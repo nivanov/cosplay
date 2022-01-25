@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>CosPlay Parent</name>
+    <groupId>org.cosplay</groupId>
+    <artifactId>cosplay-parent</artifactId>
+    <version>0.1.0</version>
+    <packaging>pom</packaging>
+    <description>An open-source 2D ASCII game engine for Scala3.</description>
+    <url>https://github.com/nivanov/cosplay</url>
+
+    <developers>
+        <developer>
+            <id>nivanov</id>
+            <name>Nikita Ivanov</name>
+            <email>nivanov@apache.org</email>
+            <organization>apache</organization>
+            <organizationUrl>https://apache.org</organizationUrl>
+            <roles>
+                <role>architect</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>modules/cosplay</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+
+        <!-- Major Java/Scala version. -->
+        <scala.major.ver>3</scala.major.ver>
+        <scala3.ver>${scala.major.ver}.1.0</scala3.ver>
+        <scala2.ver>2.13.6</scala2.ver>
+        <java.ver>11</java.ver>
+
+        <maven.build.timestamp.format>yyyy-MM-dd-HH-mm</maven.build.timestamp.format>
+        <timestamp>${maven.build.timestamp}</timestamp>
+
+        <!-- Versions. -->
+        <scala.plugin.ver>4.5.3</scala.plugin.ver>
+        <log4j.ver>2.16.0</log4j.ver>
+        <scala.logging.ver>3.9.4</scala.logging.ver>
+        <scalatest.ver>3.2.9</scalatest.ver>
+        <scala.par.colections>1.0.3</scala.par.colections>
+        <maven.jar.plugin.ver>3.2.0</maven.jar.plugin.ver>
+        <maven.compiler.plugin.ver>3.8.0</maven.compiler.plugin.ver>
+        <maven.enforcer.plugin.ver>1.4.1</maven.enforcer.plugin.ver>
+        <maven.surefire.plugin.ver>2.22.1</maven.surefire.plugin.ver>
+        <maven.shade.plugin.ver>3.2.1</maven.shade.plugin.ver>
+        <maven.install.plugin.ver>2.5.2</maven.install.plugin.ver>
+        <maven.source.plugin.ver>3.0.1</maven.source.plugin.ver>
+        <maven.clean.plugin.ver>3.1.0</maven.clean.plugin.ver>
+        <jline.ver>3.20.0</jline.ver>
+        <commons.lang3.ver>3.12.0</commons.lang3.ver>
+        <commons.math.ver>3.6.1</commons.math.ver>
+        <scala3.reflect.ver>1.0.0</scala3.reflect.ver>
+        <junit.ver>5.8.2</junit.ver>
+        <scalatest.ver>3.2.9</scalatest.ver>
+        <openjfx.ver>17.0.0.1</openjfx.ver>
+        <flatlaf.ver>1.6.1</flatlaf.ver>
+        <ikonli.ver>12.2.0</ikonli.ver>
+        <miglayout.ver>11.0</miglayout.ver>
+
+        <!-- JAR with all dependencies. -->
+        <cosplay.all.deps.jar>${project.artifactId}-${project.version}-all-deps.jar</cosplay.all.deps.jar>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-math3</artifactId>
+                <version>${commons.math.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.miglayout</groupId>
+                <artifactId>miglayout-swing</artifactId>
+                <version>${miglayout.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.formdev</groupId>
+                <artifactId>flatlaf</artifactId>
+                <version>${flatlaf.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kordamp.ikonli</groupId>
+                <artifactId>ikonli-swing</artifactId>
+                <version>${ikonli.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kordamp.ikonli</groupId>
+                <artifactId>ikonli-lineawesome-pack</artifactId>
+                <version>${ikonli.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.formdev</groupId>
+                <artifactId>flatlaf-intellij-themes</artifactId>
+                <version>${flatlaf.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-media</artifactId>
+                <version>${openjfx.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>co.blocke</groupId>
+                <artifactId>scala-reflection_${scala.major.ver}</artifactId>
+                <version>${scala3.reflect.ver}</version>
+            </dependency>
+
+            <!--
+                Scala3 dependencies.
+                ===================
+            -->
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala3-library_${scala.major.ver}</artifactId>
+                <version>${scala3.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala2.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang.modules</groupId>
+                <artifactId>scala-parallel-collections_${scala.major.ver}</artifactId>
+                <version>${scala.par.colections}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.typesafe.scala-logging</groupId>
+                <artifactId>scala-logging_${scala.major.ver}</artifactId>
+                <version>${scala.logging.ver}</version>
+            </dependency>
+
+            <!--
+             JLine dependencies.
+             ==================
+            -->
+
+            <dependency>
+                <groupId>org.jline</groupId>
+                <artifactId>jline-terminal</artifactId>
+                <version>${jline.ver}</version>
+            </dependency>
+
+            <!--
+                Test scope.
+                ===========
+            -->
+
+            <dependency>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest_${scala.major.ver}</artifactId>
+                <version>${scalatest.ver}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.ver}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.jar.plugin.ver}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala.plugin.ver}</version>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xms512m</jvmArg>
+                        <jvmArg>-Xmx4096m</jvmArg>
+                        <jvmArg>-Xss2048k</jvmArg>
+                    </jvmArgs>
+                    <args>
+                        <arg>-unchecked</arg>
+                        <arg>-deprecation</arg>
+                        <arg>-feature</arg>
+                    </args>
+                    <scalaCompatVersion>3</scalaCompatVersion>
+                    <source>${java.ver}</source>
+                    <target>${java.ver}</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.ver}</version>
+                <configuration>
+                    <source>${java.ver}</source>
+                    <target>${java.ver}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven.enforcer.plugin.ver}</version>
+                <configuration>
+                    <rules>
+                        <requireJavaVersion>
+                            <message>
+
+                                ------------------------------------------------------------------------
+                                You are trying to compile CosPlay with inappropriate JDK version!
+                                Detected JDK Version: ${java.runtime.version}.
+                                JDK version should be 11 or later.
+                                ------------------------------------------------------------------------
+
+                            </message>
+                            <version>11</version>
+                        </requireJavaVersion>
+                    </rules>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin.ver}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

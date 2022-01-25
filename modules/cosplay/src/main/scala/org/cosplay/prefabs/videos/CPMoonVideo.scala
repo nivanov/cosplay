@@ -1,0 +1,4762 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.cosplay.prefabs.videos
+
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.*
+
+import scala.collection.mutable.ArrayBuffer
+import CPPixel.*
+
+/*
+   _________            ______________
+   __  ____/_______________  __ \__  /_____ _____  __
+   _  /    _  __ \_  ___/_  /_/ /_  /_  __ `/_  / / /
+   / /___  / /_/ /(__  )_  ____/_  / / /_/ /_  /_/ /
+   \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
+                                            /____/
+
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
+*/
+
+/**
+  * https://ascii.co.uk/animated-art/moon-animated-ascii-art2.html
+  */
+object CPMoonVideo extends CPVideo("moon_vid", "https://ascii.co.uk/animated-art/moon-animated-ascii-art2.html"):
+    private val rawFrames = new ArrayBuffer[String](89)
+
+    rawFrames.addOne("""
+                                        ..,::;;;;;;;;;;::,..                                        
+                                 .,:i1tffCGGGGG0GGG0GCCLLLfft11i::.                                 
+                            .,;itLCCCLLLLLfffLLLLCCLLffffffffffLLCLLti:.                            
+                         .;1tfLLLft1111i11iiiiiii111tt11t1111ttfffLGGCCLt;,                         
+                      .:itfft11ii;ii1ii;;;;;iii;;;;iiiiiiiiiiiiiii1tfLLLLLf1;,                      
+                   .:;;;ii;;;iiiiii111iiii11i;i11ttiiiiii;i;;;;;;;;;i1tftt1fftt;,                   
+                 ,;;;::;:::;i1111iiii;;;::;;;:;;i1t111iiiii1iiiiii;;i11ttt1t11ttt1:   .             
+               ,:;::::::;i1111;:::::,,,::::::::::;1i11iiiii11111iiii1ii1111ttiii1tt1:.              
+             .:::,,::,,:;i;ii;,,,,,,.,,,::::::::::;ii111i1111iii;;ii1iiiiii1111i1ii1ft:             
+           .:;:,,,,,,,:;;;;::,,,...,,,,,,::::::::;;;;iii111ii11i;::;;ii;;;11111111111tf1,           
+          ,::,,:,,,,:::::::,,,,,,,,..,,,,:::,:::::;;:;;i1i::::;;;;::::;:,:;i1111i11ftii1ti          
+        .::,,,,,,,,::,,,:,,,:,,,,,,,.,,,,,:,,,::::;;:::ii:,,,,,:::::,:ii::iiit111111ftii1t1.        
+       .:,,,,.,,,,:::,,::,::,,,,,,,,,,,,,,,,,,:::;;;;::;::,,,,,,,,::,,;iiii111tttt11tt1ii1tt:       
+      .:::,,,.,,,:::::,,,:::,,,,,,,,.,,,::,,:;:::::;;;;:,::,,,,,,::,,..,:i11111t1tf111i1111tt;      
+     .::,,.,.,,,;i::::,,,,,,,,,,,,,,,,,,::::;;;;;::,:i;:,,,,,,,,,,,,,,,.,;itf111ii1i1ii11i111f;     
+    .;::,,...,,:ii:::,,,,,,,:,,,:,,,,:,,,,,,,:::;;iiii;:....,,,,:,,,,,,.,:;iiii11;iiiii;::iii1f:    
+    ;:,,:....,,:,,:::,,,,,::::::,,::,:,,:,,,,.,:;iii;::,,,.,...,:,,,,,,..:;;;::11i1iii::::,,:i1t.   
+   :i,.,......,,,,,::,,,,,:,,::::,,::::::::,:;;;;;;:::::,,,:,,,,,,,...,,,,::::,:;i1tft;::,,,.:11;   
+  .1;,,........,,,,:::,.,::;;;:;;;;:::::::::::;:;::,,,,,:;;:,,;i:::.,,.....,,,,.:ii1ffi:,,,,,,i1i,  
+  ;1:,,........,,,,::::,,::;;i;;iii;;;;;::::,,,.,:,,,,..,:;,,::::,...............:;;itt;:,,,.;i1i,  
+ .i1;:,..........,,::::,,,:;ii;i1tti;;;;::::,,..,::,,.....,,:;;:,......,,..........,;i11i;,::11i1i. 
+ ,fti:,.,,......,,:;ii;::::::;;;i1i;::::::,,,,,;;;;;:::,,:::ii;::.................::::;i11iii;i;i1: 
+ ;f1i;,.,,....,.,,:;;i:::::;:;;;::::,,,,:,...,:;i;;;;ii;;iiiiii;:,..,..........,.,,,:;::;i11ii;,;1i 
+ it11i:..........,:,:;,::::::;;;;;::,,,::,..,,,:::;;;i1ii1tt1i;;;:,........,,.,,.,,:::,,.:;iii;;i1i 
+ it11i,...........,,,:,,:::::::;;;i::,,::,,,::,:,,::;i1111tt11iii;:,...,..,.;i:,,,::,,,,,..,:;:;;;; 
+ i11t;:,..............,,,,,::::::,::::::::::;i;;:::;i1i11111i111iiii;::,,,,;1iiii;:,,,,.,.,,::;;;i; 
+ i11ii;:....,.....,...,,,,,:,:,,::::;;:::;ii;1iiiiiiii111ii11111i1tt11i::,:iiiiii;;,,,,,,,,:::iii1; 
+ ;11,:1:,...,,.....,,.,,,,:::,,,:::;:;:::;i1iii1111iii1111111111tLLt1i::::;iiii1;;;:,,,,,,:::;;;;i; 
+ ,t1iiti:,.........,,..,,:;;:,,,,,::i;:,,::;iiiiiii11111ff111111ttttii;;;:;i111t11;::,,,,::;t1iii1; 
+ .1111iii:,,:,,,,.,,,.,,,,::,,.,,,,::;;,,,:;ii1;;;iiiii11i1111tft1fft1tti;i;;;;i111;;:,,::;i111ii1: 
+  :1111it1::;::::::;:,,,,.,,,,,,,,,:,:i:,,:;;;iiiiiiiiiii1ii11tt111tfftt1ii;::::i11i;i;;::;iiiii1i. 
+  .111ii11i;;,:::;;;;:::.,.,::;i,::::,::,,::::iiiiiii111111111i1i111ffff1;:::::;11iiiiii::;;;iii1:  
+   :1iii1iiii;;;iii;;:,:,::,:;;:,,:::,:,,,,,iii1111i1t11ii11111i1111ttLf1;;:::,:11;ii;::;;i:;;i11.  
+    i11tt11ii;ii1i:,,...,;;;:;::;:::,,,,,,,:i1111iiii111iiii11111111111111i;;;;;;ii;i::;t1i;ii11,   
+    .t11fLft1iiii;,,.....:;::,,::::,,:,,,.,;:i111ii1111i11111111111i1ttf11ii111;i1ii1iii11ii1i1,    
+     ,t11LCft111i1;,,,,..,,:::,::::,,,.,,,,::;i1i1tf1i11ttttt1111ii1ffft11t111i1111ttt11t111i1:     
+      ,t1i1t111ttii;::,,,,:;;;:::;::,,:,,::;;1tt1fffff1ttft111iittt1t111tt1i11111tftfftftt111:      
+       ,11i11111tttti;;:;;ii;,;;;;11iiii;1tttffftfffffftt111111ttt11tt1111itt1111tLCLLfttt11:       
+        .i11111ii1111iiiiiii::;;:;1tff11ttffLLCGCLffffftttttttttt11tt1111i1t1111tfLLCLtt11i.        
+       .  ;t11i1tii11i;:;iiiiiii11111tffffLCLLCCLfffffftfftt11t1i11111111111111tfLfft1111:          
+           .it11t1iii11iii11111i1111ttffLLLLLLCLLLLLLffftttttttttttt11ttt111ttttt1t1i11;.           
+             ,1tt11i;i11ii11t111ti1ttffLLfCCLfLLLLfffffLfttfLt1tft1111tttfffftt1iii11i,             
+               :11t1ii1iiii1i111111ttfffLfLCLfLLLffLfffft111111t11ttfftffLftt1i1111i:.              
+                 ,itt11i1iiiii11t111tttfLfLLCLLCCLLLLLffffttt1tt1tttffffft1111t1i;,.                
+                   .;1t1t111iii11111ttfLffLCLLfLLffLLfffftttffftttfftttt111t1i;:.                   
+                      ,;1tfttt11ttttttLffLLCfLLLLffffffftfffffftttfttttttff1;,.                     
+                        .:itfLLLLffftfffLfLGCCGLffffffffffffffttffffLLff1i:.                        
+                            .:itfLCCCLLLLLLCGCGCLLfLffLLLLLLLLLLCCLfti:.                            
+                                .,:;1tffLLLLCCCGCCGGGGGGGGCCLfti;:,.                                
+                                       ..,,:;ii111ttt1ii;::,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;;;;;;;;::,..         .                              
+                                 .,:i1tffLCGCGGGGGGGGGCLLLfft11i::.     .                           
+                             ,;itfCCCCLLfLLLffLLLLCCCLffffffffffLLLffi:.                            
+                    .    ,;1tLLLffft1111111iiiiiiii111tt1t1111ttfffLGGCLt;,                         
+                      ,:i1fff11iiiiii11ii;;;;iiii;;;iiiiiiiiiiiiiii1tfLLLLf1;,                      
+                   .:ii;;ii;;;;iii1ii111iiii11iii11ttiiiiii;;i;;;;;;;i1tffttff1i,                   
+                 ,;i;;::;::::;i1111iiii;;;::;;;:;ii1t111iiiii1iiiiii;;111tt1t11tti:.                
+               ,;;::,:::::ii111i;:::::,,,::::::::::;ii111iiiii1111iiiiiii111tt1ii1t1;.              
+             .;;:,,:::,,,:;;;i1;,,,,,,,,,,:::::::::::ii111i11111ii;;ii1iiiiii111111itt;             
+           .:;;,,,,,,,:,:;;;;;:,,,,.,,,,,,,::::::::;i;;iii111ii1ii;::;;;i;;;1111i11111t1,           
+          ,i:,,,,,,,,,:::::::,,,,,,,,..,,,,,:::,:::;;;::;i11i:::;;;;::::;::,;1i11111tti11;. .       
+         :;,,,,,,,,,,::,,,:,,,,:,,,,.,.,,,,,::,,,::::;;:::ii,,,,,:::::,,;i;:;ii111111ftiit1.        
+       .;;.,,,.,,,,::::,,::,,::,,,,,,,,,,,,,,,,,,:::;;;;:::::,,,,,,,::,,:iiii1111ttt11t1iitt,       
+      .;:::,,,.,,:,:::::,,,:::,,,,,,,,,,,,,::,,:;:::::;;;;:,,:,,,,,,::,,.,:;11111t1tf1t1i111t:      
+     .i:::,,,,.,,,:i::::,,,,,,,,,,,,,,,,:,,::::;;;;;::::i;:,,,,,,,,:,,,,,.,:i1tt11i11i1i11i11f:     
+    .i;::,,,...,,:ii:::,,,,,,,::,,,:,,:,:,,,,,,,:::;;;iii;:,...,,,,:,,,,,,,:;iiii11;iiiii;:;iit:    
+    ii,,.,,.....,,,,:::,,,,,,::::,,,,::,:,,::,,,.,:;iiii::,,,.,,..,:,,,,,,.,;;;;:i1i111i:::,,:i1.   
+   :t;,,,.....,,,,,,,,::,,,,,:,:::::,,::::::::::;;;;;;:::::,,,::,,,,,,...,,,:::::,:i1tft;:,,,.:1;   
+  .1i:,..........,,,,::::,,,::;;;;;;;;:;;:;::::::;:;::,,,,,,;;:,,;i:::.,,.....,,,,,;iiffi:,,,,,i1.  
+  :ti:,,,,.......,,,,,:::,,,,:;ii;;iiii;;;;;:::,,,.,,,,,,...:;:,::;:,,.............,;;itt;,,,.;i1;  
+ .i1i;:,............,::;::,,,:;iiii1tfi;;;;;:::,,,..::,,.....,,::;;,......,,.........,:i11i:,:i1i1. 
+ ,tt11;,..,,.......,,;iii;::::::;;ii1i;;::::::,,,,:;;;i;:::,,::ii;::................,;::;i11iiii;i: 
+ ;ff11i:,.,...,..,.,::;ii;::::;:;;;:::::,,,::...,:;i;;i;ii;;iiiiii;:,.,,.........,,,,,:;::;111i;,ii 
+ it1111;,.....,.,...,:,;:,::::::;;;;;:::,,,:,,.,,,:::;;;i1ii1tt1ii;;:,....,..,,,,,,.,::::,.:;iii;ii.
+ i111i1;,,...........,,:,,:::::::::;;;;:,,,:,,,::,,:,::;ii11itft1iii;:,..,,.,,,;;:,,::,,,,,..,::;ii.
+ i1iit1:,............,..,,,,,,::::::,:;::::::::;;;;:::;ii111111i1111iii;;:,,,,;1iii;;,,,,,,,.,::;ii.
+ i1ii1;i;,....,,.....,...,,:,,:,::,,::::;:::;iiii1iiiiiii1111i1111111tft1i::,:1iiii;;:,,,,,,,::;iii.
+ ;ti1;.11:,....,......,,.,:,,;::,,,:::;;;:::;i11ii1111iii1i111111111LLt1i::::;iii1i;;:,,,,,::::;;i; 
+ ,t11i;11;:,.....,....,,.,,::;;:,,,,,::;i:,,::;ii1i;iii111itft1111i1ttt1i;;;:;i1itt1i::,,,,::itii1; 
+ .t1111iiii:,,:,,,,..,,.,,,,,::,,..,,,,:;;:,,,;;i1i;;;iiii11ii1111ftttft1tti;i;;;ii11i;:,,::;111i1: 
+  ;11111i1ti::;:::::::;,,,,.,,,,,,:,,,,::i:,,:;;:iiiiiiiii1iiii111t111tfftt11i;:::;i1i;i;;::;iiiii. 
+  .1111iii11ii;,:;::;;i;,:,,,.,::;i,::::,::,,::::;iiiiiii1i11111111111tffff1;:::::i1iiiiii::i;ii1:  
+   ,111ii11iiii;;;iiii;;,,:,:,,:;;:,,:::,,,::,,;iii11111t111i1111ii1111ttLf1;;:::,i1;i1;::;;i;;ii.  
+    it1tttt11ii;ii11;:,,..,,;;::;::;::::,.,,:,:i1111iiiii11iiii1i1111i1111tt1;;;;;;ii;i;:;t1iii1,   
+     tf11tLLft1iiiii:,,,....:;::::::::,,:,,,,,::i111ii11i1ii111111111111tff1iii11ii1ii1ii111ii1:    
+     .fti1fCLt1111i1i:,,,...,::;:,::::,,,,,,,,,:;i1i1tft1i1ttttt111ii1tffft11111i1111tt111t111:     
+      ,tt1i1tt111ftii;::,,,,:;;;;:::;:,,,::,::;;1tt1fffff1ttft111iittttt11ttt111111tfffffft11;      
+       ,tt1i111111ttft1;;:;;;ii::;;;;11iii;;1tttffftfffffftt11i11tftt11t1111i1t1111tCLLLftt1:       
+        .it111111ii1111i;ii;ii;::;:;i1tff1tttfLLLCGCLffLffttttftttt11ttt111i1ttt1ttfLLCftti,        
+       .  ;t1111it1ii11i;:;iiiiiiii11111fffffLCLLCCLfffffftfftt1t1i11111111111111tfLft111;          
+           .i1t11tt1iii111i111111i1i11tttffLLLLLCCCCLLLLfffttt1tttttttt1tttt11tttt11t11i,           
+             ,1tt1111;;111ii11ttt1t11tttffLfLCCfLLLLLLfffLfttfLf1tft1111ttffffft1ii11i:             
+               :1t1111i1i1iii111111t11tfffLLLCLfLLLLfLLfLft111111tt1ttfftfLLft11111i:.              
+                 ,itft11111iiii111tt11tttfLfLCCLLCCCLLLLffffttttttttttffffft111t1;,.                
+                   .;ttt11t11iii111111tffLffLCLLLLLffLLffffttfffftttfffft111tti;,                   
+                      ,i1tffttt11ttttttfLffLLCfLLLfffffffffffffffttfftttftfti,.                     
+                    .   .:itfLLLLLLfftfffLLfLGCGCLffffLfLffLfffttffffLLf1i:.                        
+                            .:itfLLCCCLLfLLLLCGCGLLLLLfLLLLLLLLLLCCfti:.                            
+                                .,,;1tffLLLLLCCGGCCGGGGGGGGCLfti;:,.                                
+                                       ..,,:;ii111ttt1ii;::,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;;;;;i;;::,..         .                              
+                                 .,:i1tffLCCGGGGGGGG00GCLLfftt1i::.                                 
+                            .,:itfLCGCCLLffLLfLLLLLLCCLfffffffLLfLLft1:.                            
+                         ,:ifLLLLffft11111111iiiii1ii11tt11t1111tfffCGGLt;,    .                    
+                      ,:i1tfft111iiiiii1iii;;;;iiii;;iiiiiiiiiiiiiiii1fLLLLt;,                      
+                   .;i1i;;iii;;;iiii1i1111iiii11i;i111tiiiiii;ii;;;;;;;i1tftff1;,                   
+                 ,i1i;:::;;::::ii1111iiii;;;::;;;:;;i1t111iiiii1iiiiii;i11ttttt1ti:.                
+               ,ii;:,:::::::ii1111;::::;:,,:::::::::::i1i11ii1ii1111iiii1i1111t1i1t1:.              
+             ,;1;,,,::::,,,:ii;;i;:,,,,,,,,,,::::::::::;ii111i11111ii;;i1iiiii11111111:             
+           .;i;:,,,,,,,,:,:;;;;;::,,,,,,,,,,,,::::::::;;;;iii111ii11i;:;;;i;;i1111i111t1,           
+          ,ii,,,,,,,,,,,:::::::,,,,,,,,,.,,,,,::::::::;:;::;i1i;:::;;;;::::;,:ii111111t11;. .       
+         ;i:,,,,,,,,,,,:::,,::,,,::,,,,,,,,,,,,,:,,,::::i;::;i;,,,,,:::::,:ii:;iit1111tt111.        
+       .;i,.,,,,,,,,,:,:::,:::,::,,,,,,,,,,,,,,,,,,,:::;;;;:::::,,,,,,,::,,;1ii111ttf11tti1t,       
+      .1;,:::,,,,,,:,::::::,,::::,,,,,,,,,,,,,::,::;;:::;;;;;:,,:,,,,,,::,..,;i1111t1tt1t111t:      
+     .1;,::,,,,,,,,,:i;::::,,,,,,,,,,,,,,,,,,,::::;;;;;::,:i;:,,,,,,,,::,,,,.,;itt11i1111i111t:     
+    .1i:::,,,,...,,:;1;:::,,,,,,,::,,,:,,:,:,,,:,,,:::;;iiii;:,...,,,,:,,,,,,,:;iiii1;iiiii:;i1:    
+    it;:,.,:,....,,,:,::::,,,,,,::::::,,::,,:,::,,,,,,;iiii;::,,.,,..,,,,,,,,.:;;;:;1i111;,::,;1.   
+   :t1;,,,,.....,,,,,,,,::,,,,,,:,:::::,,:::::::::,;;;;;;:::::,,,::,,,,,,,..,,,::::::i1tf1::,,,;i   
+  .11i::,,..........,,,,::::,,:::;;;;;;;;::;;;::::::;;:;:,,,,,,:;:,,;i:::.,,....,,,,.;iiff;:,,,,1,  
+  ;t1i::,,..........,,,,:::::,:::;ii;;;iii;;;;;::::,,.,,,,,,...:;:,,:;:,.............,;;itt;,,.:1i  
+ .11i1;::,............,,:;;::,,::;iiii1tt1;;;;;:::,,,..,::,,....,,:;;;:......,,........,:i11i::;11, 
+ ,11ftii:,.,,,,,.....,,:;iii;::::::;;ii1ii;::::::,,,,:;;;;;:::,,::;i;;:,..............,;::;1111ii;; 
+ ;ttf1iii:,,,,.....,,,,::;ii:::::;:;;;:::::,,,,:,...,:ii;i;;ii;;iiiii;:,.,,,........,.,,:;::i11i;:i.
+ it111111;,.......,....::,;;,::::::;;;;;:::,,,,:,..,,,:::;;i11i11ft1i;;:,,......,,,,,.,::::,,:iii;i.
+ i1i1t111:,............,,,::::::::::::;;;;::,,::,,:::,:,:::iii111ft1iii;:,..,,.,,:i;,,,::,,,..,:::i.
+ 11i1i1ti::.............,.,,,,,,,:::::::::::::::::;;i;;::;;i1i11i111i11iii;::,,,,i1iii;:,,,,,,,::;i.
+ 1t1iitiii;,....,,.....,,...,,,:,:,::,,:,::;:::;i1ii1iiiiiii1111i1111111tf11i::,;iiiii;:,,,,,,:,;ii.
+ if1111.,ti:,....,......,,..,:,,:::,,,:::;;;::::i11iii11111ii11t1111111fLt1i::::;iii1i;;:,,,,:::;i; 
+ :f1t11;;t1;:,.,..,,,....,,,,,::;i:,,,,,,:;i;,,,::iiii;iii111i1ft111111ttt1i;;;:;i11t1i::,,,,:;t11; 
+ .f111111iiii:,,::,,,,.,:,,,,,,,::,,.,,,,,:;;:,,,:;i1i;;;iiiii1i11111ft1tft1ttiii;;ii1ti;:,,::it11, 
+  iti11111i1ti::;;::::::;;,,,,,,:,,,,:,,,:::;;,,::;:;iiiiiiii11iii111t111tLftti1i:::;i1i;i;;::iiii. 
+  .111111iii11i;i::::;;;;i;,:,,,..::;i:,:::,::,,::::;iiiiiii1i11111111111tffLti;::::;11iiii;:;;;1:  
+   ,11111ii11iiii;;;;iii;;;,,:,::,:;;:,,,:::,,,:,,:iii111i1t111i1111ii1111ttLti;:::,;t;i1;:;;;;ii.  
+    ;tt11ttt111ii;iii1i:,,,..,:;;::;::;;:::,,,,:,,i11111iii111iiii1i11111111ttti;;;;;ii;i::11ii1,   
+     1Lt11tfLLtt11iiii;,,,,,,..:::::::::::,:,,,,,::;111ii11i1ii11111111111ttft1ii11ii1iiiii11i1:    
+     ,ff111tLCLt1111iii:,:,,,.,,,:;:,::::,,,,,..,::;i1i1tft1i1ttttt111ii1tfft11111i1t11tt11t11:     
+      ,ff11111tt111tt1ii;::,,:::i;;::::i:,,::,::;;;1tttffffftttft111i1tttt111tt111111tffffftt:      
+       .tf1111111111ttft1;;;;;;ii;,:;;;it1iii;;1ttffLfffffffftt11111tfttttt11111t1111fCLLft1,       
+        .if1i111111i111t1i;iiii1i:::;:;itfft1tttfLLLCGLfffLffttttftftt11tt111i11tt1tfLLCft1,        
+       .  :tt1111i1t11i11i;;;i1iiiiii11111tffffLCCLLCCLLfffftfftt1tt1i1111111111111fLftt1;.         
+           .it11111t11iii111ii111111i11ttttfLLLLLLLCLCLLLLffftttttttttttt1ttt11ttttt1t1i,           
+             ,1tt11111i;i1111i11ttt1t11tttffLLfCCLfLLLLLLLfLLfttff1tff1111ttfffft1111i:.            
+               :1tt1111111i1i;i1111t1t11tfffLLfLCLLLLLLLLLLLft111111t1ttfftfLft1111i:.              
+                 ,itfft111111ii1i111tt11tttfLfLLCLLCCCLLLLfffftttttttttffffft11tti:.                
+                   .;1ft111t111i;i111111tffLffLCLLLLLLfLLffffttffffttfftft111t1;,                   
+                      ,i1fftttff111ttttttfftfLCLLLLLfffffffffffffffttfttfftti,.                     
+                         ,itffLLLLLfffffffffLLCGCGLfffffffffffffftffLLffti:.                        
+                            ,:i1fLLCCCCLLffLLLCGGGCLLLLLLLLLLLLLLLLLti:,                            
+                                .,,;1tfLLLLCLLCCGGGGGGGGGGGCLft1;:,.                                
+                                       .,,,:;iii111tt11i;;:,.                                       
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;;;;;;;;::,,.         .                              
+                           .     .,:;1tffLCCGGGGGGG000GGCLfft11i::.                                 
+                            .,:itfLCGGCCLffffLLLLLLLLCCLfffffffLLfffti:.                            
+                         ,;itLLLLLfffttt111111iiiii11i111tt1t1111tffLCGLt;,    .                    
+                      ,:i11ttfttt11iiiiii1iii;i;;;iii;;iiiiiiiiiiiiiii1fLLLt;,                      
+                   .:111;:;iii;;;;iiii1i1111iiii11iii111tiiiiii;ii;;;;;;i1tfftt;,                   
+                 ,;11i;::;;;::::;i111t1iiiii;;::;;;:;;i1tt11iiiii1iiiiii;i11tttt1i:                 
+               ,i1i:::::::::::ii11i1i::::;:,,:::::::::::;1i11iiiii1111iiiiii111tt111:.              
+             ,;1i;:,,::::::,,:ii;;ii:,,,,,,,,,,::::::::::;ii111i11111ii;ii1iiii1111111:             
+           .;1i;:,,,,,,,,,:,:;;;;;::,,,,.,,,,,,,::::::::;;;;iii111ii1ii;::;;i;;i111i11ti,           
+          ,11;:,,,,,,,,,,:::::::::,,,,,,,,,,,,,,,::::::::;;;:;;11i:::;;;;:::;;,:ii11111t1:  .       
+         ;1i:,,,:,,,,,,,,:::,,::,,,:::,,,,,,,,,,,,::,,,:::;i;::;i:,,,::::::::ii:;iit111tf1i,        
+       .i1;,,,,,,,,,,,,,,::::,::,,::,,,,,,,,,,,,,,,,,,,:::;;;;::::,,,,,,,::,,;iii111ttt1t111,       
+      .11:,:::,,,,.,,:,,::::::,,::::,,,,,,,,,,,,,::,,:;::::;;;;::,:,,,,,,::,,.,:i1111ttf1t11t:      
+     .11:,::,,,.,.,,,,,;i:::::,,,,,,,,.,:,,,,,,,,::::;;;;;::,:i;:,,,,,,,,::,,,.,;itt111111i111:     
+    .1ti::::,,,.,..,,:;ii::::,,,,,,,::,,,:,,:,:,,,,,,,:::;iiiii;:,...,,,,:,,,,,,:;iiii1;iiii:;1:    
+    if1i::,.,:.....,,,:,,::::,,,,,:::::::,,::,,:,::,,,,,,;iiii;::,,.,,.,,:,,,,,.,;i;:;1i11i::,,i.   
+   :ft1i::.,,.....,.,,,,,,,::,,,,,::,::::::,:::::::::,:;;;;;;:::::,,::,,,,,,..,,,,:::::i1tfi::,,;   
+  .1t1i;:,.,,.........,,,,:::::,,,::;i;;;;;;::;;:;:::::;;:;:,,,,,,:;:,,;i:::.,,....,,,.:i1ft:,,.;: .
+  ;t111:::,,,.........,,,,,:::::,,,:;;i;;;iii;;;;;::::,,,.,:,,,,..,;:,,:;:,.............:;iti:,.:i  
+ .11111i;::,.............,,:;;::,,::;;iiiitft;;;;;::::,,..,:::,....,,:;;;,......,,.......,:i1i:,;1, 
+ ,111ff1i;:,..,,..,.....,,:;iii;::::::;;;i11i;;::::::,,,::;;;i;::,,::;i;;:,.............,:::i11iii: 
+ ;t1tft1ii;:,.,,.,.,..,,,,::;ii;::::;;:;;;:::::,,,:,...,:;i;;;;ii;;iiiii;:,.,,........,,,,::::i11;;.
+ it1t1111t1;,........,....::,;;,:::::::;;;;;::,,,::,,.,,,:::;;;i1ii1tt1i;;;,,......,,,,,,,::,.,;iii.
+ i1111t1i1i:,.............,:,::::,:::::::;;;i:::,,:,,,::,:::::;ii111tt11iii:,..,,.,,;i:,,::,,,..,:;.
+ 1t111iit1i:,,.............,..,,,,,,:::::::,;;:::::::;;i;;:::;ii111111i111iii;;:,,,:1iii;:,,,,,,::i,
+ 1f1i1ii1;ii;:....,,,.....,,...,,,:,,,::,,:::;;;:::;iii11iiiiiii111i1111111tf11i:::iiiiii;,,,,,::;i.
+ ift1111;.:ti:,,....,,,....,,,,,:,,::::,,,;::;;;:::;i1iii11111ii11t1111111fLt1i::::i1i1i;;:,,,,::ii.
+ :f111t11;it1;::,,...,.....,,,.,,::;i;,,,,,,::i;:,,::;ii1i;ii11111ff1111i1tftii;;:;i11t1i;:,,,::t1; 
+ .ffi11ii11i1ii:,,,:,,,,,.,:,,,,,,,:;,,.,,,,,::;;,,,:;ii1i;iiiiii1111111ft1ffttt1;i;;;i1ti;::::i11, 
+  1fi1111111i1t1;::;:::::::;;,,,,,.,:,,,,,,,,:,:;:,,:;;;iiiiiiiii1i1i111t111tLft1ii;:::i1iii;::;ii. 
+  .t1111111ii111i;i;,:;:;;;ii:,;:,,.,::;i:,:::,,:,,,:::;iiiiiii1111111111111tLfL1;::::;11iiii:;;1:  
+   :i1111i1ii11ii;i;:;;iiii;;;,::,:,,:;;:,,:::,,,,:,.:iii11111t111i11111i1111tfL1;;::,;t;ii;:;i;;.  
+    :ttt11tttt11iii;iii11;:,,,,.,:;;::;;:;;:::,,,,:,,;11111iiii11ii11111111i111tt1;;;;;iiii:i1ii,   
+    .;tft111tLLLtt11iii1i:,,,,,,,,;:::,:;::::,::,,,,::;i11ii1111ii111t11i11i1tff1ii11ii1iiii11i,    
+     ,tLt1111fLCftt1111i1i,::,.,,,,,:;:,:;::,,,,,,,,::;i1iitft1i1tttt11111i1ffft1111i1t1tt11t1:     
+      ,tLtt1111tt1111tf1ii;::,,::::i;;;:::;:,,:::::;;;1tttfffft1ttft11ii1tttt11tt111111fffftt:      
+       .tft111i1111111tfft1i;;:;;;ii;,:;;;it1iii;;1ttffLfffffffft111i11tftttt11111t111tLLLft:       
+         ift11111111iii11t1i;iiiii1;::;;:;itfft1tttLLLCGCLffLLffttttttttt1tt111i1ttt1tfCLf1,        
+       .  :tt111111itti1i11i;;:iiiiiiiii11t11tffffLCCLCCLLffffftfftt1t11111111111111tfftt;.         
+           .i1t11111tt1iiii111ii111111i1i1ttttfLfLLLLCCLCLLLLfffttttttttttt1tttt1tttt1ti,           
+             ,ittt111111i;i111ii11ttt11t11tttffLfLCCfLLLLLLfffLfttfLttff1111ttffff111i:.            
+               :1ttt11111i11i1iii1i11t1t11ttfffLfLLLLLLLLfLLfLft11111tttttfffffft11i:.              
+                 ,i1tftt111111iiii1111tt11tttfLLLLCLLCCCLLLLffffttttttttfttfftttti:.                
+                   .;1fft111tt11iii1111111tffLffLCCLLLLLfLLffffttfffftfftfft1t1;,                   
+                     .,;1fffttttft11ttttttffftfLCLLLLLffffffffffffffttfffffti:.                     
+                         ,i1fLLLLLLLffffffffLfLLGCGGLfLffffffffffftfLLLfti:.                        
+                            .:;1fLLCCCCCLLffLLLCGGGCLLLLLLLLLLLLLLLLti:,                            
+                                .,,:itLCLLLLCLLCCGGGGGGGGGGCLft1i:,.                                
+                                       ..,,:;iii111ttt1ii;:,.                                       
+""")
+    rawFrames.addOne("""
+                                         .,:;;;ii;;;;;;::,,.                                        
+                                 .,:;1tffLLCGGGGGGGGG00GCLfft11i:,..                                
+                             ,:itfLLCGGCLLffffLLLLLLLLCCLffffLfLLfffti:.                            
+                         .:1tfLLLLLfffttt1111111iiiii1ii111t1t1111tfLLCLti,                         
+                      ,;itt1ttfft111iiiiiii1iii;;;;;;ii;;iiiiiiiiiiiiii1fLLti,                      
+                   .:1tt1;::iii;;;;;iiii1i1111iiii11iii111tiiiiii;;i;;;;;i1tft1;,                   
+                 ,;tt1;;:::;:;::::;i11111iii1i;;:::;;::;iitt11ii;ii1iiiiiii11tttti:.                
+               ,i11;::::::::::::ii11i1i::::::,,,::::::;::::ii11iiiii1111iiiii1111t11:.              
+             ,;11i;::,::::::,,,:;ii;ii:,,,,,,,,,,:::::::::::;ii11111111ii;;i1iii11111i:             
+           .;11i;;:,,,,,,,,,:,,;;;;;;::,,,,..,,,,,,::::::::;;;;iii11iii1i;::;;i;;i11i11i,           
+          ,1ti;:,,,,,,:,,,,:::::::::,,,,:,,,,,,,,,,:::::::::;;::;i11;:::;;;:::;;,:i1111tt:          
+         ;11i:,.,:,,,,,,,,,,::,,,::,,,::,,,,,,,,,,,,,,,,,,:::;i:::ii:,,,:::::::ii;;i1t11tti.        
+       .i1i;:,,,,,.,,,,,,,:::::::::,,::,,,,,,,,,,,,,,,,,,,:::;;;;:;::,,,,,,,:,,:iii111tt11t1,       
+      .iti:,::::,,,,,,,,,,:::::::,,::::,,,,,,,,,,,,,::,,:;::::;;;;::,:,,,,,,:,,.,:i11111tt111:      
+     .1t1;,,::,,.,,,..,,::i;:::::,,,,,,,,,,,,,,,,,,,:::::;;;;::,:i;:,,,,,,,::,,,..:itt11111i11:     
+    .1t1i::;::,,,,,..,,::;1;:::,,,,,,,,::,,,::,:,:,,,,,,,:::;;;iii;:,...,,,:,,,,,,,;iii1iiiii:i,    
+    itt1i:::,.,:,.....,,,:,::::,,,,,,,::::::,,:,:,:,::,,,,,,;iiii;::,,.,,.,:,,,,,,.:;;:;1i11;,,;.   
+   :ttt11:,,,,,.......,.,,,,,,::,,,,,,::,::::,,:::::::::,:;;;i;;:::::,,:,,,,,,...,,,:::,:i1ft:,,:.  
+  .11111i::,,,...........,,,,:::::,,:::;i;;;;;;;:;;:;::::::;:;::,,,,,:;:,,;i::,,,....,,,.:i1Li,,::  
+  ;t1111i::,,,,,.........,,,,,:::::,,::;iii;;iiii;;;;::::,,,.,:,,,.,.,;:,::;:,......,....,;;1t;,,;. 
+ .1ti1111;;::...............,::;;:;:,,:;;iiii1tti;;;;;:::,,..,:::,,...,,::;;,.....,,.......,:11;,i, 
+ ,1111tft1ii:,..,,,........,,:;iii;:::::::;iii1i;;::::::,.,,:;;;i;::,,::;i;;:.............,:::i1ii: 
+ ;t111ft11iii:,..,......,.,,,::;ii;:::::::;;;:::::,,,::. .,::i;;i;ii;;iiiii;:,.,,.......,.,,:::i11:.
+ 1f111ti11111;,,........,....::,;;,,::::::;;;;;:::,,:::,.,,,,:::;;i1ii1tt1i;;:,......,,,,,,:::,,;ii.
+ 1t111i1t1111:,,.............,,,::,::::::::::;;;;::,,:,,,:::::,::;ii111tt1iii;:,..,,,.:i:,,:,,,..,;.
+ 1ft1ii1i1t1i::,..............,.,,,,,,,:::::::,:;::::::::;;;;;::;ii1i1111i111iii;;,,,,i1ii;:,,,,,,;,
+ 1ft1111;11;ii::.....,,,.....,,...,,,:,,:::,,::::;;:::;i1ii1iiiiiii111i1111111ttt1;:,;ii;i;:,,,,,:i.
+ iftt11111;.:ti;:,....,,.,.,,.,,,,,:,,:;::,,,:::;;;::,:i11ii111111i1itt111111LLti;:::;1iii;;:,,,::;.
+ ;Lf111t11i;it1i::,.....,,,....,,.,,::;i;,,,,,,::;i:,,,:;ii1iiiii1111ff11111tttti;;;:;11tti;:,,,;t; 
+ .Lft1111i111i1ii;:,,,:,,,,,.,:,,,,,,,::,,,,,,,,,:;;:,,,;ii1i;;;iiii1111111fttft1ttiii;;i11i::::it, 
+  1Ct1i1111i11iitti::;;:::::::;;,,,,,.,,,,,,:,,,:::i:,,:;;:iiiiiiiiiiiii111t111fLttii;:::i1i;i::;i. 
+  ,ttt111111iiii11iiii:,:::;;;ii:,;:,,..,:;i;,::::,::,,::::iiiiiii1i1111111111tffLfi;:::;11iii::i:  
+   :ii111111iii11iiiii;;;;iiii;;;,::,::,:;;;:,,::,:,,:,,,;ii111i11111i1111ii111ttLti;::,;1;i;:;i;   
+   .i:tttt11tttt1t1ii;;iii11;:,,...,:;;;:;::;;:::,,.,::,;11111iii111iii11i111i111tt1;;;;;iii:;1i.   
+    ,iifft1111tLLLft111iiii;:,,,.,..,;:::::::;::,::,,,,::;i111i111iii1111111111ttf1iii1ii1iii11,    
+     ,tffft111tfCCLtt1111ii1:,::,,,,,,,:;:,::,:,,,,,,,,::;i11itft111tttt111111tfft1111i111t11t:     
+      ,1fftt11111tt1111tftiii;::,,:::;i;;:::;;::,:::,:;;;ttttfffftttft111i1tt1t11tt11111tffff;      
+       .1ftt1111i1i1t111tfftt1;i;:;;;ii:,:;;;1tiiii;;11tffLtffffffft11i11tftt1t111i1t111fLLf:       
+        .iftt11i111111ii111t11i;iiii1i;::;;:;1tfft1ttfLLLCGCLffLffttttttttt11t111i1tt1tfLCt,        
+          :tt1111111iit11ii11ii;:;i1iiiiiii11t11tffffLCCLCCLfffffttftt1t1ii1111111111tfLt;.         
+           .it111111111t1iiiii11ii1111111iiitttttLfLLLLLCCCLLLLfffttttttttttt1ttt1ttttt1,           
+             ,ittttt1111t1;;i111ii111ttt1tt1tttfffLfCCLfLLLLLLffLfttfLttft1111tfffftti:             
+               :1ft1t111111i1ii1i;i1i11t11111tfffLLfLLLLLLLfLLfLft11111ttttfftfLftti:.              
+                 ,i1tttft1111111iiiii1i1ttt1ttttfLLLCCLLCCLLLLffffttttttttttffftti:.                
+                   .;1tfft1111tt11i;i1111111tffLffLCCLLLLLfLLffffttfffttfftft11;,                   
+                     .,;1tfffttttftt11tfttttfffffLCLLLLLLffffffffffffftffffti:.                     
+                        .,;1fLLLfLLLLffffffffLfLLLGCGCLffffffLffffftfLLfti:.                        
+                            .:;1tLLLCCCCCLLfffLLLCGGCCLLLLfLLLLLLLLff1;,                            
+                                 ,,:i1fCCLLLCCLLCGGGGGGCGGGCLft1i:,.                                
+                                       ..,,:;iii1111111i;;:,.                                       
+""")
+    rawFrames.addOne("""
+                                         .,:;;;iii;;;;;::,,.                                        
+                                 .,:;itffLLCGGGGGGG00G0GGCLftt1i:,.                                 
+                             ,:itfLLLCCGCLLffffLLLLLLLLLCCLfffLLLfft1i:.                            
+                         ,:itfLLLLLLffffttt111111iiiiii1i111tt11111tfLLLti,    .                    
+                      .;1tf111ttfttt11iiiiiii1iii;i;;;iii;;iiiiiiiiiiiiitffti,.                     
+                   .:1ff11;::;iii;;;;;iiii1i11i11iii111ii1111iiiiii;;;;;;;;1ff1;,                   
+                 ,;1ft1i:;:;;;;;::::;i11111iiiii;;;::;;::;ii1t11iiii11iiiii;i1ttti,.                
+               ,it1ii;:,::::::::::iii1i1i:::::;:,,:::::::::::ii11iiiii1111iii1111tt1:               
+             ,i111i;:,:,::::::,:,:;ii;;1;:,,,,,,,,,,::::::::::;iii1111111ii;i1iiii111i:             
+           .;11ii;;;,,,,,,::,,,:,;;;;;;:,:,,,,,,,,,,,::::::::;;;;;ii111ii1i;:;;ii;i1111i,           
+          ,1111i:,,,,,,,:,,,,,::,::::::,,,,,,,,,,,,,,,::::,:::;;;:;;i1i:::;;;:::;:,;i111t;          
+         ;111i;,,,,:,,,,,,,,,,:::,,::,,,,::,,,,,,,,,,,,,,,,,:::;i;::;i;,,,,::::::i;:iit11t1.        
+       .i11ii:,,,,,,,.,,,,,,:,:::,,:::,:::,,,,,,,,,,,,,,,,,,:::;;;;:::::,,,,,,::,:iii111ttt1,       
+      .it1i;,:::::,,.,..,,:,,::::::,,,::::,,,,,,,,,,:,,::,,:;::::;;;;::::,,,,,,:,.,:i1t11tt11:      
+     .i1t1i,::::,,..,,..,,,:;i;::::,,,,,,,,,,,:,,,,.,,,:::::;;;;::,:i;:,,,,,,,:,,,,.:itt111ii1:     
+    .itt1i;::;::,,,,,,..,,::i1::::,,,,,,,,::,,,:,,,,,,,,:,,,,::;;iiii;:....,,,:,,,,,,;iii1iiii;,    
+    ittt11i::,,.,:,.....,,,,:,::::,,,,,,,::::::,,::,,:,,::,,,,,;iiii;:,,,.,.,,:,,,,,.:;;:i1i1;,:.   
+   :tttt11i:,,.,,.........,,,,,,,:::,,,,,::,:::::,:::::::::,:;;;;;;:::::,,:,,,,,,,..,,:::::itt:,,   
+  .1111111;::,.,...........,,,,,,::::,,,::;i;;;i;;;;:;;:::::::;:;:,:,,,,:;:,:i;::,,....,,,,;if1,,,  
+  ;tt11111;::,,,,,,.........,,,,,:::::,:,:;iii;;iiii;;;;;::::,,.,,,,,,,.,;:,::;,,..........,;it;,:. 
+ .1tt111111;;::,...............,::;;;;:,,::;iiii1tt1;;;;;::::,,..,::,....,,:;;:,.....,.......,i1;;, 
+ ,t1i111fft1ii:,,..,,.........,,:;iiii:::::::;;ii11i;;:::::,,,,:;;;i;:::,::;i;;:............,::i11: 
+ ;ft111tft11iii:,,.,,..,,.....,,::;;i;:::::;:;;;;::::,,,,:,...,:ii;i;ii;;iiiii;:,.,,......,,,:::;1; 
+ tLtt11t1i11111i:,,.......,,....,:::;,,:::::::;;;;:::,,,::,,.,,,::;;;i1ii1tt1i;;:,.....,,,,,,::,.;i.
+ tt1111ii1f1i11;,,,......,......,,,,:,,,,:::::::;;;;::,,::,,:::,::::;i1111tt11ii;,,..,,,,i:,::,,,.:.
+ 1tttt1i11i1t1i;:,...............,...,,,,,,:::::::::;::::::::;i;;::;ii111111i111ii;::,,,;1ii;:,,.,:.
+ 1Lfft111i;11;;1;;,.....,,,.....,,....,,::,:,,:,,::::;;:::iiii1iiiiiii111i111i111ft1i:,:ii;ii:,,,,;.
+ iLfftt11111;.,11;:,,....,,.,.,,..,,.,,:,,;::,:,,::;;;;:::ii1iii111i1i11tt11111tLf1i:::;iiii;:,,,:;.
+ :Lfft111t1ii;;t1i;::,,...,,,,....,,.,,,:;;i:,,,,,,:;i;,,,::;iii;iii1111ff11111ttt1i;;:;i1tti::,,ii 
+ .LLff1i11i1111ii11i:,,,::,,,,,.,:,,,,,,,,::,,.,,,,,::;:,,,:;i1i;;;iiii11i1111fttft1tiii;;i11;:,:1: 
+  1Cft11i1111111ii1t1;::;;:::::::;;,,,,,.,:,,,,:,,,::,;;,,::;:;iiiii1ii1iii11tt11tfft1ii:,:i1ii;:;  
+  ,L1tt1111111iiii111iii;::;::;;;;i;,::,,,.,:;ii,,:::,::,,::::;iiiiiii11111111111tfff1;:::i1iii;;,  
+   i1;i11111i1iii111ii;ii;;;;iiii;;;,,:,::,::;;:,,::,,:,::,,;ii111111t1111111i1111tffi;::,iiii:;;   
+   .ti:tt1t111tttt1t1iii;;iii1i;:,,,,.,,;;;:;;:;;:::,,,,,:,:11111iiii11iii111111i111t1;;;;iii;;1.   
+    ,f;;ftft1111tLLLft111iii1i;:,,,.,...;;:::::::::,::,,,,:;;i11ii111ii1111tt111i1tft1i11ii1ii1,    
+     ,fttLft11111fLGLftt1111i1i:,:,,,,.,,::;:,:;:::,,,,,,,,:;i1i1tfti1tfttt111i1tfft1111it1ttt:     
+      ,t1fLftt11111ttt111ttf1ii;:::,::::;i;;;:::i::,,::,::;;ttttfffftttft11iitttt11tt11111fff;      
+       .1ftttt1111i1111t111tfft11;i::;;iii::;;;;1tiiii;;1ttffLfffffffft1ii11ttt1t1111tt11fCL:       
+        .;ttttt1i11111i1ii1111t1i;iiiii1i:::;:;;1tffttttfLLLCGCLffLfftttttttt1tt111i1t1tfCf,        
+       .  :tttt1111111iitti1ii1ii;::ii1iiiiii111t11ffffLCCLLCCLLfffftffttt1ii111111111tffi          
+           .i1111111111ttt1iiiiii11ii111111iii11tttfLLLLLLLCLCLLLLfffttttttttt11tt1tttt1,           
+             ,ittttttt1t1111;;i1111i111ttt11t11tttfLLfLGCfLLLLLLLffLttfLttft111ttffft1:             
+              .:itft1tt111111i1ii1i;i1111tt1t11tfffLLfLCLLLLLLLLfLft11111ttttffffft1:.              
+                 ,ittt1tfft111111iiiiiii11tt11ttttffLLCLLLCCLLLLfffttttttttttffft1:.                
+                   ,;1ttttt1111tt11ii;i1111111tfffffLCCCLLLLfLLfffttfffftfffft1;,                   
+                     .,i1ttffftttttft111ttttttfffffLCLLLLLLfffffffffffftfffti:.                     
+                    .   .,;1ffLLfffLLLLffLfffffLfLLGGCGLfLffffffffffffLfti:.                        
+                            .,;1tfLLLCCLCCLLfffLLLCGGCCLfLLLLCCLCLLft1;,                            
+                                 .,:i1fLCCLCLCCLLCGGGGGGGCCCCLf1i:,.                                
+                                       ..,,:;iii1111t11i;;:,..                                      
+""")
+    rawFrames.addOne("""
+                                         .,::;;iiii;;;;::,..                                        
+                                 .,:;i1ffLCCCGGCGGGGG000GGLftt1i:,.                                 
+                             ,:itffLLCCGGCLLfffffLLLLLLLLCCLfffLffft1i:.                            
+                         .:itfLLLLffLfffftttt11111iiiiii111111t1111ttfffti:.   .                    
+                      ,:1tft1111tfftt1111iii;i11ii;;i;;;iii;iiiiiiiiiiii1tfti:.                     
+                   .:itft11i::;iiii;;;;iiiii1i1111iiii111ii111tiiiiii;i;;;;itft;,                   
+                 ,;1tt11i;;::;;;;:::::;i1111tiiiii;;;::;;;;;ii1t1iiiii11iiii;ittti:.                
+               :i1t1ii;::,:::::::;::iii1111;::::::,,,::::::::::;i111iiii111iiiii11t1:               
+             ,1t111ii:,::::::::::,,:;iii;ii:,,,,,,,,,,::::::::::;iii11i1111ii;iiiii11i:  .          
+           .;t1iiii;;:,,,,,,,:,,::,:;;;;;;::,,,,,,,,,,,,::::::::;;;;ii111iiii;:;;ii;i11i,           
+          ,1t111i;:,,,,,,,,:,,,,::::::::::,,,:,,,,,,,,,,,::::::::;;;:;i1i;::;;;;::;::i111;  .       
+         :11111;:,,,,:,,,:,,,,,,::::,,::,,,:::,,,,,,,,,,,,,:,,,:::;i;::ii,,,:::::::i;;i11t1.        
+       .i1111i;:,,,,,,,,,,,,,,,::::::::::,:::,,,,,,,,,,,,,,,,,,:::;;;;::::,,,,,,::,;ii111tt1,       
+      .i11t1i:,:::::,,,,..,,:,,,::::::,,::::,,,,,,,,,,,:,,::,,:;::::;;;;:::,,,,,,:,,,:i1111t1:      
+     .i1111i:,:,::,,..,,.,,,,,:;i:::::,,,,,,,,,,,:,,,,.,,,:::::;;;;::,;i:,,,,,,,,,,,,.;1t11111:     
+    .i1tt11i;::;::,,,,,...,,,:;i1::::,,,,,,,,:;,,,::,,,::,,:,,,,:::;iiii;,...,,,:,,,,,,;iiiii1i.    
+    it1ttt11;::,,.,:,.....,,,,::,::::,,,,,,,:::::::,:,:,:,::::,,,,:iiii;::,,,,.,:,,,,,.:i;:1i1;,.   
+   :t1tttt11i,,,.,,,......,.,,,,,,,,:::,,,,,::,::::,::::::::::::;;;;;;::::,,,:,,,,,,..,,::::;tt:,   
+. .t1i111111;::,,,.............,,,,::::;,.,:::;;;;;;;;;:;;;::::::;:;:,,,,,,:;:,:i::,.,...,,,:if1,.  
+. it1t111111;:;,,,,,,..........,,,,,:::::,,,,:;ii;;;iii;;;;;;:::,,,.,:,,,,.,;:,:;:,..........:;t;,. 
+ .11tt1i11i11;;::,................,:::;:;:,,::;;ii;itfti;;;;::::,,..,::,,...,,:;;:.....,,.....,;1;, 
+ ,t111111tfft11i;:,.,,,,.,.......,,:;iiii;::::::;;iii1i;;:::::,,,,:;;;i;:::,::;i;:,...........::;1; 
+ ;ff11111fft11iii;:,,,,,...,..,,,,,::;;ii:::::;:;;;;:::::,,,::...,:;i;i;ii;;iiiii;,.,,......,,,::ii 
+ 1Cftt111t1i11111i::,......,.,,....,:,,;:,:::::::;;;;;:::,,:::,.,,,::;;;i1ii1ttii;;,......,,,,,:,,;.
+ tLtt1111ii1t1i11i:,,,..............,,,:,::::::::::;;;i;:,,,::::::,::::;ii111ft1iii:,.,,.,,i:,::,.,.
+ 1ttttt111i1iitt1;::,...............,,..,,,,,,:::::::::;::::::::;i;;::;ii111111i11iii;:,,,i1ii:,,,,.
+ 1Lffft1111i;1ti;1i;;,.....,,,.....,,....,,,:,::,:,,:::;;;::;;iiii1iiiiii111ii11111tf1i:,:iiii;,,,:.
+ iLfffttt11111i..;ti;:,.....,,.,.,,..,,.,,:,,:::::,,:::;;;::,;i11ii111111111t11111fLti:::;ii1i::,,:.
+ :Lffft1111t1i1;;1t1i:::,....,,,,....,,.,,,::;i;,,,,:::;ii:,,::;iiiiiii1111ff111i1ttti;;:;i1t1;:,:; 
+ .LLLfft11111ii111i11i;:,,,::,,,,,.,,,,.,,,,,:;,,.,,,,,::;;,,,:;i11i;;iiii11i111tftft1t1ii;;i1i:,;: 
+  1CCLf11i11i11i111iitti;::;;::::::,:i:,,,,.,:,,,,::,:::,;i:,,:;;;iiiii1ii1iii11t111fft1ii::;1ii::. 
+  ,Lf1tf1t11i111iiiiii1iiii;::;:::;;;i;,::,,,.,:;;i:::::,::,,,:::;iii1ii111111111111ffL1;:::i1ii;,  
+   iL;i1111111i11ii111iiiii;;;;;iiii;;;,,:,,:,,:;;:,,::::,,::,,;ii11111t11111111i111tfL1;:,:1i;;;   
+   .ft;:1f1tt111tttt11t1iii;iiii1i;:,.,..,,;;;:;;::i::::,,,::,:i1111iii111iii11111i111t1;;;;ii;i,   
+    ,ff:;ffff11111tfLLLtt111iii1i::,,,.....;;:::,::;::,::,,,,:;;i11ii111ii111tt111i1tft1i11i1i1:    
+     ,ff1ffftt11111fLCCftt1111ii1i:::,,,,.,,,:;:,:;:::,,,,,,,,:;i1i1tf1i1tttt11111tfft111i1ttt:     
+      ,f11fLfttt11111ttt1111tft1ii;::,,::,:;;;;;:::i::,,:,:;;;;1tttfffftttf11ii1t1tt1tt1111fL;      
+       .ttttttt11111i1i11t111tffft1i;i:;;;iii:,;;;;1tiiii;i1ttffftfffffft11i11ttt1t1111t11LL:       
+        .i1tttttt1111111111i1111t11i;iii;i1i:::;:;i1tffttttfLLLCGLfffLftttttttt11t1111tttLL:        
+       .  :1t1ttt1111111iitti11i11ii;:;iiiiiiiii11t111ffffLCCLLCLLfffftfftt1t1i11111111tL1. .       
+           .;11111111111111t1ii1i1i11iii111111i11t1tttfLfLLLLCCCLLLLfffttttttttt1ttt1tf1:           
+             ,it1tttttt1111t11;;i1111ii11ttt11t11tttffLLfCCLLLLLLLLLfLftffttft111tfff1:             
+               :itttt1tt1111111i1ii1iiii1i11t1t11ttftfLLfLLLLLLLLLffft11111tttfftfft:.              
+                 :itt111ttft11111111iiii1i1ittt11tttffLLCCLLCCLLLLffftttttttttfff1:.                
+                   ,;1tttttft1111tt111i;i1111t11tfffffLCCCLLLLfLLfffftftftffff1;,                   
+                     .,;1tttftffttttftt11tttttttfffffLCLLLLLffffffffffffffft1:.                     
+                        .,;1fffLLfffLLLLffLfffffLLfLLGCGCLffffffffffLfffti:.                        
+                            .,;itfLLLCCCCLLLLffffLLLCGCCLLLLLLCCLLLft1;,                            
+                                 .,:;1tfLCCCCLCCLLCGGGGGGGCCCLf1i:,.                                
+                                       ..,,:;iiii111111ii;:,..                                      
+""")
+    rawFrames.addOne("""
+                                         .,::;;iiii;;;;;:,..                                        
+                                 .,:;i1tfLCCCCGGGGGGGG00GGCLft1i:,.                                 
+                             ,:itffLLCCCCGCLLfffffLLLLfLLLCCLLLLLffti;:.                            
+                         ,:itfLLfLLffLLffffttt111111iiiiii111i1t1111tfffti:.   .                    
+                      ,:itfft1111tfftt1111iiiiii11ii;;i;;;ii;;iiiiiiiiiii1tti:.                     
+                   .:itttt11i;::;iii;;;;;;iiii1i1111iiii111ii1111iiiii;;i;;;itt;,                   
+                 ,;11tt111;;:::;;;;;::::;i1111t1iiiii;;::;;;:i;i1t1iii;i11iiiiitti:                 
+               :1t1t1ii;::::::::::::;:iii1111i::::::,,:::::::::::;ii11iiii111iii11t1:               
+             ,1f11i1i;;:,:::::::::,,,,;iii;i1;:,,,,,,,,,,:::::::::;iii1111111i;;iii11i,             
+           .;tt1iiii;:;:,,,,,,,:,,,:,,;;;;;;:::,,,,,,,,,,,,:::::::;;;;iii11i11i;:;ii;1ti,           
+          ,1t11111i:,,,,,,,:::,,,,::::::::::,,,,,,,,,.,,,,,::::::::;;;:;i11;::;;;;:;::i11;. .       
+         ;111111i;,,,,,:,,,:,,,,,,,::::,,::,,,,::,,,,,,,,,,,,,,,,,:::;;::;i:,,,:::::;i;i1t1.        
+       .i111ii1i:,,,,,,:,,.,,,,,,,:::::::::,,:::,,,,,,,,,,,,,,,,,,:::;i;;::::,,,,,:,,;ii11tt,       
+      .i111tii;,,:;:::,,.,,.,,,,,,:::::::,,:::::,,,,,,,,,,,,,::,::;:::;;;;:::,,,,,,:,.,;111tt:      
+     .i111t11i:,:,::,,,.,,,.,,,,::ii::::::,,,,,,,,,,:,,,,.,,,:::::;;;;:::i;:,,,,,,,,,,.,;tt111:     
+    .i11ttt1i;;::;::,,,,,,...,,,:;i1::::,,,,,,,,,;,,,::,:,,:,,::,,,::;;iiii:,...,,::,,,,:iiiii1.    
+    1t11ttf11i;::,,,.:,,.....,,,,::,::::,,,,,,,:::::::,:::,:,,::,,,,,:iiii;:,,.,,.,,,,,,,;i:i11:    
+ . ;f111t1f111;:,,..,,.......,,,,,,,,,,:::,,,,,,:,::::::::::::::::,;;;;;:::::,,:,,,,,,.,,,:::;tt,   
+  .ft1i1111111;::,,,,.............,,,,,:::;,,,:::;;;;;;;;;;;;;;:::::::;:,,,,,,;;,,;;:,.,...,,,iti.  
+  if11tt111111i:::,,,,,,..........,,,,,::::::,,::;;ii;;iii;;;;;::::,,,.,,,,,,,:;,,:;,.........,it:  
+ .tt11t11111i11;;:::,..,.............,:::;:;::,,:;;iiii1tfi;;;;::::,,..,::,,...,:;;;,....,,.....;1. 
+ :f1111i111tfft11ii:,,..,,,.,.......,,,:;iii;:::::::;;ii1i;;;:::::,,,:;;;i;:::,::ii;:..........,:i; 
+ iftft11111fft111iii;,,..,,.,,,...,,,,::;;ii;:::::::;i;:::::,,,::...,:;i;;;ii;;iiiii:,.,......,,::i.
+ 1LCfttt111t1i1111t1i:,,.......,.,,...,::,;;,::::,::;;;;;:::,,,::,,.,,,:;;;i11i1f1i;;:,....,,,,,:::.
+ 1ffttt1111i11fti111;:,,,......,.......,,,::,:,::::::::;;;;::,,::::::::,:::ii111ft1ii;:..,.,:;,,:,,.
+ 1fttfttt1111iii1t1i;::,,..............,,.,,,,,,::::::::::;;:::::::;i;;;::;i111111111ii;:,,,i1i;,,,.
+ ifffffft1111i;it1;;1;;:......,,,......,,...,,,:,,:,,,,,::;:;:::;i1ii1iiiiiii11i111111tt1;,:iii;:,,.
+ ;fffffft11111111:.,1ti;:,,....,,.,.,,..,,.,,:,,:;::,,,:::;;;::::i1iii11111i11t11111tLf1;::;i1i;:,,.
+ :fffffft1111t111i;;tti;::,.,,...,,,.....,,.,,::;i;,,,,,::;ii:,,,:;ii1iiii1111ft11111ttii;:;i1ti::: 
+ .fLLLfttti111i1i111iii1i;:,,,::,,:,,.,,,,.,.,,,::,,,,,,,,,:;;:,,:;ii1iiiiiii11ii11fttf1t1ii;i11::, 
+  iCLCLft11i111111111ii1f1i;::;;::::::::i:,,,,,.,,,,,,:,,::::i:,::;;;iiiiiiiii11111t11tft1i;::1ii:  
+  .fLft1f11t111111iiiii111ii;i;::;::;;;;i;::;,,,..::;i;,::::::,,,:::;iii1ii11111111111fLL1:::;1ii,  
+   ;Lf;ii1111111i1ii;1111i1i;i;;;;;iiii;;i:,:,,::::;;;:,:::,:,,:,,;ii111i1t111111111111ffi::,iii:   
+    tL1;:;ft1tt111tt1tt1t11ii;;iiii1i;:,,,..,,;;;:;;::i;:::,,,,:,:i1111iii11iii11i111111t1;;;i;i,   
+    .fLt;:tftff11111tfLLLftt111iii1i::,,,.,.,.:;:::::::::,,:,,,,:;;i11ii111ii111t1i1i1tf1ii1ii1:    
+     ,fLf1tfLftt11111tLCCLftt1111ii1;:::,,,.,,,::;:,:;:::,,,,,,,,:;i1i1tt1i1ftt111111fft11111t:     
+      ,tf11fLLftt1111111ttt111ttf11ii;::,,,:,:;i;;;:::;::,::,::;;i1tttffft1tft11i1tttt1tt1itL;      
+       .1f1tttftt11111i1111t1111tfff11i;i:;;;iii::;;;;1tiiii;i1ttfLffffffftt1i11ttttt111t1tL;       
+        .i111ttttt11111111111ii1111t11;iiii;i1i:::;:;i1tLf1tttfLLCGCLffLfttttttttt1t1111ttf:        
+       .  :111tttt111111111itt111i11iii;:;i1ii1iiii11t11tffLfLCCLCCLffffftftt1t1i1111111t1. .       
+           .;1111111111111111ttii1i11i11ii11111111i1tttftfLfLLLLCLCLLLfffttttttttt1tttf1:           
+             ,i111ttttttt1111111;;i11111i111ttt11t11tttfLLfLCLfLLLLLLLffftfLttt111tfLt;.            
+               ,i111ttt1tt1111111i1ii1iiii1i11t11t11tftfLLfLCLLLLLLLLfft11111tttffLt;.              
+                 ,i1t11111tfft11111111iiii1111ttt11tttffLLCCLLCCLCLLfffttttttttfft:.                
+                   .;1tttttttt11111tt11ii;i1111tt1tfLfffLLCLLLLLfLLfffttftfffft;,                   
+                     .,;1tfttttfftttttfft11tttttttfffffCCLLLLLfffffffffffffti:.                     
+                    .    ,;itLffLLffffLLLLfLLfffffLLfLCGCGLLLffffffLLLffti:.                        
+                            .,;itfLLLLLCCLLLLLffffLLLCGGCCLLLLCCCLLft1;,.                           
+                                 .,:;itfLCCCCCCCCLLCGGGGGGCCCLfti:,.                                
+                                       ..,,:;iiii111111ii;:,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::;;iiiii;;:::,,.                                        
+                                 .,:;i1ttfLCCCGCCGGCGGG0GGGCfti;:,.                                 
+                             .:i1fLLLLLLCCCCLfffffffLfLLLLLCCLLLfff1i;:.                            
+                         .:itffLLffffffLfffftttt111111iiiii11i1111111ttt1i:.                        
+                      .:ittftt1111ttfftt111iiiiiii1iii;;;;;ii;;;ii;iiiiii111i:.                     
+                   .:i1tttt111;::;iiii;;;:;;iiii1i1111iiii111ii1111ii;ii;;;;i11i,                   
+                 ,;1t11t111i;;:::;::;::::::;1111t1iii1i;;::;;;;;ii1111iii11i;ii11i:.                
+               ,1tt1111ii;::::::::::::;:;ii11i1i:::::;:,,::::::::::;i111iiii11i;i111:               
+             ,1ft11i11ii;:::,::::::,:,,,:;;;i;ii::,,,,,,,,,::::::::::;ii111111ii;iii1i:             
+           .;tt1iiiiii;;;,,,,,,,,::,,::,:;;;;;;:,,,,,.,,,,,,,::::::::;;;iii11i1ii;:;i;1i,           
+          ,11111111i;:,,,,,,,,,:,,,,,::::::::::,,,,,,,,,,,,,,,:::::::::::;;11;::;;;::::i1;  .       
+         ;11i1111ii:,,..,::,,,,,,,,,,,:,,,,,::,,,,:,,,,,,.,,,,,,,,,,:::;i::;i:,,,:::::;;it1.        
+       .it1i11iii;:,,,,,,:,...,,,,,,,,:::,::::,,,::,,,,,,,,,,,,,,,,,,:::;;;::::,,,,,:,:ii1tt,       
+      .i1i11t1ii;,,:;:::,,,,,...,,,,,:::::::,,,:::,,,,,,,,,,,,,,::,,:::::;;;;:,,,,,,:,,,:i11t:      
+     .i1i111t1i;:,:,:::,,...,,...,,::ii:::::,,,,,,,,,.,,,,,,.,,,::,::;;;::,:i;,.,,,,,,,,.:1t11:     
+    .11111tt11i;:::;:::.,,,.,...,,,:;i1:::::,,,,,,,,:,,,,:,,,,,,,,,,,,::;;iii;,...,,,,,,,,;iii1,    
+    1f111tttt11i;:::...,:,......,,,,,,,:::::,,,,,,::::::,,,:,,:,,,,,,,.,;iii;::,,,,.,,,,,.,;;;1i    
+   ;Lt111t1tf111i:,,,.,,,........,..,,,,,,::,,,,,,,:,,::::,,:::::::::,:;;;;;::,:,,,,,,,,..,::::t;   
+  .fft1ii11111i1;:::,.,..............,,,,,:::;:,,:::;i;;;;;;;:;;:;::::::::::,,,,:;:,:;::.,..,,,;t.  
+  iLtt11t111111ii:::,,,,,.,..........,,,,,,:::::,,,:;;ii;;;iii;;;;;:::,,,.,,,,,.,;:,:;:........,ii  
+ .ttt11tt111111i1i;;::,..,............,.,,,:;::::,,::;iii;itf1;;;;;:::,,..,::,,...,:;;,....,....,i, 
+ :ft1111i1111ttft11ii;:,...,,,.,........,::;iiii::::,:::;;i11i;;:::::,.,::;;;;::,,:;i;:.........,;; 
+ ifttft111111fft111iii;:,,.,,,.,......,,,,::;;i;:::::;:;;;:::::,,,,:,...:;i;;;ii;;iiii:,.,......,:;.
+ iLfCfttt1111tti11111t1;:,,.......,.,,...,::,:;:,:::::::;:;;:::,,,,:,..,,,::;;11i11t1;;:,....,,,,:,.
+ 1LfLf1t11111i1itt11111;,,,...............,,,,:,,:,:::::::;;;i::,,,:,,:::,:,:;i111tf1ii;:,.,.,;:,:, 
+ ifttttf1tt11iii1i11t1i:::,................,...,,,,,,::::::::;;:::::::;;i;:::;i11111i11ii;:,.:1i;,, 
+ ifttfftftt11111i;11i;i1;;:......,,,......,,....,,,:,:,,:,,::::;;::;i1ii1iiiii1111ii1111tt1;,;i;;:, 
+ ;tffffffftt1111111i,.,t1i::,.....,,....,...,,.,,:,,;::,,,,::;;;;:::i11ii11111ii1111111ff1;::;1i;:,.
+ :tffffffft1111t11i1;;it1i;::,......,,......,,.,,,::ii:,.,,:,:;i;,,,::;iiiiii11i1ft1111tti;;:i1ti:, 
+ .tLLfLLftfti1111i1i111i1iii;:,,,,:,.,,,..,:,.,.,,,,::.,.,,,,,:;;:,,,;;i1i;;iiii1ii11tt1ftt1i;;1i:. 
+  ;LLLLCff111i11i111i111ii1f1i;::;;:,::::::;;,,,,,.,,,,,,:,,,:::;:,,:::;iiiiiiiiii111t11tft1i::i1:  
+  .tfLft1tfi111111111iiiiii11ii;i;:::::;;;;ii:,;,.,,.,::ii,:::,,::,,:::;iiiiii1111111111tLfi::;11,  
+   ;fff;;ii1111111111iii111iiiiii;:;;;iiii;;i:.::,::,:;;::,:::,:,,:,,:ii111i1t11i11111111ffi:,ii:   
+    1ff1;::1ft1tt1111f11tt1t1iii;;iiii11;:,,,...,:;;::;::;;:::,,,,,,:i1111ii111iiii1111111ti;;i;.   
+    .tffti:;fftft11111ttLLLLftt11iiii1i::,,,.....:;:::::::::,,:,,,,::;i11ii11iii111111i1tt1i1i1,    
+     .tfLf11ffLftt11111tfLCCftt11111ii1;,::,,,,,,,,:;:,:;:::,,,,,,,,:;11i1fti1ttt11111tfft111t;     
+      .1ff11tfffftt1111111ttt1111ttf1iii;::,,,:,:;;;;;:::;::,::,:;;;itttffff1ttt11i1ttt1t11ifi      
+       .1ft1ttttttt11111i11111t1111fftt11;;;:;;;iii:,;;;;1tiiii;i1ttfLftffffft11i1ttt111111f;       
+        .;11i1tttttt11111111111ii11111t1i;iiii;i1;::;;:;i1fLt1ttffLLCGCfffLfttttttt11t111ft:        
+          :11i1t1tttt1111111ii1f1i1ii11ii;::ii1ii1iiii11111ffffLLCLLCLffffftftt1tii11111t1. .       
+           .;111111111111111111tt1iiiiiii1iii111111i1i11tttfLfLLLLCCCLLLffftttttttt11tt1:           
+             ,i11111t11ttt11111111i:;i11i1ii111tt11t1itttffLfLCCffLLLLfLfLftffttt11tft;.            
+               ,i1111ttt11tt1111111i1ii1ii;i1i111t1111ttffLLfLLLLLLLfLffft11111ttfft;.              
+                 ,i1tt11111ttfft11111111iiii1i111tt11ttttfLLLLLLCGLLLLfffttt1tttft;.                
+                   .;1tt11ttttft11111tt11ii;i11111111fffffLLLLLLLLfLLftttftfffti,                   
+                      ,;1tttt1ttffttttttfft11ttttt1ffffffLLLLLfffffffftffLft1:.                     
+                         ,:itfLfffffffffLfLffLLffffffffLCGGCLLfffffLLLLfti:.                        
+                            .,:i1fLLLLLLLCLLLLLfffffLLCGGCCLLLLCCCLfti;,                            
+                                 .,:;11fLLCGCCCLLCLLCCGGGGCCCLf1i;,.                                
+                                       ..,,:;;iii111111i;;:,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::;;iiiii;;;;:,,.                                        
+                                 .,:;i1ttfLCCCCGGCGGCGGGGGGCLt1;:,.                                 
+                            ..:itfLLLLLLLLCCCLLffffffLLLLfLLCCLLLffti;,.                            
+                         .:itffLfLffffffLfffffttt111111iiiii111i111tt1tt1i:.   .                    
+                      ,;itttftt11111ttfttt1111iiiiii1iii;i;;;i;iiiiiiiii111i;:.                     
+                   .:i1ttttt1i11;::;iiii;;;;;;iiii1i1111iiii111ii11tiii;i;;;iii;,                   
+                 ,i11111tt111i;;:::;;:;::::::;i11111iiiii;;::;;;;;ii1t1iiii1i;i11i,.                
+               ,1ft11111ii;;::,:::::::::;:;ii11i11;::::;:,,::::::::::;i11iiii11ii11i:.              
+             ,1Lf111i11iii;:::,,,::::::,,,,;;ii;;1;:,,,,,,,,,::::::::::;ii111111i;ii1i:             
+           .;ttt111i1iii:;;,,,,,,,,,:,,,:,,;;;;;;:::,,,,,,,,,,,,:::::::;;;iii11iii;:;ii;,           
+          ,i111111111i;:,,,,,,,,,:,,,,,,:::::::::,,,,,,,,,,,,,,,,::::::::;:;;11;:;;::::;i;. .       
+         ;11ii111i1ii:,,,.,::,,,:,,,,,,,::,,,,:::,,,:::,,,,,,,,,,,,,,,,:::;;::i;,,:::::;;11.        
+       .it11i111i1i;:,,,,,,,,,,.,,,,,,,:,::::::::,,,::,,,,,,,,,,,,,,,,,,::;;;:::,,,,,,::ii11:       
+    . .111i11tt1ii;,,::::::,,,,,,..,,,,,:::::::,,,::::,,,,,,,,,,,,,::,::;:::;;;::,,,,,:,,,i1t:      
+     .111i1111t1i;:,:,,::,,,..,,..,,,,::ii::::::,,,,,,,,.,,,,,,.,,,::::;;;;:,:;;:,,,,,::,.,it1:     
+    .1111t1tttt1i;;::;;::,,,,,,...,,,::;i1:::::,,,,,,,,;:,,,:,,,,,,,,,,,:::;;iii:,..,,,,,,,:ii1,    
+    1Ltt111tttt11i;:::,.,.,:,.......,,,:,,:::::,,,,,,,::::,,,,:,,::,:,,,,.,;iii;:,,,,.,,,,,.;;i1.   
+   ;Lft1111t1tf1111:,,,,.,,.........,.,,,,,,,:::,,,,,,::,::::,,:::::::::,;;;;;::::,,,,,,,,,,,:,;i   
+  .fLft11i1111it11i;::,,,,..............,,,,,:::::,,,:::i;;:;;;;::;:;:::::::;:,,,,,;;,:;:,,,.,,,1,  
+  iLfft11tt111111ii;:;:,,,,.,...........,,,,,,:::::,,,,;;;i;;iiii;;;;;:::,,,,,,,,,.::,,;:.......:i. 
+ .tftt1i1t1111111i11;;;::,..,...............,,:;;:;:,,::;;ii;itfti;;;;:::,,..,::,,..,:;;:....,...:, 
+ :fft1t111i11111tftt1iii;,,..,,,,.,,.......,,:;iiii;:::::::;;ii1i;;;::::,,,:;;;i;::,::i;:........:: 
+ ;Lfttfft111111tLft111iii;:,,.,,,.,..,....,,,::;;ii:::::;;:;;;:::::,,,:,..,:;i;i;i;;iiii;,.,.....,:.
+ ifffCCtttt11111t1i1111t11;:,,..........,....,::,;;,::::,::;;;;;::,,,,::..,,::;;;1ii1t1i;:,....,,,:.
+ ifffLfttt11111i1i1fti1111;,,,,...............,,,:,,,,,:::::::;:;;::,,:,,:::::::;i111ttii;:,.,,:;,, 
+ itfftttft1tt111ii1ii1tt1i:::,................,...,,,,,,,::::::,:;:::::,:;ii;::;i11111111ii;:,,i1;, 
+ ittttfLfffft11i11i;it1i;i1;;:......,,,.......,....,,,:,,:,:,,::::;;:::iiii1iiiii1111i1111tti::iii, 
+ ;t1ffffffffttt1111111;..:t1i::,......,,.,.,,..,,..,,,,::::,,,:::;;;:::i11ii11111ii111i11ff1;:;i1;, 
+ :1tfffffffft11111t111i;;it1i;::,,,....,,,..,..,,,,,,::;i;,,,,,,::i;,,,::iiiiiii111tt11i1tti;;;1ti, 
+ .1tLLfLLLftfti1111i1i1111i1iii;:,,,,:,.,,,,.,,,,,,,,,:::,,..,,,,::;:,,,;ii1i;iiii11i11tftftti;;1i. 
+  ;ffLLCCLfL111ii11i111i111ii1f1i;::;;::::::::;;:,,,,.,,,,,,:,,,:::;;,,:;;;iiiiiii1ii11t11tft1;,ii  
+  .ttfLLft1ffi1ti11i111iiiiiii11ii;i;:::;:;;;;;i;,::.,,.,::ii:,::::::,,:::;iiiiiii11111111fLt;:;1:  
+   ;ttff1:iii1111i111iii1iit11iiii;i;:;;;ii;i;;;:,::,,:,,:;;:,,::,:,,:,,;ii11i1t11i1111111tf1::i;   
+    1ffLti;:;1Lt1tt1111tt1ttt1t1iiii;iiii11;:,,....,:;;::;;:;;:::,,,,,,:i1111ii11iiii111111ti;;i.   
+    .ttfffi;,ifftff111111tfLLLLttt111iii1i::,,,...,.,;:::::::::,::,,,,::;11ii111ii11111iitf1ii1:    
+     ,1tfLft1tffLftt111111tfCGLftt11111ii1;,:,,,,,,,,,:;:,:;:::,,,,,,,::i1i1tt1ittt11111tft1it;     
+      ,1tfL1i1ffLfftt1111111tttt1111tff1iii;::,,::,:;i;;;:::i::,::,:;;;1tttffft1tt11i1ttt1t1t;      
+       .itttt1tttfftt111111111111t1111ffft11;;;:;;;iii::;;;;11iiii;1ttffftffffft11i1tttt111t;       
+        .;11111ttttttt111111111111ii1111t11i;iiii;i1;::;;:;i1fft1ttfLLCGCLffLfttttttt1t1itt,        
+       .  :111i1ttttt1111111111iitti11ii1iii;:;iiiii1iii111111ftffLCLLCCLfffftfttt111111ti.         
+           .i11i111111111111111t11t11iiii1i11ii1111111i11tttftfLfLLLCCCLLLfffttttttt1tt1:           
+             ,i11ii11tt1tttt1111t111i;;i1111ii1111tt11t11tttfLLfCCLfLLLLLLffttfttt11ff;.            
+               ,i11111tttt11t11111111i1iiiii;iii111t11111tfffLLfLLLLLLLLffft1111tffti.              
+                 ,i1tt1111111tfft111111111iiiiiii11tt11ttttfLLLCLLCCLLLLffttt1tttt;.                
+                   .:1tf111ttttfft11111tt11ii;i1111111tfffffLLCLLLLfLLffftfffffi,                   
+                      ,;1ttttttttffftttttfftt11tttttttffffLLLLLLLLffffftfLLt1:.                     
+                         .;itffLfffffffffLffLfLLffffffffLLGGCLLfffffLLLfti:.                        
+                            .,:itffLLLLLLLCLLLLLffffffLCCGCCCLLLCCLfti:,                            
+                                 .,:;11tfLLCGCCCCCCLCCGGGCGCCLf1i;,.                                
+                                        .,,::;iiiii1111i;::,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::;;iiiii;;;;:,,.                                        
+                                 ..:;i1ttffLCCCGGCCGGCGGGGGCLf1;:,.                                 
+                            ..:;1ffLLLLLLLLCCCCLffffffLLLLLLLCCLLffti;,.                            
+                    .    .:itfLLfffffffffLLfffffttt11111iiiiii11i11tttt11;,.                        
+                      ,;i1tttttt11111ttfftttt111iiiiii1iii;i;;;;;iiiiiii11ii;,.                     
+                   .:it1111ttt111i:::;ii1i;;;:;;iiii11111iiiii111ii111ii;;;;ii;;,                   
+                 ,itt1111ttt111;;::::;;;;::::::;i11111iiiii;;::;;;;;iit11iii1i;i1i:                 
+               ,ifft111111ii;;::::::::::::;::iii11i1i::::::,,:::::::::;;i11iiii1ii1i:.              
+             ,ifLf1111111i;i;:::,:,::::::,,,,:;iii;ii::,,,,,,,,,:::::::::;ii11111i;;1i,             
+           .;ttt1111i1iii;;;;:,,,,,,,,::,,,:,:;;;;;;::,,,,.,,,,,,,:::::::;;;ii11iiii;;i;,           
+          :111111111111i;::,,,,,,,,::,,,,,::::::::;:,,,,,,,,,,,,,,,::::::::;::;ii::;;;::;:  .       
+        .;111ii1111i1i;::,.,,,:,,,,:,,,,,,,::,,,,:::,,,::,,,,,,,,,,,,,,,,,::;;::i:,,::::;ii,        
+       .1t1111i111iii;:,,,,,,,:,....,,,,,:,,::::::,:,,:::,,,,,,,,,,,,,,,,,::;;;::::,,,,::;1t:       
+      .1111111itt1ii;,,::;:::,,,,,,.,.,,,,,:::::::,,:::::,,,,,,,,,,,,,:,,:;:::;;;:::,,,,:,,it:      
+     .1ti1i1111tt1i;:,::,::::,,.,,,..,,,,::ii::::::,:,,,,,,,,,,,,,.,,,::,:;;;::,;;:,,,,,:,,,1t:     
+    .1f111111fttt1ii;:::;:::,,,,,....,,,::;i1:::::,,,,,,,,::,,:,,:,,,,,:,,,::;;iii;,..,,:,,,:i1,    
+    1Lftt1111tttf1i1i::::,.,,::,......,,,,:,,:::::,,,,,,:::::::,,::,,,,::,,,,:iii;:,,,,.,,,,.:;i.   
+   ;Lfft1111ttttf1i11i:,,,..,,........,..,,,,,,,,::,,,,,,:::::::,,::::::::,:;;;;;:::,,,,,,,..,::i.  
+  .ffLLtt1ii111ti11i1;:::,.,,..............,,,,,:::::,,,:::i;;;;;;;;;;;;:::::;:;:,,,,;;,:;:,,.,,:: .
+  iLffftt11tt111i111ii::;:,,,.,,,...........,,,,,:::::,,:,:;ii;;iiii;;;;;:::,,.,,,,,.:;,,;,......;. 
+ .ttfttt1i1t11ii1111i1i;;;::,..................,,::;:::,,,:;;ii;i1fti;;;;:::,,.,::,,..,,:;,...,..,, 
+ ,ftttttt11ii11111ttft111ii;:,....,,.,,........,::;iii;:::::::;iii1i;;:::::,,,:;;;;::,::i;:......., 
+ ;ffftttfft1111111fft1t11iii;:,,,.,,..........,,::;;ii;:::::;:;;;:::::,,,:,..,:i;;;ii;;iii;,,,...,:.
+ itfLfLGLtttf11111ttiit111111i:,,.......,..,....,::,:;,:::::::;;;;;:::,,::,..,,::;;i1i1tti;;,...,,,.
+ i1ffffLftttt11111i1itt1i1111;:,,,...............,,,::,,:,:::::::;;;;::,,:,,:::,:::i111tt1i;,.,,:;,.
+ i1tffttttfttttt11ii111i1tt1i:::,.................,...,,,,,,::::::::;;::::::;i;;::;i1111111ii;:,;1: 
+ i11tfftffftftt11i111i;it1i:i1;;;,......,,.......,,...,,,:,,:,:,,,:::;;::;;1ii1iiiiii11i1111tt;,ii: 
+ ;11ttffffffffttt11111111;..:t1i;:,,.....,,.,..,..,,..,,,,:;::,,,,::;;;:::i11ii1111i11t1111ffi::i1: 
+ :t1tfLffffffft11111t1111i;;it11i:::,.,....,,,.....,,.,,::;i;,,,,,,::;;:,,::i1iiii11i1f1111tti;;1t, 
+ .11tLLffLLLfttf1i111111i1111i1iii;:,,,,::.,,,,..,,,,,.,,,::,.,.,,,,:;;:,,,;iii;;iiii1111tfttt1;;1, 
+  ;1tfLLLCCLtL111ii11i11111111ii1fti;::;;:,:::::::;:,,,,..,,,,,::,,,::;;,,:;:iiiiiii1ii11t11ff1;:i. 
+  ,1ttfLLff11ff11t111ii1111iiiiii11iiiii:::;:;;;;;i;:::,,,..::;i:,::::::,,:::iiiiii111111111ff;,i:  
+   :tttfff;;i;i1t1111111iii1iit11ii1iii;:;;;ii;ii;;;,,:,,:,,:;;:,:::::,,:,,;ii1111t1i111i111ft::i   
+    itffLf1;;,;1Lt1tt11111ft1ttt1t1i1i;;iiii11;:,,.,..,,;;::;;:;;:::,,,,,,;1111ii111iii11111t1;;,   
+    .tttfffti::1fftfft11111ttfLLLLttt1111ii1i;:,,,...,.,;::::::::::::,,,,:;i11i111iii1111i1tti1:    
+     ,111ffff11tffLftt111111tfLCCLftt11111ii1i:::,,,,,,,,:;:,,;:::,,,,,,,:;i1i1f1i1ft111i1ft11;     
+      ,i1ttLf1itfLLffttt1111111ttf11111tff1iii;::,,,:,:;;;;;::;;:::::,::;itttffft1tf111tttt1t;      
+       ,i11ttt11ttttftt11111i111i11t11111ffft11;;;:;;;iii::;;;it1iii;;1ttfLfffffft1iitttt11t:       
+        .;111111tttttftt11i1111i11111ii1111t11i;iiii;ii;::;;:;1tLfttttLLLCCLffLftttttt11111,        
+       .  :11i111tt1tttt111111111ii1f111iii1iii;:;i1iii1iii11111tffffCCLCCLfffftfttt11111;.         
+           .i111i1111111111111111t11tt1ii1ii1i11iii11111i1i1tttffLfLLLLCCCLLffftttttt1t1:           
+             ,i11iii111tt1tttt1111tt111;;i11111ii111tt11t11tttfLLfLCLfLLLLLLLfttftt1tt;.            
+               ,i111i11ttttt1tt11111111i1iii1ii;i1i11t11111ttffLffLLLLLLLLfff1111tfti.              
+                 ,i1tt1111t1111tfft11111111111ii11i11tt111tttffLLCLLCCCLLfffttttt1;.                
+                   .:1ttt111tttttft111111tt11ii;i111111ttffffffLCLLLLfLLffffffti,                   
+                      ,;1tttttt1tttfftt1tttfft111ttttttfffffLLLLLLffffffffffi:.                     
+                         .:itffffffffffffffLfLLfLLfffffLfLLCGGLLffffLLLfti:.                        
+                            .,:itffLLLLLLLLLLLLLLLfffffLLCGGCCLCCCLfti:,                            
+                                 .,:;i1tfLLLCGCCCLCCLCCCGCCCLLfti;,.                                
+                                       ..,,:;;iiii11111i;;:,,.                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::;;iiiiii;;::,,.                                        
+                                 .,:;i1ttffLCCGCGGCCGGCCGGGCLfti:,.                                 
+                             ,:;1ffLLLLLLLLLCCCCLffffffLLLLLLCCCLLft1:,.                            
+                    .    .:ittfLfffffffffLLLffffftttt11111iiii111111tt11i;,.                        
+                      ,;1ttttttttt11111ttffttt1111iiiiiiiiiii;;;;;;iiiiii11i:,.                     
+                   .;1tt1111ttt1111;:::;iiii;;;;;;iiii1i1111iiiit1iii11iiiiiii;:,                   
+                 ,;tf1111i1tt111i;;::::;;;;::::::;i111111iiiii;::;;;;;i1t11ii1iii;,.                
+               ,itfft1111111ii;:::::::::::::;::;ii11i11:::::;,,,::::::::;ii11iii11ii:               
+             ,1tfLft111i111i;;;:,::,:,::::::,,,,;;iii;1;::,,,,,,,::::::::::iii1111iiii,             
+           .;111tt1111i1iiii;;;:,,,,,,,,,::,,:,,:;;;;;;::,,,,,,,,,,,:::::::;;;ii11iii;i;.           
+          :11i11111111111i;:,,,,,,,,,:,:,:,,,::::::::::,,,,,,,,,,,,,,:::::::;;;;i1i:;:::;:. .       
+         ;t1111i11111111i;:,,,,,::,,,:,,,,,,,::,,,,,::,,,,::,,,,,,,,,,,,,,,:::;;:;i:,::::;i,        
+       ,1f11t1i1i111iii;::,,,,,,,,,..,,,,,,,::::::,::::,,,,:,,,,,,,,,,,,,,,,:::;;:::,,,,::;1:       
+      ,1t11111i11t11ii;:,::;::::,,,,,,,.,,,,,::::::::,,,::::,,,,,,,,,,,,::,::;::;;:;:,,,,:,:1:      
+     ,1t1i11i111t1t11i;,,:,,:::,,...,,.,,,,,::ii::::::,,,,,,,,,,,,,,,,:,::::;;;;:,;;:,,,,,,.,1:     
+    .1tt1111t11fttt1ii;:::;;:::,,,,,,....,,,:;i1:::::,,,,,,,,::,,::,,,::,,,,,,::;iii;,..,,,,,:i,    
+    1Lffft1t111tttf111i;::::,,,,::,.......,,,::,:::::,,:,,,,::::::,,::,::,:,,,.,;ii;:,,,,,,,,,:i.   
+   ;Lffftt1111tt1tf11111;:,:,.,,,........,.,,,,,,,,,::::,,,,::::::::,::::::::,;;;;;::::,,,,,,,,::.  
+  ,ffffLftt1i11t1t111i1i;:::,.,,..............,,,,,,:::;:,,:::;i;:;;;;;;;;;::::;:;:,,,,:;,;;:,..,,  
+  iLffffft111tt111i1111i;::;,,,,,,,,...........,,,,,,:::::,:::;iii;;iii;;;;;:::,,,,,,,.,:,:;,....,. 
+ .tftfftt1111tt11i1111i1ti;;:::,,...............,..,::;:;::,,::;iiii1fti;;;;:::,,.,::,...,;;,..,... 
+ :ttttft1tt111ii11111ffftt11ii;,,,.,,,,,,,........,::;iiii;::::::;iii1i;;;::::,,,:;;;::,::i;:....., 
+ ;fffffttffft1111t11tfft1t11iii;::,,.,,....,,.,,,,,,::;;i;:::::;:;;;;::::,,,:,..,:i;;;i;;iii:,,..., 
+ it1ffLfLGfttttt11111tti1t1111t1i::,..........,,....,:,:;:,:::::::;:;;::,,,::,,,,,::;i1iitti;:...,,.
+ 11ifLfffLftttt11111i11itf1i1111;:,,,...............,,,,::::,:::::::;;;;:,,,:,,::::,:;i11ttii;,,.::.
+ tt1tfffttttfttttt11111i11i1tt1i;::,.................,...,,,,,,::::::::;:::::::;i;;:;i1111111i;:,;i.
+ 1111tffftffftfttt11111ii;it1i;i1;:;,......,,,......,,....,,,:,::::,,:::;;::;iii1iiiii111i111tti,ii.
+ iti11tffffffffffttt11111111:.,:t1i;:,,.....,,........,,..,:,,;::,,,,::;;;:::i11i1111i1111111f1::i; 
+ :t11tfffffffffftt1t111t1111i;;it11i;::,.,,...,,,.....,,.,,,::;i:,,,:::;i;:,,:;i1iiii111f1111f1;;1; 
+ .t11tfLffLLLLfttfti111111ii1111i11ii;;,,,,::,,,,,..,:,.,,,,,,::,,.,,,,::;:,,:;i1i;iiii11i1tttt1;i, 
+  ;11ffLLLCLCLtLtitiii11i111i1111ii1fti;:::;::,::::::;;,,,,..,,,,,,:,,,::;;,,:;;iiiiiiiii11t1tf1;;. 
+  .11ttffLLff11tf1it1111i11111iiiiii11iii;i:,:;:;;;;;i;::;,,,..,:;i:,::::::,,::;iii1i11111111tL;;:  
+   :t1ttffft:;i;i1t111i111ii1i1iit111iii;ii;;;;;i;ii;;;,,:,,:,,:;;:,:::::,,:,:ii1111t11111111tt:;.  
+    1ttffLft1;;,:1ff1ttt11111t1ttt11t1iiii;iiii11i:,,.,,.,,;;;:;;:;;:::,,,,,:i1111ii1iii11111t1;.   
+    .tttttfff1;:,1tftfft111111ttfLLLLftt11iiii11;:,.,..,..,;;::::::::,::,,,,:;i11i11ii1111i1tt1:    
+     ,111tfffft11tffLfttt111111tfLCCLftt11t11ii1;::,:,,.,,,,:;:,:;:::,,,,,,::i1i1tt11tt1111tf1;     
+      ,1111tLf111tfffffttt11111111ttt111111ff11ii;:;,,,:,:;;;;;::;;:::::::;;1ttffff1tt1i1t11t;      
+       ,i111tftt1tftttfttt1111i1111i11t1i111ffft11;i;:;;;ii;::;;;it1iii;ittfLfffffft1i1ttt11:       
+        .;11111111tttttftt11i11111111111ii1111t11i;iiiii1i:::;:;i1tft1ttfLLCCLfffftttttt111,        
+          :11ii1111tt1tt11t111111111iitt1111i11ii;::ii1ii1iiii11t11ffffLCLLCLfffffftt1111;. .       
+           .;1111111111i111111111111t11t11111i11111iii1111111itttttfffLLLCCLLLfLttttttt1:           
+             ,i111ii11111t11ttttt111t1111i:;i11iiii111ttt11t11ttffLfLCLfLLLLLLfftftftt;.            
+               ,i1111i111ttttt11t111111111i1ii1iiii11111t1111ttffLLfLLLLLLLLfft11tffi,              
+                 ,;1tt11111111111tfft1111111111iiii111i1t111ttfffLLLLLCCLLLfftttt1;.                
+                   .:itttt111tttt1tft11111tt111ii;i1111t111fLffLLLCLLLLLLffffffi:                   
+                      .:ittf11ttttttffftt1tttfft111ttttttffffLLLLLffLfffffff1:.                     
+                         .:itfffffftffffffffLffLLLLLffffLLfLLCGCLfffLLLfti:.                        
+                             ,:i1fLLLLLLLLLLLCLLLLLfffffLLCGGCCCCCLfti:,                            
+                                 .,:ii1tffLLLCCCCCCLCLCCCGCCCLfti;,.                                
+                                        .,,::;iiiii1111i;;:,,.                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,:;;;iiiii;;;:,,.                                        
+                                 .,:;i1tfffLLCCGGCGCCGGCCGGCLfti:,.                                 
+                            .,:;1tfLLLLLLLfLLCCCCLLfffffLLLLLLCCCLft1;,.                            
+                    .    .:i1ffffffffffffLLLLLfffffttt11111iiiii11111tt1i;,.                        
+                      ,;1tttttttttt111111ttffttt111iiiiiiiiii;;;;;i;;iiii1i;:.                      
+                   .;1tt11111tttt1111;:::iiiii;;;;;;iiii11111iii11t1ii111iiii;;:.                   
+                 ,itft111111ttt111i;;::::;;:;::::::;i111111iiii;;::;;;;;i111iii1i;,.                
+               :1tttft1111111iii;::::::::::::::;:;iii1111;::::;:,,::::::::;ii11ii11i:.              
+             ,1ftffff111111i1ii;;::::,:,::::::,,,,:;;ii;ii::,,,,,,,,,::::::::ii1111ii;,             
+           .;t111tt111111iiiii;:;:,,,,,,,,,::,,,,,,;;;;;;;:,,,,,,,,,,,,::::::;;iii1iii;;.           
+          :t1ii11111t111111i;;:,,,,,,,,,,::,,,,,::::::::::,,,,,,,,,,,,,,::::::::;;i1;:;;;,          
+        .itt1111ii11111111i;:,,,,,,::,,,:,,,,,,,,::,,,,::,,,,::,,,,,,,,,,,,,,,,:;;:;;,,:::;,        
+       .tft11t11111111iiii;:,,,,,,,:,,..,,,,,,,,,:::::::::,,::,,,,,,,,,,,,,,,,,::;;::,,,,,:i:       
+      ,ttt11111i111tt1iii:,,::;::::,,,,,,,.,,:,,,:::::::,,,::::,,,,,,,,,,,,:,::;::;;;:,:,:,,;:      
+     ,t11ti11ii11111111i;:,::,::::,,,..,,,.,,,,::;i::::::,:,,,,,,,,,,,,,,:,::::;;;:,;;:,,,::.;:     
+    .1t1t1i111t11fttt1iii;:::;;:::.,,,,.....,,,::i1;::::,,,,,,,,::,,::,,,:,,:,,,::;iii;,..,:,.;,    
+    iffffftt1t111ttttt111i::::,.,,.::,......,,,,,:,:::::,,,,,,,::::::,:::,:::,,,,.:iii::,,,,,,,;.   
+   ;fffffft11111tt11ff1111i::,,,,,,,........,,,,,,,,,,,::::,,,,::,:::::,:::::::::;;;;::::,,,,,,,,   
+  .fffffLLft11ii1111ti11i1i;:::,,,,..,.........,.,,,,,,:::;:,,,::;i;;;;;;:;;:;::::;;;,,,,:;,;:,.,.  
+  iLffffffttt111tt111i1111i;::;:,,,,,,,...........,,,,,,:::::,:::;iii;;iii;;;;;::,,,,,,,.,:,::....  
+ .tffttftt11111tt11111111i1ti;;;::,...................,,::;:::,,::;iii;1tti;;;;:::,..::,..,:;:..... 
+ :t1tftftt11t1111i111111ffft111ii;:,,...,,,.,,.......,,::;iii;::::::;;ii1i;;;:::,,,:;;;;::::i;..... 
+ iftfftfttttfft11111111tLft1111iiii::,,,,,..,.,,..,.,,,::;;ii:::::;;;;;:::::,,,:...:;;;;i;;iii,,,., 
+ 1ft1tfLffLGLttttt111111t1i1t1111t1i::,,..........,....,::,;:,:::::::;;;;:::,,::,.,,::;;i1it1i;,.,, 
+.ff11tffffLLftttt111111i111tt1i1111i:,,,................,,,:,,::,::::::;;;;::,:,,,:::,:;i11ttii:.,:.
+.ff111tffftttttft1ttt11i1i11ii1tt1i;::,,,...............,,..,,,,,,,:::::::;;::::::;i;::;i111111i;,i,
+ tf1111fffftfLfttftt1111111i;it1i;i1;;;:......,,,.......,,...,,,:,::::,,:::;;::;iii1iiiii11i111t1:;.
+ it1111ttffffffffftt1t111111111;..,1ti;:,,......,,.,..,..,,..,,,,::::,,,::;;;:::i1ii1111i11111tf;:i 
+ :tt111tffffffffffft11t111t11111;;itt1i;::,,,,...,,,.....,,,,,,::;i:,.,,,::i;,,::;iiiii1i1f111tt;;; 
+ .1t11tfLCffLLLLfftft1i11111iii1111iiiiii;:,,,::,.,,,,.,:,...,,,:::,,.,,,,::;:,,:;i1;;iii1ii1ttt1i, 
+  ;111ttLLLLLCLCtff11tii1t11111ii111ii1tfi;:::;::,::::::;;,,,,,.,,,,,,:,,,::;:,::;;iiiii1iii1ttf1;. 
+  ,1i11ttfLLLff1itfti1t1i11i1111iiiiiiii1iii;i;,:;;:;;;;ii::;:,,..,:;i:,:::::,,:::iiiiii111111tf;,  
+   ;111tttfff1:;i;iit1111i1111iii1iit111iii;ii;;;;;iiii;;;:,:,,:,,:;;:,:::::,:,,;ii11it1i11111ft:   
+    it1tftfLfti;;::itL11ttt1111tftttt11t1iiii;iiii11i;:,.,..,,;;;:;;:;;:::,,,,,:1111ii1iiii111ti.   
+    .1tttttffff1i:,itfttfft11111tttLLLLLttt111iii11;:,,,.....,;;::,:::::,:,,,,:;i11i11ii1t1iitt:    
+     ,tt111tfffft11tffLLftt1111111tfLGCLttt11t11ii1i:::,,,,,,,,:;:,:;::,,,,,,,,;1i1tt1ttt111tf:     
+      ,11i11tfLf1iitffffffttt111111i1ttt111111ff11ii;::,,:,,:;i;;:::;::,::,::;itttffftft11t1t;      
+       ,11i11tfftt1tttttfttt11111i1111111t1i111ftft11;i;:;;;ii;,:;;;1tiii;;1ttLftffff1i1ttt1:       
+        .i11ii111111tttttfttt1111111i111i1ii11111111;;iiiii1i::;;:;i1fftttfLLCGLffLftttttt1,        
+       .  :111iii1111tt1ttt1t11111111iii1tti111i1iii;::ii1ii1iii11111tfffLCCLCLffffftt111;.         
+           .;1111111111111111111111111t11tt11i1ii1i11ii111111iii1ttftfLfLLLCCLLLLfttttt1:           
+             ,i111ii111111tt1t11ttt1111t111i;;i11111ii111tt11t11tttfLfLCLfLLLLLLftffft;.            
+               ,;1111i1111tttttt11tt11111111i1iii1iiiii111t11111tffLLfLLLLLLLfft11tt;.              
+                 ,;1tt111111111111ttfft1111111111iiii1i1i1tt11tttfLLLLLLCCLLffttt1;.                
+                   .:ittttt1111ttt1ttft111i1ttt11ii;i1111111ttfffLLLCLLLfLfffft1:                   
+                      .:i1tttt11ttttttffft1ttttfft111ttttttffffLLLLLffffLLft1:.                     
+                         .:;1ffffffftfffffffffffLLfLLLffffLfLLCGCLLLfLLfti:.                        
+                             .:i1ffLLLLLLLLLLLCCLLLLLffffLLCGGGGCLLfti:,                            
+                                 .,:;i1tffLLLLCCCCCLCCLCCCCCCLfti;,.                                
+                                        .,::;;iiii111111;;:,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,:;;;iiiii;;::,,.                                        
+                                 .,:;i1tffffLLLCGGGCGGCGCCCCLft1;,.                                 
+                            .,:;1tfLLLLLLLLfLLCCCCLLffffffLLLCLLCCfti;,.                            
+                    .    .:i1tffffffffffffLLLLLffffffttt1111iiiii1111tt1i:,                         
+                      ,;ittt1ttttftt1111111ttttttt111iii;iiiiii;;;;;;;iii11i:.                      
+                   .;1tft111111ttt11111;:::;iiii;;;;;;iiiii11111iii111ii11iii;;:.                   
+                 ,ittft1111111ttt111i;;::::;;:;::::::;;111111iiiii:::;;;ii1111i1i;,                 
+               :1ttttftt1111111ii;;:::::::::::::::::iii11i1i::::;:,,::::::::;i11ii1i,               
+             ,1ffttfLft1111i1iiii;;::::,,:,::,:::,,,,;;ii;ii;::,,,,,,,,:::::::;ii1111;,             
+           .itt111ttt111111iiiii;:;;:,,,,,,,,,::,,,,,:;;;;;;:,,,,,,,,,,,,::::::;iii11ii:.           
+       .  :1t1i1111i11t1111111;;:,,,,,,,,,,,::,,,,,::,::::::,,,,,,,,,,,,,,::::::;;;;1;:;;,  .       
+        .ittt11111i111111111i;;:,,.,,,:,,,,:,,,,,,,:::,,,:::,,,:::,,,,,,,,,,,,,,::;;:;:::::.        
+       .tftt11tt11111111ii1i;::,,,,,,,:,,.,,,,,,,,,,,:::,::::,,::,,,,,,,,,,,,,,,,:;;;::,,,:;,       
+    . ,tttt1111111111tt11ii;:,,:;;::::,,,,,,,..,:,,,:::::::,,::::,,,,,,,,,,,,::,:;::;:;::,,,:,      
+     ,ft11tii11ii111111t1i;;,,::,:::,,,,..,,..,,,,::;i:::::,,:,,,,,,,,,,,,,,,::::;;;:,;;,,,,,:,     
+    .tttttti1111t11tfttt1ii;;:::;;::,,,,,,,....,,,::;1;::::,,,,,,,,::,,::,,,,,,:,,::;;ii:,,,:,:,    
+    1ttffffftt11111ttttfti11i::::,.,,,::,.......,,,,:,,::::,,,,,,,::::::,:::,:,:,,,.:iii:,.,,,,:.   
+   ;ttffffftt1ii11ttt1tfti111i:,,,,,.,,,.......,,,,,,,,,,,:::,,,,,::::::::,:::::::,:;;;:::,,,,,,,   
+  .tfffffLLftt11iii1t1t1i11i1i;:::,,,,...............,,,,,:::::,,,::;i;;;;;;:;;;::::;:;:,,,;:::,,.  
+  ifLfffffffttt111tt111111111i;::;:,,,,,,,,...........,,,,,:::::,,,:;i;i;iiii;;;;:::,,.,,,,:::;...  
+ .ftffttffttt11i1tt111i11111i11i;;;:::,..................,,,:;:::,,::;iii;1ft;;;;:::,..::,..,::..,. 
+ :ft11ftfftt11t11111i11111tffft111ii;:,,.,.,,,...........,::;iiii:::::::;ii1i;;::::,,,:;;;:::;;,... 
+ 1ftttffffttttfff111111t11fLft1ti11iii;:,,,.,,.,,.,,.,..,,:::;ii;::::;;;;;;::::,,:,..,:i;;i;;ii:,,. 
+ tftt11ffLLfLGLttttft111111t1i1t1111t1i:::,.......,,.,....,::,:;,,::::::;;;;::,,,::,.,,:;;ii1ti;,., 
+.fff1i1tfffffLfftttt111111i111tfti1111i:,,,,...............,,,::,:,,::::::;;;;::,:,,::::::i11t1i:.,.
+.fLf1111fffftttttftttttt111iii1ii1tt11i:::,.................,.,,,,,,,,:::::::;::::::;i;::;i11111i::,
+ tft1111tftfftfLfttfftt1t111i1i;it1i;;1i;;:......,,,,......,,....,,:,,:,:,,:::;;::;iiiiiiii11i11t1;.
+ ift111111tfffffffffftttt111111111;...iti;;,,,.....,,....,..,,,.,,,,:;::,,,::;;;::;1ii111ii1t1i1f;;.
+ :ttt111ttfffffffffffft11t111t11111;;;1t1i;::,,.,....,,..,...,,,,,::;i;,,,:,:;i;,,::iiiii1i1t1i1ti; 
+ .11t111tfLLfffLLLffttftii11111i1i1111iiiiii;:,,,:::.,,,,.,,:,,,.,,:::,,.,,,,:;;:,,;i1i;iii1iittt1, 
+  ;11111ttLLLLLCLCLfLfit1iii111111ii111ii1tf1i;::;;:,:::::::i:,,,,.,:,,,::,,:::;,,:;;iiiiiii111tf;  
+  ,tii11ttffLLLfft11ff1itt1111i1111iiiiii1i11ii;i;:,:;:;;;;;i;:::,,,.::;i:,:::::,,::;ii1i11111itf.  
+   ;1111tttfffft::iiii1t11t111111iii1iit111iii;ii;;;;;ii;i;;i:.::,:,,:;;:,::::,,:,:ii11it1i1111t;   
+    itt1tftffLft1;;::i1fL1ttt111111ft1ttt1t111ii;iiiii1i;:,,,..,,;;;:;::;;:::,,,,:i11ii11iii1i11.   
+    .1tttft1tffff1i:,;tfftffft11111tttLLLLLft111iiii11;:,,,,....,;;::::::::::,,,,:i11i11ii11i1t:    
+     ,tt11111fLffftt11tffLfttt1111111tfLCCLftt11t111;1i::::,,,,,,,:;:,:;::,,,,,,,:ii1t11tt111f;     
+      ,tti111ttfLf11itfffLfftttt111111itttt111111ff11ii;::,,::,:i;;;:::;::,::::;ittfffttf11tt;      
+       .1ti1111tfttt1tttttftttt1111ii111111tt1111tftft11;i;:;;;ii:::;;;t1iii;1ttfLfffft1i1tt:       
+        .it11i11111111fttttfttt11i111111111i1ii11111t11;iiii;i1;::;;;;1tLt1ttfLCCLfffftttt1,        
+          :111i1ii1111ttt11tttt111i11111iiitf1i111i1iii;:;ii1iiiiii11111fffLCCLCLfffftt11;.         
+           .;111111111111t1111t11111i111tti1t11ii1ii1i11ii111111iiittttfffLLLCCLLLLtttt1,           
+             ,i111111i111111tt1t1t1tt1111ttt11i:;i11111i111ttt11t11ttfLfLCLfLLLfLftfft;.            
+               ,;111111111111tt1tt1ttt11111111iiiii1iiii1i11tt1111tffLLfLLLLLLLft11t;.              
+                 .;11t11t111111t11111tfftt111111111iiii1i111tt11tttfLLLLLCCCLffft1;.                
+                   .:;1ttt1tt111ttt11ttft11111ttt11ii;i1111111tffffLLCLLfffLLfti:.                  
+                      .:i11tttt1ttttttttfffttttttfft11ttttttffffLLLLLffLLLft1:.                     
+                         .,;1tffffftfttfffLffLffffLfLLLfffffffLLGCLLLLLfti:.                        
+                             .:;1tLLLLLfLLffLLLCCLLLLfffffLLCGGGGCLfti:,                            
+                                 .,:ii1tffLLLLLCCCCCLCCLCCCCCLfti;,.                                
+                                        .,,::;iiiii1111i;;:,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;iiiii;;::,,.                                        
+                                 .,:;i1tfffLLLCCCGGGCGCCCCCCLft1;,.                                 
+                             ,:;1tfLLLLLLLfLffLCCCCLLffffffLLLCLCCLti;,.                            
+                         .:i1ttfftffffffffffLLLLffffffttt11111iiii111111;:,.                        
+                      ,;1tttt1t11ttttt1111111ttttttt111iiiiiiiiii;i;;;iii1i;:.                      
+                   .;1tftt1111111ttt1111i;:::iii1i;;;;;;iiii1111i1ii111i;i11ii;:.                   
+                 ,ittttt11111111ttt111i;;::::;;;;;::::::;i11111iii1;:::;;;ii111ii;,                 
+               :1fttttfftt1111111iiii;::::::::::::::::;ii11111::::;:,,:::::::;i1111i,               
+             ,1fft1tfLLft1111111iiii;::::,,::::,:::,::,:;;ii;ii::,,,,,,,:::::,:;ii111i,             
+           .itt1111ttft1i11111iiii;;;;:,,,,,,,,,::,,,:,,:;;;;;;::,,,,,,,,,,::::::;ii11i;.           
+       .  :ttt1i11111111t1111111i;;:,,,,,,,,,,::,,,,,::::::::::,,,,,,,,,,,,,:::::::;;ii:;,          
+        .if1tt11111ii111111i111i;:,,,,,,::,,,,:,,,,,,,::,,,,:::,,,::,,,,,,,,,,,,,,:;;:;::::.        
+       .tLttt111t1111i1111iii1i;:,,,,,,,,:,,..,,,,,,:,::::::::::,:::,,,,,,,,,,,,,,::;;;::,,:.       
+    . ,fftttt111111i111tt11iii:,,::;:::::,,,,,,,.,,:,,::::::::,,::::,,,,,,,,,,,,:,:;::;;;:,,:.      
+     ,ff111t1i111ii1111ttt11i;;,:::,::::,,...,,,,,,,,::;i;:::::,,,,,,,,,,,,,,,,,:::;;;::;:,,,,.     
+    .tt1tt1ft11111t11tfttt11ii;::::;;::,.,,,,,....,,,::;1i::::,,,,,,,,::,,:,:,:,,:,,::;ii;,.,,,.    
+    1t1tfffffftt1t111tttttf1111;::::,.,,.::,.......,,,,,,,:::::,,,,,,::::::,::::,,::,.:ii;:,,,,,.   
+   ;tttfffffftt1i111ttt11tf11111i::,,,,.,,,........,,.,,,,,,,:::,,,,,,::::::,:::::::,:;;;:::,,,,,   
+  .ttffffffLLfft111i11111t1111i1i;:::,,,,...............,,,,,::::;,,,::;i;;;;;;;;:;:::::;:,,:;:;,.  
+  iftLffffffffftt111ttt111111111i;::;:,,,,,,,...........,,,,,,:::::,,::;i;i;iiii;;;;::,,,,,,,:::..  
+ .ffttftttfftt1t1i1tft111i11111i1ti;;;:::,,..................,::;;;:,,::;iiiitf1;;;;::,..::,..:;,.  
+ :ftt11fftfftt11tt1111ii11111tffftt11ii;:,,...,,,,.,........,,:;iiii:::::::;ii1i;;:::,,,:;;;:::i:.. 
+ iLfttttftffftttffft111111111fLft1t111iii;:,,.,,,..,,,,,,,,,,,::;;i;:::::;;;;;:::,,,:..,:i;;i;ii;,. 
+ tLtttt1tfffLfLGCfffttft111111ttiit1111111;::,........,.,,....,:::;:,:::,::;;;;::,,::,.,,:;;i111;,,.
+.fLtfti1tffffffLLft1ttt111111i11itft11111i;,,,,.......,........,,,:,,:,::::::;;;;::,:::::::;i1tti:,.
+.tLfft111tfffftttttfftttttt11iii111i11t1ii:::,,................,...,,,,:,:::::::;::::::i;::;11111i:.
+ 1Ltt11111tftffttffftfffft11111i1i;;11ii;1i;:;,......,,,......,,...,,,,,,:,:,,:::;::;iii1iiii1111t;.
+ iftt1111111tffffffffffftttt111111111i,..:t1i;:,,......,,.,.,,..,,.,,,,:;:::,:::;;:::i1i1111111i1t:.
+ :tttt11i1ttfffffffffffftt11t111t11111i;;1t1ii:::,.,....,.,.....,,.,,::;i;,,,:::;i:,,:;iiii1it1i1t: 
+ .11111111tfLCfffLLLLfftfftii111111ii11111i1iii;:,,,,::,.,,,,.,:,,,.,,,::,,.,,,,:;;,,:i1i;iii1i1tt, 
+  i111111ttfLLLLLCCLCtfftit1ii11111111i111iii1f1i;:::;:::::::::i:,,,,.,:,,,::,,::;;,:::iiii1i111t1  
+  .t1ii111ttffLLLfft1itff1itt1111i11111iiiii1i11iiiii:,:;::;;;;i;:::,,..,:;i::::::,,:::iiii11111f:  
+   ;t1111ttttfffft;:ii;iitt1111i111iiii1i;1111iii;ii;;;;;iiii;;;;,::,::,:;;:,:::,,:,,;i111t111it1   
+    i11t11tttffLft1;:;::i1Lfit1t111111fttttt1tt1iii;iiiii11;:,,,...,;;;:;::;:::,,,,,;11ii11iiii1.   
+    .11tt1tftttffffti;:,itfftffft111111ttfLLLLft1111iii11;::,,,....,;::::::::,::,,,:;11i1ii111t:    
+     ,1t1t1111tffffftt11tffLLfttt1111111tfLCGLftt11t11ii1i::,:,,,,,,,:;:,;::,,,,,,,:ii1t11t11t;     
+      ,tf1i1111tfLLf11i1ffffffftttt1111111ttftt11111ff11ii;:;,,:,::i;:;::;;:,::::;i1ttfftt11t;      
+       .1f1111i11ftftt11ttttttttt11111i11i1i11tt1111tffft11;i;:;;iii::;;;itiii;ittLftfff11tt:       
+         ;tti111i1111111ttttttfttt11111111i111i1ii11111t1i;iiiiiii;::;:;i1ff1ttfLCCLfLftttt,        
+          ,1t11i1iii11111tt11ttt1t111111111iiitt111iii1iii;:;iiii1iii11111ffffCCLCLfffftt;.         
+           .;11111111111111t1i111111111i111t1itt11i1ii1i11iii1111111i1tttfffLLCCCLLLfttt:           
+             .;111111i1111ii11tttt1t1ttt1111tt11i;;i111i1ii111tt11t11ttfLfLCLfLLLLffft;.            
+               ,;11111111111111tt1tt11tt111111tt1i1ii1iiii1ii11t1111tfffLLLCLLLLfft1;.              
+                 .;1111111tt11111t11111tfftt11111t111iiii1iii1tt11ttffLLLLCCCLLLf1:.                
+                   .,;ittttttt1111tttt1ttft111111tt11iiii11111t1tffffLLLLffLLLti:.                  
+                      .:;111tttt11ttttttttfftttttttfft11ttttttffffLLLLLfLLft1:.                     
+                         .,;i1tffffftfftfffLLfffffffLLLLLfffffLLLCGCLLLfti:.                        
+                             .:;1tfLLLLLfffffLLLCCLLLLLffffLLCGGGGLfti:,                            
+                                 .,:iittffLLLLLLCGGCCCCCCCCCCLfti;,.                                
+                                       ..,,:;;iiiiiii11i;;:,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;iiii;;::,,.                                        
+                                 .,:;i1ttfffLLLLCCGGGGCCCCCLLft1;,.                                 
+                            .,:;1ttfLLLLLLffLLffLCCCLLLfffffLLCCLLLt1;,.                            
+                         .:i1tttftttfffffffffLLLLfffffftttt1111iiii11111;:,                         
+                      ,;1tttt111111tft111111111ttttt11111ii;iiiiii;;;;;ii1i;:.                      
+                   .;1ffttt11111111ttt11i11;:::iiiii;;;;;;iiii111iiiii11i;i11i;:.                   
+                 ,itfttttt11111111ttt111i;;::::::::;::::::;i11111iiii;::;:;;i111i;,                 
+               :1fft1ttftft11111111ii;i;::::,:::::::::::;ii11i11;:::;:,,,:::::;;i11i:               
+             :1ffft1tffLLt1111ii1iiii;;;:::,,,,,,:,::,,,,,;;ii;ii::,,,,,,,,::::::;i1ti,             
+           .1ftt11111tftt1i1111iiiii;;:;;:,,,,,,,,,::,,,,,:;;;;;;:,,,,,.,,,,,:::::;;;11;.           
+       .  :ff111i111111i1111111111i;;:,,.:,,,,,,,::,,,,,::,::::::,,,,,,,,,,,,,,::::::;ii:,          
+        .1ff11t11111iii111111i111i;;:,,.,.,::,,,,,,,,,,,,::,,,,,:,,,,::,,,,.,,,,,,,,:;;;::,.        
+       .tLftttt111t111ii1ii1iiiii;::,.,,,,,,,,....,,,,,,,,,:::::::,,,:,,,,,,,,,,,,,,,:;;:,,,.       
+      ,ffttttt1111111i11i1t11iii;:,,:::::::,,,,,,....,:,,,::::::,,,,::,,,,,,,,,,,,:,::::;;:,,.      
+     ,fff1111t1i111ii1111111111;;:,,::,:::,,,...,,...,,,,:;i::::::,,,,,,,,,,,,,,,,:,:;;;:;;,,,.     
+    .fft11tt1f111111tt11tf1t11iii;::::;;::,.,,,,,.....,,::;1i::::,,,,,,,,:,,,:,,,,,,,,::;ii:.,,.    
+    1ftttffffffftt111111tt11tt111i;::::,..,.,:,........,,,,,,,:::,,,,,,,:::::,,:,,,,:,,.:ii;,.,,.   
+   ;f1ttfLffffftt11i1111tt11ff11111i::,,,..,,,........,..,.,,,,,,::,,,,,,:,::::,,:::::,:;;;:::,,.   
+  ,tttfffffffLLftt111ii11111ti1t1i1i;:::,.,,................,,,,,::::,,,::;;;;;;::;::::::::,,,:::.  
+  if1tLffffffffftt11111tt111111111iii:,;:,,,,.,,,............,,,,,::::,,,:;;i;;iii;;;;::,,,,,.:,:.  
+ .tffttfftttfftt1111i1tt1111i11111i11i;;;:::,...................,,:;;::,.,:;;i;itti;;;::,..:,,.,;.  
+ :fttt111fftfftt11111111iii111111ttft111iii;,,,...,,,...........,:;;ii;::::::;;ii1;;::::,,:;;:,:;,. 
+ iLftt1tttftffftttfftf1111111111tLft111i1iii;::,..,,,..,.,.....,,::;;i;:::::::;;::::,,:, ,:;;i;;i;. 
+ 1Lf1ttt11tffLLffCGLtttttf1111111t1ii11111111i::,,.......,..,....,:,,;:,::::::;;;:::,,:,.,,:;i111;, 
+ tLLtffii1tfffffffLftt1tt1111111ii111tt1i1111i:,,,................,,,:,,,,::::::;;;:,,:,:::,,;11ti, 
+.tLLfff11111fffftttttttttt1tt111iiii11i11tt1i;::,.................,...,,,,,,:::::,:::::::;;::i11i1; 
+ 1fLfft11111tftffftfLfttffttt111i1i1i;;1t1i;;1;:;:.......,,.......,....,,,,,:,,,,::;:::;iiiiii11i11.
+ iLfttt1111111ttffffffffffttt1t1111111111:..,1ti;:,,......,,.......,,..,,,::::,,:::;;:,;1ii11111iti 
+ ;f1ttt11111ttffffffffffffftt111111t11111i;;ittii;::,.,....,.......,,..,,:;i:,,,,,:i;,,:;iiii11tit; 
+ .t111111111tfLCLffLLLLffttfftii111111ii11111iiiii;;:,.,::,.,,,..,,,...,,,::,..,,,::;,,:i1i;ii1i1f, 
+  it11111i1ftfLLLLLLLLCLtLf1itiiii1111111i111ii11tti;:,:;::,::::,:;;,,,,.,,,,,,,,,::;,,:;iiiiii111  
+  ,ft111i111ttffffLLfft11tffiit1ii11ii111iiiiiiiii1iii;i:,:;:::;;;i;,::.,..::;i,::,::,:::iiii11it:  
+   ;t11i111tttttfftf1::ii;iit1i111i111ii1i1i;1111iiii;ii:;;;;i;i;;;;.,,,:,,:;::,:,,,,,,;i1111111i   
+    i111t11tttttfLft1i:;:,;11Lt1t1tt11111f11ttt1111iii;;ii;i11;:,,....,;;::;::;::,,,,,;11ii1iii1,   
+    .11i1tt1ft1ttfffft1;:,:1tfttffft111111ttfLLLLft111iiiii1i:,,,,....,;::,::::,,:,,,:;1i1ii111:    
+     ,1t11tt1111tffffLtt111tffffftt11111111tfLCGLfttt1111i;ii:::,,.,,,,,;;,,::,,.,.,,:iit11t11;     
+      .1ft1i11111ttfLft1i1tfffffftttt1111111111tt111111ffii;i;::,,,,,;;;;;::;::,:,:;i1ttftttt;      
+       .ift11111111fttt1t1tttttttttt11111i1111i11111111tftt11i;;::;;ii;,:;;itiii;ittLffff11t:       
+         :tt1i111111111111tftttttttt111111111111ii1ii1111111i;iiii;1i:,;;:i1ff1ttfLCCfffttt:        
+          ,if111i1111i1111tt1111tt11t11111111iii1fti11ii11ii;::iiiiiiiii1111fffLCLLLffffti.         
+            :1111111111111111111i111i1111i1111ti1tt1iiiii1i11iii11111ii11ttfffLLCCLLfft1:           
+             .;11111111111111111t1111t11tt1111ttt11i:;i1111ii111t111t11ttfLfLCfLLLLfft;.            
+               ,;11111111i111111ttt1tt111t111111111iiiii1iiii1111t1111tffLLfLLLLfff1;.              
+                 .:i1111111111111i1111111tfft111i111111iiiii1111t111tttfLLLLLCLLL1:.                
+                   .,;i1tt1111tt1i111tt11ttft111111tt11ii;i1111111tffffLLLfLLLti:                   
+                      .:;11111tttt111tttttttffttt1tttftt11ttttttfffLLLLLLLLt1:.                     
+                         .,;i1ttttftttffftfffffffffffffLLLLfffffLLCCCLLfti:.                        
+                             .:;i1tfLffLffffffffLLCLLLfLffffLLCGGGCLti:,                            
+                                 .,:ii1tfffLLLLLLCCGCCLLLCCLLLfti;,.                                
+                                       ...,:;;iiiiiii11i;;:,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;iiiii;;::,,..                                       
+                                 .,:;i1ttfffLLLLCCCGGGCCCCCLLft1;:.                                 
+                            .,:i1ttffLfLLLLfffLffLCCCCLLffffLLCCLLft1;,.                            
+                    .    ,:i1ttttttttffffffffffLLLLffffftttt11111ii11t1i;:.                         
+                      ,itffttt111t11tfft11111111tttttt11111iiiiiiii;;;;;iiii:.                      
+                   .;1fftttt11111111tttt11111;:::iiiiii;;;;;iiii111i1ii11iii11;:.                   
+                 ,;tft11ftt111111111tt11111i;::::;;::;::::::;i11111iii1;:;;;ii111;,                 
+               :1tftt1tttfftt11111111ii;ii:::::::::::::::::iii1111;:::;:,,::::::;11i:               
+             ,tftftf1tfffLft1i111i11iii;;;::::,,,,:::::,,,,,:;ii;ii;:,,,,,,,::::::;i1i,             
+           .1Lftt111111tft11111111iiiii;:;;:,,,,,,,,,,:,,,,,,:;;;;;;,,,,,.,,,,,::::;;i1;.           
+       .  ;fL11tt1111i11ii1111111111ii;;:,.,,,,,,,,:::,,,,,:::::::::,,,,,,,,.,,,::::::;i;,          
+        .1fft11tt1111111ii1111111111i;:,,,.,,,::,,,:,,,,,,,,::::,,::,,,::,,,,,,,,,,,,:;;;:,.        
+       .tffLttttt111t111ii11i111iiii;::,.,,,,,,,,....,,,,,,::::::::::,,::,,,,,,,,,,,,,::;:,,.       
+    . ,fLtfttt1t1i11111ii1iitt11iii;:,,:;;::::,,,,,,...,,:,,:::::::,,,:::,,,,,,,,,,,:,::::;:,.      
+   . ,fLff1i11ttiii11iii1111t11t11;;:,::,,:::,,,,..,,,..,,,::;i;::::,,,,,,,,,,,,,,,,:::;;::;,,.     
+    .ffftt1ttttf111111tt11tfttt111ii;::::;;::,.,,,,,....,,,::;1i::::,,,,,,,::,,:,,,,,,,,::;1:,,.    
+   .1fftttffffffffttt11111ttttttti11i;::::,..,.,:,........,,,,,,::::,,,,,,,:::,,,:,::,,,,,;i;,,,    
+   ;ftttttfLffffft1t1ii1111tt11ff11111i::,,,,.,,,...........,,,,,,,,::,,,,,::::::,,:::::::;;:::,.   
+. .ttttfffffffffLLftt111i1i1111t11t1i1i;::::,.,...............,,,,,,::::,,,::;;;;;;;;::::::;:,,::.  
+  ;ttttfLfffffLfffftt11111ttt11111t11iii;::;,,,,,,.,............,,,,:::::,,,:;;i;;ii;;;;::,,,,,,:,  
+ .ttffttffftttffttt1t1ii1tt1111i11111ii11;;;:::,,..................,,,:;;:,,::;ii;1f1;;;::,.,:,.,:. 
+ :Lffftt11tfftffft1111t11111ii111111ttftt11iii;:,,...,,,...........,::;ii;::::::;ii1i;::::,,:;;,:;. 
+ iLffff1tftfftfffttttffff1111111111tfff11111iiii;:,,.,,,.....,....,,::;;i;::::;:;;;:::,,:,.,;;;;;i, 
+ 1LfLttftt11tffLfffLGGftttttft111111tt1i111111t1i;:,,..........,....,::,;:,::::::;;;::,,,:.,,:;i1t:.
+.tLLLftftii1ttffffffLLftt1tt11111111i111tt1i1111i:,,,................,,,:,,,,:::::;;;;:,:,:::::i1t;.
+.tfLLLfft11111fffffttttttfttttttt1111i11iii1tt11;:::,................,,..,,,,,,::::::;:::::;;:;111i.
+ 1ffLffft111111fttffftfLfttffftt111i11iii;it1i;;1i;::.......,,,......,,...,,,,,:::,:::;::;iiiiii111.
+ iffffttt1111111ttfffffffffffftt1t1111111111;...itii;:,,.....,,.......,,..,,,::::,,::;;::;1i11i1111 
+ :f11tttt111i1tftffffffffffffftt11t1111111111;;;1t1i;:::,,,....,......,,.,,::;;:,,,,:;;,,:i1ii11t1; 
+ ,t111111t1111tfLCLfffLLLLfft1fftii111111iii1111iiiiii;:,,,,::.,,,,.,:,..,,,:::,..,,,:;:,:i1iiiiit: 
+  it111111111fttLLLLLLLCLCLtLf1it1iii11i1111ii111ii1tf1i;::;;:,::::,:;;,,,,.,:,,,,,,::;,,:;iiiii11. 
+  .ttt1i1ii111ttffLLLLfftt11tff1ittii111i111iiiiiii1i11ii;i;::::::;;;i;,::,,.,:;i:,::::,::;iii111;  
+   ;ttt111111tttttffffti:;iii1it1it111111ii1ii1;it111i1i;ii;;;;;i;ii;;;,:,,:,,;;:::::,,,,ii11111i.  
+    i1i111t11tfttffLLtt1;:;::;1tCt1tttt11111ft11tt1111i1i;;iiii11;:,,,,.,:;;:;;:;:::,,,:;1ii1ii1,   
+    .i1i11tft1ft1ttfffffti;:,;ttfttffft111111t1fLLLLftt11iiiii1i::,,,....:;:::::::,:,,,:i111i11:    
+     .1t11t1t11111tfffffftt11tfffLffttt1111111tfLCGLfttt11111;1i:::,,,,,,,:;:,:::,,,,,,;i1t1tt;     
+      .iftt1i1i1111ttfLft1iitffffffffttt1111111111tt111111ft1iii:::,,,,:;;;;::;::::,:;ittft1t;      
+        ;ttt111111111tttt1t11ttttttfttt11111i1111i111t1i11tftf11i;;:;;;ii::;;;11ii;itfLffftt:       
+         :1ttti111111111111i1tttttttttt111111111111i11ii1111111i;iiiii1;::;:;1ff1ttLLCLffft,        
+          ,itft11111111i11111ttt11ttt1t111111111iii1f1i111i1iii;:;iiii1iii1111fffLCLCLfffi.         
+            :it11111111111111111111111111111i111tti1f11ii1i1111iii11111ii1tttfffLLCLLff1:           
+             .:1111111111111111i111t1t11tttt11111tt111;;i1111iii111tt1t11ttffLCLfLLLLf;.            
+               .;i1111111111i111111ttt1tt11tt111111111i1ii1iiiii111t1111tffLfLLLLLLt;.              
+                 .:i1111111111t11t1i11111111tfft11111111111iii1111t11tttffLLLLCCLt:.                
+                   .,;i111t1ttttt11i11ttt11ttft111111tt11ii;i1111111tffLLLLLLLfi:                   
+                      .:;i11111ttttt11ttttttttffttttttfft111ttttttfffLLLLLLf1:.                     
+                         .,;i111tftttttffftfffLLffffffffLLLLfffffLLCGCLfti:.                        
+                            ..:;i1tffLffLffffffffLLCCLLLLffffLCCGGCLfi:,                            
+                                 .,:ii1ttffLLLLLLLCCGCCLCCLLLLfti;,.                                
+                                        ..,::;iiiiiiii1i;;:,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,:::;iiiii;;::,,..                                       
+                                 .,:;i1ttffLLLLLLLCGGGCCCCCLLft1;:.                                 
+                            .,:i1ttfffLfffLfffffffLCCCCLLffLfLLCCLft1;,.                            
+                    .    ,;i1tff11ttttfffffffffffLLLLffffftt111111ii111i;:.                         
+                      ,itffttttt11tt1ttff111111111tttft11111iiiiiiiii;;;;ii;:.                      
+                   .;tfffttttt11111111tttt11111;:::iii1ii;;;;;iiii11111ii11ii1i:.                   
+                 ,;tfft11ttt1111111111tt11111i;::::::::;;:::::;i11111iiii::;:ii11;,                 
+               :1ftttt1tttttttt111111111iiii:::::::::::::::;:;ii1ii1;:::;:,,::::;i1i:.              
+             ,tLftftft1tffLLLt1i11ii111iii;;:::::,,:,:::::,,,,:;;ii;i;::,,,,,,:::::;1i,             
+           .1LLt1t1111111tft11111111iiiii;;:;;:,,,,,,,,,::,,,:,:;;;;;;:,,,,,,,,,:::::iii,           
+       .  ;fLft11t1i1111111111111111111ii;:,,,:,,,,,,,:::,,,,,::::::::,,,,,,,,,,,,:::::;i,          
+        .1Lfttt1ttt111111iii11111111i11i;:,,,.,,,::,,,:,,,,,,,::,:,,,:,,,::,,,,,,,,,,,,:;;:.        
+       .tLtfLftttt1111tt11ii111111iii1i;::,,,,,,,,,,,..,,,,,,:,,:::::::,,,:,,,,,,,,,,,,::;;,.       
+    . ,fLffft1tt1t11111111i11i1tt11iii;:,,:;;::::,,,,,,..,,,:,,:::::::,,,:::,,,,,,,,,:::;::;:.      
+   . ,ffffft1111tt11i11iiii1111t11t11;;:::::,::::,,...,,..,,,,::;i:::::,,,,,,,,,,,,,,,:,:;;:;,.     
+    .fffftt11ttt1f1111111tt11tfttt11iii;;:::;;:::.,,,,,,...,,,::;1i::::,,,,,,,:,,::,:,,,,,::1:..    
+   .1ttfttttffffffffttt11t111ttttttt1111i;::::,,,,,::,.......,,,,,,::::,,,,,,,::::,,::,,:,.:i;,,    
+   ;ftttttttLfffffffttt1i11111tt1tff1111ii;:,,:,..,,........,,,,,,,,,,::::,,,,::::::,::::::;;;::,   
+  .tttttffffffffffLLffttt11i1i1t11t1i11ii1;:,::,.,,..............,,,,,,::::,,:::;;;;;::;::::;:,:;,  
+  ;ttttttLLfffffffffffttt1111ftt1111i1111ii;::;,,,,,..,,...........,,,,:::::,:,:;;i;iii;;;::,,,,::  
+ .ttttftttftftttffftt1t11i11tt1111i111111i11i;;;:::,..,...............,::;;;:,,:;;i;itti;;::,.:,.:. 
+ :ffftfttt11tffttfftt1111t1111iii111111ttfft111ii;;,,....,,,.,........,,:;iii::::::;i11;;:::,,;;::, 
+ iffffftt1tftffttfffttttffff1111111111tfLft1t111iii;::,,.,,.....,.,,,,,::;;i;::::;:;;;::,,:,.,;;;i; 
+ 1fffLL1tttt11ttfffLffLGCftftttf1111111tt1iit1111111i::,,.........,,...,::,;:,:::::;;;::,,:,.,:;i1i 
+.1ffLLftffti11ttfffffffLLfftttt11111111i1111ft1i1111;:,,,...............,,,:,,,,:::::;;;:,:,,:::i1i.
+ 1ffLLfLfft11111tfffffttttttfftttttt111ii1i1ii11tt1i:::,................,,..,,,,,::::::::::::i;:i1i.
+ 1ftfLftft1111111tftfffftfLfftffftt111i11iii;;11ii;i1;:;,......,,,......,,...,,:,:::,:::;::iiiiii11.
+ ifffffttt111111111tffffffffffffftt1t1111111111i,.,:t1i;:,,......,,......,,,,,,,:;:,,::;;::i1i11i11.
+ :fttttt1tt11111tftffffffffffffffftt111111t11111;;;it11i:::,.,....,.,....,,,,,::;;,,,::;i:,:iiii1ti 
+ .ft1111111t1111tffLCLfffLLLLffftfftii11111111i11111i1iii;;,,,,::,,,,,.,:,,,,,,,:,..,,,:;:,:i1iii1: 
+  1f111111111iitftfLLLLLLLCLCftLftit1iii1111111ii111ii11f1i;::;;::::::::;;,,,,.,:,,:,,::;:,:;iii11. 
+  ,tftt1111i1111tttffLLLLfft1i1tff1itt1i11111111iiiiiiii11iiii;:,:::;;;;i;,:,,,.,:;;,::::,::iii11:  
+   ;f1tt111111ttttttffftft::iii;1ittitt1i1111iiii1iit111iii;ii;;;;;i;ii;;:,:,,:,:;:,,::,,,:i1111i   
+    i1ii111tt11tftftffLftt1;:;::i1tLt1tttt11111tt11tt11t1iiii;iiii11;:,.,..,:;;:;:;:,:,,,:i1i111,   
+    .i11ii11tf11ft1ttffffff1i;:,itffttffft111111ttfLLLfftt111iiii1i:,,,....,::::::::,:,,,;i11i1:    
+     .i1111t1tt11111ttffffLft111tfffLffttt1111111tfLCGLfttt1111i;1i:::,,,,,,:;;,:::,,,,,:i1t1t;     
+      .;1tffti11i1111ttfLfft1iitfffffffftttt1111111tttt111111ft1iii:::,,,:;;;;;:;:,::::;1tftt;      
+       .;ttttt111111111tftt1tt1tttttftfttt11111i11i1i11tt1111tfft11ii;:;;;i;,;;;11ii;1tffff1:       
+         :1tttf1i11111111111111ttttttffttt111111i11111i11i11111t1i;iiiii1i::;:;iff1tfLCLfft,        
+          .;11tt111i1111ii1i111ttt111tt11t111111111iiitf1i11i11iii::iiiiiiii1111tffLLCLffi.         
+            :i1t111111111111111111t11i111i1t1111t11t1itt11iiii1i11iii1111ii1tttffLLCLLLt:           
+             .:i11i111111111111111111t11t1tt1tt1111tt111i:;i1111ii111t11t11ttffLCLLLLf;.            
+               .:iii11i1111111i111111ttt1tt11tt111111111iiii11iii11i1t1111tfLLfLLLLt;.              
+                 .:;i111111t1111t11t1i1t11111ttfftt11i111111iiiii111t11ttffLLLCCLt;.                
+                   .,:ii111tttttttt11i1tttt11ttft111111tt11iiii1111tttffffLCLLfi,                   
+                      .,;i1111111tftt11ttttttttfffttttttfft111tttttfffLLLLLf1:.                     
+                         .,:i111ttttfttftftftfffLLffffffLLLLfLffffLLCGCLti:.                        
+                             .,;i1tfffLffLffffffffLLCCCLLLLfffLCCGCLfi:,                            
+                                 .,:;i1ttffLLLLLCLLCCGGCCCLLLfft1;,.                                
+                                        .,,::;iiiiiiii1i;;:,,.                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::::;iiiii;;::,,..                                       
+                                 .,:;i1ttffLLLLLLLLCGGCCCCCLLft1;:.                                 
+                            .,:i1ttfffffffffffffffffLCCCCLLLLLLLCLft1;,.                            
+                    .    ,;ittftt11tttttffffffffffLLLLLffffttt111111111i;:.                         
+                      ,;tfffttttt11tttttfft11111111ttttft11111iiiiiiii;;;iii:,                      
+                   .:1fffttt1tt111111111tttt11i11;:::;iiiii;;;;;iii11111ii11iii:.                   
+                 ,i1tftt1ttftt1111111111tttt111i;::::::::;:::::;;i11111iii;:::ii1;,                 
+               ,1fftttt1tttttftft1111111t1ii;i;::::::::::::::::;ii1111;::::,,::::;ii:.              
+             ,1LLfttftf11tffLLLt11111111iiiii;;;:::,,:,:::::,,,,,;;ii;i;:,,,,,,:::::ii:             
+           .iLLLf1tt1111111tftt11i11i1iiiiii;;:;:,,,,,,,,,,::,,:,,:;;;;;:,,,,,,,,,::,:ii,           
+       .  :fCLft11tt11111i1111i11t1111i11iii;::,,:,,,,,,,::,,,,,:::::::::,,,,,,,,,,,:::;i,          
+        .1LLftft11ttt111111ii111111111111ii;:,,..,,:::,,,:,,,,,,,::::,,::,,,:,,,,,,,,,,,:;:.        
+       .tLfffffttttt1111tt111111111111ii1i;:,,,,,,,,,,,..,,,,,,,:,::::::::,,:,,,,,,,,,,,,:;:.       
+      ,fLffftfttt1tt11111111ii1111tt11iii;:,,:;;::::,,,,,,..,,,:,,:::::,:,,:::,,,,,,,,,:::;::.      
+     ,fLfffff11111tf1i11t1i1i11111t1tt1i;;::::,,::::,,,..,,...,,,::;i:::::,,,,,,,,,,,,,:::;;::.     
+    .fffffttt11ttt1fti111111tt11tfttt11iii;;:,:;;:::,,,,,,.....,,::;1;::::,,,,,,::,::,:,,,,::i,     
+    tfttftttttffLffffffttt111111ttttttt1111i;::::..,..::,......,.,,,,:::::,,,,:,::::,,:,:,:,,i;,    
+   ;ttttt1ttttLffffffffttt1i11i11ttt1ff111111;:,,:,..,,,.......,,,,,,,,,,:::,,,,,:,:::,::::::;;:,   
+  .t1tttttffffffffffLLLfttt111i111111t1i11ii1i::::,,,,...............,,,,,::::,,::;;;;;;;;:::::,:,  
+  ;t1tfttttLLffffffffffffttt1111ttt11t1i11111ii::;:,,,,.,,,...........,,,,:::::,::;;i;iii;;;::,,,,  
+ .tt1ttfftttfffttttfftttttt1111tf1111ii1111111ti;;;:::,,.,...............,::;;::,,:;iiitt;;;::.,,,. 
+ :ftfftfttt111ttfttffftt1111t11111ii111111tftftt11iii;:,,...,,,,,........,::iii;:::::;ii1;:::,,;;:: 
+ itffffffft1ttttfftffffttttfffftt111111111fLff1t1i1iiii::,,.,,..,..,..,,,,::;;i;:::;;;;;::,,:..;ii;.
+.1tffLfLf1ft1tt11ttfffLffLGCffttttft1111111ttii1t111111i::,,.......,.,,...,:::;:,::::;;;;:,,:,,,;i1.
+.ttffLCLftfft11i1tffffffffLLft11ttt1111111ii111ft1i1111i:,,,,..............,,,:,,,:::::;;;:,:,::,;1.
+.tftffLLfLfft1111ttfffffftttttffttt1ttt111i1i1i1ii1tt1i;:::,........,.......,..,,,,,::::::::::;;:i1.
+ 1fftfLLffff11111111tftfffftfLfftfffttt11i1111ii;1t1i;;1i;;:......,,,,.....,....,,:,::,,::;::iiiii1.
+ iLfffffftttt11111111ttffffffffftffftt1tt111i111111:..,1ti;::,......,,,..,..,,,,:,::::,::;;::i11111.
+ ;fttt111t1tt111111tftffffffffffffffftt1tt111t11111i;;itt1i;::,,,....,,,....,,,,,:;i:,,,:;;,,;iii1i 
+ .fttt1111111t1111ttffCLfffLLLLLffftfft1i1t11111ii11111i1iii;;:,,,::,,,,,.,,,,,,,,::,.,,,:;:,;1;i1: 
+  1ftt111111111ii1fttLLLLLLLCCLCftLftit1iii11111111i111ii11fti;:::;::::::,:i:,,,,,:,,:,,::;:::iii1. 
+  ,ttftt11111i11111ttfffLLCLfft1i1tff1;tt11111111111iiiii1i11iiiii:,:::;;;;i;::,,.,:;;:::::,:;ii1:  
+   :ttttt111111111tttttffftft::i1i;iitti1t1i11111iii1i;t111iii;ii;;;;;iiii;;:,:,::,;::,::,:,;i11i.  
+    ;1i1i1111tt11tftftffLLftti;;;:,i1tCt1tttt11111tt11tt11t111ii;iiii11;:,,,..,;;:;::;::,,,;11i1,   
+    .i1111i11ttft1ffttttffffft1i::,ittfttffft111111ttfLLLLfttt11iiii1i:,,,....,;::::::,:,,:i1i1:    
+     .i11tt11t1tt11111ttffffLLtt1tttfffLffttt1111111tfLCGCfttt1tt1i;1;:::,,,,,::;::::,,,,,;11t;     
+      .;i1ffft1i11i1i11ttffLff11i1tffffffffttt111111111ttt111111ft1iii::,,,,:;;;;:;:::,:;itff;      
+       .:i1tttt1i11111i11tftft1t11ttttttffttt11111i1111i11t111t1ffft11;;::;;i;,:;;11iiitffff:       
+         :i11ttfti1i111111111111i1ftttttfftt1111111111111i11i11111t1i;iiiiii::;:;1ft1tfCLft,        
+          .:i11tt111111111iii11111ttt11ttt11t111111111ii1tt1i1ii11ii;:;iiiiiii1111ffLCLLfi. .       
+           .:;i1t1111111111111111111111111t111111i111tti1tt11i1ii111iii1111ii11tfffLCCLt:           
+             .:ii11i11111111i1111iii111tt1tt111ttt1111tt11i;;i1111ii111t11t1ttfLLCLLCf;.            
+               .:;ii111i11111111i111111tttttt11ttt111111111iii11iiiiii1t111tffLfLCLf;.              
+                 .:;ii111111tt1111t11t1i1t11111tttft111i1111111iii1111t11ttffLLCCf;.                
+                   .,:;iii11ttt1tttft1111ttttt1ttff111111tt1iii;11111t1tffLLCLf1:                   
+                      .,;i11111111ttttt111tttttfttfftt1tttfft11ttttttffLLCLf1:.                     
+                         .,;i1111t1tttffftfftftffLLLffffffLLLfLffffLCCCLti:.                        
+                             .,;i1ttffffffLfffffffLLLCCCLLLLLfLLCGCLf1:,                            
+                                 .,:;i1ttffLLLLLLLLLCCGCCCCLLftt1;,.                                
+                                       ...,::;;iiiiiiiii;;:,,.       .                              
+""")
+    rawFrames.addOne("""
+                                        ..,::::;;iiii;;::,,..                                       
+                                 .,:;i1tfffLLLLLLLLLCCGGCCCLfft1;:.                                 
+                            .,:i1ttffftffffffLffffLffLCCCCLLLLLLLLLt1;,.                            
+                    .    ,;1tttttt11tttttffLffffffffLLLLffffftt111111111;:.                         
+                      ,;tfLftttttt111tt11tfft11111111ttttft1111iiiiiiiiii;;;:,                      
+                   .:1ffffttt1ttt11111111ttttt11111;:::iiiiii;;;;;iii11iiii11i;:,                   
+                 ,i1ttttt111tftt1111111111tt1t111i;:::::;::;;::::;;i11111iii::;ii;,                 
+               ,1fftttttt1ttttttftt111111111ii;i;::::::::::::::::;ii1i11;::::,,::;;;:.              
+             ,1fLLfttftft11fffLLLft1111i111iiii;;;:::,,,,,:::::,,,,:;ii;i;::,,,,,:::;;:             
+           .ifLLfft1ft1111111tftt111111111iiii;;:;;:,,,,,,,,,::,,,,,:;;;;;:,,,,,,,,:::;;,           
+       .  :fLLLftti1t11i1i111111i111t1111111ii;;:,,,,,,,,,,:::,,,,:::::::::,,,,,,,,,,:::;,          
+        .iLLfftfft11ttti11111ii1i11111111111i;;:,,..,,,::,,,,,,,,,,,::::,::,,,:,,,,,,,,,,;:.        
+       .tLffftfLfttttf11111t1111iii111111iiii;:,,,,,,,,:,,...,,,,,,,,:::::::,,:,,,,,,,,,,,;:.       
+    . ,fLfffftffttt11t111i1111i1i1111ft11iii::,,:;;::::,,,,,,,..,,:,,::::::,,,:::,,,,,,,,::;:.      
+     ,fLfffffft11111tftiii11i1ii111itt1t111;;:,:::,::::,,,..,,..,,,,::ii::::,,,,,,,,,,,,,::;;;.     
+    .fLffffftt111fttttf1111111tt111tfttt11iii;;:,:;;:::,,,,,,,...,,,::i1::::,,,,,,,:,,,,:,,,:;i.    
+    tLtttfftttttffffffffffttt1t1111ttt1ttt1111i;::::,,,,.::,......,,,,:,:::::,,,,,::::,::,::,,i:    
+   itttttt1tttttLLffffffft1t1111111ttt1tfLt11111i::,:,,.,,,........,..,,,,,,:::,,,,:::::::::::;;,   
+. ,t1tttttttfffffffffffLLLfft1t11i1i1t11t1i11i11i;:::,,,,...............,,,,,:::,,,:;;;;;;;::::::.  
+  1t111ftt1ttLLffffffLfffffttt11111tttt1t111t11iii::::,,,,,,,............,,,,::::,:,:;i;;i;;;::,,,  
+ .ttt1tttff1ttftfttttfffttt11t1i11tft1111i11111iit1;;;:::,,.................,::;;;,,:;ii;tt;;::,,,. 
+ :fttffftfttf1111tffttffttt1111t11111ii111111tftftt11iii;:,,....,,,,........,:;iii;:::::ii1;::,,:;, 
+ 1f1ffffffttf1ttttffftffftttttfftf1111111t111tfff11t111iii;:,,..,,....,...,,,::;ii:::::;;;::,,,.:i;.
+ tt1fffLfLt1ft1tt11ttfffLLffLGCffttttft1111111tt1i1t1111t11;:,,.......,.,,...,:,:;,:::::;;;:,:,.,:i.
+.fftffLLCLfftft1i111tfffffffLLLftt1ttt11111111i111tfti11111;,,,,.......,......,,,:,::::::;;;::::::i,
+.tftfffLLffLfff11111t1fffffftttttttfttttttt1111i1i1ii1tt11i:::,...............,...,,,,:::::::::;;:i,
+ 1LtfftfLLtffft1111111tfftfffttfLfftfffttt111i11i1i;it1ii;1i;:;,......,,......,...,,,,:,,,::;:;iii1.
+ iLtffffffttttt111111111ttffffffffffffftt11t1111111111i...;t1i;::,.....,,.,.,..,,.,,,:::,,:;;:;1111.
+ ;ftfttttttt1tt11111i1tftffffffffffffffftt11t111tt11111;;;1t11;::,,,,...,,,....,,,,::;;,,::;;,:iiii 
+ .ffftt11111111t1i111ttfLCLfffLLLLLLfLttff1iit1111iii11111111iii;:,,,::,,,,,.,:,,.,,,:,,,,,:;,:ii1: 
+  iffttt111111111i1ifftfLLLLLLLLCCCLtLLfi1tiiii1111111i1111ii1tfii;::;::::::::;:,,..,:,,:,:::,:i1i. 
+  ,t1tfftt11111i11111tttfffLLLLfft111tff1;1f11i11111111iiiiiii11iiiii:::::;;;;i:::,,.:;;::::,,;i1:  
+   :t1tt1tt11i1111111tttttfffff1::iii;ii1ti1t1111111i1i1i;11111ii;ii;;;;;iii;;;,:,,:,;;::::,,:i1i   
+    i1111111111tt1i1tftftffLLft1i:;;,:i1tLfittt111111tf11ttt1t111ii;iiii1i;:,...,:;::::;::,,:111,   
+    .i1i111ii1111ft1tft1tttffffft1i::,itffttffft11t111tttLLLLftt111iiii1;:,,,....;:::::::,,:;i1:    
+     .iii1tt111t1tt1111i1tfffffLftt111tfffLffttt1111111tfLCGCfttt1tt1ii1;::,,,,,,:;::::,,,,;1t;     
+      .;ii1fffft11i1iii111ttfffft11i1fffffLffttt1111111111ttt111111f11ii;::,,,:;;:;:;::::;itf;      
+       .;iitttttt11111111i1tfftft1t11ttttfftfttt11111i1111i11t11111fftt1i;;:;;i;::;;1iii1fff:       
+         :ii11tttf11111111111111111itftttttfttt111i111111111i1ii11111t1;iiiiii::;;;tfttfCCf,        
+          .:;i1tttt1111111i11i1i1111tttt11ttt1t111111111iii1ft1iiii1ii;:;iiiiiii111tffLCLi.         
+           .:;;i11t11111111111111111111111i111i11111i111t1i1t11iiiii11iii1111ii1ttffLCCf:           
+             .,;ii111111111111i1111111111ttt1ttt11tt111ittt11;;;i111ii111t11t1ttfLLLLf;.            
+               .:;;ii111i1111111111111111ttt11t111tt111111111iiii1iiiiii1t111tfLLLCfi.              
+                 .,;;ii1111111t11111111t1i1t111111ttftt1111111111iii1111t1tttfLCCf;.                
+                   .,:;iiii111tt11ttttt11111ttt11ttttt11111tt11iii11111tttfLCCf1:                   
+                      .,;iii1i11111ttfttt1tttttttfttfftttttfftt11tttttffLCLf1:.                     
+                         .,;ii111111tttffftffttffffLLfffffffLLfffffLLCCCfi:.                        
+                             .:;i11ttfttfftfLfffffffLLLCCLLLLLLLLCCLf1;,                            
+                                 .,:;i1ttfffLLLLLLLLLCGGCCCLLft1i;,.                                
+                                       ...,::;iiii1iiii;;::,..       .                              
+""")
+    rawFrames.addOne("""
+                                        ..,::::;;iiii;;::,,..                                       
+                                 .,:;i1tfffLLLLLLLLLLCCGCCCLffti;:.                                 
+                            .,:i1tffffttffffffLffffLfLLCCCCLLLLLLLLt1;,.                            
+                         .:1tffttttt1ttttttffLfffffffffLLLfffftt1111t11i;:.                         
+                      ,;tfLfftttt1t111tt11ttfft11111111tttttt11111i;ii;iii;;:,                      
+                   .:1ffftftttt1tt1111111111tttt11111;:::iiiiii;;;;iiii111iit1;:,                   
+                 ,1tt1ttttt1t1tftt1111111111tttt1111i:::;;:::;:::::;;i1111iii:;;i;,.                
+               ,1ffttttfttttttfttffft11t11111tii;;i;:::::::::::::;:;ii111i;::::,::;;:.              
+             ,ifLfLfttfftft11ffffLLft1i111i11iiii;;;;:::,,:,:::::,,,,:;iiii;::,,,,,::;,             
+           .iffLLLft1tf11111111tftt11111111iiiiii;;;;:,,,,,,,,,,::,,,,:;;;;;:,,,,,,,,:;;,           
+       .  :fLfLLftt111t11i111i11111i11tt1111111ii;:,,,,,,,,,,,:::,,,,::::::::,,,,,,,,,:::,  .       
+        .1ffffftfff111ttt11111111i11111111i1111i;;,,,.,,,,:,,,,,,,,,,,::::,,:,,,::,,,,,,,::.        
+       .tLffffftfLfttttft1111tt1111i1111111iii1i;:,,,,,,,,,,,,.,,,,,,,,:,:::::,,::,,,,,,,,:;.       
+      .ffLLfffffff1ttt1ft111i11111111111ft11iii;:,,:;;::::,,,,,,,.,,::,,::::::,,::,,,,,,,,::;.      
+     .fLfLfffftft111111ttii11t1iiii1111t11tt11;i:,:::,::::,,,..,,,.,,,,:;i;::::,,,,,,,,,,,::;;,     
+    .fLLfffffftt111tttt1ft1111111tt111tfttt11iii;::,:;;;::,,,,,,,...,,,:;i1::::,,,,,::,:,:,,,:i,    
+    1Lftttffftttttfffffffffffttt111111ttttttf1i11i;::::,,,,.::,......,,,,,,::::,,,,:::::,::::,:;    
+   if1tttftt1tttttfLffffffffttt11i1111ttt11tLt11111i::,,,,.,,,........,,.,,,,,,::,,,,::::::::::;,   
+  .ft11tttttttffffftffLffLLLfffttt11i111111t1i1t111i;::::,,,,.,,...........,,,,::::,,::;;;;;;::::.  
+  if1tt1tftt1ttLCffffffffffffftttt1111tttt1t111t1i1ii;::;,,,,,,,,..........,,,,,:::,,,:;i;ii;;::,,  
+ .fttf11tftfftttfffftt1tffftttt1t1i111ft1111i111111i11i;;;:::,................,,,:;;:,,;iiit1;;:,,. 
+ ;ffttfffttfttft111ttffttfffttt111t111111ii111111ftfftt11ii;;,,....,,,,,......,,:;ii;::::;i1i;::,;, 
+ ift1tffffffftf11tfttffftffftttttfffft1111111111tffft1t111iii;:,,,,,,.,,....,,,,::;i;::::;;:::,,.;; 
+ 1f1ttfffLfLt1tft1t111ttffffLffLGGLfttttff1111111tttii11111111i::,.......,.,,...,:,;:,::::;;;:,:,,;.
+ fLtttffLLCLfftff1iii1ttfffffLffLLfft11tt11111111i1111ft1i1111;:,,,..............,,:,:,::::;;;,,::;,
+ tLffffffLLffLffft11111ttfffffftttttttfttttttt1111i11i1i11tt1i;::,...............,,.,,,,:::::;:::;i,
+ 1fftffttLLLtfftt11111111tfftffffffLfftfffttt111111i1ii;1tii;i1;:;,......,,......,...,:,,:,,:;::iii.
+ iffftftffffftttt1i11111111ttfffffffffffffttt1t1111111111i,..:t1i;:,,.....,,.,.,..,,,,,:::,::;::i1i.
+ ;fftffttt11tt11tt111111ttftffffffffffffftftt11t1111t11111i;;it11i;::,.,...,,,.,.,,,,,:;;,,::;:,;i; 
+ ,Lfffttt111111111t1111tttLLCLfffLLLLLLffttfftii1t1111iii11111i1iii;:,,,::,,,,,.,:,,,,,:,.,,,;::ii, 
+  1fffttt111111111111i1fftfLLLLLLLLCLCLtfLf1it1iii11i1111ii111ii1tf1i;::;:::::::;;,,,.,:,::,::::ii. 
+  ,ftttffttt1111ii111111tttfffLLCLfftti11fftiif11i11111111iiiiiiii1iii;i:,:::;;;i;::,,.,;;:::,,;1:  
+   ;t1ttt1ttt11i11111t11ttttffffff1::iii;ii1t11tt11111iiii1i;it111iiiii;;;;iii;;;:,:,:,:;:::,,:1i   
+    i111111ii1111ttt11tfttttffLLtt1i;;;::;11Lfittttt11111f11ttt1t111i;;iiii1i:,.,..:;:;::::,,:i1.   
+    .i1i11111i111t1ft11fft1ttfLfffft1i::,ittLttffft11t111tttLLLLftt11iiii11:,,,....::::::::,,;1:    
+     .iii111tt111t1tt111111ttfffffLftt1t1tfffLffftt1111111tfLCCLfttt1t11iii:::,,,,,:;:::,,,,;t;     
+      .;i;iitftftt11i1iiii11ttffLfft11i1fffffffffftt111111111tft1111ttf11ii::,,,:;;:;:;::::if;      
+       .;i;i1t1tttt11111111111tffft1tt11tttttttfttt1111ii1111i11t1i11tftt1i;;:;;;i::;i1ii1ff:       
+         :iii11ttttf1i11111111111111111tfttttftttt111111111111ii1i11111t1i;iiii1::;;ifttfCf,        
+          .;;;ii1tttt111111i1111ii11111tttt11tt11tt11111111iiitt1i11i11ii::iiiiiii11tffCC1.         
+            :;;;;i1t1111111111111111i11111t1111t1i1111i111tti1tt1iiiiii1iii1111iitttfLCf:           
+             .,:iii111111111111111111111i11tttt1tttttt111i1tt11i;;i11iii111t111ttffCCfi.            
+               .:;;;iii111111111111i11111111ttt1tt111t1111111t11iii1iiii111111tffLLLi.              
+                 .,;;;;i11111111t11tt11111111t111111ttft11111111111iii1111t1ttLLCfi.                
+                   .,:;;;iii111ttt1ttttft1111tttt11ttftt111111t11iii11111ttfLCL1:                   
+                      .,;iiiiii111111ttftt11tttttttttfftt1tttfft1111tttffLCf1;.                     
+                         .,;i111111111ttttfftfftftfffLfffffffLLfffffLCCLf1:.                        
+                            ..:;i11tttttttffffffffLffLLLCCLLLLLLLCLLf1;,                            
+                                 .,:;i1ttfffLLLLLLLLLLCCGCCLLft1i;,.                                
+                                       ..,,::;iiiiiiiii;;::,..       .                              
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;iiiii;;;:,,..                                       
+                                 .,:;i1ttffLLLLLLLLLLLCCGCCLffti;:.                                 
+                            .,:i1tfffffttffffffffffffffLCCCCCLLLLLft1;,.                            
+                         .:1ffffttttt11ttfftffLLffffffffLLLffffttt1tt11i;:.                         
+                      ,;1fLLfftttttttt11tt11ttfft111111111ttttt1111iiiiiii;;:,                      
+                   .:1tftftffftt11tt111111111tttttt11ii;:::i1iiii;;;;iii11ii11i:,                   
+                 ,1ftt11tttt11t1tftt11111111111ftt1i11i;::::::;;:::::;;1111iii;;;;,                 
+               :1ffttttttftt1tttfttffft11111111t1ii;i;:::::::::::::;:;ii111i::::,:;:,.              
+             ,1fffffLfttfftft11fftfLLft11111i111iiii;;;:::,,::::::::,,::;iiii::,,,,:::,             
+           .iftfLLLLft1tf111111111fttt11i1t111iiiii;;;;;:,,,,,,,,,::,,,,:;;;;;:,,,,,,,::,           
+       .  :fLffLCLftt11tt11i11i1i11111111t1111i11iii;:,,,:,,,,,,,::,,,,::::::::,,,,,,,,::,          
+        .1fffffLftfft111ttt1111111i1i111111111111ii;;:,,.,,,::,,,:,,,,,,,:::,,:,,,:,,,,,,,:.        
+       .tLfffffftfLLftttttt11111t11111i1111111iii1i;:,,,,,,,,,,,.,,,,,,,,,:::,::,,:,,,,,,,,:.       
+      .fLfLLfffffffftttt1tf111i11111ii11i11ft1iiii:,,,::;:::::,,,,,..,,:,,::::::,,::,,,:,,,:;,      
+     ,fLffLffffffff111111tfti111t1i1ii1111t11tt11;;:,:::,::::,,,..,,.,,,,::;i::::,,,,,,,,,,,:;,     
+    .LLfLLfffffftt111ttttttft1111111ttt11tfttt11iii;:;,:;;;::,,,,,,,.,.,,,:;1;:::,,,,,,:,:,,,,;,    
+    tLfftttttfftt1tttfffffffffftttt1t1111ttttttfti11i;::::,,,,.,:,.......,,,,::::,,,,,::::::,:,:.   
+   ;Lt1tttftttttttttfLLffffffffttt11i11111ttt1tLf11111i;:,::,..,,........,,,,,,,,:::,,,::::,:::::   
+  .ff111tfttttttfffffffffffLLLLffft1111ii11t11tt11t1i11;::::,,,,..,..........,,,,,:::,,::;;;;;;::.  
+  iLt11t11tftttttfCfffffffffffffftttt1111tftt1111i1111ii;::;:,,,,.,,,.........,,,,::::,,:;i;ii;:,,  
+ .ff1tft11tttffttttftffttttfffttt1111i111ftt1111i1111111ti;;;:::,..,,..........,.,,:;;:,,;iiiti;:,. 
+ ;Ltfttffffttft1tt1111tfftttffftt11111111111ii111111tftftt11ii;;,,,...,,,,.......,:;iii::::;i1i:::: 
+ ifttttfffffffftft1ttfttffftffftttttfftft11111111111tLff11ti1iiii;:,,.,,....,..,,,,:;ii::::;;::,,.:.
+ 1LftttffffLfLf11ftttt1i1ttffLLLffLCGLftttttf11111111tt1i1t111111i::,,........,,..,:::;,::::;;:,:,:.
+ 1CLfttffLLLCLffffLf11111ttfffffLffLLfftt1ttt1111111ii1i1tt1i1111i:,,,.............,,,:,,::::;;:,::,
+ 1LffftfffLLLLfLffff111111ttfffffftttttttfttt1tttt111ii111ii1tt1i;::,...............,.,,,,::::::::;.
+ 1ftLftfftffLLffffft11111111tfftffffffLffttfffttt11111111i;it1i;;1i;;,.....,,,.....,,..,,:,:,,:;:ii.
+ iftfftfftffffftttft1i11111111ttfffffffLfffffftf1tt1111111111:..,1ti;::,....,,.,....,,.,,:::,:;;:1i.
+ ;Lffttftttt11ttt1tt1111111tfftfffffffffffffffft11tt111t111i1i;;itt1i;::,,,...,,....,,.,:;;,,:;;,i; 
+ ,Lftfftttt111111111tt1111tttLLCLLfffLLLLLfff1fft1i1t111111i11111iii1i;:,,,::,,,,.,,,,,,,:,,,,;::1, 
+  1Lttftttt111111i1i111111fttfLLLLLCLLLCLCtfLftit1iii11111111i111ii1tf1;:::;:::::,:i:,,.,,,:,,:::i. 
+  ,ftttttfftt111111ii111111tttfffLLCLffft111fLfiitt1i111111111iiiii1i1iiiii::;:;;;;;::,,.:;;:::,i:  
+   ;f11t1tt1ttt11i111111t1tttttffffff1::iii;i11f1it11i111iiiii1;it111ii;ii;;;;iiii;;,:,:,::::,,;i   
+    iti1ii111i111111tt111tftftfffLftt1i;:;:,;11LL11tttt11111f11tft1t1i1ii;iii11;:,,..,;:::;:,,:1.   
+    .i1i1i11111ii11t1tft1tftt1ttfLfffft1i::,;ttfftffff111111ttfLLLLftt111ii11i:,,,...:::::::,,1:    
+     .i1iii11tf1111tt1tt111111ttfffffLftt111tfffLffft11111111tfLCGLftt11t11;1;::,,,,,:;,::,,,i;     
+      .iii;ii1ftfftt1111iiii111ttffLfft1ii1fffffffftttt111111111tf111111ft1ii;::,,:;;;::;,:;1;      
+       .:i;;i1ttttttt111111111111tffft1tt1ttttttttfttt1111ii1111111t1i11fft11i;:;;;;:;;1i;1f;       
+         :;iii111tt1ff1i1i11111111111111i1tfttttffttt111111i11111i11i11111ti;iiiii:::;1ftLL,        
+          .;i:;ii1tttf11111111ii1ii1111111tttt1ttt11t11111111iii1tt1i1i11ii;:iiii1ii11fLC1.         
+            :i;;;;i1tt1111111111111111111111111111t1111t1i111t1itf1iiiii111ii1111i1ttfCL:           
+             .:::;iii11111111111111i11111ii111ttt1tt1tttt1111tt11i;;i111ii111t1ttttLCfi. .          
+               ,::;;;iii111i1111111111i1111111ttt1tt11ttt111111t11iii11iiii1t111tLLLi.              
+                 .:;;;;;ii11111111t11t11t111t11tt11111ttft1111i111111ii1111tttfLCLi.                
+                   .,;;;;;;iii11tttt1tttttt11i1ttttt1tttft11111tt1iiii1111ttfLL1:.                  
+                      .,:;iiiiii111111tttftt11ttttttttttftttttffft1111ttfLLL1;.                     
+                         .,;ii1111i1111ttttfftffftftffLLfffffffLfffLLLLLf1:.                        
+                            ..:;i111tttttttfftffffffffLLLCCLLLLLLLLLf1;,                            
+                                 .,:;i1tffffLLLLLLLLLLLLCGCLLft1i;,.                                
+                                       ..,,::;iiiiiiiii;;::,..       .                              
+""")
+    rawFrames.addOne("""
+                                        ..,::::;;;iii;;;:,,..                                       
+                                 .,:;i1ttfLLLLLLLLLLLLLCCCCLLf1i;:.                                 
+                            .,:ittfffftftttfffffffffffLfLCCGCCLLLLft1;,.                            
+                    .    .:1fLfftttttt111tffttffLfffffffffLLLffffttttt1i;,.                         
+                      ,;tfLCLfftttttttt11tt1t1ttftt11111111tttftt111iiiiiii;:,                      
+                   .;1tfftfttffftt1ttt1111111111ttttt11ii;:::iiiiii;;;;ii11i11i:.                   
+                 ,itft1111ftft11tttftti1111111111tt11111i;::;:::;;:::::;i1111ii;;;,                 
+               :1fffttftttfttt1tttftttfft111t1111t1ii;ii:::::::::::::;:;i1i1i;:::,::,.              
+             ,1fftfffLffttfftft11tftfLLfft11111i111iii;;;;:::,,,::::::,,::;iii;::,,,::.             
+           .1fftfLCLLff11tf111111111tftt111111i1iiii1i;;;;;,,,,,,,,,,::,,,:;;;;;,,,,,,:,.           
+       .  ;fffffLCLfftt111t111i1i1111111i111t1111111ii;;:,,,,,,,,,,:::,,,::,:::;:,,,,,,::,          
+        .iLftffffftfffft11ttt11i11111ii1111111111111ii;;,,,.,,,::,,:,,,,,,,:::,::,,::,,,,,,.        
+       .tLfffffffftfLLfttttttt11111t11111i1111111iii1i;:,,,,,,,,:,,.,,,,,,:,:::::::::,,,,,,,.       
+    . ,tLfffCffffftftft1tt11ft111i111111111i11ft11iii;,,,:;;::::,,,,,,.,,,:,::::::,,::,,,,,,:,      
+     ,tLLffLLffffffffti111i1tt1i111t1i1ii1111t111t11;;;,,::,::::,,,..,,..,,,::i;:::,,,,,,,,,,:,     
+    .LCLffLffffffftttt11tttt1tf11111111ttt11tftttt1iii;;:,:;;;::,,,,,,...,,,::i1:::,,,,,:,,:,,:,    
+    1Lfffftttfffftt1tttfffLfffffffttt11t11111tttttft111i;::::,,,,.::,......,,,,,::::,,,,::::::,:.   
+   ;Lft1ttttfttt1ttttttfLfffffffffttt11i1111tttt1tff111111;:,::,..,,.......,,,,,,,,,::,,,::::::::   
+. .fLft111tttttttttfffffffffffffLCfffttt11ii1i1111t1111i11i::::,,,,.............,,,,:::,,:;;;;;;:.  
+  iLff11tt11tftt11ttLCffffffffLffffffttt11111ftt11t1i1t111ii::;:,,,,,,,..........,,,,::::,:;;ii;:,  
+ .Lfftttf1t1tfttftttffffftttttfffttttt111i11tf11i1111111i1i11;;;:::,..............,,,::;:,,;iit1;:. 
+ :Lftff1tftffttffttft1111tfffttfffttt1111t11111ii1t11111ftftt11iii;:,,...,,,.,.....,::iii::::;1i::, 
+ ifftft1tftffffLftff1tttttfffttffffttttffftf11111i11111tLfft1t111iii;:,,,,,....,.,,,,::;i::::;;:,,,.
+ 1ffft1ttffffLfLLt1tftttt111ttfffLLffLCGCffftttft1111111tt1i1t1111t1i;:,,........,,..,::;,::::;:,,,.
+ 1fCfftttfffLLLLffftfft11i11ttfffffLffLLfftt1tt111111111i111tft11111i:,,,.............,,:::::::;:,:.
+ 1LffLfttfffLLLLfLLffft1111111tfLfffftttttttffttttttt1111i11iii1tt11i:::..............,..,,,::::::;.
+ 1LttfftfffttLLLftffft111111111tfftffffftLLfftftfftt111i1111i;;t1ii;1i;;:.....,,,....,,..,,,::,::;i.
+ iLftffftfftffffffttftt1i11111111tttffffffLffffffttt1tt111111111i..,iti;::,....,,.,...,,.,,::,::;:i 
+ :Lffffttfttttt11ttttttt1111i1ttftfffffffffffffftftt11t111tt11111;;itt1i;::,.,..,.,...,,.,:;:,,:::; 
+ .fCftffftttt1111111111t11111ttffLCLLfffLLLLLLff1tff1ii111111i111111i1iii;:,,,::,,,,.,,,.,,:,,,:::, 
+  1Cft1fftttt111111111i111111fttfLLLLLCLLLCLCftLfti1tiiiit111111i111ii11f1i;:;;::::::;:,,.,,,,,::;. 
+  ,fftttttfffttt11111iii11111ttttfffLLCLLfft111tLf1;tt1i111111111iiiiiii1iiii;,:::;;;i::,,,:;::,::  
+   ;tf11t1tt11ttt1111111111tttttttfffffft;:;ii;i11ttit11i111111i11ii1111iiiii;;;;iiii;,:,::;::::;.  
+    ;11111i1111ii11111ttt111tfttttffLLtt1i;:;:,:11fL11ttt111111ft1tft1t111iiiiii1i:,,..:;:;;:,,;,   
+     i11i1111111iii11tttft11fffttttfffffft1i::,;ttfftfffft11111ttfLLLLftt11iii1i:,,,..,::::::,;:    
+     .i1iiii111tt1111tt1tt1111111ttfffffLftt1t1tfffLffftt1111111tfLCCLftt1111iii::,,,,,::::,.;:     
+      .;iii;iiitftffft111i1iiii111ttffLfft1ii1fffffLfffft111111111ttt11111tf11i;::,::;;;::::i;      
+        :ii;ii1tt1ttttt111111111111tfftft1tt1tttttttffttt1111ii111111t1i11tftt1i;:;;i;:;1iit;       
+         :i;;iii11ttt1ff1i1i111111111111111i1fftttfffttt11111111111ii1i11111t1;iiiii::;1fff:        
+          .:;;:;iii1tttt111111111111i11i1111tttt11ttt11111111111iii1f1i11i1ii;:iii1ii11fC1. .       
+            :ii;;;;ii1tt11111111111111111i111111111111111111i11tti1tti1iiii11ii111i1tfLL;           
+             .:;::;iiii111111111111i11i111i11111ttt11t1tttt11111tt11;;i11iii11tt11tfLLi.            
+               ,;;:;;;;iii11i11111111111ii1111111ttt1tt11tt111111t11iii1iiii11t11fLfi.              
+                 .:;;;;;iiii11111111t111111111t1i1t11111tffftt11111111iii1111ttfLfi.  .             
+                   .,;i;;;;;iiii11tttt1tt1tft11111tttt1tttft11111tt1iii1111tfLft:.                  
+                      .,:;iiiiiiii1111111tfttt11ttttttftffftttttfff1111tffLf1;.                     
+                         .,:i11111ii1111ttttffffffttfffffLffffffLfffLLLLf1:.                        
+                            .,:;i11ttttttttttfffffffffffLLCCCLLLLLLft1;,                            
+                                 .,:;i1tfffffLLLLLLLLLLLCCCCLft1i;,.                                
+                                        .,,::;iiiiiiiii;;::,..                                      
+""")
+    rawFrames.addOne("""
+                                        .,,,::;;;;;;i;;::,,.                                        
+                                 .,:;i1ttffLLLLLLLLLLLLLLCCLLf1i;:,                                 
+                            .,:i1fffffftftttfffffffffffLfLCCCCCCLLfti;,.                            
+                         .:ifLffft11t1tt11tfftttffLffffffffLLLfffftttt1i;,.                         
+                      ,;1fffLffttttttttt111t1111ttftt11111111ttttt111iiiiii;,,                      
+                   .;1tttfttttffttt11ttt11111111111tttt11ii;:::i1iii;;;;ii1111i:.                   
+                 ,itff11111tttf111tttftti1111111111tttt1i1i;::::::::::::;;i111ii;:,                 
+               :tfffftttttttfttt1tttftttffft11111111ti1iii;::::,:::::::::;i111;:::::,               
+             ,tffttfffLLttttfftft11tftffLLft11111ii11iiii;;:;::,,,,::::,,,::iiii::,,::.             
+           .1LfttffLCLLff11tft1i1111111fttt11111111iiiiii;;;;:,,,,,,,,,:,,,,:;;;;:,,,,,,.           
+       .  ;LffffffLLLfttt111t111i11111111iii11t11111111ii;::,,,,,,,,,,:,,,,,::::::,,,,.,,,          
+        .1Lftfffffffttffft111ttt1111111i1iii111111111i1i;;:,,..,,,::,,,,,,,,,::,,,:,,:,,,,,         
+       ,tLffffffffffttLLfttttttt11111tt11111i1111i11iiii;;:,.,,,,,,,,..,,,,,,:,,::::,::,,,,,.       
+      ,tfLLffLLffffffftft1ttt1tf1111i11111ii11i11t111iii:,,,:;:::::,,,.,...,,,,::::,,,::,,,,:.      
+     ,ffLLffLLffffffttft111111tttii111t1iiii1i111t11t11;;;,::,,::::,,...,,..,,,:;;:::,,,,,,,,:.     
+    .fCLLffLLftfffLfttt111ttttt1ff111111111tt11tfttt11iii;:;:::;;::,,,,,,,...,,:;1:::,,,,,:,,,,.    
+    1Lfffffttttfffftt1tt1tffffffffffftttt11t1111ttttttt1i1ii::::,.,,.::,......,,,,::::,,,,::,:::.   
+   :Lfft111tttftttt1tttt1ffLffffffffft1t11ii11111tt11fL1i1111;:,,,,..,,.......,.,,,,,,:,,,,,:::::   
+  .fffLt111ttttttttttffffffffffffLLLLLftt1tt1ii1i111111111ii1i::::,,,,.............,.,:::,,:;;;;;.  
+  iLtLft11tt11tfttt1tttCLfffffffffffffffttt11111tt111111i1111ii;:::,,,,,,...........,,,:::,,;;;i;,  
+ .LLfft1ttt1t1tfttff1tttttfftttttfffttt1t1t1ii1tft1111i111111i11;;;:::,...............,,:;:,:;;11;. 
+ ;Lffttftttfffftttft1tf11111tfftttffftt11111t111111ii1111i1ttfft111ii;:,,...,,........,:;ii:::;ii;, 
+ iLtfffft1tftfffffftttf11tttttffttfffftttttfffft11111111111fLft1t111iii;:,,,,,...,....,,:;i:::;;:,, 
+ 1ttfLt111tffffLfLLf11ftt1tt111ttffffLffLLGCLftttttf11i1111tttii1111i11i;:,,........,..,::;,:::;:,, 
+ 1ftCLfftttfffLLLLLfffffft11i11ttfffffLfffLLfft11tt11111111i11i1ft1i111i:,,,............,,:,::::;::.
+.1tfLffLftffffLfLLffLLffft11111111tfffffttttttttftt11ttt111i111iiii1t1ii:::.......,.......,,,::::::.
+ 1tfttfLftfffttffLLttfttt1111111111tfttfffttfLfftttfftt11111111ii;1t1i:ii;;:.....,,.....,..,,,:,:;;.
+ iffftfffftfftfffffttttft11111111111tttfffffffffffffftt1tt111i11111i,..iti;::,....,,.....,.,,::,:;;.
+ :fffftftttfttttt111tt11tt111111i1tftfffffffffffffffftt1111111t11i11i;;1t1i:::,,........,,.,:;,,::: 
+ .fLLftfffftttt11111111111t11111tttLfCCLfffLLLLLLfft1fftii111111ii11111iiiii;:,,,:,,,,.,,.,,:,.,::, 
+  1LLftttLftttt1111111111i1111i1fttfLLLLLCLLLCLCLtLLfiitiiii1111111i111iii1fi;::;::::::;:,,.,,,,::. 
+  .ffft1t1tttftttt111111i11111111tttfffLLLCLfft1111fft;1t11i1111111iiiiiii11ii;i:,::;;;i::,,,;:::,  
+   ;t1f1i1t1tt11tttt111i11111111tttttffffttt;::iii;1i1ti1t1i1111iii11ii1111ii;i;;;;ii;;;,,,::::::   
+    ;1111111i1111iii11111tt1111tfttttffLLft1i;:;:,:i1tCt1tttt11111tt11t11t11ii;iii1i:,,..:;:;:,:.   
+    .i111iiii11111iiii11t1tft11fft11ttfffffft1i::,:1tfftfffft1111111fLLLfft111iii1;,,,..,;::::,,    
+     .ii1iiiii111tf11111t11tt11111i1ttffffLLfttt11ttfffffttt1111111tfLCCLttt1t1ii1::,,,,,:::,,,     
+      .;iiiii;ii11fttfftt11ii1iii111tttffffft1ii1tffffffftft1111111111tt11111ft1ii::,,:;;:::;:      
+       .:;ii;;;i11t1ttttt11111111111i1ttftft1t111tttttttftt11i1ii11111i1t1111fft1i;:;;;:;i11:       
+         ,;i;;;ii1111t11tf1111i111111111111111itft1ttttttt111111111111i1ii1111t1;iiii;;:ift:        
+          .:;;;::iiii1t1ttt1111111i1111111ii1111tt111tt11tt11111111ii1tt111i1ii;;iii1iitL1.         
+           .,;;i;:;;;ii1tt1111111111111111111111111111111i1111i111t1itt1iiii11iii11iitff:           
+             .;i;::;iiii1t11111111111i1111111i111111t11t1111t11111tt11i;i111i1i11111ffi. .          
+               ,:i;:;;;;iiii111ii111111111ii1111111ttt1tt111tt11111111iii1iiii1111Lfi.              
+                 .:;;;:;;;;;i111111111t111111111t1111111111ttttt1111111iiiii111tfti.                
+                   .,;;;;;;;;;iii111t1tt1t11ttt11111tttt11ttft11111t1iiii111tff1:.                  
+                      .,;;;i;;;iiiii1111111ttttt111tttttttffftttttfft111tfLf1;.   .                 
+                         .,;i11i11iiii1111tttffftftftftffffffffffLLLLLLLt1:.                        
+                            .,:;i11tt11t1ttttffftffffffffLLLCLLLLLLft1;,                            
+                                 .,:;i1ttfffffLLLLLLLLLLLLCCLft1i:,.                                
+                                        .,,::;;iiiiiiii;;:,,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;i;;;:,..                                        
+                                 .,:;i1tffffLLLLLLLLLLLLLLLLLf1i;,.                                 
+                            .,:i1tffffftttttttfffffffffffLLCCGCCLLfti;,.                            
+                    .    .:itLLLfft11tttt111tftttffLLffffffffLLffffttt1i;,.                         
+                      ,;1tfffLLftftttttttt111t1t1ttfftt1111t11ttttt1111iiii;:,                      
+                   .;1tftttttfttftttt11ttt111111i111t1ttt11ii;::;iiiii;;;ii11ii:.                   
+                 ,1fffftt1111ftff111ttfftti1111111111tttt1i1i;::::::;:::::;i1111;:.                 
+               :tLftffttttttttfttt1tt1ftttffft11111111t1ii;i;:,::::::::::::;i11i::::,               
+             ,tLftttffffLfftttfttft11tfftfLLfft11111111iiii;;;:::,,:,::::,,,:;iii;:,,,.             
+           .1LLtttffLLLLLff11tft1i1111111tfttt11i1t111iiiii;;;;;,,,,,,,,,:,,,,:;;;;,,,,,.           
+          :LCftfffffLCLfttt111tt11111i11111i1i111t1111111iii;:,,,,,,,,,,::,,,,::::::,,,,,,          
+        .iLfffffffffffttffft1i11tt11i11111ii11111111111111i;;:,,..,,,:,,,,,,,,,::,,::,:,,,,.        
+       ,tfffffffffffffttfLftttttttt11111tt1111111111111iiii;::,,,,,,,,,...,,,,,:,,:::,,:,,,,.       
+      ,fttLLfffLLfffffffttftttt11tf1111i11111ii11111tt11iii:,,,:;:::::,,,....,,,,::::,,::,,,,.      
+     ,fftLLfffLLffftffftff1i11111tttii111t1i1ii111i1t11t11i;;,,::,::::,,..,,..,,,:;;:::,,,,,,,.     
+    .fLLLLfffLLftfffffttt1111ttttt1ff111111111tt11tffttt11iii;;::;;;::,,,,,,...,,:;1;::,,,,::,:.    
+    1LfLfffLftttttfffftt1ttttffffffffffffttt11t1111ttttttt1i11i;:::,.,,.::,.....,,,,::::,,,:::::.   
+   :fLfLft1tttttttttt11tttttffLffLffffffttt11i111111tt11tLti1111i:,,,,..,,.........,,,,,:,,,::::,   
+  .ffftCtt111tttttttttttfffffffffffffLLLLfftt1t11i11111111i1t111i;:::,,,,............,,,:::,,;;;;,  
+  iLLffLtt11tt11tff1tt1ttfCLffffffffLLffffftttt1111tttt1111i1111ii;::;,,,,............,,,:::,:;ii:  
+ .fLLfff1ttft1111fttffttttttttftttttfffttt1t111ii11ft1111i111111i11i;;;::,..............,::;:,;i1i. 
+ ;Lffft1fftttfffffttfftttf11111tfftt1fffttt11111t11111ii111111tttftt111i;:,,..,,,.......,:;i;:::ii, 
+ iffftftftt1tLfffffffftttt1ttttttffftfffftttttfffft11111i11111tLff1t111iii;:,,,,,.,,,...,,:;i:::;:, 
+ 1fttfLftt1ttfffffLfLLt11fttttt111tttffLLLffLCGLftttttft1111111ttii1111111i;:,,.......,..,:::,::;;,.
+ 1tttLCffftttfffLLCLLLfffffft11i11ttfffffffffLLfftt1tt11111111ii111ft1i1i1i:,,,...........,,,::::;:.
+.1ttfLffLfftffffLLLLLLfLLffft111i11t1tffffffttttttttttt1tttt1111i1i1ii1t1ii::,.............,,,,::::.
+ 1ttffttLfftfffftfffLLtffftt1111111111tfttffftttLffftfffttt111i111ii;it1i;1i;;,.....,,....,..,,:,:;.
+ iftfftfLffftfffffffffttttft11i111111111ttffffftfLffffffttt1t111111111i,..iti;:,.....,....,,,,::,::.
+ :ffLLftfftttftttttt1t1tt11tt111i1111tftffffffffffffffffft111t111t11ii1;;;1t1i::,,,..,,...,,.,;:,:, 
+ .tfLCfttfffftttt11t111111111t1111i1ttfLLCLffffLLLLLfff1ftt1i111111iii11111iiii;,,,:,,,,.,,.,,:,,:. 
+  iLLLLtt1ffftttt11111111i11i111111fftfLLLLLLLLLCCLCtfLftit1iii1111111i111ii1tti;::;:::::;:,,,,,::  
+  .tfffttttttttfttttt11111i11111111ttttfffLfLCLfftt111fftiif11i11111111iiiii111iii;,:::;;i::,,;::,  
+   :tt1ft11tt1tft1ttttt1ii111111111tttttffffftti::iii;ii1ti1t111111iii11ii111iiiii;;;ii;;:,,::::,   
+    ;1i1111111111111i111111ttt1111tfttftffLLftti;:;:,:i1tLf1tttt11111ft1tt1t11ii;iii11:,,.,;:;::.   
+    .i1i111iiii111111iii11tt1fft1tfftttttfLfffft1i;:,:1tfftfffft111111tfLLLfft11iii1;,,,..:::::.    
+     .iii1iiiiii111tft1111tttttt1111ii1ttffffLLftttt1tffLfffftt1111111tfCCCftt11tii1::,,,,:::,.     
+      .;;;iiii;;ii11tftfftt111ii1ii11111ttffLfft1ii1fffffLfftft111111111ttt1111tt1ii:,,,:;:::,      
+       .;;;iii;iii1tt1ttttft1i11111111111tfffft1t11tttttttfttt11111i1111i1t1i11fft1i;:;;;:11,       
+         :;;i;;i;ii111ttt1tft1111111111111111111i1tfttttftttt111111i1111ii1i1111tiiiii;::tt,        
+          ,:;;;;;,;iiii1t11tt1111111111i11i11i1111ttt111tt111t1111t11iiitt1i1i1ii;;ii1i1f1.         
+           .:;i;ii;;i;iiittt1111111111111111111i11111111111111111i11tti1t1iiii111i11iift:           
+             ,;ii;:::i;iii1111111111111i1111111i1i1111t111t1t1tt1111tt11;;i11ii11t1ttfi.            
+               ,;ii;:;;;;;iiii11i111111111111i1111111tttt1t11ttt1111111iiii1iii11ttfi.              
+                 ,:;;;::;;;;;ii111111111t111111111t111t11t111tftt111111111iii11tft;.                
+                   .,;i;;::;;;iiiii111t1tt1tt1ttt11111tttt11ttft11111t1iii11ttf1:.                  
+                      .:;i;;i;;;iiiii1111111ttttt1111tttttttfftttttfft11tfff1;.                     
+                         .:;i111ii1iiii11111tttfffttfftttffffffffffLLLLLt1;.                        
+                            .,:;i11ttt11tttttttfftffffffffLLCCCCLLLft1;,                            
+                                 .,:;i1tffffffLLLLLLLLLLLLLCLLt1i:,.                                
+                                       ..,,:;;;ii1iiiii;;:,,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::::;;;;;i;;;:,,.                                        
+                                 .,:;i1tffffLLLLLLLLLLLLLLLLLfti;,.                                 
+                            .,:i1tfLfffftttttttffffffffffLLLCCGCCLfti:,.                            
+                    .    ,:itfLLLfftt1ttttt111ffttfffLffffffffLLLfLfftti;:.                         
+                      ,;tfffffLLffffttttttt111tt1t1ttfftt11111111tttt1111ii;:.                      
+                   .;1ffttttfttttfffttt11ttt11i1111111ttttt111i;::;1iii;;;;i11i:.                   
+                 ,1ffftft11111tftff111tttftt111t1111111tft11i11;:::::::::::;;111i:.                 
+               :tLLftfffttttttttftttttt1tttttfftt11t11i1111i;i;:::::::::::::;ii1i;:,.               
+             ,1LLfttttfffLLfftttfftff111fftfLLLft11111i111iiii;;:;:,,:,::::,,::;ii;:,,.             
+           .iLLffftttfLLLLLff11ttt1111111111tftt111i11111iii1i;;;;:,,,,,,,,:,,,::;;;,,,,.           
+       .  :fCLftfffffLLCLfftt111tt111111111111i1i111t1111111ii;;:,,,,,,,,,::,,,::::::,,,,.          
+        .iLLfffffffffffftfffftt111ttt1111111ii1i1111111111111i;;:,..,,,::,,,,,,,,::,::,,,,,         
+       .tftfffffffffffffttfLLftttttttt11111tt1111111111i11iiii;;,,.,,,,,,,..,,,,,:,::::,,,,,.       
+      ,ff1tfLffffCLfffffffftft1ttt11tt1111i111111111i11tt11i1i:,,::;::::,,,,,,.,,,,::::,,:,,,.      
+     ,fLttfLLfffLLffffffftfft1i11111tttii1i1t1i1iii1111t1tt11i;;,::,,::::,,..,..,,,:;;:::,,,,,.     
+    .fLLLCLLfffLfftffffLfttt1t11tfttt1ff111111111ttt1tffttt11iii;;:::;;::,,,,,,..,,:;1;::,,,:,,.    
+    1LfLLLffLfftttttffffttttttttfLffffffffffttt1tt1111ttttttt1111i;:::,.,,,:,.....,,,,::::,,,::,    
+   ;LfLfLftt1t11ttfftttt1ttttttffLffffffffftttt1i111111ttt1tLt11111i:,,:,.,,,........,,,,,:,,,::,   
+  ,LffLtLLtt111ttttttttttttffffffffffLffLfLLfftttt11ii1i1111t1111i11;:::,,,,.,,........,,,:::,:;;,  
+. iLfLffLftt11tt111tftttttttfCfffffffffLfffffftttt11111ttt11t1i1t11ii;:::,,,,,,,........,,,::::;i; .
+ .fLLCffff1ttff11t1tftfffttttttffffttttffLfttt1tt11i11tf11111i11111111i;;;::,.............,:;;,;i1. 
+ :LfLLffttfftttffffLfttfftttt11111ttffttfffftt11111111111ii1111111ftftt11ii;:,,..,,.......,:ii:,:i: 
+ iLtfftfftftt1tfftffLffLfttft1ttttttfffttfffttttttfffft1111111111tLff1t111iii;:,,,,.......,::i:::;, 
+ 1LttttLLft1t1tfffffLLfLLt11ffttttt11tttfLffLffLCGCftftttft1111111tt1i1t11111i;:,.....,.,..,:::::;: 
+ tftfffCLffftttffffLLLLLfffttfft11111tttffffffffLLLfft1ttt11111111i111tt1i111i:,,...........,,:::::.
+ tfttffLffLffttffffLfLLLffLLffft111i111ttfLffffftttttttftt1tttt11i1ii1iii1t11i::,...........,,,,:::.
+ 1f1tfft1fLfftffffttffLLLtffftt1111111111tfftffffftfLfftftfftt111i11iii;it1i;1i;;,....,,....,.,,,::.
+ iLtffffttfffftfftfffffffftttftt11111111111tttLffffffffffffftt1tt11111111i,.,1ti;:,....,.,..,,,:::: 
+ :ftfLLfftfftttftttttt1ttttt1ttt111i11i1ttftfffffffffffffffftt11t111t11111i;itt1i::,,....,..,,,;:,, 
+ .ttfLCLfttffffttttt11t111111111tt11111ttfLLCLLfffLLLLLfff1tfftii11111iii1111iiii;:,,::,,,,,,,,:,,. 
+  ifffLLfft1fLfttttt11111111i11it1i111ffttLLLLLLLLLCCLCftLftittiii1t1i111i111ii1t1i::;:::::;:,,,,,  
+  ,1tfffftttt1t1tftfttt1t1111ii1i111111tttfffffLCLLfft111fffi;ft1i11111111iiiiii11iii::::;;;:,,::.  
+   :1tt1tf111tt11ft1tttttt1i11111111ttttttttfffftf1::;1i;i11t1it111111iii11i1111iiii;;;ii;i:,,::,   
+    i1ii1t11111i111i11ii111111ttt1111ffttftffLLftt1i::;,:i11Lf1tttt11111f11tt1t11iiiii11:,..::;:    
+    .i1i11111i1ii111111iiii11tt1ff11tfft1tttfLfffft1i;:,:1ttftfffft11111ttfLLfft11iii1;,,,.,:::.    
+     .iiii1iiiiiii111tft11111tttttt1t11111ttfffffLfttt11tfffLffftt1111111tLCCLtt11t1ii:,,,,:::.     
+      .;i;;iiiii;;ii11tfttfftt1111i1iii111tttffffft1ii1tffffLfffft111111111tt1111tt1i;:,,:;:;.      
+       .;i;;ii;;;iii1tt1tttttt11i11i1111i111tfffft1t11tttttfffttt11111i1111i1ti11fft1i:;;;;1,       
+         :;;:ii;i;;ii1111tt11fft1i1111111111111t11111tfttttffttt11111111111i1i1111tiiiii:;1,        
+          ,:;:;;;i::iiii11tt1tft1111111i1111111ii111ttttt11tt11t11111111iitt111i1i;:iiii1i.         
+            :i;;iii;;;i;ii11tt1111111111111111111111111111111111111i11tt11t1iiii1ii11i1t:           
+             .;ii;;:::;;iiii1t1111111i1111i11111111ii1111tt1tt1ttt11111t11;;i11i1111tt;.            
+               ,;ii;;::;;;;;iii111i111111111111111111111ttt1tt11ttt1111111iii1ii11tti.              
+                 ,:ii;;::;;;;;;ii111111111t111111111t1111t11111tftt111111111ii1ttt;.                
+                   .:;ii;;;:;;;iiiiii11tt1tt1tttttt11111tttt1tttft1111ttiii1ttti:.                  
+                      .:;iii;;;iiiiiiii1111111tttft111ttttttttfftttttft1ttff1;.                     
+                         .:;i111iii1iiiii1111tttfffffffttfffffffffffLLLft1:.                        
+                            .,:;i11ttt1111ttttttfffffffffffLCCCCLLLfti:,.                           
+                                 .,:;i1ttffLffLLLLLLLLLLLLLLCLf1i:,.                                
+                                       ..,,:;;;iiiiiiii;:::,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;:::,.                                        
+                                 .,:;ittffLLLLLLLLLLLLLLLLLLffti;,.                                 
+                            .,;ittfLLfffttttttfttffffffffffLLCCGCLfti:,.                            
+                    .    .:itfLLLLffttttttttt11tffttffLLffffffffLLLLLtt1;:.                         
+                      ,;1fffftfLLLftftttttttt111t1111ttfftt1111111tttt1111i;:.                      
+                   .:1ffft1ttfftfttfftftt1tttt1111t11111ttttt11ii:::iiii;;;ii1i:.                   
+                 ,ifLfttff1t1111tftft111tttftt1i1111111111ft11111;:::::;;::::;111:.                 
+               :tLLffttfffttftttttftttt1t1tftttffttt11t1111t1i;ii:::::::::::::;i1i;,.               
+             ,1LLLfttttffffLLfffttfftfft11tffffLLLft11111111iiii;;:;::,::::::,,:;ii;:,.             
+           .iLLfffftttffLCLLLfft1ttft111111111tfttt11i1t1111iiii;;;;:,,,,,,,::,,,:;;;,,,.           
+          :tCCLftffffffLLCLffttt111tt11111111111ii1i11111111111ii;:::,,,,,,,::,,,,::::,,,.          
+        .iLffffffffffffffftttffft111ttft1111111i1iii111111111111i;::,..,,::,,,,,,,,::,:,,,,         
+       .tLttfffLfffffffffffttfLfttttftttt11111tt1111111111111iiii;:,,,,,,,:,..,,,,:::::::,,,.       
+      .fLf1tfLLffffCLffffffffftft1ttt11ft11i1i1t111ii1111tt111i1i:,,::;::::,,,,,..,,,:::,,:,,.      
+     ,fLff1fLLffffLLLfffffLftfft1i11111tttii111t1i1iii1111t11t11;;;,::,,:::,,..,,..,,:;;::,,,,.     
+    .fLLLLCLLLfffLLLftffffftttt1t11ttttt1ff111111111tt111tftttt1iii;;,:;;::,,,,,,...,,;1::,,,,,.    
+    1LffLfLffffLftttttfffffttttt1ttffffffffffffttt11tt111ttttttt1111i;:::,.,.,:,....,,,,:::,,,::    
+   iCfffLfLft11tt1tttfttttt1tttt1tffLffffffffffttt11i1111tttt1tLt11111i:,,:,.,,......,.,,,,::,,:,   
+. .CLffLftCL1t111tttttttttttttffLffffffffffLLLLfftt1111ii1i1111t11t1i1i;:::,,,,.........,,,,::,:;.  
+  1CffLftfLftt11ttt11tffttt11ttfCLfffffffffLffffffttt11111tttt11111111ii;:::,,,,,,........,,:::,;;  
+ .LLfLCLfftf1tttf1111tffttffttttftfffftttttffftttt1tt11i1tft1111i11111i11i;;;::,............,:;,:i, 
+ ;LfffLLff1tffttttffffftttfftttf111111tfftttfffttt1111t111111ii111111ftftt11ii;,,...,,.,....,;i;,;: 
+ iLfftfttfftftt11fLtffffffffftft1tttfttfLfftfffftttttfffft1111111111tfff1111iiii:,,,,.....,.,:;;:;: 
+ 1LfttftfLLft111ttfffffLffLLt11fft1ttt111ttfLfLLfffLGGLftftttft111111tt1i1t111t1i:,,.....,,..,::,:: 
+ 1LfttftLGLfffttttffffLLLLLffffffft111i11ttfffffLfffLLfftt1tt11111111i111tf1i111i:,,.....,...,:::::.
+ 1Ltt1fffLffLffftfffffLfLCLffLLffft1111111ttffffffftttttttfttttttt111i1i11111t11;::,,.........,,,::.
+ iLt1tffft1fLfftfffffttfLLLftfffttt111111111ttfttffttffLfftttfftt111i1111i;it1;;1;;:....,,...,,.,::.
+ iLfftfffftfffffttffftffffffttttttt11111111111tttfLfffffffffffftt1tt11111111i,.,t1;:,,...,,,,,,,::: 
+ :LfffLLLfftfftttfftftttt1ttttt11tt11111111ttftfffLfffffffffftftt11t111t11111;;it1i::,,...,,.,,,::, 
+ .fttffLCLfttffffttttt1111111111111tt11111tttLLCCLfffLLLLLLfft1fftii11111iii1111iiii;,,::,,,,,,,,,. 
+  iftLfLCLfft1fLffttttt11111111i11i1t111itfttfLLLLLCLLCCLCLtLLfi1tiii1t1i111i11ii1tti;:;::::::,,,,  
+  ,t11ffffftt1ttt1tfftfttt111111ii1i111t11tttfffffLCLLftt111tff1;ft1i11i1111iiiiii11iii:::;;;:,,:.  
+   ;titt11ft111tt11tft1tttttt1i11111111t1ttttttffffff1;:;ii;i11t1it111111iii1ii111iiii;;;i;i;,::,   
+    i11ii1tt11111i111i111i1111111ttt1111ffttftfffLftt1i::;:,;11Lf1tttt1111tt1tt1t11iiiii1i,,.,::.   
+    .iiiii11111iiiii111111ii1i11t11ff11tfffttttfLfffffti;:,,itfftffff111111ttLLLff111ii1;,,.,::.    
+     .iiiiii1iiiiiii1111tf111111tttttt1t11111ttfffffLLtttt1tffffffftt1111111fCCCttt1tiii:,,,::.     
+      .iii;;i1iiii;;ii11tfftffttt111ii1ii1111tttffffft11ittffffLftfttt1111111tf1111tt1i;:,::;.      
+       .:;;;;i1i;;;iii11t11ttftft11111111111111tfffft1t11tttttttfttt111111111i1t111ft1i;;;;i,       
+         :i;;:;i;;i;iiii111tt11tft1i11111111111111t111i1tfttttffttt111111111ii1ii1111iii;;;,        
+          ,;;;::i;;i::iiiii1tttttt1111111i11111111i1111tttt11ttt1tt1i1111iiitt1ii11i:;i11;.         
+           .:ii;;i;;;:;;;;iii1tt1111t11111111111111111111111111111111111tt11t1iii11ii111:           
+             .;1i;;;;:::;iiiii11111111111111i111111ii1i1111t11tt11tt11111t11;;111i1ttt;.            
+               ,;ii;;;:::;;;;iiii1111i11111111111i11111111ttt1tt11tt1111111iiiiii111;.              
+                 .:ii;;;::;;;;i;;i1111111111tt11111111tt111111111tfttt111111iii1t1;.                
+                   .:;iii;;;:;;;;;;iiii11tt1tt1tt1tft11i11tttt11ttt11111t1ii1tti:.                  
+                      .:;iii;;;;;iiiiiiii1111111ttttt111tttttttfftttttfftttti:.                     
+                         .,;i11iiiii11iiii11111ttffffffffttfffffffffLLLfti:.                        
+                            .,:;i1111tt1111ttttttftfffffffffLCCCCLLf1i:,.                           
+                                 .,:;i1ttffLLffLLLLLLLLLLLLLLLf1i:,.                                
+                                       ..,,:;;;iii1iiii;::,,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;i;::,,.                                        
+                                 .,:;i1tffLLLLLLLLLLLLLLLLffffti;,.                                 
+                            .,;itfffLLffftttttttttfffffffffLLCCCGCLti:,.                            
+                    .    .:itffLLLfffftt1ttttt111tfftfffLLfffffffLLLLLt1;:.                         
+                      ,;1tLffttfLLLfftftttttttt11tt11ttttftt11111111tttt11i;:,                      
+                   .:1fffft1tttfttfttfftftt11ttt1111t11111ttttt11i;::;i1ii;;i1i:.                   
+                 ,ifLLfttfftt11111tftftt11tttftf1i1111111111tt11i11;::::;;::::;11;.                 
+               :tfLLLffffLftttttttttftttt1tttfttfffftt11t1111t11iii::::::::::;:;i1i:.               
+             ,1fLLLftttttttffLLLffttffttft111ffffLLLft11111i111iiii;:;::,:::::,,::;i;,.             
+           .ifLLfffftttfffLLCLLLff11ttf1111111111tfftt1111111i1ii1i;;;;,,,,,,,::,,::;;,,.           
+       .  :tfLCLLftffffffLLCLffttt111tt111111i11111111i11tt111111iii;::,,,,,,,::,,:::::,,.          
+         1LffLfffffffffffffffttfffft111ttf11111111i11i111111111111i;;:,..,,::,,,,,,,,:,:,:,         
+       .tLfftfftfLfffffffffffftfLLfttttttttt11111t1111111i11i111iii;;:,,,,,,:,..,,,,,,::::,,.       
+      .tLff1tffLLffffLLffffffffftfft1ttt11ft111ii1t111i11111ttt1ii1;:,,:;::::,,,.,..,,:::,,:,.      
+     .tLLff1tfLLffffLLLfffffffftfft1111111tftii1i1t1iii1i1111t11t11i;:,::,::::,..,,.,,,:;::,,,.     
+    .tLLLLLLCLLLfffLLfftffffLftttt1t11tfttt1ff11111i111tt111tfttt11ii;;:::;;:,,,,,...,,,ii::,,:.    
+    1ffffLfLLffffffftttttfffffttttt1ttfLfLfffftfffttt111t111tfttttt111ii;:::.,,,:,.....,,,::,,::    
+   ;CfftfLLfLftt1tt11tttfttttt1tttt1tffLLffftfffffttt11i11111ttt1tLfi1111;:,,,..,,......,,,,,:,:,   
+  ,LGLffLLffCL1t1111t1ttttttttfttfffffffffffffLLLLfftt1t11ii111111t1111i1i;:::,,,..........,,,:,;,  
+  1CLffLLftfLftt11ttt111tfftt1t1ttfCLfffffffffLffffffttt11111tttt111i1111ii;:;:,,,,........,,,:,:;  
+ .LLffLLCLfftf11ttff11t1tftftffttttttttfftttttffftttt1t111111ft1111i11111i11i;;:::..........,,:;,;, 
+ :CfLffLLffft1fft1ttffffLftttfftttf111111tfffttfffttt1t111111111ii1111i1ffftt11ii;,,..,,......:i;:: 
+ iLLfftffttfftfft11tfftfffffffffttf11ttftttffftfffftttttfftff11111111111fff1111iii;:,.,,..,.,,,;;:: 
+ 1fLftttftfLLftt111tffffffLffLLf11tftt1tt111tftffLLLffLCGCftttttft111111tt1i1t11111;:,......,.,::::.
+ tfffttfftLCLffftttttffffLLLCLfffftfLt111i11tttfffffffffLfft11ttt1111111i11itf1i111;,,,....,...,,::.
+ 1fftt11fffLffLLffttffftfLfLLLffLLffff1111111t1tffffffttttttttttt1ttt11111ii1ii1t1i::,...........,:.
+ ifft11tffft1tLffftfffftttffLLLttfffft1111111111tfttffffftLLffttfftt111i111ii;11i;i1;;,...,,...,.,,.
+ ifftttfftffttffffftfftttfffffftfttttt11111111111tttfffffffffffffftt1tt11111111;..;ti;:,...,,,.,,:, 
+ :ffftffLLLffttfttttfttttttt1111tt11tt111111111tfttfffffffffffffffft11tt11tt111i;;1t1;:,,,..,..,,;, 
+ .tfftffLCCLfttfffffttttt1111111111111tt11111tttffLCLffffLLfLLfft1fftii11111ii11111iii;:,,:,,,,,,:. 
+  1fttffLLLLfft1tLLfttttt1111i1111111i1tii11tfttfLLLLLLLLLCLLCtfLfi1tiii111111ii11ii1t1;:;::::;,,,  
+  ,f1i1fLffff1t1t1tttfftffttt111111ii11111111ttttfffffLCLfft111tff1;tt1i1111111iiiiii1ii;::;;;;,:,  
+   ;tiittt1tLt111tt11tftt1tttttt1i11111111111tttttfffffft;:;ii;ii1t1it1111111ii1i1111iii;;;ii;,:,   
+    1111iii1tt11111111111i1i11111111tttt111tfttftfffLfttti::;::;11Lf1tttt1111tt1tt111iiiii1;,.::.   
+    .1iiiii111111i1iii111111iiii111t11fft1tfftt1tttfffffft1;:::1tfftffft111111tfLLfft1ii1i:,.,:.    
+     .i1i1iiiiiiiiiiii1111tft11111ttt1ttt1t111i1ttfffffLLttt11tfffLffttt111111tLCCft11tii;,,,:.     
+      .ii;ii;;iiiii;;;iii11tfffffttt111ii1iii1111tfffffft1ii1fLfffLffft11111111tt1111tt1;:,:;,      
+       .;i;;;;;i1;;;iiiii1tt1tttftft11111111111111tffttt1t11tttftttftt111111111i1ti1tft1;;;;,       
+         :i;;;:;ii:;i;iiii111tft11fft1i111111111111111111i1fftt1ttttt11111i111i11i111tiii;;.        
+          ,;;:;::;i:i;,:;iiii11t1tttt1111111i11111111ii1111ttt1ttt11t11i1t11iitt1ii1i;;i1;.         
+           .:i;i;:;i;i;;;;;;iii1ttt111t1111111111111111i111111111111111111tti1t1iii1i11i,           
+             .;i1i;;;;:,:;;;iiii111111111111111i111111i1ii1111t1tt111t1111tt1i;i1ii1tt;.            
+               ,:i1;;;;;::;;;;;;iii11111i1111111111111111111ttt11t111tt111111iiiii11;.              
+                 .:iii;;;;::;;;;;;;i1111111111tt111t11t11t111111111ttt1111111iii11;.                
+                   .,;iiii;;;;;;;;;;;iiiii1tt1tt1tttttt11111tttt11ttt1i1111i111i:                   
+                      .:;iiii;;;;;iiiiiiiii111111ttttt1111tttttttffttttfft11i:.                     
+                         .:;i111iiiiii1iii1i1111tttfffftfftttffffLLfLLLfti:.                        
+                            .,:;itt1111111111tttttttfffffffffLCCCCLfti:,                            
+                                 .,:;i1ttffLLLfffLLLLLLLLLLffffti:,.                                
+                                       ..,,:;;;iii11iii;::,,.                                       
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;;;;;;;;::,,.                                        
+                           .     .,:;11tffLLLLLLLLLLLLLLLLffftt1;,.                                 
+                            .,;itffLfLLfffttttt1tttffffffffLLLCCCCLti:,.                            
+                    .    ,:itffffLffffftttttttttt11tftffffLffffffLLLLLf1i:.    .                    
+                      ,;1tfLftttffLLLftffttttttt111tt11ttttftt11111111ttt11;:,                      
+                   .:1tffffttttttfttfttfftftt11tttt111t1111tttttt11i;::i1ii;;ii:.                   
+                 ,1fLLfftttfft111111tftftt11tt1fffti111i111111tt11111;::::;;:::i1;,                 
+               :1LLLLLffttfLftttftttttfttttttt1tftttfftt1111111111iii:::::::::::;11;.               
+             ,1ffLLLfttttttffffLLLftttffftfft11tffffLLLtt11111111iiii;;;:,,:::::,,:i;:.             
+           .itfLLfLffffttftfLLCLLLfft1ttft1111111111fftt11i1t111iii1i;;;;,,,,,,,::,,:;:,.           
+       .  :tffLCLLfttffffffLLCCLffttt111tt111i11111111i11111t1111i11ii;::,,,,,,,::,,,::::.          
+         iLfffLffffffftfLffffffttttfftt111ttt11111111iiii111111111111i;::,..,::,,,,,,,,:::,         
+       .tLfffttfftfLffffffffffffttfLffttttttttt11111t111111111111i1iii;:,,,,,,:,.,,,,,:::::,.       
+      .1LLfLt1tffLLffffLCfffffffffftffttttt11tt11iii1t111i11111tt11iii;,,::;::::,,.,.,:,::,,:.      
+     .tffLfLtttLLLffffLLLffftfffffffft1111111ttt1i111t1iiiii111tt1tt1i;;,,::,:::,..,,.,,,;;::,.     
+    .tLfLLLLLLCLLLffffLLfftffffLftttt1111tfttt1tft11111111tt1t1fftt1t1ii;;:::;;:,,,,,..,,:i::,,.    
+    1fffLfffLLLffffffffttttffffftttttttttfLfLffffffffttt11tt111tttt1tt111i;:::,.,.::....,,,:::,,.   
+   :CLfLfffLLfLftt1ttt1tttffttttt1ttttttffLLffftffffft1tt1i11111ttt1tLf1111i;,,,,.,,......,,,,,,,   
+. .LCGLfffLLtfCL1tti11ttttttttttttttffffffffffLffLLLCLffttt111i111111t1i11i1i:::,,,..,......,,:::,  
+. iCLLfffCLftLLftt111tt1111tfftt1t1ttfCLffffffffffffffLftttt1111tftt111i1111ii::;,,,,.,......,,:::  
+ .fLLffLLLLLtftft1tttft11t1tftttfLttttttttffttt1ttfffttt11tt1i11ttt111111111i11;;;::,.........,:::, 
+ :CLffLffLLffft1fffttttfffffftttfftttft11111ttfftttffftt1111tt11111ii111111ttft111i;:,..,,.,...,i;, 
+ iLfLffftffttffftftt11tLftfffffffffttft1ttttttfffttfffftttttfffft111111111tfLf1111iii:,,,,.,,.,,;;:.
+ tLfLLttttf1fLLLtt111ttffffffLffLLf11tftttttt111ttfLfLLffLLGCffttttft111111tt1i111111i:,........:::.
+ tLffftttfftfCCffffttttffffLLLLLLLffftfLft11i11ttffffffLfffLLfft1ttt1111111i111ft1111i:,,.......,,:.
+.ifffftt1tfffLffLLffftfffftfLfLCLffLLfffft111111t1tfLfffffttttfttttt1tttt1111111i1tt1;:,.........,:.
+ ittff11ttffft1tffffttfffffttffLLLtftfftt1111111111tfftffffftfLffttffftt1111111i;11;;i;;,...,,..,.,.
+ iftfftttfffffttfffffttfffftfffffftftttft111111111111tttffffffffffffftt1tt11111111:.,11;:,...,,.,,, 
+ :ttffttffLLLffftfftttffttttttt1tt1ttt1ttt111111i1tfftfffffffffffffffft11tt11t1111i;it1i:,,..,,.,,, 
+ .ttttttffLCCLftttfLfffttttt11111111111111t111111ttfLLCLLfffLLLLLfff1fftii1t111ii1111iii;:,:,,,,,,. 
+  iffttffffLLLffft1fLftttttt1111i1t11111i1t1i111ftttLLLLLLLLLCLLCtfLfi1tiii111111i11ii1t1;:;:::;,,  
+  ,tf111tffffffttttt1tttfftff1tt1t11111i1i111111ttttfffffLCLffft11tff1;tt111111111iiiii1ii;::;;;,.  
+   ;f11i1tt11tft111ttt11tfttttttttt1ii1111111t1ttttttfffffft;::iiii11t1it111111ii1ii11iiii;;ii;::   
+    iti111iii1tt111111i1111111iii111111ttt1111tfttfttffLfttti;:;:,;11Lf1tttt1111t1tt1t1iiii1i,,:.   
+    .11iiiiii111111i11ii1111111iiii11tt11fft1ttftt1tttfffffft1;:::1tfftffft11111tfLLfft1ii1:,.:.    
+     ,1iiiiiiii11iiiiiiii1111tft11111ttt1ttt1t11111ttfffffLLttt11tfffLfftt111111tfCCft111ii,,:,     
+      ,iii;;i;;iiiiiii;;;ii111fftffftt11111i1i111111ttffLfft1iitfffffLffft11111111tt11tt1i:,:,      
+       .ii;;;;;;;1i;;;;iiii1tt11ttfttft11111111111111tfftt11t11ttttttfftt1111i111i11i1ff1;;;,       
+        .:ii;;;;:;1i:;i;iiiii111tt11tLtt1111111111i111111111i1ftt1tftttt11111111i11i1111ii;.        
+       .  ,ii:;;::;i;:i;,:iiiii11tt1tft11111111i1111111111111ttt11ttt1t111111iiit1ii11;;i;.         
+           .:ii;ii::ii;i;;;;;;iiii1tt1111t1111111111111111111111111111111111tti1tiiii11i,           
+             .;1iii;;i;;:::;;;iiii11t11111111i111i111111i11ii111tt1ttt1t1111tt1i;1i111;.            
+               ,;;i1;;;;;:::;;;;;;iii1111i111111111111111111111ttttt111t111111iiii11;.              
+                 .:iiii;;;;;::;;;;i;ii1111111111tt11t111t11t111t11111tftt11111111i:.                
+                   .,;iiiii;;;;:;;;;i;;iiii11tt1tt1tttttt111i1ttt11tttt11111111;,.                  
+                      .:;i1i;;;:;;;iiiiiiiii1111111ttttt1111tttttttftt1tfft1i:.                     
+                         .:;i1111iiiiii111ii1111t1ttffffftffttffffLLfLLfti:.                        
+                            .,:;itttt111111111ttttttffffffffffLCCCLfti:,                            
+                                 .,:;i1ttffLLLLfffLLLLLLLLLffffti:,.                                
+                                       ..,,:;;;iiii1iii;::,,..                                      
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;::,,..                                       
+                                 .,:;1ttffLLLLLLLLLLLLLLLLffftti;,.                                 
+                            .,:itffLLfffffttttttttfttffffffffLLCCCLti;,.                            
+                    .    ,:itffffffffffftttttttttt111fftttfLLfffffLLLLfti:.                         
+                      ,;ittfffttttffLLfftftttttttt111tt111ttfttt1111111ttt1i:,.                     
+                   .:1ttfffffttttttfttfttfftftt11tttt111t11111tttt11ii::;iii;;;:.                   
+                 ,1fffLLfttttfftt1t111tftfft111t1fftt111t1i11111ftt1i1i::::::::;i;,                 
+               ,ifLffLLffftffLftttftttttttttttttttfttfffttt1tt111t11iii::::::::::;1;.               
+             ,ittffLLLfttttttfffffLLfftttfftfff111ffffLLLft11111111iiii;:;:::,::::,:;:.             
+           .itttLLfLfffffttftfLLCLLLfff11ttf1i11111111tfftt11i1t111ii1i;;;;,,,,,,::,,;;,.           
+          :fttfLGCLLfttffffffLLLCLffftt1111t1111111111111i1i111t111111ii;::,,,,,,,:,,,:::.          
+         iLffffLLffttffftfffffffffttfffft1111ttt11111111iii11111111i111i;;:,.,,::,,,,,,:::,         
+       .tLffffftfffffLfffffffffffffttfLfftttttttf111111t11111i1i11111iiii;:,,,,,:,,,,,,::::,.       
+      ,1ffLfff1ttffLLfffffCCfffffffffftffttttt11ft111i11t111ii1111tt1ii1i:,,:;::::,,,,.,,::::.      
+     .ttffLfLftttLLLLffffLLLffffffffftfft1111111tft1i111t1i11ii1111t1tt1i;;,::,:::,.,,,.,,:;:,.     
+    .1fLffLfLLLLCLLLffffLLffffffffLftttt1111tftttttft11111111ttt11tftt11iii;:,:;;:,,,,,,,,,i;,,.    
+    1ffffLffLfLLLfffffffftttttffffffttt1ttttfLfffffffffftttt1t1111ttttttt111i;:::,,.,:....,,::::.   
+   ;LLLfLfftLLLfLftt11ttt1tttfftttt11ttttttffLLffftfffLftttt1ii11111tt1tLti111i:,,,.,,.....,,,,:,   
+. .fLCGCfftfLLttCCt1t1111ttttttttttttttffffffffffLffLLfLLfftt1111ii11111t11t111;:::,,,.......,,,:.  
+. iCLLLLftfCLftfLLttt111tt1111tfftt1t1tttLCffffffffffLffffffttt11111ttt111i1111i;:::,,,,,.....,,:,  
+ .fLLLfffLLCLLffttt11ftfft11t1tfttffLtttttttttfftttttfffttt11tt1i11tf1111i1111111i;;::,........,,:. 
+ :LLLffLLffLLffft1tfff1tttfffffftttfftttft11111ttfftttfffttt1111t11111ii1111itffft11ii:,,.,,,,..,i, 
+ iLffLLffttffttffftfftt11tLftffffffffftftt1ttttttfffftfffftttttfffft111111111tLft111iii;,,,,.,,,,;: 
+ 1LffLLfttttf1tfLLftt1t1ttffffffLffLLL111fttt1tt111tttffLLLffLGGLfttttft111111tt1it1111i:,....,,.,:.
+ tLftfLftttfftfCCLffffttttfffffLLLLCLffftffft111i11ttfffffffffLLfftt1tt1111111i11tf1i11i:,,...,,.,:.
+.1tffffttt1tfffLfffLLffftffffffLfLCLLfLLfffft1111111tttfffffftttttffttt1tttt1111iiii1t1i:,........,.
+ 11ttfLt11ttffff11fffffttfffffttfffLLftfffft1111111111ttfttffffftLffffffftt111111i;iti;ii;,...,..,,.
+ ifttfLtfttfffffttffffffttfftttfffffftttttftt11111111111tttfffffffffffffttttt1111111i..it;:,..,,,,, 
+ :f1ffLttfffLLLfffttLtttttfftttttt11t1ttt1tt111111111ttftfffffffffffffffft11tt11t1i1i;;t1i:,,..,.,, 
+ .ftttftttffLCCLffttfffffftttttt11t1111111111t111111tttLfCCLfffLLLLLLff1fftii11111i11111ii;,,,,,,,. 
+  iftfttfLffLCLLffft1tfLfttttttt11111t1111111t1i111tfttLLLLLLCLCCCLCffLfi1tiii11i11i11ii1ti::::::,  
+  ,ttf1111ffLffffttt1tttt1tfftffttt1t11111i111111111tttffffLLCLffft11tff1;tt111i1111iiiii1ii::;;:.  
+   :tt11i1ttt111ff11i1ttt11tfttttttttt1i111111111t1tttttfffftffi::iiii11f1it1i111ii1ii111ii;;i;;,   
+    itt1111iiii1ttt1111111111111111i111111tttt111tfftfttffLLttti;:;:,;1tLt1ttt1111tt1ttt1iiiii,,.   
+    ,111iiiiiii1111111i1iii1111111iiii11ttt1fft1ttfftttttfffffft1;:,:1tfftfff11111ttLLff11i1;,,.    
+     ,11iiii1iiii1iiiiiiiii11111tft1t111ttt1ttt1t11111ttfffffLLttt11tfffffftt11111tfCCft1tii,,,     
+      ,1iiii;ii;;ii1i;ii;;;iii11tfftffftt11111i1iii1111ttffLfft11itfffffffft11111111t111tti::,      
+       ,ii;i;;;;:;iii;;iiiiiii1tt1tttfttft1i111111111111tffff1tttttttttttttt1i1i111i111tf1i;,       
+        .;iii;;;;::;1;:;i;;iiii111tft11tLt1i11i11111111111111111tftt1ttftt1111111ii1i1111i;.        
+       .  :ii;::;;::;i::ii,,;iiii111ttttft11111111i11111111ii11tttt11tt11t11i111i1t1ii1;;;. .       
+           .;ii;;ii;:;i;;i;;;;i;iii11ttt1111111111111111111111111111i11111t111t11t1iii1i,           
+             ,;iiii1i;;i;:,::;i;iiii1111111111111111i1111111i1i111tt1t111t1111t1i;ii11:             
+               ,;i;i1i;:;;;:::;;;;;;iiii1111i11111111111111111111ttt1t11tt1111t1ii11:.              
+                 ,;iiiiii;;;;;:;;;;;i;ii11111111111t11t111t11t111t1111ttttt111111i:.                
+                   .:;iiii;ii;;;::;;;;i;;ii1i11tt1tt1ttttttt1111tt111ttt1i11111;,                   
+                      ,:;i11i;i;;;;i;iiiiiiiii1111111tttttt11tttttttfttttff1;:.                     
+                         .:;i11111iiiiii111iii111t1tttffffffftttfffLLLLfti:.                        
+                            .,:ii1ttt1111111111ttttttttffffffLLCCCLf1i:,                            
+                                 .,:;i1ttfffLLLLfffLLLLLLLLffft1i:,.                                
+                                       ..,,:;;;iiiii1ii;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;::,,.                                        
+                                 .,:;ittfffLLLLLLLLLLLLLLLfftt1i;:.                                 
+                            .,:itfLLLLfffffttttttttttttfffffLLLCCCLf1;,                             
+                         ,:1tfLffffffffffftt1ttttttt11tftttffLfffffLLLLfi:.                         
+                      ,;1tttfffttttffLLLfttfttttt1tt111t1111ttftt111111ttt1i:.                      
+                   .:1tttttttft1tttttttftttfttftt1111tt11111i1111ttt1ii;:;iii;::.                   
+                 ,itfffLLLtttttft1111111ttttft1i1t1tftt1i111i11111ft11i1;:::::::;;,                 
+               ,itffffLLffttttffftttftttttttttttttt1ttttffftt111111111;ii:,:::::::i;,               
+             ,ittttfLLLftttttttttffffLffft1ffftfft11tffffLLLt11111i11iiii;:;:,,,::,:;:,             
+           .1ttttfLLfLffftttttttLLLLLLLfft11ttt1111111111tftt11i1111iiiii;;;:,,,,,,,,:;:.           
+       .  :ff1ttfCCLLLfttfffffffLLLCLftttt1111t1111i1111111i1ii1111111111i;:,,,,,,,,:,,::.          
+        .;LLffffLffffftttftfffffffffttttfftt1i1tttt11111111i11i11111111111i;:,..,,,,,,,,::,         
+       .1ffffffftttfftffffffffffffffffttLLfttttttttt111111t1111ii1i1111iiii;:,,,,,,,..,,,::,.       
+      .1ttfLffff1ttffLLfffffLCLfffffffffftff1tttt11ft11iii11111ii1111tt1iii;,,,::::,,,..,,,::.      
+     .1tttfLLfLf11tLLLLffffLLLLffftfffftttft1i111111tt1ii11t1iiiiii11t11t11;;:,:,:::,,...,,:;:.     
+    .itfLLfLLLLLLLCLLLffffLLLffttfftfLftttt1111ttttt1tft11111111tt111tftt11ii;;:::;:,,,,...,;;,.    
+    ittftffLffLfLLLLtfffffftttt1tffftft1tt1t11tffffffffftfftttt111111ttt1ttt11i;:::,..,:....,,:,    
+   ;ffLLffLfftLLLfLLttt11t1t1t1ttftttt11ttt1t1tfLLfffftffffttt11ii11i11t11tL1i11i;,,,.,,.....,,,,   
+  .fLLLGGLfftfLLftLCL11tii11t1tttttttttttttfffffftfffLfLffLLfftt1111ii1i111t111i1i:::,,........,:.  
+. ;LLLLLLfftfLLftfLLf1tt111tt1111tff1t111tttfCffffffffffffffffttt111111tt1111i111ii:::,,,.......,,  
+ .fLLLLLfffLLLLLffftft1tt1fft11111tttttff1tttttftffttt1tfffttt111t1i11tf1111i1111i11;;::,........:. 
+ :ffLLfffLLffLfLffft1ffff1tttfftffftttfft1ttf111111tfftttffttt11111t11111ii11111ttft111i:,..,,...:: 
+ ifLfffLfLfttfff1fffftfttt11tLftfffLffffttttt11t1ttttfffttffftttt1fftft111111111tLf111iii;,.,....,: 
+ 1LLfffLLfttttft1fLLLftt1111ttfffffLLfLLLt11tftt1tt1111ttfffLfffLCGCftttttt111111t1i11111i:,.....,: 
+.1ffftffLttttfftfLGCfffftttttfffffLLLLLLfffttfft111i111ttfffffffffLLft11tt1111111i1itt1i11:,......,.
+ tt1ttffft1t11fftfffffLfffttffffffLfLLLLffLLftff111111111tfffffftttttttttt11tt1i1ii1ii1t1i:,....... 
+ 1fi1ttLft111tffftt1tfLLffttfffffttfffLLftfffttt1111111111ttfttfftttLfftttftt111i111i;11;ii:,..,... 
+ ifttttfftfttfffffftttffffftttftttfffffffttttttt111111111111tttfffftffffffftt111111111i,.i1;:,..,.. 
+ :ff1tfffttftfLLLfffftffttttfttttttt111t1tt111ttt111111i1ttttfffLffffffffffft1111111i11;;11;:,..... 
+ .tfttttfttffffCCLLftttffffftttttt1111111i111111tt11111tttffLCLffffLLLLLff1fftii1111i11111ii:,,,,,. 
+  ifttLtt1tLffLLLLLfftt1ffLftttttt1111111111i11i11ii111fttfLLLLLLLLCCLCtfLfi1tiii11111i1ii1t;::::,  
+  ,tttft1111ffffffft1t11t1tt1ttfttt1tt1111111iii11111111ttfffffLLLLftt111ff1if1ii11111iiii11i;::;.  
+   :11t11i11ttf111ff111i1tt111tttt1t1tt1t1i111111111111tttttfffftti::ii;ii1ti1111111iiii11iii;;;,   
+    ;1tt1i1111iii1tt1111111i111111i1ii111111i1tt11111ffttttfffLftti::;::i1tL11111111tt1t111i;i;,    
+    .i1i1iiiiiiii1111111iiiiii1111111iiii111t11fft11tfft1tttffffffti;:,:1tfttfft11111tfLft1ii;..    
+     ,11iiiiii1iiiiiiiiiiiiiii11111tf111111ttt1t1t111i1i1ttfffffLLtt111tffffft1111111fCLt11i;,.     
+      ,11iiii;;i;:;iiii;ii;;;;ii111tfttfft1t1i11ii1i111111ttffLff1iiitfffffftt1111111tt111ti:.      
+       ,1i;;i;;;;;:;iiii;;;ii;iii1t11tttfttt111111111111111tfftt1tt1tttttttt1t1i111111111f1;,       
+        .;;;;i;;;;;::;1;:;i;;iiiii111tt111fft1i11i111111111111111i1tttt1fttt1111111i11i111i.        
+       .  :i;;;::;;:::;i::ii:,;;iiii11tt11tt11111111i111i11i1i11111tt11tt111111111i11ii1i:.         
+           .;i;i;;;ii;:;i;;i;;;;;;;iiii1tt1111111111111i11111111i1111i1111111111t111ii1i,           
+             ,;iii;ii1;:;i;:,,:;i;;iiii1111111i1111111111111111ii1111t11111111111i;i1i:.            
+               ,;ii;;1i;;;;;::::;;;;;;iiii1111ii1111111111i11111111ttt1t11tt11111iii:.              
+                 ,;iiiiii;;;;;::::;;;;;;;;i1111111111t111111111t11111111ttt111111;:.                
+                   .:iiiii;;;i;;;;:;;;;;;;;iiiii1tt1tt11t1ttt11111t1111tt11111i;,                   
+                     .,:;i1iii;;;;:;;;;;iiiiiiiii111111ttttt111ttt1ttttttfft;,.                     
+                         .:;i111111iiiiiii111iii111111ttfffttft1tfffLLffti:.                        
+                            .,:;11tttt11111111111t1tttftftffffLLCCLfti:,                            
+                                 .,:;i1ttffffffLLfffLLLLLLLLftt1i;,.                                
+                                       ..,,:;;iiiiiiiii;;:,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;::,,.                                        
+                                 .,:;ittfffLLLLLLLLLLLLLLLfftt1i;:.                                 
+                            .,:itfLLLLLfffffttttttttttttffffLLLLCCLf1;,                             
+                         .:1tfLfffftfffffffttt1tttttt11tfftfffffffffLLff1;,                         
+                      ,;1ttttfftttftfffLLfftfftttftttt111t11t1ttft11111tttti:.                      
+                   .:1tttttfffffttttttftttfttfftftt11t1tt11111111tt1tt1i;:;ii;:,.                   
+                 ,itfftfLLLfttttfft111t111tttfft111t1tfft1i1t1111111ft111i:::;::::,.                
+               ,itfffffLCLfftftffLfttttttttfttttttttt1ttttffftt111111111ii;:,:::::;;,               
+             :itttttfLLLLftttttttttffffLLfftttfftfft11tffffLLLft1111111iiii;:;:,::::::,             
+           .1ftttttLCLLLffffftttftfLLCLLLfff11tttt111111111tfftt1ii1111iiiii;;:,,,,,,,::.           
+       .  :tLt1tffLCCLLLfttfffffffLLLCLffttt1111tt111111i11111i1i111t111111ii::,,,,,,:,::,          
+        .;tffffffLLLfffftftffffffLffffftttfffft111tttt11111111ii1i11111111i1i;:,..,:,,,,,:,         
+        1ffffLfffftttLftffLffffffffffffffttfffftttttttt11111tt1111i1i11111iii;:,,,,,:..,,,:,.       
+       ittttLLffft1ttffLLffffffLCffffffffffftff1tttt11tt111i111111i11111t11i1i:,,:;::,,,.,,::.      
+     .1t1ttffLLfLft1tfLLLfffffLLLfffffffffttfft1i111111tt1i111t1iiii1i11t11t1i;;,:,:::,...,,:;.     
+    .ittfLLfLLLLLLLLCCLLLfffffLLfftfffffLftttt1111ttttt1tft11i11111tt111fttt11ii;:::;:,,,,..,;:.    
+    ittffffffLffLfLLLLftfffffftttt1tffftftttt1tt1ttfffffffftfftttt1t1111ttttttt11i:::,,,:,...,::    
+   :ftfLCLfLLfftLLLffLftf11ttt1ttttffttttt1ttt1t1tffLLffftfffftttt1111111ttt1ff111i;,,,..,....,,,   
+  ,fLfLLCGCLffffLfLtfCCf1t1i111tttttttttttttttffffffffffLfLffLLffft1111i1111111i11i1;::,,.......,.  
+  ;ffLLLLCLfftfLLfftLfLt1f1111tt1111tffttt11tttfCLffffffffffffffffttt11111tt11111111i;::,,,,....,,  
+ .tfLLLLLLfffLLLCLftfttft1tftfft1111ttttttffttttttttffttt1ttfftttt11t1111tf1111i111ii1i;;:,......,. 
+ :tffLCfffLLfLfLfLfffft1ffff1tttfftffffttffft1tf1111111ffftttffftt1111t11111ii111i1tttt1ii:,.,,..,, 
+ iffLfffLLfffftfffttfffttfttt11tLfttffLfffffttttt1tttfttfffttffffttttfftft111111111fLt11iii;,,,..,: 
+ 1LfLfffLLLfttttff1tffLfttt111tttfffffLLffLLt11tftttttt111ttffffffffCGCfttttft11111tt111i11i:,....,.
+ 1fffLftffLfttttfttfCGLffffttttttfffffLLLCLfffftffft111i11ttfffffffffLLftt1tt111111i1i1t111i:,....,.
+ 1ftitfffffttt11tfffLffffLffffttffftfLLfLLLLfLLftfft11111111tfffffftttttttftttttt11i1iiiit1i:,..... 
+ 1Lti1ttfLft111tffffft1tfffffttfffffttfffLLLtftfftt1111111111tfttffffttLffftffft111i1ii;11;i;:..,,. 
+ ;LtttttfLftftttffffftttffffffttfftftffftffftttttttt11111111111tttfffffffffffftt1t1111111,.i1:,..,. 
+ :ttfttffLfttfffLLLLfffftfLttttftftttttt11t11tt11ttt111111i1tfftffffffffffffffft11111t111;;t1;,.... 
+ .1tft1tttfttffffLCLLLftttffffffttttt1111111i1111111t111111ttffLCLLffLLLLLLff1ff1i1111i1111iii,,,,. 
+  itfftfftt1fLfffLCLLfffft1ffLftttttt1111111111i1111t1i111ffttLfLLLLLLCCLCtfLtit1ii11111i1iit1::::  
+  ,ttt1ft1111tffLffffft1t1tt1tttttffffttt1t111111i111111111tttffffLLLLfft11tffi1t1i11111iiii1i;:;,  
+   ;t11f1t1111ttf111tLf111ittt11ttt111tttt1t11i11111111111tttttffftfti::ii;i1ttit1111iiiii11i;;i:   
+   .i1itt11i1i11iii11tt11111111111111i11ii11111i1ttt1111ffttttffLLftti::;::i1ff1t1t111t11t11iii;    
+    ,11iiiiiiiiiiii11111111i11iii1111111iiii111tt1tft11tfftttttffffffti;:,;tfftfff11111fLLf1ii:     
+     ,1111ii1iii1iiiii1iiiiiiiiii11i11tft11111ttt1t1t11111i1ttfffffLfttt1tfffffftt1111tLCLtt1;.     
+      ,11iiiiii;;i;;;iiiii;ii;;;;ii111tfftfft1t111iii1iii11i1tfffLft1ii1fffffffft111111tt111;.      
+       .i1;;i;i;;;;::;;i1i;;;;iiiii1tt111tttttt11i11111111111ttfftt1t11ttttttftt1i11111111fi,       
+        .;i:;iii;;;;;::;1i:;ii;iiiiii111tt111ff11i11111111i111111t111tftt1fftt111111i11ii1i.        
+          :1;;ii:::;;:::;i;:ii:,:;iiiii11ft1ttt11111111i11111111i1111tt11ttt1t1i111i11i11:          
+           .i1i;ii;;;ii::ii;;;;;;;;;;iiii1ttt1111t1111111111111111i1111i11t111111t1i111i,           
+             ,iiiiiiii1i;;;i;:,,:;;;;iiii111111i111111111111111i1i11111t11111t111t1iii:.            
+              .:;;ii;;i1i;;;;;::::;;;;;;iiiii1111ii111111111111111111ttt1111t111111i:.              
+                 ,;1i;;iii;;;;;;:;:;;;;;;;;ii1111111111tt1t111111111111111tt11111i:.                
+                   .:iiiiiiiii;i;;;;:;;;;;i;;ii1i11tt1tt11t1ttt1111tt111ttt1111;,                   
+                      ,:;;i1iii;ii;;:;;;;iiiiiiii1i11111ttttttt11ttttttfttft;,.                     
+                         .:;i1111111iiiiiiii1i1iii111111tttffttfttffLLLfti:.                        
+                            .,:i1tttttt11111111111tttttfffffffLLLCLfti:.                            
+                                 .,;;i1ttffffLffLLfffLLLLLffftt1i;,.                                
+                                       .,,,:;;iiiiiiiii;::,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;;;:::,,.                                        
+                                 ..:;ittfffLLLLLLLLLLLLLLLfftt1i;:.                                 
+                            .,:itfLLLLLLfffffttttttttttttffffLLLLLLf1;,                             
+                         .:itffLfffftfffffffftt1ttttttt11tftftfffffffLff1;,                         
+                      ,;1ttttttftttfttffLLLfftffttttttt111tt1tt1tftt111ttt11:.                      
+                   .:1tft11tffffftttttttfttffttfftfttt11ttt111t1111tt1t1ii;;ii;,.                   
+                 ,itftfftfLLffttttfft111tt11tttfftt11tttfft1i1t1i1111tf111i;:;;;;:,.                
+               ,itttfffffLCLfftftffLfttttftttftttttttttttttttfftt11111i11iii:::::::;,               
+             :1ttttttfLLLLLfttttttttffffffLfftttffftfft11tffffLLftt111111iii;:::::::::.             
+           .ifftttttfLLfLfffffttttttfLLLLLLLfft11ttt1111111111tfft11i11111iiii;;:,,,,::,.           
+          :tfff1ttffCCCLLLfttffffffffLLLCLffttt1111t111111111i11iii111t111111i;::,,,,,:::,          
+        .ittfLfffffLfffffftftfftffffLfffLftttfffft111ttft1111111i1111111111111i;:,.,,::,,:,         
+       .iftfffLLfffftttfffffLffffffffffffffftfLLfftttttttt11111tt1111i1i1111iii;:,,,,,,,,,:,.       
+      .;t1tttfCfffff1tttfLLLffffffCCffffffffffftffttttt11tt11ii1t1111i1111tt1iii:,:;:::,,,,::.      
+     .;t11ttffLLLfLft1tfLLLLffffLLLLfffffffffftfft11111111tt1i111t1ii11i11111t1ii;,:,:::,,,,,:.     
+    .it1tffLLfLLLLLLLLLCLLCLfffLLLfffffffffLftttttt111ttttttff11111111tt11tfttt1ii;:::;:,,,,.,;.    
+   .111tffftfffLffLffLLLLffLfffffftttttffffffttt1tttttfLfffffftfffttt1tt111tttttt11i;::,,,:...,,.   
+   ;ttffLCLLfLLfftfLLLfLLftf11t1111tttffttttt11ttttttffLLffftfffffttt1111111tt1tL1i11i:,,.,,...,,   
+  ,ftLfLLLGGLffftfLLLftLCLt1t1i111tttttttttttttttfffffffffffffffLLffft111ii111111111i1;::,,.,...,.  
+  ;tffLLLLLCLfftfLCLftfLfLttf1111ttt111ttfttt1t1tttLCffffffffffffffffttt1111ttt111i11ii;::,,,,...,  
+ .ttLLfLLLLLfffLLLCLLffftfft1tftfft11111tftttfLtttttttftfftttttfffttt1tt1111ft111ii111i1i;::,....,. 
+ :t1fLfCLffffLfLfLLLLfffft1ffff1tttfffffLftttfftttft111111tfffttffttt1111t11111ii1111tfft1ii:,.,.., 
+ ;tttLffffLLfLffttfffttfffttfftt11tLfftfffLffLfftttt11tttttfffftffffttttfffft11111111tLt11i1i:,,.,, 
+ ifffLffffLCLfttfttft1fLLLLftt111tttffffffLffLLft11ff1t1tt1i1tttffLLLfLCGCfffttft11111t1i1111;,..,,.
+.1ttffLfttffLftt1tffttfCGLfffffttttfffffLLLLLLLffftffLt111i111tfffffffffLLfttttt11111iii1t1i1;,.....
+.tfft11fttfffftt11tffffLffffLffffttfffftLLfLLLfffLLfffft111111ttfffffffttttttfttttt11111iiit1;,.... 
+ 1fft11tttfLft111ttffffft1tfffffttffffftttffLLLftfffttt1111111111fftffffttfffttfftt11111i;1i;i;,.,. 
+ ;tfftttttfLftfttffLffffttfffffffttfftfttfftffftttttftt11111111111tttffffffLffffftttt111111,,1;,... 
+ :t1fLt1fftLfttffffLLLLfffttfLtttttfftttttt111t1tt111tt111111i1ttftfffffffffffffft11111t111;iti:... 
+ .1itLttttttfttffffLCCCLfftttffffffttttt1111t1111111111tt1i111tttLLCLLfffLLLLffttftii1111i111ii:,,. 
+  ;1tffttLfttttLfffLLLLLfffft1ffLftttttt1111111111i1111t1i111ffttLLLLLLLLCCLCtfL1itii11i11i1i1t;::  
+  ,11tt1tft11111tfLffffLft1t1tt1tt1tfffffttt11111111ii1111111ttttffffLLLLff111ff1it1111111iii1i;:,  
+   ;1111tt1ti111ttft111fLt1111ttt111tftt1tttttt11i11111111t11tttttfffffti:;iiii1ti1t111iiii11i;;:   
+   .11ii1tt11i1111iiii1ttt11111111111111i111i11111i1ttt1111ffttttfffLftti:;;,;1tL1tt1111t1tt1ii;.   
+    .11i11i1iii1ii1ii11111111i11iii111111111iiii11tt1tff11tfftt1ttffffLf1i:::1tfftff1111tfLft1i.    
+     ,11i1i1iiiiii1iiiii1iiiiiiiiiii11i11tft111111tt1ttt1111111ttfffffLftt1ttffffft11111tCLtti.     
+      ,11i1iiiiii;;ii:;iii1i;ii;;;;iii111tfftfftttt11iii11ii111ttffffft1iitffffffft111111t1t1.      
+       .1t1i;i;ii;;i;:;;;iiii;;iiiiiii1tt111tttttt11i11111111111tffft11t11tttttft11i111111tt,       
+        .;1i:;iii;;;;;;::;ii;:;i;;iiiii1111tt111fft1i11i11111i1111111111tttttttt111111iii1i.        
+          :11;;ii;::;;;:::;i;:;i;,,;iiiiii11ftttft11111111i1111111ii111ttt11tt111i11i1111:          
+           .;1i;;ii;;;iii::i1;;;;;;;;i;;iii11ttt1111tt111111111i1111111111111111111ti11;,           
+             :i1;;i1ii1i1i;;;i;;:,::;;;iiii11111111111111111111i1i11ii11ttt111t11111ii:             
+              .:ii;ii;;i1i;;;;;;::::;;;;;;iiiii1111ii11i111111111111111tttt11tt1i11i:.              
+                 ,;11i;;ii1i;i;;;;;;:;;;;;i;;;i11111111111t1111111111111111ttt111i,.                
+                   .:i11iiiiiii;ii;;;;;;;;;;i;;ii1i11tt1tt11t1ttt1111tt1ttttt11;,                   
+                     .,;ii;i1iiii;ii;;:;;;;iiiiiiiii111111ttttttt1tttttffffti,.                     
+                         .:;111111i111iiiiiii1111ii111tt11tfffftfttffLLfti:.                        
+                            .,:i1ttttttt1i1111111111tttttffffLLLLLLfti:.                            
+                                ..,:;i1tffffffLLLLLffLLLLLffftt1i;,.                                
+                                       ..,::;;iiiiiiiii;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;;;:::,..                                        
+                                 .,:;i1tfffLLLLLLLLLLLLLLLfftt1i;:.                                 
+                            .,:itffLLLLLLffffffttttttttttffffLLLLLLf1;,.                            
+                    .    .:itfLLfffffftfffffffftttttttttt11fftttfffLLLLf1;,                         
+                      ,;1tftttttftfttfttffLLLfttffttfttttt11t11tttttt11ttt1i;,                      
+                   .:1ttttt1tfffffftt11tttfttffttfftfttt1tttt1111111tt1t1ii;ii;,.                   
+                 ,;tftttftfLLLftttttffftt1t1111ttfftt111ttfffti1t1i1111tt111;:;;:,.                 
+               :itt11fffffLLCffttffffLfttttfttttfttttttttttttttfftt11t111t1ii;::::::,               
+             ,1ttttttftfLLLLffttttttttffffffLLfftttfftfft111ffffLLLt1111111iii;:::,::,.             
+           .ifftttttftfCCfLffffffttttttfLLCLLLffft1tttt111111111tfftt1i1111iiii;;:,,,,:,.           
+       .  :tftfftttfffCGCLLLLftffffffffLLLLLLffttt1111t111111i11i11ii111t1111i1i;:,,,,,:,,          
+        .ift1fLffffffLLLffffttftfffffffffffLftttffftt1i1ttt11111111i111111111111i;:,,,::,,,         
+       ,itttffffLLffff1ttfLftfLLffffffffffffffftffffftttttttt11111tt111i11111iiiii:,,,,:,,,,.       
+      ,;if11t1tLCfffff1tttffLCLffffffCCffffffffffftff1tttt11ft11ii1t111ii1111t1ii1:,,;::,,,,:.      
+     ,;it11ttffffLLfLLt11tfLLLLffffLLLLffffffffffftft11111111tt1i111t1i1iii11t1ttii;,:,::,,.,:,     
+    .1it11fffLLfLLLfLLLLLCCLLLffffLLLLffttffffLffttttt111ttttt1ft11111111tt11tftt11i;::;;,,,,.:.    
+   .1t1ttfffftfffLftLLfLLLLfffffffffftttttffftfftttttttttfffffffftfftttt11111tttttt11i;::,,,,..,    
+   ;t1tfffLCLfLfLffffLLLffLLtft11tttt1tttfftttttttttttttffLLffftfffftt1t1i1111ttt1ffi11i:,,.,..,.   
+  .tttLffLLCG0CLLfffLLfLttLCLt1t11111tttttttttttttttfffLfffffffffffLLLffttt1ii1i111111i1i::,,,....  
+  ;t1fffLLLLLLLfftffLLfftfLfLttf1111ttt1111tfftttt1tttfCffffffffffffffffttt1111tt1111111i;::,,....  
+ .1ttfLfLLfLLLfffLLLCCLLffLtfft1ttttLt111t1tftttfff1tttttftfftttttfffttt1tt1i11ft111i111i1i;::..... 
+ :t1tfLfLCLffffLLLffLfLLfffft1ffff1tttffffffftttfft1ttf111111tfffttffftt1111t11111i111itttt1i;,.,,. 
+ ittttLLfLffLLffLfftfLffttfffftfftt111fLftffffffffffttt11tttfttfffttfffttttfffft1111111tLf11ii;,,,. 
+ 1ttffLLffffLCLffttttffttfLLLLftt1111ttffffffLLfLLLt11tftttttt11tttfLfLLffCGCfffttf11111t1i1111:.., 
+.1fttfffLftfffLftttttfftffCGLffffftttttfffffLLLLCLfffftfLft111111ttffffffffLLftttt111111i11t111:,.. 
+.tffff11tfttffffttt11tffffLffffLffffttfffftfLLLCLLffLLfffft111i11t1tffffttttttfffttttt11i11i1ti:,.. 
+ 1ttff111tttfLftt111ttffffft1tfLfLfftffffffttfffLCftfffttt1111111111tfttfffftLLfftfft11111i;1iii,.. 
+ ;ttLtftttttfffttfttffftffftttfLfffffttfftftfffffffttttftt11111i11111tttffffffffffftt1t11111i.;1,,. 
+ :t11tLf11fffffttffffLLLLLfffttfLtttttffftttttt11t1ttt11ttt11111111tfttfLffffffffffft1111t11i;11:,. 
+ .11itLft1tttffttftfffLCCCLfftttfffffftttttt1111111i111111tt11111tttLLCLLfffLLLLff1ff1i11111111i:,. 
+  ;11tfff1fLf1t1tfLffLLCLLLffftt1ffLfftttttt1111111111i11i1t1111tfttLLLLLCLLCLCLtLfit1i11i111111;:  
+  .11tttt1ftt11111tffLffffLft1t1tt1tt1tffftftttt1t11111i111111111tttffffLCLfft11tffi1tii1111ii1i;,  
+   ;t11111f11ti11itttf111tLft11i1ttt111tftt1tttttt11i11111111111tttttffffft;:ii;i1t1it111iiii1ii:   
+   .1ti1i1ttt11i11i1iiii11ttt1111111i111111i11i1i111111ttt1111tfttftffffftt;:;::i1ft1t1111t1t1ii.   
+    .11i1i1ii1iii1ii1iii1111111111iiii11111111iiiii11tt1tff11tfftttttffffft1;:,;tfftff1111tLfti,    
+     ,111111iiii1iii1iiiiii11iiiiiiiiii11111tft111111tt1ttt1111111ttffffLLftt1tffffft11111LLt1,     
+      ,111i1iiiiiii;;ii;;;ii1iiiii;;;;iii111tfftfftttt11iiiiii1111ttffffftii1ffffffft11111t1t,      
+       ,111ii;ii;ii;;i;;:;;ii1i;;iiiiiiii1tt1t1ttfttt11111111111111tffft1tt1tttttft11111111t,       
+        .;11i::iii;i;;;;;::;i1;:;ii;;iiiii1111ft11tLt11i11i111111111111111tft1tftt11111111i,        
+          ,i11;;iii;::;;;;::;ii:;ii:,:;iiiii11tf1ttft11111111i1111i11i111ttt11tt1t1i11111;          
+           .;t1i;;i1;;;;iii::;ii;;i;;;;;i;iiii1ttt1111t11111111111111111111111ti1111t11i,           
+             ,1ti;;iiiii1i1i:;;ii;:,::;i;iiiii111111i111111t111i111i111111ttt11tt11t1i:             
+               :i1i;ii;;iiii;;;;;;::::;;;;;;iiiii1111111111111111111111i1tt1t1tt11ti:.              
+                 ,i11ii;;ii1ii;;:;;;;;::;;;;;;;;i11111111111t111111111111111ttt11i:.                
+                   .:i11iiiiiiiii;i;;;;:;;;;;;i;;ii1i11tt1tt11t1ftt1111t111ttt1;,                   
+                     .,;iii;iiii1i;ii;;:;;i;;iiiiiiii1it1111tttttt11ttttfffti,.                     
+                         ,:;1111111ii11iiiiiiii111i111111t1ttffftfttfLLfti,.                        
+                            .,;i11fftt11t1i1111111111tttttffffLLLLLfti:,                            
+                                ..,:;11ttffffffLLfLLffLLLLffftt1i:,.                                
+                                       ..,::;;iiiiiiiii;;:,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;;;:::,,.                                        
+                                 .,:;i1tfffLLLLLLLLLLLLLLLfftt1;:,.                                 
+                            .,:itfLLLLLLLLfffffftttttttttttfffLLLLLf1;,.                            
+                    .    .:itffffffffffffffffffftttttttttt11tftftfLLLLff1;,.                        
+                      ,;1tfft1t1ttffftfttffLLLLfttffttftttt11tt11ttttt11ttti;,                      
+                   .:1tttttt1ttffffffttt1tttftttfttfffftttttttt1111111t1111iii;,.                   
+                 ,;1fftttfftfLLLftttttffft1111111tttfft111ttfff1i111i1111ft11;;;:,.                 
+               :i1t111tfLfffLLCffttftffLfttttfttttfttttt1ttt1tttttfttt1t1i1t1i;:::::.               
+             ,1ft1ttttfttfLLLLffttttttttfffffffLLftttffftftti1tffffLLft111111iii:::::,.             
+           .iffftt1tttttfCLLLffffffftttttfLLCCLLLfff11tttt111111111tftt1i1111ii1i;;,,,,,.           
+          :tfttfLttttfffCGCLLLLfttffffffffLLLCLffttt1111tt111111i11111i1111t11111i;:,,,,:.          
+        .1ttttfLLffffffLLfLffffttffftfffffffffftttttfftt11tttt11111111i11111111111i:,.,,:,.         
+       ,ti1t1fffffLLffffttttLftffLffffffLffffffffftfLffttttttttt11111t1111i1i111iii;:,,,,,,,.       
+      ,1:;f11ttttLCffffL11ttfffLLfffffffCLfffffffftfftff1tttt1tft11ii1t11ii1111ttiii:,::::,,,.      
+     ,1:ift1tttffffLLffLft1ttLLLLfffffLLLLfffftfffffttft1i11111tft1i1i1tiiiiii1t11tii;,:,::..,.     
+    .tiit11tfffLLfLLLLLLLLLLCCLLLffffffLfffffffffLffttt1111tttttt1ft11111111t11tfttt1i;::;:,,,,.    
+   .1t11t1tfffftfLfLLffLffLLLLftfffffffftfttttfftfftt1t1t1ttfLfffffffffttt111111tt1tt11i;:,,,,.,    
+   ;f11tffffLCLfffLffftfLLLffLLttt11ttt11ttttftttttt1tttttttfLLffffffffft111i1111tt1tfi11;,,,,...   
+  ,1tftfLfLLLCC0CfLfftfLLfLtfLCLt1tti111tttttttttttttttfffLfffffffffffLLffft1t1ii111111111;:,,....  
+  ;tt1ffffLLLLLCLffftfLCLfftfLfLttf1111ttt1111tffttt11tftfCLfffffffffLfffffttt1111tt11111ii;:,....  
+ .111tfLLLLLfLLLfffLLLLLCLLtfLtfft1tfttLtt11t1ttftftffttttttftfftttttfLfttt1111i1tf11ii11111;;:,..  
+ :tttttLffLCLfLLfLLfLffLfLLtfft11fffft1tttffffffftttfft1tft111111tffttffftt1111t1111i111ittft1i:.,. 
+ iftttftLffffLfLLfLffftffffttfffftffttt11tLftfffLffffffttft1tttfttfffttfffttttffft1111111tLt11ii,,. 
+ 1t1tfffLLfffffLLffftftttfttfLLLLfttt1111ttffffffLffLLft1tftt11tt111tfffLLfffCGLftttft1111t11111;.. 
+.tttttfftLLfttfffffttttffftffCGLffffftttttffffffLLLCLfffftffft111i11ttffffLfffLLftttt11111iitti1:,. 
+.ttffffti1tftttffft1tt11tffffLffffLLfffttffffffLLfLLLffLLftfff1111111ttfffffttttttftt1tt11111it1:,. 
+ 1fttLLt11ittttfLft111ttfffffft1tfLfLffttfffffttfffLLLffffftf1111111111tfttffftfLffttfft11i1ii1;i,. 
+ ;t1tLffttttttffLftft1tffftfffttffffffffttfftftffffffftttttftt11111111111ttffffffftffft1111111,:i,. 
+ :t11t1fLt11ffffLttttfffLCLLLfffttfLfttttftfttttttt1tt1ttt1ttt11111ii1tftffffffffffffft1111t11;i1:. 
+ .11111fLtt1ttttftttfffffLCCCLfftttfffffftttttt111t11111111111t11111tttfLCLfffLLLLLfttf1i111i111i:. 
+  ;1111ffft1fLf11ttfLfffLLCLLLfffft1fLffttttttt1111111111i11i1t1111tfttLLLLLCLLCLCtfL111i11111111:  
+  ,1111tttt1ftt111111tfLfffffLft1tt1tt1t1ttfftff1tt1111111ii11111111tttffffLCLfft11ffi1t11111ii1i.  
+   ;111111itf11ti1111ttft111tLft1111ttt111tftt1tt1tttt1ii1111111t11tttttffftf1::ii;i1tit111iii11:   
+    it1i11i1tft11111i11iii111ttt1111111i111111111ii111111itttt111tfttftfffftt1::;,;1ff1tt11t1t1i.   
+    .1t111ii1i11iii1ii11ii111i1111111iiii11111111iiiiii1tt11ff11tfftttttffffft1:,:1tftff111tLf1,    
+     ,111i111i1ii11ii1i1iiiiii1iiii;iiiii111i1ttft1111111t1ttt1111111ttffffLfttt1tfffft1111fCt:     
+      ,11111i1i1;iiii;;ii;;;;ii1iiiii;;;;iii111tffffftttt111iii1i1111ttfffft1iitfffLff11111tt:      
+       ,111tii;;i;;ii;;i;;;;;;i1ii;;;iiiiii11tt11tttfttt1111111111111ttfff11t1ttttfft1111111:       
+        .;;11i;:;iiii;;;;;;:::;ii;;;i;;iiiiii111tft1itLt11i111111111111111111ttttttt111i11i,        
+       .  ,i111i;;iii:::;;;;:::ii;:iii,,:;iiiii11ft1tttt1111111111111i1ii111tt11tt11i1111;.         
+           .;11ii;;;ii;;;;iii::;ii;;i;;;;;;;;iii11ttt1111t11111111111111111111i11i111t1i,           
+             ,1t1;;;iiiiiiii1i;;;ii;:,:::i;;iiii11111111111111111111111ii11111t1tt11ti:             
+               ;111i:ii;;iiiii;;;;;;;::::;;;;;;iiii11111i1111i11i11111111i1tt111t111:.              
+                 ,;11iii;;;i11i;i;:i;;;;::;;;;;;;;;i1111111111t11111t11111111ttt1i:.                
+                   .:i111i;;iiiiii;;i;;;;:;;;;;;i;;ii11i1tt1tt11ttft1111tttttt1;,                   
+                     .,;11i;;iiiii1i;ii;;;;;ii;iiiiiiii1111111ttttt111ttfffti,.                     
+                         ,:ii1111iiiiii11iiiiiiii111ii1111111ttfffffffffti:.                        
+                            .,:i1ttfftt1tt1i1111111111tttttffffLLLLfti:,                            
+                                ..,;;itttfffffffLLLLLfffLfffft11i:,.                                
+                                       ..,,:;;iiiiiiii;;::,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;;;;::,,.                                        
+                                 .,:;ittfffLLLLLLLLLLLLLLLfft11i:,.                                 
+                            .,:itffLLLLLLLfffffffttttttttttffLLLLLff1;,.                            
+                         .:itffffffffffffffffffffftttttttttt11tfftfLLLLf1;,.                        
+                      ,;1tfftt1tt1tffttttttffLLLLftfffttftttt11t11ttttttttti:,.                     
+                   .:itftttttt1ttffftffttt1tttfttffttfftftttttttt111111t11t1ii;:.                   
+                 ,;1tfftttffffLLLLfttttttfftt1t1111tttfft111tttff11111i111tt11i;:,.                 
+               ,1111111tffLfffLLCffttftffLLtttttftttftttttttttttttttftt1111111i;::::.               
+             ,1ff11t1tttftfLLLLLLfftttttttttffffLfLfftttfftfft11tffffLLft11111iii;:::,.             
+           .ifffftttttttttfLCfffffffffftttttfLLCLLLLfft11ttt111111111tfft1i111111ii;:,,,.           
+       .  :1ttttffftt1tfffCCCLLLLLfttffffffffLLLCLffftt1111tt11111111111i1111t1111i;:,,,,.          
+         1fttt1tfLfffffffLLfLffffftfffftfffffffffftttfffft111tttt1111111i1i111111111;:,,,:.         
+       .tfi1fttfffffLLfffft1ftfLftfLLffffffLffffffffttfLfftttttttft1111t1111i11111iii;,,,,,,.       
+      .ti,;ffitfttfLCffffLf1tttfLLCLfffffffCLffffffffffftffttttt1tt11111t111ii111tt1ii,,:::,,.      
+   . ,ti,ift111ttffLLLLffLLt1ttfLLLLLffffLLLCfffftfffffftft11111111tt1ii1t1i11ii1t11tii:,,::,,.     
+    .t1;itt11tfffLLffLCLLLLLLLLCCfLLfffffLLfffftffffLLfttt11111ttttttft1111111tt11fttt1i;:;;,,,.    
+    1t1ti111fffffttffLLftfLfLLLLLftffLffLfftft1ttfffffttt11ttttfLfffffffffttt11111ttttt11i::,,,.    
+   ;Ltt11ffffLLCLLLfLLffftLLLLffLLtft1ttt1t1ttttfftttt11tttttttfLLffffffffttt1i1111tt1tfi1i:,,,..   
+  .t1tf1fLLfLLLCC0GLLLffffLLfL1tLCLf1tt1111ttttttttttttttttffffffffffLfffLLffttt11i11111111i:,,...  
+  ;t1t1tLffLCLfLLLLLfftfLLCLfftfLfLttft1111tt111ttfft1t111fttLLffffffffffffffftt1111tt111111i::...  
+ .1111ttfLfLLLfLLLfffLfLLLCCLLffftfft11tttLft11t11tftftfftttttftttffttttfffttt1t1111ft1ii1111i;:,.  
+ :tt1ttttLffLCLfLLffLLfLfLLfLLtfftt1fffft1tttffffffftttfft1ttt11111ttffttffftt111tt111ii111tft1i:,. 
+ iftttttftLffLfLfLLfLLffftffffttfffftffttt11tLfftfffLffLffttft1tttfttfffttfffttttffft111111tLt11i,. 
+ 1ft1tffffLLfffffLCLffttfttffttfLLLfftt1111tttffffffLLfLLLt11tftt1tt111ttffffLfLCCLftttt1111t1111:. 
+.1ttttttfffLffftfffLffttttfffttfCGCfffffttttttfffffLLLCCLfffttfLtt11111ttffffLffLLftttt11111i1t11;. 
+.tttftfffti1tftttfffftttt11tfftfLffffLLffffttftfftLLfLCLLLfLLfffft1111111tfffffttttttftttt1i11i11:. 
+ tttt1fLft111ttttfLLft111ttfffffft1tffffffttffffffttfffLLftfffttt111111111tfttffftfLfttfft1111i1i;. 
+ i1111fLtftttttttffLttfttftffffLffttffffffftttfffttfffffLtttttftt1111111111tttffffffffffttt1111;:1, 
+ :1111t1tLftt1ffftLftttffffLLLLLffffttLftttttfftfttttt1tt1ttt11tt11111111tftfffffffffffft111111iii. 
+ .111111tLLtt1ttttfftttffffLLGCLLfftttffffffftttttt111t1111111111t11111tttLLCLfffLLLLfttf1i111i11;. 
+  ;11i11tftft1fLft1tttfLffffLCLLLffftt1tLfLtttttttt111111111i1111t1i111fttLLLLLLLCLCLfL111i1111i1;  
+  ,111i1t1tt11fttt11111tffLfffffLft1tt1t11t1ttffftfttt1111111ii11111111tttffffLCfft11tfi1ti111ii1,  
+   ;11t11111itL11ti1i111ttft111tLft1111tttt111ft1ttt1tt1t1111111111ttttttttfftfti:ii;i1t1111iii1;   
+    i1tti1i1i1ttt11ii11i1iiiii11ttt111111111111111i11i1i1111itttt111tfttftffLftt;:;:;1ft1t11t1ti.   
+    .111111ii1ii11iii1iii1iii111i1111111iiiii11111111ii1i11tt1tff11tffttttffffft1;,:1fftft111Lf,    
+     ,11111i11111ii11i;iiiiiiii1i1iiiiiiiiiii11i1ttft1111111t1t1t1111111ttfffLftt11tffftt111fL:     
+      ,111111i11ii;iiii;;iii;;;iii1iiiii;;;;ii1111tfftffttt11111iiii1111tfffff1iitffffft11i1t:      
+       ,1fi1tiii;ii;;ii;;;i;;:;;ii1ii;;iiiiiii11tt11tttfttt1111111111111tfftt1t1ttttft11ii11,       
+        .;1;i1ii::;iii;;;;;;;;::;i1i;;;i;;iiiiii111tf111fLt1111i11111i111111111tttttt111i1i,        
+          :iii11i;:iii;:::;;;;:::;i;:;ii;,:;iiiiii11ft1ttt11111111i111111ii11ttt1tt111111;.         
+           .;1111ii;;i1;;;;;iii;::i1;;;i;;;;;i;iiii1ttt11i1t1111111111111111111i111111ti,           
+             ,ift1i;;iiiiiiiii1i;;;ii;::,::;i;iiii11111111111111111111111i1111tt1tt111:             
+               :111ii;;ii;;iiiii;;;;;;;::::;;;;;i;iiiii111ii111i111111111111ttt11tti:.              
+                 ,i111iiii;;ii1ii;;;;i;;;;;:;;;;;i;;;i11111111111111111111t111ttti:.                
+                   ,;i1111ii;iiiiiii;ii;;;;:;;;;;;i;iii1111tt1tt11ttft111ttttt1;,                   
+                     .,;1t1i;;ii1ii1i;iii;;:;;i;;iiiiiiii111111tttttt11ttffti:.                     
+                        .,;i1111111i11ii11iiiiiiii1111i1111111ttffffffffti:.                        
+                            .,;i1ttttttt11t1ii111111111tttttfffLLLLfti:,                            
+                                ..,:i11ffffLfffffffLLLfffffffft1i:,.                                
+                                        .,::;;;iii1iii;;::,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;::,,.                                        
+                                 .,:;ittffLLLLLLLLLLLLLfLLfft11;:,.                                 
+                            .,;ittfLLLLLLLLfffftfffttttttttfffLLLLft1;,.                            
+                    .    .:itfffffffffffffffffffLfftttttttttt11tffffLLLf1;,.                        
+                      ,;1tffftt1tttttfttttfttfffLLftfftfttfttt11t11tttttttti:,                      
+                   .:i1tttttttt11ttffffffttt1ttttftffttftfftttttttt11111111tti;,.                   
+                 ,;111fftttffftfLLLfftttttffftt1tt111tttfft1111ttff1i111111tt11i:,.                 
+               :1f111t111tffLfffLLCLfftftfffLfttttfttttftttt11ttttttttfft111111i;::,.               
+             ,1fLt11tt1tttfttLfLLLLffttttttttfffffffLLffttffffftt1tffffLLft11111ii;;:,.             
+           .itffffftt1ttttttfLCLfLfffffffftttfffLLCLLLffft1tttt11111111tfft1i1111i1i;:,,.           
+          :ttttttffff1t1tfffLCCLLLLLfttfffffLffLLLCLLffttt1111t11111111i11i111t111i1i::,,.          
+         iLfttt11ffLffffffffLfLLffffttftffffffLffffLftftfffft111ttt11111111i111111111i:,.:,         
+       .1Lt;1ft1tfffffLLfffffttftLfttfLLfffffffffffffffttfLffttfttttt11t11t111111i11iii:,,,,.       
+      .tt;,:tf1itftttfCLffffLt1tttffLCLfffffffCCffffffffffftffttttt1tt11ii111111111tti1;,:::,.      
+     .tf:,;ttt11tttfffLfLLffLfttttfLLLLffLffLLLLfffftfffffttft1i11111tfti111ti1iii11t11i;::::,.     
+    .tf1ii1t111tfffLLffLCLLLCLLLLLCCLLLffffffLLffftfffffLftttt1111ttttttft111111ttt1tf1t1;::;,,.    
+    1fttt11t1tfffffftfLfLLftLLfLLLLLffffffffffttttttffffffttt1ttttfLfLffffffftt11111ttttt1i;:,,,    
+   ;fftt11tfffffLCLLfLfLLffftLLLLffLLttf111ttt1ttttffttttt11ttttttfLLffffffffttt1i111tt1tti1;:,,.   
+  .tt11fttfLLfLLLCCG0CLLffffLLffLttLCCf1tti111ttttttttttttttttffffffffffffffLLffttt1i11111111;,,..  
+  it11tt1fLffLLLLLLCCLffftffLCLfftfLfLfttt1111tt1111ttff1tt11tftLCfffffffffLffffftt111tt11111i;:..  
+ .111111ttLLffLLLLLLLfffLfLLCCCLLftLttft11tftfft11tt1tfttttfftttttttfftttttfffttt111iitt11i1111;:,  
+ :ftt1ttttfLfffGLffLLfLLfLLffLfLLfffft1tffff1tttffffffffttffttttf11111ttLfttffftt111t11111111tt1i,. 
+ iftttt1tfttCLfLffLfLLfLfffttffffttffffttfttt111fLftfffLfffLfttttt1ttfttfffttffftttffft111111ff11;, 
+ itftt1tffffLLffLfffLLLffttftttft1tfLLLftt11111ttffffffLLffLLf11tftt1tt111ttffLLffLGCftttt111t1111, 
+.1ttttttttfftfLffttfffLfttfttfffttfLGCLffffftttttfffffLLCLCLfffftfLft11111ttffffLffLLfttt11111it11, 
+.tfttfftfftti1tfftfffffttttt1ttffffLffffLLffftttfftftfLLfCLLLLLLfffft111111ttffffftttttftttt111i11,.
+ 1ftttttfLft1111t1ttfLftt111tttffftft11tffLLftttfffffttfffLLLttffttt111111111tfttffttLfftfft1i1iii: 
+ it11111LftttttttttffLfttfttttfffffffttffLfffffttfftftfffffffttttftt1111111111ttfffffffffftt1111;:: 
+ :t11111t1tLLtt1tffffLfttttfffLCLLLffffttffttttfffttttttt11t1ttt11ttt1111111tftffffffffffft111t1i1: 
+ .11111111tLLttt1ftttftttffffffLCCLLfftttffffffftttttt111t1111111111tt1111tttfLCLffLLLLLttf1i11i1i. 
+  i111i1t1tftff1tLLtt1tttfLffffLCCLLffftt1tffLftttttt1111111t1111111t1i11tfttLLCLLLLCLLtL111i1111i  
+  ,t1111i1tttt11fttt1i1111tffLfffffLft1tt1tt1ttttfffffttttt11111ii1i111111tttffffLLfft1tf11ti11ii,  
+   ;111t1i111111Ltit1i1111tttft111tfft111itttt111ff1tttttt1t1ii1111111111ttttffftf1:;iii111111i1;   
+    i111fi11iii1ttt111i11i11iiii111ttt111111111111111i111111111itttt111tfttftffftti:;:;1fttt11t1.   
+    ,t11t1111ii1iii1ii;i1iii1iii111i1111111iiiii11111111ii1i11tt1tff11tffttttfffft1;::1fftf1itL,    
+     ,11i1111i111iiiii1iii1i1iiiiiii1iiiiiiiiiii11i11tft1111111t1ttt111111ttffffLft1ttfLft111L;     
+      ,11111111i11ii;iiii;;iii;:;;ii11iiiii;;;;iii111tfftffttt111i1iiii111ttfffftiitfffff111t:      
+       ,1ttiittiii;ii;;ii;;;i;;:;;;ii1i;;;iiiiiiii1tt11ttttttt1111111111111tfft1ttttttft1i11:       
+        .;1i;i11i;::iiiii;;;;;;;:::;1i;:;ii;;iiiiii1t1tf111fft1111i11111111111111tttttt111i.        
+       .  :1iii11ii;;ii;;:::;;;;;:::ii;:;ii:,:;iiiii111f1tttt111111ii11i11111111tt1ttt111;          
+           .i11111iii;;i1;;;;;iii;::;ii;;;;;;;;;;;iiii1ttt11i1t11111111111111111111111ti,           
+             ,iff11ii;;iiiiiiiiiii;;;;i;;::::;i;;iiii111111i1111111111111ii1111tt1ttti:             
+               ,1t11ii;;ii;;;iiiii;;;;;;;::::;;;;;;;iiiii111i1111i11i11i1111i1t11tt1:.              
+                 ,i1111iiiii;;ii1ii;;;;;;;;;;:;;;;;i;;;i111111111tt11111t111111tti:.                
+                   .;i11ii11iiiiiii;ii;ii;;;;:;;;;;;;;iii1111tt1tt1ttttt111ttt1;,                   
+                     .,;1tti;;;;i1iii1i;ii;;;;;;i;iiiiiiii1111111ttttt1ttffti:.                     
+                        .,;i111111i1i11ii1t1iiiiiiii1111i111111ttfffffffti:.                        
+                            .,;i1tttttttt11t1ii1111111111ttttfffLLLfti:,                            
+                                ..,:i1ttffffLfffffffLLffffffftt1i:,.                                
+                                       ..,::;;iiii1iii;;;:,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;;;:::,,.                                        
+                                 .,:;itffffLLLLLLLLLLLLffLfft11;:,.                                 
+                            .,;itffLLLLLLLLfLffftfftttttttttffffLfft1;,.                            
+                    .    .:itfLLfffffffffffffffffffffttttttttt11ttfffLLf1;,.                        
+                      ,;1tfftttt1tttttfftftftttffLLLftffttttfttt11t11tttttt1;.                      
+                   .:ittttttttttt1tftffffffttt1tttfftffttttfftttt1tt11111111t1;,.                   
+                 ,itt11tfttttffftfLLLfftttttffftt1tt111tttfft1111tfff1111i11tf11;:.                 
+               :tff1i1tt11tffffffLLLCLfftfffffLftttttftttfttttt1tttttttfftt11111i;:,.               
+             ,1ffff111t1tttfftffffLLLfftttttttttfffffLfLfftttfffftt1tffffLLt11i11ii;:,.             
+           .ittfffffttt1ttttttfLCLfffffffffffttftfLLCCLLLfft11ttt11111111tfft1i111iii;,..           
+          :tt1tttttffLf1t1tfffLCCCLLLLffttffffffffLLLLLffftt1111tt11111i1111i111t1111i;:,.          
+        .iLfftttt1tfLLffftfLffLLfLffffttttffftfffLfffffftftfffft111ttt1111111i11111111i:,,,         
+       .1fLtii1ft1tffffffLffffff1fffLftfLLffffffLLffffffffttfLfftttttttt1111t111111111ii;,,,.       
+      .1fti:,iff11tft1tfLCffffff1ttttffLCLfffffffCCfffffffffffffftttt11tt11i1t11ii111t11i,::,.      
+     .tft;,:1ftt11tttfffLfLLffLLfttttfLLLLLffffLLLCLffftfffffttft1111111tt1i11t1i1ii1ttt1i:,:,      
+    .1ff1ii1tt111tffffLLffLCLLLCLLLLLCCLLLffffffLfLfffffftfLfttt11111ttttttf1111111tt1ftt1i;::,.    
+    1fttttt11t1tffffffttfffLLffLfffLLLLftffffffffttt1ttffffffttt1ttttfLffffftffttt1t1ittttt1;:,,    
+   ;ftf1tt11tffffLfCCLLLLfLfffttLLLLffLLttft11tttttttttfttttt11ttttttfLLffftfffft11i111tt1f11i,,.   
+  ,ttt11ff1tLLLLLLLCCC0GLLLffftLLLLLttLCCL11t1i11tttttttttttttttttfffffffffffffLLff111i1111111;,,.  
+  if1111t11ffffLLLLLLLCLLLfftffLCLfftfLfLfttf1111ttt1111tfftttt1tttLCfffffffffffffftt111tt1111i;,.  
+ .tt11111tttfLffLLLfLLLLfffLfLLLCCLLftLttft11tfttLtt11t1tfftttffttttftftffttttffttttt1iitt1i1111;,  
+ ;ftttt1ttttfLfffCCLLfLffLLfLLffLfLLfffft11ftfft1tttffffffftttfftttf11111ttffttfttt1t1t111i111tft;. 
+ ifttttttttfttLLfLffffLLLfLfffttfLffttffffttffttt1ttLftfffLfffLffttft1ttfttffftfffttttfff11111tf11: 
+ 1ttftt1tfffffLLffffffLCLLffttfttfft1tfLfLfftt1t11tttffffffLffLLf11tfttttt111tfffLLffCCftttt111111; 
+.tttttttttttffffLffftffffLftttttfffttfLGGLffffftttttfffffLLLLCCLffftffft11111ttffffLfLLft1t1111i1t; 
+.tfft1tfttffftii1tftftffffttttt11tffffLfffffLffffftffffftLLfLCLLffLfffft111i1t1tfffftttttftttt11i1; 
+ tfftttt1tLLft1111tttttLLft1111tttffftft11tfffLffttffffftttffLLLttffftt111111111tttffftffffft111ii; 
+ it1111111CftfttttttttffLfttfttftfLffffftttfffffffttfftffffffffftttttft1111111111ttfffffLffftt111;: 
+ ;t1i1111tt1tfLft11ffftLLftttffffLCLLLffffttfLtttttfffttttttt1t1ttt11ttt1111i1ttftfffffffffft1111i: 
+ ,t1111i1111tLLttt1tftttftttfffffLLCCLLLfftttffLfffttttttt11t111111t111tt1111ttfLCLfffLLLfttf11111, 
+  i111111111tftfft1fLfttttttfLffffLCLLLfffttt1ffLftttttttt11111t1111111t1i11tftfLLLLLLCLLfL11i111i  
+  ,t11111iit1tttt1tftf1111111tffLffftfLft1tt1tt1tt1tffffftttt1t1111ii11111111tttffLLCftt1tfit1111,  
+   ;1i111t111111i1ffi1ti11111tttft111tfLt111i1ttt111tf111tttttt11i11111111t1ttttfftft;:i;it111i1;   
+    ;111if1i1i1ii1ttft111i11i11iiii111tt111111111i111111i1111i111111tt1111fftftfffft1:;:;1ftt111.   
+    .1t11t111i1ii11ii11iii11ii11ii1111i1111111iiiii111111i1ii1i111t1tff11tfftttfffffti::tftf1if:    
+     ,t1111t111i111ii1ii11iiiii1iiiii1i1iiiiiiiiiii111i1tft111111tt1t1t111111ttfffLftt1ffft1ifi     
+      ,1t1111111i11iiiiiiiii;;;ii;;;;iii1i;i1i;;;;iii111tfftffttt1111iiii1111tfffftiiffffft11:      
+       .1tttii1t1iii;ii;;iii;;ii;;;;;;ii1i;;;iiiiiiii1ft11tttfttt111111111111tfft1ttttfft111,       
+        .;11i;i111i;::ii;ii;;;;;;;;::;i1i;;;i;;;iiiiii1t1ft111ff11111i111111111111tttttt11i.        
+       .  :11;ii111ii;;i;;;::::;;;;:::;ii::iii,,:iiiiii11tf1tttt1111111i111111111tt11tt11;  .       
+           .i1111111ii;;;i1;;;;;iiii;::i1;;;;;;;;;i;;iii11ttt1111111111111111111111i111i,           
+             ,itff11ii;;iii1iiiiiii1;;;;ii;:,:::i;;;iiii1i1111i11111111i1111i1111t1tt1:.            
+               ,1ft11iii:;ii;;;ii1ii;;;;;;;;::::;;;;;;iiiiii11ii11ii11i11111111t1tt1:.              
+                .,i111ii1iiii;;iii1ii;;;;;;;;;;:;;;;;;;;;i111i111111111111111111ti:.                
+                   ,;i111ii11ii;iiiiiiii;ii;;;;:;;;;;;i;iii1ii1t11tt1ttft111tt1;,                   
+                     .:;1tt1i;;i;i1iiii1;;ii;;;;;;i;iiiiiiii111111tttttttffti:.                     
+                        .,;1tt1111iiiii11ii111iiiiiii111111111111tffffffti:.                        
+                            .,;i1tfttttttt1111ii1111t11111ttttffffffti:,                            
+                                ..::i1tffLfffLfffffffLLLLfffftt1i:,.                                
+                                       ..,,:;;iiii11ii;;::,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;i;;:::,,.                                        
+                                 .,:;i1tfffLLLLLLLLLLLLLfffft11i:,.                                 
+                            .,;itfLLLLLLLLLLfffffffftfftttffffffffft1;,.                            
+                    .    .:itffffftffffffffffffffffffffttttt1tt11ttfffLf1;,                         
+                      ,;1ttftttttt1tttttfttttftttffLLLftffftttttt11111ttttt1:.                      
+                   .:1tt11tttttt1tt1ttfffffffttt1ttttftttttfttft1tt1t111111t11i,.                   
+                 ,itt1i11ffttttffftfLLLffftttttfft1t111111ttfft1111tfft111111tf1i:.                 
+               :tLft1i11t111tffffffLLLCLLfttftfffffttttfttttttttt1tttttttfft111111;,.               
+             ,1ffffft111t1ttttfttfLfLLLffttttttttttfffffffLftttfffftt11ffffLft1111ii;,.             
+           .itttffffffttt1ttttttfLLCLfffffffffttttftfLLCCLLLfft11ttt11111111ft11111iii:.            
+       .  :tft1ttttttffff1tt1ffffCCCLLLLLffttffffffffLLLCLffftt1111t1111111i111i111111i:,.          
+        .ifffft1tt11tfLLffftfLfffLfLLffffttftffftffLfffffftttttfft111ttt1111111i11111111;,..        
+       .1ttLfi;1tf11fffffffLLffffft1ftfLftffLffffffffffffffffttfLftttttttt1111111111111ii;,,.       
+      ,1ttti:,:1ff11tft1tffCLffffff111ttffLCLfffffffCLffffffffffffft1ttt1tt11ii1111i111tii,,:.      
+     ,tttf;,,;1ttt11ttttfffLfLLffLLft11tfLLLLLfffffLLLffffffffffftft1111111tt1ii11iiii1111i:::.     
+    .ttfttiii11t111tffffLLLffLLLLLLLLLLLCCLLLffffffLLfffttffffLfttt1111ttttttft111111t11ttti;::.    
+    iffftttt1i1t1tffffffftfffLLLffLffLLLLLLfffffffffttttttffftfftt11ttttffffffftfftt1111tt1t1i:,    
+   ;ttfLttt111tfftfffLCLLfLLfLfffftfLLLfffLftft11t1t11ttttfttttt11ttt1ttfLLffffffft11i111tttf1i,.   
+  .tttt111ff1tLLLffLLLLCG0GLLLffftfLLfLt1LLCLt1t1ii11tttttttttttttttfffffffffffffLLftt11ii11111;,.  
+  ift11111t11fLfffLLLfLLLLLLffftffLLLffttLLfLtttt111ttt1111ttfttt11tttLCffffffffffffftt111tt111i;,  
+ .ft1111111tttfLLfLLLLLLLLLfffffLLLLCLLftfftfft11tttfft11t11tftttfft1ttftttftt1tfffttt1111tt11111;  
+ :Lft1tt11tttttLfffLCCLfLLffLLfffffLfLLftffft1fftff1tttffffffftttfftttf111111tftttftt1111111i111t1, 
+ ifttttttt1ttfttfCffLffLfLLLfLfffttfffft1tftfttffttt111fLftffffffLffttft1ttfttffttffftttfft11111f1; 
+ tf1tfftt11fffffLLLffLfffLCLLffttttttff1tfffLffttt1111ttffffffLLfLLf111fttttt11ttfffLffCGftttt1111i 
+.tft1tttt1ttttffttfLffttffffLffttttttfttffCGLfftffttttttffffffLLLCLfffttfft11i11tffffLffLfttt111i1i.
+.tftffttfftfffff1i1tfftfffffftt1t1111ffftfLffffLLffffttftfftfLfLLLLffLLtfftt11111tffffttttttttt1i1i.
+ tftfftttt1tLLff1i1i1tttttLLftt111tttffftfft1tfLffLfttffffffttffLLLfttfttt11111111ttttfftffttft11ii.
+ 1f111111t11CftfttttttfttffLfttfttttfLfffLftttffffffftttfffttffffffttt1ttt1111111111ttffffftfft111: 
+ ;t111111t11t1tfLftt1tffftLfttttttfffLLfLLffftttLfttttfffttttttt11t1tt11ttt111111tftffffffffff1111: 
+ .t1111111111i1LLftt11ttttfftttffffffLCCLLLfftttfffffffttttttt11t111111111t11111ttfLCLffLLLftf1i11, 
+  i11111111111tftfft1tLLft1t11tfLfLffLLCLLfffttt1tLLLffttttttt11111111111it1i11fttfLLLLLLCLff1ii1i  
+  ,1111111111t1tttt11fttt1111111tffLffffffft11t1ttt1t1ttffttfttt1t11111i1i11111tttffffLft11ft1111,  
+   ;t111tit111111111tL1itti111i1tt1ft111tfff11111ttt111tft11tt1ttt11i111111111ttttffftt;;ii11111;   
+   .ii11111fi11i1i11tttt1111i11i11iiiii11tt111111111i1111i1i11i111111i1tt111tftttfffft1:::itt111.   
+    .1t1111t1111iiii1iii1ii;i1iii1i;ii111i11111i1i1iiii1111111ii1111tt1tft11tfttttffff1;,;ftft1:    
+     ,1t111i1t1111111iii1ii1iiiii1iiiiiiii1iiiiiiiii;i11ii1tft1111111t1tt1111111tffffft1tfft1t;     
+      .1111111111iii11iii;iiii;;;iii;;;;iiiii;iii;;;;;ii111tfftffttt1111iiii111ttfffti1fffft1:      
+       .it11f1ii1t1iii:;ii;;ii;;;;;;::;;;ii1i;;;iiii;iii1t111ttttttt111111111111tft111tttt11,       
+        .;1i1i;;i111i:::ii;ii;;;;;;;;:::;iii;;;i;;iiiiii1t11ft111Lt1i111111111111111ttttt1i.        
+          :11ii;i1111ii;;i;ii;:::;;;;;:::ii;::ii;,,;ii1iii11tt1ttt111111ii111111111tt11t1:          
+           .i11ii111iiii;;;i1i;;;;;iii;::;ii;:;;;;;;;;;iiii11tt111111111111111111111i11i,           
+             ,i11tft11ii;;i;iiiiiiiii1i;;;;i;;:,::;i;;iiii1i1111i111111111111111i11tt1:             
+               ,itt111iii;:iii;;;iiiii;;;;;;;;::::;;;;;;;iii1i11ii1iii1111i1111ittt1:.              
+             .  .:;111ii1iiiiii;;iii11i;;;;;;;;:;:;;;;;i;;;ii1111111111111111111t1:.                
+                   ,;11t11ii11iii;iiiii;ii;ii;:;;:;;;;;;;;iii1ii1t11t11ttt11tt1;,                   
+                     .:;11tt1i;;;;iiiiiiii;;ii;;:;;;i;;iiiiiii111111tttttttti:.                     
+                        .,;1ttt1ii1iiiii11ii111iiiiiiiii1111111111tfffft1i:.                        
+                            .:;11tfftttt1tt1111ii1111111111ttttfffff1i:,                            
+                                .,:;i1tfffLLfLLftfffffLLffffft11i:,.                                
+                                       ..,,:;;ii11i1i;;;::,...                                      
+""")
+    rawFrames.addOne("""
+                                        .,,:::;;;;;i;;:::,,.                                        
+                                 .,:;ittfLLLLLLLLLLLLLLLfffft11;:,.                                 
+                            .,;itfLLLLLLLLffLffLffftfftttttffffffffti;,.                            
+                         ,:itfLffftttfffffffffffffffffffttttttttt1tfffff1;,                         
+                      ,;1tfttttttttttt11ttffttttttffLLLLftfftttfttt1t11ttft1;.                      
+                   .:1ff1111ttttttttt1ttfffffffttt1ttttfttfttftftttt1tt11111t1i:.                   
+                 :1fft1i11tftttttffftfLLLffftttttffftt1t1111ttfftt111tfft11111tt1;.                 
+               :tLLft1i111t111tfffLfffLLLLLfftffffffftttttftttttttt1tttttttftt1111i:.               
+             ,1ffttfftt11tt1ttttfttfLffLLLffttttttttttffffffLfftttfffft11ffffLt11111i:.             
+           .itt1ttffffffttt11ttttttfLCLffffffffffttttfffLLCLLLfff11ttt1111111tft111111i,            
+       .  :tfttt1ttttttffLf1ttttfffLCCCLLLLLfttffftfLfffLLLLLffftt111t1111111111111t111i:.          
+        .iftfffftttt11tfLLfffftfLffLLfLLffffftftfftfffLffffffttftffft111ttt111111i1111111:..        
+       .1fttfLtii1tft1tffffffLLfffffft1ftfLftfLLffffffffffffffffttfLftttttttt111111111111i:,.       
+      ,tt1tt1;:,;1ff11tft11tfLCfffffLt1t1ttfLLCLfffffffCLffffffffffffftttt11tt1ii111ii11t1i::.      
+     ,ttttf1:,:;tttt11tttttfffLfLLffLLfttttfLLLLffffffLLLffffffffffftf1111111tt1ii11iiii111i::.     
+    .1ttfttiiii1tt111tfffffLLffLLLLLLCLLLLLCCLLLLfffLfLLLffttffffLfttttt11ttttttf111111t1ttti;:.    
+    ittffttttt111t11tffffffftfLLLffffLffLLLLCLffffffffffttt1ttfftffttt1ttttfLfffftffttt111ttt1;,    
+   ;ftttLfttt111tffftfLLLCLLfLLfLfffftfLLLLffLftft11tttt1ttttfttttt11ttttttfLLfftfffttt1111ttt1;.   
+  .fttttt111Lf1tfLLfLLLLLCCG0GLLLffftfLLfLf1fLCLt1ttii111tttttttttttttttffffffffLffLLfftt1i11111:.  
+  iLtt11111tt11ffffffLLLLLLCCLLffftffLLLffftLLfLfttt1i11tt1111ttfftt11tttLCfffffffffffftt111tt11i,  
+ .ffttt111111tttfLLffLLLLLLLLLfffLfLLLCCCLLtfLttft11tttfLt111t1tftttfLt1tttttfftt1tffttt11i1f1i11i. 
+ ;Lffttttt1ttttttfLfffLGLLfLLffLLLLfffLLfLftffft1tffff1ttttfffffffttfft1tf111111ffttfftt11t111111f: 
+ 1ftfttttttt11ttfttLLffLffLfLLLfLffftttffffttftffttfttt111tLftfffffffffttft1ttfttffttfftttfft1111f; 
+ tft11ffttt11ftffffLLLffLfffLLLLffftttttff1ttffLLfttt1111tttffffffLfLLLt1tfttttt11ttfLLffLGfttt11t1.
+.fLftttfttttttttffftfLfffttffffLffttttttffttfLGCLLfffftttttfffffLLLLCLffftfff111i11tfffLffLftt11111.
+.fLftfftttffttfffftii1tfftftfffftt1tt111tfftfLLffffLffffttffffffLLfLLLffLLffft111111tffffttttftt1i1.
+ fLftffttttt1tfLfft1i1i1ftttfLLftt1111ttfffftft11tfffLffttfffffttfffLLftfffft11111111tttffffffft11i.
+ 1Lt1t11111t11LLtfftttttttttffLfttft1tfffftffffttffffffffttfftttffffffttttttt1i1111111ttffffffft11; 
+ ;Lt1t111t1t11t11fLLftt1tffftLLftttttfffLLfLLfLffttfLtttttfftttttt111t1tt11tt11111i1tttfffffffft1t: 
+ .tt11111111111i1fLLttf11tfftffftttftfffLLCCLLffttttfffffftttttt111t1t1111111t1111ttfLCLffLLLftti1, 
+  ;t111i111i1111tttttft1tLLtt1tt1tfLffffLLCCLLffftt1tffLftttttttt11111111i111t1111ftfLLLLLLCff111i  
+  ,11111111111itttttt111ftft1111111tffLLfffffLtt1t11tt1ttttffttf1tt111111ii1111111ttfffLLft1tt111,  
+   ;t1111t1it11111111i1fL1itti111i1tt1ft111tfff11111ttt111tft11tt1ttt11i111111111ttttfftt;iii111;   
+   .1ii11i1itfi111iiii1ttft111ii11i11iiii111tt1t1111111ii111i1i11i1i111111tt111tftttfffti::;ttt1.   
+    .11f1t111t111i1iii1iii11ii;i1iii11iii11ti1111111iiiii11111111ii1ii1tt1ff11tfftttffff1::tfft,    
+     ,1t11111i1t111i111iii1iii1iiiii11ii;iiii1iiiiiiiiiii11111tft111111111tt111111tfffff11ffft:     
+      .111111111111iii1iiiiiiiiii;;iii;;;;iiii1i;i1i;;;;;ii111tfftffttt1111iiii11tffff1itffft:      
+       ,11111tti1i1f1iii;;ii;;iii;;;;;;::;;;ii1i;;;iiii;iiitt111tttftt11111111111tfft1ttttt1,       
+        .i1ii11;;ii11ii;::;i;iii;;;;;;;;::;;i1i;;;i;;iiiiii1t1tf1t1fft1i1111111111111ttttti.        
+          :11i1i;i1i111ii;:iii;;::::;;;;;:::ii;:;ii:,:;iiiiii11fttttt11111i1i11111111t1tt:  .       
+           .;1111111t1i1iii;;i1i;;;;;iiii;:;i1i;;;;;;;;i;;iiii1tt11i1t11111111111111111i,           
+             ,i11itftt1iii;;i;iiiiiiiii11;;;;ii;::,::;;;i;ii111111111111111i111i11itt1:             
+               ,i11tt111iii;:iii;;;iiiii;;;;;;;;::::;;;;;;;iiiii111111ii11i111111tt1;.              
+                .:i111iiii11iiiii;;iii11i;;;;;;;;;;::;;;;;;;;;i1111111111111111t11:.                
+                   ,;it111iiii11iii;iiiiiiii;;i;;;;:;;;;;;;;iiiiii1t11t1ttt11t1;,                   
+                     .:;1tttt11i;;;;ii1iiiii;;ii;;;;;;i;iiiiiiii11111ttttttti:.                     
+                        .,;1tft11ii11iiii11iii1t1iiiiiiii111i111111tfLff1i:.                        
+                            .:;11tffftttt11t11111i11111111111ttfffft1i:.                            
+                                 .:;i1tffffLffLLftfffffLfLfftt1ii:,.                                
+                                       ..,::;;ii1111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,:::;;;;;;i;:::,,.                                        
+                                 .,:;ittfLLLLLLLLLLLLLLLLffft11;:,.                                 
+                            .,;itfLLLLffLLfffLLfffffffftttttfffffftt1;,.                            
+                    .    ,:itffLffftttfffffffffffffffffLffttttt1ttttffft1;,                         
+                      ,;1tffttttttttt1tt11ttftftftttffLLLLtffffttftt1t11tft1;.                      
+                   .;1tft1111tttttt11t11ttfffffffttt1tttfttttttftft1tt1tt11t1ti;.                   
+                 :1fff11i11tfftttttffftfLLLLfftttttffftt1t1111ttfft1111tft11111tt;.                 
+               :tLLfftti111tt111tfffLfffLLLCLfftttfffLftttttftttftttt1ttttttfft1111;.               
+             ,tLfttfffft111tt1ttttfftfLLfLLLffftttttttttffffLfLfftttfffft11ffffft1111:.             
+           .ift11ttfffffffttt11ttttttfLLCLfffffffffftttftfLLLCLLffft1ttt11i1111tft1111i:            
+       .  :ffftttttttttttfffft1tttfffLCCCCLLCLLfttfffffLffLLLLLLfttt1111t1111i1i111i1111;.          
+      . .1fttffLfftttt11tffLLffftffLffLLfLfffffffffffffffLffffLfttttfft111ttt111111111111i,         
+       .tf1ttfLf1;i1tft1tfffffffLLfffffft1ftfLftfLLfffffffffffffffftfLLfttttttt11111111111i:.       
+    . ,ff1tttti::,;1ff111tft1tffCLfffffLt1ttttfLLCLfffffffCLfffffffffffff1ttt1tt1ii111i1111i:.      
+     ,ff1tttfi,::;tttt1i1ttttffffLfLLffLLfttttfLLLLLffffLLLLLffftffLfftff111111tt1ii11i1i1tti:.     
+    .1tttffttiiii1ttt111tfffffLLffLLLLLLCLLLLLCCLLCLfffffLLLLfttffffLftttt111tttttf11111tt1tti:.    
+    ittffffttttt11itt1ttffffffttffLLfLftLLfLLLLLLffffffffffttt1tfffffftttttttfLffffffftt111ttt1:    
+   ;fttttfLttttt11tfffffffLCCLLfLLfLLffftfLLLLffLftfttt1ttt1ttttfftttt11ttttttfLLffffft1t1111tf1,   
+  .ftttt1ttt11ff1tfLLLfLLLLCCCG0GLLLffftfLLffL1fLCCf1tt1i111ttttttttttttttffffffffffffLfftt1i111i.  
+  iffftt1t111tt11tfLfffLLLLLLLLCLLfffttfLLCLfftfLfLfttf1111ttt1111tfftt11tftLLffffffffffftt1i1t11:  
+ .ffft111111111tttffCLffLLLLLLLLLfffLLLLLCLCLLftLftfft11fttLtt11t1tffttfftttttfffftttfftttt1itti11. 
+ :Lffftttttt11ttttttLLfffCGLffLLLfLLLLLfffLfLLftfff11fftft1tttfffffffttfftttf11111tfftffttt1t11i1t; 
+ 1Lttftttttttft1ttfttfCLffLffLfLLLfLffftftffffttffffftffttt11tffffffLffLffttft1ttfttfftfftttff111ti 
+ tCftt1tffttt11fffffffLLfffffffLLLLffftttttfft1tffLLffttt111tttffffffLfLLLt1tftttt11ttfLfLfCCftt111.
+ fCfft1ttftttttttttffftfLLffttffffLffttt1tfffttfLCGLfffffttttttfffffLCLCLffftfLf11111tffffffLftt111.
+ tCfffffft1tffttfffffti11tfffftfffftt1tt111tffftLLffffLLffffttfffftLLfLLLLfLLfff111i11tfffftttftt1i.
+ 1GLfftftttttf1tfLLfft11111ftttfLLfftt111tttffftft11tfLffffttfffffttfffLLftffftt1111111ttffftLfft1i.
+ iGft11t11111t11fCftfttttttttttffLfftffttftfLfffffttfffLfffftttftttffffffftttttt1i111111ttfffffftti 
+ :Lft1t11i1t1t11tt1tfLLttt1tffftfLfttttffffLLLLCffffttfLtttttffftttttt11t1tt11tt1111i1tftfffffff1t; 
+ .1tt1111i111111111tLLfttf11ttttffttttfffffLLCCLCLfftttfffffftttttt111t11111t11tt1111ttfLLfLLLft11, 
+  ;1tt111i111i11111tffffft1fLLtt1ttttfLffffLLCCLLffftf11ffLffttttttt1111111111i11i11fttLLLLLCLf11i  
+  .111111111111111t1tttt11tftft1111111tfffLffftfLft1tt1tt1tt1ttfttfttf11111i1i111111tttffLLft1f11,  
+   ;tt11i1it1if111111111itffi1f1i11111tt1ff111tffft111i1ttt111tt111t1ttt1ii11111111ttttfff1;ii11;   
+    1t;i11111itfi11111i11tttft111i111i11iiiii11tt1t111111111111i1ii1i1i11111tt111tfttfffft;:;1t1.   
+    .111t1t1111t111i11ii11i1i11iiii1iii11iii11ti11i11i1iiiii11111111ii1ii1t11ff11fftttffft;:1ft,    
+     .i11t11111itt111i11111i11ii11iiiii11iiiiiii1iiiiiiiiiii11i11tft111111tt1t111111tfffftttff:     
+      .i11111111111111ii11iiii;ii1ii;iiiii;;;iiiiiiii1i;i;;ii1111tffffftt1111iiii11tffffi1fft:      
+       .11i111tf1iii1f1ii1;;iii;;iii;;;i;;:;;;iiiii;;;iiiiiii1tt11ttttftt1111111111tft1tttf1,       
+        .i11ii11i:;ii1t1i;:::ii;iii;;;;;;;;::;;iii:;;i;;iiiiii1t1fft11Lt1i1111111111111ttti.        
+          :11ii11i;i1i111ii;:iii;i;:::;;;;;:::;ii::;ii:,:;iiiii11tf1ttt1111111111111111tt;  .       
+           ,i11ii111i1t1i1iii;;ii1;;;;;iiii;::;i1;;;;;;;;;;;iiii1ttt1111t11111111111111i,           
+             ,i11i1tLf1t1iii;;iii1iiiiiiii1i;;;;i;;::::;;;;;iii1i1111i11111111111ii1t1:             
+               ,i111tt111iiii;;iii;;;iiiiii;;;;;;;;::::;;;;;;;iiii111i11i1111111i1t1:.              
+                 ,i1111i1ii11iiiiii;;iii11i;;;;;i;;;;::;;;;;i;;;11111111t1t1111tti:.                
+                   ,;i1t111iiii11iii;;iiiiiiii;ii;;;;:;;;;;;;;;ii1iit11ttttttt1i,                   
+                     .:i1ft1t111i;;i;ii11iii1iiiii;::;;;;;iiiiiii11111tttttti:.                     
+                    .   .:;1tfft11iiiiiii1111iii1t1iiiiiii11i111i1tttfff1i:.                        
+                            .:;1ttfffftttt11t11111ii111111111ttffftt1i:.                            
+                                 .:;i1tffLLLLLfLLfffffffffftttti;:,.                                
+                                       ..,::;;ii1111ii;;::,,.                                       
+""")
+    rawFrames.addOne("""
+                                        .,,:::;;;;;;i;:::,,.                                        
+                                 .,:;itffLLLLLLLLLLLLLLLLLfft11;:,.                                 
+                            .,;1tfLLLLLfffLfffLLfffffffffftttffffft1i;,.                            
+                    .    ,:1tfLLffffffttfLLfffffftfffffffLfttttt1tttffft1;,                         
+                      ,;1ffttttttttttt1tttttttftttttttfLLLLLtfftttftttttttt1;,                      
+                   .;1ftft1111tttttttt1t11ttfffffffttt1tttttttftttftt1t11t11t11;.                   
+                 :1fLft111111tfftttttffftfLLLLffttttttffft111111ttfft111tff111111i,                 
+               :tLLLffft1i111tt1111tffLfffLfLCLLfttfffffftttttftttttttt1ttttttftt11;,               
+             :tLfttttfffft111tt1tttttftffLfLCLLffttttttttfffffffffftttffft11tfffft111;.             
+           .1fLt11tttffffffftttt1ttttfttLLCCffffffffffftttfffLLCLLLfft1tttt11111tff1111:            
+       .  :fftftft1ttttttttfffLt1tt1tfffLCCCLLLLLffttffffffffLLLLLfftt1111t1111i1111i1t1i,          
+         1LftttffLfttttt1tttfLLLffftfLfffLffLfffffttfffffffffffffLftftfftt11ttt1i111111111:         
+       .tLt1tttfLfi;i1tft11fffLffffLLffffff1tftLfftffLfftfffLLfffffffttfffttttttt1111111i11;        
+      ,fLt1ttttti::,;1tft11tfft1tffCLfffffLt1ttttffLCLffffffLCLfffffffffftft1tt1tt1i11111111;.      
+     ,tLt1tttff;,,:;1tttt111ttttfffLLLLLffLLfttttfLLLLLfffffLLLLffffffffftft11111tt1ii11iii1t;.     
+    .ttttttffttiiii1t1t111ttffffLLLffLCLLLLCLLLLLCCLLLLfffffLLLffftffffLfttt111tttttf1i111t1tt;.    
+    it1tfffffttttt11i1t11ttffffffttffLLLLffLLffLLLLLftffffffffttttttffffftttttttfLfffffftt111tti    
+   ;LttttttfLt1ttt111tfffffffLCCLLfLLfLLfffffLLLLffLLttft1tttt1ttttfftttt1ttttttfLffffffft1111tt:   
+  .ffttttttttt11fLt1tfLLfLLLLLCCCG0GLLLffftfLLffLttLCCL11t1i11tttttttttttttttffffffffffLLftt1i111.  
+  iLfffftt1t111ttt11fLLffLLCLLLLLLCLLLffttfLLCLffttLLfLttft111ttt111ttfftt1ttttCLfffffffffftt11t1;  
+ .fLffft1t11111t1ttttffCffLLLLLLLLLLffffLLLLCCCLLLtfftfft11tttLf111t1tftttffttttfftftttffftt111ti1. 
+ ,LLfffttttttt11tt1tttfLffffCGLLfLLLffLLfLLffLfLLftffft1fftff1tttfffffffttfftttf1111tffttfttt111it; 
+ ;Cfttffttttttttt1tttfttfCLffLffLfLLLffLfftttfLfftttfffftffttt11tfLttfffffLfftff1ttfttfftffttfft11i 
+ 1GLfftt1tfftttt1tffffffLCLffffffffCCLLffttfttttf1tfffLLfftt11t1ttffffffLffLLt1tftttt11tffLffCLtt11.
+ tGLffftt1tfttttttttttffftfLLffttffffLfftttttttfftffLGCLffffftftttfffffLLLCLftftfft1111ttffffLftt11.
+.1CLffffffft1tffftffffff1i11tfftfftffffttttt11tffftfLffffLLffffttfffftfLfLLLffLffft111111ffffttttti.
+ iLGLtfttfttttttt1tfLLff1111i1fttttfLfftt1111ttffftfft1ttfLfffttffffffttffLLfffftt1111111tttfffftti.
+ ;fCfttt1t111111t1tLLtfftttttttfttffLffttfttftfffffffftttfLfffftttffftffffffftttftt1111111tfffffffi 
+ :1Lft11t1111t11t11t11fLLfftt1tfffffLftttttfffLLLfLLffffttLfttttffftttttt11t1tt1ttt1111itftLffffft; 
+ .i1tt11111111111111i1tLLfttf11ttfttfftttffffffLCCLCLfftttffLfffttttttt11t1111t111tt111ttfLLfLLftt, 
+  ;11t1111ii1111i1111tfftfff11fLftt1tt1tfLfffffLCCLLffffft1fLfLtttttttt1111111111it1iitftLLLLLLfti  
+  ,11111111111111111t1ttttt1itftft1111111ttffLffLtffft1tt1tt1tt1ttfftfttt1t11111i111111ttffLLt1t1:  
+   :t1t111111t1itt1111111111tffi1f1i1i111tt1tf1111ffft111i1ttt111tft1tt1ttt1111111111ttttfft;;i1i   
+    1f1;i1i1111itf1111i11111tttft111ii11i11iiii1111ttt11111111111111i11iii1t111tt111ftttfff1::tt.   
+    .1111f1tt1111t111i11iii11i1111iiii1iii11iii11t111111111iiii1111t111iiii1tt1tf11tftttfff1:1f:    
+     .ii11t1111t1itt111111111i111ii1iiiiiii1iiiiiii1iiiiiiiiiii11i1ttft11111tt1tt11111tffft1tf:     
+      ,i1i111t1111111111ii11iiiii;ii1ii;i;iii;;;iii1ii;i1i;;;;iii111fffffttt111ii1i11tfff11ff:      
+       .iti11111tf1iii1f1iiii;;ii;;;ii;;;;i;;:;;;ii11i;;iiiiiiii1tt11tttfft1111111111tft1tft,       
+        .iti1iii11;:;i11t1i;:::;ii;ii;;;;;;;;:::;;iii:;;i;;iii111111ftt1ff11111111111111tt1.        
+          :11i1i111;;ii1111iii;;i;i;;::::;;;;;:::;ii::i1i,,;iiiiii11ftttt111111111111i1tt;  .       
+           .i111ii111i11t111iii;;;i1i;;;;;iiii;:;;ii;;;;;;;;;;;iiii1tt11111111111111i1ti,           
+             :i111111ffttt1iii;;;iiiiiiiiiii11;;;;ii;::,::;;;iiii1i11t1i1111111i1ii1t1:             
+               :i111itfti11iiii;;iii;:;iiiiii;;;;;;;;::::;;;;;;;ii11i1111ii11i11111t;.              
+             .   ,i11i1111iii11iiiiii;;iii11i;;;;;;;;;;;:;;;;;i;;;i111111111111tti:.                
+                   ,;i111111111ii111ii;;iiiiii1i;ii;;;;;;;;;;;;;iii111t11tttft1;,                   
+                     .:i1ft11t1111i;;iiiii1iii1i;iii;:;;;i;;iiiiiii1111ttttti:.                     
+                        .,i1tfft111iiiiiiii1111ii1t1iiiiiii111i1111tttffti:.                        
+                            .:i1ttfffffttt111t111111i111111111ttffft1i:,                            
+                                 .:;i1tfLLLLLLLfLLfffffffffftt1i;:,.                                
+                                       ..,,:;;ii1111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,:::;;;;;;i;:::,..                                        
+                                 .,:;i1ffLLLLLLLLLLLLLLLLLftt11;:,.                                 
+                            .,;1tfLLLLLLffffffffLLfffffffffttffffft1i;,.                            
+                    .    ,;1tffLfffffftttffLffffffffffffffLLftttttttttft1;,                         
+                      ,itffftttttttttttt1tt11tttftttftttfLLLLftftttttt1tttt1;,                      
+                   .;tffttt111t1tttttttttt11ttfffffffttt1t1tftttttftftttt1tt111;.                   
+                 :1LLftt1t11111tfftttttfffttLLLLffttttttffft1t1111ttfft111tft1111i,                 
+               :tCLLLffftt1ii11tt1111tfffftfLLfCLLfftfffffffttttttttttttt1fftttfft1i,               
+             :1LLfttftftfftt111tt1tttttfttfLffLLLffftttttttttfffLffLftttffft11ffffft1i,             
+           .1ffft1tttttffffffftttt1tttttttfLLCLfffffffffttttttfLLCCLLfft1tttt11111tt111;.           
+       .  ;fLftftttt1ttttttttfffLf1ttt1ffffLCCCLLLLLfftfffffLffLLLLLLfftt1t1t11111111i1ti:          
+        .1CfffttfffLfttttt11ttffLLfffttfLfffLfLLffLfftttfffffffLfffffttttfft11ttt11i111111;         
+       .tLftt1ttffLti;i1tff11tfffLffffLLffffff1tftLfttfLLffffffffffffffftfLfftttttt11111111i.       
+      ,tLLt1tttttti::,:1tff111tfttttfLCLfffffLt1ttffffLCLfffffffCLffffffffffff1tt1tt1i1111iti.      
+     .tffft1tttft;,,::itttt1i1tt1tffffLLfLLffLftttttfLLLLLffffLLLLLffftfffffff111111t1i1t1ii11.     
+    .1ttttttffttti;iii111t111ttffffLLLffLLCLLLCLLLLLLCLLLLfffLfLLLfftffffLfttt1111tt1tf1i11t1t1.    
+    it1ttttfffftttttt11itt11ttffffffttffLLfLftfLffLLLCLffffffffffttt1ttfffftttttttfLffftfftt11t1.   
+   :ffttt1tttLLt1tt11111ffffffLfLCCLffLLfLLtfftfLLLLftLLfttt11ttt1ttttfftttt1tttttfLfffffftt111t;   
+  .tfftttttttt1t11tLf1tffLLfLLLLLCCLG0GLLLLffffLLLfLf1LLCLt1t1i111ttttttttttttttfffffffffLLft1111,  
+  ;Lfffffttt1t1111tt11tffffffLCLLLLLLCCLLffftfLLCLLfftLLfLtttt111tt11111tfftt11ttfCfffffffffft11t;  
+ .tLfffft11t11111111ttttfLCffLLLLLLLLLLffffLfLLLLCCLLffLttft11tttfft11t1tfttffftttfttffttffttt11t1. 
+ :tLffffftt11ttt111tt1tttfLffffCGLLffLLffLLfLLffLLLLLffLft1tfffft1tffffffffttffttft1111tftfftt1t11; 
+ ;fLffttfftttttttttt1tttfttfCLffLffLLfLLLfLffftttLffft1ffffttfttt11tfLftfffffLftttt1ttftfftffttft1i 
+ 1fCLfftt1ttffttttt1tfffffffCLfffffftfLLLLffttftttfftttffLLfftt1111ttffffffLfLLf11ffttt11tfLLfLCtt1.
+.1LGLffft1tttftttttttttttffttfLLfffttffffLfftttttfffttfLCCLffffftftttfffffLLLCLffftff11111tffffLtt1.
+.1fCCLffftffft1ttffttffffft1i11tfftffffffftt1tt111tffffLLffffLffffttfffftLLfLLLLLLffft11111ffftttf1.
+ i1LGCffftffttttttt1ttfLfff1111i1ft1ttfLLftt1111tttffftft11tfLfLfftfffffftfffLLfffftt111111tffffff1.
+ ;1fGLftt1tt111111t11tCLttftttttttfttfffLfttft1ttffftfffftttfffffffttfffftfftfffttttt1111111tfffffi 
+ :11Lftt11t1111t11t11tt11fLLfttt1tfffffLfttttttfffLLLLLfLffttfLtttttfttttttt1111tt1tt11111tttfffff; 
+ .1itttt11111i11111111i11fLLfttf11tffttfttttffffffLLGCLLfffttffffffftttttt11t11111111t1111tLLfLLft, 
+  ;1i1t11111111111i11111tfffftft1fLLft11t1tfLLffffLLLLLfffttt1tffLfftftttt1111t11i1111i1tttLLLLLfi  
+  ,111111111t1111111111t1ttttt11tftff11111111fffLffLfffLtttt1tt1tt1tfffffttt11111iii1111ttffLLt1t:  
+   ;111tt111111t1itt11111111111tffi1f1i1111ittttf1111tfff11111ttt111tt11tttttt1i111111ttttfffi;1i   
+    ittti:1111111i1fti111i111i1tttft111ii11i11iiiii111ttt111111111111i1i11i111111tt111fttffft:;t.   
+    .i111ift1t11111t1111i1iiii11i1i11iiii1iiii1iii11t111111111i1ii1111111ii11i1t1tLt1tfttfff1:t:    
+     .iii11t1t11111i1t111i111111i111ii1iiiiiii1iiiiiii11iiiiiiiiii11111ff111111tttt11111tfff1f:     
+      ,ii1i111tt1111111111iii11iiii;iiiii;;;iii;;;;;ii1iiiiii;;;;ii1111ffffftt1111ii111tff11L;      
+       .it11111111tf1iii1ttiiii;:i1i;;;ii;;;;;;::;;;ii11i;;iiiiiiiittt11ttfft111111111tft1tt:       
+        .;t1i11ii111;:;i1it1i;;:::ii;iii;;;;;;;;:::;;ii;;;i;;;iiiii1t1tft1tft111111111111t1,        
+          :11ii1ii11i;;i1i1111ii;;iii;;::::;;;;;;:,:ii;:;ii;,:;iiiii11tt1ttt1111111111i1t;  .       
+           .i1111ii1111i11t1i1iii;;;i1i;;;;;iiii;::;i1i;;;;;;;;;;iii11tt111111111111i1ti,           
+             ,i11i1111tfft1t1iii;;;i;iiiiiiiiii1i;;;iii;::::;;;;;iii11111i11111111i111:             
+               :i1111itft111iiiii:;iiii;;;iiiii;;;;;;;;;:::;;;;;;;iii111111i11111111;.              
+                 ,itt1ii1111iii11iiiiii;;iiii1ii;;;;;;;;;::;;;;;i;;;1111111t1111t1:.                
+                   .:i111111111iii1111ii;;iiiiii1i;;i;;;;;;;;;;;;;ii111t111ttt1;,                   
+                     .,i1fft11tt111i;;i;iiii1iiii;iiii;;;;;i;;iiiiii1111tft1i:.                     
+                    .    ,i1ttfftt11iii1iiiii111ii11111iiiiii1ii1111ttttti:.                        
+                            .:i1tfffffffttt111tt111t1i11111111tttftt1i:,                            
+                                 .:;i1tffLLLLLLLLLLfffffffffft1i;:,.                                
+                                       ..,,:;;ii1111ii;;:,,,.                                       
+""")
+    rawFrames.addOne("""
+                                        .,,:::;;;;;;;;;::,..                                        
+                                 .,:;i1ffLLLLLLLLLLLLLLLLffft11;:,.                                 
+                            .,;1tfLCCLLLLfffffffffLffffffffftffffft1i:,.                            
+                    .    ,;1fffffffffffffttfLLffffffffffffffLftttttttttti;,                         
+                      ,itffftttttttttttttt1tt1ttttftttfttffLLLLtftttttttttti;,                      
+                   ,ifLfftttt111t1tttttttt1t11ttffffffftttttttttttffttft111tt1i;.                   
+                 :tLCLfttt11i1111tfftttttfffttfCLLfffttttttfft11t111tffft11tft1t1i,                 
+               :tCCLLLfffftt1i111tt111ttffffffLLfLCLLfttfffffftttttttttttt11fttttfti,               
+             ,tLLfffttttfffftt1111t11ttttfftffLfLLLLfffttttttfftfffffLffttffft1tffffti,             
+           .1Lffff11ttttffffffffftttt1ttttfttfLCCLfffLfffffftttfffLLCLLfffttttt1111tt11;.           
+       .  ;LLfftfftft1tttttttttfffLft1ttttfffLCCCCLLLLLfttfffffLffLLLLLfftt1t111111i11i11:  .       
+        .1CLffftttfffLtft1ttt11ttffLLLfftffLfffLfLLfffffftfffffffLffffLftttfft11tt11i11111;.        
+       .tLfftt1tttfLLt1i;1ttft11tffLLfffLLLfffLLf1tftLfftfLLffffffLfffffffttffftttttt111111i.       
+      ,tffLt1ttttttti::,,i1tft111tft1ttfLGffffffLt1ttfffLLCLffffffLCLfffffffffffttt1tt1i11i11,      
+     .tffffttttttft;,,,:;1tttt111ttttfffLLLfLLffLLfttttfLLLLLffffLLLLfffftfffftf11111tt1i11i11,     
+    .1fttttt1tffttti;iii1t1t1111ttffffLLLfffLCLLLCCLLLLLCCLLLffLffLLLLftffffLfttt111ttttt1i1ttt.    
+    ittttttfffffftttttt1111tt1tttffffffttfffLfLftfLffLLLLLLffffffffftft1tfffffttttttfLffffftt1t1.   
+   :tfffttttfttfLt1tttt111tffffffLfLCCLLfLLfLLfffffLLLLLffLftft11ttt1ttttffttt11fttttfLLfffft11ti   
+  .1fffftftttt1t1tt11fLt1tfLLLfLLLLLCCLGGGLLLLffftfLLfLf1fLCCt1tt1111tttttttttttttfffffffffLLf1i1, .
+  ;tffffLffttt1t1111ttt11ffLffffLCLLLLCLLCLLfffttfLCCLfftfLfLfttt111ttt1111tfttt1tttCffffffffft1t1  
+ .1tLffffftt1t111111t11tttffLCffLLLLLLLLLLLfffLLLLLLLCLLftLttfft1tftfft1111tftttfttttttffttfftt11t. 
+ :ttCffffffttttt1tt11ttt1tttfCffffLGCLLLLLffLLLfLLffLfLLftfff11fffft1tftffffffttffttf1111tftfftt11: 
+ ;ttCLfttffftttftttttt11ttffftfCLffLffLLfLLLfLffftttfLfftttfffftfftt111fLftffLffLfftftttftffffttffi 
+ 1tfGCffftt11tfffttttt1ftfffffLCLLffffftfLCLLfffttftttff1tffLLLftt1tttttffffffLfLLt1tfttt11tfLffCf1.
+ ttfGCfffft1tttfttttttttttttffftfLLfffttffffLfftttttfffttffCGLLfffftttttfffffLCLCLfftfft111tffffLt1.
+ 11tCCLftfftffffttttffttfffftf1i11tffttftfffftt1tttt11ffftfLffffLLfffttfffftLLfCLLfLLfft1111tffttt1.
+ i1iLGCLttfttfftfttttt11tLLfff11i111tt1ttfLLfttt111tttffffft11tffffffttffffftfLfLLtfftt111111tfftft.
+ ;1ifGLfftt1tt1111111t11fCLtfftttttttftttffLfftffttfffLffffftttffLffffttffffffffffftttt1111111tfff1 
+ :t11LLft111111111t11t11tt11ffLfttt1tfffftLLtttttffffLLLLLffffftfLttttttftttttt1t1tt11tt1111ttfffL; 
+ .11i1tttt111111111111111111fLLfttf11tffttffttttffffffLCCLCLfftttffffffttttt11tt1111111t111tfLLfLf, 
+  ;1111ttt111t1i11111111t11tfftftft1tLLft11t1ttfLffffLLCLLLfffftt1ffLfftttttt1111t111111iittfLLLL1  
+  ,11111111111111111111111t1ttttt11tf1fft111i111tffLffffffLftttt1t1tt1tfffftttt1111iii1111ttffLtt:  
+   ;11t1tt111i11ittiift1111t111111tffiitti1111i1tt1ft111tfff11111ttt111tt1tttttt11i11111ttttffiii   
+   .i1ttt1;;t11111111ff11i11i1iii1tttft111ii11ii1iiiii111tt1t11111111111i1i11ii1111tt11tfttfLt:i,   
+    .i111t1if1ttt1111tt111ii1iiii11i1i11iiii1iii11iiii1t11t111111i1ii1111111ii1i1t1tft1tfttfLii:    
+     .i1ii11tt11111t111tt111111111iii11ii1iiiiii11iiiiiii1iiiiiiiiiii11i1tft11111tttt1111tffft;     
+      .iii1ii111tt111111111t1ii111i1ii;iii1i;;iiii;;;;iii1ii;iii;;;;ii111tfffftttii1ii11tff1t;      
+       .;111ii111t11tf1iiii1f1iiii;;i1i;i;iii;;;;;:;;;;;i1ii;;iiiiiiiitt11tttftt11111111fttt:       
+        .;111i11iii111;:;i1i1t1i;;::;ii;iii;;;;;;;;::;;iii;:;i;;iiii1i111f11tft1i11111111t1,        
+          ,1t1ii11ii11i;;iii1111iii;;i;i;;::::;;;;;;:,:ii;:;ii:,:;iiiii1tf1ttt11111i11i11i. .       
+           .;111111ii1111i11t1i1iii;;;ii1i;;;;;iiii;::;ii;:;;;;;;;;iiii1tt11111111i1i1t1,           
+             ,i111111111fLft1t1iii;;;i;iiiiiiiiii11;;;;ii;::,:;;;;iiiii1111i11i111i111;.            
+               ,i11111iitft111iiiii;;iiii;;;iiiiii;;;;;;;;::::;;;;;;iii111i11i111111;.              
+                 ,i1t11ii1111iiii11iiiiii;;iiii1i;;;;;;i;;;;:;;;;;i;;;111111111t11:.                
+                   .:itt11111t1ii1ii111iii;;iiiiii1i;;i;;;;;;;;i;;;iii1i111ttft;,                   
+                     .,ittfft11tt1111i;;i;iiiiiiiii;iii;;;;;;i;iiiiiii111ttti:.                     
+                         ,;ttttfft111iii1iii111111ii1t11iiiiiii1i1111ttt1i:.                        
+                            .:i1tfffffttfttt1111t11111i1111t111ttttt1i:,                            
+                                 .,;i1tffLLLCLLLfLLLffffffffft1i;:,.                                
+                                       .,,,:;;ii1111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,:::;;;;;;;;;::,..                                        
+                                 .,:;11tfLLLLLLLLLLLLLLLLffft1i;:,.                                 
+                            .,;1tfLLLLLLLffffffffffLLfffLffffffffft1i:,.                            
+                    .    ,;tfLLffffffffffftttfLLffffffffffffffLtttttttt1i;,    .                    
+                      ,ifLLftttttftttttttttt1tt11ttfftftfttffLLLftftttttttti;,                      
+                   ,ifLLftttft1111t1ttttttttt111ttfffffffttt1ttttttfftfttttttti:.                   
+                 :tLLLLfftftt1i1111tfftttttfffttfCLLfffttttttfftttt111tfftt11tft1i,                 
+               :tLCLLLLffffftt1i111tt1111tfffffffLfLCLLfttfffffftttttftttttt1tfttffi,               
+             ,tLLffLfttfttftfftt1111tt1tttttfftffLfLCLfffttttttfttfffffLfttttft11ffffi,             
+           .1Lffffft111tttffffffffftttt1tttttfttLLCLffffLfffffftttffLLCCLfft11tt1111tft;.           
+       .  ;LLfffftttfft1ttttftttttfffLft1ttttfffLCCCCLLCLffttffffLffLLLLLfftt1tt1111i1111:  .       
+        .1CLLffffttfLffLfttt1tt11ttffLLLfffffffffLLfLLffffftftffffffffffLfttffft11tt111111i.        
+       .1LfLLft11tttffLf1i;i1tfft11fffLffffLLfffffff1tftLfftfffffffffLffffffttfLftttttt1111i.       
+      .1tffLLtt11ttttt1;::,:1tff111tfft1ttfLCLfffffLt1tttfffLCLffffffLCfffffffffffttt1t1i1111,      
+     .1ftffLtttttttffi::,:;ittttt111ttttfffffLfLLffLLfttttfLLLLLffffLLLLfffffffftft1111tt111i1,     
+    .1ttttttft1tffttt1;iiii1t1t111ttfffffLLLLffLCLLLLCLLLCLCCLLLfffLLLLLffffffLfttt11ttttt1i1tt,    
+    ;1ttttttttfffffttftttt11i1t11tttffffffftfffLLLfffLLfLLLLLLffffffLfftttttffffttttt1fLffffft11.   
+   :11ffftttt1fttfLft1ttt1111tffffffLfLCCLLfLLffLffffffLLLLffLftft11tt11ttttftttt1tttttLLfffft1ti   
+  .i1tLLfttftttt1t11t11tLLt1tfLLLfLLLLLLCLCG0CLLLffftfLLfLLttLCCf1tt1111ttttttttttttffffffffLLf11,  
+. :1tfLfffLffttt1tt1111ttt11tfLffffLLLLLLLLLCLLfffftfLLCLffttLfffttt1111tt111tffttttttLLffffffft1i  
+ .11tLLffffftt1t111111t111tttffLCffLLLLLLLLLLLffffLLLLCLCLLLtLftfft1tfttLt1111tftffftttftffttftt11. 
+ ,t1tCLffffLfttttt1ttt11tttttttfLffffLCCLffLLffLLLfLLffLfLLftffft1tffft1tfffffffftffttf1111fftft1t: 
+ ;t1tCLffttffftttttttttft11ttffttfLLffLLffLfLLLffLfffttfLfftttfffftfftt111fLftfffffffttt1tttfffftfi 
+ if1fGCLffttt11tffffttt1t1ftffffffLLLffffffffLCLLffttfftttft1tffLLfftt11tttfffffLLfLL11fttt11tfffC1.
+ if1fCGLfffft1tt1ffttttttttttttffftfLLfffftffffLfftttttffffttfLGCLfffftttttfLffLLLCLffffft111tfffLt.
+ it1tLCCLftffttffft1ttfffttfffffftii1tffftfftfffftt1tt111tfftfLffffLLfffftfffftLLLLLfLLfft1111tfftt.
+ i1iitCGCftffttfftttttttt1tfLLfff111111tf1tttfLLfttt111ttfffftft11ffLfffttffffftfLLLftfff11111ttfft.
+ ;11i1CGLfttt1tt11111111t11fCLttfttttttttfttffLffttfttttfLftfLffttffLfffftffffffffffftttt111111tfft 
+ :111ifCftt111t11111tt1tt1ttt11ffLLftt11tffftfLftttttffffLLfLLfffftfLfttttffttttt11ttt11t111i1fffLi 
+ .111i1ttttt11111111t111111111tfLLfttf11tfftttfttttffffffLCCLCLfftttfLffffttttt11t11i1111t111tfLfL, 
+  ;1i1111tt1111111i1111ii11t11tfffftft1tLLftt1ttttfLfffffLLCCLffftft1ffLftttttt1111111i111i1tfLLCf  
+  .11i111111111111111t1111111t1ttttt11tftfft1111111tffLLfffffLft1tt1ftttttfftfttt11111ii1111ttLLf:  
+   ;1i1t111t111i11i1t1itf11111t111111tff1itti111111tt1ff111tfff11111ttt11tft11t1ttt1i11111tttffi;   
+   .11itttti:it1111i11i1fti1111111ii1tttft111ii111i11iiii111tt1t11111111111i1i11i11111t11tttff1;.   
+    ,iii1111i1f11t111111t1111i11iii11ii1111iiii1iiii1iii11t11111111111ii1111111i1i1t1tf11fttffi,    
+     ,;i1iii11tt11111t1111t111i111111iii11ii11iiiiii1iiiiiii1iiiiiiiiii111i1ff111111t111111fff:     
+      .i1ii11i1111tt111111111t1iii111iiii;ii11i;;iiii;;;;iii11iii1i;;;iii111fffftt11iiiii1fft;      
+       .;ii11111111t111ftiiii1ttiii1i;;i1;;iiii;;;ii;;;;;;i11ii;;iii;iii1tt1tttft11111111ttt:       
+        .;1t111i11iii111;:;ii1it11i;;::;iiiiii;;;;;;;;::;;i1i;;;i;;iii111t1ft11ft11111111t1,        
+          ,it11i1i1ii11ii;:iii11111ii;;iiii;;::::;;;;;:,:;1i::i1;,,;iiiii11f1ttt11111i111;.         
+           .:1t11i11iii1111i11t1111iii;;;i11i;;;;;iiii;::;1i;;;;;;;;;;iii1tt11111111i11i,           
+             ,;1t1i11111itffft1t11ii;;;i;i1iiiiiii1i1i;;;ii;;::::;;;iiiii1111i11111111:.            
+               ,i11i1111i1ffti111iiii;;iiii;:;iiiiii;;;;:;;;::::;;;;;;iii11111i1111i:.              
+                 ,;111111i111i1iii111iiiiii;;iiii11i;;;;;i;;;;:;;;;;;;;i11111t1tti:.                
+                   .:i1t11ii11t1i111ii11iiii;;iiiiii1i;;i;;;;:;;;i;;;ii1i1ttttt;,                   
+                     .,;ttfft1111tt111ii;ii;iii1iiiii;iii;:;;;;i;iiiiiii1ttti:.                     
+                         .;1ffftfft11111iiiii1111111i11t1iiiiiiiii111ttt1i:.                        
+                            .:i1tfLffffttfftt1111t1i1111111ttt11ttt11i:,.                           
+                                 .,;i1tfffLLCCLLLfLLLfffffffft1i;:,.                                
+                                       .,,::;;i11i11ii;;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,::::;;;;;;;;::,..                                        
+                                 .,:i11tfLLLLLLLLLLLLLLLLfftt1i;:,.                                 
+                            .,;1fLLLLLLLLLLfffffffffLLfffffffffffft1i:,.                            
+                    .    ,;tLLLLffffffffffffttffLfffffftfftffffLftttttt1i;,                         
+                      ,ifLLLftttt1ttttttttttt11tt11ttftttttttfLLLLttftttttt1;,                      
+                   .ifCLLttt1ttt111111tttttt111111ttffffffft1t1t1ttttttttt1ttt1:.                   
+                 :tCCLLffftft11i11111tffttttttffftfLLLLffttttttfft111111tfft11tt1i,                 
+               :tLCLLLLLLfftftt11ii11tt11111tffffffLLfLCLffttffffftttttttttttt1tttft:               
+             ,tLLfffLfftttttftfLttt111tt11ttttttttfLffLLLfftttttttttffffffftttff11tff1,             
+           .1CLftffff1111tttffffffffftttt111ttttttfLLCLfffffftfffttttfLLCCLfft11tt1i1tti.           
+       .  ;LCLfffftfttttt1111ttt1ttttfffLf11t11tftfLCCCLLLLfftttfftffffLLLLLftt111111i111:  .       
+        .iCLLLffftt1ttfftLfttt11t111ttffLLfffttfLfffLLfLLfffftttffftffffffffttttft11t11i11i.        
+       .iffffLfttt1tttffLLti;;11ttf11tfffLffffLLfffffff1tttLfttfffftfffLffffffttffftttt1111i.       
+      ,ittfLfLf1111ttttt1;::,,;1tLt111tttt11ttLGffffffLt1t1tfffLLfffffffCLffffffffffttt1t1111,      
+     .i1fttffft111tttff1;,,,:;1ttttt11111tttffffLLLLffLLftt11fLLLLLffffLLLLffffffftfti111t1111,     
+    .i1ttttt1ttt1ttLf1tti;iii11t111111ttfffffLLfffLCLLLLCLLLLLCLLLLfffffLfffttfffLttt111tttti1t,    
+    i11tttt11tttfffffttttttt111i1t111ttffftfffttffLfffftLLfLLLLLfffffffffftt1ttfffft11ttffffttt1.   
+   :1i1fftftttt1ftttLft1ttt11111tffffffLfLLCLLffLffLftfftfLLLLffLftft11tt11ttttfttt11t11tffffft1;   
+  .111tffffttttttt1tt11t11tLf11tfLLLffffLLLLLCGGGLLLfffttLLLfLttLCCf1tti111ttttttttttttfffffffLft,  
+  :111ffffffLttttt11t11111ttti1tfffffLfLLLLfLLLLLLLffftfLLLLffttfLffttt111tt1111tft111ttLLffffffti  
+  i11tLffffffft11tt11111111i1ttttffCLffLLLffLLLLLffffLffLLLCLLLtffttft11tttft1111ttttft1tttft1fft1, 
+ ,1111LCfffffLfttt1111tt111ttt1t1tfLLffffCGLLfLLLffLLffLffLLfLLtfftt1tffft1ttffffffttft1t1111ftttt; 
+ :1111LCLLftttffttttfttt1ttt11tttftttLCfffLffLLfLLLfLffftttfffft1ffffttftt111fLtfffffffttt1ttfftft1 
+ ;tf11LGCLfftttt11tfffttttt11ttffffffLCLfffffftfLCLLfff1tttttft1tffLLftt1111ttfffffLfLLt1tt1t11ffLf.
+ itf1tCCCLfLfff11t1tfftttttt1tttttfffttfLffftttffffLffttt1ttffttffCCLfffftttttfffffLLLLftffti11tfff.
+ ;1t1tLCCCLftffttfffft1ttffftttffffftii11tffttttfffftt1tt111tfffffLffffLffftttffffLfLLfLLfft111tftt.
+ ;11i11LCCCftffttffftttttttt11tLLLff11i1111tt1ttfLLft11111tttffffft11tfLfffttffffttffLLtttt111i1tft.
+ :111iifGCLfttt11tt1111i111111fCLttfttttt1tttttfffLfttftttttffftffftttffffffttffttffffftttt11111tL1 
+ :11t1i1LLftt1i1t111111t11tt11tt11tfLLftt11tfffttLftttttttffLLfLLffftttLtttttttttttt111t11t1111ttLi 
+ .1i11ii1tt1tt1111111i111111111111fLLfttft11tttttfttttffffffLLCCCLfftttffffffttttt111111111t111fLL: 
+  ;1iii1111tt111111i1i11111111111ttftfttt11fLftt11t11tLLffffLLLLLffftt11ffLfttttt11111111111ittfCt  
+  .111ii1i1111111111i11111111111t1tt1tt111fttft11111111tffLfffffLft1t11t11t1tfftt1tt11111i1111tfL,  
+   ;11iit1111t11111111ttiitf111111111111tfL1i1t1i1i111tt1tf1111ffft1111tt111tt11ttttt1i111111tft:   
+   .11ii1ftt1i:it1111ii11itf1ii11iiiiii1tttft1111ii11i11iiii111tt1t11111111111ii11111111t11tttLi    
+    .tiii11111i1L111t11111tt1111i11iiii1iiii11ii;ii1iii1iiii111i111i111iiii111111ii1i11tf1tttft.    
+     ,1;i11iii11tt111111111itt11111i11111ii1iii1ii;iiii1iiiiiii1iiiiiiiiii11i1tft11111111111fL:     
+      ,iiiiii1ii11111t111111111111iii111i1ii;iiiii;;;;ii;;;;iiiiiiiii;;;;ii111fftftt1ii1ii1ff:      
+       .;i;i11111i111t111ff1iiii1ftiii1;:;ii;;;;ii;:;;;;::;;;iiii;;iiii;iiitt11ttft1111111tt:       
+        .;i11111ii1iiii111i::iiii1t1i;;:::ii;;ii;;;;;;;;::::;ii;:;;;:;iii1it1tt11ft1i111i11.        
+          ,;1t1111111iii1i1;:iiii1111i;i::i;;;;:::::;;;;;:,:;i;:;ii:,:;iiii11f11t11111i11;.         
+           .:i1111i111iii111iii1tt1iiiii;;;ii1i;;;;;iiii;::;ii;:;;;;;;;;iiiitt111111111i,           
+             ,;i111i111i11itfftttt11iii;;;;;iiiiiiiiii1i;:;;ii;::::;;;;;ii11111i11111i:             
+               ,;11i111111i1ffti111iiii;:;iii;:;;iiiii;;;;;;;;::::;;;;;;ii1i111ii11i:.              
+                 ,;111111i1111i11iiiiiiiiiiii;;;iii11i;;;;;i;:;;:;;;;;i;;1111i1t1i:.                
+                   .:i11111ii111111111ii11iiii;;iiiiiiii;;i;;:;:;;;;;;;iiii1tt1i,                   
+                     .,;itffft1111tt1111i;;;;;iii1i;iii;iii;:;;;;;iiiiii1111i:.                     
+                         .:ifLfftttt111iiiiiiii11i111ii111iiiiiiiii1111t1;:.                        
+                            .,;1ffLLfffftttttt11111t111111111tt1tttt1;:..                           
+                                 .,:i1tfLffLLLCLLLLLLLfffffttt1i:,,.                                
+                                       .,,::;;i11111ii;;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;:,,..                                        
+                          .      .,:i11tfLLLLLLLLLLLLLLLLfftt1i;:,.                                 
+                            .,;1ffLLLLLLLLffffffffffffLfffLLfffffft1i:,.                            
+                    .    ,;tLCLLffttfffffffffttffLLffffftfffffffffttttt1i;,.                        
+                      ,ifCCLffttttttttttttttttt11ft1tttftttttfffLfLLtftttft1;,                      
+                   .ifCCLftttttftt11111ttttttttt1111ttfffffffttt1ttttftttttttt1:.                   
+                 :1CGCLLfLfffftt1i11111tfft1ttttfffttLLLLffttttttfftt11111fft1tfti,                 
+               :tLCLLLLLLLfftffft11i1111tt1111tffffffLLfLCLffttfffffttttttttttttttt1:               
+             ,1LLffffLLfttttftftffftt1111t11tttttfttffLfLLLfffttttttttfffffffttfft1fL1:             
+           .1CCffffffLt1111ttttffLfffffftttt1ttttttttfLCCffffffffffttttffLCCLfttttt1i1ti.           
+          :LGLLffffftfttttt111tttttttttffffLt1ttttfftfLCCCLLLLffftfffffffLCLLLfft11111i11:  .       
+        .iLCfLLffffft1ttfLtLftttt1tt11ttfffLLLffftfLfffLLfLLfffftttffffffffffffttfft1tt111i.        
+       .ittfffLLftt11tttffLLf1i;i1ttff11tfffLffffLLfffffft1ttfLffffLfftfffffffffftfffttft111.       
+      ,11tttffLLt11t1tttttti;::,:i1fLt111tftt1tffLCLfffffLt1t1tfffLLffffffLCfffffffffttt1t111,      
+     .111fttffLft111ttttLti:,,::i1ttttt111t1tttffffLLLLffLLfttttfLLLLLffffLLLffftffftf1111t111,     
+    .i11tftftttttt1ttffttt1iiiii11t1t1111ttffffLLLLffLCLLLLCLLLLLCCLLLffffLLLfttfffLftt11tttt11,    
+    i1i1ttttt11ttttfffffttttttt111i1t111ftfffffffttffLLffftLLffLLLLffffffffffttttfffft1tttfffff1.   
+   :11iitfffftttt1ttttfLft1tftt1111tfffffffffLCLLffLLfLLffftfLLLLffLLtft1t1111tttfttttttttffffft;   
+  .11i11fffLfttfttftt1tt1tt11tLft1tfLLLffLfLLLLCLGGGLLLLffttLLLfLttLCCf1tti111tttttttttttffffffLf,  
+  ,1111fffffffLfffttt1tt11111ttti1tfLfffLLLCLfLLLLCCLLffftfLLLLLfftfLfLttt111tt111tfftttttLffffffi  
+  ;1111fLfffffffft11t1111111t1i1ttttffCLffLLLLLfLLLLffffLLfLLCLCLLfffttft11ttfft111tfttftttftfttft, 
+ ,11111tCLfffffffftt1t1tttt111ttt1ttttLLffffLGCLffLLffLLffLffLLfLLftfft1tffft1ttfffffttfftf111tftf; 
+ :11tt1tCCfLfttttffttftfttttttt11tttttttfCLffLffLLfLLLffLfftttfffft1fffftfftt111fftffffffttt1ttftf1 
+ :ttft1fCGCLfffttt11ttffftttttt1ttfffffffCLLffLfffffLLLfffttft1tff1tfffLffttt11ttffffLLLLt1ftt11fLL.
+ :11ft1fCGCLfLffLt1ttttffttttttttttttfffttfLLfffttffffLffttttttffttffCGLfffftttttffffLLCLffff1i1tLf.
+ :11t11fLCCCLfftffttfffft1ttffftttfffftt1i11ttfftfttfffftttt11t1fffffLffffLfffttffftfLLLffLfft11tft.
+ :1i111itCCCGLtfffttffftfttttft11tfLLfft1111i1tf1ttffLfft1111tttffffft11tfffffttfffftffLLtfft11i1tt.
+ :11111i1LGCLfttt111tt111111i1111tLCfttttttttttttttffLfftffttttfLftfffttfffffffttfttffffftttt1111t1 
+ :1i1tt1itLLfttt111t111111tt1tt111t11tffLfttt1tfffftLLftttttfffLLLLLffffttLttttffttttt111tt1t11itfi 
+ .1ii11iiitttttt111111111111111111111tLLLtttt11tttttftttttfffffLLCCCLfftttfffffttttt111111111111fL, 
+  ;1iii11i111tt11111t1i1i1111i111111ttfttftf11fLLtt11t11tfLffffLLLLLfffft11fLLfttttt11111111111fLf  
+  .1i111i111111111111t1111111111111t1ttttt111fttft11111111tffLffftfLft1t11ttttttftfttt1111i111ttL:  
+   ;ti11iit1111t1111111i1ttiitt11111111111itfLti1t1i11i111tttf1111ffft11i1tt111tt11t1tt1i11111tf;   
+    1t1iiifttt1;:;f11111i11i1tf111i111iii11tttft11111i11i11iiii111tt11111111i111ii11ii111tt1ttft    
+    .1tiii1t11t1i1L111tt11111tt1111ii1iiii1iiii11iiiii1iii1iii11t1i1111111iii111111iii1t1tt1ftf,    
+     ,1i;i11iii111tt11t11111111tt111i1i1111iiiiiii1iiiiiii1iiiiiii1iiiiiiiiii1iitft1111t1t111f:     
+      ,i;;1iii111i11111t1111111111111iii111iiiiiiii1i;;;iii;;;;iii1iiiii;;;;ii11tffftt1i1ii1f:      
+       .iiiii1111111111t111tf11iiii1f1i;ii;:;i1;;;;ii;;;;i;::;;;i11i;;iii;iii1t11ttft1111i1t:       
+        .;ii1t1111i11iiii111i;:;iiiit11i;;:::ii;iii;;;;;;;;:::;;ii;;;;;;iii1i11tt1tf1i11111.        
+          ,;;1tt1111111iii111i;;ii111111ii;:;i;i;;;:::;;;;;;:,:ii::ii;,:;iiii11f1tt1i1111;.         
+           .:ii111111111iii1111ii11t1111iii;;;ii1i;;;;;iiii;::;1i:;;;;;;;;iii1tt1111111i,           
+             ,;iii111i111111itfLft1t11iii;;;;;iiiiiiiiiii1i;;;ii;::::;;;;;ii1111i1111i:             
+               ,;i111111111iitfft1i11iii1;:;iiii;:;iiiiii;;;;;;;::::;;;;;;ii111ii11i:.              
+                 ,;i111111111111ii1iii1i11iiiii;;;iii11i;;;;;i;;;::;;;;;;;i1111t1i:.                
+                   .:i111111ii1111111i11ii11iiii;;iiiiiiii;;i;;;;:;;i;;;iii1tt1;,                   
+                     .,;itfffft11111tt1111i;;i;iiii1i;iii;i1i;:;;;;;iiiii111i,.                     
+                         ,:itLLffttttt111i1ii1ii111i111ii111iiiiiii111111;:.                        
+                            .,;1tfLLLfffftttfftt1111t11111111ttt1tt11;:,.                           
+                                 .,:i1tfLLfLLLCCLLLLLLLfftfttt1i:,,.                                
+                                       .,,::;;ii1111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;::,..                                        
+                          .      .,:i11tfLLCLLLLLLLLLLLLLfftt1i;:,.                                 
+                            .:i1fLCCLLLLLfffffffffffffffLLLLLLLffft1i:,.                            
+                    .    ,;tCGCLLffttffffffffftttffLLfffffffffttffLftft1i:,                         
+                      ,ifCGCLfftttttttftttttttftt1tf11tttffftfftffLfLtftfft1;,                      
+                   .ifCGCLfftttttft111111ttttttttt1111ttffffffftttttttttfttftt1;,                   
+                 ,1CGCCfLfLLffft1t1i11111tffttttttfffttLLLLffftttttfftt1111tftttti,                 
+               :tLLLLLLLLLLLLftffttt1ii111tt1111tfffffffLfLCLLftttfffftttttttttt1ft1:               
+             ,1LLffffffLLfttttftfftfftt1111tt11ttttfftffLfLLLLfftttttttfffLffLftffttft:             
+           .iLCLfffffffft1111ttttffffffffffttttt1tttfttfLLCLfffffffftttttffLCLLfft1t11ti.           
+       .  :fCCLLLffffftffttftt111ttfttttttffffft1tt1tfffLLCCCLLLLfftfffffffLLLLLft1tt1111:          
+        .ifCCfLLLffffft1ttfLffLftttttt111ttfffLfLffttfLfffLfLLfffffftffffffffffLtttftt1t11i.        
+       .1t1tffffLffttt1tttfffLLt1i;i1ttft11tffffffffLLffffLft1ftfffffLfftfffffffffttffttttti.       
+      ,11itttfLfLLtt1t1tttttt1;:::,:11fLt111tftt11tfLGffffffLt1t1tffLCLffffffCLffffffffttt111,      
+     ,11i1fftfffLfttt1ttttff1;,:,::i1tttft111t11ttffLfLfLLffLLfttttfLLLLffffLLLffffffftf111111,     
+    .11i1tttfftt1ttt1tttLfttt1iiiii11t1t1111ttfffffLLLffLCLLLLCLLLLLCLLLLffffLfLfttffLftt1tttt1,    
+    i1111ttttttt1ttttffffffttttttt111i1t11tftfffffffttfffLfLftfLfLLLLLffffffffftt1tffffttttfffft.   
+   :1111i1fftfftttt1tfttffLft1tft11111tfffffffLfLCCLLfLLfLLfffffLLLLffLftft1ttt1tttfftttttttfLffi   
+  .i1i111tffLffttftttftt1tt1t111tLf11tfLLLLfLfLLLLCLGGGCLLLffftLLLfLftLCCf1t1i11tttttttttttffffLf, .
+  ,i1111tfffffffLffffttt1tt11111ttti1tffLfffLLLLLfLLLCCLLfffttfLLCLfftfLfLttt111tt111tfttttfLfffL1  
+ .:i1111tLLfffffffftt11t111111tt111ttttffCLffLLLLLLLLLLLffffLLLLCCCLLffLttft1tttft111tfttfttttfttf, 
+ ,1i1111tfGLffffffffttt1t1t1ttt11ttttttttLLffffLGCLLfLLLffLLfLLffLfLLftfft1tffft1tfffffftfftt11ttf; 
+ :i111t11fCCLLftttffftttttfttttttt11tttffttfCLfffLffLfLLLffLfffftfLffttfffftfftt11tLffffffftttttff1 
+ :itttf11fCGCLffftttt1ttfffftttttt1tffffffffLLLfffffftfLCLLffttft1tff1tffLLffttttttfffffLfLt1ftt1ff.
+ ,111ff1tLCGGLffffffttttttffttttttttttttfffftfLLLfftttffffLfftttttffftffCGLfffftfttffffLLCLfffti1tf,
+ ,1i1tt11fLCCCCLftfffffffffttttffftttffffft1ii11ffftfttfLfftt1tt111tffffLfffLLfffttffffLLLLLLff1i1t.
+ :11i11i11tCGGCCffffftfffttftttttf11tfLLfftt1111ittttttfLLft11111ttffffff11tffffftffffttfLLffft111t.
+ :1111111i1LGGLLftttt1ttt111111i1t11tLCftffttttt1tttttfffLfttfttttfLfffffttffffffttffttfffftttt1i11 
+ ,1111tt11itLLLftf111t1111111t11tt11tt11tffLfttt11tffftfLfttttttfffLLfLfffftfLtttttftttt11tt1tt1ifi 
+ .11ii1t1ii1ttttttt111111111t11111111111tLLLfttf11ttttttfttttffffffLCCCLfftttfLfffttttt1t11111t11L: 
+  ;1i1iiii1iii1ttt111111i11i11111i11111ttfffftft1tLLftt1tt1tfLffffLLCCLfffff1tfLftttttt111111111ff. 
+  ,t1i111ii1111111111111t111111111i111t1ttttt111tf1fft1111111tffLfffffLft1t11tttttfftftt1111i111f:  
+   ;t1i11ii1t111ttt111111111ftiitf1111111111111tffiitti11i1i1tttf1111ffL111ittt11tftttttt111111fi   
+    itt1ii11ftttti;:t111111i11i1ff11i11111i1i1ttttt1111ii11i11iiii111tt1t111111i111i111i111t1tft.   
+    .ittiiii1t11t1iiLt11tt1t1111tt1111111iiii11i1111iiiii1iii1iiii1t11111i111iii11111iii1ttf1tf,    
+     ,i1i;i111iii111tt1111111t1111t1111i111111iii1iii1iiiiiii1iiiiiii1iiiiiiiii1111tt1111tt11f;     
+      ,ii;;1iii1i11ii1111t11111111t111t1iii111i1iiiiii1i;;i;ii;;;;iii1iiiii;;;i111tffftt1ii1t;      
+       .iiiiiii11111111111t111ff11ii11tf1i;ii;:;1i;;;;ii;:;i;;:;;;;i1i;;;iii;ii1t11ttft11i1t:       
+        .:iii1ttt1i1i11iiiii111i:;ii1iit11i;;:::ii;iii;;;;;;;;::;;i1i;;;;;iii1i11tt1ft1i11i.        
+          ,;;;ittt11111i1iii1111;:iii11i11iii;:iiii;;::::;;;;;:,:;ii:;ii,,;iiii11t1tt1111;  .       
+           .:;i;11111i1111iii11111i11tt11iiii;;;;i11;;;;;;iii;::;ii;;;;;;;;;iii1t111111i,           
+             .:;iiit11i1111111itfffttttiiii;;;;i;i1iiiiiiii1i;:;;i;;:::;;;iii1111i111i:             
+               ,;iii111111111iittft1i11iii1i:;iiii;;;iiiiii;;;;;;;;:::;;;;;ii111i11i:.              
+                 ,;i11ii1111111111ii1iii11i1iiiii;;;iii11i;;;;;i;;;;:;;;;i;i1111ti:.                
+                   .;i11111t1iii1111111i11ii11iiii;;iiiiiiii;;i;;;;;;;i;;ii11t1i,                   
+                      ,;i1ttffff11111tt11111i;;i;iiii1iiiii;i1i;;;;iiiiii111i:.                     
+                         ,:;1fLLfft1tttt11iiiiiii1111111ii111iiiiii111111;:.                        
+                            .,;itfLLCLffftttttftt1111t1111t111ttt1t1i;:..                           
+                                 .,:i1tffLLLLLLCCCLLLLfLfttttt1i;,,.                                
+                                       .,,:;;;iii111iii;::,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;;;;;;;:::,..                                        
+                                 .,;i11tfLLCCLLLLLLLLLLLLfftt1i;:,.                                 
+                            .,;tfLCCLLLLLLLffffffffffffffLLLLLLLftt1i:,.                            
+                    .    .;fCGGCLffffttfffffffffftfffLffffftfftftffLftt1i:,    .                    
+                      .;fCGGLLffttttttttttttttttttt1tt11t1tftttffffLLLfttft1;,                      
+                   .;fCGCLLffftttttft1111t1tttttttttt111ttffffffftttttttttffft1;.                   
+                 ,iLGGCLLLLfLfffft1t111111ttffttttttfffttfCLLffttttttfft1111tfftti,                 
+               :tLLLLLLLLLLLLLLftffftt11i111tt11111tffLftfLffLLLffttffffttttttftttf1:.              
+             ,1fLLffffffLLfftttfttfftffttt1111t11tttttfttffLfLLLffttttttffffLfffttfff1:             
+           .ifLCCLfftffffft111t1tttfffLfffffftttttt1t1ttttfLCCLffffffffftttffLCLLftt1tti,           
+          :tLCGLLLfffffftffttttt11ttttttttttffffLf1ttt1tfffLCGCCLLLffttffffffLLLLfft1t111:  .       
+         iffLCffLLLffffft1tttfffLLftttt1t111ttffLLLffftffLfffLfLLffLftfffftfffffLfttfft1t1;.        
+       .tf11tffffLLLfttt11ttffffLf1i;;i1ttft11tffLLffffLLffffLfttffLfftfffffffffffffffffttt1,       
+      ,ttii1tttfLfLLtt11tttttttt1;:::,:11fft111tfft11tfLGffffffLttttftfLCLfffffLLfffffffft1t1,      
+     ,t11iitfftfffLft1t1tttttff1;,:,::i1tttft1i1tt1ttffLfLLLCffLLfttttLLLLLffffLLLffffffft11t1,     
+    .11i111ttttftttttft1ttfLfttt1;iiii1tt1t1111ttfffffLLLffLCLLLLCLLLLLCLLLLfffLLLfttfffttt1tt1,    
+    i111i11ttttttt1tttttffffffttttttt11111tt11tttffffffttfffLLfftfLfLLLLLffffffffttttfffft1ttfft.   
+   :ti1i11itfftffttttt1tfttfLLftttftt1111tffffftfLfLCCLLfLLffLfffffLLLLffLftf11t11tttffttttttffLi   
+  .;1111111tLffLffttfttftttttt1tt11tLLt1tffLLLfLfLLLLCLC0GCLLLffftfLLfLttLCCt1t1i1ttttttttttffffL:  
+  ,:i11111tfLffftfLLffffttt1tt11111ttti1tffLfffLLLCLfLLLLCCLLffftfLLCLfftLLffttt11tt111tfttttLffLt  
+ .::i11111fLLffffffffftt1tt1111111tt11ttttffLCffLLLLLfLLLLLffffLfLLCCCLLffLtfft1tttft111tttfttfftf, 
+ ,iiii1111tfGLffLffffffttttt1t1ttt11ttt1tt1tfLLffffCGLLffLLffLLfLLffLLLLfffft1ffff1ttffffftfttt1tf; 
+ :iiit1tt11fCCLLLftttffftttttfttttfftt1ttttfttfLCfffLffLLfLLLfLfffftfLffttfffftfftt11fftffffftt1tf1 
+ :;i1t1LtitfCGCLLffffttt1ttfffftttttt1tftffffffLCLLfffffffLCLLfffttfttffttffLLftt1t1ttffffLLL1ttttf.
+.,:i11tft1tLCCGCfffffLf11ttttfftttttttttttttffftffLLfffttffffLffttttttfftffCGLffffttttfffLLCLfff11t.
+.::1ii1f111fLCCCCLfftffffffffft1tttffftffffffftii11tffttftfffftf1tt1t1tfftfLfffLLffftffffLLLLLff11t.
+ :i111i1ii1itLGCCCLffffftfffftftttttf11tfLLLfft1111i1tf1ttfLLfft1111ttfffffft1tLfffttfffttfLftft11t.
+ ,i1111i111i1LGGCLftttt11tt111t1i111t111fCLttftttttttttttfffLfttfftttfLftfffttfffffftffttffffttt111.
+ ,111111tt11i1LCLftft111t1111111tt11t111t11tffLLfttt1tfffftLfttttttfffLLLLfffftfftttfftttt11tt1t11i 
+ .1111i11111iitttttttt111111111t111111111111fLLftttt11tttttftfttffffffLCCCLfftttfLffttttt11111111t: 
+  ;11111ii111ii11ttt11t11t1i11111111i111t11tfftfttt1tfLftt11t1tfLffffLLCCLfffft1tLLftttt11111111tt. 
+  ,tt1i11111i11111t11111111t1111111111111t11ttttt111ftfft1111111tffLfffffLfttt1tttt1ffttttt11i11t:  
+   ift11i11ii1f111ttttt11i11111t1i1tf11111t1111111fff1itt111i111tttft11tfff1111t1t11tt1tttt1111t1   
+    i11t1iii11ftttti;:if111111i1111fL111i11iiii11ttttft1111i11i11iiii111ttt1111111i11ii11111t1tt.   
+    .i1ttiiiii1t11t11;tL11tttt11111tt1111ii1iiii11i1i11iiiii1iii1iii11t11111111iii11111ii1ttt1f:    
+     ,1i11;;i111iiii111tt11t111111111t111111i1111ii111ii1iiiiiii1iiiiiii1iiiiiiii11i1ft111t11t;     
+      ,11i;;1iiii1111ii11111t11111111111111ii111iiiiiiiii1i;;iiii;;;;iiiiiiii;;;ii11tffft1ii1;      
+       ,iiiiiiii11tt11111111tt11tft11ii11tf1i;ii;:;1i;;;;ii;;;i;;:;;;;i1i;;iii;ii1t1ttft1i11:       
+        .;;iiii1t111i1i1111iii1111;:;ii1i1t11i;;::;ii;iii;;;;;;;;::;;ii;;;;;;ii111ttttf1i1i.        
+          ,;;;;i1tt11111111iii11i1i:;ii111i11iii;;iii;;;::::;;;;;:,:ii::ii:,;iiii1tttt111;. .       
+           .:;;i;11tt111i111iii111111i11t11i1iii;;;;i1i;;;;;iiii;::;1;:;;;;;;iiii1t111ti,           
+             .:;;;ii1t11i111ii11itfLftttt11iii;;;iiiiiiiiiiii11i;;;i;;:::;;;iii111111i:             
+               ,:i;iii1111111111ittft1i11iiiii::;iiii;;;iiiii;;;;;;;;:::;;;;;i1ii11i:.              
+                 ,;i111ii1t11111111iii1iii11i1iiiiii;;iiii1i;;;;;i;;;:;;;;;;;i111i:.                
+                   .:i111ii1t1iii1111111ii11i111iiii;;iiiiiiii;;;;;;:;;i;;ii1t1i,                   
+                      ,;ii1tttffft1111ttt11111i;;i;iiiiiiiiii;ii;:;;;;iiii11i:.                     
+                         ,:;1tfLLfft1tttt111iiiiiiii1111111i11iiiiii1111i;,.                        
+                            .,;ittfLLCLfffft1ttftt1111t1111tt11tt111i;:..                           
+                                ..,:i1ttfLLLLLLLCCLLLLLffftttt1i;,,.                                
+                                       .,,::;;iii111i1i;:,,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;i;;;;;:::,..                                        
+                           .     .,:i11tfLLLCCLLLLLLLLLLLLftt1i;:,.                                 
+                            .,itfLCCCCLLLLLLffffffffffffffLLLLLLLft1;:,.                            
+                    .    .;tCGGGLLffffttffffffffftttffLLfLffttffffffLft1i:,    .                    
+                      .;tCGGCLffffttttttttttttttttftt1tt1ttttftttfffLLLffff1;,                      
+                   .;tLGGCLLffftttttftt1111t1tttttttttt111ttffffffttttttttttft1;.                   
+                 ,ifCGCCLLLLfLffffft1t11111111tfftttttfffftfLLLffttttttfft111tffti,                 
+               ,1LLLLLLLCLLLLLLLLftffft111i1111tt1111tffffffLffLCLfftfffftttttftttt1:.              
+             ,1fLfLfffffffLLffttttftffttfttt1111tt11tttttfttfLfLLLfttttttttttffffftff1:             
+           .iffLCCLffftffffLt1111tttttffLfffffffttttt1tttttttfLCLfffLfftfftttffLCLftttti,           
+       .  :tffCGCLLLfffLfftfttffttt11ttttttttftffffLt1ttt1tfffLCCCLLLLfftffffffLLLLft1t11:  .       
+         ifttLGLfLLLLfffftt1tttfLffLftttttttt11ttffLLLffftfLfffLLLLLffftttfftffffffftfft1ti.        
+       .tft111fffLfLLffttt11ttffffLLf1i;;i1ttft11tffLLffffLLffLfLf1tffLftfLfftfffffffftfftf1,       
+      ,tftii1ttttfLfLLftt1ttttttttti;:::,;11fft111tfft1tffLCfffffff1t1tfffCLfffffLLfffffffttt,      
+     ,fti1ii1ffttffffLf11t1tttttLf1:,:,::i1tttft111tt1tttfffLLLCffLfttttfLLLLffffLLLffffftt11t, .   
+    .tt1i1111tttfftt11ttt1tttfftttt1;iiii11t1t1111ttfffffLLLffLCLLLLCfLLLLCLLLffffLLftfffftt1tt,    
+   .111111i1tttttttt11ttttfffffffttfttttt1111t111tttffffffttfffLfLftfLfLLLLLffffffLftttfffttttLt.   
+   :1ti1ii11itffttftttttttffttfLfft1tfttt1111fffffffLfLCCLLfLLffLftfftLLLLffLttt1tt11ttfttt1ttfLi   
+  .;;11111111ffffLffttftttftt1ttt1tt11tLLt11tfLLLfLffLLLCCCGGGLLLffftfLLfLttLCLttti11ttttttttfffL: .
+  :::;111111tfLffftffLfffft1t11tt11111ttt1i1ffLLffLLLCLLLLLLCCLLffftfLLCLfftLLLftf111tt11tftttfLLt  
+ .;::i11111itLLfffffffffft11tt1111111tt11ttt1fffCLffLLLLLLLLLLLfffLfLLLCCLLffftft11ftft11tttfftfff, 
+ :iiii111111ttCCfffLffffffttt1ttt1ttt1t1t1ttt1ttLLffffCGCLLfLLffLLffLffLLLLftLtt1fffttfffffftftt1fi 
+ ;iiiit11tt11tCGLfLftttttfftttttftttttftt1ttttfftffCLffffffLfLLLffLfftttLffftfffftftt11fftfffftt1ft 
+ ;::iif1tLt11fLGCLLfffftttt11tfffftttt1t11ftfffffffCLLffLfffffLLLfffttfttffttffLLftt11ttfffffLf1ttt.
+.;,:1111tft11fCCGCLffLffLf1t111tffttttttt1tttttffffffLLfffftffffLfftttttffftffCCLfffftttfffLLLfff11.
+.:,:1i11tf111tfLGCCLLfttfffftfffft1tttfffttfffffff1i11tffftftffffftttt111tfftfLfffLffftftffLLLLfft1,
+ :;;i11i11i1111fCGGCCftffftttffftftttttft1ttfLLfft111i11tfttttfLfftt111ttffffft1tfLffftfffttfLfft11.
+ :;ii11i11111iitCGCLLftttt11ttt11t1i111t111fCCftffttttt1tttttffLfftffttffffffffttfffffttffffffftt11.
+ :ii111111tt11i1fLLfftft111t1111111tt11tt11tt11tfLLfttt11fLfftLLftttttfffLLLLfLfttfftttttttt1tt1t1i 
+ .11111ii1111iii1ttftttt11111111111111111111111fLLLfttf11tttttftttttffffLLCCLLffttfLffftttt1111t1t: 
+  ;1111i11iii11ii1itttt11111t1i11i11111i1t1111tfftfttf11fLLtt11t1ttLLfffLLCCLffffttfLftttt11111111  
+  .1tt111111iii11111t111111111t11111t1111111tt1ttttt111fttft1111111tffLfffffLfttt1ttt1tftttt1i11t:  
+   ;ftt11i111ii1f1111tttt111111111t1iitf11111t1111111tfL1itf1i1i1i1tttft11tfff1111t111tt1ttt111ti   
+   .i111ttiii111ft1ttt;;,tt11111ii1111fL11i11111i1i11tttft1111i11ii1iiii111ttt111111111i11i111tt,   
+    .i1i1t1iiii11t11111iiLf111tt111111tt1111ii1iiii11i11i1iiiii1iii1iii11t11111111ii11111ii1ttt:    
+     ,11i11i;ii11iiiii1t1tt11t1i11111111t1111i111111ii11iii11iiiiii1iiii1i1iiiiiiiii1i1f111ttt:     
+      ,1111i:i1iiii11111i11111tt111111111111t11ii11iiiii;iii1i;;;iii;;;;ii1i;ii;;;;i11ffft1i1:      
+       ,11i1iiiiii111t111111111t111tft1iii11ffiiiii;:i1i;;i;ii;:;;;;;;;;i1i;;iii;iitt1ttf111,       
+        .;;;iiii11t11111ii11iiiii111i::;ii1i1t11;;;::;ii;ii;;;;;;;;:::;i1i;;i;;ii111tttt11i,        
+          :;::;;iittt111111i11iii1111;:iii111111iii:;ii;;;;:::;;;;;:,:;1;:ii:,;iiii1ttt11;.         
+           .:;:;i;i11t1111i1111iii111111111t1111ii;;;ii11i;;;;;iii;;:;ii:;;;;;;iii1t11ti,           
+             .:;;;;ii1t1111111iii1i1fffftttti1ii;;;;;;iiiiiiiiii1i;;;ii::::;;iiii11111:.            
+               ,;ii;iii11i1111t111i1tff1i111iii1;:;iiii;;;ii1ii;;;;;;;;:::;;;;iii11i:.              
+                 ,:;i1ii1111t111i11111i11iii11i1iiiiii;;iiii11i;;;;;;;;;;;;;;ii11i:.                
+                   .:i11111i111iii11111t11ii111i11iiii;;iiiiiiii;i;;;;;;;i;ii11;,                   
+                      ,;i1111ttffft111111tt1111ii;;i;iiiiiiiii;iii;:;;iiii1ii:.                     
+                         ,:;i1tffLffftttttt1111iiiiii11111111111iiii1111i;,.                        
+                            .,;1ttffLLCLtfffttttfft111111t11tt1ttt11i;,.                            
+                                ..,:i1tffLLLLLLLLCCCLLLLfffttt1i;,,.                                
+                                       .,,::;;iiii11iii;:,,...                                      
+""")
+    rawFrames.addOne("""
+                               .        ..,::;;;ii;;;;:::,,.                                        
+                           .     .,:i11tffLLCCCLLLLLLLLLLLftt11;:,.                                 
+                            .,itfCCCCCLLLLLLfffffffffffffffLLLLLLft1i:,.                            
+                         .;tCG00GLLfffffttfffffffffttfffLffffftffffffLf1i:,                         
+                      .:1LGGCCLffffftttttttftttttttfftt1ft11ttfttttffffLLff1;,                      
+                   .;tLCGGCLLLffftttttftt1111t1tttttttttt111ttfffffftttttttfft1;.                   
+                 ,ifLCCCCCCLLLffffffft1tti11111ttffttttttffftfLLLffttttttft111tfti:                 
+               :1fLfLLLLLCLLLLLLLLLfttfftt11ii111tt11111ffLfffLffLCLfftfffftttttttt1:               
+             ,1ffffLfffLffffLLffttttfttfftffttt1111t111ttttfttfLffLLfftttttftffffffff1:             
+           .ifftLCCCLLLftffffff111tttfttfffLffffffttttt11t1ttttfLCCLffLfffttttfffCLfttti.           
+          :tftfCGGLLCLfffffffffttfftt1111ttfttttttffffft1tt1tfffLCCCLLLLfftffffffLLLLt111:          
+        .;tftffCCffLLLLfffftft1tttfLtfLfttttttt11tttffLLLffftfLfffLLLLffffttffffffffLftftti.        
+       .1Lft111tfffffLLfftttt11ttffffLLt1i;;11tfft11tfffLffffLLffLfft1ttffffLfftffffffffffft,       
+      ,tftt1ii1ttttLLffLftt1tttttttttti;:::,;11fft111ttft1tffLCffffffftt1fffLCLffffLLfffffft1,      
+     ,ff1i1i1i1ffftffffLft1tttttttfLti:,:,::i1tttft111tt1ttffLfLLLLffLfttttfLLLLfffLLfffffft1t,     
+    .ttt1111111ftttftttttttt1tttLLtttti;iiii11t1t1111tffffffLLLffLCLLLLCfLLLCCLLLfLfLLftffftttt,    
+    it111111i11tttttttt1ttfttfffffffttfttttt111itt11tftffffffftfffLfLftfLfLLLLLffffffffttffft1ff.   
+   :i1t111i111itffftfftttttttftttfLLftttft1t1111tffffffLffLCLLfLLffLfffffLLLLfLftf11tt1ttftttttf1   
+  .i:i111111111tfffLfffttffttftt11tt1tt111fLt11tfLLLffLLLLLCCLG0GLLLffftfLffLtfLCf1t111ttttttttfL: .
+  ;:::;111i111tfLfffffffLfffftttt1tt11111tttti1tffLffLLLLLLLLLLCCLLffftfLLCLfffLLfttt11tt1ttfttfLt  
+ .1;::;i111111tLLLfLfftffffft11tt1111111tt11tttttffLCfffLLLLfLLLLLffffLLLLCLLLtfftft1ttft11tftfttf, 
+ ,1;iiii111111ttLGffffLffffffttt1t1t1ttt1t1tt11ttttfLffffLCCLLLLLLffLLLLffLLLLffft1tfft1tfffftfttt; 
+ ;1;iiiit11tt11tLGCLfLfttttffftttttftttttttt11tttffttfLCffLLffLffLLLfLfffttLffttffftfftt1fftfLfttt1 
+ ii:;iitf1tLt11ffCGCLLffftfttt1tttfffftttttt1tftffffffLCLffffffffLCLLfftttttff1tfLLfft1t1tffffLftf1.
+ i;,,i1111tft11fLCCGCffffffLf1ttt1tffttttttttttttttffftffLLfftttfffLfftttttffftfLGCfffftttfffLCLff1.
+.;:,:11i11tf111tfLCCCLLLfftfftttfffff1tttfffttffffffft1i11tfftfttfffftttt1tttfffLfffLLffttfffLLLff1.
+ ;::;i111i11i11i1tCCGCGLftftffttffftft1tttft11tfLLfff111i1itfttttfLLftt111ttffffft1tfffftffftfLLft1.
+ ;;:i11111111111i1LGGCLLftttt11ttt111ti111tt11tLCLttftttttttttttfffLftffttffLftfftttffffftftfffftti 
+ ,1;i111ii11tt111itLLLfttfti11t1111111tt11tt111t11tffLLftt11tffftfLftttttfffLLLLffftfftttffttt1ttt; 
+ .111111iii1111iiiitttttttt11111111111111111111111tLLLfttf11tttttffttttfffffLCCCLftttffffttt11111t, 
+  ;111111111iiii11i111tttt11111ttii1111111i111111tfftfftf11tLLttt1t1ttLLfffLLCCLffft1fLftttt111111  
+  .11tt1i1111t1ii111111t111111111t11111t11111111t1tttttt11tftff1111111tffLfffffLttt1ttt1tfftt11i1:  
+   :ft1t11111tiii1ft111ttttt111111111ttiitft1111t1111111tfLti1f1i111i1tttf111tfLt111tt11tt1ttt111.  
+    i111ttt1iiii11ff1ttt1;::f1111111i11i1tL111i111111i11tttftt111i11i11iiii11tt1111111i1111111tt,   
+    .i11i1ttiiiii11tt11t11i1Lt11tttt11111tt11111i1iiii11i1i111iiii1ii11ii111ti111111ii1111ii1tf:    
+     ,11i1i1i;;ii1i1iii1111ttt1tt1111t11111t1111i1i1111ii111ii1iiiiii11iiiiii1iiiiiii111tt111t:     
+      ,t1i111;:i1i;ii11i111i11111tt11111111111111iii11iiiiiiii11i;;iii;;;;ii1i;iii;;i111fft11,      
+       .11iii1iiiiiii11t111111111ttt11fft1iii11ftiii1i;:i1i;ii;ii;;;i;:;;;i11i;iiiiiitt1tt11,       
+        .;i;;iiiii1tt11111ii111iiii1111i:;;iiii1t1i;;:::;ii;ii;;;;;;;;::;i1i;;;;;ii111ttt1i,        
+       .  :i;:;;;;i1ttt111111111iii1111i::iii11i11iii;:;iii;;;:::;;;;;:,;1;:;i:,;iii1tttt;.         
+           .;;;;;ii;i11t1111i1111iii1i1111111tt111iii;;;;i1i;;;;;iii;;:;ii:;;;;i;ii1t11i,           
+             ,;;;;;;iii1t11i1111i111i1tffftttt11iii;;;i;iiiiiiiii11i;;;ii;:::;;iii111i:             
+               ,;;;i;;iii11111111111i1tfft11111ii1i:;iiiii;;iiiiii;;;;;;;::;;;;;i11i:.              
+                 ,;;ii1ii1ii1t1111111111ii1iiii1iiiiiiii;;iiii11i;;;;i;;;;;;;;ii1i:.                
+                   .,;111111i11t1iii111t1111iii11i11iiii;;iiiiiiii;;;;;;;;;;i11i,                   
+                      ,;i11i111tffff11111t1tt1111i;;i;iiiiiiiiiiiii;:;;;ii1i;:.                     
+                        .,:;i1tttfLLfft1tttt11111iiiiii11111111i1iii1111i;,.                        
+                            .,;1tffffLLLLftfftt1ttft1111t1t111tttt1ii;,.                            
+                                 .,:i11tfLLLLLLLLLCCCLLLLfftt1ii;,..                                
+                                      ..,,::;iiii111iii;:,,...                                      
+""")
+    rawFrames.addOne("""
+                               .        ..,,:;;;;i;;;;:::,,.                                        
+                                 .,:i1ttffLLCCCCLLLLLLLLLLfft1i;:,.                                 
+                            .,itLCCCCCCLLLLLfLfffLffffffffLLLLLLLLf1i:,                             
+                    .    .;tCG00GCLLfffffttffffffffftttfffLffLfffffffLfti:,                         
+                      .:ifCGGCCLLfffftt1tttttttttttttftt11ft11ttftttfffLLffti,                      
+                   .;tfLCCGCLLLLffttttttftt111111ttttttt1tt111ttffffftttttttff1;,                   
+                 ,itfLLCCCLLLfLLLLLfffft1ttiii11t1tffttttttffftfLLLfftttttfft11tti,                 
+               ,1fLffLLLLLLCLfLLLCLLLfttfftt11ii111tt11it1tfLLffLffLCLfffffffttttft1:.              
+             ,1ffffffLffLfffffLLffttttfftfftffttt1111t111tttttfftfLfLLLftttttffffffff1:             
+           .iffttLLCCLffffffffffft111ttttttfffLffffffttttt11tttfttLLCLffLfffffttffLCLfti.           
+       .  :1fttfLGGCLLCLffffffffffttfftt1111ttfttttttfffLft1tt1tfffLCCCLLLffftffffLLLLft1:  .       
+        .;tttttfLGLffLLLLfffffft1tttfLftfLfttttttt11tttffLLLfftffLfffLLLLfffttfffffffLftffi.        
+       .1ffft1111tfffffLLLfftttt1tttffffLLt1i;i1tttft11tffLLffffLLffffftttfffffLffffffffffft,       
+      .tffft1i1itttttfLffLLttt11ttttttttti;:::,;11fft111tfft1tffLCfffffftt1tffLCLffffLLffffft,      
+     .tffti11i1i1ffttffffLLt11tttttttfLt1:,::::i1tttft1i1tttttffLfLLLLfLLfttttLLLLfffLLffffft1,     
+    .tf1t1i111111ftftftttttttft1tttLftttt1;iiii11t1t1111tttffffLLLffLCLLLCLLLLLCLLLfffLLftffftt,    
+    it1111111iit1ttttt1tt11ttfttffffffftttttttt111itt11tttffffffftffLLfLffLLfLLLLffffffftttffttt.   
+   ,1;it1i11i111i1tfftffftttttttftttfLLft11ft1t1111tffffffLffLCCLfLLffLfffffLLLffLtft1t11ttftttf1   
+  .i;:;1111i11111tffLfLfffttftttfttt1tt1tt111fLft1tfLLLLfLfLLLCCCGGGLLLffftfLffftLCL1t1i1tttttttL: .
+  ;i,,::i111i111tfLLfffffffLftfftttt1tt111111ftti1tffLLffLLCCLLLLLLCLLffftfLLCLftfLLftt11tt1tfttft  
+ .1i:::;i111i11i1LLLffffffffffft111t11t11111t111ttttffLCffLLLLLfLLLLLfffLfLLCCLLffftft1ttft11ttftf, 
+ ,1i;;iii1i11111tttGCfLfffffffffttt1t1t1tttt111t1ttt1tfLLffffCGLLLLLLffLLfLffLfLLffft1fff1tffftttt; 
+ :t1;i1ii1t11ttt1tfCCLLLLftttfftfttttttttttttftt1ttttfttfLCfffLffLLLLLLfLffftffffttffftft11fffffff1 
+ ;1i::;iitf1tLf11tLLGGCLLfffftttt11ttfffftttt1t11ftffffffLCLLfffffffLCLLffttfttft1ffLLft111tfffLLtt.
+ ;i:,,;1111ttff11tLCCGGCffffffLf1tttttfftttttttt1tttttffffffLLfftttffffLftttttffftfCGLffftttffLLLft.
+ ;i:,,i1iii1tft11tfLLCGCCLffftLffftffffft1ttffffttfffffft1i11tffttftfffftttt11ttfffLfffLfftffffLLLt.
+ ;i::;i1i11i111i1i11fCCGCGLffffffttfffttftttttft1tfLLLfft1111i1tt1ttfLLftt111ttfffft11fLfftffftLff1.
+ :i;:i1i11i1111111i1tCGGCLLftttt11ttt111t111i1t111fCLttffttttttttttfffLfttftttfLffffttfLffftftffft1 
+ ,1i;i11111111tt111i1fLLLfttft111tt1111111tt11t11ttt1ttfLLfttt1tfffffLfttttfffLCLLLffttLtttttttttt; 
+ .11111111iii1111i1ii1tttttttt11111111111t111111111111fLLftttt11tfftffttttffffLLGCLffttffftttt111t, 
+  ;11111111i1iiiii11ii111tttt111111ti1111111111111111tffffttt1tLLftt1ttttLLfffLLCLffft1tLftttt111i. 
+  .111tttii1111t1iii111i1ttt11111111t11111t1i111111tt1ttttt11tf1fft111111tffLffftLftttttttffftti1:  
+   :1ft1tt11i11t1iiitf1111ttt1t111111111ttiitft111111111111tfLti1f111i1i1tttf11ttff111t111t1tt11i.  
+    it1111ttti1iii11tfttttti;:;f1111111111i1tLt11ii11111ii1ttttt1111i11i11iii111ttt11111111i111t,   
+    .i1i1i11f1iiiii1itt11tt11itLt11tttt11111tt1111ii11iii1111i111iiii1ii1iii11t1111111ii1111i1f:    
+     ,11111ii1i;;ii111iiii1111tft1t11111111111ft11111111111i111ii11iiiii1iiiiii1iiiiiiii11t11t;     
+      ,1t11111i;;i1i;iii1i111ii1111tt11i111111111111iii11111ii;ii11i;iiii;;;iii1iii;;;i11tft1:      
+       .it1iii1iiiiiiii11tti111111i1tt11tff11iii11fti;iii;;i1i;;iii;;;;i;;;;;i1i;iiiii1t1tt1,       
+        .i1i:;iiiiii1tt111i11i1111iiii1111;:;iiiiitt1i;;:::iiiiii;;;;;;;::;;ii;;;;iii11ttfi,        
+          :1i;:;;;;ii1ttt1111111i11iii1111i:;ii111111iii;:ii;;;;;::;;;;;:,:i;:;i:,iii1ttt;.         
+           .;i;::;;iii11111111i11111ii1111111111tt111iii;;;;11i;;;;iiii::;ii:;;;;;;ii1t1,           
+             ,;i;;:;;;iii1t1111111i1111itfLftttftiiiii;;;;;iiiiiiiii1i;:;ii;:::;;ii111:.            
+               ,ii;;;i;iiii1111111t111iittft11111ii11;:;iiii;;;iiiii;;;;;;:::;;;;11i:.              
+                 ,;;;ii11i1ii11t1111111111ii1iiii1iiiiiiiii;;iii11i;;;;;;;;;;;;i1i:.                
+                   .,;i11iii11i11t1ii1111t111ii1111i111iii;;iiiiiiii;;;;;;;;;ii;,                   
+                      ,;111ii111tfffft11111t1f11111i;;i;;iiiiiiiiiiii;;;iiii;:.                     
+                        .,:i111tttfLLfff1ttttt1111iiiiiii111111ii11ii11ii;,.                        
+                            .,;1tfffffLLLLftfftttttfft1111ttt1tttt1ii:,.                            
+                                 .,:i11tfLLLLLLLLLLCCCLLLffft1i;:,..                                
+                                       .,,::;iiiii11iii;:,,..                                       
+""")
+    rawFrames.addOne("""
+                               .        ..,,:;;;ii;;;;:::,..                                        
+                                 .,:i1ttffLLCCCCCLLLLLLLLLfft1i;:,.                                 
+                            .,itLCGGGCCLLLLLLLfffffffffffLfLLLLLLLf1i:,                             
+                    .    ,;tCG000GCCLffffffttfffffffffttfffLffLfffffffff1:,                         
+                      ,:itLCGGLCCLLfffftt1tttttttttttttftt1tt111tffttfffLLfti,                      
+                   .;tffLCCGCLLLLfffttttttftt111111tttttttttt111tfffffftttttff1;.                   
+                 ,ifffLLCCCLLCLfLfLLffffft11t1ii1111tfft1ttttffftfLLLfffttttft1tti,                 
+               ,itffffLLLfLLLCLfLLLCCLLfffffft111ii11tt11111tffffffffLCLfffffftttff1:.              
+             ,iffttfffLLffLLffffLLLftttttfftfftffttt1111tt1tttttfttfLfLLLfttttftfffff1,             
+           .ifftttfLLGCLffftffffffft1111ttfttfffLfffffffttttt1ttttttfLCLffffffffttfLLLfi,           
+          ,1ffttffCGGCLLCLffffffffftttffttt11ttttttttttffffLf1ttttfffLCCCLCLfftfffffLLLt1:  .       
+         ;ttttttffCGLffLLLLfffLffft1tttfLffLLftttt1tt11ttfffLLffftfLLffLLLLfffttffffffffff1.        
+       .1ttfftt1111tffffffLLLft1tt11ttfffffLLt1i;i1ttff11tfffLffffLLffffffttfffffLfffLLfffft,       
+      .1fffftt1iiittttffLffLLftt11tttttttttti;:::,;11fft111tfft1tffCCfffffftttfffCLffffLfffft,      
+     .1tfft1i1i11i1ftfttffffLftt1tttttttfLt1:,:,::i1tttft111tt1ttffLfLfLLfLfftttLLLLfffLLfffft,     
+     ittt1t11111111ftfttftttttttft1tttLLtttt1iiiii11t1t1111tftffffLLLffLCLLLCLLLLCLLLffLLftffft,    
+    :ttt111i1111it1tttttt1tt1tttttfffffffftttttttt111i1t11tftffffffftffLLfLffLfLLLLfffffffttfftt.   
+   ,11;itt1111i111i1tffftffttttttttffttfLLfttttt1t1111tffffftLLfLCCLLLLffLfffffLLLfLfft1t1ttfttti   
+   ;i;:;i1i11i11i111fffLLLffftfffttfttt1tf11t111tLftt1ffLLLfLfLLLLCCGGGLLLffftLLfLtfCLtt111tttttf: .
+  :1;:,::;i111i1111tfLfffffffLLfffft1tt1tt111111ttt11tffLfffLLLCLfLLLCCLLffftfLCLfffLLftt11t11ttft  
+ .i1i;:::;i11111111tLLLfLffffffffftt11t1111111tt111ttttfffCLffLLLLLLLLLLfffLLLLCCLLffttt1ttft1ttff, 
+ ,i1i;;iiii11111111ttLGLfLfLfffLfffftt111tt1ttt1t1t1t1ttttLLffffLGCLfLLLffLLfLffLLLffft1fft1tffftf; 
+ :111i;iii;1t11ttt11tfCCLfLfftttffffftttttftttttftt11tttffttfCLffLffLLfLLLfLffftfffftffftft11fffff1.
+ ;11i::;iiitfitfLt11ffCGGLLLfffftttt11ttfffftttttt11ftffffffLLLLffLffffLCLLfftffttfttfLLftt1ttffLLt.
+ ;ii:,.:i11t11ttf111fLCCGGLfffffffftttttttfftttttttttttftfffftfLLfffttfffLLfttttfffttLCLffftttffLLt,
+ ;ii:,,:i1ii11tft111tfLLGGCCCLfftfftffffffft1tttfffttfffffff1ii1tffttftfffftttt11tfffffffLfftfffLLf,
+ ;1i::;;i11111i11i1ii1tfCCGCGCffffffttfffftftttttft11tfLLfftt11ii1tf1ttfLLftt111ttfffft1fLfftfftfLt.
+ :1i;:;i1i111111111i1i1fCGGCLLfttttt1ttt11111i111t111tLCftffttttttttttffLLftfftttfftffttfffftfffff1 
+ ,111;;1111111111tt111i1fLCLfftft111tt1111111tt11tt11tt11tffLfttt1tfffffLfttttfffLLLLffftftttftt1t; 
+ .i11111t111ii1i1t111iii1tttttttt11111111111t111111111111tLLLfttt11ttttfftttfffffLCCCLfttffffttt11, 
+  ;11111111i1111iiii11iii111t1tt11t111t1i1111111111t1t11ttfffftt1tfLftt1t1tfLffLfLCLLfff1tLfttt11i. 
+  .i1i1ttt1ii1111t1iii1111i11t111111111t111111t1111111tt1ttttt11tf1fft111111tfLLffffftt1ttttfft11:  
+   :11tt1ttt11i11t1iii1tt1111ttttt111i11111tt1i1ft11111t1111111tLfiit1i111itttft11tff111tt1tt1tti   
+    ;11i111tttt11iiii11ff1tttt;;:;f1111111111i11Lt111111i1iii1tttftt1i1i11i11iii11tt11111111ii1t,   
+    .i11i11i11f1iiiii111t111tt1i;tLt11tttt111111t11111i11iii1111i11iiiii1ii1iii111111111ii111it:    
+     ,1111111ii1i;;ii111iiii1i111tft1111i11111111tt11111i11111i11iii1iiiiii1iiiiiiiiiiiii11t1t:     
+      ,11t111111i:;i1i;iii11i111ii111ttt1111111111111t11ii111iiiiiii1i;;iii;;;;ii1iii;;;i1tft:      
+       ,11111iii11iiiiiii111t1111111111ttt1tff11iii11ftiii1i;:i1i;;;ii;;;;;:;;;i1i;iiiiit1tt,       
+        .i11i;;iiiiiii1tt111111ii111iiii11111;:;ii1iit11i:;:::iiiiii;;;;;;;::;ii;;;;iii1tf1.        
+          :11;;:;;;;;ii1ttt11111111i1iiii1111;:;ii111111iii;;iii;;;:::;;;;:,:ii:i;,:ii1tt;.         
+           .i1i;:;;;;i;i111t111i1i1111iii1i11111111t1111iii;;;i1i;;;;;iii;:;ii;;;;;;i1t1,           
+             ,;;;;:;;;;iiii1t11i11111i111i1tLfftttt11iiii;;i;iiiiiiiiii1;:;ii:::;;ii11:.            
+              .:iii;;;i;iiii11111111t111iittfft11111ii1;:;iiii;:;iiiii;;;;;;::;;;i1i:.              
+                 ,;i;;iii1ii11ii1t1111i11111ii11iii11i1iiiiii;;iii11i;;;i;;;;;;iii:.                
+                   .,;ii1111i11111t1iii1111t11111i1111111iii;;iiiiiiii;;;;;;iii;,                   
+                     .,:1111ii111ttfffft11111ttf11111i;iii;iiiiiiiiiii;;;iii;,.                     
+                        .,;i11111tttfLfLft1tttt11t111iii1i11111i1i11111ii:,.                        
+                            .:;itfffftffLLLfttfff1tffft111tttt1ttt1i;:,.                            
+                                ..,:;1ttfffLLLLLLLLLCCCLLfftt1ii:,.                                 
+                                      ..,,::;iiiii11iii;::,..                                       
+""")
+    rawFrames.addOne("""
+                              .         ..,,::;;;iii;;:::,,.                                        
+                                 .,:i1tfffLLLCCCCLLLLLLLLLfft1i;:,.                                 
+                            .,itLCGGGGCCLLLLfLLffffffffffffLLLLLLLf1i:,.                            
+                    .   .,;1LG000GGCCLLffLfftttfffffffftttfffLffffffffft1;,                         
+                      ,;i1fLCGGCCCLLLffftt11tttttttttttttftt1tt11ttftttfLLfti,                      
+                   .;1ffffLCGGCLLLLffftttt1fftt111111tttttttt11111tffffft1tttt1:.                   
+                 ,;tffffLCCCCLLCLfLLLfffffft11t1ii1111ttft1ttttffftfLLLffttttftt1i,                 
+               ,ittfffffLLLLLLCCLLLLLLCLfLftffft1t1ii111tt11111ffLfffffLLLffffftttf1:               
+             ,ifffttfLffLffffLfffffLLftttttffttftffttt1111tt11tttttttfLfLLftttttttfLft:             
+           .;tftttttfLCCCLLffftffffffft111t1tt1tfffLffffffttttt111ttttfLCCfffffttttffCL1,           
+          ,itttfttffCGGLLLCLffffLffffftttftttt111tttttttttffffft1tt1tffLLCLLLLfftffffLLLt:  .       
+         ;t1ttttttffCCLffLLLLLfffffftt1tttfLtfLfttttt1tt11ttffLLLffttfLfffLLLfffttffffffff1.        
+       .it1tffftt11i1ttfffffLLLfft1tt11tttffffLf11i;i11ttf111fffLffffLLffffft1tffffLffffffft,       
+      ,1tttffft1iii11tttttfLffLCftt1111ttt1ttt1i;:::,;11fft111tttt1tffCLffffft11tffLLfffLLfff:      
+     .1ttffftii1ii1i1fftttfffffLft11t1ttt1tfLt1:,:,::;1tttft1i1tt1ttffLfLfLffLttttfLLLfffLLfff,     
+     ;1ttt1tt11111111tftttfftttttftf11ttffftttt1;iiii11t1t11111ttffffLLLffLLLLCLLLLLCLLffLLftft,    
+    ,i1t1t11111111i111ttttt1ttt11ttttttfffffftttttttt111i1t111ttffffffftfffLfftfLfLLLfffffftttf1.   
+    ;11i;1f1ii11ii111ittffttfftttttt11fttttLLft1ttt1t11111tfffftfffLCLLfLLfLLffffLLLfLftt111tttti   
+   :1ii:;i11i11i1ii111tfffLfffffttftt1fttt11f11t1111LLt11tfLLLfLfLLLLCLGGGLLLfftfLfLftLLt1111tttf:  
+  ,1i;:,:::;i111ii1111tfLfffftfffLfttff1tt11tt11111tttti1tffLfffLLLLLLLLLCLLffftfLLLftfLftt11t1tt1. 
+  i11i;::::;ii11111111fLLLfLffftfftfttt11t1111111111111ttttffLLffLLLLfLLLLLfffffLLLLLffftt11tf11tf, 
+ ,;i11;;;ii;i1111111i1ttLGLfLfLffffffftttt1t1t1ttt1111tt1ttttfLffffLGCLffLLffLffffLLLffft1tfttffffi 
+ :;it1i;iii;iit1i1ttt11tfGCLfLffttttttfftttttfttttttttt1tttttttfLCfffLffLfLLLfLffttffftffttft1tffL1 
+ ;1i1i;::;ii1tf11fLf111ffCGGLLLfffftttt11ttffffftttt1t1tftffffffLLLffLffffLLLffftfttff1fLLft11tffft.
+ :i;i;,,.:i11111ttff1i1fLCCGGLfffLfffLt1111ttffttttttttttttttfffttfLLftttfffffftttttfttfCLfffttffLf.
+ :iii:,,::i1ii111tft111tfLLCCCLLLfftfffttffffff1ttttffttttffftftii11tfftftfffftttt11tfffLffLffttfLf.
+ :1ii;::;;i1i111111i11i11tLCCGCCCftfttftttfffttttttttt1ttfLLffft11i11tftttfLLft1111ttfftt1tffttftff.
+ :iii;::ii1i111111111111i1fCGGCLLfttttt11tt1111ti1111t111LCfttfttttt1tttttffLftft1ttffffttfffftttft 
+ :1ii1i;i111111i111tt111ii1fLLLfftft1111t11111111t11tt111t11tffLfttt11ffftfLfttttfffLLLffttftttttt; 
+ .11111111t1111iii11t11iiii1tttttt1t1111111111i1111111111i11tLLLfttf11tttttftttftfffLCLLfttffttt11, 
+  :1i1111111111i111iiiiiiii1111t1tt111111t1i111111111111111ttftfftt11fLftt1tttfLfffLLCLfft1fLttt1i. 
+  .ii1i1tttt1ii11i11t1iii111111t1111111111t111111t1i11i111t1ttttt111t1ff1111111tffffffLt11ttttttt:  
+   :ii11f11ttt11i111t1iii1ft11111tttt1111111111f1iitf11111111111i1tffi1t1i111itttf11tff111t11t1ti   
+    ;i1t11111tttt11iiiii11ff1tttt;;,;f1111111i11111ff111111i1iii1ttttt1111111i1iii11tt11111i1i11,   
+    .1111ii1i111f1iii;ii111t111t11i;tLt11ttt1111111t11111111iiii11iii1iiiiiiiiiiii1111111ii1111:    
+     ,1i1111111i11i;;;i111iiiiiii111tft1111111111111tt11111i11111ii1ii1iiiiii1iiiiii1iiiii11tt:     
+      ,111t11i111ii:;i1iiiiii1i1111ii11111t111111111111111iii11iiiiii;i1i;;iii;;;iiiiii;;i1tf:      
+       ,t1i111iii1iiiiiiiiii11tt1111111111t1111ff11iii11ftiiiii:;ii;;;;ii;;;;;:;;i1i;ii;i1tt:       
+        .1111i;;;iiiiiii11tt111111ii111iiiii111i;;;iiii1t11i:;::;ii;ii;;;;;;;::;ii;;;;ii1tt,        
+       .  :11i;;;:;;;;;ii1ttt11111111111iiii1111;:;ii11111ii;;:;i;;;;;::;;;;:,:i;;i:,;i1ti.         
+           ,;1i;;::;;;;i;i111111111i1ti1iii11i11111111111ii;i;;;;11i:;;;iii;:;i;:;;;;i11,           
+             ,ii;;;::;;;;;iii1t11i11111i1i1ii1ffft1ttti1ii;;;;;iiiiiiiiii1;:;i;:::;i1i:             
+               :iiii;;iii;iiiii11111111t111i1ttft1i111ii1i:;iiii;:;ii1ii;;;;;;::;;ii:.              
+                 ,;ii;;iii11i1iii11t1111111111iii1iiii1iiiiiiii:;ii11i;;;i;;;;;;i;:.                
+                   .::iiii111i111ii1t1iii11i1t111iii111111iiii;;iiiiiii;;;;;;ii:,                   
+                     .,:i111iiii111tfLfft111111t1t1111i;;;;;iiiiiiiiiii;;;i;;,.                     
+                        .,;i1111111ttfLLLLt1ttttt1111iiiiiii1i11ii1111ii;:,.                        
+                            ,:;i1ffftfttffLCLttfftt1tfft111tttt1tt11;:,.                            
+                                ..,:;i1tfffLLLLLLLLLLCCLLLftt1i;:,.                                 
+                                      ..,,::;iiiiiiiiii;::,..                                       
+""")
+    rawFrames.addOne("""
+                               .        ..,,::;;;iii;;:::,,.                                        
+                                 .,:i1tffLfLLLCCCCLLLLLLLLLft1ii:,.                                 
+                            .,;tLCGGGGGCCLLLLfLLLfffffffffffLLLLLLfti:,.                            
+                    .   .,;1fG0000GGCCLLffLfffttfffffffftttfffLffLffffft1;,                         
+                      ,;i1tfLLCGGLGCLLLffftt1tttttttttttttttttttt11ttfttfLfti,.                     
+                   .;1fftffLCCGGLLLLfffftttttfftt111111tttttttt1111ttfffftttft1;.                   
+                 ,;ttffffLCCCCCLLCLLLLLffffffft1t11ii111ttfftttttffftfLLffftttff1i,   .             
+               ,ittttfffffLLfLLLCCLfLLLLCLfLfttffft111i111tt11111tfffffLfLLLffffttf1:               
+             ,itffftttfLfLLLfffLfffffLLfftttttfttfttffttt111tt11ttttfttfLfLLfftttttfLt:             
+           .;1fttttfffLLCCCLLfLftffffffft1111ttttttffffffffffttttt1tttttfLCLffLffffttLC1,           
+       .  :111tffftffLGGGCLLCLfffffffffftftfttttt11ttttttttttfffLftttttfffLCCLLLLfffffLCf;  .       
+        .;t11ttttfttffCGLffLLLLLLffLfffttttttfLffLftttttttt11ttfLLLffftfLfffLLLffftfffffff1.        
+       .ittttfffft111i1ttffffLfLLLfftttt11ttfffffLf11;;i1ttff11tffLLffffLLffffttffffffffffLf,       
+      ,11ttfffftt11i111tttttfLLffLLftt11ttttttttt1i;:::,;11fft111tfft1tfLCfffffft1fffLLffLLfL:      
+     .111tfLft1iitii1iitfttttfffffLft11t1tttttfLt1:,:,::;1ttttt1i1tt1tfffLLLLLfLftttfLLLffLLff:     
+    .;i1tftt1t1111111111ftfttfftttttftf11ttfLLtttt1i;iii111tt1111tffffffLLLfLLLLLCLLLLCLLffLfff,    
+    .;i1t1tt11111111i1t11ttttttttt11tttttffffffftttttttt11111tt1tftffffffftffLLLffLffLLfffffftft.   
+   .,i11i;i1t11111ii111i1tfffftffttttttttfftttfLfft1tft1t1111tffffffffLCCLfLLfLffffLLLfLfft11ttti   
+   .;1;i;,;i11i11111i1111tffLffffffttfft1tftt11tt1tt111fLf11tfLLLfffLLLLCCGGCLLLfftLLfftLLtti1ttf: .
+  .i1i;;:,:,:;i1111i11111tLLffffffffLfftfft1t11tt1111i1ttti1tffLfffLLCLLLLLLCLffftfLLLftfLft11t1f1. 
+ .;1i11;;::::;ii111111111fLLLfLfffffftffttt11t1111111tt111ttttffLCffLLLLLLLLLLfffLfLCCLffftt1tf11f, 
+ ,i;i1ii:;;iiii1i1111111tttLGLfLfLffffffffttt1t1t1tttt111tt1tt1tfLffffLGCLffLLfLLffffLLLffttffttffi 
+ ;:;1t11i;iiiiii1t11ttt111tfCCLffLfttttttfftttttfttttttttt1ttttfttfLCffLLffLfLLLfffftffftfffffttfft 
+ :iii11i;::;iii1ftitfLf111ffCGGLLLffffttttt1tttfffft1tt1111ftffffffLCLfffffffLCLffttfttf1fLLft11fff.
+ ,;;;ii:,,,:i111111ttft111fLCCGGCLffLfffff1ttt1ttft1tttttt1tttttfffttfLLffttfffLffttttfftfCLffftfLf.
+ :;iii;:,,::i1ii1111tf1111tfLLGCCCLLffttfftttffftft1tttfffttffffftt1i11tfftftffffttt11tfffLffLfttff.
+ :iiii;:::;;i1i1111i11i11i11tfCCGGGCftftfffttfffttttttttft1ttLLLfft11i1itftttfLLft111ttfffttfLftfff.
+ ,iiiii;:;iiii111111111111ii1fCGGCLLfttttt11ttt111t1i111t111fCLttfttttt1ttttffffftftttffffttfffttft.
+ ,1iii1ii;i111111i1111tt111ii1fLLLffttf1111t11111111t111t111tt11ffLLttt1tfffffLfttttffLLLfftfftttt; 
+ .1111111111t1111iiii1tt11iiii1ttttttttt11111111111t111111111111fLLfttt11ttftfftttffffLCLLfttLfttt, 
+  :1ii11111111111ii1iii1iiiiiii111t11t11t111t1ii11111111111111ttfffftt11fLftt1tttLLfffLLLffttfftt1. 
+  .iii11i1tttt11i11i11t1iiii1111i1t1111111111t11111111i111111ttttttt11tftff111111tffffffLt11ttttt:  
+   :i;111fftttft11ii11t1iiii1ft111111ttt1111111111ttii1f11111t1111111tffi1f1i11i1ttf11tff111t11ti   
+    ;ii1t1111i1tttf11iiiii111ft1tttt;;::ft111111ii11i1ff111ii1i1iii1ttttt11ii11i11ii111t11111111.   
+    .1iii1ii11i111ft1iiiii111tt111t11i;tLt1tttt1111111t11111111iiii11iiiiiiiiiii1ii11111111i111,    
+     ,11i11111111ii1i;;;ii111iiiii11111tft1t11111111111tt11111i11111i11ii1iiiiii1iiii1iiiiii1t:     
+      ,t1i1tt11i111ii;:;i1iiiii11i1111i111111t111111111t111111ii11iiiiiiiii;;iii;;;i1iiii;i1f:      
+       ,ttii1111iii11iiiiiiiii111tt1111111111t1111ff111ii11f1iiiii:;1i;i;ii;;;;;;:;iii;iiitt:       
+        .tt111i;;;;iiiiiii11tt111111ii1111iiii1111i:;;iiii1t11;::::;iiiii;;;;;;::;ii;;;iitt,        
+       .  :1111i;;;;;;;;;;i1tttt11111111i1iiii1111i:;iii11111iii;:iii;;;:::;;;:,;i;;;:;iti.         
+           ,i11i;;;::;;;ii;i111111111iit111iii11i1111111tt11iiii;;;i1i;;;;iii;:;i;;;;i1i,           
+             ,i1i;;;::;;;;;;iii1t11111111ii1i1i1fffftttf1iiii;;;i;iiiiiiiiii;:ii:::;ii:             
+               :i1iii;;;iii;iiiii11111111t111iittff11111ii1i;:iiii;:;i1iii;;:;;::;ii:.              
+                 :i;ii;;ii;i11i1iii11t11111111111iiiiiii1ii1iiiii:;iii1i;;;;;;;;i;,.                
+                   .:;;i;ii1111i111111t1iii111111111ii11111iiiii;;iiiiiii;;;;i;:,.                  
+                     .,;i1t1ii1ii111ttfLfft11111tttt1111i;ii;;iiiiiiiiii;;;;:,.                     
+                        .,;1t1111111tttfLLLft1ttttt1111iiiiii1i11111111i;:,.                        
+                            .:;i1tfffttttffLLLffffft1tfftt111ttt11t1;:,.                            
+                                .,::;i1tffffLLLLLLLLLLCCLLftt1i;:,.                                 
+                                      ..,,::;iiiiiiiiii;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;iii;;:::,,.                                        
+                                 .,:i1tffLLLLLCCCCCLLLLLLLLft1ii:,.                                 
+                            .,;tLCG00GGCCCLfLfffLLffffLLLLffLLLLLLfti:,.                            
+                    .    ,;1fCG00GGGGGCCLLffLffftffffffffffttfffffLfffft1;,    .                    
+                      ,;11t1tfLCGGCCGLLLffffttttttttttttttttttt1tf11ttftfLLti:.                     
+                   .;1fffttfLCCGGCLLLLfffftttttfftt111111tttttttttt11tffffttff1;.                   
+                 ,;tttffffLLCCCCCLLCLLLLLLfLfffft1t11ii111ttfftttttffffLLffftttfti,   .             
+               ,itt1ttffffLLLLfLLLCCLfLLLLLLLLfftffftt11ii11ttt1111tfLffLfLLLfffftf1:               
+             ,;tttfftttfLffLLLfffLfffffLLLftttttffttftffttt111tt11ttttfftfLLLLfttttfLt:             
+           .;11fttfttftfLLCGCLLfffftffffffft111ttttttfffLffffffttttt111tttfLCLfffffftfLt,           
+       .  :11i1tfftttffLGGGCLLLCLffffLffffftftftttt111tttfttttttffLft1tttfffLCCLCLfffffLL;  .       
+        .i1111ttttff1tffLGLfffLLLLLfffLfffttttttffffLftfttttt11tttffLLffffLfffLLLffftffffL1.        
+       .i11ttttfffftt111ittfffffLLLLLfftttt11tfffffLLf11;;i1ttff11tffLffffLLffffttffffLfffLf:       
+      ,111ttttffftt11i111tttfttfLfffLLttt11tttttttttti;:::,;11fft11ttft1tffCLffffft1tfLCfffLf:      
+     .1111ttffft1iitii1ii1ffffttffffLLft1ttttttttfLf1:,:,::;1tttft1i1tttfffLfLfLfLftttLLLLfLLf:     
+    .;ii1tftt11t1111111111tftfttffttt1tftft1tttLLfttt1iiiii11tttt111tfffffLLLfLLLLLCLLLLLLLfLff,    
+    ::;i1tt1t1111111111i1t1tttttttttt11ttftttfffffffttfttft111i1tt1ttfffffffttfLLfffLfLLLffffftt.   
+   ,,,i111i;itf1ii11ii1111i1tfffttfftttttttttftttfLfft1ttt111111tffffffffLCLfLLLLLffffLLfLft111fi   
+  .,,;1iii::ii11ii11111i1111tffLfLffffttfftttftttttt11t111tLft11fLLLfLLLLLCCCGGCLLfftfLfffLLt11tf:  
+  ,,ii1i;:,,:,:;i1111ii111ttfLLffffffffLLfffft1tt1tt111111ttti1tffLfffLLCLfLLLCCLffftfLLftfLft1tt1. 
+ .:i1i11i;;::::;ii111111111tfLLLfLfffffftfftt111t11111111t111ttttffLCffLLLLLLLLLfffLfLLCLLfffttftt, 
+ ,i;;i1iii:;iiiii1i11111111tttLGLfLfLLfffLfffttttt11t1ttt111ttt1t1tfLLfffLGCLfLLffLLfLfLLLffttfttL; 
+ :i:;i1t11i;ii1iii1tt11ttt111tfCCLLLLfftttftffttttttttttttttt11tttfttfLCffLffLLfLLfLffttfftfffft1Lt 
+ :i;iii1ii:::;iiiitf11tfLt111ffCGGCCLffffttttt1tttffffttttttt1tttfffffLCLLffffffLCLfftfttftfLLft1ff.
+ ,:;;;ii;:,,.:ii11111ttfft111fLCCGGCLffffffff1ttttttffttfttttttttttffftffLLffttfffLfttttfftLCLfftff.
+ .;;iiii:,:,::i11iii111ff11i1tfLLCCCCCLffttfftttffffff1tttffftttffffft1i11tfftftffffttt11fffLffffff.
+ .;iii1i:::;;;i1ii1111i11i11i11tfCCGGCCLfffftfttfffftft1tttft1ttfLLfftt1111tftttfLftt11ttfffttfftft.
+ ,;;iiiii::;iiii11111111111111i1fCGGCLLLfttttt1ttt111111111t111tLCftfftttttttttffLftftttffffttfffft 
+ .11i11i1i;;i111111ii111ttt1111i1fLLLLfttft111tt1111111tt11tt11tt11tfLLftt1tffffffttttffLLLLftfttfi 
+  i11111111111t11111iii1111111iii1tttft1ttt111111111111111111111i11fLLfttf11tfftftttffffLCCLftfftt: 
+  :1iii11i1111111111i111ii1iii1iii111tt1tt11111ttii11111111i11111ttffffff1tLLft11ttfLfffLLLfftfft1. 
+  .;iii1iiittttttii111111t1iiii1111i1tt111111111tt11111111111111ttttttt11tttff111111ffffffLtttttf:  
+   ,i;;i111fttttft111i111t1iiiitft11111tttt1111111111ttii1ft1111t1111111fLtitti1111tttt1tft11t1t1   
+    iiii1tt111111ttttt11iiiii11tLt1tttt;;::ft111111ii11i1tf111ii1i11ii1tttft1i1i1111ii11tt1i1111.   
+    .1iii111ii11i111tf1iiiii1111tt111t111;tLt1ttttt111111tt1111111iiii11ii1iiii1ii1iii111111ii1,    
+     ,t11i11t111111ii1i;;;ii1i1iiiiii11111fft1t1t111111111tt11111i1111ii11i11iiiii1iiiiiiiiiit:     
+      :tt1iitt1111111iii:;i1iiiiii11i1111i11111tt1111111111111111ii111iiiiii1i;iii;;;i1iii;it;      
+       ,tftii1t111iii11iiiiiiiiii1ttt1i1111111i1t1111ff111ii11f1iiii;:i1;;iii;;;;;;;i1i;i;1t:       
+        ,tf1111ii;;;;iiii;iii1tttt11111ii1111iiii1111i:;;iiii1t1i;;::;iiiii;;;;;;:;ii;;;i11,        
+       .  ;11111i;;;;;;;;;;iiittttt11111111i1iiii1111i:;ii111111ii;:;iii;;:::;;;::ii;;:;1;.         
+           ,i111ii;;:::;;;ii;i1111t11111i1ti11ii11111111111t111iii;;;i1i;;;;ii;;;ii;;;ii,           
+             ,i11i;;i;::;;;;i;iii1tt11111111i111i1tffftttftiiiii;;i;iiiiiiii1i;;i;:;ii:             
+               ,i1i;iii;;;;ii;iiiii11111111t111iittfft1i111i1i;:;iiii:;i1iii;;;;::i;:.              
+                 ,11;ii;;iiiii11i11ii11t11111111111iiiiiii1ii1iiii;;iii11;;;;;;;;;,                 
+                   ,:ii;;;ii1111ii111111t1iii1111t1111ii11111iiiii;iiiiiii;;;;;:.                   
+                     .,;111t1ii1iii11tttLLfft11111tttt1111i;ii;iiiiiiiiiii;;:,.                     
+                        .,;1tt11ii111ttttLLLLfttttttt111iiiiiiii1111111i;:..                        
+                            .:i11tfffftfttfffLLftffftttffft111ttt111;:,.                            
+                                .,:;;i1tffffLLLLLLLLLLLCCLLft1i;:,.                                 
+                                      ..,,::;iiiiiiiiii;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;iii;::,,,.                                        
+                           .     .,:i1tffLLLLLCCCCCCLLLLLLLft1ii:,.                                 
+                            .,;tLCG00GGGCCLLLLffffLffLffLLLffLLLLLfti;,.                            
+                    .    ,;1fLGG0GGGGGGCCLLLffLfffffffffffffttffffLLLfft1i,.                        
+                      ,;1tt11tfLCGGGCCCLLLffffttttttttttttttttfttttt1ttffffti:.                     
+                   .;1ffffttffCCCGGCLLLLfffftttttffft1111t1ttttttttt11ttfffffft;.                   
+                 ,;tttttLfffLLCGCCCLCCLLLLLLfLfffft1t111i1t11tfft1ttfffffLLffftffi,   .             
+               ,;ttt1ttfffffLLLLfLLLCCLLLLLLCCLfLffffftt11ii111tt1111tffffLfLLfffftt:.              
+             ,;1tttffftttfLffLLffLLLffffffLLffttttfffffttfftt1111t111tttffffLLCftttfft;             
+           .;111ffttfttftfLLLCCLLLffftffffffft1111ttttttffLLfffffftttt11ttttfLCLfffftfLt,           
+          :111i1ttfftttffLGGGGLLLCLffffffffffffttftttt11ttttttttttffLfftttttffLCCLCLfffLLi  .       
+        .it1111tttttffttffLCCfffLLLLLLfffLffttttttfLfffLftfttttt11ttfLLLffftfLffLLLfftfffL1.        
+       .i1i1t1tttfffftt111itttLfffLfLLLLfftttt11ttffffLLf11;;i1ttft11tfLLffffLffLfftffffffLf:       
+      .1t11tttffffftt11ii111fttfffLLfffLLttt1ttttttttttti;::::;11fft11ttft1tfLLfffffttffLLfLL:      
+     .i11111tffffttii11i11iitttfftfffffLLfttttttttttfLf1:,::::;1tttft1i1t1tfffLLfLLLftttLLLfLL:     
+    .;;ii11tftt11tt11i1111111fftftffttttttftft1tttfLftttti;iii11tttt111tfffffLLLfLLLLCLLLCLLLff:    
+   .::,;i11t11t11111111111i1t1ttfttttttt11ttfttffffffffttftttt11111tt1tfffffffftfLLLffLfLLLffftt.   
+   ,:,,i1111;;i1f111111ii1111i1tfffttfffftttttttftttfLffttttt1t1111tffffffffLCLfLLfLffffLLffft1t1   
+  ,:,,:1i;ii::;;11i111i11i1111tfffLLfLfffftfftttftttttt1tt111tLLt11fLLLLffLLLCCCGGLLfftfLfffLt11f: .
+  :,,ii1i;i::,::,;i1i111ii111ttffLffffffffLLfffft1tt1tt111111ttt1ittfLLffLLCLLLCCCLLfftLLLffLft1t1. 
+ .;:i1i111i;;:::::;i1111111111tfLLLfLfffffLfffft1t1tt11t11111t1ittttfffCLfLLLLLLLLLffffLLCLfffttft, 
+ ,iii:i11iii:;;i1i;i1i1111111itttLGCfLffLffffffffttt1t1t1ttt111ttt1tttfLLfffLGCLLLLfLLfLfLLLfftftfi 
+ :1i::i1tt11i;ii1iiii1t111tttt11tfCGLLfLfftttttffftttttfttttttttt1tttfftfLCffLffLLLLLffftffftfffttt 
+ ,ii;ii111ii;:::iii11ff11tfLf111ffLGGCLLffffftttf11tttffffttft1t1tftfffffLCLLffffffCLffttttftfLfttt.
+ .:::i;iii;::,,,;1111111ttfLt11tfLCCCGCLfffLftfft1t1ttttftttttttttttttfffftfLLfttfffLfftttfftLCffff,
+ .,;;iiiii:::,,:;11iiii11tff1111tfLLCGCCCLLffttfftttfffff1ttttfffttffffff1i11fftffffffttt11ffffffff.
+ .:;iiii1i::::;ii11i11i1i111i11i11tfLCCGCGCfffftftttfffttfttttff11tfLLfftt1111tfttfLLft11ttfff1ffff.
+ .:;i;iiiii:::ii11i11111111111i11i1tLGGGCLLfttttt1tttt111t1111tt111LCftffttft1tfttffLttfttfffftffft.
+  ;1iii1ii1i;;i11111111i111ttt1111i1fLCLLfttft1111t1111111tt11tt111t11tfLLftt1tffftLftttffLLLftftfi 
+  :1111111111111tt1111ii1i11tt111iii1tttftttttt11111111111t11111111111fLLfttf11tftffttffffLCLftfft: 
+  ,;iiiii111111111111111111ii1ii11iii111tt1tt111111t1i11i11111111111ttfffftt1tLLtt1tttLfffCLfftff1. 
+  .;;iii11iiitttttt11i111111t1iii111111i1t1111111111t11111111111111tttttttt1tttft11111tffffLf1ttf:  
+   ,i;;;i1111ft1ttftt11ii111t1iiii1ft111111tttt111111111tt1i1tt11111111111tfL1it1i111tttt1ff111t1   
+    ;1iiii1t1i1111ittttt11iiiiii11tLt1tttti;;,ff111111i11111tLt11i11i1iii1ttttt11i11i1ii11tt1i11.   
+    .11i111111ii1111111ft11ii;iii11tt111t111i1Lf1ttttt111111tt1111111iii111i1iiiiiii1ii111111i1,    
+     ,1111iii1t1111111i11i;;;ii111i1iiii11111fft1t1t111111111tt1111i11111i11ii11iiiiiiii1iiii1:     
+      :ft11i11tt1111111i1i::;i11;iiii1111111i11111tt11i111111t111t1ii1111iiiii1i;iii;;i1iii;1:      
+       ,fffti111t111iii111iiiiiiiiii11tt11111111111t11ttff111i11tf1iiii;;1i;;ii;;;;;;;iii;i1:       
+        ,tLt11111i;;;;;iiiiiiii11tt1t11111ii1111iiii1111;:;iiiiit11i;;::;iiii;;;;;;:;ii;;11,        
+       .  ;t11111i;;;;:;;;;;;;ii1tttt111111111i1iiii1111i:;ii11i11iii;;iii;;::;;;;:;i;;:i;.         
+           ,i11i1i;;;;::;;;;iii;1111t111111it111iii11i1111111tt111iii;;i11;;;;ii;;ii;;i;,           
+             ,i111i;;i;;::;;;;;;iii1tt11i11111ii1i1i1fLfftttf1iiii;;;;iiiiiiiiii;;;:;i,             
+               :it1i;iii;;;;;ii;iiiii11111111tt111i1ttLt1i111i11i:;iiii;;i1ii;;;;:;;:.              
+                 ,iti;ii;;iiiii111i1i1i11tt1111111111iii1iii1ii1iiii;;iii11;;;;;;:,.                
+                   ,;i1;;;;iii1111i111ii11t1i1i1111t1111ii11111iiii;;iiiiii;;;;:.                   
+                     .,;1t11tiii11iii11ttfLLff111111tttt1111i;i;;iiiiiiiiii;:,.                     
+                        .,;1fft11ii1111tttfLLLLt1tttttt111i1iiiii111111i;:..                        
+                            .:i1tttffffttfftffLLLfffftt1ffft11tttt1i;:,.                            
+                                .,:;ii1ttfLfLLLLLLLLLLLLCCLft1i;:,.                                 
+                                      ..,:::;iiiiiiiiii;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;ii;;::,,,.                                        
+                           .     .,:i1tfffLLLLLCCCCCCLLLLLLft1i;:,.                                 
+                            .,;1LCG000GGCCCCLLfLfffLffLffLLLLLLLLLft1;,.                            
+                    .    ,;1fLCGGGGGGGGGGCLLLffLfffttfffffffftttffLLLfft1;,.                        
+                      ,;tfft111fLLCGGCCGCLLLffffttttttttttttttttttttt11tfffti:.                     
+                   .;1tfttfttffLCCCGGCLLLLfffftttttfftt111111tttttttt111tfffft1;,                   
+                 ,;1ttt1tfffffLLCGCCCLLCLfLLfLfffffft11t11i1111tfftt1ttfftfLffftt1:   .             
+               ,i1ttt11ttffffLfLLLfLLLCCLLLLLLLCLLLfffffftt11iii1tt1111tffffLLLLfff1:.              
+             ,i1i1tttffftttfLffLLLffLLLfffffLLLftttttffttffffttt111t111ttttttfLLftttft:  .          
+           .;1111fftttttfttfLLLCCCLLLLfttffffffft1111t1tttfffLfffffftttt111tttfLCLffttft:           
+          ,tt1ii111tfttttfffCGGGLLfLCLfffffLftffttttftttt11ttttttttttffff1ttttffCCLCLftfLi  .       
+        .itt11111ttttttfttfffCGfffLLLLLLffffffttt1ttttLfffLftttt11t11ttfLfLfftffffLLfffffLt.        
+       .1t1i1tt1ttffffft1111iittfffffLfLLLfft1tt11ttttfffLLt11;;i1ttf11tfffffffLffffttffffLf:       
+      ,111111tttttffftt11ii11i1ftftftLLfffLLttt111tttt1tttti;:,:,i1tLt111ttt1tffCfffffttfLLfL;      
+     .1ii1111ttfLffttiiitii1ii1tfffttfffffLLft11t11tttttLf1;,:,::;1tttf1i11t1ttfLffLLffttfLLfL:     
+    .i;:ii11tfftt11tt111i1111111fttfttfttttttfttt1tttfLftttti;iiii1t1tt111ttffffLLfLLLLCfLLLfLL:    
+    ;:,,:;111t11t1i111111111i1t11tttttt1ttt11ttttttfffffffttttttt111i1f11tftfffffttfLLffLLLLLfft.   
+   ;;,,.:11111;;i1tt111111ii1111i1tfffftffttttttt1tfftttLLff11tt1t1111ffffffffLLLfLLfLffffLffftt1   
+  ,i,,,:i1i;ii::;ii1ii1111111i1111tfffffLffftttftttfttt11tt1tt111LLt1tfLLLfffLLLCCGGLLfftfLftLf1t: .
+  ;:.,ii11i;;:,,,:,:;i1111111111t1tfLfffffffffLftfttt1t11tt11111ttt1ittffffLLLLLLLLCLLfftfLLffft11  
+ .1;:i1iii11i;;:::::;iii1111111111fLLLfffffftfftfftt111t11111111t111tttffLCffLLfLLLLLffffLLCLftttf, 
+ ,11ii;;i11iii:;;iiii;i1i11111111tttfGCffffLffffffffttt1t1t11ttt111tt1ttttLLfffLCLffLLfLfffLLffttf1 
+ ,i1i::;i11ti1i;;iiii;ii1t111tttt11tfLGCLfLfftttttftfttttttftttttttt1tttfftfLCfffffLfLLffftfffffttt.
+ ,:ii;;ii1i1ii;:::;iiii1ff11tfLt111ffLGGGLCLffffttttt11ttfffftttttt11ftfffffLLLffffffLLLfttttttLftt.
+ ,.:::ii;iii;::,,,:ii111111ttfLt111tfCCCGGLfffffffff1ttttttffttttttt1tttttffttfLffttffffftttfftCLff,
+ .,::;;iiii;:,:,,::i11ii11111ff1111tffLCGCCCLLffttfffttffffft1tttffftttfffff1i11fffttffftt11tffffff,
+ .::;iiii1ii::::;;;i11i1111i111i11i1i1fLCCGCCCftfftffttfffftft1tttft11tLLfff11111ttttfLft11ttffttft,
+ .::;;;iiiiii:::;iiii1111i11111111i1ii1LGGGCLLftttttt1ttt111t1i111t111LCLtfttttttttttfLftfttfffttft.
+ .:;t1iii1ii1i;;;1111i11ii11111tt1111i1tLLLLfftff1111t11111111t111t111tt1tfLLttt1tffffftttffLLLfffi 
+ .:;111ii1111111111t1i111iiiii1t111iiii1ttttt1t1tt111111111i1111111111i11fLLfttt1ttftftttfffLCLtff: 
+  ::;iiiiii111i11111111i11i111ii1iiii1iii1i1t11t111111t1i111111111111111tfffftt1fLft11ttLffLLLftft. 
+  ,;:;;i;i1iiii1t1ttt1i1i11i111t1iii1i111ii1t1111111111t11111111111111ttttttt11ttff11111tfffff11f:  
+   ,;;;i;i1i111ff111tft11111111t1iiii1ft111111ttt111111i1111t1i1tt11111111111tffi1t1111ttt11ft1t1   
+    :11iiii11t11i111i11tttt1i1iiiii111ff11ttti:;,1f11i1111111iitft111i111ii11tttt11i11i1ii11t111.   
+    .i1iiii1ii11ii111i111tf11iii;iiii1tt111t111iiLf11ttttt11111t111111iiiii11ii1iiiiiiiii1111i1,    
+     ,11111ii1i111111i1i1i11i;;;iiii11iiiii1i111tft111t111111111tt1111111111i1ii1iiiii1ii11ii1:     
+      :fft1t1i11tt11i11111ii;:;i11i;iiii11iii11ii1111tt11i111111111111ii11iiiii;ii;ii;;;iii;i:      
+       ,fLtfti1i111111;ii11iiiiiiiiiiii111t11111111111t1111ffi11i11tti;ii;;ii;;;i;;;;;;;iiii,       
+        .tCLt11111ii;;;:;;i;iiiii11ttt1111111ii111iiiii1111;:;iiii1t11;;::;iiii;;;;;:;ii;ii,        
+       .  ;ft111111i;;;;:;;;;;;;iii1tttt11111111i11iii1111i;:;i111i11ii;:ii;;;::;;;::i;;;:.         
+           ,1t11111i;;;;:::;;;;ii;i11111111iii1t111iii1ii1111111t1i1iii;;i1i;;;;i;:;i;;;,           
+          .  :i11ii1;;;i;:::;;;;;;;iii1t111111111i111i1tffft1tf1iiiii;;;iiiiiiiii;;;;:,             
+              .:i111i;;iii;;;;;i;;iiii1i11111111t1111it1fft1i11ii1i:;iii;;;iii;;;;;:,.              
+                 ,itti;;ii;;iiiiii1iiiii1i11t11111111111iiiiiiiii1iiii;;ii11;;;;;:,                 
+                   ,;111;:;;;ii11i11i111ii11t111i1111t1111ii1111iiiii;;iiiii;;;,.                   
+                     .,;1tti1tiiii1iii11tt1fLLft111i1tt1tt111i;ii;;iiiiiiii;:,                      
+                        .,i1ffft1iiii111ttttfLLLft1ttttt1111iiiiii11111i;:.                         
+                            .:i1fftttfffttftttfLCLffffft1tfft11ttt11i:,.                            
+                                .,:;i11ttffLffLLLLLLLLLLLCLff1i;:,.                                 
+                                       .,::;;iiiiiiiiii;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;iii;::,,,.                                        
+                                 .,:i1tffLLLLLLLCCCCCCLLffLftt1;:,.                                 
+                            .,;1LCGG000GGCCCCLLLLfffLLfLLfLLLLLLLLft1;,.                            
+                    .    ,;1fLCCGGGGGGGGGGGCLLLffLffftfffffffffttffLLLft1;,.   .                    
+                      ,;tffft1i1tfLCGGGCCGCLLLffffttttttttttttttttttttt1tffti,.                     
+                   .:1tffttfttffLLCCGGGCLLLLfffftttttffft111111tttttttt11ttfLft;,                   
+                 ,;1tttt1tfffffLLCCCCCCLLCLfLLLLffLffff11t11i1111ttfttttffffLLfft1:                 
+               ,i111tt11ttfffffLLfLLfLLLLCCLfLLLLCLLfffffffttt1i111t11111ffffLLLLff1:.              
+             ,i11i1ttttffttttfLffLLLfffLLfffffLLLfftttttffftfffttt111t111tttfffLLLffft:  .          
+           .;11111tffttttttftffLLCCCLLLLfftfffffffftt11t1tfttffLLfffffttttt1tttffLLffff1,           
+       .  ,1t11ii111tffftttfffLGGGGLLfCLLffffLfffffttttftttt11ttttttfttffffttttttLCCLLfffi  .       
+        .;ttti1111tttttttftttfLLGCfffLLLLLLfffffffttttttfLfffLftttttt11ttfLLLfftfffLLffftLt,        
+       .1t11i1tf11ttffffftt1111i1ftfffffLfLLLfft1ttt1tttffffLLt1i;iitttf11tffLfffLfffftfffLf:       
+      ,1111111ttttttfffftt11ii111tftttffLLLffLLttt11tttttttttti:::,:i1fft11tttt1tfCffffttfLLL;      
+     .11ii11111tfffffttiii11i111i1ffffttfffffLLft11tt1tttttff1;::,::i1ttft1i1t1ttfLLLLLfftfLLL;     
+    .ii;:;ii11tffttt1tt111111111111fttfttfftttttftft11ttfLftttti;iii11tttt111tfffffLfLLLLLLLCLL:    
+    ;;:,,:;i111t11tt11111111111i1t11ttfttttttt11ttftttffffffftttttttt11i1t11tttffffftfLLffLLLfff.   
+   ;1,,,,,ii1111i;iitf11i1111ii1111i1tfffftfffftttttt1fftttfLfftttt1t1111fffftfffLCffLfLfffLLffti   
+  .1;,,,,:11i;ii:,:ii11i1111111111111tfffffLffffttfftttfttt1tt1tt111LLt1tfLLLLLLLLCCGGLLfffLffLf1:  
+  :1.,.;ii11i;;:,,,:::;;i1111111111tttfLLffffffffLfttftt1tt1tt11111ttt11tffffffLLLfLLCLLfffLLffft1. 
+  ;1::;11iii11i;;:::::;;i1i1111111111fLLCLfLffftfLffftt111t11111111t111tttffLCffLLLLLLLffffLCLfftt, 
+ .i11ii;;;i1i1ii;:;;iiii;11i1111111i1ttfCGLfffLffffffffttt111tt1ttt111tt1tttfLfffLCCLfLLfLfffLfftfi 
+ ,;11i;::;i11t11i;;ii11iiii1t111tttt11tfLGCLLfLfttttttffftttttttttttttt1tttfttfLCfLLfffLLffftfftff1.
+ ,,;iii;iii1i11i;:,::;iiii1ff11tfLf111tffCGGCCLffffttttt111tfffftttttt11ftfffffLLLfffffLCLftftftfft,
+ ,..,::;ii;iiii::,.,,:i1111t11tttff111tfLCCGGCLfffffffft1tttttffttttttttttttffftfLLffttfffftttftLLf,
+ ,,,::;;;iiiii;,:,,,:;i11ii1i11ttft111ttfLLGCCCCLffttfffftffffft1tttfffttffffft111tffftfffttt1tffff,
+ ,,,::iiiii11i::::;;i;i11i1111i111i1111i1tLCCGGCCLffftffttffffttt1tttft1tfLLfft1111ttttfLft11tfftff,
+ ,,,:;;;;iiiiii;::;ii1i11111111111111i1ii1fCGGCLLffttttt11ttt1111i111tt11LCftffttt1ttttfLftftffftft.
+ ,,,;t11iii1ii11i;;ii1t1i11i1i1111ttt111iitfLLLffttft1111t1111111tt11t11ttt1tfLLtt11ffffftttffLLffi 
+ .::;1111i111111111111t11111iiiii1tt111iii11tttfttttt11111111111111111111i11fLLftft1tttfttfffLCLtL: 
+  :;:;ii1iiii111i11111t11111i1111ii1iiii1iii111t11tt111111tii111111111t1111tfffff1tLLtt11tLffLLftt. 
+  .1;;;;ii;i11iii1tttttf1i11111111t1ii1ii1111i1tt1111111111t1111111111111ttttttt1tttf11111fffff1f;  
+   :;;i;;i;i1i111fL11tttft111ii11111ii1i1ft1111111ttt1111111111t1i1tt1111t111111tL1it1i11ttt1ft11   
+    ;;11iiiii11t11i1111i1tttft11iiiii1111ff11ttt1:;,iL1111111111iitft11i1111ii1tttt11i11i1ii1t11.   
+    .ii11iiii11i1iii111i1111ff11iiiiii111tt111t111iifft11t1tt11111tt1111iiii1i11i1iiii1i1ii1111,    
+     ,t11t111ii1i1t111111111i1i;;;;ii1111iiiii1i111tft111t111111111tt1111i1111i11ii1iii1i;i1i1:     
+      ,fLft1ttii11tf11i11111iii;:;i11i;iiii11i1i11ii1111tt11i1t111111111ii11iiiiiiii;ii;;iiii:      
+       ,tLLttf1111111111iiii11iiiiiiiiiiii11tt11111111111t111tft11ii11f1iiii:i1;;ii;;;;:;iii,       
+        .1CCftt1i1t11ii;;;;;iiiiiii111tttt11i111i11111iiii111i;;;iiiitt1i:;::iiii;;;;;:;i;;,        
+          ;fL1111i111ii;;;;;;:;:;;;ii1ttttt11111111i11iii1111i:;ii11i11ii;:;i;;;::;;;:;;;:.         
+           .1f111111ii;;;;:::;;;;ii;i1111t11111ii1t11iii11ii111111111iii;;;i1i;;;ii;;ii:.           
+             :111ii11i;;;i;;::;;;;;i;ii1itt11111111ii111i1fffft1ttiiii;;;;iiiiiiii;;;:,             
+              .:11111i;;iiii;;;;;ii;ii;i1i11111111t1111i11tft1i11ii1i:;iii;;iiii;;;:,.              
+                .:i1fti;;ii;;iiii;i11iiiii1i11t1111111i1t1iiiiii1ii1iiii;;i11i;i;:.                 
+                   ,;1111;:;;;iii11i1ii111ii111111i1111t11t1ii1111iiiii;iii1i;:,.                   
+                     .:;1tttiitiiii11iii11tt1fLLtf111i1tt1t1111i;ii;iiiiiii;,.                      
+                    .   .,;1ffLft1iiii1111ttttLLLLt1ttttt1111iiiii11111i;:.                         
+                            .:itfffftttfftttftfffLCftffft1tfftt1tt1ii:,.                            
+                                .,:;11ttffffLffLLLLLLLLLLLLLfti;:,.                                 
+                                       .,::;;iiiiiiiii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;i;::,,,.                                        
+                           .     .,:i1tffLLLLLLLCCCCCCLLLffffti;:,.                                 
+                            .,;1fCG00GGGGGCCCCLLLLfffLLfLfLLLLLLLLft1;,.                            
+                    .    ,;1fLCCCCGGGGGGGGGGCCLLffLLfftfffffffffttffLLLt1;,                         
+                      ,;tLLftt1i1tfLCCGGGLCCLLLfffffttttttttttttttttt1tttft1i,.                     
+                   .:1fffft1fttfffLCCCGGGLLCLLfffftttttfftt11111tttttttt11tfLft;,                   
+                 ,;1tttttt1tfLffffLCCCCCCLLCLLLLLLffLffff11t11i111ttffttttfffLLff1:                 
+               ,it111ttt11ttfffffLffLLLLLLLCCLffLLLCCLfLfffffttt1ii11t1111tfffffLLf1:.              
+             ,;1t1iittttfffttttfLLffLLLffLLffffffLLLftttttffftffftttt11t111ttffffLLfft:             
+           .;1111111fftttttttftffLLCCCCLLfffftffffffftt111t1tttfffLffffffttt11tttfLLfff1,           
+          ,i1tt1ii1111tffftftfffLGGGGCLfLCLLffffLffffftttffttt111ttttttttffLftttttfLCLLffi  .       
+         ;11tt1i1111tttttttffttfLfLGLfffLLLLLLfffLfffttttttfLffLLttttttt1ttfLfLfftfffLLffLt,        
+       .1t111i11tt1tttfftffftt1111itftfffffLfLLLfft1ttt1tttffffCft1i;i1ttft1tfLLfffLfffftfLf:       
+      .1t111111tttttftfffftt111;1111tttttffLLffLLLttt11ttttttttt1i:::,:i1ff111tft1tfLffffttLL;      
+     .111ii111111tfffLftttiiit1i11ii1tfffftfffffLLft11t11tttttLf1;,:,::itttfti1t1ttfLLLLLftfLL;     
+    .i1i;:;i;i11tffttt1ttt111111111111fttfttffttttttttf11ttfLftttti;iii11t1t111tffffLLLLLLLLLLL:    
+    ;1;:::,:;i111tt1tt111111111111i1t11tttttt11ttt1ttftttfffffffttttttt111itt1tftffffftfLfffLLLf,   
+   ,fi,,,,.,i11111i;ii1tf1111111i11111i1tfffttffftttttttttftttfLfftttt1t1111ffftfffLCLfLLLfffLffi   
+   it:,,,,:;11i;ii;,:;ii1111111111111111tfffLfffffftttftttfttt1tt1tt111LLt1tfLLLffLLLCGGCLLffLfff:  
+  .ti,,,,iii11i;;;:,,::,:;;i11111i1111tttfLLffffffffLLftfftttt1tt1111i1tt11tffLffLLLLLLCCLfffLLff1. 
+  ,1i::;i1iiii11i;;;:::::;;i1i11111111i1tLLCLfLLffftLftftt1111t1111111t1ittttffLLfLLLLLLLffffLCLff: 
+ .:i11iii;;;i1i1i1i:;;;1iiii111111111111tttLGCffffLffffLfffttt1t1t1ttt1tttt1tttfLfffCGLfLLfLfffLffi 
+ .::i11i;::;i11t111i;;1i1ii;ii1f111tttt1ittfCGLLLLfftttttftftttttftttttttt1tttfttfCLfLffLLLffffftft 
+ ,:,;iii;;iii1i11ii;::::iii1i1ff1itfLft111ffCGGCLCLffLfttttt11ttfffftttt111ftfffffLLffLftLCLfftttft.
+ ,,..,:::;ii;iiii;::,,,,;i111111itttfft111fLCCCGCLfffffffff1t1tttffttttttttttttffftfLffttffLfttffLf,
+.,,..,:;;;;iiiii;:::,,::;111ii1i111tft1111tfLLCGCCCLLLfttfffttfffff11ttfffttfffffti11fftttfftt1tfff,
+ ,,,,::;iiiii11i;::::;;i;i11i11111i11ii1i1i11fCCCGCGCfffffffttfffttfttttft1tfLLfft1111tttfLft1tfftf.
+ ::,,::;;;;iiiiii;:::;ii1ii1111i1111111i111i1tLGGGCLLfttttt11ttt111t1111tt11LCftfttttttttfLftftffft.
+ :;,::1ti1iii1ii11i;;;11111i11iii1111ttt1111i1tLLLLfftff1111t1111111tt11t11tt11fLLft11fffffttffLLfi 
+ .i:::i11111111111111111tt11111ii1i11tt111iii11tttfttttt11111111111111111111i1tLLfttt1tttfttfffCLf: 
+  :i;::ii1i1iii11111111111111111i1111i1iiiiiiii11itt1tt111111t1i1111111111111ttfffft1fLtt1tfLfLLft. 
+  .1i;:i;iii;i111iiitt1tttt1ii11i1111t1iiiii1111i11t1111111111t11111t1i11111t1tttt11ttLt1111fffft:  
+   ,i:;i;;i;;i1i111tLf1tttftt111i1111t1iiii1tf1111111ttt1111111111f1iitt1111111111tftit11i1tt1tfi   
+    ;;:11iiiii111t11i1111i1ttttft11iiiiii111fft1ttt1:;:;L111111111111tf111i11i1ii1ttt11i1111i1t1.   
+    .iii11iiii11ii11iii111i1111ff11iii;i1i11tt111t111iifft11t1tt11111tt111111iii11i1iiiiiiii111,    
+     ,1t11tt111iii11t11111111iii1i;;;iii111iiiiii11111tft1111111111111t111i11111ii1ii1iiiiii11:     
+      ,tfffft1t1ii11tft11i111111ii::;i11i;iiii11iii11ii1111tt11i1t111111111ii11iiiiiii;ii;iii,      
+       ,1LLLf1ft11i111tt11iiiii1iiiiiiiiiiiii11tt1111111111tt111tftiiii1ttiiii;i1;;ii;;;;;ii,       
+        .iLLLLtt1i11t11i;;i;;;iiiiiiii111tt11t11111i1111iiii1111i;;iiii1t1i:;::iiii;;;;:;i;.        
+          :tfft1111111iii;;;;:;;;;;;;iii1ttft11111111111iiii111i;:;i11111ii;:;ii;;::;;:;;,          
+           .1ft1111111ii;;i;:::;i;;iii;i111tt111111i1111iii1ii1111111t1i1i;;;i1i;;ii;;i:.           
+             :tt1ii11i1;;;;i;:,:;;i;;i;iiii1tt1111111ii111i1tffftttt1iii;;;;iiiiiiii;:.             
+              .;tt1i111i;;iiii;;;;;ii;iiii1i111i11111t111i11tft1i11ii1i:iiii;iiii;;:,               
+                .:i1tf1ii;iii;;i1ii;ii11ii1iii11t1111111i111iiiiii1ii1ii1i;ii1i;;:.                 
+                   ,;1t111;:;;;;ii1t111ii111i1111111i1111t11t1ii1111iiii;;iiii:,.                   
+                     .,;1tfttiit1iii11iiii11tttLLLtt111i1tttt111iiiiiiii1ii;:.                      
+                        .,;tfLLLf11iiii11111tttfLLLft1ttttt111iiiii1111i;:.                         
+                            .:i1fLLfttttffttffffffLCLtffffttfftttt1ii:,.                            
+                                .,:;1tttfffffLffLLLLLLLLLLLLft1;:,.                                 
+                                      ..,::;iiiiiiiiii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;i;;:,,..                                        
+                          ..     .,:;1tffLLLLCCLLLCCCCCLLfffft1;:,.                                 
+                             ,;1fLGGG0GGGGGCCCCLLLLffffLLLLLLLLLLfft1;,.                            
+                         .;1fLCCCCCGGGGGGGGGGGCLLLffLffftffffffffttfLLLf1;,    .                    
+                      .;tfLLttt1ii1ffLCGGCGLCCLLLffffttt1tttttttttttttttttt1i,                      
+                   .:ifftfft1tfttfffLCCCGGGLLCLLLffftttttfftt11111ttttttt11tfft;,                   
+                 ,;11ttttt11tfLLffffLCCCCCCLLCCLLLLLLfffffft1t11i111ttffttttffLLf1:                 
+               ,ittii11ttt11ttffffffLfLLLfLLLCCLLfLLLLCLLffftffft11ii11t1111tffffLLt:.              
+             ,;111iii1ttttftfttttfLLffLLLfffLLffffffLLfftttttffftfffttt11t111ttfffLLf1:  .          
+            :111111111fftttttttfftfLLLCCCLLLLffttfftfffft111t1ttttffLLfffffttt11ttffLLf1,           
+          ,i11tt1iii11111ffftfttfffLGGGGLLLLLLfffffLftffftttftttt11tttttttttfffttttfLCLCf;  .       
+         :111tf1i11111tttttttfttttfLLCGffffLLLLLLfffLfftttttttLLtfLftftttt11ttLffftfLfLLfLt,        
+       .1f11t1ii11tt1ttttffffftt1111iifttfffffLLLLLLfttttt11tfffffCf11;;ittft1tfLLfffLffftff:       
+      .1f111111111ttttftffffftt11ii1111tftttftLLfffLLttt11ttttt1ttt1;::::i1tft11tft1tLLfffttL;      
+     .11i1iii111111ttffLfftt1ii1tii11ii1ttftttffffffLftt1tt1tttttLf1:::,:;1tttt1it1tffffLLftfL;     
+    .i1iii;:;i;i111tfttttittt111i11i11111fttfttffttttttttf11tttLLtttti;iii11t1t11tfffffLfLLLLLC:    
+    ;1i;::,,,:;ii11tt11tt111111111i11iit11tttfttt1ttt11tffttffffftfttttttt111it11tttfffftfLffLLL,   
+   .ifi,,,,..:ii11i11;;ii1ft11i111ii11111i1ttfffttffttttttt1tftttfLfft1tf1t111tfffffffCLfLLLffLL1   
+   ,1f:,,,.,,;11i;iii:,:i;i11i11111111i1111tfffLLfffffttfftttfttt1tt1tt11tLLt1tfLLffLLLCGGLLffLfL:  
+  .:t1,,,.,1ii11i;;;:,,,::,:;;i11111ii1111ttffLffffftfffLfttft1tt11t111111tt11tffLffLLLLLCCLffLLft. 
+  .:11;::;i1ii1ii11i;;:::::::;iii11111111iitLLLLffLfffffftfft1111t1111111t111tttffCffLLLLLLfffLCLL: 
+  ,:i1iii;i::;i1111i1;:;;;iiii;i1i111111111tttfCGffffLffffffffttt1t1t1ttt11ttttt1tLLffLGLfLLfLffffi 
+ .:::i11ii:::;i11tt11ii;iii1ii;ii1t1111tttt11tfLGCLfLLfttftfffftttftfttt1ttft1tttfttLLfLffLLLffffft 
+ .::.:iiii;;iiii1it1ii:,:::iiiii1tf111tfLt111ffLGGGCCLffffttttt1tttffffttt1111ftffffLLLffffLLLfttff.
+ ,:,...:;::;ii;;iiii:::,..,;ii111111tttfLt111ffCCCGGCLffLfffLf1tttt1tfftttttttttttfLffLLfftfLfttffL,
+ ;:,,,,:::;;;iiiiii;:::,,::;111ii1i111tft1111ttfLCGCCCCLffttfLfftfffffttttfffttffftf1i1tfttffftttfL:
+ ;:,,,:::;iiiiii1ii;::::;;ii111i11111i111i11i111tLCCGCCCLffftffttfffttfttftft1tfLfft1111tttfLf11tff,
+ :;,,,:::;;;;iiiiiii;:::;ii1ii1111i111111111i1ii1fCGGCLLfftttt11ttt111t1111t11tLLttfttt1tttfLfttfft.
+ :i,,,:;tti1iii11ii11i;;;1i1t1i11iii1111ttt11111itfCCLffttf1111t1111111tt11t11tt1tfLLtt1tffffttfLLi 
+ .i;,::;11i1iii1111111111111t11111iiii111t111iiiiitt1ttttttt1111i111111111i1111i1tLLttt1tftfttffLL: 
+  ,1;;::;ii1ii1ii1111i111111111111ii1111i1ii1i1ii11111t1tt111111t1i111t111111111tttfft1fLtt1tfLLLt. 
+   i1i;:;i;ii;ii1iiii11ttttttt11111ii111t11iiii1111ii1t1111111111t11111t1111111t1ttt11ttLt111tffL:  
+   ,ii;:;i;;i;;i111t11tLtttttft1111i1111t1iiiiitft1111t1ttt11111i1111f1i1ft1111111111ftit1111t1t1   
+    ;i;:it1iiiiii11tt1i11111i1ttttft1i1iiiii111fft1tttt;;::Lt1111111111itf1111i11ii1ttt111111i11.   
+    .iiii111iiiii11111iii1111i1111ff11iiiii1i11tt1111t11iifL11tttt111111t111111iiii1iiiiiiiii11,    
+     ,11t11tt1111i1ii1t11i11ii11iii1i;;;iii1111iiiii11111tft111t111t1111tt11111111ii1i1iiiiii1:     
+      ,1tfffff11t1ii11ttt11i111111iii::;i11i;i1ii1111111ii1t11tt11i1t11111111ii11iiiiii;;i;i1,      
+       ,1tfCfL1tf111i111t1t1iiiii111iiiiiiiiiiiit1tt11i1111111ttt11ff11iii1f1;ii;;1;;i;;;;;;.       
+        .itLLCCtft11i1t11ii;i;:;;iiiii;ii11ttt11111111i1111iiii1111;:;iii1111;;:;iiii;;;:i;.        
+       .  :1tfLt11111111iii;;:;:;;:;:;;;iii1tttt11111111111iii1111i:;i11111iii;;ii;::;;;;,          
+           .ifft11111i1ii;;;i;;::;;;;;ii;;1111t111111iit11iiiiii1111111t1i1i;;iii;;;i;;:.           
+             :tf1iii1iiii;;;ii;;::;;i;;i;;ii11tt11111i11iiiiiitffftttf1iii;;;;iiiiiii:.             
+               ;tf1iii111;;i1iii;;;;;ii;iiiiiii11111111t1111i11ff1i11ii1;:iii;;iii;:,               
+                 :i111ttii;;ii;;;iiiiii111ii1iii11tt1111111111iiiiii1i11iii;;i1i;:.                 
+                   ,;1tt1i1i::;;;;ii11ii1i1111ii111111i1111t11t1ii111iiii;iiii;,.                   
+                     .,;1ttft11i1tiiii1iiiii11tttLCftt111i1tttt111i;iii111i;:.                      
+                        .,;1ffLffft11iii111111tttfLCLft1tttt11111iii111i;:.                         
+                            .:itfLLLLttttfttttfttfffLLfffffttffttt1i;:,.                            
+                                .,:;1ttffffffffffLLLLLLLLLLfft1;:,.                                 
+                                      ..,::;iiiiiiiiii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;;;;::,..                                        
+                          ..     ..:;1tffLLLLCCCLLLCCCCCLLffft1;:,.                                 
+                             ,;1tLCG000GGGGGGCCCCLLLffffLLfLLLLLLfft1;,.                            
+                         .;1fLLCCCCCCGGGGGGGGGGGCLLfffLffttffffffffffLLf1;,.   .                    
+                      .:1fLLLttttii1tfLCCGGGCCCCLLLffffttt1tttttttttttttftt1i:                      
+                   .:itLfttftttfttffffLCCCGGGLLCLLLfffttttttftt11111ttttt111ffti,                   
+                 .;1t11t1tt111tfLLftffLCCCCCCCLLCLLLLLLfffffft1t11i111ttft1tfffLL1:                 
+               ,;1t1ii11ttt111ttffffffLfLLLfLLLCCLLffLLLCLfLfftffft11ii1tt111tfffLLt;.              
+             .;1111i1iitttttfffttttfLLLfLLLfffLLffffffLLLftttttffftfffttt11t11tttffLLt:             
+            :1111t11111tfftttttttfftffLLCCCCLLLffftffffffft1t11tttttfffLfftftttt1tttfLL1,           
+          .;1111tt11ii11111tffttttffffCGGGCLLLLLLffffLffffftttffttt111ttttttttfffttttfCCL;  .       
+         :it11tft11i11111tttttttft1tfLLLCCffffLCLLLLffffffttttttfLfffLtttttt11ttLfffffffLLt,        
+       .itt11t11ii11tt1ttttfffffttt1111i1ftffffffLLLLLfftttt11ttffffLLt1i;i1ttf11tLLffLfffff:       
+      .ittt1111111111tttftfffffttt11ii1111tttttftLLffLLLttt11ttttttttt1:::,:itft11tfttfLffftf;      
+     .i1i111ii11111t11tfffLftttiii1tii11iitttftttffffffLft11tt1ttttfLfi::,::itttt1i11tffLLLftL;     
+     ;1i1ii;;:ii;1111tffttf11tt1111i1111i111fftfttffttttttttf11ttfLfttt1iiii11t1t111ffffLfLLLLC;    
+    :ii1i::::,::;ii11tt111tt111111111i11iitt1tttfttt1ttt11tffttffffffftttttft11itt1ttfffftfLffLL,   
+   .:1f1:::,,..,ii11i11i;;ii1ft11i111ii1i11111ttfffttffttttttt1tftttfLftt1tt11111ffftffLCLLLLffLt   
+   ,;1f;:,,,.,,:111;;ii;:::i;11ii11111111ii1111tfffLfLffffttftttfttt1tt1tt11tLf11fLLLfLLLCGGLLffL; .
+   ,;1t:,,,.,1ii11ii;;;:,,,::,:;;i111111ii111t1ffLLffffffffLfttffttt11tt1111ttt11ffLffLLLLLCLfffLt. 
+  ..:11i:::;i11ii1i11i;;;:::::::;iii1111i111111fLLLffLffffffffftt111t111111tt11ttttfLLfLLLLLLffLCL: 
+ ..::i11i1i;i;:;;i1i1ii1;:;;iiiii;i1i1111111111tttCGLfLfLLfffffffttt1t1ttttt11ttttttfLfffCLfLLLffL1 
+ .,:::i111ii;:::ii11t1i1ii;iii1ii;ii1tt111tttt11ttLCCLLfLfftfttffffttfttfttttftt1tttttfCfLfffLLffft.
+ .,::,,;iiii;;iiii1i11iii:::::iiii11tLt11tfLf111tffCGGCLLffffttttf11ttffffttttt1tfffffLCLffffLLfttf,
+ ,::,,..,::::;ii;;iiiii::,,.,,;ii1111t11tttff111tfLCCCGCLfffffffLt1tttttffttttttttttffftfLffffLfttf:
+ ;;,,,,.,:::;;;iiii1i;:::,,,::;111iiiii11tff11111tfLLCGCCCCffftfLftftffffttttffftfffffti1tfftfftttf,
+ ;i:,,,,:::iiiiiiii1ii:::::;i;;1i1i11111i111i111i11tfCCCGCGLftfttfttfffftfttttf11tLLffti11tttfft1tf.
+ :i:,,,:::;;;;;iiiiiiii::::;ii1ii11111i11111111i11i1fCGGGLLLfttttt11tt111t1111t11tCftftttttttLfttft 
+ ,t;:,,::if1i1iiii1iii1i;i;i111t1i11iiii1111tt11111itfLLLLfttft111tt111111tt11t11t11tLLtt1tfffftfL1 
+ .;1;,::;i1111iii11111111111111t11111iiiii11tt111iiii1fttftt1tt11111111111111111111tLLftt1tftftffC; 
+  :ii;;:::;iiiii1iii1111i111111111111ii1111ii1iiiiiiii111t1ttt11111t1i111111111111ttffft1fLt11ffLf. 
+  ,;1iii::ii;iiiii1iiiiii1ttttttti111111111111iiiii1111i1tt111111111t111111111111t1tttt1ttL111tfL: .
+   :;ii;:;;i;;ii;;11i1t1tfL11tttft1111i1111t1iiiii1ft11111tttt1111111111f1i1f1i11111111ftit111tt1   
+   .;ii;:;11i;iiiii1i1tt1i11111i1ttttft1i1iiiii111tLt1tttti;;,ft111111111i1ft11i111ii1ttt1i11ii1.   
+    ,1iiiii11iiiiii111i11i1i1111i1111ff11iii;ii1i11t111tt111itL11tt1t11111tt11111iii11iiiii1iit:    
+     ,111t111tt1111iii1it111111i11iii11i;;;iiii11iiiiii11111tft1111111t1111t11111111ii1i1iiii1,     
+      ,11tffffff11t1ii111tft11i1111111ii::;i11i;iiii1111i11ii111ttt1i1t111111111i11iiiiii;iii,      
+       ,1t1fCLLf1ff111i111t1111i;iii111iiiiiiii;iiitttt1111111111tt11tfti1ii1f1iii;ii;;i;;;;.       
+        .it1LLLCfttt11i1t1iii;;i;;;iiiiiii1i11ttt1111111ii1111iiii111i;;iiii111;::;iii;;;;;.        
+       .  ;tttfLft11111i11iii;;;;;:;:;;;;;iii1ttttt11111111i11iii111i;:ii11i11i;;ii;::;;;,          
+           ,itff1t11111i1ii;;;i;;::;;;;;iii;i1111t11111111t11iiiiii111111t11ii;ii1i;;;;:.           
+             :1ff1i11iiii1i;;;;i;;::;;ii;;i;iiii1tt1111i11ii1i1i1ffft11t1iii;;;iiiiii;.             
+               :tLf1i1i111i;;iiiii;;;;;ii;iii;ii111111111tt111i11fft111i1i;;iii;iii:,               
+                 :1t111tti1i:;ii;;;iiii;ii11ii1iii11tt1111111111iiiiii1i1iii;;11i:.                 
+                   ,;1ttt1ii1;:;;;;iii11i11i1111i1111111i1111t1111i1111iiii;ii;,.                   
+                     .,i1ttttt11iit1iiiiiiiiii1ttttLCftt1111tt1tt11i;iii11i;:.                      
+                        .,;1fLLLffft11ii1i11111ttttLLCLt1tttt111i11i111i;:.                         
+                            .:itfLCLLLtttttttttfftfffLCfffffttfft11i;:,.                            
+                                .,:;1tffffffffffffLLLLLLLLLLff1i:,.                                 
+                                      ..,::;i1iiiiiiii;::,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;;;;::,...                                       
+                           .     ..:;itffLLLLLCCCLLLCCCCLLfftt1;:,.                                 
+                             ,:itLLGG000GGGGGGCCCCLLLLfffLLfLLLLLLft1;,.                            
+                         .:1fLLLLLCCCCGGGGGGGGGGGCLLLffLLftfffffffffffff1;,.   .                    
+                      .:ifLLLLt1tt1ii1tfLCCGGGCCGLLLLffffttttttttttttttttft1i:.                     
+                   .,;1tftttfftttfttffffLCCCGGGLLCLLLfffttttttft111111tttttttfti,                   
+                 .;1tt111tttt11ttfLLffffLCCCCCLCLLCLLLLfLffffffttt11i111tfft1tfLL1:                 
+               ,;1tt1ii11tttt111ttffffffLffLLLLLLLCCLLfLLLCCLffftffft111i1tt111tfLLt;               
+             .;11111111iitttttffffttttfLLffLLLfffLLfffffLLLLfttttffftffftt111t11ttffLt:             
+           .:i111i1t11111tffttttttttffffLLLCCCCLLLffttffffffft111t1ttttffLfffftttt1ttfCt,           
+          .:i1111tt1i1ii11111tfffffttfffLGGGGCLLLLLLffffLffffftttfttt111ttttttttffttttfCLi  .       
+         ,ii1111tf1ii111111tttttttfft1tfLfLCCfffLLLLLLLffffffttttttfLfffftfttt11tfLffffffLt,        
+        ;1tt11tt1iiii1ttt1ttttffffftt11111i1ftffffffLLLLLfftttt11ttffffCft1;;ittf11fLLffLfff:       
+       ;11tt1111t111111ttttftfLfffttt11ii11i1tttftffLLffLLLttt11tttttttt1i::::i1ft11tfttLLfff;      
+      ;t1i111ii111111t11tfffLfftttiii1tii11ii1ttftttffffffLftt1t11ttttfft;::::;1ttf1i1ttfLLLfL;     
+     ,11i1iii;::i1;i111ttffttt11tt1111i11i11111fftfftffttttttttf1tttfLfttt1;iiii1tt111ffffLLLLC;    
+    ,;iiii:::,:,,:;ii111tt11ttt111111111i111i1111tttttttttt11tfftttfffffftttttt11i1t1tttffftfffL,   
+   .::1ft;,:,,,..,iii11i11i;iiitft11i1111i111111i1tfffftfLftttttt1tffttfLftt1tt1111tfftffLLfLLfL1   
+   ,,;1L1:,,,,.,::i11i;iii;,::i;111i1111i11ii11111tfffLffffffttffttfftt1tt1tt11fLt1tLLLfLLLCGCffL:  
+  ...;1ti,,,,.,i1;111ii;;;::,,:,,:;;i111111ii111t1tfLLffffffffLLtffftttt1t11111tt11tfLLfLLLLCCffLf. 
+  ...,i11;:::;i11ii1iit1i;;;::::::;;iii11111i111i1tLLLLfLLffffLfffftt11t1111111t11tttfLLfLLLLLffLC: 
+  ..::;111i1i;ii:;;i1111iii::;;iiiii;i111111111111tttLGCfLLfLfffffffttt1t1tttt111ttttttLffLCLLLffLi 
+ .,,,;::i111ii;:::;1i11t111ii;;ii1iiiii11f1111ttt111tfCGLLfLffttttffffttftftttttft1tttftfCffffLLfft.
+ .,,::,.,iiii1;;;i1ii1i11iii:::::iiiii1tff11ttLft111ffLGGCLCLffLftttf11ttffffttttt1ttffffLLffffLftf,
+ ,:,:,,,..,::;,;iii;;ii1i;::,,,,,;ii1111t11tttfft11tffCCCGGCfffLfffff1tttttffttttttttttffffLftfLftf,
+ ,i;,,,,,,,:::;;;;iiii1ii:::,,,:::i1tiiii111ttft1111tffLCGCCCLLfftffffftfffft1ttffttffffti1tffffftt.
+ :i;:,,,,,:::;iiiiiii11ii:::::;;i;i111i1111ii111i11i111fLCCGCCCftffffttfffftftttff1tfLfft111ttfLttt.
+ :1i:,,,,:::;;;;i;iiiiiiii::::;iiiii11111i11111111111i1tLGGGCLLfttttt11tt111t1111t11LLttttttttffttt 
+ ,11;:,,,::1tti1iiii11ii11i;i;;111t1i111iii1111ttt1111i1tLLCLfttft111tt111111tt1tt11t1tfLft1fffftLi 
+ ,ii1;::::;i11i1111i11i11111111111t1i1111ii1i11tt111iiiiitttfttttt111111111111111111i1fLftt1ttfttL; 
+  i:ii;;;:::iiiiiii1iii1111i1t1111tt11111i11iiii1iiiiiiii111tt1tt1t111t1ii11111111111tffft1fft1tLL. 
+  ,;:1i1i;::i;;;iiii1111ii1i1ft1tttt111i11i1111t11iiii111ii1tt111111111t11111t111i111tttt1tff11tL;  
+   ;;:ii;::;ii;;ii;;i111t11tff111ttfttt1111111111iiii1ft111111tttt111111111t1itf1i1111111f111i1t1   
+   .1;iii;:it11;iiiii111ttt1i11111i1ttttft1i11iiii111tft1tttti:;,ff11111i1111tf111i111i1ttt111i1.   
+    ,1iii1ii111ii1iii1111i11iii111111111ff11iii;ii1111t1111t111itft1tttt11111tt11111ii11iiiiii1:    
+     :t111tt111tt1111i11111t11i111ii1ii111i;;;iiiii11iiiii11111tft11111111111tt11i111111i1iii1,     
+      :t111fffftft11t1ii111tff11i1111111iii::;i11i;iiii1ii1i111i1111t11i1t1111111ii11iiiii;;i,      
+       ,1t11tCLfLt1fft11i1111t1t11i;iii111iiiiiiiiiiii11tt1111111111t1ttff1iiiit1iii;ii;i;;;.       
+        .it11fCLCCtttt1111tt1iii;i;;:;iiiiiiii111tttt111111ii111i1ii1111;;;iii111;::;ii;;;;.        
+          :1t11tLLt11111111t1iii;;:;;;;;;;;;;iii1ttttt11111111i1iii1111i:;i11i11i;;ii::;;,          
+           ,itttft1t11111i111;;;i;;:::;i;:;iii;i111tt111111i1111i1iii111111t11iii;ii;ii:.           
+             ,1fff1i11111i11i;;;;i;;:,:;;i;;i;;ii11tt11111i11i11ii1fLftt1t1iiii;ii11i;,             
+               :tLLf1i1i1111i;;iiiii;;;;;;ii;iiii1i111111111t111i11tft111i1i;;ii;ii;,               
+                 :1ft111tt1iii:;ii;;;iiii;ii111i1ii1111t1111111111iiiiiiii1iii;1i:.                 
+                   ,ittttt11i1i::;;;;iii11i11ii111ii11t111i1i11t111i1111iiiiii;:.                   
+                     .:i1fttttttt1i1t1iii1iiiii11tt1tLLftt1111tttt11iiiii11;:,                      
+                        .,;1fLLLfffft11iii1111111tttfLCLLtttttt11111111i;:.                         
+                            .:itfLLCLffttt1tftttffftffLCLffffttfft1i;:,.                            
+                                .,:i1tffffLLfffffffLLLLLLLLfft1i:,.                                 
+                                      ..,,:;i11iiiiiii;::,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,,::;;;;;;;;:::,..                                        
+                           .     .,:;i1ffLLCLLLLCCLLLCCCCLfftt1i:,.                                 
+                             .:itLLCGGGGGGGGGGGCCCCLLLLfffLLLLLLLLfti;,.                            
+                         .:ifLLLLLLCCLCGGGGGGGGGGGGCLLLfffLftfffffffffff1;,.   .                    
+                      .,;tLLLLffttf1ii1tffLCCGGGCCGLLLLfffftt1ttttttttttfft1;,.                     
+                   .,;ittff1tfftt1ftttfffLLCCCGGGLLCLLLffftttttfft11111tttttttti,                   
+                 .:i1tt11t1tttt1tttLLLffffLCCCCCCCLLCLLLLLLffLffft1t11i11ttft1tfLt:                 
+               ,;111ttiii11tttt111ttffffffLLfLLLfLLLCCLLLfLLLCLfLffffft11ii1t111tLLt;.              
+             .;1111111i11iitttttffffttttfLLffLLLfffLLfffffffLLffttttffftfftt11111ttfLf:             
+           .:;i1111i1111111tffftttttttffffLLLLCCCLLLLfftfffffffttt11ttfttffLffffttt11fLt,           
+          .:;i11111tt1111i1i11ttffffttttfffLGG0GLLLLCLLffffLffffftttfttt11tttttttffftttLCi          
+         ,;;it111tff1i1111111ttttttttftt1tfLLLCLffffLLLLLLffffffttttttLfffLttttt1ttfLfftfLt,        
+        ,i11tt11tt1iiii1tt11tttttfffffft11111i1ftfffffLLLLLLfftttt11ttfffLLt1i;ittf1tfLffLLf:       
+       ,i11tft11111111111tftttftfLfLfttt1tii11i1tfttfffLLffLLLtt111tttttttt1::::;1ft11tttfLff: .    
+      ,it1ii111ii1i11111111tfffLfftttiii1tii111i1ttffftffffffLftt1tt1ttttff1::,::ittt11tttfLLL;     
+     .;iiiiiii;;::;1;ii111tfftttt11tt1i11i11i11111tftfftffttttttttf1tttfLftttiiii11t111tfffLLLC;    
+    .;;i1i1i:::::,,:;iii11ttt11ttti11111111111ii1t11ttttttt1tt11tftttfffffffttttft111t1ttffftffL,   
+   .,::iff1::::,,,.,:ii111i11i;iii1ff1111111ii11111i1tfffftfffttttttttftttLLftttt1t11tfffffLLLLL1   
+   .,,;itf;::,,,,,:,;111i;iii;,::ii111i1111i1111111t11fffLffffffttffttfftt1tt1t11tLf1tfLLfLLCGCfL:  
+  ....;itt;,,,,..;1ii1111;;;;::,,::,:;;i111111ii1111t1ffLffffffftLLfffft1t1tt11111tt1tffffLLLLCLff  
+  ....,;111;:::;;11iii1ii11i;;;:::::::;ii11111111111itLLLLffLftffLftfftt11t111111t11tttfLLfLLLLLfL: 
+  ...,::i111iii;ii;;;;i1111i1i::;;;i1ii;i1i11111111111ttfCGffLfLfffffffftt1t1t1tt11ttttttLffCCfLfL1 
+ ..,,,:;:;11i1ii;::::ii111t111ii;;ii11i;;ii1f1111tttt11tfLGCLfLLfttttftffttftfttttttt1ttftfLfffLLLf.
+ .,,,:::,.:iiii1i:iiiiii1i11iii:::::;i;iii1ff11ttfLt111tfLCGGLLLffLftttt11ttffffttt11ttfffLLLfffLft,
+ .::,:,,,,..,::;::;ii;;;iiii;:::,,,,:ii11111111ttfft111tfLCCGGCLffLLffLf1tttttfttftttttttfffLfttfff,
+.,;i;,,,,..,,::;:;;;iiiii1ii::::,,,::i111iiii111tff1111ttfLLCCCCLLffffffffffffftttfffttfffti1tftftt,
+.;;i;:,,,,,,:::;iiiiiiii11ii:::::;;i;i111i11111i111i11ii11tLCCGGCCLfffffftfffttftttft1tLLft1i1ttftt.
+ :;i;:,,,,,:::;;;;;i;iiiiiiii::::;iii1i11111i11111111111ii1fCGGCLLLtttttt1tt1111111tt1fCfttttttffft.
+ :;1t;:,,,,::itt1i1iiii1iii111;i;;1i1t11111ii1i111tttt111i1tfLCLfftff111tt111111t11t11t1tfLtttffff1 
+ ,1;i1i:::::;i1t11111i111i11111111111tti1111iii1i1tt111iiiiitttfttt1tt111111111111111111fLfttttftf; 
+  1i,;1i;;;:::;iiiiii1iii11i11i1t11111111111ii1111i1iiiiiiii111tt1tt11111t1i111t11i1111tfffttLt1fL. 
+  ,t::11iii;::i;;;ii;ii111iii111ttttttf1i1111i1111t11i1iii111i1tt111111111t11111111i111tttt1tf1if;  
+   i1,;iii;::;;i;;ii;;;11i1t11tfL1ttttft1t11111111t1iiii1tf11111tttt111111111tti1ft1111111tf1ti11   
+   .11:iii;::it11i;iiiii111ttt11111t111ttttft1ii1iiiii11tffttttti:;:ft11111ii11itt111111i1tt1111.   
+    ,t11iiiiii111iiiiii11111111i11111i11111ff11iii;ii1111t1111t111itft1tttt11111t11111ii11iii11,    
+     :t1111ttt111tt1111iiii1i1t11i111i1111111i;;;iiii111iiiii11111tft11t11111111t1111111ii1iii,     
+      :t1i11tfffftff11t11ii111fft11i11111111ii::;i11i;iiii11ii111ii111tt111t11111111i1iiiiiii,      
+       ,11111tLCLLLt1tft111i111tttt1ii;ii11i1iiiiiiiiiii1t1tt1111111111ttttftiiiit1ii;;i;i;;.       
+        .i1111tLLLCCttft11111t1iii;;i;;;;iiiiiiii111tttt111111ii111i1ii111i;;iii11i;::ii;;;.        
+       .  :1t111tfLft11111111t1iii;;;;;:;;;;:;;;iii1ttttt1111111i11iii111i;:i1111ii:ii;:;,          
+           ,itt1tff1tt11111i11ii;;;i;;:::;i;;iii;i1111t11111111111iiiii111111t1ii;iii;i:.           
+             :1ffffti111i1ii11i;;;;i;;;::;;i;;;i;iii11tt1111i111i11i1tLftttt1iii;;i1i;,             
+               :1fLLf1i1i11111i;;iiiiii;;;;;ii;iii;ii111111111t111i11tft11iii;;iiii;,               
+                 :1fft111ttt1ii;:;ii;;;i1iii;i111ii1i1i11t1111111111iiiiiii11iiii;,                 
+                   .;tffttt11ii1i:;;;;;iii11i11i11111i11t11111i1tt111i111iiiii;:.                   
+                     .,ittffttttt1tii1t1iii1iiiii11tt1fLLttt111tttt11iiiiii;:.                      
+                        .,;1tfLLLffffft11ii111111ittttfLCLfttt111111111i;:.                         
+                            .:;1fLCCLLfft1t1tttttffttfffCLffffftff1i;:,.                            
+                                .,:i1tfffLLLfffftLffLLLLffffft1i;,.                                 
+                                      ..,::;;11iiiiiii;::,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;:::,..                                        
+                                 .,:;i1tfLLLCLLLLLLLLLCCCLfft11i:,.                                 
+                             .:itfLCCGGGGGGGGGGGCCCCLLfLfffLLLLLLLfti;,.                            
+                         .:itLCLLCLLLCLCGGGGGGGGGGGGGLLLfffffttfffffffft1;,.                        
+                      .,;1fLLLffft1ff1ii1tfLCCCGGGCCCLLLLfffttt1ttttttttfff1;,.                     
+                   .,:i1ttff1tffft1ttttffffLLCCCCGGLLCLLLfffttt1tfft11111ttttt1i,                   
+                 .:i11tt111t1tt111t1tfLLftffLCCCCCCCLLCLLLLLLfffffft1t1i111ttttfft:                 
+               ,;i111tt1ii111t11t111tttffffffLfLLLfLLLCCLLLfLLLCLLfffffft11i1t111tLt;.              
+             .;i1i111111ii1i1ttttttffftttttfLLffLfLffLLLffffffLLffttttfftttttt1111ttft;             
+           .:;;ii111iit111i11tffftttttttttftfLLfLCCCLLLffftffffffft1111ttttffffffttt11ft:           
+          .:;:i111111tt111ii111111tffftttttfffCGGGCLfLLLLffffLfftfftttfttt111ttttttfft1tL1. .       
+         ,;;;i1t111tft1iii111111tttt1t1tfttttfLLLCLfffLLLLLLffffftttttttfLffLttttt1ttffffLt,        
+       .,;iitttt11t11iiii1ttt11ttt1ftfffftt11111i1ftffffffLLLLLft1t111tttfffLt1i;ittt1tfffLf,       
+      .,,1111tt11111t1111111ttttfttfffffttt11;i11i1tttttffLLffLLLtt11tttt1ttt1;::,;1ft1ttttLf:      
+     .,,it1ii1ii1ii1i11111t111tftfffftttiii1tii11ii1ttfttttfffffLft11t1tttttft;:,,:ittt111tfLL:     
+     .,;i1iiiiii;;:::1i;i11i1tfftttt11tt1111i11111111tftffttftttt1tttt1tttffttt1;iii1tt11tfffLL:    
+    .,;;;1iii;:::,:,,::;ii111ttt11ttt11111111111iii1t11ttttttt1tt11tfftttffftfftt1tt1i1t1ttfffff,   
+   .,,:,;1fti:::,,,,,.,;ii111i11i;iii1ff11ii111iii1111i1ttffftfffttttttttftttLfft1t1111tffffLLLLt   
+  .,.,,,iiLt;:,,,,,.,,,i111;;iii;,::iii1iiii1111111111111tfffLfffffttffttftt11t11t11ff1tfLLfLLCCL;  
+  .....,iitt;,,,,..,1i;i11ii;;;;,,,,::,,;;;ii111i111111tttLLffffffffLLttttttt1tt111itt11ffffLLLCLf. 
+  ......:i111;::::;i11iii1i111i;;;:::::::;;iii111111111i1fLLCfffffftfffftt111t111111111ttfLLfLfLfL; 
+ .....,:::i11iii1i;i;:;;;i11i1iii;:;;;i1ii;;11i11111111i1tttLGLfffLfffffffftt111t1tt11t1tttLffCLfL1 
+ .....,,:::;i111ii;;::;:ii111t1i11i;;iii1iiiii1tti111ttt11ttfCCLLfLfftttfftfttttttt1ttt1ttttLLfffLt.
+ ...,,,:::,.:;iiii1;;;;iii11i11iii:::::;iiiii11Lti1tfLf1111ffCGGCLLffffttttt1ttfffttt111tfffLLfffLf.
+ ,.::,::,,,...,,::;,;;ii;;;iiii;:::,,,,,;ii1111111tttfft111fLCCGGCLfffLffLf1t11ttftttttttttfffLffff,
+.;,;1;:,,,,,..,::;:;;;;ii;iiii;:,::,,,::;111iiii1111tft1111tfLLCGCCCLffttfftftffft1ttffttfff1itftft,
+ 1:;ii;,,,,,,,::,:;ii;iiiii11i;:::::;;i;i1i1i111i11i111iiiii1tfCCGGCGLttttfftffftfttttt1tLLft11ttft,
+ i:;1i;:,,,,,,:::;;;;i;iiiiiiiii:,::;iii1ii111111111111111iii1tCGGCLLLttttt11tt1111111t1tCfttttttft.
+ :i:1t1;:,,,,::;1t1i1iiiii1iii111;;;;i111111111iii1111tt111i1i1fLLLfftft111tt111111t1t1111tfft1fff1 
+ .fi;;11;::,:::i1t1i11iii111i111111i1111tt11111iiiii11t1111iiii1tttttt1t111111i1i111111111fLft1ttf: 
+  1f;:;1i;i;;:::;i;iiiiiiiii11i11i1t111111111ii1i1i11ii1ii1iii1111tt1tt11111t11i1111i1111tffttfftf. 
+  ,fi::i1iiii;::ii;;;ii;ii111iii111tt1tt1t1i1111i1111t11iiii1111i1tt111111111t11111111111tt111f1t;  
+   ;f;::iiii:::;;i;:;ii;;;11i1t11tLf1ttt1fftt111i1111t1iiiiitf111111tttt11111111t1ittii11111f111i   
+    1ti:;iii;::it11i;iiiiii111t11ii11111i11ttttf1iiiiiiii111fft1ttti:;,ftii111111itf111iii11t111.   
+    .1ti1iiiiiii111iiiiiiii111i11ii11111ii1111tf1iiii;ii1ii1tt111t11iitf11t1t11111t11i1iii11ii1,    
+     ,ft111111tt111tt1111ii1ii1i1t11i11i11111111i;;;iiiii1iiiiii11111tf111t111111111111111iiii,     
+      ,tt11111ffffftff11tt1iii1i1ftt11i11111111ii::;ii1i;i11i1iiii11i1111tt1i1t1111111i1iiiii,      
+       ,1ti111ttLCffLt1tft111ii111t1t11i;iiii1iiiiiii;iiiii1t1t1i11111111tt11ftiii1t1ii;i;i;.       
+        .1111111fCLLCLttft111111t1iii;ii;;:;iiiii;iii11tt11111111i11111ii111i;;iii11;::;ii:.        
+          :1111111fffft1111111111iiii;;:;;;;::;;;;;ii11tttt11111i11i1iii1111;:i1111i;;i;;,          
+           .1t111ttft1t111111i11ii;;;i;;:::;;;;:iii;i1i11t111111i1111iiii111111t1ii;iii:.           
+             :1ttftft11111111iiii;i;;ii:;:,:;;i;;i;;iiii1t1i111i11i1ii1tfft1ttiii;;i1;,             
+              .:1ffffftii1111111i;;i1iiii;;;;;ii;iii;i1111111111t111i11tf111i1i;iii;,               
+                 :itfft1111tf1iii;:;ii;;;i1iii;i111ii1iii11t111111i111iiiiiiiiiii;,                 
+                   ,;tfft11t111iii;::;;;;iii11ii1ii1111ii111111ii1t1111ii11i1i;:.                   
+                     .,itftft1ttttt11;i11iiii1iiiii111t1fLLtt1111tttt1iiiiii:.                      
+                        .,;1tfffLLffffft11iii1111111ttttfLLLttt11111111i;:.                         
+                            .:i1fLCCCLLfft1111ttttfffttffLLffffffftii:,.                            
+                                .,:ittffLLLLLLffttfffLLLffffft1i;,.                                 
+                                      ..,::;;i11iiiiii;::,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;::,...                                       
+                                 .,:;i1tfLLLLCLLLLLLCLCCCCLftt1i:,.                                 
+                             ,:i1fLCCCGGGGGGGGGGGCCCCLLLLffLLLLLLLfti;,.                            
+                         .:;tfLCLLCLLLLCCCGGGGGGGGGGGGCLLLffffftffffLfft1;,                         
+                      .,:itfLLLLfffttftiii1tfLCCCGGGCCCLLLLffftt11tttttttft1;,.                     
+                   .,:;i11ttft1ttfft1ttttfffffLCCCGGGCCCLLLfffttt1tft11111tttt1;,                   
+                 .;ii11tt11111tft111tttfLLffffLLCCCCCCLLLCLLLLLffffff1t11i11ttttft:                 
+               ,;ii1111ttiii11tt1tt111tttfftfffLffLLLLLLLCCLLfLLLCLfLfffftt11i111tft;.              
+             ,;1ii11111111i11i1ttttttffffttttfLLffLLLffLfLfffffffLffttttfftttttt111tft:             
+           .;;;;i11111i1t1111111fffttttttttffftfLLLCCCLLLLffttfffffft111tttttffLfffttttt:           
+          .;;::;111111ttt1111ii1i1111ffftttttfffLGG0GCLfLLLLffffLftfftttfttt1ttttttttfftf1. .       
+         ,:;;;i1t1111tft1i11111111tttft1tttfttttfLLCCLfffLLLLLLfffLffttttttLftLftttt1tfLfLt,        
+        ,,;ii1t1t11ttt1iiiii1tt111tt1tffffffttt1111itfttffffLLLLLLft1tt11ttfffLf1i;1tfttfffL:       
+      .,,,1111tft1111111i11111tftttftffffffttt11ii11i1tftttffLLffLLftt11tttttttti:::;tf11ttfL:      
+      ,,,it11iii111ii11i11111t111tfffLfftttiii1tii11ii1ttftfttfffffLft1tt1ttttffi::::itft11tLL:     
+     ,,,;ii1iiiiiii;:::i1;ii111ttfftttt11tt1111i11i11111tfttfttfttttttttt1tttLftt1iiii1tt11ffLL:    
+    .,,:;:11ii1i:::::::,:;;ii111ttt11ttt1i11111111111i1t11ttttttt1tt11tffttfffftfttttt111t1tffff.   
+   .,.::,:itft1:::,,,,,.,,iii111i11i;;ii1tft11i1111i11111iittffftffftttttt1tfttfLft1tt111tfffLLL1   
+  .:..,,,;i1Lti::,,,,,,:,:i111;;iii;,::iii11ii1111i111i11111tfffLfffffttfft1ftt1tt1t11ff1tLLfLLCC:  
+  ,......;iitt;:,,..,,;1i;1111i;;;;:,,,,:,,:;;ii11t11ii1111ttfLLffffffffLffftttt1t111itt11fLffLLCt  
+ .,......,:i111i:,::;;it1iii1i1111;;i;:::::::;iii111111111i1tLLCLffffftffffttt1t111111111ttfLLLfLL: 
+ ,,.....,:::i111iiii;ii;:;;;i11i1ii1;:;;;i11ii;i111111111111tttLGCfffLLfffLffttt1tt1tt11ttttfLfCLL1 
+ ,,..,..,:;::;i1i11ii;:::;:ii111t11i1i;;iiiiii;iii1f1111ttt111tfCGLLfLLftttfffttttttttttt1tttfLffLt 
+ :..,,,,::::,.,;iii;ii:;;i1iii1i11iii;:::::iiiiii1ff1ittLft111ffLGGCLCLffftttf11tffffttt11tfffLffff.
+.:..:;,,:,,,,,..,,::;:,;iii;;;iiiii:::,,,,,;ii1111111tttfft111tfCCCGCLfffLffLftttttffttttttttftffff,
+ i;.;1i;:,,,,,...,::;:;;i;iiiii1i;;:::,,,:::ii1iii1111ttff1111tfLLCGCCCLffftffffffffttttfttfff11fff.
+ i1:;ii;;,,,,,,,:::::iiiiiiiii11ii::::::;i;;ii11i11i11i111i1ii111fLCCGCGLffttfttffftftttt1tLLf111tf.
+ i1,;1ii;:,,,,,,:::;;;;i;;iiiiiiiii;,:::iii1ii111111111111111i1ii1LGGCCLLtttttt1tt111111t1tCfttttft.
+ :1;;itti::,,,,::;itt1i1iiiii1iii111i;;;i1i11111111ii1111ttt11i1i1tLLLfftff111t111i11t11t1t1tLf1tfi 
+ .fti;;i11;::,:::;i1t1i1i11i111i111111111111t11111iiiii11t1111iiii1tttftt1t111111111111111i1fLt1tf: 
+  ;fti::i1i;i;;::::iii1iii11iiii1111i1t1111111111i1iii11ii1iiiiiii1111tttt11111111111111111tfftftt. 
+  .tfi,:;11iiii;::;i;;;iiiiii111iii1i1ttttt1tt11i111ii111t1ii1ii1111i1t11111111t1i11111111tttt1tt:  
+   :tf;::;i;i;:::;;i;;;iii;;i1ii1t11tfL111t1tft111111111111iiiitf11111tttt11111111ttitt111111t11i   
+    itti;;iiii;::;t111iiiiiiii1i1t1ti1i11111i1ttttf1ii1iiiii111fft1ttti;:;L11111ii1i1f11111i1t1i.   
+    .1tti1ii1i1iii1111iiiiiii11111111iii1111i1111tfti1ii;;i11i1t1111t11iift1t11t1111t1111ii11ii,    
+     ,1f111i1111tt111tt11111ii1ii11tt11i1111i111i11i;;;iiiii11iiiii11111ft1111111111t111i11i1i,     
+      ,ttt11111tffffftff111t1iiii11tftt1ii1111ii11ii::;i11i;i1ii1iii111i111tt1i1t111111i11iii,      
+       ,1t1i1t11tfLCLLLf11fft11ii11i1t1t11i;iii11iiiiiiiiiiiii1ttt1i11111111t11tt1ii1tiiiii;.       
+        .1ti11111tLCLLCCftftt11111t11ii;;ii;;;;iiiiiiii111tttt11111ii111iii111i;;ii111::;i:.        
+          :11111111tfffft111111111t1iii;;:;;;;;:;;;;;;;i1ttttt1111111i11iii111;;i111i;;i;,          
+           .ift111tttft1tt11111i11i1;;;;i;;:::;;;;;iii;i111t1111iii11i1iiii111111tii;ii:.           
+             :1tttfffft11i111i1ii1i;ii;;i;;:::;;i;;;i;iiii1tt1111i11i1ii1tffttt1ii;;ii,             
+              .:itftfLft1i11111111i;;i1iiii;;;;;;ii;iiii1i11111111t1i1111tf11i1i;ii;,               
+                 ,itffft1111ttf11ii;:;ii;:;i1iii;i111ii1iii11t111111i111iiiiii1ii;,                 
+                   .;tffft11tt111i1i;::;i;;iii11111ii1111ii1111111i1t111ii111i;:.                   
+                     .:itffttt11tttttt1;1t1iiiiiiiiii1ttt1LLftt1111ttt11iii;:.                      
+                    .   .,i1fffffLLftffLft11iii1111111tttfLCLftt11ttt11i;:.                         
+                            .:i1fCCCCLfffftt1111fttffftfffLCfffLfft1;:,.                            
+                                .,:i1fffLLLLLLLfffffffLLLfffft1i:,.                                 
+                                      ..,::;;i11iiiiii;;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;;::,,.                                        
+                                 .,:;i1tfLLLLCLLLLLLLLLCCCLftt1i:,.                                 
+                            ..:i1tfLCCCCGGGGGGGGGGCCCCCLLLLLLLLLLLfti;,.                            
+                         .:;1fLLCLLLLLLLCLCCGGGGGGGGGGGGCLLLffLftffffLft1;,                         
+                      .,:i11fLLLLffft1tftiii1tfLCCGGCGCCCLLLLffftt1ttttttft1;,.                     
+                   .,:;iii1ttff1tttfft1ttttfffLLLCCCCGGCCCLLffffttttfftt111ttt1;,                   
+                 .;iiii1ttt111t1tftt11tttfLLfffffLCCCCCCLLLCLLLLLffffft1t1i11tfft1:.                
+               ,;i1ii111tt11ii1tt1ttt111tttfffffffLfLLLfLLLCCLLffLLCLfffffft11i111tt;.              
+             ,;i1iii1111111ii11ii1ttttttffftttttfLLffLLLfffLLffffffLffttttffftttt11tt1:             
+           .;i;;;;i11111i1t1111111fffttttttttfffffLLLLCCCLLLffftfffffff1111ttttfffffttt1,           
+          .;;::::i111111tttt111ii1i111ttffftfttftffLGG0GCfLLLLLffffLftffttfftt1tttttttffti  .       
+         ,::;;;ii1t1111tff1ii11111111ttftttttfftttffLLCCffffLLLLLLfffffttttttfffftttt1ttfft,        
+        ,:,;1i1tttt11ttt1iiiii1tftt1ttt1tffffffttt111iitftfffffLLLLLLfttt11ttfffLf1i;1tt1fLf:       
+      .,,,,i1111tft1111i1t1111111tftttftffffffttt11ii11i1tfttfffLLffLLft1t1ttt1ttti:::ift1ttf:      
+     .,,,,;tt11ii1i11iii1i111111t11tfffLffftttiiiitii111i1ttftfttffffLLft1ttttttffi::,:1ft11tL;     
+     ,,,,;ii1iiiiiiii;;::;1i;ii111ttfftttt11tt11111111111111ftffttfttttttttttttfftt1iii11t11ffL:    
+    .,,,:i;;1iii1i::::::,:,::iii111ttt11ttt1111111111111iit11ttttttt1tt11tfttfffftfftttt1i11tfft.   
+   .,,,,::,:itft1:,::,,,,,,,:iii111i11i;;ii1tft11i1111ii11111ittffftffftttttttfftfLffttt111fffLLt   
+  .::...,,,;iiLfi:,,,,,,.,:,:i111;;iiii:::;i;111ii111i111i11111tfffLfffffttffttftt1tttt1ff1tLLLLG; .
+  ,,.......;iitti:,,,,,,,;1i;1111ii;;i:,,,::,,:;;ii11t1iii1111ttfLLfffffffLLtfft1t1tt11itt1tfffLLf. 
+  :..,.....,:;111i;::::;i111iii1i1111;;i;:::::::;iii111111111i1tLLLLffffffffffft11t11111t11ttfLfLL: 
+ ,:.......,:::i111iii1i;ii;:;;;i11i1ii1;::;;ii1ii;i11111111111itttfGCfffffffffffttt11t1t11ttttffLC1 
+ ::......,,:;:::i1111i1ii:::;:iii11tt1i1ii;iiii1iiiii1tt111tttt11tfLGLLLLLftttfffttttfttttt1tttfLLf.
+ ;:..,,,,,::::,..:;iii;1i:;;iiiii1i11iii;:::;:;iii1i1tLti1tfLf111tffCGCCLLffftttt1ttfffttt1tfffLLff.
+.i:.,,;;,,:,,,,,...,,::;::;;ii;;iiiiii;:;,,,,,:ii11111111tttff111tfLCCGGLfffLffLt1tt1fftttttttfffff,
+ ii:.,1ii;:,,,,,,.,,:::;:;;iiiiiii1ii;::::,,,::i111iii1111ttf1111ttfLLGCCCLffttffftfffttttfttfft1ff,
+ ;t1,;1ii;::,,,,,,,::::;iiiiiiiii11ii;:;:::;;i;i1i1i111111111i111ii1tLCCGCGLfffffttfftttttt1tLftitf.
+ ;fi:;1ii;;:,,,,,,::::;;;;;i;iiiiiiiii;::::iiii1ii11111111111111i1ii1LGGGCLLftttt1tt111111t1fLttttt.
+ :ti;:i1t1i::,,,,:::;1tt1i1iiiii1i1i111i;i;;1i1111111i1ii1111tt1111i1tLCLLftff111t11111t11t1t1ff1f1 
+ .tfti;;;111;::,,:::i11ti11i111111i111111111111tt11111iii1111111111ii1tttttttt111111111111111tLt1f: 
+  ;tfti::;i1i;i;;;:::;iii1iii1iiii111111it11111t1111i11ii111i1ii1iiiii111tttt1t11t1i1111i1111tftft. 
+  .1tf1:::i11iiiii:::ii;;;iiiiii111iii111tt1ttttt11i111ii111t11i1ii1111itt11111111t111111111ttttf:  
+   :1tfi:::ii;ii:::;;;i;;;iii;;i11i1t11tfLt11t1tftt111111111t1iiii1ft1111tttt111111i1titt11111tti   
+    i11t1;;;iiiii::;1t11i;iiiiii1111t111111111ii1ttttft111iiiii111fft1ttt;;:1f1i11111i1f1111i1t1.   
+    .11tti11ii1i1iiii111iiiiiii1i1111111iii11i1i1111tft11ii;ii1111t1111t11i1fttt1t1111t111iii1i,    
+     ,11f1111i1111tt1111tt11111iiii111t111i1111111i1111;;;iii1111iiiii1111tft111111111111i1111,     
+      ,1t1tt11111tfffffftff11tt1iiii1itfft1ii11111111ii;:;i11i;i1ii1i1i11i111tt1i11111111i1ii,      
+       ,1t11i1tt11tfCCLfLLt1fff111ii11i1t1t11i;iii11i1iiiiiiiiiii111t1i1111111t11tti1it1iii;.       
+        .1t1i111t11tLCLLCGftftt111111t11ii;;ii;;:iiiiiiiii111ttt1t1111i111i1ii11i;;ii11;:i;.        
+          :11ii11t111tfffLt11111111it1iiii;;:;;;;;:;;;;;iii1ttttt111111111ii1111;;111i;ii,          
+           .itft1t1tttff11tt111111i1i1i;;;ii;;::;;;;:;ii;i1111t11111i1111iiii11111t1iii;.           
+             :tt11tfffff11ii111iiii1ii;i;;i;;;:::;ii;;;;;iiiitt1i1ii11iiii1ffttttiiiii,             
+              .:1ttttfLLft1i1ii11111i;:i1iiii;;;;;;ii;iiiii111111111t1i1111ft111i;i;,               
+                 :1tffffft1111ttt1iii;:;ii;:;;iiii;ii111i1iiii1tt11111i111iiii11i;,                 
+                   ,;tfffftt11t111ii1i;::;i;;iiii11i11i111iiit11111iitt11ii11ii:.                   
+                     .:itffftttt1ttttttti;111iiiiiiiiii1ttttLLft1111ttt11ii;:,                      
+                        .,i1tffffffffftfLLt11iii11111111tttLLLfttt1ttt1i;:.                         
+                            .:i1fLCCCCLffffftt111tfttffftffLCLLfLft1;:,.                            
+                                .,:i1tLLLLLLLLLLLfffffLLLLfftt1i;,.                                 
+                                      ..,:;;;i111iiiiii;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;:::,,..                                       
+                           .     .,:;i1tffLLLLLCLLLLLCCLLCLLtt1i:,.                                 
+                            .,:i1tfLLCCCCGGGGGGGGGGGCCCCLLLLLLLLLLft1;,.                            
+                         .:;1tffLCLLLLLLLCCCCCGGGGGGGGGGGCLLLfffftffLfft1;,                         
+                      .,;ii11tfLLLLfffttff1ii1tffLCCGGCGCCCLLLLLftt1tttttft1;,                      
+                   .,:;;;ii1tftft1tftftt1ttttfffffLCCCCGGCCCLLffffttttff1111tt1;,                   
+                 .;i1iii1tttt111t1tftt11tttffLftfffLCCCGCLCLLLLLLLLffffft1t1i1tft1:.                
+               ,;iiiii1111ttiiii1tt111t1111tttfftfffLfLLLfLLLCCLLLLLLCLfffffft111tt1:.              
+             ,i1iiiiii11111111i11ii1ttttttffffttttfLLLfLLLffffLffffffLLfttttfffttt1tt1:             
+           .;1i:;;;i11111ii111111111tfffttttttttfffffLLLCCCCLLLfftffffffft11ttttffffftfi,           
+          ,:;;:;::;11111i1ttft1111ii1i111ttffttftttfffCG00GLLLLLLffffLftfftttftttttttttff;  .       
+         ,::::;;;ii1t1i111fft1i111111111ttftttttfftttfLLLCCffffLLLLLfffffftttttfffLttttttLt,        
+       .,,:,:1ii1tt1f111tt1iiiii11tftt1ttt1tfffffftt11t1iitftfffffLLLLLfttt11ttfffLf1;itftff:       
+      .,,,,.;11111tft111t11t1i111111tftttftffffLfttt11i;11i1tttttffLLfLLLtt11ttttttti,:;1t1tf;      
+     .,,,,.:itt11ii1i11iii11i11111t111tfffLffftttiiiit1i11ii1ttffftfffffLft1tt1tttff1:,,;tf11f;     
+    .,,,,,:iii11ii1iiii;;:::;1i;ii111ttfft1tt11ttt1111111111111fffftfftttttttt1ttfLft1iii1t11tL:    
+    ,,,,,,;;:;1ii11i;:::,::,,,;;iii111ttt11ttt1i11111111111iit11ttttttt1tt1ttfttfffffftttt11ttLf.   
+   .:,,,,:::,;itffti:::,,,,,,,,:iiit11i11i;;ii1tft11i1111ii11111ittffftfLfftttt1tfttLLfttt11tffLt   
+  .:;,,..,,,,iiiff1;:,,,,,,.,:,:i111i;iiii:,:;1;111i1111i1111i1111tfffLfffffttfttftt1tttt1ff1fLfG; .
+  .:,.......,;ii1t1;:,,,,,.,i1i;1111ii;;i;,,,,::,:;;ii11111ii1111ttfLLfffffffLLtffttt1t11itt1fffCf  
+  ,:.........,:;i111i:,::;;i111iii1ii111i;i;::,::::;;iii111111111i1fLLLffffffLffftt1t11111t1ttfLLL: 
+ .;,........,:::;i1111ii1i;i1;:;;;i11i1ii1i::;;;i1iii;i1i11111111i1ttfCGffLfLfffffftt1tt1t11tttffC1 
+ :i,,......,,,:;::;i1i11i1ii;::;:iii11tt1i1ii;;iii1ii;iiitt1111ttt11tfLGCLfLLttftfffttttttttt1ttLLt.
+ ii,..,,,,.,::::,,.,:iiii;1i:;i;iiii11it1iii::::::iiiii11ff11tfLft11tfLCGGLCLffftttt1tfffttt1tffLLf.
+ 1i,.,.,;:,,::,,,,,...,,::;::;;ii;;;iiiii;:::,,.,,;ii1111t11tttfft11tfLCCGGLffLfffftttttfttttttffff,
+ i1i;,,;1ii;:,,,,.,...,:::;:;;;;iii;iii;;:,::,,,::;111iiiii11ttft111ttfLLGCCCLfftffffffftttfftfft1f,
+ ;1t1:,iiii;:,,,,,,,,:::::;iiiiiiiii11ii;:;:::;;i;iii1ii11111111ii11111tLCCGCGLffffftfftttttt1fLt1t.
+ ;tfi::i1ii;;:,,,,,,:::::;;;;;i;iiiiiiiiii:,::;iii1ii11111i11111111i1ii1fGGGCLLtttt11t111111t1Lfttt.
+ :111;:;i1t1i::,,,,,:::;tft1i1iiiii1ii1i111;i;;i111t1i11111i1111ttt111i1tLLCLftft11t11111t1ttt1fffi 
+ .1ttt1i;;i111;:,,,:::;i11ti111111111i1111111111111t11111iii1i11t111iiii1tttttttt11111111111111Ltt: 
+  ;t1ft1;::;i1i;;;;::::;;iii11iiiiiiii11111i111111t1111ii1i1i11i11i1i1iii11tt1tt1t111i1i111111fftt. 
+  .11tff;:::i11iiiii;:::ii;;;iiiiii111iiiii1tt1ttttt1111111i111t11iii1111i1tt1111111t11111111tt1f;  
+   ;11tL1;:::ii;ii;:::;;ii;;;ii;;;i11i1t11ttLt1tt1tfttt11111111t1iiiitf11111tttt11111i1titti111ti   
+    i1i1t1i;;;iii;i;::it111i;iiiiiii111ttt11111111i1ttttft111iiiii111fftttt1;;:ft1111111tt111i11.   
+    .11itf1i11;i1ii1iii1111iii1iii11111i111i1111i1i1111tft11iiiiii111t111t111iff1t1t1111t111ii1,    
+     ,ti1ft111i111t11t1111ttt11111iiii111tt11i1111111i1111;;;iiiii1iiiiii1111ff111111111111111,     
+      :11t11t111111tfffffftfft11tt1iiii1ifftt1ii111i1111i;::;i11iii1ii1iii11i111tti1t11111i1i,      
+       ,1t1t11i1t111tfLGLLLLf11fft111ii111tt1t11i;iii1111iiiiiiiiiii1ttt11111111tttttii1tiii.       
+        .1f111111tt11tLCLLCGLttft111111tt1iii;;i;;:;;iiiiiiii11ttttt1i11ii11i1i111i;ii11;;;.        
+          ;11111111t111tfffff1111111111t1iiii;;:;;;;;:;;;;;ii11tttt111111111iii11i:i111i;:          
+           ,1tttt1tt1tttff11tt111111i11i1;;;;i;;:::;i;;;iii;i111tt11111i1111iii111111ii;.           
+             :tft11ttfffff11ii1111iii11i;i;;;i;;:::;;ii;;i;iiii1t1111i11iiii1ffttt1ii;,             
+              .:1t1tftfLLft1111i1111111;:;iiiiii;;;;;;i;iii;ii11111111t11111tf111ii;,               
+                 :1tttttfft1111tttt11ii;:;i1;:;;iiiii;i11iiiiii11tt111111111iii1i;,                 
+                   ,;tffffftt11tt111ii1i::;;i;;iii111111i1i11iit1111ii1t111111i:.                   
+                     .:itfffftttt1ttttttt1;;111iii1iiiiii1tttfLLtt111tttt1i;:,                      
+                        .,;1fffffffffffttLLft1iiii1111111tttfLLLftt1ttti;:.                         
+                            .:i1fLLCCCCLffffftt111tfttffffffLCLLLft1i:,.                            
+                                .,:;1tfLLLLLLLLLLfffffffLLffft1i;,.                                 
+                                      ..,:;;;ii111iiiii;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,:::;;;;;;;;:::,...                                       
+                           .     .,:;i1tffLLLLLCCLLLCCLCLLLLft1i:,.                                 
+                            .,:i1tffLLCLLCGGGGGGGGGGGGCCCCLLLLLLLLft1;,.                            
+                         .,;1ttfffCCLLLLLLLCCCCGGGGGGGGGGGGCLLLfLfffffft1;,                         
+                      .,;iii11tffLLLffftttff1;i1ttLLCCGGGGCCCLfLLftt11tttff1;,                      
+                   .:;ii;;;i11ttffttttfftt1ttttfffffLCCCCGCCLLLLffftttttft11tt1;,                   
+                 ,;111iii1tttt1111t1tft111tttfffLffffLCCCCCLCLLLLLLLLfffLftt111tti:.                
+               ,i1iiiii1111ttti1ii11t1t1tt111tttfftfffLffLLLLLLCCLLLfLLCLffffftt11ti:.              
+             .;11iii1iii1111i111ii1ii1ttttttfffftttttffLffLLLfffLLfffffLLftttfttttttt1:             
+           .:11;:;i;;i1i111ii1111111111fffftttttttttffffLLLCCCLLLLfftfffffftt11ttffffff1,           
+          ,;;;;:;:::i1111ii11tff1111ii1ii1111fffftfttttffCG00CLLLLLLffffftffttfftt1ttttffi          
+        .,;:,::;;;ii11t11111tft1i1111111111ttttttttfttttfLLLCCfffLCLLLLffffftttttfffftt1tft,        
+       .:,,:,,i1i11tt1ft11ttt1iiiii1ttttt1ttt1tffffftt1t111i1tftfffffLLLLLftt11ttfffLtii1ttf:       
+      .::,,,.,i11111ttft111111t1i111111tftttttffffftttt11;i11i1tfttfffLLfLLft11ttttttt;,:1ttf:      
+     .,,,,,,,;1t111ii1i111iii11i11111t111tfffLfffttti;iit1i111i1ttffttffffLLft1t1tttffi:,:1f1t:     
+    .:,,,,,,;iii1iiiiiiiii;;:;:i1i;ii11ittfftttt11ttt111111i11111tftfftfftttttttttttLft1iii1t1f,    
+    :.,,,,,:;;:;1ii1i1;:::::,::::;;iii111ttt11ttt1i1t111111111i1t11tttttt1tt11tfttffffffttt11ttt.   
+   ,:,,,,.,;::,:;1fft1::::,,,,,,,,:iiit11i11i;;iii1ff11ii1111i11111i1tffftfLfttttt1fftfLtttt11tf1   
+   ::;,,...,,,,;iitLti:,,,,,,,.,:,:i111i;iiii:,:;iii111i1111111111111tfffLffffttffttft1tttttf1fLL; .
+  .::,.........;ii1tti:,,,,,,,,;1i;i111ii;;;;:,,,::,:::;ii11111ii1111tfLLfffffffLftfttt1t111t1tfLf  
+  .::...........,:;11ii;:::::;i111iii1ii111i;;;::::::::;iii111111111i1LLLLffftfffffft111111t11tfLL: 
+ .:;,........,,::::ii111iii1i;i1;:;;;i11111ii1;:;;;i11ii;i1i1111111111ttfCCfffffffLfftt1t11t11ttfL1 
+ :i;,.........,,:;:::;i1i11iiii;::::;1i111t11i1i;;iii11iiiii1f1111ttt1i1fLGCLLLftttffftttttttt1ttLf.
+ ;t;,...,,.,,,,::::,,.::iiii;1i:;i;i1ii11it1iii;:::::ii;i1i1tf11ttfft111ffC0GLLffffttt1ttffttttffLf.
+ iti:.,.,:i:,,::,,,,,,..,,,::;:,;;iii;;iiiii;:::,,,,,:iii11111i1ttfft11tfLCCGGLffLffLt1tttftttttfff,
+ i1ii;:,,i1ii;:,,,,.,,.,,,:::;;;;;;iii;iiii;;,,:,,,:::i111iiiii11tft1111tfLCGCCCLfftffttfft1tfftftt,
+ ;1itti,:iiii;;,,,,,,,,,:::::;iiiiiiiiii1iii::::::;;i;ii11i11i11i111i11111tLCCGGCftfffttfffttf1tLt1,
+ ;11L1:::iiii;;:,,,,,,,,::::;;;;i;i;iiiiiiiii;,:::iii11ii1111i11111111111i1fGGGLLftttt1tt111111fft1.
+ :t1t1i;:;i1t1i:::,,,,,::;itft1i1iiiii11iii111i;;;i1i1t1i11111i1111tt111111tLCLfttf111t1111t1tt1tfi 
+ .i1tfttii;;i111;;::,,:::;i11t1111i1ii111i111111111111t111111iiii11t111iiii1f1ttt1tt111111111111ff: 
+  ;111ff1i;::;i1ii;i;;;:::;;i;i1iiii1iii111111i1t1111111111i1i11i1i1ii1iiiii11tt1t111111i111111tft. 
+  .11itfL1::::i11ii1iii:::;i;;;;iii;ii111iiii111ttttf1tt11i1111111t1iiiii111i1t111111it11111111tt;  
+   :1i11ffi::::i1;ii;:;:;;;ii;;;ii;;;i11i1t111tLf1ttt1fftt11111111t1iiiitf11111t1t111i1111it111ti   
+    i1ii1111;:;;;ii;i;:::1t11iiiiiiiiii111ttt111111t111ttttft111iiiii111ff1ttti::1f1111i11tti111.   
+    .111i1ftii11;i1ii1iii11111iiiiiiii11111i11ii11111i11111ff11ii;iii111t111t11i1ftttt1111tiii1,    
+     ,tti1ft1111i1t1111tt1111ttt11111ii1i111t111i1111i11i1111;;;;ii111iiiii1111tf11111111t1111,     
+      ,t11t11tt111i11tfffffftfff111tt1iiii1itfft11111111i11ii;:;i11iii1ii1i111i111t1i1t1111ii,      
+       ,t1t1tt111tt111ttLCCLfLft1tfft11i1i11itt1t1ii;iii1111iiiiiii;ii111t1i1111i1tttt1i11ii.       
+        .1ff1111111t111tfCLfLGCftfft111111tt1iii;ii;::;iiiiiiiii11ttt11111ii111ii111;;i11;:.        
+       .  ;f1111111111111tffffft11111111i1tiiii;;::;;;;;:;;;;;ii1ttftt111111i1ii111;;111i:          
+           ,1ftttt11t11tttff11tt1111111i111i;;;ii;;:::;;;;;ii;ii11tt1111ii1111ii111111i;.           
+             :tfft11ttffffft11i11111iiii1ii;i;;i;;;:::;;i;;;;;iii1tti11i111iiitfttt1i;,             
+              .;1tt11fftfLLft1i1ii1111111i:;iiiiii;;;;:;ii;iiiii11111111t11111tt11i;,               
+                .:1ttttttffft1111tttt11iii;:iii::;i1iii;i111iiiiii1tt11111111iiii;,                 
+                   ,itfffttfftt11tt111ii1i:;;;i;;;iii11i11i1i1ii1t1111ii111111i:.                   
+                     .:itfffft1tttt1ttttttt1;i111iii1iiiiiittttfCLt11111tt1;:,                      
+                         ,;tffffffffffLfftfLfft1iii111111i1tttLLLfttttt1;:.                         
+                            .:i1fLLCCCCCLffffftt1111fftffffffLCLLffti:,.                            
+                                .,:;1tfLLCLLLLLLLLfffffffLffft1i:,.                                 
+                                      ..,:;;;i11111iii;;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                       ...,::::;;;;;;;:::,,..                                       
+                                 .,:i11tfffLLLLLCLLLCLLCCLLLft1i:,.                                 
+                            .,:i1tfLffLLLLCCGGGGGGGGGGGCCCCCLLLLLLft1;,.                            
+                         .,;1tttfffLCLLCLLLLCCCCCGGGGGGGGGGGCLLfffffffff1;,                         
+                      .,;iiiii11fLLLLfffftttftiii1ttLLCCGGCCCCLLfLfftt1tfftt;,                      
+                   .:;ii;;;;ii1tttff1tttfftt1ttttffffLLCCCCGGCCLLLfffttttftttt1;,                   
+                 ,;i11iiiii1tttt111tt1tft111tttfffLffffLCCCGGCCLLLLLLLfffLftt111ti:.                
+               ,;11iiiiii1111tttiiii11t111tt111ttttfftffLffLLLLLLCCCLfLLLCLfffftt1t1:.              
+             .;11iiii11iii1111i111ii1i;11ttttttffffttttffLLfLLLfffLLfffLfLLftttfftttt1:             
+            :111;:;ii;;i1i111ii1t11111111tfffttttttttftfffLLLCCCCLLLfftfffffftt1ttfffff1,           
+          .;i:;;::;:::i11111i11ttft1111i11i111t1ffftfftttffLGG0GCLLLLLffffffffttfttttttff;          
+         ,;:,::::i;;ii111t11111fft11111111111tttttttttfttttfLLLCLfffLLLLLfffffttttffffft1ft,        
+       .::,,,:,:iii11tt1tt111tt1iiiiii11tttt1ttt1tfffffftt1111i1tffffffLLLLLfttt1ttffLf1;1ft:       
+      .;:,,,,,.:i11111ttft1111111t11111111tttttftffffLfttt11ii1i11tfttffLLfLLLtt11ttttt1::itt:      
+     .:,,,,,,,,;1f111ii11111iiii11i11111t111tfftLfffttf1iiit1i111i1ttftttffffLft1tt1ttft;,:1tt:     
+    .;,.,,,,.,;iii11iiiii1iii;;:;:i1i;ii111ttfffttt11ttt111111i11i11tftfftftttttttt1ttLftiii11t,    
+    ::.,,,,,,:;;:;11i1i1i;:::::,:,,:;;iiii111tt111ttt11t111111111iit11tttttt1tt11tftfffffftttitt.   
+   ,::,,,.,.,;:,::;1tffti::::,,,,,,,,:iii111i111i;;ii1fft111111ii1i111i1tffftffttttt1tftffttt11fi   
+  .::,;,,,...,,,.:ii1Lf1i::,,,,,,,,:,:i1111;iiii;,::ii;111i1111i111i1111tfffLffffttfttft1ttt1ftfL: .
+  .,::,..........:;ii1tt;:,,,,,,,,;1i;i1111i;;;;:,,,,:,,:;;i111t11ii111ttfLLffffffLftfttt1t1111tLf  
+ .,.::............,:;i111i;:::::;i111iii11i1111;;i;:::::::;iii111111t11i1fLLLfLffffffft11111111tfL: 
+ ,::i:..........,:;::;i11111ii1i;i1i::i;ii11i1ii1;:;;;;i1ii;i11i111111111ttfGCfLfLfffffttttttt1ttL1 
+ :iii:.,......,.,,::;::;;11111i1ii;:::;;iii11tt1i1ii;;ii11iiiii1tt111ttt11tfLGLLLLftttffttfttttttft 
+ :11;:,....,,,,.,:::::,,.:;iiii;1i:;i;i1iii1i1tiiii:::::;i;iii1tft11tfLt11tffCGCCLfffttt11tfftt1tff.
+ :tti;,.,,,:i:,,:::,,,,,....,:;:;:,;;iii;;iiiiii;:;,,,,,:iii1111111ttfLt11tfLCCGCLffffff1tttfttttff,
+ ;111i;:,,,i1ii;;,,,,,.,,.,,,:::;:;;;i;iiiiiii;;:,::,,,::;111ii1i111tff1111tfLCGCCLLftffffffttfftf1,
+ ;1ii1t1;,:iiiii;:,,,,,,,,,:::::;iii;iiiiii11ii;:;:::;;i;i111i111111111i1iii1fLCCCGCffffttfffttttL1.
+ :111ffi:::iiiii;::,,,,,,,:::::;;;;i;i;iiiiiiiii;:,::;ii11ii1111111111111111itLGGCLLfttt1tt11111fL1 
+ ,t1i1t1;;:;11t11;::,,,,,,::;ittt1i11iiii11iiii11i;;;;111t11i11iiii111ttt111i1fLCLftft11t11i1ttt1fi 
+ .i11ffttt;i;;;i11i;:::,,:::;i11t1i1111ii111i111111111111tti1111ii1i11tt111iiitttftttt1111i111111L, 
+  :11t1tLf1i;:::i1ii;i;;;;:::;;iii1iii11iii1i11111it111111t111i1ii1i1iiii1iii1111tttt11111111111ft  
+  .111i1fffi::::;111iiiiii:::;i;;;;iii;ii1111ii11i1ttt1tttt1111111111t11iii1111i1t11111111111111f;  
+   :t1i11tLti:::,i1;;ii;:;:;;;ii;;;iii;;i1111tt11tfL111t1fft111111111t1iii1tt1111tttt11111t1t111i.  
+    i111i11t11;;;;;ii;ii;::;1t111;iiiiiiii111ttt1i1111t1111tttft1i1iiiii11tLt1ttt;:if111i111ti11.   
+    .i111111ftii11i;1ii11iii11111ii1iii1i11111i11ii1i111i11111ff11ii;ii111tt111111iftttt111t1i1,    
+     ,1ttiitLt1t11i1t11t1tt1111tttt11111ii1i111tt11i1111i1111111;;;iiii11iiiii1111ft1111111111,     
+      ,tti1tt11tt111i111tfffffftfff11ttt1iii111ffft11i111i1111ii::;11iiii1i111111111t1it11111,      
+       ,ttitt1t1111tt1111tfCCLLLLf11tfft11iii111tt1t11i;iii1111iiiiiiiiii11t11111111tttti11i,       
+        .1fff1t111111t111tfLLLLCGLttftt111111t11iii;ii;::;iiiiiiiii1tttt1111iii111111i;ii1:.        
+       .  ;ff111111111111111ffffff11111111i1t1ii1i;;:;;;;;:;:;;;ii11tttt11111111ii11i;i1i,          
+           ,tftttttt11t11tttfLt11t1111111i11i1i;;;ii;;::;;;;;iii;i111t11111i1111ii11111;.           
+             :tLftt111ttffffff111i1111i1iii1i;i;;;i;;:::;;ii;;;;iiiitti11i11ii11fttt1;,             
+               ;tt1111tftffLLft111ii1111111i;:;iiiii;;;;:;ii;iiiii1111i111t1111tt11;,.              
+                .:tftttttttfff1111tttft11iii;:;1i;:;iiiii;i11iiii1i11t1111111111i;,                 
+                   ,itffftttfftt111tt111ii1i::;;i;;;iii11111i1i11i1t111ii11111i:.                   
+                     .:itfffffftttft11ttttttti;i111iii1iiiii1ttttLLt111tttti:,                      
+                        .,itffLfffffffffLfttfLft11iii1111111tttfLCLttttti:.                         
+                            .:i1fLLCCCLLCCLffffttt111tfttfffffLCLff1i:,.                            
+                                .,:i1ffLCCCLLLLLLLLLftfffffftt1i:,.                                 
+                                      ..,:;;;i1ii11iii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,:::;;;;;;;;:::,,.                                        
+                                 .,;i1ttfffLLLLLLLLLCLLLLLLLft1;:,.                                 
+                            .,:i1ffLLffLLLLCCGGGGGGGGGGGGCCCCLLLLLft1;,.                            
+                         .,;1ttttfffLCLLCCLLLLLCCCGGGGGGGGGGGGCLLffLffft1;,.   .                    
+                      .,;iiiiii11tLLLLffffftttftiii1tfLCCCGGCCCCLLffftttfft1i,.                     
+                   .:;iii;;;;;i1ttttft1tttfft11ttttffffLLCCCGGCCCLCLffttttfftt1;,                   
+                 .;ii1iiiiii11tttt1111t11ftt11tttfffLffffLLCCCGCLLLLLLLLffLLt1111i:.                
+               .;11iiiiiii11111tftiiiii1t111tt1111tttfftfffLfLLLLLLCCLLLLLCLLfffttt1:               
+             .:1111iiii1ii1ii111ii11ii11ii1ttttttfffftttttfLLffLLfffLLfffLfLLfttffttf1:             
+            ,i11ii::;ii;;iii111ii11111111111tfffttfttttttffffLLLCCCLLLfftffffftt1tttfff1,           
+          .:i;::;::;;:::i11111i111tft1111ii1ii111ttfffftftttffCG00CLfLLLLfffffffttftttttfi. .       
+         ,;;:,,:::;i:;iii11t11111tfft1ii11111111ttfttttttffttffLLCCfffLCLLLLffftttttfffftft,        
+       .:;:,,,::,;iii111t1tt1111tt1iiiii11ttttt1ttt1ffffffttt111111tffffffLLLLfttt11tffL1;1f:       
+       :;,,,,:,,.:i11111ttftt1111i1tt11111111tftttftffffLfttt11;i1i1tfttfffLffLLft11ttttt;,it:      
+     .::,,,,,,,.,;1tt111i11i111iii11ii11111t111tfffLfLfttf1iiit1i11iittffftffffLLt1tt1ttf1::1f:     
+     ;;,.,:,,,.,;iiii1iiiii1iiii;::::i1i;i11111tffftttt1ttt111111111111tftfttfttttttt1tfLt1ii1t,    
+    :;,.,,,,,,,:;;::11ii1i1i;:::::::,:,;;iiii111tt111ttt11t1111111111it11ttttt11t11tfttffffttt1t.   
+   ,;,:,,,..,.,;::,:;ittft1;::::,,,,,,.,:iii1t11i11i;;ii1tft11i111ii1i1111ttfftfffttttttttLftt1t1   
+  .:,:,;:,,....,,,.,;ii1Lf1;::,,,,,,.,::,i1111;;iiii:,:;1;11iiii11i11111111tffLffffttfttftttt1ttL: .
+  .,,:::,..........,;iiitt1;:,,,,,,,,:11i;1111i;;;;;,,,,:,,:;;i111111ii111ttfLLffffffLtfttttt111ft  
+  ,,.:;,...,,.......,,;;1111i;:,:::;;111iiii1ii111i;i;:::::::;iiii11111111itLLLLfffffffft1111111tL, 
+ .;::i:,...........,::::;i1111iii1i;;1i::;;;i11i1ii1i::;;;i1iii;i1i111111111ttfGLfffffffftt1ttt11fi 
+ ,i;ii;,,,......,.,,,:;;::;i11111iiiii:::;:iii11tt1ii1i;;iii1ii;ii1tt111ttt11tfCCLLLftttffttttttttt 
+ ,i1ti;,.....,.,,.,,::::,,.,:;iiii;i1;;i;i1iii11it1iii;:::::iiiii1tLt11tfLt11tfLGGCLLffftt11tftt1tf.
+ ,i1tii:..,.,,i;,,,::,,,,,,...,.,;:;;,:;iii;;;iiiiii:::,,.,,;ii1111t11tttft11tfCCCGCffLfff11tfftttf.
+ :i1i1ii;:,,,;1iii;:,,,,,.,,.,,,:::;:;;;;;iii;iiiii;,::,,,::;i11iiii111tff111ttfLCGCCLffffffffttfft.
+ ;11i11tt1:,:iiiii;;:,,,,,,,,,:::::;iii;iiiiiii1iii:::::;;;i;ii11i11i11111i1ii11fCCGGCftffttffttttt.
+ ;11111Lt;:::iiiii;;:,,,,,,,,,::::;;;;;;i;iiiiiiiii;;:::;iii11i1111111111111111itCGGCLfttt1t11111ft 
+ ,11t11tti;;:;i1tt1i:::,,,,,:::;i1ft1i11iiiii1iiii111;;;;i111t1i111iii111tt1111i1fCLLfft11t111t11ti 
+ .i1i1ttftt1;i;;;i111i;:::,::::;i11t1i11ii11i11i111111111111tt11111iii111tt111ii1ttttttt111111111t: 
+  :11i111fft1i;:::;11ii;i;;;;::;;;iii1iiii1iiiii11111i1t11111t111i11i111i11i1i1i111tttt1111ii111tt. 
+  .i11111tfffi:::::i11ii1ii1i:::;ii;;;iii;ii11i1iii111tttttttt1111111111t11iii111i1tt11111111111t:  
+   :111i111tLti:::,:11;iii;:;:;;;i;;;;iii;;;11111t11tfLt1ttttftt11111111t1iii1ft111tt1t111111111i   
+    ;1i1ii1111t1;;;;;iii;ii:::;1t111iiiiiiiii11itt111111111111tttft1i11iiii11tftttt;:;f111i11t1i.   
+    .i1i11111tftii11i;i1ii1iiii11111ii1iiii111i11i11ii1111ii11111ff11ii;iii11t111111iftttt11111,    
+     .11tt111ff11t1i1i111t11tt1111tttt11111ii1i111tt11i1111i111i111;;;iii11iiiii1111ft11111111,     
+      .tft11tt111ft111i111tffffffftfff11ttt11ii11ifftt11111111111i;;:i11i;i1ii11i1111tt111111,      
+       ,tf1i1f1tt1111tt1111tfLGCLLLLf11ffft1111i111tt1t11i;iii1111iiiiiiiii1ttt1111111ttt11i,       
+        .tLttft1111111tt1111fLCLLLGGfttftt111111t1iii;;ii;::;iiiiiiii11ttt1111ii111ii1i;i1;.        
+       .  ;fft11111i1111111111ffLffft11111111i1t1i11i;;:;;;;;:;;;;;ii1tttt11111111ii11;i1:          
+           ,tLtttttft11tt111tttff11tt1111111i1111;;;;ii;:::;;;:;iiiii11t11111i111ii1111i.           
+             :fLftttt111ttffffff111ii111111i111iii;;i;:;:::;;i;;;;iiiitti11i11ii1tttti,             
+              .;fft1111tfttfLLLft111ii11111111;:;iiii1i;;;;;ii;iiiiii111111111111fti,               
+                .;tfftttttttffft11111tttt111ii;:;ii;:;iiiii;i11i1iiii11t111111111;,                 
+                   ,ifffftttfffftt111tt111ii1i:;;;ii;;iii1111i1i11ii11111i1t11i:.                   
+                     .:itfLffttfttttft11ttttttti;it11iii1iiiii1tttfLft11ttti:,.                     
+                    .   .:itfLLfffftfffffLffttLLft1iiii1111111ttfLLLft11i:.                         
+                            .:i1fLLLLLLLLLLLffffftt111tfftffffLLCLf1i:,.                            
+                                 ,:i1fLLCCCCLLLLLLLLfffffffftt1i;,.                                 
+                                      ..,:;;ii11i111ii;;;:,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;;;;;;;:::,...                                       
+                                 .,;i1ttfffLLLLLLLLLLCLLLLLfft1;:,.                                 
+                            .,:i1tfLLffffLLLCCGGGGGGGGGGGCGCCCLLLLfti;,.                            
+                         .,;1ttttttfffCCLLCLLLLLCCCGCGGGGGGGGGGCLLfLLfft1;,                         
+                      .,;iiiiiiii11fLLCLffffftttftiiittfLCCGGGGCLLLfffftttft;,.                     
+                   .:iiii;;;;;;ii1ttttft1tttfft111tttffffLLCCCGGCCCLLffftttfft1;.                   
+                 .;11i11iiiiii11tttt1111t11fft111tttffLffffLLCCCGLLLLLLLLLfffttt1i,.                
+               .:i11iiiiiiii11111tftiiiii1tt1tttt111tttfftfffLfLLLLLLCCLLfLLCLfffft1:               
+             .,i1111iiiii1ii1i1111ii111i11ii1tttttttffffttftffLffLLLffLLfffLfLfftffff1:             
+            ,;i1iii;:;;ii;ii111111i11111111111tfffttttttttftffffLLLCCLLLLftffffft1tttff1,           
+          .:;1;::;;::;;:::i111111i111tft1111ii1ii11tttfffffttttfLCG0GLfLLLLfffLfffttftttt;          
+         .;;;:,:::::;i:;iii11t11i111fft111i11111111ttfttttttffttfLLLCLfffLLLLfffftftttffft1,        
+        ,;::,,,,:,,;1ii111tt1tt111ttt1iii1ii1tttt1tttt1tffffftt1t11iitttffffLLLLftttttffL1i1,       
+      .,;;,,,,,:,..:i111111ttft1111111tt11t11111tttttftfLffffttt11;i1i1tfttfffLfLLft1ttttt;:1:      
+     .:;:,,,,:,,,.,;1tt111ii11i111i1111ii11111tt111fffffffttt1iiitii11iittffttfffLLt1ttttft::1:     
+     :i;,.,,,,,,,,;iiii11iiiii1iiii;::::i1i;ii1111ttfftttt1ttt111111i11111fftftffttttttttff1iit,    
+    ,i;,,.,:,,,,,:;;;:;11i11i1i:::::::,,,,;;iiii111ttt11ttt111111111i11i1t11ttttt1tt1tfttfffftt1.   
+   .;:,,:,,,,.,.,::::,:;1tfft1;::::,,,,,,,,,;ii1t11111i;;ii1tft11i111ii111111tffftfffttttttfft1t1   
+  .::,;,:i:,,....,,,,.:iiitLt1;::,,,,,,.,,:,;1111;;iiii:,:;1;1111ii11ii1i1111tffLLfffftfttftttttf; .
+  .,,,:::,............:;iiitt1;:,,,,,,.,:11i;11111i;;i;,,:,::,:;:;111111ii111ttfLffffffLfftttt11tt. 
+ .,,..,;:....,,........,,;;1t1ii;:,:::;;i111iii1ii111i;;i:::::::;;iii11111111itLLLfffffffft111111f: 
+ .:;::;i:............,:;:::;i1111iii1ii;ii;:;;;i11i11ii1;:;i;i111i;i1i111111111ttLGfffLffffft1tt1ti 
+ .;i;iii:,,,.........,,,:;;:::;1111i1ii;i:::::i1i111tt1i1ii;iii1iiiiiitt111ttt11tfCCLLLfttfftttttt1 
+ .;i1t1;;,.....,,,,,,,,::::,,..::iiii;i1;:;i;i1ii11i1t1ii;:::::;i;iii1ff11tfLt1itfCGCLLffftt1tffttt.
+ ,:i1t1i;,..,,,,;i:,,,::,,,,,,....,,:::i,:;;iii;;iiiiii;::,,,,,:ii1111t11ttfft11tLCCGCLfLfff11tfttt.
+ :;i1111ii;:,,,:1iii;;:,,,,,,,,...,,::;;;;;;;;iiiiiiii;:::,,,:::i111iiii11tff111tfLLGCCLfffffffttft.
+ ;ii1i1i1ft1:,:iiiiiii;,,,,,,,,,,::::::;iiiiiiiiii11ii::;:::;;i;ii11i11111111i1ii1tfCGGGLttftffttft.
+ :1i111itL1;:::;iii1i;;:,,,,,,,,:::::;;;;;;;;;iiiiiiiii;::::iii1iii11111111111111i1fGGCLfttt1t111tt.
+ .ii1t111tti;;:;i11t11;:::,,,,,::::;1tftii1iiiii11iii111i;i;i111t1111i11i111ttt1111tLCLfft11t1i11ti 
+  ;iii11ttf1ttiii;;ii111;;:::,::::;i11t1i11iiiii111i111111111111t11t111iiii1tt11iii1ttfttt1111111t: 
+  ,11111t11fLt11i:,:;i11ii;i;;:;:::;;iiii1iii11iii111111i1t1111tt111111i111i11iiiii1i1ttt1111i1111. 
+   ;1i11111tfffi;::::;111ii1iiii:::;ii;;;i1i;iii111ii1111tt1ttttf1111111i11t1i1ii111itt111111111t:  
+   ,11111i111fLti;:::,i1i;iii::::;;;ii;;;iii;;;i11i1t11ttLf1ttttftt1111111111iiitt111tt1t111111ti   
+    ;1ii1111111t11i;;;;;iii;ii:::;tt111i;iiiiiii11ittt1i111111111tttft111iiii111ft1tti:if111i1t1.   
+     ;1i11111i1tftii111;i11ii11iii11111ii1iiii111111i11ii1i11i111111ff11ii;ii11tt11t11ifttt1111,    
+      it1tt1111fft11t11i1t11t11tt1111tttt11111ii1i111tt11i11111111i11i;iiii111iiiii111f1111111:     
+      .1ftt111tt111tt111i111ttffffffftfft11ttt1iii11itftt1111111i111i;:;i11ii1ii1i11111tt1111:      
+       .tLf11itt1tt1111tt1111tffLGLLLLLt1tfff11111i11itt1t1iii1ii1i1iiiiiiiii11tt111111ttt1i,       
+        .tLfttff1tt1111i1t1111tfLLLfCGCftfft1111111t11ii;;ii;::iiiiiiiii1tttt1111i11111ii1;.        
+          iLfff11111111111111111tffLfff11t11111111t1i1ii;::;;;;;;;;;;;i11ttt1111111ii11ii:  .       
+           ,tLfttttttttt1tt11ttttff111tt111111111iii;;;ii;;::;;;;;iiiii11t11111111ii111i,           
+             ;fLLttttt1111ttfffffft11ii11111iiii1i;;i;;i;;:,:;;i;;;;;i111t111111i1tft1,             
+              .;fLf111111tfftffLLftt11ii11111111i;:iiiiii;;;;;;iiiiiii1111111t1111f1,               
+                 ;fLLfttttttttffftt11ittttf1111i;:;i1;:;;iiii;;11i11iii11t1111111;,                 
+                   ,ifLftttftttffttt111tt111ii1i:;;:ii;;iii1111i1111i1t11111t1i:.                   
+                     .:itffLftttfftttft11ttftttttiiit11iiiiiiii11tttLft1tt11;,.                     
+                         ,;1fLLffffftffffffffftfLftt1iii11111i11tfLLCft1i;,                         
+                            .:i1fLLLLLLLLLLLLfffffttt111tftfffLLLCfti;,.                            
+                                 ,:i1tLCCCCCCLLLLLLLLffffffftt1i;,.                                 
+                                       .,:;;iii1ii111i;;;:,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;;;;;;;::,..                                        
+                                 .,;i1tffffLLLLLLLLLLLLLLLLfff1;:,.                                 
+                             ,:itffLLfffffLLLLCGGGGGGGGGGGGGCCCLLfft1;,.                            
+                         .,;i1ttttttfffLCCLCCLLLLCCCCCGGGGGGGGGGCLLLLLft1;,    .                    
+                      .,:;iiiii;ii11tLLLLLfffff1tffti;ittfLCCGGGGCLLffffttt1i,.                     
+                   .:iiiii;;;;;;;i1tttttft1tftffft11ttttfffLLCCCGGCCLLLfftttff1;.                   
+                 .:i1iii1iiiiiii1ttttt1111t11tft111t1tffffffffLCCCCLLLLLLLLffLft1i,                 
+               .,i11iii1iiiiii111111ft1iiii1tt111tt111tttffffffLffLLLLLCCLLLLCCffff1:               
+             .,;i1i111iiii1iiiii11111i111ii11;i1tttttttffftttttffLfLLLfffLfffLLLfttft1:             
+            ,:;i1ii1i::;;i;;;i1ii111ii11111111111tfffttttttttttfffLLLCCCLLLftfffftt1tff1,           
+          .::;ii::;;;:::;:::i111111i1111tf11111ii1ii1111fffftttttffLG00CLLLLLffffffftf1tt;  .       
+         .:;;;:,::::::;i;:iii111t11111tfft11ii11111111ttftt1ttfttttfLLLCfffLLLLLfffttttfff1,        
+        ,:;::,,,,,:,,;iiii111t1tf1111ttt1iiiiii1tttt11ttt1ffffffttt111i1tttffffLLLft111tff1i:       
+      .::;;,:,,,,:,,.,ii11111ttfft1111111t111t11111tftttttfffffttt111;1ii1tftfffLfLLt11tttt;;:      
+      :;:;,,,,,:,,,.,:11f1111ii11i111iii11ii11111tt111tfffLffttt1;i11ii11i1ttfttffffLt1t1ttt:i:     
+     .;i;,..,,,,,,,,:;iiii1iiiiiiiiii;;::::i1i;ii1111ttfftttt1ttt111111i1111tftftttttttttttfti1,    
+    .:i;,..,,,,,,,,,;;;;:i1ii1ii1i:::::::,,,,::;iii11t1tt11ttt111111111111i1t11tttt11t1tftfffttt.   
+   .;;:,,:,,,,..,.,:;:::,;i1tfft1;::::,,,,,,,,,;iiit11i111;;iiitft11i111ii111111tfftfftttttttftti   
+  .:;:,::,;;,,,.....,,,,,;iiitLti;::,,,,,,..,:,:i111i;;iii;,::iii1iiii11i1111111tfLLfffftfttftt1f: .
+  ,,,,,::::,,............:;iiitt1;:,,,,,,.,,i1i;i1111i;;;i:,,,,:,,::;111t11ii111tfLffffffLtfttt111. 
+ .:,,,.,:;:.....,.........,,;i1111ii:::::;;i111iii1ii1111;;;;:::::::;iii1111111i1fLLLfftfffft1111t: 
+ .:;;:::i;,.............,,;:::;ii1111iii1i;ii;::;;;i11i1ii1i::;;;iiii;i111111111ittfGLffffffftt11t; 
+ .,;;;;ii;,.,...........,,,:;;:::;i11111iiii;,::;;ii111tt1i1ii;;ii11i;;iitt111ttt11tLCLLLfttfftttt1 
+ .,:ii1ti;:,.....,,.,,,,,,::::,,..,:iiiiii1i:;i;i1iii1ii11iii::::,;i;iii1ff11fLft11fLGGLLfffttttftt.
+ ,:,i1ttii;,.....,,i;,,,,::,,,,,,,....,:::;:,;;iii;;iiiiii;:::,,..:ii1111111ttfft11fLCCGLfLfft1tftt,
+ :;:i11111ii;::,,,i1iii;;:,,,,,.,,...,,:::;:;;;;;iiiiiiii;::::,,,::ii11iii111tft111tfLCCCLffffffttt,
+ :1ii11i111t11;:,:iiiii;;:,,,,,,,,,,,::::::iii;iiiiii11ii;:::::;;i;ii11i1111i111i1ii1fCCGCftfftfttt.
+ ,11111111ff1;::::iiiiii;;:,,,,,,,,,::::::;;;;;;;iiiiiiiii;::::;ii11ii1111i11111111iitCGCLftttt111t.
+ .iii1f1111t1i;;::;ii1t11;:::,,,,,::::;1ttt1i1iiiiii1iiii11i;;;;1i1t11111iii111tt111i1fCLffti1t11ti 
+  :iiii1itttf11tiii;;;i1111;;:,:,,:::;ii111i111iiii111i111111111111t11111iiii11t111ii1tttttt111111: 
+  ,;ii11i1t11fLt1ii;::::i11ii;i;;:;::::;iiii1iiii1iiii11111iit111111111i11111ii1iiii11i1ttt1111111. 
+   :i111111i1tffL1;:::::i111ii1iiii::::ii;;;;iii;ii11iii1i111ttttt1t111111i11111iii111i1t11111111:  
+   .;11111ii111tLti;::::,11;;iii::::;;;ii;;;;ii;;;i11i1t111tLf1tt1tft1111i11111iii1t1111t1111111i   
+    ,1i1ii11i1111t1ti;;;;;;ii;;ii:::;1t111i;iiiiiiii111ttt1111111111tttft111iiii11ff1tt;:1t11i11.   
+     :11i11111i11tftiii1t1;i1ii111iii11111ii1iiiiiii111i11ii1i11i111111ft1ii;;i1i1t11t1i1ft111t,    
+      :1t1ttt1i11fft11t11ii1111t11tt11111tt111111ii1i1111t11i1111111i1i1i;iiiii1iiii111tt1111t:     
+       ifftt1111tt111tt1111i111tfffffffttfft111tt1iiii1itftt1i111i1111ii;:;i1i;iii1i11111t111:      
+       .1Lfft111ft1tt11111tt11111ffCCLLLLLt1tfft111ii1111tt1t1iiiii1111iiiiiiii11tt11111ttt1,       
+        .1CLftttft1tt1111i1tt1111ffCLLLCGLttfft1111111t1iii;;ii;:;iiiiiiii11ttt111ii1111ii;.        
+       .  ;LLffft1t111111111t111111ffLffft11111111i11tiiii;;::;;;;;;;;;;i11ttt111111ii11i:          
+           ,tCLfttttttttt111t111tt1fLt11tt1111111i11iii:;;ii;:::;;;;;ii;i1111111111ii11i,           
+             :fLLffffttf111tttfffffff111i1111i1iii1iiii;;i;:;::;;ii;;;;i11tti1i11i1tf1:             
+               ;fLLf111111tffttffLLftt1iii11111111i;:;i1iii;;;;;;iiiiiiii111111111tt:               
+                 ;fLLfttttttttttffftt1111ttttt1i1ii::ii;::;iiii;i1ii1iii11t1i1111;,                 
+                   ,ifLLftttftttfffttt111tt111ii1i::;;ii;;ii1111ii1i1i11111111i:.                   
+                     .:ifLfffftttfff1ttft11ttftttt1;ii111ii1iiiii1t1tLLftt11;,.                     
+                    .   .,itfLLLfffttfffffLLfffftfLfttiii111111i1tffLLf1i;,                         
+                            .:i1fLLLLLLLLLLLCLfffffttt111tftfLLLLLLf1;,.                            
+                                 ,:;1tfLCCCCCCLLLLLLLLfffffftt1i;,.                                 
+                                       .,:;;iii11i11ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;;;;;;:::,..                                        
+                                 .,;i1tfffLLLLLLLLLLLLLLLLLfft1;:,.                                 
+                             ,:itffLLfffffffLLLCCGGGGGGGGGGGGGCCCLft1;,.                            
+                         .,:ittttt1tttfffCCCCCLLLLLLCCCGGGGGGGGGGCCLLLLt1;,.                        
+                      .::;i1iiiiiii111fLLCLLfffftttff1ii1ttfLCCGGCCLLLfLfft1i:.                     
+                   .,i11iiii;;;;;;;i1ttfttft1tftffft11ttttLffLLCCCGGCCLLfftttft;,                   
+                 .,i11iii11iiiiii1t1tttt1111t11tft111tttfffffffLLCCGCLLLLCLLffLfti:                 
+               .,:i11i1i1iiiiiii111111tf1iiiii1t111ttt111tttfffffLffLLLLLCCLLLLLfff1:.              
+              ,::i11i11ii;iiii1iiii1111ii111i11ii11ttttttffffttttffLfLLLfffLfffLLfttf1;             
+            ,:;;i11111i::;iii;;i11i111ii111111111111fffttttttttttffffLLCCCLLLftfffftttf1,           
+          .,:::ii;::;;;:::;:::;1111i111111tff11111i11i111ttfffttftttffCG0GLLLLLffLffftttt;          
+         .,:;:;;:,:::::::i;:;iii11tt11111tff111ii11111111ttft1tttfftttfLLCLffLCLLLffftttfL1.        
+        ,::;:::,,,,,:,,;iiii111tt1tf1111tt11iii1i11tftt1tttttfffffftt11111tttffffLLLft11tffi,       
+       ,::;;::,,,,,:,,.,;i11111tttfft1111111tt11111111tftttttfffffttt11ii1i1tfttffffLLt1tttt;,      
+      ,;;:;:,,,,::,,,.,:i1tt1111ii1ii111i1i11ii11111tt11ttftffLftttiii11i111ittfttffffLtttttt;,     
+     ,,;ii:..,,:,,,,,.,;iiii11iiiiii1iiii;;:::;1i;ii1111ttfftttt1ttt11111i11111tftttttttttttL1i,    
+    ,,:ii:,.,,,,,,,,,,;;;;::11ii11i1i::::::::,,,::;iii1111tt11ttt1111111111i11111ttttttt1tttfftt.   
+   .::;::,::,,,,,.,,.,:;::,:;i1tfft1;:::::,,,,,,.,:iii11i1111i;iiitft11i111ii11111tfftfftttttfffi   
+  .::;:,,;:,;;,,,,.,..,,,,.,;iiitLf1i::,,,,,,..,:,:i1111;iiii;,::iii1iii111ii111111ffLfffftftfttf: .
+  ,:,,,,,::::,,.............:;ii1ttt;:,,,,,,...;1i;i1111i;;;i:,,,,:,,:;;111t1ii111ttfLfffffLfft11i  
+ .;,,:,..,:;:.....,.........,,,;;1111i;:,,:::;ii11iiii1i1111i;;;::,::::;iii111111111LLLfffffff1t1t, 
+ .:,;;:,,;i;,..............,,;:::;ii1111iii1i;;ii::;;;i11111iii;:;;;i1ii;i1i11111111ttCCffffffft1t; 
+ ,,,i;i;;ii;:.,,.........,.,,,::;:::;i11111iii;i:::;:i1i111t1i11i;;iii1iiiiitt111tt11tLCLLLfttfttt1 
+ ,,,:iiit1i;;,......,,,,,,.,,:::::,,.,:;iiii;i1;:;;;i1ii11i11iii;:,:::i;iii1ff11fLf11tfCGCLffttttft.
+ ,::,;11ttii;:..,,.,,:i;,,,,::,,,,,,,...,,,::;;,:;;iii;;iiiiii:::,,.,,iii111111ttff11tLCCGLfffft1ft.
+ ,:;:i111i11ii;;:,,,:11iii;;:,,,,,,,,,,.,,,::;:;;;;;iiiiiiii;::::,,,::;111iiii1ttft11ttLCGCLftftfft,
+ ,iiii11i1111tt1i:::;iiiiii;;,,,,,,,,,,,::::::;ii;iiiiiii1iii::::::;;;i111i1111i11i11i1tLGCCffftfft.
+ ,i111111111fLti;:::;1iiiii;;:,,,,,,,,,:::::;;;;;;;;iiiiiiiiii::::;iii1i11111i111111iii1LGCLftt1t11.
+ .:iiiitt1111ttii;;:;i1itt11;:::,,,,,,:::;i1tt1i11iiiii1ii1i111;;;;ii1t1i111ii111tt111i1fCLfft1tit; 
+  ,;iiii11itttft1t1;i;;;;i1111;;:,:,,::::;i11tii11iiiii11i1111111i1111t11111iiii111111iitttttt1111, 
+  ,:iiii11i1t11tLfti1i;:::;i11ii;i;;:;:::::iiii1iiiiiiiiii1i111i111111t1111i111ii1ii1ii1i1ttt1t111. 
+  .,:i11i1111i1tffLfi::::::i111ii1iiii::::ii;;;;iiiiii1111ii1111ttttttt111111111t1iii111i1t11111t:  
+   .,i1111111i111tfL1i;:::,:11;;iii::;:;;:ii;;;;ii;;;;11ii1111tLf1ttttftt111111111ii1tt11ttt1111i   
+    .;1i1ii11i11111t111;;;;;;;ii;;ii:::;1t111i;iiiiiiii111tt11111111111tttf1i11iii1itfttt;;t1111.   
+     ,;111i11111i11ttf1ii11ti;i1iii1iiii11111ii1iiiiiii111i11iii111ii1111tft1ii;ii11t1111itt111:    
+      .;1t11tt11i11fLt111t11iit11tt11tt11111tt111111ii1i1111t11i1111i11ii11;;;iii1iiii111tt11t;     
+       :1ffttt1i11tt111tft11111111tfffffffttfft11ttt1i1ii1itftt1i1111ii1ii;:;i1iii1i111111t11;      
+       .ifffft111tft1tt111i1tt11111tfLCCLLLLLt1tfft1111i1111tttt1i;iii1i1iiiiiiii11tt11111t1,       
+        .1CCfftttff11tt1111i1tt1111tfLCLfLCGLttfft111111tt1iii;ii;::;iiiiiii11tt1111ii1111i,        
+          ;LCfffff11t111111111111111ttffLffft11111111iitti1ii;;:;;;;:;;;;;ii1ttt111111i11:.         
+           .tCLLff1tftttttt11tt1111t1tff111tt1111111i1111;;;;i;:::;i;;;iiii11tt11111i11i,           
+             :fCLfLftfttft111tttffffffft11ii11i1iiiii1iiii;;;;;:::;;i;;;;i1itti111i1f1:             
+               ;fCLLft111t11tffttfLLLftt11ii111111111;:;iiiii;;;;:;iiiiiii1111111111;.              
+                 :tCCLffttttttttftffftt1111t1ttt111ii;:;ii::;iiiiii1ii1ii1i11i111i,                 
+                   ,ifLLffttfffftffffttt111tt111ii1i:;;:ii;;ii1111i11ii11111111;.                   
+                     .:ifLLffffftttfft1ttft11ttftttt1;ii11iiii1iii11ttfLftt1i,.                     
+                        .:itfLLLLffffffffffffLffftfLLtt1i1111111i1tffLLfi;,.                        
+                            .:itfLLCLLLLLLLLLCLLffffftt111tfffLLLLLf1;,.                            
+                                 ,:;1tfLCCCCGCCLLLLLLLLfffftt11i;,.                                 
+                                       .,::;iii11ii11i;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;;;;;;:::,..                                        
+                                 .,;i1tffLfLLLLLLLLLLLLLLLLfft1i:,.                                 
+                            .,:itfLLLLfffffffLLLLCGGGGGGGGGGGGGGCLft1;,.                            
+                         .,:i1ttttt11ttfffLCCLCCLLLLLLCCCCGGGGGGGGGCCLLf1;,.   .                    
+                      .,;;iiiiiiiiiii1i1fLLCLLfffftttff1ii1ttLCCGGCGLLLLLft1i,.                     
+                   .,;111iiiii;;;;;;;i1tttttf11tfttfft11tttffffLLCCGGGCLLLfffft;,                   
+                 .,;111i;i11iiiiiii1t1tttt1111t1itff111tttfffffffLLCCCCLLLLLLffLfi:                 
+               .,:;i11i1ii1iiiiiii111111tf1iiiii1tt11ttt111tttfffffLffLLLLLCLLLLCfft:.              
+             .,:::i111111ii;iiiiiiiii1111ii111ii11;i1tttttttfffftttffLfLLLffLLfffLfft1:.            
+            ,::;;;111i11;::;;ii;;ii1ii111ii1t111111111tfffttttttttttfffLLCCCLLfftfffttf1,           
+          .,::;:;1i;::;;;:::;;:::i1111i1i1111tft1111ii1ii111ttffffftttffLG0GLLLLLffffftft;          
+         .,,:;;:;:,,:::::::ii:;ii;1t1t111111tff111ii11111111tttt1ttfffttfLLCLffLCLLLfftttft,        
+        ,,,:;;::,,,,,,::,:iiii1111tt1ft1111tt11iiiii11tftt1tttt1fffffttt111i1ttfffLLLfft1tLt,       
+       ,::::;;,:,,,,,:,,,,:i111111tttfft111t1i1tt11111111tfttfttfffffttt11;1ii1fttfffLLft1tt1,      
+      ,:;;::;,,,,,,:,,,,.,;i1tt1111ii1i1111i1ii1ii11111tt11ttfffLLftttiii11i11i1tfttfffLftttt1,     
+     ,,,;ii;,.,,,,,,,,,,,:;iiii11iiiiiiiiiii;;:;:;1i;ii111ittfftttt1ttt1111ii1111tfttffttttttf1,    
+    ,:,,;i;,,,..,,,,,,.,,;;;;:;11ii11i1i:::::::,,,,:;;iii1111tf11ttt111111111111111tttfttttftfft.   
+   .:::;;::,::,,,,..,,.,:;:::,:;i1tfff1i:::::,,,,,,.,,iii1111i11i;;ii1ft11111ii1i1111fftfftttttLi   
+  .;::;:,,:;:,;i::.,.....,,,,.,;iiitLf1i:::,,,,,,,,:,,i1111;;iii;,::iii111i1111111111tfLffftttftf: .
+  :;:,,,,,,;,::,,..............:;iiittti::,,,,,,.,:11i;i111ii;;i:,::,::,::;111t11i11ttffffffLfftti  
+ .i:,.,:,.,,:;:.....,,..........,,;;i111ii;:,:::;;i111iii1ii111i;;;::::::;;ii111111111fLLfffffft1t, 
+ ,;,,:;;:::;i;:,..............,,;:::;ii1111iii1ii;ii;:;i;ii1111ii1;:;;;i1ii;i111111111ttLCfLfffftt; 
+ ,:.,;;;i;iii;:,.,.........,,.,,,:;;:,:;i111111i1;i;:::;;ii111t11i1i;;ii11iiii1tt11ttt11fCLLLffftf1 
+ ,:,,:;i11t1i;;,......,,,,,,,,,,:::::,,..:;iiii;i1;:;i;i1iiiti11iii;:::::iiii1tft1tfLt11fCGCLfftttt.
+ ::::,:i11ttiii:,..,..,,;i:,,,,::,,,,,,,...,,,:::;,:;;iii;;iiiiii;::,,.,,;ii111t11tfft1tfCCGLfffttt.
+ :::;:;1111111iii;::,,,:11iii;;:,,,,,.,,..,.,,::;;:;i;i;iiiiiiii;:::,,,::;111ii111tff11ttfCGCLfffft.
+ ,;iiiii11i1111tt11;:,:iiiiiii;;,,,,,,,,,,,::::::;iiiiiiiiii11ii::::::;i;i111i1111i11i1iitLCGCfttft.
+ ,:i1111i11111tLf1;::::i1iiiii;;:,,,,,,,,,:::::;;;;;;;;;iiiiiiiii;:::;ii1ii1111111111111i1LGCLtt1t1.
+ .::iii1itt11i1tt1i;;::;i11tt11;;::,,,,,,:::;;1tttii1iiiiii1iii111i;i;i11t1i1111i111tt11i1fCLft111; 
+  ::;iiii1i11tf1ft1tti;i;;;ii1111;;:,:,,::::;i11t1i1111ii111ii1111111111tt11111iiii1t111iitttt1111: 
+  .::;iiii1111t11tfft1ii;::::;i11ii;i;;;;;::;:;iiii1iiiiiiiiii1111i111111t11111i111i1iiii1i1tt1111. 
+  .:::i111i1111111fffL1;:::::;1111ii1ii1i;:::;i;;;;iii;iii111ii1111tt1tttt111111111t11ii111t1111t:  
+   ,:,i11111111i111tfLti;;:::,:11;;iii::;:;i;ii;;:;ii;;;;i11i1111tfftttttft111111111ii1tt11tt1i1i   
+    ,,;1ii1ii111111111t1ti;;;;;;iii;;ii:::;1t111i;iiiiiiii111ttt1111111111tttt111iii1itf1t1:1ti1,   
+     ,,;11111111111111tft1ii111i;i1iii11iii11111iii1iiiii1111ii1ii1111i11111ff1ii;ii11t11111f1t:    
+      ,,;1ttittt11i11tLft11t111i1t11tt11tt11111ttt11111ii1i1111t11i1111i11i11i;iiii1iiii11tt1t;     
+      .::1ffftft1111tt1111tt1111i1111tfffffffttfft11ttt1iiii11fftti11111i11ii;:i1iii1i1i111tt;      
+       .;tfffft11111ft1tt111i11tt11111tfLCCLLLLft1tfft1111i11i1t1ttiiiii1111iiiiiii11t111i1t:       
+        .ifCCfffttttf11tt11111i1tt1111tfLCLLLGGLttfft1111111t11i;;ii;:;iiiiiiii1ttt111i111i.        
+          :fCLLfffft1t1i111111111111111ttfffffft1t111111i1t1iiii;::;;;;;;;;;ii1ttt1111ii1:          
+           .1CCLLLft1tftttttt111tt111tt1fLf111t11111111111ii;;;ii;;::;;;;iiiii1t111i111i,           
+             :tCLffLftffttft1111tttfffffft11i1i11111iiii1iii;;i;;:::;;i;;i;i11t1i111t1;.            
+               ;fLLLLft1111111tffttffLLftt11iii11111111i;:iiii1i;;;:;i;iiiii11111111;.              
+                 :tCCLLffttttttttttfffftt1111t1ttt111ii;:;ii::;iiii;i1i11i111t111i,.                
+                   ,ifLCLffttffffttffftttt111t1t11ii1i:;;;ii;;ii1111i11i1111111;,                   
+                     .:1tLLfftffffttffftttfft11ttftttt1ii111ii1iiiii11tfLft1;,.                     
+                    .   .:itLLLLLfffttfffffffffLffftfLftt1i11111111tfLLL1;,.                        
+                            .:itfLLCCLLLLLLLLLLCLfffffttt111fffLLLff1;:.                            
+                                 ,:;1tfLCCGCCGCCLLLLLLLLfffft11i;,.                                 
+                                       .,,:;ii111111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;;;;;;:::,..                                        
+                                 .,;itfffLLLLLLLLLLLLLCLLLLfft1i:,.                                 
+                            ..:itLLLLLffffttfffLLCCGGGGGGGGGGGGGCCfti;,.                            
+                         .,:i1ttt1t111ttfffLCCCLCLLLfLLCCCCGGGGGGGGGCLLf1;,    .                    
+                      .,;iiiiiiiiiiiiii11tfLCLLLfffftttff1;i1tfLCCGGGCLLLLf1;,.                     
+                   .,;i1tiiiii;;;;;;;;ii1ttfttLt1tfttfft11tttffffLLCCGGCLLLffft;,                   
+                 .::;i11iiii1iiiiiiii11ttt1t1111tti1tft111ttffffffffLCCGCLLLLLfLf1,                 
+               .,:::;11ii1111iiiiiii1111111ftiiiii1tt111tt111tttfffffLfLLLLLCCLfLCft;.              
+              ,::::i1111111ii;iiiiiiiiii11t1i1111i11i;1ttttfttfftfttttfffLLLffLfffLLf1:.            
+            .,:::;;ii11i11i::;;;i;;;i11i1111i111111111111fffftttttttttfffLLCCCLLftffftf1,           
+          .,,:::::i1i:::;;;:::;;:::;111111111111tft1111ii1ii11t1ffffttttffLG0GLLLLLfLffff;  .       
+         .,,,:;;:;;:,::::::::;i;:;iii111111i111fft111111111111ttftt1ttfft1tLLLLffLLLLffttft,        
+        .,,,:;;:::,,,,,,::,,;1iii111ttttft1111tt111iiii11tttt1ttt1tfffffttt1111tffffLLLft1tf,       
+      .,,,:::;;:,:,,,,,,,,,.,;i1t11111ttfft111t1111t11111111tfttftfffffftt11ii1i1fftffLLLt1tt,      
+      ,,:;;::;;,,,,,,:,,,,.,:;11ft111ii11ii111i1ii1ii111111t111tfffLLftt1ii11i11i1tfftfffftttt,     
+     ,,,,:iii;,.,,,,,,,,,,.,;;iiii11i;i1ii1iiii;;:;:;11;iii111ttffttt11ttt111i11111tfftttttttft,    
+    ,::,,;ii:,,.,.,,,,,,,.,:;;;;:;11ii11i1i:::::::::,,:;;iii1111tf11ttt111111111i11111ttf1t1ttft.   
+   .::::;;:::,,:,,,,,..,,.,:;:::,:;i1tfftti::::,,,,,,,.,,;ii1t11i11i;iiitft11111ii1i1i1ffffftttf1   
+  .;;::;;:,,:;:,:i::,,,.,...,,,,,,;iii1LL1i:,,,,,,,,,.:,,;1111i;iii;,::iii11ii111i11111tfLffffttf:  
+  :i::,.,,,,,;:,;:,...............:;iiittti::,,,,,,,.,i1i;i11i1i;;i;,,,,:,,;;i1111ii111tfLffffftt1  
+  ii::,,:,..,,:;;,.....,,..........,,:;i111ii;:::::;;i111iii11i111i;;;::::::;;ii1111111ifLLfffff1t, 
+ .i::,:;;::,::i;:,..............,.,;;:::;i1111iiii1i;iii::i;;i1111ii1;:;;;iiii;1111111111tLCfLffft; 
+ ,:,..;i;ii;iiii:,.,,.........,,.,,,:;;;,:;;11iiiii1iii,::;:i1111tt1i1ii;iii1iiii1t111tt11fCLLftff1 
+ :::,,:;;i1itti;;:,.......,,.,,,.,,:::::,,..::;iiii;ii;:i;iiiii11it1iii:::::iiii1tf11fLt11fCGLLfttt.
+ :;,:::,:i11tt1ii;:,..,..,,;i;,,,,::,,,,,,,,...,,:;:;;,:;iii;;;iiiii;::,,,,,;i111111ttft11fCGCffftt,
+ ,:::;;:;11111i11ii;;:,,,,:11iii;;:,,,,,,.,,...,,,::;::;;;;iiiiiiii;:,:,,,::;111iii11tft11ffCGCffff.
+ ,;;iiiii111i11111tt11;:,:iiiiiii;;:,,,,,,,,,,,::::::iiiiiiiiii11ii;:;:::;i;i1111111i11i111tLGGLfft.
+ .;:iii11i1111111ffti;::::i1iiiii;;::,,,,,,,,::::::;;;;;;i;iiiii1iii;::::iiiii1111ii111111i1CGLftt1.
+ .::,iiii11tt1111ttt1i;;::;i11tt11;;::,,,,,,::::;i1tt1i1iiiii11iii111i;i;i11t1i11ii111tt1111fCft1ti 
+  ,:,;iiiii1i111fttft1tti;i;;;ii1111;;::::,::::;;i111i11111ii111i11111111111t1111iii11t11ii1tttt11: 
+  .::,;iiiiiii11t111tLft11i;::::;i11ii;ii;;;;:::;;iiii1iiii1iiii11111i1t1111t111iii11i1ii1i11tt11i. 
+  .::::i1ii1111111i1tffLfi;:::::;i111iiiii1i;:::;ii;;;iii;iii111iii1i1tt1tttt11111i11t1ii11i1t11t:  
+   ,:,,i11111111111111tfLti;::::,:11;;iii;:;::;;;i;;;;iii;;;i11i1t11tfL11tttf1t1111111ii1t11t111i   
+    ::,:11i11ii1111111111t11i;;;;;;;ii;;ii::::1t111i;;iiiiiii11ittt111111111tttft11iiiiitftt;it1.   
+    .:,,;ii1111111111i11tff1iii111i;i1ii11iiii111111iiiiiiii1111ii1iii111i1111tftii;ii11t1111tt:    
+     .:,,;11f11ttt11i1i1fft111t111i1t111t11tt11111ttt11111iiii1i11111i1111111i1i;iiii1ii1111t1;     
+      .:::1tffttft1111ttt111ttt1111i1111tfffffffttfft11ttt1iii111fft1i11111i11i;:;1iii1ii111t:      
+       .;i1ffffft11111ft1ttt111ii1f111111tfLCCLLLLft1tfft1111i11i1t1t1iiiii111iiiiiii111111t:       
+        .iffLCffffttttf11ttt1111i11t1111ttfLCLfLGGfttft1111111t1iii;;ii::;iiiiiii1tt11ii11i.        
+          :tLCCLffffft111ii11111111111111ttffLffft11t111111i1t1iii;::;;;;:;;;;ii1tt111111;.         
+           .iLLLLLLfftttftttttt11ttt111tt1tfft11tt1111111111ii;;;;i;:::;;;;iiiii1t11i11i,           
+             :1LCLfffLftffttft1111tttffffffft1i1ii11i11iii1iii;;;;;;::;;i;;i;i1t111111;.            
+               :tLLLLLff11111t11tffftffLLLftt1iii11111111i;:;iiiiii;;:;iiiiiii11111i:.              
+                 :1LCCLLLfftttttttttfffffft11i1ttttt111iii:;ii;:;iiii;i1i1iii1t11i,.                
+                   ,ifLLLLfffttffffttffffttt111t1111ii1i:;;;ii;;ii111ii1i111111;,                   
+                      :1fLLLfftfffffttffftttfft11ttftt1tiii11iiiiiiii11tLLf1;:.                     
+                        .:itLLLLLfffffffffffffffLffftffLft1i11111111tffft;,.                        
+                            .:itfLLCCLLLLLLffLLLCLLffffftt111fffLLftt;:.                            
+                                .,:i1tfLCCGGGCGCCLLLLLLLLftft1ii;:.                                 
+                                       .,,:;ii1111111i;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;;;;;;:::,..                                        
+                                 .,;itfLLLLLLLLLLLLLLLLLLLLfft1i;,.                                 
+                            .,:itfCCLLLfffftffffLLLCGGGGGGGGGGGGGCLt1;,.                            
+                         .,:;1tttt11111ttffffLCCLCCLLLLLLCCGCGGGGGGGGCLf1;,    .                    
+                      .,;ii;;;iiiiiiiiiii11ffLCLLffffftttftii1ttfCCCGCCLLLLt;,.                     
+                   .,iii1tiiiiiii;;;;;;;i11ttfttLttffttfft11tttfLffLCCCGGCCLffti,                   
+                 .:;;;i111iii11iiiiiiii111tt1tt11i1t11fft11tttfffffffLLCCCLLLLCLf1:                 
+               .,::::;111ii1i11iiiiiii1111111ff1iiiii1t111ttt111tttffffffLLLLCCLLCLt;.              
+             .,:::::;11111111iii;iiiiiiiii1111ii111ii11;i1tttfttffffttttfffLLLfLLffLLt:             
+            .,::::;;;i11ii11i::;;;ii;;i1ii1111ii1t1111111111ffttttttttttfffLLCCLLLftfff1,           
+          .,,,:::;:;11;:::;i;:::;;::::i11111111111tff11111ii1i111ttffffttttfLG0GLLLLfffff;  .       
+         .,,,,,:;;:;i:,,::,:::::ii::iiiit1t11ii111fft11i1i1111111ttftttttffttfLLLffLLLfffft,        
+        .,,,,::;;:::,,,,,,::,,:iiiii111ttttft111ttt1i1ii1i11tttt1ttt1fffffttt1111ttfffLLLttt,       
+       ,,,,::::;;:,:,,,,,,:,,,,:;i1t1111tttfft111ti111t11111111ttttftffffftt111;1i1fftffLfttt:      
+      ,,,::;;::;;,,,,,,,:,,,,.,:i1tf1111ii11ii1i1iiii1ii1t1111t111tfffLfttt1ii1111i1tfttffLttt:     
+     ,,,,,:;iii;,.,.,,,,,,,,,,,;iiiii11i;iiiiiiiii;;:;:;i1;;ii111ttffttt11tt1111i1111tfftfttttf,    
+    ,:::,,:;ii:,,,,.,,,,,,,,,,:i;;;:;11ii1ii1i;:::::::,,,::;iii111ttt11ttt1111111111111tttttttff.   
+   .:::::;;;:::,,:,,,,,,..,,.,:;:::,:;i1ttffti;,:::,,,,,.,,,;1iit11111i;iiitft1i111iii111ffffttf1   
+  .;;;::;;:,,,:;:,,i;::,,..,...,,,,,,;iii1LLt1;,:,,,,,,,.,:,:i111i;;ii;:::iii1iii11i11111fLLffttf:  
+  ,i;;::,,,,,.,;:,::,,...............:;iii1tt1;:,,,,,,..,;1i;i1111i;;i;,,,,:,:;;i1111ii11tfffffff1  
+  ;1;::,.,:,...,:;;:......,,..........,,:;i1111i;::,:::;ii11iiii1i1111;;i::::::;ii11111111fLLfffft, 
+ .ii::,,;;;::,::ii;:.................,:;:::;ii1111iiiii;;ii;:;;;i11i1ii1;:;;;i1iii11111111tfCLffffi 
+ ,:,,,.,;;;ii;iiii;:..,,.........,,.,,,::;;:::;i11i1iiii;i:::;;;1i11tt111i;;iiiii;iitt11tt11LCLftf1.
+ ,;::,,,:;;iiitt1i;;:,......,,,,,,,.,,,::::,,..,:;iiii;i1;:;i;i1ii11it1ii;::::;iii11ft1tLt1tLGGLftt,
+ ,;:,:::,:;i11tt1iii:,,..,..,,:i;,,,,:::,,,,,,,...,,,:::;,:;;iii;;i;iii;::,,,,:ii111111tff11LCGLfff,
+ ,::::;;::;i1111i11iii;;:,,,,:11iii;;;,,,,,,.,,..,.,,::;::;;;;iii;ii1i;:::,,,::i11ii1i11ft11fLGCLff,
+ ,:::iiiiiii11i111111ft1i:,,:iiiiiiii;:,,,,,.,,,,,::::::;iiiiiiiiii11i;:;:::;i;i11i11111111i1fCGLft.
+ ,:;:;1i11111111111tLf1i;::::i1iii1i;;;:,,,,,,,,,:::::;;;;;;i;;iiiiiiii;:::;iiii11111i11i111ifGCft1.
+ .,::,;iiii11tf111i1tttii;;::;iii1t11i;:::,,,,,,:::;i1tt1ii1iiiii1iiii11i;;;i11t1111i111tt11itCftt; 
+  ,,:,:ii;iii1ii11tftfft1ftiii;;;ii1111i;;:::,,:::;;i1111i11iiii111i11111111111t1111iii11t11i1tt11: 
+  .:::,;iiiiii11111t11tfLft11i;::::;;11ii;;i;;:;:::;;iiii1iiii1iiii11111it1111tt1111111iii1i1i1t1i. 
+   :::::;iiii1i1111111ttffLfi;::::::it111iiiiiii:::;ii;;;;iii;ii1111ii111tt1tttti111i11t1ii111t1t:  
+   ,::,,;111111i111ii11i1tLLti;;:::,:11i;iii;:;::;;;ii;;;;ii;;;i11i1t11tLf1tttft11111111ii1t11tti.  
+    ::,,:i1ii11ii111111i1111tt1i;;;;;;;ii;;ii;:::itt111;;iiiiiii11ittt1111111i1ttft11iiii1ftti1t.   
+    .::,,:i1i1111111t11i1i1tff1iii1t1i;i1iii1iiii11111iiiiiii1i1111ii1iii11ii1111ft1i;i1111111f:    
+     .:,.,:iitti1ttt11i111fLft11tt111i1t111t11tt11111tttt1111ii111i1t1111111111111;;iii1ii111t:     
+      .::::ittffttft1i11ttt1111tft1111i111ttfffffffttfft111tt1iii1i1ftt1111111i1i;:;1ii1i1i1t:      
+       .;1i1Lffffft11111ft11tt111111tt111111tfLCCLLLLft1tfft11iii111ttttiiiii111iiiiiii11111:       
+         :ttfLCCffffttttft11tt11i11i1tt1111tffCLLLLGGfttft1111111t11i;;ii;:;iiiiii11tt1ii1i.        
+          :tfLLCLffftfft111i1111111111t11111ttffLffft11111111iitti1ii;::;;;:;;;;i1ttt1111;.         
+           .ifCLLLLLfft11tfttttttt1t1t1111tt1tff111tt1111111111ii;;;ii;::;;;;iiii1tt1i1i,           
+             ,1LLLLLLffLftffttft1111tttffffffft1i1ii11111iii1iiii;;;;:::;;i;;;ii1t1111:.            
+               :tLLLLLLLft1111tt11ttffttfLLLftt11ii111111111i;;iiiiii;;:;iiiiii111ti:,              
+                 :1LCCCLLLftttt1ttttttttfffftt111ttttt1111ii:;ii;:;iiii;11i1ii1t1i:.                
+                   ,ifLCLLLffftttfftfttffffttt111tt111ii1i:;;;ii;;i111iiii11111;,                   
+                      ,1fLLLffffffffffttfft1ttftt1ttftttttiii11ii1iiii1tfff1;,.                     
+                         ,itLCLLLfffffffffffffffffLffftfLLtti11111111tffti,.                        
+                            .:itfLCCLLLLLLLLLfLLLLCLffffftt111fffLftti:.                            
+                                 ,:i1tfCCCGGGGCCCCCLLLLLLfftt1ii;:..                                
+                                       .,,:;ii111111ii;;:,,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;;;;;;:::,..                                        
+                                 .,;itfLLLLLLLLLLLLLLLLLLLLfft1i;,.                                 
+                            .,:itfCCCLLLffffttffffLLCCGGGGGGGG00GCLf1;,.                            
+                         .,:i11ttt111t111tftffLLCCLCCLLLLLCCCCCGGGGGGGCf1;,    .                    
+                      .:;;ii;;iiiiiiiiiiiii11ffLCLLffffftttftii1ttLCCGGCLLLti,                      
+                   .,;11i1t1iiiiiii;;;;;;;i11ttfttft1ffttfft11tttfLffLCCCGCCLft;,                   
+                 ,:;;;;ii11iiii111iiiiiii111ttttt1111t11tft111tttffffffLCGCCLLLCf1:                 
+               .,::::::i1i1i11i11iiiiiiii111111tftiiiii1tt111tt111tttfffffLLLLLCLLCt;.              
+             .,,::::::ii1111111ii;;iiiiiii1ii11t1i1111i11ii1ttttfttffftttfffLLLffLfLLt:             
+            .,,,:::;;;ii11ii1ii;:;;;ii;;;i11i1111ii1t111111111tfftttttttttfffLLCCLLffff1,           
+          .,,,::::;;:;11;:::;;i;:::;;:::;i1111i11i111tff11111i1ii11t1tfffftttfLG0GLLLffffi  .       
+         .,,,,,,::;;:;i:,,::,:::::;i;:;iii1t1t11ii11tfft111i1111111ttttttttffttfLLLfLLLfff1,        
+        ,,,,,,,:;;;:::,,,,,,,::,,;iiiii111tt1tft1111tt11iii1i11tttttttttfffLftt1111ttffLLftt,       
+      .,,,,:::::;;;::::,,,,,::,,.,:i1111111tttfft111ti11tt11111111ftttttffffftt11i1i1ftffLLft:      
+      ,,,,::;;:::;;,,,,,,,:,,,,,.,:i1tft111ii11ii111i1ii11i111111t11tfffLLftttii1111i1tffffftt:     
+     ,,,,,,,:;iii;,...,,,:,,,,,,.:;i1iii11i;iiiiiiiii;;::::i1;;i1111tfffttt11tt111i1111tffttttf:    
+    ,:,:::,,:ii;:,,.,..,,,,,,,,,,:ii;;::11ii1iii1;::::::::,,,:;iiii11ttt11ttt111111111111ttf1ttf,   
+   .:::::::;i;:::,,::,,,,,,,.,,.,:;:::,::;i1tfft1;::::,,,,,,,,,:1i1t11111i;ii1tf11111ii111tffftt1   
+   :;::;::;;:,,,,;;,,:i:::.,..,...,,,,,.:iiiifLf1i:::,,,,,,,,:,:i111i;iii;:::ii11i111i11111fLLftf: .
+  ,;ii;::,,,:,,,,:;,:;:,,...............,;;iiittt;::,,,,,,.,:11i;1111i;;;;,,:::,:;;1111ii11tfffff1. 
+  :i1;;::,.,:,...,,:;;,......,,...........,:;;11111i;:,:::;;i11iiii1ii111;;i::::::;ii1111111LLffff, 
+ .:ii:::,,;;;::,::;ii:,.................,:;:::;ii11111ii11i;ii;:;;;i1111ii1;:;;iiii;i1111111tfCffL; 
+ ,;::,:..:i;;ii;;iiii;:..,,.........,,,.,,,::;:::;i111i1ii1ii;,::;;1i11tt1i1i;;ii1i;ii1t11tt1tCLff1 
+ ,;;:,:,,,::;i1i1t1i;;;,,.......,,,,,,.,,,:::::,,..::iiii;;1i:;i;i1iii1it1ii;::::;iii1ff1tLt1tLGLft.
+ ,:;:,:::,,:;i111ft1iii:,..,,..,,:i;:,,,:::,,,,,,,....,,:::i:,;;iii;;iiiii;::,,,,:ii11111tft1tCGCff,
+ ,::::::;;::i111111i11iii;::,,,,:11iiii;;:,,,,,,,,,.,.,,::;;:;i;;;iiiiiiii:::,,,::i11iii1tft1tfCCLf,
+ ,::;:;iiiiiii11ii11111tf11i:,::;iii;iii;:,,,,,,,,,,,,:::,:;iii;iiiiii1ii;::::;;i;i1ii11111i1i1CGLt.
+ .::;::i1i111i11111111tLf1i;::::i1iii1i;;;:,,,,,,,,,:::::;;;i;;;i;iiiiiiii;:::;ii1ii111111111i1CGf1.
+ .:,;;,:iiiii11tf11111ttt1i;;;::;i1i1f11i::::,,,,,,::::;1tftii1iiiii11iii11i;;;11t1i11ii11tt1i1LLti 
+  ,,,::,;1i;iiii1i111fftfft1tti;i;;;iii1111;;:,:,:::::;i11t1i11iii111111111111111t1111iii1111i1ttt: 
+  .,,:;,:;iiiiiiiii11t111tfftt11i;::::;;11iii;i;;:;:::;:;iiii1iiiiiiii11111it111111111ii1i1iii11t1. 
+   :;::,::;1iiii1111111i1tfffLti;::::::i111iii1iiii::::;i;:;;iii;ii1111i1i11tttttt1111i11t1i1111t:  
+   .;:::,,i1111t111111i11111tLf1i;;:::,:11i:iii;:;;:;i:ii;;;;iii;;i11i1t11tLf1tttf1111ii11iitt1t1.  
+    :;:,,,;11ii11iii111111i1111t11i;;;;;;;iii;ii;:::;tt111i;iiiiiii11ittt11111111tttf1iiiiitf1i1,   
+     :::,,,;1i111i1111t111111ttft1iii111i;i1iii11iii111111ii11ii1i1111i11i1111i1111ff1i;i11t11t:    
+      ::,,,,;1itti1tttt11i1i1ffft111t111i1t111t11tt11111tttt1i11iiiii111111111111111;;iiiii1it;     
+      .:::,:;1ttffttft11111ttt111ttft1111i111ttfffffffttfft11ttt1iii1itftti11111i1i;:i1ii1i1t:      
+       .;i1i1fLffffft11i11tft1ttt111111tt111111ffLCCLLLLft1tfft111i11i1ttt1iiiii11iiiiii1111:       
+         :1ttffLGLfLffttttft11ttt11111i1tt1111tffCLLLCGCfttft1111111t11i;;i;:;iiiiii1tt1i1i,        
+          ,1tfLLCCLffftfft11t111111111111111111tffffffft11111111i1t1iiii::;;;;;;;;i1tt111;.         
+           .;tfLLLLLLLfft1ttfttttttt1tttt1t11tttfft111tt111111111i1;:;ii;::;;;;iii11t11i,           
+             ,ifLLLLLLffLfttffttff1111ttttffffffft1iiii11i11iii1iiii;;;;::;ii;;;i1t111:             
+               :1fLLfLLLLLft11111t11ttffttffLLfttt1ii111111111i;;iiiiii;;;;iiiii1111:.              
+                 ,ifLCLCCLLLffttt1ttttfttttffftt11itt1tft111ii::ii;:iii1ii1iii11ti:.                
+                   .;tLCLLLLLfftttffffftfffffttt111tt111ii1i::;;ii;ii11iii111t1;,                   
+                      ,itLCLLfffftfffffttfffttttftt11tffttttiii1iii1iii1tfft;,.                     
+                    .    ,itLCCLLfffffffffffffffffffLfffffLft1i1111111ttti:.                        
+                            .:itfLCCLLLLLLLLffLfLLLCLfffffftt1tfLfft1i:.                            
+                                 .:i1tfLCCGGGGGCCCCLLLLLLfftt1i;:,..                                
+                                       .,,:;i111111iii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;;;;;;::,,..                                        
+                                 .,;itfLCCCCLLLLLLLLLLLLLLLfft1i;,.                                 
+                            .,:i1fLCGCLLffftfftffffLLCCGGGG00G00GGCf1;,.                            
+                         .,:i11111t111t111ttftffLLCCLCLLLLLCCCCCGGGGGGCL1;,                         
+                      .:;iiii;;;iii;iiiiiiiii11ffLCLLfffffttff1i1ttLCCGGGCLti,.                     
+                   .:;itii1t1iiiiiiii;;;;;;;i11tttttft1ffttfft11tttfLfLCCCGGCLt;,                   
+                 .:i;;;;;i1t1iiii11iiiiiiii1111tttt1111t11tft111tttffffffLGCCLLLL1:                 
+               .,:::::::i111ii11111iiiiii1i1111111ft1iiiii1f111tt111ttffffffLLLLCLLf;.              
+             .,,,,:::::;1i1111111iii;iiiiiiii11i1t1ii111ii11;i1tttfttffffttfffLLfffLLt:             
+           .,,,,:::::;;;ii111i1ii;::;;;ii;;i111i1111i1t111111111tfftftttttttfffLCCLffff1,           
+          .,,,,:::::;;:;i1;:::;;;;::::;::::;111111111111tft11111i1i111ttfttftttfCGGLfLLLfi          
+         .,,,,,,,,:;i::;i:,::::::::::ii;:;iii1t11t1i111tfft111111111111tft1ttffttLLLfLLLLL1,        
+        ,,,,,,,,::;;;:::,,,,,,,:::,,;1iii1111ttttft111ttt111i1ii1tttt1ttt1tftffttt11tttffLLt,       
+      .,,,,:::::::;;;::::,,,,,,:,,,.,:i11t1111tttfft111t1i1tt1111111tfttftffffftt11iii1ffffLf:      
+      ,,,,,:::;;:::;;:,,,,,,,:,,,,,.,:i1tft1111ii1ii111i1i111i1t111tt11tffffft1tii1111i1tftfff:     
+     ,,,,,,,,,:;iii;,...,,,,,,,,,,,.:;i1iii11iiiiiiiiiii;;::::i1;;ii111tfffttt1tt111i1111fftttf:    
+    ,:,:::::,,:iii::,.,,.,,:,,,,,,,,:;i;;:;1tii11ii1i:::::::,,,,::iii1111tt1ttt111111111111tt1tf,   
+   .::::::::;;;;::::,,:,,,,,,,.,,,.,:;:::,::;i1tfft1i::::,,,,,,,.,:ii1t1i111;;iitft1111i1111ffff1   
+   ,;;:;::::;;:,,,,:;:,,;i:::.,..,...,,,,,.:iiiitLf1i::,,,,,,,.,:,:i111i;iii;,:;ii11i111i111tffff: .
+  .;;ii;;::,.,,,,,.,;:,:;:,........,.......,:;iiittti;:,,,,,,,.:11i;1111i;;i;,,,:,::;1111i111fLfft. 
+  ,;it;;::,,.,:,,..,,:;;;,......,,...........,,:;itt11i;:::::;;i111iiiii111i;;;:::::;ii11111itCLfL: 
+ .::i1;::,,,;;;;::,::;i;:,.................,,;:::;;i1111iiii1i;i1;:;i;i11i1ii1;:;;i1iii1111111fCfLi 
+ ,:;::,,:..:i;;;i;;iiiii;,.,,,..........,,.,,,::;;,:;;i111111iiii,::;;1i11tt1i1i;iii1iii1t11t11LLLt.
+ ,::;:,,,.,,::;i1i1tt1i;;;,,.......,,,,,,,.,,:::::,,..,:;i;ii;i1;:i;i1iii1i11ii;::::iiiitf1tLt1LGLf.
+ ,::;;,:,::::::i111tf11ii;:,..,,..,,,i;:,,,,:::,:,,,,,...,,,::;;,:;iii;;iiiii;::,,,,;i11111tft1LGCf,
+ .::::::::i;;:;i111i1i111iii;;:,,,,:itiiii;;:,,,,,,,,,....,,::;::i;;iiiiiiiii:::,,::;11iii1tf11fCCf,
+ .::::::iiiiiiii111i1i1111tf11i;:,:;iiiiiii;;:,,,,,,,,,,,:::,:;iiiiiiiiii1ii;::::;;iii1i11111i11LGf,
+ .:::;;:;1ii111i111111111fLf1i;::::;iiii1i;;;::,,,,,,,,,:::::;;;;;;i;iiiiiiii;:::;ii1i111111111iLGt.
+  ::,:;:,:i1iii111tt11111ttt1ii;;::;i111tti1;;::,,,,,,,:::;i1tt1i1iiiii11ii111ii;i11t111ii11tt1ifLi 
+  ,:,,:;,:;ii;iiii1i1111ft1ftt1tti;1;;;;ii1111;;::,:,::::;;111ti111111i111111111111tt111ii11t1iitf: 
+  .,,,:;:,:;iiiiii111i11t111tfLft11ii;::::;111ii;ii;;:;:::;;iiiiiiii1iiii1111i1t1111t11iii1111i111. 
+  .,:;:::,::iii1i1i1111111i1tfffLfi;:::::;;1111ii1ii1i;:::;ii;;;iii;ii111iiii1tt1ttt1i111i11i111t:  
+   ,:;:::,,:ii111t111t11111111ttLL1i;;::::,it1:;1ii::;:;i;ii;;;;ii;;;i11i111tfLttttft1111111i1tt1.  
+    ,;::,,,:i11ii11iii1111111it11ttt1i;;;;;;;iii;ii;:::;1t111i;iiiiiii111tt1111111i1ttf11iii1f11,   
+     ,:::,,,:i1ii11i111111111111ttft1iii111i;i11ii111iii11111iii1iiii1111i11ii11ii111tfiiii111t:    
+      ,::,,,,:i1itt1itttt11i111tffft11tt111i1t111tt1tt11111ttt11111ii1ii11111i11111111;iiiiii1;     
+       ::::::;ittfffttft11i11ttt1t11ttf11111i1111tffffffftffft11tttii1i1ifft11111i11i;:iii1i1;      
+       .;;i1iitffffffftt1i111ff11tt1111111tt111111ffCCLLLLLft1ffft111i111ttt1iiii111iiiii1t1:       
+        .:;1tttfLCCfffftttttfft11ttt1111i1tt1t111tffCLLLCGCttfft111111t11i;;ii:;iiiiii1t11i,        
+          ,i1tffLLCLfffftfft1111111i1111111111111ttfffffff11t111111ittiiii;:;;;;;;;;1tt11;.         
+           .;1tfLLLLLLLLfft1ttftttttttttt1tt1t1tt1tfft11tt1111111111ii:;ii;::;i;;iii1t1i,           
+             ,itffLCLLLLffLftfffttff11111tttffffffft1iiii111111ii1iiii;;;;::;i;;ii1tt1:             
+               :1ffLLfLLLLLfft11111t11ttffftffLLfftt11ii11111111i;;iiiiii;;;;iiii111:.              
+                 ,itLLLCCCLLLfffttt1ttttfttffffftt1111t1ttt111ii::ii::iiii;iii111i:.                
+                   .;tLCLLfLLLffftttffftftfffffttt1111ttt1ii1i:;;;ii;;i1iii1111;,                   
+                      ,itLLLLLffffffffftfttfffttttftt11tftttt1ii11iiiiii1tfti:.                     
+                    .    ,;tLCCCLLfffffffffffffffffffLffffffLt1111111t1t1i:.                        
+                            .:itLCCCCLLLLLLLfffLLLLLCLLfffffttt1ffffti:,                            
+                                 .:i1tfLCCCGGGGGCCCCLLLLLLfft1i;:,..                                
+                                       .,,:;i1111111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;;;;;;;:::,..                                        
+                                 .,;itfLLCCCLLLLLLLLLLLLLLLfft1i;,.                                 
+                            .,:i1fLCCCCLfffftffttffffLLCCGG0G000GGCf1;,.                            
+                         .,:i111111111111111tfftffLLGCCCLLLLLCCCCGGG00GCt;,    .                    
+                      .,;iiii;;;;;i1iiiiiiiiii11tffLCLLfffftttffii1tfLCGGCLfi,                      
+                   .:;ii1i;i1tiiiiiiii;;;;;;;;i11ttfttft1ffttfft11ttfLffLCCGGCti,                   
+                 .;ii;;:;;i111iiiii11iiiiiiii1111tt1t1111t11tft111tttfffffLCCLCLLt:                 
+               ,::::::::,:ii1iiiiiii1iiiiiiiii111111tf1iiiii1t111tt111tttffffLLLLCLf;.              
+             .::,,,::::::;ii1111111iii;;iiiiiiiiii11t1i1111ii1ii1ttttftffftttfffLffLLf:             
+           .,:,.,,:::::;;;ii111i111i:::;;;i;;;i1111111ii1t111111111tftttttttttfffLCCfLf1,           
+          .,,.,,,:::::;;:;i1i;:::;;;;:::;;::::i111111111111tf1i111iiii11t1fffftttLC0CffLLi  .       
+         .,,,,,,,,,:::;::;i;,,,,,,::::::ii::;i;i1t11t1i111tfft11ii1111111tft11ttf1tLLLfLLLt.        
+        ,:,,,,,,,,::;;;::::,,,,,,,::,,,i1iii11111t1tf11111tt11iiiii1tttt1tt11fffftt111ttffLf,       
+      .,:,,,,::,:::::;;::,:,,,,,,,:,,,.,:i1111111tttftt1111i11111111111ttttttfffftt11i11ttfLf:      
+     .,,,,,,,:::;;:::;;:,,,,,,,,:,,,,,.,:i1tft111iii11i111iiii11i11111t111tfffLf1tii11111tttff:     
+     ,,,,,,,,,,,:;;iii:,....,,:,,..,,,,:;;iiii111i;iiiiiii1;;::::i1;;i11i1tffttt1tt111i111tfttf:    
+    .:::,:,,,,,,:iii;:,,.,..,,,,,,,,.,,:;;;;::itii11ii1i::::::,,:,,::iii1111t11ttt1111111i1ttttt,   
+   .,::::::::::;;;::::,,,:,,,,,,...,,,,:::,::,:;i1tfftti::::,,,,,,,.,:1i1t1111i;;i1ft111iiii1tfL1   
+   ,:;;:::::::;::,,,,,:;:,,;i::,.,......,,,,,.,;iii1LL1i;::,,,,,..,,,:i111i;iii:::ii1ii1111111fff:  
+  .:;;;i;;;::,.,,,,,..:;,,:::,.................:;;ii1tt1;:,,,,,...,i1i;1111i;;i:,,,:,:;ii11i11tfLt. 
+  ::;it1;;::,,.,:,,...,,::;;,......,,............,:;;111ii;::,:::;i111iiiii111i;;:::::;ii111111LLf: 
+ .;::;1;:::,,,:;;;::,,::i;;:,..................,:;:::;ii1111iii1i;;ii::i;ii1i1iii:;;;iiiii11111tLL1 
+ ,;:;;:,,,,..:;;;;ii;;iiiii:,..,...........,,.,,,:::;:::;i11111iii;i,::;;ii11tt1ii;;ii1i;i1t1tt1fCt.
+ ,::;;:,,:,.,,::;;iii1tt1i;;;,........,,,.,,,.,,,::::,,,.,:;iiii;i1;:;;i1ii11i1iii::::iiiitf1ff1fGL,
+ .:::;;:,,,,:,,,:;i111tt11ii;:,......,,,;i;,,,,:::,,,.,,,...,.,:::;,:;;ii;;;iiii:::,,,:ii1111ff1fCL,
+ .,:::::::::;;;:;i111111i111iii;::,,,,,;11iii;;;,,,,,,..,....,,::;::;;;iiiiiiii;,::,,::i1ii11tt1tLL,
+ .,:,,:;::iiiiiiiii111i111111tft11;:,,:iiiiii;;;:,,,,,,,,,,,::::::;ii;iiiiii1ii;::::;;;i1i11111i1LC,
+ .,::,:;:,;1ii111ii111111111fLf1i;::::;iiiiiii;;;:,,,,,,,,,,::::;:;;;;;;iiiiiiii:,::iiii11111111iCf 
+ .,;:,:;;,,:iiiiii111ft111i1ttt1i;;;::;;i111f11i::::,,,,,,:::;i1tt1i1iiiii1iiii1i;;;i11111iii1t1iL1 
+  ,,,,,,;:,:;ii;;iiii1ii111fttftt1tti;ii;;;ii1111i;;:,:,:::::;i11t1i11ii1i11i111111111t111iii11iit: 
+  ,,,,,,:;,,;:iiiiiii11i111t1111fLtt11ii;::::;i11ii;;i;;:;::::;ii;i1iiiiiiiiii11i11111111ii1iiii11. 
+  .:,,;:::,,::;iiiii1i11111i1i11tffLf1;:::::::1111iiiiiii;:::;ii;;;iii;;i111iiii1t1tttt1111111i11;  
+   ,:,;:::,,,:ii11111111111ii11111tLL1i;;::::,;11;;iii;:;::i;;i;;:;;i;;;i1i1t11tff111tt111111i1t1.  
+    .:::::,,,:i11ii1i1iii11i11111t11t11ti;;;;;;;iii;;ii:::;1t111i;iiiiiii111tt1i1111i1tttiiii1t1,   
+     ,::::,,,,:;11ii1iii1111t1ii1111tft1iii11ti;i11iii1iiii11111iiiiiiii111ii1i1i11i111ttiii11t:    
+     .,:::,,,,,:i1i1f1i1tttt111i11tfftt1111111iit111t11tt11111tt111111iii11111111111111i;iiii1:     
+       :;:;:,,:;itttfftttft11111ttt1111ttt11111i111ttfftffffttfft11tt1iii1i1ftti111111i:;1ii1:      
+       .;;:i1i;1tfftfffftt11i11tft11tt1111111tt111111tLCCLLLLfft1tft111i1111tttiiii11iiiii11:       
+        .;;:1tttfLLCCffffftttttft11ttt11i11i11tt1111tfLCLLLCGLttft1111111t1i;;ii::iiiii1t1i,        
+          ,i11ttfLCLCLfffftfft111t11i1111111111111111tfffffff1111111ii1t1iii;::;;:;;;itt1;.         
+           .;111fLLLLCCLLLfff1ttftttttttt1111t1111tt1tff111tt111111111ii:;ii;::;;;iii1ti,           
+             ,ittffLCLLLLfffLfttfftttft1111tttfffffffft1i11i11111iiiiii;;;;:::;i;;;1ti:             
+               ,itffLLffLLfLLLft111111111tfffttffLLftt11ii111111111;;;iiii;;:;iiii11:.              
+                 ,ittfLLCCCLLLLfffttt1tttttttftffftt11i1t11tt111ii::ii:;iiiii1i111:.                
+                   .:1fLLLLLfLLLffftttfffftttffffttt1111t111iiii:;:;i;;i1iii111;,                   
+                      ,;tfLLLLfffffftffffffttffft1ttftt11ttt1tti;i11;iiii1tti:.                     
+                         ,;1LLGCLfffffLfffffttffffffffffffffffft111111111i:.                        
+                            .:itLCCCCCLLLLLfffffLLLLLCLLfffffttt1fftti:,.                           
+                                 .:i1tfLLCCGGGGGGCCCCLLLLLLft1i;:,..                                
+                                       .,,:;ii111111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;;;;;;;:::,..                                        
+                                 .,:itfLCCCCCCLLLLLLLLLLLLLfft1i;,.                                 
+                            .,:i1fLLCCCLLLfffttfttffffLLCGGG00000GCL1;,.                            
+                         .,;ii11ii1111111t111ttftffLLCCCCLLLLLCCCGGG00GCfi,    .                    
+                      .,i1ii;i;;;;;iiiiiiiiiiiii11tffLCLLfffffttfti1ttLCGGCfi,                      
+                   .:i11i11;i1t1iiiiiiii;;;;;;;;i11tttttft1ffttff11tttfLfLCCGGfi,                   
+                 .;iii;:;;;;1111iiiii11iiiiiiii111tttttt111tt1tft11tttffffffCGCCLt:                 
+               ,;;::::::;::;i111iiii1i11iiiiii1i1111111L1iiiii1tt111t1i1ttfffffLLCCt;.              
+             .:;:,,,:::::::;ii11111111ii;;iiiiiiiiiii1t11i111ii1i;1tttfftfffttfffLLLLt:             
+           .,:,.,,,:::::;;;;ii111ii11i:::;;;ii;;;i11i1111i11111111111tffttttttttffLCCLL1,           
+          .:,,,,,,,:::::;;:;i1i;:::;;;;::::;;::::i11111111111tff1111ii1i11ttffffftfLGGLLLi  .       
+         .:,,,,,,,,,,:::;;:;ii,,::::::::::;i;;:iiii1t11t1i111fft11ii1111111tft1ttfftfLLfLLt,        
+        ,:,,,,,,,,,,::;;;::;:,,,,,,,,::,,:i1iii1111tt1tf11111tt11iiii11tt11ttt1fffftt11ttfLf:       
+      .,:,,,,,,::,:;::;;;;:,,:,,,,,,::,,.,,;i1111111tttftt1111ii111111111ttttttffffft1ii1ttfL;      
+     .,,,,,,,,,::;;;;:,:;;:,,,,,,,::,,,,,,,:i1tft111iii11i11iiiii11i11111t11tfffLftt1i111ittfL:     
+    .:,,,,:,,,,,,,:;;iii;:....,,,:,,,,,,,,:;;iiiii11i;iiiiiii1;;::::i1;ii11i1tfftt11t11111i1ftf:    
+    ,,:::,::,::,,,:;iii::,,.,..,,,,,,,,,,,:;i;;::itiii1ii1i::::::::,,::;iii111tt11tt111i11111ttt.   
+   .:,:::::::::::;;;;::::,,::,,,,,,,..,,,,,:;:::,:;i1ttftti:::::,,,,,,,,;1i111111;;iitt111iii1tf1   
+   ,,:;;;:;;;:::;;::,,,,:;;:,,;i:::.,,.,...,,,,,.,;iii1fLti;::,,,,,,,,:,:i111i;ii;,:;iiii11i1i1fL:  
+  .:,:i;ii;;;::,,,,,,,,,,;:,,;;:,,................,;;iiittt;::,,,,,..,i1i;111ii;;;,,,,,:;i11111tLt. 
+  ,:,;iiti;;:::,..::,,,..,,::;;,......,,............,,;;i111ii;:,:::;i111iii1i11i;;;:::::ii11111fL: 
+  ;;::;ii;:::,,,:;:i;::,,::ii;:,..................,:;:::;;i1111iii1i;;ii::;;i11i1i1;:;;iiii111111C1 
+ .;::;;:::,,:..,;i;;;ii;;iiiii::,.,............,..,,,::;:,:;;i11111ii;i:::;;ii11t1iii;;iiiii1t1t1Lf 
+ .::::;;:,,:,,,,::;;i1ii1tt1i;;;,,........,,,,,,..,,:::::,,..,:;i;iii1;:;;i1ii1i11ii;:::;iiifttf1fC,
+ .:::::;;:,:,,:::,::ii111tt11ii;:,...,...,,:i;:,,,,::,,,,,,,,...,,:::i,:;;ii;;iiii;::,,.:ii111tftfC,
+ .,,::::;:::::;i;::;i111111i111iii;;::,,,,:11iiii;;:,,,,,,.,,.,.,,:::::;;;;iiiiiii:,:,,::i1iii1f1tC,
+ .,,,:,::;::;1i1iiiiii111ii11111tft11i::,:iiiiiii;;;,,,,,,,,,,,::::::;ii;iiiiii1ii::::;i;i1i1111i1L,
+ .,,::,:;;::;1ii111iiii11111111fLfti;::::;i1iiiii;;;:,,,,,,.,,,::::;;;;;;i;iiiiiii;:::;ii1111111i1L.
+  ,,::.::;;,,:;iiiii111tft11111ttttii;;;:;;i1i1t111;:::,,,,,,::::;1tt1i11iiii1iii11i;;ii1111i11t111 
+  ,,,:,,,:;:,,;ii;;iiii1ii1111ft1fft1tt1;ii;;;;ii1111;;:,:::::::;i11t1i11i1i111i11111111t111ii11it: 
+  ,:.,,,,,:;,,;:;iiiiii1i11i11t111tfLtf111i;::::;;11ii;;i;;:;::::;ii;i1iii1iiii1111it111t111111i11. 
+  .;:,:i:::,,,:::iiiii1111111111i11fLfLf1i:::::::it111iiiiiii::::ii;;;i1i;ii111ii11tttttt111i11i1:  
+   ,;,:;:,::,,,:ii11i1t11i1111ii1111ttfLti;;::::,;11i:iii;:;::;;;ii;;;ii;;;i1i1t11tLt1ttt11111i11   
+    :.:;:;::,,,,i111ii111ii111i1111it11tttti;;;;i;;iii;;ii;::;it111i;iiiiii11itt11111111tf11ii1f,   
+    .,,::::,,,,,:;11ii11111111t111i111ttft1iii11t1;i11ii111iii11111iii1iii1111i11ii11i111f1ii1t:    
+     .,,::::,,,,,:i1i1ftiittttt1111iitffft111t111iit111tt1tt11i11ttt11111i11i11111i1111i1;iii1:     
+      .::;:;:,:,:;itttffftttf1111i1ttt1111ttf11i11i111ttfftfffftffft1ttt1iii1iftt1111111i;ii1:      
+       .;i:;i11ii1tfftffffftt11111fft11tt1111111tt111111fLCCLLLLff1tfft11ii111tttiiii11iiii1:       
+        .;i;:ittttfLLGCfffffttttttft11ttt11i1111ttt111ttfLCLLLCGLttft111111t1ii;i;:;iiii1ti,        
+          ,i1i11fffLCLCLffffftfft11t1111111111111t111111tfffffft1111111i1t1iii;::;;;;;itt;.         
+           .;1111ffLLLLCLLLLffftt1tftttttttt1t1tt1t1ttt1fft11tt111111111ii:;i;;::;;;i1ti,           
+             ,itttfffLCLLLLfffLffttftttff111i1tttffffffft1ii11i1i11iiiiii;;;;::;i;;i11:             
+               ,i1ttfLLLfLLLLLLfft11111t111ttffttffLLfftt1iii11111111;;;iiii;;;;ii1i;.              
+                 ,i1ttfLLCLCCLLLLfffttt1ttttttttffffft11i1t1ttt111ii:;i;:;iiii111i;.                
+                   .:1tLLLLLLLffLLfffttffffttffffffttt1111ttt1ii1i:;;ii;;i1i111;,                   
+                      ,;tfLLLLLffffffftffffffttfffttttftt1tfttttti;11ii1i1tti:.                     
+                         ,;1fCCGCLffffffffffffffffffffffffffftfft1111tt1ii;,                        
+                            .:itLCGGCCLLLLLffLfffLfLLLLCLfffffftt1tt1i:,.                           
+                                 .:;1tfLLCCGGGGGGGCCCCLLLLLft1i;:,..                                
+                                       .,,:;ii111111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;i;;;;;:::,..                                        
+                                 .,:i1fLCGGGCCCLLLLLLLLLLfffft1i;,.                                 
+                            .,:ittfLCCCCLLfffftffttffffLLCGG00000GCLti,.                            
+                         .:;i111ii11111111t1111ttftfLLLGCCCLLLLLCCGG00GCfi,                         
+                      .,;11i;;i;;;;iii1iiiiiiiiiiii1tffCLLLffffttffii1tLGGCfi:                      
+                    ,;i11i11;i11tiiiiiiiii;;;;;;;;ii1tttftft1ffttft11ttfLfLCGGLi,                   
+                 .:i1ii;:;;;;i11t11iiii11iiiiiiiii111tt1tt1111t1tft11tttfffffLGCLt;                 
+               .;i;::::::;:::;1i11iii11i11iiiiii1ii111111ftiiiiiitt11tt11tttffffLLCf;.              
+             .:i:,,,,::::::::;ii11111111iii;iiiiiiiiiii1111i1111i11;ittttftfffttfffLLt:             
+            ,;:,.,,,,::::::;;;iii11ii111i::;;;;ii;;i111i111ii1t11111i11tfftttttttfffLCLt,           
+          .::,,,,,,,::::::;;::;11i;:::;;;;::::;::::;i11111111111tft1111i1i11ttffffttLGGLLi  .       
+         .:,,,,,,,,,,,,:::;;::;i;,,,::,::::::;i;:;ii;i1t1t11111tfft11111111111ft1ttfttLLfCt,        
+        ,:,,,,,,,,,,,,::;;;;::::,,,,,,,,::,,:i1iii1111tt1tf1111ttt11iiii1ttttttt1fffft111tff:       
+      .,::,,,,,,,::,:;:::;;;;:,::,,,,,,,,,,..,:i1111111tttfft1111i11t111111ttttttfffft11ii1fL;      
+     .::,,,,,,,,,:,:;;;:::;;:,,,,,,,,::,,,,..,:i11ft1111ii11i11ii1i111i11111111tffLftt1i1111fL:     
+     ::,,:,:,:,,,,,,::;iiii;,....,,,:,,,,,,,,:;;iiiii11i;iiiiiiii;;:::;1i;ii111tfftt1tt1111i1ff:    
+    ,:,:::::::::::,,,;iii;::,,,,..,,,,,,,,,.,:;i;;::;t1ii1ii1i;:::::::,,::;iii111t11tt11i11111tt.   
+   .::,::::::::::::;;;;::::,,,::,,,,,,,..,,,,,:;:::,,:;i1tftti;::::,,,,,,,,;1i11i11i;iitt111ii1f1   
+   ,:,,;;;;;;;;::::;:::,,,,:;;:,,;i:::.,,.,....,,,,,.:iii1tLf1i::,,,,,,.,:,:i111;iii::;i1ii111i1L: .
+  .::,:i;;ii;;;::,,.,,,,,,,,;;,,:::,,................,;;iiittti::,,,,,..,i1ii111i;;;:,,,,:;i11i1ft  
+  .::,:ii1ti;;;::,,.,::,,...,,::;;,.......,............,,:;i111ii;:,:::;i111iii1i11i;;::::;i11111L: 
+  ,i;::;i1i;::::,,,;;;i:::,:::ii;:,..................,,;::::;i1111iii1i;;ii::;;i111iii:;;iiii111if1 
+ .:;:::;;:::,,:..,:ii;;;i;;;iiiii;:,.,,...........,,.,,,::;;::;;i11111ii;i::::;ii11t1ii;;i1iiit1ttf.
+ .,::::;;;:,,::,.,,::;;i1ii1tt1i;;;:,.....,..,,,,,,,.,,,::::,,..,:;i;iii1;:;;i1ii1i11ii:::;ii1f1ftL,
+ .,,::::;;;:,:,,:::::::ii111tf11iii::,...,..,,,i;:,,,,:::,,,,,,,...,,,;:;::;iii;;iiii;:,,.:ii111ftL:
+ .,.,,::::;:::::;i;;::;i111111ii11iiii:::,,.,:itiiii;;;,,,,,,.,,...,,:::;:;;;iiiii1i;::,,,:i11i1t1f:
+ .,.,:,:,::;::;1i11iiiii1111i1111111ft11i::,:;iiiiii;;;:,,,,,,,,,,,:::::;ii;iiiii11i;::::;ii11111if,
+ .,,,:::,::;:,:i1ii1111ii11t111111tLfti;:::::;1iiiii;;;::,,,,,,,,,::::;;;;;i;;iiiiiii;::;ii1111111t,
+ .,,,:;,,::;;,,:;iiiiii111tft111i11tttii;;;::;i1i1tti1;;:::,,,,,::::;1tf1i11iiii1ii11ii;i11111i1t1i 
+  ,,,,:,,,,:;:,,;i1iiii1ii11i1111Lt1fft1tt1i;i;;;;ii1111;;;:,:,::::;i11t1i11i1111111111111t111i111: 
+  ,::,,,,,,::;,,:;;iiiiiii111i111t111ttLftt11ii::::;;it1ii;ii;;;:::::;iii1iii1iii1111i11111111ii1i. 
+   ;;:,,;;::::,,:::iiiiii1i11111111i11tfffLti;::::::;t11iiiiiiii;:::ii;;;iii;i111iii11t1tt1111111:  
+   ,i::,:;::::,,,,iii11i1t11i11111i11111tfLtii;::::,:11i;i1i;:;;:;;;1i;;;ii;;i111111tLtttft111111.  
+    ;,.;;::;::,,:,i111ii1111ii11111111it1111tt1;;;;;;;;iii;ii;::;it111i;iiiiii111tt1111111tt1iit,   
+    .:,,:::::,,,,,:;i11111111111111111111ttff11ii11t1;i11iiii1iii11111ii1iiii111111ii11i11ttii1:    
+     ,;,,::::,,,,,,,;1i1tf1i1ttttt111111tffft111t111iit111tt1tf11111ttt1111ii1ii1t11111111iii1:     
+      ,;::;::;:,::;;itttfffttttt11i1i1ttt1111ttf11111i111ttffffffftffft1tttiii1itft111i11i;i1:      
+       ,i;i::;i1i;i1tfftffffftt111111fft11tt1111111tt111111fLCCLLLLft1tfft11i11itttiiii1iii1:       
+        .;ii::;tftttfLLGGffLffftttttfft11ttt1111ii1ttt111ttfLCLfLGCttftt1111111ii;i;:iiiit1,        
+          :i1ii11tffLCCCCLLfffftfff111t11111111111111111111fLfffLf11111111it1iii;:;;:;;iti.         
+           .;11111tfLLLLLCCLLLfffttttffttttttt11tttt111tt1tfft11tt11111111ii:;i;;:;;;i11,           
+             ,itt1tffLfCLLLLLLffLLfttffttfft1111tttfffffffft1i11ii111iiiiii;;;;::i;;i1:             
+               ,i1tttffLLLfLLLLLLfft111111111ttffftffLLLftt11ii11111111;;iiiii;:;i1i:.              
+                 ,;1tttfLLCCLCCLLLffffttt1tttttfttffffftt1i1t11tt111ii:;i;;iiii11i:.                
+                   .:ittfLfCLLLLfLLffffttffffftffffffttt1111ttt1ii1;:;;1i;i1111;,                   
+                      ,;tfffLLLLLfffffftfffffffttffftttftttttttttt1;i1ii111t1:.                     
+                         ,;1fLCCGGLffffffLffffffffffffffffLffftfff1111t1i;:.                        
+                            .:i1fCGGCCCLLfLLfffffffLfLLLCLLLffffft1t1i:,.                           
+                                 .:;1tLLLLCGGGGGGGGCCCLLLLLft1i;::,.                                
+                                       .,,:;iii1t111ii;;::,..                                       
+""")
+    rawFrames.addOne("""
+                                        ..,::;;;i;i;;;:::,..                                        
+                                 .,:i1fLCGGGGGCCLLLLLLLLLLffft1i;,.                                 
+                            .,;itffLLCCCCLLfffftffftffffLLCGG0000GCLti,.                            
+                         .:ii1111iiii1111111t111ttfttfLLCGCCLLLLLCCGGGGCfi,    .                    
+                      .,;111i;;;ii;;iiii1iiiiiiiiiii11tfLCLLLffftttf1i1tLGCL1:                      
+                    ,;i111iitiii11tiiiiiiiii;;;;;;;;ii1ttfftft1ffttft11ttLLLGGL1,                   
+                 .:i11ii;::;;;;i1111iiiii11iiiiiiiii11ttt1tt1111t1tft11ttfffffCGLt;.                
+               .:1i;:::::::;:::;1i11iiii1i11iiiiiii1i111111tf1iiiiitt111t11tttfffLLf;.              
+              ,ii:,,,,,::::::::;ii11i11111iii;;iiiiiiiiii111111111i11;i1ttfftffttffLLf:  .          
+            ,;;:,.,,,,::::::;;;;iii111iii1i;::;;;;i;;;i1111111i1t1i111111tfftttfttfffCGt,           
+          .,::,,,,,,,,::,:::;;::;i1i;:::;;;;;::::;::::i1111111i1111ff1111ii111ttfffftfCGLi  .       
+         .::,,,,,,,,,,,,,,::;;:::ii:,:::::::::::ii;:;iiiit11t11111tff111i1111111ft1ttftLLLf,        
+        ,::,,,,,,,,,,,,,,:;;;;::;:,,,,,,,,:::,,:i1iiii111tttft1111tt111iii1tttt1tt1ffftt11ff:       
+       ,:,::,,,,,,,::::;:::;;;;;:,:,,,,,,,:,,,..,:i1111111tttfft11t1i11t111111tttttfffft1iitf;      
+     .::,,,,,,,,,,,:::;;;;:::;;:,,,,,,,,::,,,,,.,:i11ft1111ii11i11ii1i11i11111t11tffLfttii1i1f:     
+     :;,,,:,,::,:,,,,,::;iiiii:,...,,,,::,.,,,,.,;;iiiii11i;iiiiiiii;;:::;1iii111tfftt11t111i1f:    
+    ,:,,,:::,::::,::,,,:;iii;::,,.,..,::,,,,,,,,,;ii;;:;11ii1ii1i;:::::::,,::;iii1ttt1tt1111111t.   
+   .,::,,::::::::::::;;;;;:::::,,::,,,,,,,..,,,,,:::::,::;i1tfft1;::::,,,,,.,,ii11111i;iitt111i11   
+   .,:,,:;;;;;;;;::::;;:::,,,,:;;:,,;i:::,,,......,,,,,.,iiiitLf1i:,,,,,,,,,:,;111i;ii::;ii1111if: .
+  .,,:,:;i;;ii;;;:::,,.,,,,,,.,;;,,:;::,.................:;;iittt1::,,,,,,.,i1;i111i;;;,::,:;11i1t. 
+  .,:;,,;ii1fi;;;:::,,.,::,,...,,:;;;:.......,,............,:;;111ii;:,:::;i11iiiii111;;;:::;i11it: 
+  .,i;:::;i1i;::::,,,:;;;i:::::::ii;;:,..................,:;:::;i1111iii11;;ii:;;;i111ii:;;iii11111 
+ .,,i;:::;;:::,,:,..,:i;;;;ii;iiiiii;:,.,,...........,,..,,::;;:::;i11111iiii::::i111tti1;;i1iit1tt.
+ .,,:::::;;;::,,:,.,,,:;;;i1ii1tf1ii;;:,........,,,.,,,.,,,:::::,,.,:;i;iii1;;i;i1ii111ii:::;iittft,
+ ..,:,::::;;;:,:,,::::,::;i1111tf11iii;:,...,..,,,;i;:,,,:::,,,,,,,...,,:;:;::;iii;iiii;::,.:1111tf:
+ .,.,,,:::::;::::::;;;::;ii111111i111iiii;::,,,,,;11iiii;;:,,,,:.,,..,,,:::;;;;;iiiiiii:::,:;11i1tt,
+ ..,,,:::,,::;:::i1i1iiiii1111ii1111111tft1i;::::iiiiiiii;:,,,,,,,,,,,:::::;ii;iiiii1ii:::;ii111111,
+ .,,,,,::,,:;;;::i11i111111111t1111111LLt1i;::::;i1iiiii;;;:,,,,,,,,,,:::::;;;i;;iiiiii;::;ii111111.
+ .,.,,,;;.,::;;,,::i1iiiii111tft111111ttt1ii;;;:;;i1i1t11i;:::,,,,,,:::;1tf1i1iiii11ii11;;i1111i1ti 
+  ,,,,,::,,,,:;;,,:;i1i;ii1ii11i1111ff1tftt1tti;i;;;;ii1111i;;:::,::::;i11t111111i1111111111t11i11: 
+  ,::,,,,,,:,::;:,:;:iiiiiiii111ii11t111ttLftt111i;::::;i11ii;ii;;:;:::;;iii1iii1iii111i1111111i1i. 
+  .:;;:,,,;;,::,:,:::;iiiiii1i11111111i11tfffLti;::::::;111iiiiiiii;:::ii;;;iiiii11iii11tttt11111:  
+   ,ii:::,;:::::,,,,;ii11111t11i111111i1111tfLf1i;:::::,i1i;;1i;:;::;;;i;;;;ii;;i1i111tLtttft111i.  
+    ;i..:;;:::::,,:,;1111ii1i11ii11111111i1t11ttt1;;;:i;;;iii;ii;::;1t111iiiiiii111tt111111tf1i1,   
+    .i:,,::::::,,,,,:;i11ii11i111111tt11ii11ttff11ii11t1;;11ii1i1iii11111ii1iii111111i11111tti1,    
+     ,i:.,:::::,,,,,,,:11i1ftii1ttttt1111i1tLfft111t111iit111tt1tt11111tt11111iiii111111111iii:     
+      ,i:,:;;:;;,,:::;;1ttfffftttft1111i1ttt1t11ttt11111i111ttfffffftffft11tt1iiiitft111i1i;1:      
+       ,1i:i;:;i11i;i1tffftLfffftt11i111fft11tt1111111ft11111tfLCCLLLLfttfft11i111tttii11iii:       
+        .;iii:::itttttfLLCGLfffffttttttftt1tttt1111111tttt11ttfLCLfCGLttft1111111i;ii:;ii11,        
+          :iiiiii11tfffLLLCLLfffffffft111111i1i1111111tt11111tfLfffft11111111t1iii:;;;;;1i.         
+           .;1111111ffLLLLLCLLLLLfff1tttftttttft1ttttt1111tt1fft11tt11111111ii:;i;:;;;ii:           
+             ,;1t111tfLLLCLLLLLLffLLftffftttff111i1tttffffffff1i11ii1111iiiii;;;::;iii:.            
+               ,i1111tffLLLffLLLLLLfft1111111t11ttffttffLLftt11i11111111i;;iiii;:;11:.              
+                 ,;1t11tffLLCCCCCLLLfffftttt1t1ttfttffffftt1i1tt1tt11ii;;;;;;iii1i:.                
+                   .:i1ttfLfLLLLLLfLLffffttffffttttffffttt1111t1t1iii;;;ii;i11i;,                   
+                     .,;1ffffLLLLLLfffffftffffffttffff1ttffttttttttti;iii111i:.                     
+                        .,;1fLLCCCGLffffffLffffffffffffffffLffffffftt1t1i;:.                        
+                            .:i1fCGGGCCCLLffLLffLffLLLLLLCLLLLffft111i:..                           
+                                 .:;1tfLLCCCGGGGGGGCCCCLLLLftt1;:,,.                                
+                                       .,,:;ii11t1111i;;::,,.                                       
+""")
+    rawFrames.addOne("""
+                                        ..,::;;ii;;;;;:::,..                                        
+                                 .,:i1fLCGGGGGCCCLLLLLLLLLLftt1i;,.                                 
+                            .,;itffLLCCCCCLLfffftttfttfffLLCG0000GCLti:.                            
+                         .:i111111iiii1111111tt111ttftffLLCCCCLLLLCCGGGCf1,    .                    
+                      .:;i11ii;;;ii;;;iiiiiiii;iiiiiii11ffLLLLLfffttfti1fLCL1:.                     
+                    .;1111iii11ii1ittiiiiii;ii;;;;;;;;ii1tttftf1tfftff11ttLLCCL1,                   
+                 .,;i1iii;;:;;;:;i1t111iiii111iiiiiiii11tttttt111111tftttttffffCCt:.  .             
+                :i1i;::::::::::::;1i11iiii11i11iiii;i1ii11111tf1iiiiitt11tt11tttfLLf;.              
+              ,;ii:,,,,,:::::::::;ii11i111111iii;;i11iiiiii1i111i111i11;i1ttftffttffLf:  .          
+            .:;;:,.,,,,,:::::::;;;;ii111iii11i:::;;;ii;;;i11i111ii1t1111111tftttttttfLCf,           
+          .,:::,,,,,,,,,::,:::;;;:;;i1i;:::;;;;::::;;::,:ii1111111111tf1111ii111ttffttfGGi. .       
+         .,:,,,,,,,,,,,,,,,,::;i;::;i;,,::::,::::::ii;:;iii1t11t11111fft11i1111111ftttftfLt,        
+        ,::::,,,,,,,,,,,,,,,:;;i;::::,,,,,,,,:::,,:i1ii11111tttft1111tt11iiii1tt1ttttffft1tt:       
+       ,:::::,,,,,,,,,::,:::::;;;;:,,:,,,:,,,::,,..,;i1111111tttft111t1i1t111111tttttffLf1iif;      
+      ,;::,,,,,,,,,,,:::;;;;::::;;:,,,,,,,,:,,,,,,.,:i11ft111iii11i11ii1i11i1111111tffLft1i11t:     
+     .;:,,,,:,,,,,,,,,,,,::;iiii;:,....,,,:,,,.,,,.,;;iiiii11i;iiiiiiii;;:::i1;ii1i1fftt1t11i1f:    
+    .,:,,,,:::,::,:,::,,,,:iii;:::,,,,..,,,,,,,,,,,,;ii;;::11ii111ii;:::::::,,:;iii11tt1tt11i111.   
+    ,,,:,,:::::,::::::,:;;;;;:::::,,::,,,,,,,...,,,,:;::::,:;i1tfft1;::::,,,,,,,:ii1111i;i1t11i1i   
+   .,,::,:;;;;:;:;;:::::;:;:,,,,,:;;:,,;i:::,.,..,...,,,,,.,;iii1LL1i::,,,,,,.,:,i11i;ii::iiii1it: .
+  .,,:::,:;i;;ii;;;;:::,,.,,,,,,,,:;:,:;:,,.................,;;ii1tt1::,,,,,,.:1i;111i;;;,,,:;1111. 
+  ..,:;:,:;ii1fi;;;:::,,..,::,....,,:::;:,......,,............,:;;1t1ii;:,:::;i11iii1111;;::::i1i1: 
+  ,.,ii::::;;1i;;::::,,,:;;;;:::,,::;ii::,.................,,:;:::;ii1111iiii;;i;:;;i11iii:;i1ii11i 
+ .,,,;i::::;;:::,,,:...,:i;;;;ii;;iiiiii:,..,,...........,,.,,,::;:::;i11111iii;:::;i11tt1i;i1ii1t1.
+ .,.,::,:::;;;::,,::,.,,,:;;;i1ii11t1ii;;;,,........,,,,,,,.,,:::::,,.,:;iii;i1;;;;1ii1i1ii:::iittt.
+ .,.,,,:::::;;;:,,:,,::,::::;ii111tft1iii;:,...,...,,:i;:,,,,:::,,,,,,...,,:::;::;ii;;iii;:,,,i11tt,
+ ....,,,,::::::;::::::;;;::;;i1i1111i1111iii;:::,,,,:i1iiiii;;,,,,,,,,...,,,:;;;;;;iiiiii:::,:i1i1t,
+ .,.,,,,,,,:,::;;::;iii1iiiiii1111i1111111tft11i::::iiiiiii;;;,,,,,,,,,,,:::::;ii;iiiii1i:::;;i1111.
+ .,..,,,,;:,,::;;:,:i11ii111i1i11t1111111fLf1i;:::::;iiiiiii;;:,,,,,,,,,:::::;;;;;;;iiiii;::;i1111i.
+ .,..,,,:;:,,,:;i:,,:;i1iiiii1111ft1111i1ttt1ii;;;::;i1i1tt11;:::,,,,,,:::;itf1i1iii11ii11;;i111i1i 
+ .:,,,,,,:,,,,,,:;:,,:;iii;;iiii1111111tf1tftt1tt1;ii;;;;ii1111;;::::,:::;i11t111i1i111111111t11i1, 
+  :::::,,,,,,,,::;;,,:;:iiiii1ii1111i11tt111tfLtf111i;::::;;11ii;;i;;;;::::ii;i1ii1iii111i111t1i1i. 
+  .;:;;:,,,:;;,::,:,,:::;iiiiii1i111111i1111tfLfLf1;:::::::111iiiiiiii;::;ii;;iii;i11iiii1tttt111:  
+   ,;ii:,:,:;::::,,,:,,;ii11i1t111i1111iii1111ttLL1i;;::::,i11;;1i;::::;;;i;;;;ii;i11111tftttt11i   
+    ;1;,.,;;::;;::,,,,,i111iii111iii111i1111i1t11ttt1i;;:;;;;iii;ii;:::1t11iiiiiiii111t111111f11,   
+    .ii,,.,::::::,:,,,,;;111ii11iii1111tt11i1111tff11ii11t1i;i1ii11iiii1111iiiiiii11i11i111itti,    
+     ,1i,,.,:::::,,,,,,,:i11i1f1ii1ftttt111ii1tffft111t111ii1111tt1tt11111tt1i11iiii11111111ii:     
+      ,1i:,:;;::;;,,:,:;;itttffffttttt1111i1ttttt11ttt11111i111tffffLfftffft1tt1iiiitft111iii:      
+       .1t;;;i:;;i11i;;1tfLftfffffft111i11tftt11tt1111i11tt11111tfLCLLLLft1tff11i1111t1iiiii:       
+        .i1iii;:;:1tftttfLfLGCffffffttttttftt1tttt1i11i11t1t111tfLCLfLGCftftt1111t1i;i;:i11,        
+          :1iiiiii11ttfffLLLCCLffffftfftt11111111i1111111t111111tLfffLf1111111i11ii;:;;;ii. .       
+           .;11111i11tffLLLLLCCLLLLffft1ttttttttttt1tt1tt1111t1tfft11tt11111111;;i;::;ii,           
+             ,i1111t1tffLfLCLLLLLLfffLfttfffttfft1111tttfffffffft1iiii1111iiiii;;::;ii:.            
+               ,i1111t1tffLLLffLLLLLLfft1111111t11ttffftffLLfft11ii1111111i;;iii;;ii:.              
+                 ,;11t11ttfLLCCLCCCLLLfffftttt1tt1tfttffffftt111t11tt11ii;;;;;i1ii:.                
+                   .:i111ttLfLCLLLLffLLffftttfffftfttffffttt1111tt1iii;:;;i;i11;:                   
+                     .,;1tfffffLLLLLffffffftfffftftttfff1ttfttttttttti;iii11;:.                     
+                        .,i1fLLLLLCGCLffffffLffffffffffffffffffffffftt11i:,.                        
+                            .:i1fLCCGGCCLLLffLLffLLfLLLLLCCCLLLfLft1ii:.                            
+                                 ,:;1tfLCCCCCGGGGGGGGCCCLLLLft1i:,,.                                
+                                       ..,::iii1t111ii;;::,,.                                       
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;iii;;;:::,..                                        
+                                 .,:i1fLCCGGGGGCCCLLLLLLLLffft1i;,.                                 
+                            .,;itfLLLLLLLCCLLfffffffffffffLLCG000GGLti:.                            
+                         .:i1tt1111iiiii1111111t111tttfffLLCGCCLLLLCCGGCf1:.   .                    
+                      .:;i111ii;;;iii;;;;iiiiiiiiiiiiiii1tffLLfLfffttft1tfLf1:.                     
+                    .;i11ii1iiiti;i11ttiiiiiiiii;;;;;;;;ii1ttfttf1tfttfti1tLLCL1,                   
+                 .,:i11i1ii;;:;;;:;i1t111iii;11iiiiiiiii11tttt1tt11t11tf1ttttffLCf:.                
+               .,;i1i;:::,:::::::::;1i11iiiii11111iiiii1ii11111tf1iiiiitt11t11ttfLLf;.              
+              ,:;ii;,,,,.,::::::::::ii111111111iii;;iiiiiiiiii11t11111i11;itttftfttfLf;  .          
+            .,:;;::,,,,,,,:::::::;;;;iii111ii11i;::;;;;ii;;i1111111i1t1111111tftfttttfLf:           
+          .,:::,,,,,,,,,,,:::,:::;;::;i11i::::;;;;::::;;:::;i1111111111tfti11ii111ttfttLG1  .       
+         .,:,,,,,,,,,,,,,,,,,,:::;i:::;i:,,,:,,:::::::ii;:;iii1t1111111tft111i11111tfttttLt,        
+        .:::,:,,,,,,,,,,,,,,,,::;;;;::;:,,,,,,,,:::,,;i1iii1111tttf1111tt111ii11tt1tt1tffttt:       
+       .:::,,:,,,,,,,,,,:,,:;:::::;;;:,,:,,,,,,,,:,,,.,;i1111111tttft11t1i11t11111ttttffLf1i1:      
+      .:;::,,,,,,,,,,,,::,:;;;;:,::i;:,,,,,,,,::,,,,,.,:i11ft111i1i11i11ii111i1t11111tffLt1i11:     
+     .:i:,,,,,:,,,,::,,:,,,:::;iiii;:,....,,,::,,,,,,.,:;iiiii11i;iiiiiiii;:::;1iii111fftt1t1it:    
+    .,:::,,,:::::,:,::,::,,,,;iii;;:,,,.,,.,,:,,,,,,,,,;ii;;::1tii11i1i:::::::,,::;ii11t11tt1i11.   
+    ,,,,:,,,:::::,:::::::,:;;i;;:::::,,::,,,,,,,,..,,.,:;::::,:;i1tfft1;::::,,,,,,,ii1111i;itti1i   
+   ..,,::,,:;;;;;;:;:;:::::;:;:,,,,,:;;:,,:i;::,.,,.,...,,,,,,,;ii11LL1i::,,,,,,,:,;111;ii::iii11: .
+  ...,,::,,:ii;;iii;;;:::,,,.,:,,,,.,:;:,:;::,,........,.......,;;ii1tt1::,,,,,.,i1;i11i;;:,,::i1i. 
+  ...,:;;:,:iiiitt;;;;:::,,..:::,,,..,,::;;;,.......,,...........,,;;1t1ii;::::;;111iiii11;;:::ii1, 
+ .,..,;ii::::;;i1i;:::::,,,:;;;i:::,,::;ii;::..................,,;;:::;i1111ii1i;ii;;;ii111i:;iii1; 
+ .,,,,:i;:::;;;::::,,:,...::i;;;;ii;;iiiiii;:,.,,...........,,.,,,::;;::;i11111iii;,::ii1ttii;iii11.
+ ....,:::::::;;;::,,,::,.,,,:;;;;11ii1tt1i;;;:,........,,,.,,,.,,:::::,,.,:;iiiii1:;;iii1i1ii::;itt.
+ ....,,,:,::::;;;;:,,:,,::::,:::iii111ft11i;i;:,..,,..,,,;i;,,,,:::,,,,,,,..,,::;;,;ii;;iii;:,,;11t,
+ .....,,,,,::::::;::::::;;i;;::;i1i11i111111iiii;::,,,,,;1iiiii;;,,,,:,.,,..,,::;:;;;iiiiii::,,;1it,
+ ,,,..,.,,,,::,:::;:::;1ii1iiiiiii111i11111111tt11i;:::;iiiiiii;;:,,,,,,,,,,:::::iiiiiii11i:::;ii11.
+ ,,,,..,,,::::,::;;;:,;11ii11111ii11t1111111tLft1i:::::;iiii1ii;;::,,,,,,,,::::;;;;ii;iiiii;:;i111i.
+ ,,....,,,:;:,,:::;;,.,:;i1iiiii1111ft1111i1tttt1i;;;::;i1i1tt11;;:::,,,,,:::;1ftii1iii1ii11i;1111i 
+ .:,,.,,.,,:,..,,,:;;,,,;iiii;iiiii11i1111tft1fftttt1i;i;;;;ii1111;;:,::,:::;i1t1i11i1111111111t11: 
+  :;:::;,,.,,,,:,,::;:,:;;;iiiiiiii1ii1i111t111ttLtft1ii;::::;;1tii;;i;;;;::;;iii1ii11iii11111t11i. 
+  .i::;i;:,,,:;;,::,::,,:::iiiiiii1i111111111111tfffL1i;::::::it11iiiii1i;::;i;;;ii;i11iii11tt1i1:  
+   :i;ii;:,,,:;::::::,,,,:iii11i11t1111111ii11111ttLLti;;::::,;11;;1i;;;::;;ii;;;ii;;i1111ff1tt1i.  
+    ii1;,,.:i:;:;;::,,,:,:i111ii11111iii11i1111i1t11tttti;;;;;;;iii;ii:::;tt11iiiiiii1itt11111f1.   
+    .11;,,,.:::,:::,:,,,,:;i11ii111i1i1111tt11ii111tfft1ii11t1i;i1ii111ii11111iiiiii11i11i1111t,    
+     ,11;,,.,::::::,,,,,,,::i111tf1i1tfttt1111ii1tfLft111t111iit111tt1tt1111tt1111iii11111111i,     
+      ,tt;:,::;;::;;,,:,:;;;1fttffff1ttft1111itttt1t11ttf111111111tffffLfftfft1tt1iii1ft11i1i,      
+       .1f1;;;i;:;;i11ii;i1tfLftLfffftt111111tfft11tt1111i11t111111fLCCLLLLf1tff11i111ttii1i,       
+        .;t1iiii::;;1tftttfLLLGGLfffLfttttttfftt1ttt11i11i11ttt111tfLCLLCGfttft111111;ii:ii,        
+          ,11;;iiiii111ffffLCLCCLfffffttftt11111111111111111t11111tfffffft111111111ii:;;;;.         
+           .;11i111i111tfffLLLLCCLLLLLfffttttfftttttt1ttttt11t1tttfft11tt1111111i;;i:;i;,           
+             ,;1i111t11tffLfLCLLLLLLfffLLftffftttff11111tttffffffft1ii1i1111iiii;;::;;:.            
+               ,i1i111t1tffLLLLffLLfLLLffft111111t11ttfffttfLLfftt1i11111111;i;ii;;;:.              
+                 ,;i11111tttLfLCCLCCLLLLfftffttt1tt1tfttffffftt111t1ttt11i;;;;ii1;:.                
+                   .;i1111ttfLfLCLLLLffLLffffttfffftftfffffttt1111tt1iii;;;iii1;,                   
+                     .,;1tfftfffLLLLLLffffffttffffffttffft1ttftttttttt1ii11i;:.                     
+                        .,ittfLLLLLCGCLLfffffffffffffffffffffffffffffft1i;,.                        
+                            .:;1fLLCGGGGCLLLffLLffLLfLfLLLCCLLLLfff1i;:.                            
+                                 ,:;itffCCCCCGGGGGGGGGCCCLLLft1i;,..                                
+                                       ..,:;;ii1tt111ii;::,...                                      
+""")
+    rawFrames.addOne("""
+                                        ..,:::;;ii;i;;:::,..                                        
+                                 .,:;1fLCCGGGGGGCCCLLLLLLfffft1i;,.                                 
+                            .,;1tfLLLLLLLLCCCLfffffttffttffLLCG00GGLti:.                            
+                         ,:i1ttt1i1iiiiii111t1t1tt111ttffffLLCCCLLLCCCGLfi:.   .                    
+                      .:i11i1iii;;;iiii;;i;iiiiiiiiiiiiiii1tfLLLLLftfttf1tff1:.                     
+                    .:i11iii1iii11iii11ttiiiiiiiii;;;;;;;;ii1ttftft1fftfti1fLLf1,                   
+                 .,::i11111i;;::;;;:ii1t111iiiii111iiiiiii111tttttt11111ft1tttfLLt;.  .             
+               .,:;i11;::::,:::::::::;ii111iiii11i11iiiii11i111111f1iiiiit11tt1ttfLf;.              
+              ,::;ii;,,,,,.,::::::::::;i1111111111iii;ii1iiii1ii11t11111111i1ttfffffLf;  .          
+            .,,:;;::,,,,,,,,,:::::::;;;;ii11t1ii11i;::;;;ii;;;i111111i1t1111111tftttttLf:           
+          .,,:::::,,,,,,,,,,:::::::;;;::;i1i;:::;;;;;::::;::::;i111111i111ft111ii111tfffL1. .       
+         .,,,::,,::,,,,,,,,,,,,,,:::;i::;ii:,,,:,:::::::;ii;:;iii1t1t1111tff111111111ttttLt,        
+        .::::::,,:,,,,,,,,,,,,,,,::;;;:::::,,,,,,,,:::,,;i1iii1111tttt1111tt11ii11ttttttfttt,       
+       .,::::,:::,,:,,,,,,::,,:;:::;;;;;:,:::,,,,,:::,,..,:i1111111t1tft11t111111111ttttfff11:      
+      .,;;:::,,,,,,,,,,,,,::::;;;;:,,;i;:,,,,,,,,,,,,,,,,,:;11ft111ii11i11ii1111it11111tfLf1i1:     
+     .,:i::,,,,,:,,:,,::,,,,,,:::;iiii;:,...,,,,::,,,,,,,,:;i1iii11i;iiiiiii;;:::1i;i111fft1111,    
+    ..,:,:,,,,:::::,::,:,::,,,,,;iiii;::,,.,,..,:,,,,,,,.,:;i;;::1tii11i1i:::::::,,:;ii11t1tt1i1.   
+   ..,,,,::,,,::::::::::::::,;;;i;;:::::,,,::,,,,,,,..,,,,,:::::,:;i1tffti;:::,,,,..,ii1111i;1t1;   
+   ...,,,::,,:;;;;;;;:;;::::::;;;::,,,,,:;:,,:i;:::.,,.,....,,,,,.:ii11Lf1i::,,,,,,,,:11i;i;:;ii1, .
+  ....,,,::,,:;i;;iii;;;;:::,,,.,:,,,,,.:;:,::;:,,................,;;ii1tt1::,,,,,,:1ii11i;;:,::ii  
+  ....,,:;:,,:;iiitfi;;;;:::,,..,::,,....,,::;;:.......,,............,:;it11i;:,::;i11iii11i;;::;1, 
+ .,,...:ii;::::;;i1i;;::::,,,,:;;;i;:::,:::ii;::,..................,:;::;;i111iii1i;i;:;;i1i1;;iii; 
+ .,,..,:;i;::::;;;:::,,,:,...,:i;;i;ii;;iiiiii;:,..,,..........,,.,,,::;;::;i11i1iiii:::;i1t11ii1i1 
+ ,.....,::,::::;;;;::,,:::,.,,,::;;;11ii1tt1ii;;:,........,,,,,,,.,,,::::,,.,:;iii;1;;;i1i111i;:;it,
+ ,.....,,,:,:::::;;;::,,:,:::::::::;ii111tt11iii;:,...,,.,,,:i;:,,,:::,,,,,,...,,::;::;ii;iii;:,:it,
+ ,......,,,,,,::::::;::::::;ii;;::;iii111111111iiii;:::,,,,:11iiii;;:,,,,,,,..,,,::::;;;iiiii::,:i1,
+ :..,..,..,,:,::,,::;;::;;1ii1iiiiiii111i11111111tft11;:,::iiiiiii;;:,,,,,,,,,,::::;ii;iiii1;::;i11.
+ ::.,,,.,,,,,:::,:::;;:::;11ii111111i11111111111LLf1i;:::::i1iiiii;;::,,,,,,,:::::;;;;;;iiiii::;i1i.
+ ,;..,..,,,,:;;,,,,:;i;,,,:;i1iiiii1111tf111111tttt1ii;;;:;i11i1t11i;:::,,,,:::;;tfti1iii1ii1i;i11; 
+ .i,,,,,:,.,,::,.,,,,:;:,,,;i1ii;iiiii11ii1111ff1tftt1tti;i;;;;ii1111;;;:::::::;i1t11111i111111111: 
+  ;1::::;:,,,,,,,,,,:::;,,:;;;iiiiiiii11i1i111t1111tLftt11ii;:::;;i1ii;;i;;;:::;;iii1i1iii1111111i. 
+  .i;::;;i::,,,:;i::::,::,::::i1iiiii11111t11111i11tfffLti;::::::it11iiiii1i:::;i;;iii;i1iii1tt11:  
+   :1;;;ii:,::,:;;:,::::,,,,:iii11i11t1111t111ii1t111tfLt1i;::::,;11;;11;:;::;;ii;;ii;;i111tfttti.  
+    i1i1i,,.,:i:;::;::,,,,:,:i1111ii1i1iii1111111111t111ttti;;;;;;;iii;ii:::;tt1iiiiiii11t1111tt.   
+    ,t1ii,,,..:::,::::,:,,,,:;i11i11111ii11111t11ii111ttft1ii1111i;i1iii1iii1111iiiii111i1111it:    
+     ,f11;:,,.,::::::,,,,,,,,:;i111tf1i11fttt1111i111ffft111t111iit111tt1t1111ttt111ii11111111,     
+      ,1t1i:,,::;;::;;:,::::;;ittttffff1tfft1111i1ftttt11ttt11i111111tfffffftfff11t1iii1f1i1i,      
+       .ittti;;;1::;;i11ii;i1tfffffLffffft11i111tftt1ttt111111tf111111fLCLLLLfttffti1111ti1i,       
+        .;1t1iiii;:;;;1tfttttfLfCGCLffLffttttttfft11tttt1i111itttt11tffLLLLGLttft11111iii;i.        
+          :11i;;iiiiii111tfffLCCLCCLffffftffft11t11111111111111111111tLffLft11111111ii::;:          
+           .i11ii1111i111tffLLLLLCLCLLLLffftttttfttttttt1tt1tt1t1ttttft11tt111111i;;i:;;,           
+             ,ii1iit1tt1ttffLfLCLLLLLLLffLLfttfLfttfft111itttffffffft1ii1i1111iiii;:;;:.            
+               ,i1ii111tt1tffLLLLfLLLLLLLffft111111t111ttffftfLLLftt1i1111111ii;iii;:.              
+                 ,ii1ii1tt1ttfLfLCCLCCCLLLLffffttttttttfttfffffftt11t1tt11ii;;;iii:.                
+                   .;1111111tfLffCLLLLLLfLLfffttttfffffttffffttt111tttiii;;;ii;;,                   
+                     .,;1ttfttfffLLCLLLfffffffftffffffttfffttttfttttttt1iiii;:.                     
+                        .,itfffLLfLLCGGLLffffffLfffffffffffffffffffffLf1i;,.                        
+                            .:;1fLLLCCGGGCLLLLfLLLffLLLLLfLCCCLLLffti;:.                            
+                                 .:i1ttfLCCCCGGGGGGGGGCCCCLfft1i;,..                                
+                                       ..,:;;i111t111ii;;:,,..                                      
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;iiii;:::,..                                        
+                                 .,:;1tLLCGGG0GGGCCCLLLLLffftt1i;:.                                 
+                            .,;1tfLLLLLLLLLLCCLLfffffffffffLLLCG0GCLti:.                            
+                         .:itfft11i1iiiiiii111tt11t1111ttfffLLCCCLLLCCCLti:.   .                    
+                      .:i111iiiiii;;iiii;;;iiiiiiiiiiiiiiii11tfLLLfffttffttt1:.                     
+                   .,:iiiiiii11iii11i;i11ttiiiiii;ii;;;;;;;;ii1ttftfttfttt11fLf1,                   
+                 .,:::;1111iii;;::;;;:ii1t111iiiii1i1iiiiii;111t1tttt1111tf11tfLLt;.  .             
+               .,::iii1;::::,,::::::::::iii11iiii11i11iiii;i1i111111ftiiii1t11t11fLt;.              
+              ,:::;iii:,,,,,,,::::::::::;ii111i11111iii;;iiiiiiiiiii11111111ii1ttftfft;  .          
+            .,,,:;i;::,,,,,,,,,:::::::;;;;iii111ii111i;::;;;ii;;i11i111ii11i11i11fttttft:           
+          .,,,:::::,,,,,,,,,,,::::::::;;;:;;iti;:::;;;;;::::;;::;ii11111i111ft111i111ttff1. .       
+         .,,,::::,,,:,,,,,,,,,,,:,,::::;;::;ii:,:::::::::,:;i;;;ii;1t11t1111fft1i11111tttft.        
+        .,,::::::,::,,,,,,,,,,,,,,:::;;;;:::::,,,,,,,,::,,,;i1ii1111tttft1111t11ii11tttttff1,       
+      ..,,::::,,::,,,,,,,,,,,::,::;:::;;;;;:,,::,,,,,,::,,..,;i111111tttff11t1i1t11111tttfff1:      
+      ,,,:;:::,,,,,,,,,,,,,,::::;;;;;:,:;i;:,,,,,,,,,,:,,,,.,:;11ft111ii11i11i1111i11111tfff11:     
+     ,.,:i;::,,,,,:,,:,,::,,,:,,,:::;iiii;:,....,,,::,,,,,,.,:;iiiii11i;iiiiiii;:::ii;i11tft111,    
+    ,,.,::,:,,,,:::::,::,:,,::,,,,,;iiii;::,,.,,..,:,,,,,,,,,:ii;;::1ti11ii1;::::::,,:;ii1tt1t1i.   
+   ...,,,,,::,,,::::::::::::::::;;;i;;:::::,,,::,,,,,,,..,,,,,:::::,:;i1tffti::::,,,,,,;i111i;1t;   
+   ....,,,:::,,:;;;;;;;;;;:;:::::;;;:,,,,,,:;;,,,;i:::,.,..,...,:,,,.:ii11Lf1;,,,,,,.,::i1i;i:;i1, .
+  .,....,,:::,,:;ii;;ii;;;;;::::,,.,:,,,,,.,;:,,:;::,........,,......,;;ii1tti::,,,,.,1ii11i;;,:;i. 
+  ,...,.,,:;;:,:;iii1tti;;;;::::,..,::,,,...,,:;;;:,......,,...........,,;;it1ii::::;;11iii11i;::i, 
+ .,,,...,:ii;:::::;;i1i;;:::::,,,:;;;i;:::,:::;ii;:,..................,;;:::i1111ii1i;ii:;ii11i:i1; 
+ ::,,...,:;i;:::;;;;::::,,,:,...,:ii;i;ii;;;iiiiii::..,,..........,,,,,,::;;::;i1i11iii:::i11t1ii1i.
+ ;:......::;::::::;;;:::,,::,,.,,,::;;;11ii1tt11i;;;,,.......,,,,,,,,,,,::::,,.,:iiiiii;;iii111;:;1.
+ ;,......,,::,::::::;;i::,,:,:::::::::;i1111tft1iiii:,,..,,.,,,,i;:,,,:::,,,,,,..,,,::::;ii;iii:,:1,
+ ;,........,,,,,::::::;;::::::;ii;;::;ii11111111111iiii;::,,,,:i1iiii;;:,,,,,,,.,.,::;:;;;iiii;:,:1,
+ ;:..,...,..,,,,:::,:::;;::;;1ii1iiiiiii1111i11111111ft11i::::;iiiiii;;:,,,,,,,,,,::::ii;iii11;:;i1,
+ ,i,.,,...,,,,,::::,::;;;:::;111i111111i111t1111111fLft1i:::::iiiii1i;;;:,,,,,,,,::::;;;i;iiii;:;ii.
+ ,1:......,,,,:;i:,,:,:;i;,,::;iiiiiii1111tft1111i1ttttii;;;::;i1i1t11i;::,,,,,:::;ifti1iii1i11;it; 
+ .1i,,,,,,,,,,,::,,.,,,::;::,:;iiiiiiiiiii1i11111tf1tfft1tt1;ii;;;iii111;;:,:,:::;i1t1i11ii111111t, 
+  ;t;:::::;:,,,,,,,,:,,::;;,,:;;:iiiiiiiii1i1i111tt111tfLtf11ii;::::;i11i;;i;;;:::;iii1ii1ii11111i. 
+  .11i:::;;i::,,.,:i;,:::,::,::::iiiiiii1ii111111i1i11tfLfLfi;::::::;t11iiiiii;::;i;;;ii;i1ii1ttt:  
+   :1i;;;ii;:,,,,,;;::,:::,,:,,:iii11i11t111it11iiiit111tfLf1i;::::,:11;;ii;:;:;;;i;;ii;;1111ftt1   
+    1tiii1:,,..:i;;;:;:::,,,,:,;11111ii1111iiii1i111111t11tttti;;;;;;;iii;ii:::1t11iiiiii11t111t,   
+    .ff11i;,,,.,:::,::::,::,,,,:;i111i1111ii1111tt111i111tfft1ii11t1i;i1iii1iii111iiiiii1i11111:    
+     ,Lf11i:,,,,,:::::::,,,,,,,,:;i111tf1i11ttttt1111111ffff111t111iit111tttt1111tt111iii11111:     
+      ,11tti;:,,:;;;:::;:,,::::;;1tt1fffff1ttft1111i1ftt1t11ttt111111111ffffLftfff1tt1iiift11,      
+       .i1ttti;;;;1::;;;11iii;11tffftffffffft11i111tftt11tt1111i1tt11111tLCCLLLfttft1i111tii,       
+        .;1111iiiii;:;;:itfftttfLLLCGCfffLfftttttttft11tttt111i11tttt11tfLCLLGLtttt1111i;i;,        
+       .  :11ii;;iiiiii1111tfffLCCLCCLfffffftfftt1111i11111111111111111tffffft11111111i;;:.         
+           .i1iiii1111ii1t1tffLLLLLCCCLLLLLfffttttttttttttt1t1tt1111tttff11tt111111i;;;;,           
+             ,iii1ii1t1t11ttffLLLCLfLLLLLfffLLftffLtttff111i1ttffffffff1iiiii11iiiii;;,.            
+               :i11ii1111t11fffLLLLfLLLLLLLLfft1111111t11ttffftffLLftt1i1111111i;ii;:.              
+                 :i11iii1ttttttfLfLCCLCCCLLLLfffftttttttttftttfffftt11t1tt11i;;;ii:.                
+                   ,;111ii1111tfffLCLLLLLffLLfffftttfffftttffffttt111tt1ii;;iii:,                   
+                     .,ittttfttffffLCLLLLffffffftfffffffttfffttttfttttft11ii;:.                     
+                        .:itLLffLfffLCCGCLfffffffLfffffftffffffffffffffti;,.                        
+                            .:i1fLLCLLCGGGCLLLLLfLLffLLLLLfLCCCCLffti;:.                            
+                                 ,:i1ttfLCCGCCCGGGGGGGGCCCLfff1i;,.                                 
+                                       ..,::iii11tt11ii;::,,..                                      
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;iii;;:::,,.                                        
+                                 .,:i1tLLCGGGGGGGGCCCLLLLLfftt1i;,.                                 
+                            .,;1tLLLLLLLfLLLLCCLLfffffftfffffLLCGGCLti:.                            
+                         .:itfftt11iiiiiiiii1111tt1tt111ttffffLLCCCCCCCLti,.   .                    
+                      .:i1t1iiiiiiii;;;iii;;;i;iiii;iiiiiiiii1tffLLffftffft1i:.                     
+                   .,:iiiiiiii11iiii11iii11t1iiiii;;ii;;;;;;;;ii1ttttt1fftt1tLfi,                   
+                 .,:;::;i111iii;;;::;;:;;i11t11iiiii1iiiiiiii;111t1tttt111tf11tfft:.                
+               .,:::;ii11;::::,,::::::::::;1i111iiii1i111iii;i1ii11111f1i1iitt11ttft;.              
+              ,::,,;;ii;:,,,,,.,:::::::::::ii1111111111i;i;ii1iiiiii1i111i11i1iitttfft;             
+            ,::,:::;i::,,,.,,,,,,::::::::;;;;iii111ii11i;::;;;ii;;;i11111i11111111ttttf1:           
+          .,,,,::::::,,,,,,,,,,,,:::::::::;::;;11i::::;;;;::::;;:::;1111111111ft11i1111ffi. .       
+         .,,,,,::,:,,,:,,,,,,,,,,,,,,,:::;i;::;ii,,,::::::::::;i;:;iii1t111111fft1111111tft.        
+        .,,,,:::::,,:,,,,,,,,,,,,,,,,::::;;;::;::,,,,,,,,:::,,;iiii11111ttf1111t11iii1t1ttft,       
+      .,,.,,::::,,::,,,,,,,,,:,:::,::::::;;;;;:,,:,,,,,,,:,,,,,,;i111111t1tft11ti111111ttttLf,      
+     .,,.,,;;:::,,,,,,,,,,,,,,,::::;;;;::,:;i;:,,,,,,,,,,,,,,,.,:;11ft111ii1ii1ii111i11111tff1,     
+     ,,.,,;i::,,,,,,:,,,:,,,:,,,,,,,:::;iiii;:,.,..,,,,:,,,,,,.,:;iiiii11i;iiiiii;:::iii111ft1t,    
+    .,...,:,::,,,,,:::::,:,,,,,:,,,,,,;iiii;::,,.,,...,,,,,,,,,.:;i;;::11i111ii::::::,::;ii1t1ti.   
+   .,...,,,,,:,,,,::::::,,::::::::,;;;;;;:::::,,,::,,,,,,,...,,,,:::::,:;i1tff1;:::,,,,,,;i111;1i   
+   ,.....,,,:::,,::;;;;;:;:;;:::::::;::;,,,,,,:;;:,,;i;::,.,......,,,,..:iiitLti:,,,,,.,,:11ii:;1:  
+  .,.....,,,:::,,,:;i;;;ii;;;;;:::,,,.,,,,,,,.,:;,,::::,................,:;;ittt;:,,,..,iii1i;;,,;. 
+ .:,......,,::::,,:;iii1tt;;;;;:::,,..,:::,....,,,:;;;,.......,,..........,,;;111i;::::;11iii1i;:;, 
+ ,;.,,....,:iii:,:::;;;i1i;;:::::,,,,;;;;;:::,,::;ii;::..................,:;::;i111iiii;ii:;i11i;i; 
+ ;;.,....,,:;i;:::::;;;::::,,,:,...,:;i;;;;ii;;iiiiii;:,.,,...........,..,,::;:::;i1i1iii:::i1t1iii.
+ ii.......,:,;:,::::;;;;:::,,,:,,.,,,::;;;i1ii11tt1i;;i:,........,,.,,,.,,,::::,,.:;iiiii:;iii11i:i,
+ i;........,,,,:::::::;;;;:,,::,,,::::,:::i11111ft1iiii;:,...,...,,;i:,,,:::,,,,,,..,,::;,;ii;ii:,i,
+ i;...........,,,,,:::::,;:::::::;;;;;::;;i1i11i111111iiii;::,,,,,;tiiii;;:,,,,,,,..,,::;;;;iiii:,i,
+ ;i,..,,...,...,,,:::,,:::;;:::;iii1iiiiiii1111i11111111tf111;:,,;iiiiii;;:,,,,,,,,,::::;iiiii1;::i,
+ :;;...,....,,,,,:::,,,::;;;::,;i1iii11111ii11t1111111tLft1i;::::;iiiiii;;::,,,,,,,,:::;;;;;iiii:;1.
+ ,1i:,..,...,,,,,:;;,,,,::;i:,,,:;iiiiiii11111ft111111tttt1i;;;::;iii1t11i;::,,,,,:::ittiiii11i1;ii 
+ .11;,,:,,.,,,,,,,:,.,,,,,::;:,,,;;i1i;;iiiii1iii1111ft1tft11t1;ii;;;;ii111;;:,:,:::;i11i1ii11111t: 
+  ;11i:;::::;:,,,,,,,,,,,,:,;;,,::;:iiiiiiiii1i1ii111t111ttLffti1i;::::;i11i;;i;;;:::;iiiiiiii1111. 
+  .i11i;:::;;;::,,,,:;i:,:::,:,,::::i1iiiiii1i111111i11i11fLfLf1i::::::;11iii1iii;::;;;;ii;i1i11t:  
+   :11ii;;iii;:,:,,,:;;:,,:::,,:,,:iii11ii1t111i1111iii11i1ttLf1i;::::,;11;;1i;;::;;i;:;i;i111tt1   
+    1f1iii1i,,...,;;:;::;:::,,,:,,;1111iiii111ii111i11111i11i11t11;;;;;;;ii;;i;::it11iiiii11t111,   
+    .tLt1iii:,,...:::::::::,:,,,,,:;i11ii1111ii11111t11ii111ttft1iii111ii1iiiiiii1111iiii111111:    
+     .fLt111i::,..,::;:::::,,,,,,,::ii1i1tf1i11ttttt111i1i1fLft111t111i1t11tt1t1111tt111ii1111:     
+      .1t1tt1;;:,,::;;:::;;,,::,::;;1tttfffft1ttft111ii1ttt1t11ttt1111i111tfffLfttft1tt1i1tt1:      
+       .it11tf1i;;;;1:,;;;i11ii;;1ttfLftfffffftt111111tft111t11111i1tt11111fLCLLLfttft1111ti,       
+        .;1ii111iiiii;:;;:itffttttffLLGGLfffLffttttttttt11tt11111i11ttt11ttfCLLGLttf1111ii;.        
+       .  :1t1i1i;;iiiiii11111ffffLLLLCCLfffffftfftt11t1i1111111111111111tfLffft1111i11i;,          
+           .it1ii1i11111ii1t1ttffLLLLLCLCLLLLfffttttttttttttt11t1tt111tttff11tt11111i;i:,           
+             ,11ii11i1t1111itttfLffCCLLLLLLLLffLfttfLf1tfft111itttfffffff1iii1i11iiii:,             
+               :111iiiii111t1tfffLLLCLfLLLfLLLffft111111t111tfffttfLLftt1i11111ii;i;,.              
+                 :i111iii1tt11tttfLfLCCLCCCLLLLfffftttt1t11tttttfffft11t11tt1i;;;;:.                
+                   ,;1t1iii1111tfLffLCLLLLLffLLfffftttffftttffffttt1111t1ii;;ii:,                   
+                     .,;1tttttt1tLffLLCLLLLffffffftfffffffttffftttttttttt1ii;:.                     
+                        .,itfCLfffffffCCCGLfffffffffffffffffffffffffffff1;,.                        
+                            .:i1fLLLLLLCGGGCLLLLffLLfLfLLLLLLCCCCLft1;:.                            
+                                 ,:i1tffLLCCGGCCGGGGGGGCCCCLffti;:..                                
+                                       ..,::;ii11ttt11i;::,,..                                      
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;iii;;:::,,.         .                              
+                                 .,;i1tfLCCGGGGGGGGCCLLLfffftt1i;:.                                 
+                            .,;itLLLLLLLffLLLLCCCfffffftfffffLLCCGCLti:.                            
+                         .:itfLftt11ii11iiiii1111tt11t111tttftffLGCCCCCLti,.   .                    
+                      .:1ttt1iiiiiiii;;;iiii;;;i;iiiiiiiiiiiiii1tfLLLfffLLt1;:.                     
+                   .,:iii;;iiiii111ii111ii111ttiiiiii;ii;;;;;;;;i1ttftf1tftttffi,                   
+                 .,:;;:::i1111iii;;;::;;:;ii11t11iiiii11iiiiiiii111tttttt111tttff1:.                
+               .,::::;ii11i:::::,,::::::::::;1i11iiiii1i111iii;i1ii11111f1i1i1t11ttt;.              
+             .,::::,:;iii;,,,,,,,,,::::::::::;ii111i111111ii;;iiiiii1iii1111111ii1tfft:  .          
+            ,,,:,,::;;;::,,,,,,,,,,::::::::;;;;iii111iii11i;:;;;;ii;;i1i111i11111111ttf1,           
+          .,,,,,,:::::,,,,,,,,,,,,,::::::::;:;:;;i11i:::;;;;;::::;:::;1i11111111ft11111tf;.         
+         .:,,,,,:::::,,::,,,,,,.,,,,,,,,,:::;i;::;i;,,:::::::::::ii;:iii1t111111ff1111111f1,        
+        ,,,.,,,::::::,,,,,,,,,,,,,,,,,,,:::;;;;::;::,,,,,,,,:::,:i1ii11111ttft111t11ii1ttttf,       
+       :,.,,,:::::,,:::,,,,,,,,,:,::,,:;;:::;;;;;:,::,,,,,,,::,,,,,;i11111tttft11ti11111tttff:      
+      ,,.,,,:;:::,,,,,,,.,,,,,,,,,::::;;;;;:::;i;:,,,,,,,,,:,,,,,.,:i1tf1111i11i1ii111i1111tff:     
+     :,,,,,:ii:::,,,,,::,,,,,:,:,,,,,,,::;;iiiii:,....,,,,:,,,,,,,,:;iiiii11;iiiiiii:::iii11fft,    
+    ,,,..,,:,,::,,,,,:::::,,::,:,,:,,,,,,;iiii;::,,.,,.,,,:,,,,,,..:;i;;:;11i1ii1;:::::,::ii1ttt.   
+   .,....,,,,,,:,,,,,:::::::::::::::::;;;;i;::::::,,::,,,,,,....,,,,:::::,:;i1ffti:::,,,,,:i11iii   
+  .:,......,,,:::,,::;;;;;;;;:;;;;:::::;;:;:,,,,,::;:,,:i;:::.,,.....,:,,,,;ii1fL1;,,,,,,,,;1ii:i,  
+  ,:.......,,,::::,,:;ii;;iiii;;;;::::,,,,,,,,,,..:;:,::::,,...............,;i;itt1:,,,..,1ii1i;,:. 
+ .;:,.......,,::::,,:;;iiitfti;;;;::::,..,:::,,....,,::;;:.......,,..........,:;i111i::::;11ii1i;:, 
+ ,1:.,,.....,:;ii;:::::;;i11i;;:::::,,,,:;:;i::::,:::iii::,.................,::::;i111ii1;ii:;i1i;; 
+ :1:,,..,..,,:;;i::::;:;;;::::,,,,:...,:;i;;i;ii;;iiiiii;:,..,,,........,,.,,,::;::;i1111ii::;i11ii.
+ ;t;,........:,::,:::::;;;;:::,,:::,.,,,:::;;;i1ii1tt1ii;;;,........,,,,,,,,,:::::,.,:iiii1;;iii1;;.
+ i1;.........,,::,:::::::;;;;:,,,:,,,::,::,::;i1111tft11ii;:,...,,.,,,;i;,,,:::,,,,,...,::;:;i;ii::,
+ i1;,.........,.,,,,,:::::::;::::::::;;;;:::;i11111111i111iii;:::,,,,;11iii;;:,,,,.,...,::;;;iiii::,
+ ;1;:...,....,...,,,,:::,,:::;;:::;i1ii1iiiiiii111ii1111111tft11;:,::iiiiii;;:,,,,,,,,::::;iiii1i:i,
+ ;;;;,..,,....,,,,,,:::,,,::;;;;:,;i1iii11111ii1i1t1111111fLt1i;::::;iiii1i;;;:,,,,,,,:::;;;;iiii:i.
+ ,iii:,...,...,,,,,:;i:,,,:::;i;,.:::ii1iiii11111tft1111i1ttt1ii;;;:;ii11t11i;::,,,,,::;1t11ii1i1i; 
+ .11ii:.:,,,.,,,.,,,,:,,,,,,,::;:,,,;;i1i;;;iiii11ii1111ft1tftt1tti;i;;;;ii111;;::::::;i1111ii11i1: 
+  ;1iti:;:,:::;:,,,.,,,,,:,,,::;;,,::;:;iiiiiiii1ii1i111t111ttLffti1i;::::;i11i;i;;;:::;ii1i1ii111. 
+  .1ii1ii::;;;;i:::,,.,:;i,::::::,,,:::;iiiiiii1i111111111i11tfffL1i::::::i111iiiii;::;i;;iii1i1t;  
+   :111ii;;;iii;;,:,:,:;;:,,::,::,:,,:iii111i1t111i1t111ii1t11ttLL1i;::::,iti;i1;;;:;;i;:;;;i11t1   
+    ift1i;ii1i:,...,;;:;;:;;::,,,,:,,;11111ii1111ii1i1i11111i11i11t1i;;;;;;;ii;ii::;tt1iiiii1111,   
+    .1fLt1iii;:,....:;::,::::,,:,,,,,;;i111ii1111i11111t11111i1ttft1iii1t1;i1iii1iii111iiii1i11:    
+     .1LLt111i;,,,,.,,:;::::::,,,,,,,,:ii1i1tf1i11ftttt1111111fLft111t111i1t11t1tt111t111ii111:     
+      ,1t111t1i;::,,::;;;:::;:,,::,::;;1tttfffft1tfft1111i1tttt111ttt1i111111ffffftfft1t1iit1:      
+       .i1111ttt1;;;;;i;,;;;i11iii;i1tffLftfffffftt111i11tft11tt111111tt11111tLCLLLfttt1ii11,       
+        .i11ii1t1iiiiii;::;:;1tfftttffLLCGCLfffLftttttttftt11tt1111i11ttt11ttfLLLGLtft1i1i;.        
+       .  :1111i1i;;;iiiiiii1111tfffLLCLCCCLLfffftffff1111111111111111111111fLffft111111i,          
+           .itt1ii1ii11111ii111ttffLLLLLCCCCLLLLfffttttttttttttt1tttt1t1tttff11t11111i;;.           
+             :1t1ii11ii1tt111itftfLLfLCLfLLLLLLffLLftffLt1tft11111ttfffffff1ii1i11iii;,             
+              .:1t1iiiiiii11tt1ttffLLLLLfLLLLLLLLfft111111tt1ttfffttfLLft11i1111iiii,.              
+                 :1t111iii11tt11tttLLLLCCLLCCLLLLfffftttttt11tttttfffft11t1tt1ii;;:.                
+                   ,;1tt1iii11111ffLffLCLLLLLffLLfffftttffftttfffftft111tt1iiii:,.                  
+                     .,;tfftttttttffffLCLLLLLfffffffffffffffttffttttftttft1i;,.                     
+                        .:itfLCLffffffLLCCGGLfffffLffLffffffffffffLffLft1;,.                        
+                            .:itfCCCLLLLLCGGGLLLLLfLLffLLLLLLLCCCCLf1i:.                            
+                                .,:i1tffLLLCGGGGCGGGGGGGCCCLfft1;:,.                                
+                                       ..,::;ii111tt11ii;::,..                                      
+""")
+    rawFrames.addOne("""
+                                        .,,::;;;;iiii;;::,,.         .                              
+                                 .,:i1tfLCCGGGGGG0GGCCLLLffftt1i;:.                                 
+                             ,;1fLCCLLLLLLfLLLLCCCLfffffffffffLLCCCLti:.                            
+                         .:itLLLft1111ii1iiiiii1111tt1tt111ttffffLCGCCCLti,.   .                    
+                      .:itft11iiii1iii;;;;iiii;;iiiiiiiiiiiiiiiii1tfLLfffff1;,.                     
+                   .,:;ii;;;iiiii111iiii11ii111ttiiiiiiiiiii;;;;;;i1ttfft1ffttti,                   
+                 .:;;;::::;1t11iiii;;;::;;;:ii11t111iiii11iiiiiii;i11ttttt111ttft1:.                
+               .,::::::i1111;:::::,,:::::::::::iii11iiiii1i111iiii1ii1111tfiiiit1tt1;.              
+             .,:::::,,;i;ii;,,,,,,,,,::::::::::;iii111111111iii;i1iiii11ii1111111i1tft:             
+           .,:,,:,:::;;;;::,,,,,,,,,,,::::::::;i;;iii111ii111i::;;;ii;;i11111i1t11111ff1,           
+          .,,,,,,,:::::::,,:,,,,,,,,,,:::,::::;:;:;;i1i;:::;;;;;:::;;:::i11111111tf11111ti. .       
+         ,:,,,,,,::::::,,::,,,,,,,,,,,,,,,,,:::;i:::;i;,,,:::::::::;i;:;iiit111111ft11i11f1,        
+       .,,,,,,,,::::::,,::,,,,,,,,,,,,,,,,,:::;;;;::;::,,,,,,,,::,,;i1ii11111ttt111t11iitttt,       
+       ::,,,,,::::::,,:::,,,,,,,,,,,,::,,:;::::;;;;;::::,,,,,,::,,,.,:i111111t1tf11ti1t111ttf:      
+     .::,,,,,,:i::::,,,,,,,,,,,,,,,,,::::;;;;;::,:i;:,,,,,,,,,:,,,,,.,;i1tt111ii1i1ii11i111ttf:     
+    .::,,,.,,:i;,::,,,,,,:,,,:,,:,:,,,,,,,:::;;iiii;:....,,,,:,,,,,,,,:;i1ii11i;iiiii;::;iii1tt,    
+    ::,,...,,:,,::,,,,,,:::,:,:::::,,::,,,,,:iiii;::,,,,,.,,,:,,,,,,.,:ii;::iti1111i:::::,:;i1t1.   
+   ,:,,...,,,,,,,:::,,,:::::::,,::::::::,:;;;i;;:::::,,,:,,,,,,,...,,,,:::::,:i1tff1;::,,,,,;11i;.  
+  .;,,......,,,,::::,,::;;;;;;;;;;;:;:::::;;:;:,,,,,,:;;,,:ii:::.,,.....,,,,.,;ii1Lti:,,,,,,:11;;,  
+  :;,........,,,::::,,,:;ii;;iiii;;;;;:::,,.,,,,,,,,.,;:,,:;:,,........,......,;ii1t1;,,,,.:1i1i:,  
+  i;:,.........,:;:::,,:;iiii1fti;;;;::::,,..,::,,....,,::;;:,......,,..........,;;1t1i::::i11i1i;. 
+ ,ti:,,,,,....,:;iii::::::;ii11i;;:::::,,,,:;;;i;:::,:::;ii;:,.................,;:::i111ii1;i;;i1i: 
+ ;ti;,,,.,,..,,::;i;::::;:;i;::::,,,,:,...::ii;i;iii;;iiiiii;:,.,,.........,,,,,,:;;::i1111ii::i11; 
+ ;11;,......,..,::;:::::::;;;;:::,,,::,..,,,::;;;i1ii11t11i;;;:,.......,,,,,,.,,::::,,.:;iiii;ii11;.
+ it1;,.........,,,:,:,::::::;;;i::,,:,,,:::::,::;ii111tft1iiii::,..,,..,,;i;,,,:::,,,,,..,:;::ii;i:.
+ ;11;,..........,.,,,,,,::::::,;;:::::::;;;;;::;i111111111111iiii;;:,,,,;11iii;;,,,,,,,..,:::;iiii:.
+ ;1ii;,..,,,...,,...,,:,:,:,,:::;;;::;i1ii1iiiiiii1111i11111111ft11i::,:iiiiii;;:,,,,,,,,:::iiiii;;.
+ ;t,;1,,..,,.,..,,,,,,,;::,,,::;;;;:,:i11iii11111i1i1t1111111tLfti;::::;iiii1i;;:,,,,,,,:::;;;;iii;.
+ ,1i11;,,...,....,,,,::;;:,,,,,:;i;,,,::ii1i;iii1111tft1i11i1ttfti;;;;:;i1i1t11;:::,,,,::;tti1iii1; 
+ .111ii;,,:,,,,.,,.,,,,::,,.,,,,::;;,,,:;i1i;i;iiii11iii111tfttftt1tti;i;;;;i111i;:::,:::i11111111: 
+  ;11i1t;:;::::::;,,,,,,:,,,:,,,:,;i:,,:;:;iiiiiiii11i1i111tt111tLftti1i;:::;i11ii;i;;:::iii1iii11. 
+  .11ii1i;;::::;;i;,:,,,.,:ii,:::::::,,::::iii1iii1i111111111i11tffff1i;::::;1111iiiii::;i;iii1it;  
+   :1i11iii;;;iii;;,:,,:,,;;:,,::::,,:,,:iii111i1tt1111ti1i1i1111ttLL1i;::::,iti;1i;;:;;i;;i;i1t1   
+    ittttiiiii1i:,,..,:i;:;::;;:::,,,:,,:i1111ii11i1iiii1111111i1t111tti;;;;;;i1;;i::;1t1iiii111,   
+    .1tfLtt1iii;,,,,..,;::::::::,,:,,,,,::i111ii1111i11111t11111i1ttft1ii111i;iiiiiiii111iii1i1,    
+     .11LLtt11ii;,:,,.,,::;::::::,,,,,,,::;i1i1tftii1ttttt1111111ffft11tt11iit11tttt111t111i11:     
+      ,111t11tt1i;::,,,:;;;:::;;:,,::::;;;1tt1fffft1ttft111iitftttt11tf11111111tfffftffttt11t:      
+       .i1i111tttti;;:;;ii,:;;;111iii;ittffLftffffffft111111tftt1tt1111i1tt1111tLCLLLftft111:       
+        .i1111i11t1iiiiii;::;:;itfft1ttfLLLCGCLffffffttttftftt11tt1111ii1t1t1ttfLLLCftt111i.        
+       .  :11i11ii1i;;;iiiiiii1111tffffLCCLCCLfffffftfftt11t1i111111111111111tfLfft111i11:          
+           ,it1t1ii111i11111ii111ttfffLLLLLCCCLLLLLffftttttttttttt1ttttt11tttft11t1111i;.           
+             ,it11i;111i11ttt1ti1ttffLfLCCfLLCLLLLffLfttfLfttfft1111ttfffffft1ii1i1ii;,             
+               :it1i1i1iiii111111ttffLLLLCLLLLLLLLffLft111111t11ttffttfLLft1111111ii:.              
+                 :itt111iii111tt11tttfLfLCCLLCCLLLLfffffttt1tt1ttttffffft1111t1i;;:.                
+                   ,;1ttt1iii11111tffLffLCLLLLLLfLLffffttftfffttffffftt111t1iii:.                   
+                     .,;tffft11tttttLftfLCLLLLLffffffftfffffftttfftttfttffti;,.                     
+                        .,;tfLCLLffffffLfCGCGCffffffffffffffftfffffLffft1i,.                        
+                            .:itfLCCLLLLLLCGGGCLLLLffLLffLLLLLLCCCLf1i:.                            
+                                .,:;1tffLLLCCGGGGGGGGGGGGCCLLfti;:..                                
+                                       ..,::;ii111tt11ii;::,..                                      
+""")
+
+    /**
+      *
+      */
+    private def prepFrames(): Seq[CPImage] =
+        if rawFrames.isEmpty then
+            E(s"No video frames found.")
+        // NOTE: just in case we remove '\r' from the images...
+        val frameStrs = rawFrames.map(_.replace("\r", "").split('\n').filter(_.nonEmpty))
+        val frameLines = frameStrs.head.length
+        if frameStrs.exists(_.length != frameLines) then
+            E(s"Uneven number of lines per frame.")
+        val maxLen = frameStrs.flatten.max.length
+        frameStrs.map(strArr =>
+            val padded = strArr.map(_.padTo(maxLen, ' ')).toSeq
+            CPArrayImage(padded, (ch, _, _) => {
+                ch match
+                    case ' ' => XRAY
+                    case ch => ch&C_WHITE
+            })
+        ).toSeq
+
+    private val frames = prepFrames()
+
+    override val getFrameCount: Int = frames.size
+    override val getFrameDim: CPDim = frames.head.getDim
+    /** @inheritdoc */ override def getFrame(idx: Int): CPImage = frames(idx)
+
+/**
+  * Previews image using the built-in video viewer.
+  */
+@main def previewMoonVideo(): Unit =
+    CPVideo.previewVideo(CPMoonVideo)
+    sys.exit(0)
+
+
+

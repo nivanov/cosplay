@@ -1,0 +1,120 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.cosplay
+
+import scala.annotation.targetName
+
+/*
+   _________            ______________
+   __  ____/_______________  __ \__  /_____ _____  __
+   _  /    _  __ \_  ___/_  /_/ /_  /_  __ `/_  / / /
+   / /___  / /_/ /(__  )_  ____/_  / / /_/ /_  /_/ /
+   \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
+                                            /____/
+
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
+*/
+
+/**
+  * 2D dimension container.
+  *
+  * @param width Width in characters.
+  * @param height Height in characters.
+  */
+final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width, height) with Ordered[CPDim]:
+    override protected def ctor(ints: Seq[Int]): CPDim =
+        assert(ints.sizeIs == arity)
+        CPDim(ints.head, ints(1))
+
+    override def compare(that: CPDim): Int = area.compareTo(that.area)
+
+    /**
+      * Creates `d`x`d` square dimension.
+      *
+      * @param d Square dimension.
+      */
+    def this(d: Int) = this(d, d)
+
+    /**
+      * Tests whether this dimension is less than the given one.
+      * Note that this operation will check that both width and height are less than.
+      *
+      * @param that Other dimension to check.
+      */
+    @targetName("lessThan")
+    infix def <@(that: CPDim): Boolean = width < that.width && height < that.height
+
+    /**
+      * Tests whether this dimension is less than or equal to the given one.
+      * Note that this operation will check that both width and height are less than or equal.
+      *
+      * @param that Other dimension to check.
+      */
+    @targetName("lessThanOrEqual")
+    infix def <=@(that: CPDim): Boolean = width <= that.width && height <= that.height
+
+    /**
+      * Tests whether this dimension is greater than the given one.
+      * Note that this operation will check that both width and height are greater than.
+      *
+      * @param that Other dimension to check.
+      */
+    @targetName("greaterThan")
+    infix def >@(that: CPDim): Boolean = width > that.width && height > that.height
+
+    /**
+      * Tests whether this dimension is less than or greater to the given one.
+      * Note that this operation will check that both width and height are greater than or equal.
+      *
+      * @param that Other dimension to check.
+      */
+    @targetName("greaterThanOrEqual")
+    infix def >=@(that: CPDim): Boolean = width >= that.width && height >= that.height
+
+    /**
+      * Area in square characters for this dimension.
+      */
+    final val area: Int = width * height
+
+    /**
+      * Whether width or height equals to zero.
+      */
+    final val isEmpty: Boolean = area == 0
+
+    /**
+      * Whether width and height are greater than zero.
+      */
+    final val nonEmpty: Boolean = area > 0
+
+    override def toString: String = s"[w=$width,h=$height]"
+
+/**
+  * Companion object with static utility functions.
+  */
+object CPDim:
+    /**
+      * Zero dimension.
+      */
+    final val ZERO = new CPDim(0)
+
+    given Conversion[CPInt2, CPDim] = d => CPDim(d.i1, d.i2)
+    given Conversion[CPDim, CPInt2] = d => CPInt2(d.width, d.height)
+    given Conversion[CPDim, (Int, Int)] = t => t.width -> t.height
+    given Conversion[(Int, Int), CPDim] = t => CPDim(t._1, t._2)

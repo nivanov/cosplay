@@ -1,0 +1,86 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.cosplay
+
+/*
+   _________            ______________
+   __  ____/_______________  __ \__  /_____ _____  __
+   _  /    _  __ \_  ___/_  /_/ /_  /_  __ `/_  / / /
+   / /___  / /_/ /(__  )_  ____/_  / / /_/ /_  /_/ /
+   \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
+                                            /____/
+
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
+*/
+
+/**
+  * Insets container as 4-int tuple.
+  *
+  * @param top Top inset.
+  * @param left Left inset.
+  * @param bottom Bottom inset.
+  * @param right Right inset.
+  */
+final case class CPInsets(top: Int, left: Int, bottom: Int, right: Int) extends CPIntTuple[CPInsets](top, left, bottom, right):
+    override protected def ctor(ints: Seq[Int]): CPInsets =
+        assert(ints.sizeIs == arity)
+        CPInsets(ints.head, ints(1), ints(2), ints(3))
+
+    /**
+      * Creates new insets container.
+      *
+      * @param hor Left and right inset.
+      * @param vert Top and bottom inset.
+      */
+    def this(hor: Int, vert: Int) = this(vert, hor, vert, hor)
+
+    /**
+      * Creates new insets container.
+      *
+      * @param d Top, left, bottom and right inset.
+      */
+    def this(d: Int) = this(d, d, d, d)
+
+    /**
+      * Total horizontal offset (left + right).
+      */
+    val horOffset: Int = left + right
+
+    /**
+      * Total vertical offset (top + bottom).
+      */
+    val verOffset: Int = top + bottom
+
+/**
+  * Companion object with utility functions.
+  */
+object CPInsets:
+    /**
+      * Insets of one.
+      */
+    final val ONE = new CPInsets(1)
+
+    /**
+      * Zero insets.
+      */
+    final val ZERO = new CPInsets(0)
+
+    given Conversion[CPInt4, CPInsets] = d => CPInsets(d.i1, d.i2, d.i3, d.i4)
+    given Conversion[CPInsets, CPInt4] = d => CPInt4(d.top, d.right, d.bottom, d.left)
