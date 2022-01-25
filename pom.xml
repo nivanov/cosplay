@@ -22,20 +22,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>CosPlay Parent</name>
-    <groupId>org.cosplay</groupId>
+    <groupId>org.cosplayengine</groupId>
     <artifactId>cosplay-parent</artifactId>
     <version>0.1.0</version>
     <packaging>pom</packaging>
-    <description>An open-source 2D ASCII game engine for Scala3.</description>
+    <description>An open-source 2D ASCII game engine for Scala3</description>
     <url>https://github.com/nivanov/cosplay</url>
 
     <developers>
         <developer>
             <id>nivanov</id>
             <name>Nikita Ivanov</name>
-            <email>nivanov@apache.org</email>
-            <organization>apache</organization>
-            <organizationUrl>https://apache.org</organizationUrl>
             <roles>
                 <role>architect</role>
             </roles>
@@ -54,6 +51,17 @@
     <modules>
         <module>modules/cosplay</module>
     </modules>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -93,6 +101,10 @@
         <flatlaf.ver>1.6.1</flatlaf.ver>
         <ikonli.ver>12.2.0</ikonli.ver>
         <miglayout.ver>11.0</miglayout.ver>
+        <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
+        <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
+
+        <gpg.keyname>0xB56A1A29</gpg.keyname>
 
         <!-- JAR with all dependencies. -->
         <cosplay.all.deps.jar>${project.artifactId}-${project.version}-all-deps.jar</cosplay.all.deps.jar>
@@ -235,6 +247,37 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven.gpg.plugin.ver}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <keyname>${gpg.keyname}</keyname>
+                            <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${sonatype.staging.ver}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
