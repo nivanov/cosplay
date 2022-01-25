@@ -7,7 +7,7 @@
         \____/  \____//____/ /_/     /_/  \__,_/ _\__, /  
                                                  /____/
 
-             🕹 2D ASCII GAME ENGINE FOR SCALA3
+             🕹 2D ASCII Game Engine for Scala3
 
 
 
