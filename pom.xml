@@ -63,7 +63,7 @@
         <!-- Major Java/Scala version. -->
         <scala.major.ver>3</scala.major.ver>
         <scala3.ver>${scala.major.ver}.1.0</scala3.ver>
-        <scala2.ver>2.13.6</scala2.ver>
+        <scala2.ver>2.13.8</scala2.ver>
         <java.ver>11</java.ver>
 
         <maven.build.timestamp.format>yyyy-MM-dd-HH-mm</maven.build.timestamp.format>
@@ -71,7 +71,7 @@
 
         <!-- Versions. -->
         <scala.plugin.ver>4.5.3</scala.plugin.ver>
-        <log4j.ver>2.16.0</log4j.ver>
+        <log4j.ver>2.17.1</log4j.ver>
         <scala.logging.ver>3.9.4</scala.logging.ver>
         <scalatest.ver>3.2.9</scalatest.ver>
         <scala.par.colections>1.0.3</scala.par.colections>
