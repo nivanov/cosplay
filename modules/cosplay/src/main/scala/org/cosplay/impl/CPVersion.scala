@@ -53,7 +53,8 @@ object CPVersion:
     // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
     // +=================================================+
     private final val VERSIONS = Seq(
-        Version("0.1.0", LocalDate.of(2021, 9, 1)),
+        Version("0.1.0", LocalDate.of(2022, 1, 25)),
+        Version("0.1.1", LocalDate.of(2022, 2, 25)),
     ).sortBy(_.semver)
     // +=================================================+
     // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
