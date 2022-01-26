@@ -171,7 +171,7 @@ object CPShaderExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Some(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

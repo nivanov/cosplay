@@ -570,7 +570,7 @@ object CPGuiLog:
                 val s = logSearchOffs.filter(_ < curPos)
                 if s.isEmpty then None else Option(s.max)
             posOpt match
-                case Option(pos) =>
+                case Some(pos) =>
                     activeLogSearchOff = pos
                     logPanel.setCaretPosition(pos)
                     searchLog()
@@ -783,7 +783,7 @@ object CPGuiLog:
                     // Add timestamp.
                     var attrs = mkAttrs(C_WHITE)
                     val tstamp = DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now())
-                    doc.insertString(doc.getLength, s"${"%1$s8".formatted(tstamp)} ", attrs)
+                    doc.insertString(doc.getLength, s"${tstamp.format("%1$s8")} ", attrs)
 
                     // Add level marker.
                     val (lvlStr, fg) = lvlColors(lvl)

@@ -71,7 +71,7 @@ object CPArtPolylineApp:
                     )
                     ctx.getCanvas.drawArtPolyline(pts, 0, _.px.withFg(C_WHITE), CPCanvas.ArtLineStyle.ART_SMOOTH)
 
-            CPEngine.startGame(new CPScene("scene", Some(dim), bgPx,
+            CPEngine.startGame(new CPScene("scene", Option(dim), bgPx,
                 spr,
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // ¯\_(ツ)_/¯
             ))

@@ -89,7 +89,7 @@ object CPSoundExample:
                         case None => ()
 
             val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
-            val sc = new CPScene("scene", Some(dim), bgPx,
+            val sc = new CPScene("scene", Option(dim), bgPx,
                 panel,
                 lbl,
                 ctrl,

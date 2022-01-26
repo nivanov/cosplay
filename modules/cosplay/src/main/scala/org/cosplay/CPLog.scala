@@ -57,7 +57,7 @@ enum CPLogLevel:
   * Underneath the implementation is using Log4j2 library. You can supply your own `log4j2.xml` file on the
   * classpath of your game. The default Log4j2 configuration is the following:
   * {{{
-  * <Configuration status="TRACE" strict="true">
+  * <Configuration status="INFO" strict="true">
   *     <Appenders>
   *         <RollingFile
   *             name="file"
