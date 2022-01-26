@@ -117,6 +117,11 @@ final class CPCache(delayedQ: mutable.ArrayBuffer[() => Unit]):
     def clear(): Unit = delayedQ += (() => map.clear())
 
     /**
+      *
+      */
+    private[cosplay] def reset(): Unit = map.clear()
+
+    /**
       * Retains only those mappings for which the predicate `f` returns `true`.
       *
       * Note that all mutating operations will be queued up and executed at the end of the current

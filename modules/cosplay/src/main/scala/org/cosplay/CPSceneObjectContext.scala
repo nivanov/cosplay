@@ -157,7 +157,7 @@ trait CPSceneObjectContext extends CPBaseContext:
     /**
       * Deletes given scene. Note that you can't delete current scene.
       *
-      * @param id ID of the scene to detele. Cannot be the current scene.
+      * @param id ID of the scene to delete. Cannot be the current scene.
       */
     def deleteScene(id: String): Unit
 

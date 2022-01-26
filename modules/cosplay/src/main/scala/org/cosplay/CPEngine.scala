@@ -106,7 +106,7 @@ object CPEngine:
     private val FRAME_MILLIS = 1_000 / FPS
     private val FPS_LIST_SIZE = 500
     private val FPS_1PCT_LIST_SIZE = FPS_LIST_SIZE / 100
-    private val scCont = CPContainer[CPScene]()
+    private val scenes = CPContainer[CPScene]()
     private var term: CPTerminal = _
     private var pause = false
     private var frameCnt = 0L // Overall game fame count.
@@ -432,23 +432,23 @@ object CPEngine:
       * Starts the game.
       *
       * @param startSceneId ID of the scene to start with.
-      * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
+      * @param scs Set of scene comprising the game. Note that scenes can be dynamically
       *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
       */
-    def startGame(startSceneId: String, scenes: CPScene*): Unit =
+    def startGame(startSceneId: String, scs: CPScene*): Unit =
         checkState()
-        scenes.foreach(scCont.add)
+        scs.foreach(scenes.add)
         engLog.info("Game started.")
-        gameLoop(scCont.grab(startSceneId))
+        gameLoop(scenes.grab(startSceneId))
 
     /**
       * Starts the game.
       *
       * @param startSceneId ID of the scene to start with.
-      * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
+      * @param scs Set of scene comprising the game. Note that scenes can be dynamically
       *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
       */
-    def startGame(startSceneId: String, scenes: List[CPScene]): Unit = startGame(startSceneId, scenes:_*)
+    def startGame(startSceneId: String, scs: List[CPScene]): Unit = startGame(startSceneId, scs:_*)
 
     /**
       * Starts the game. Games start with the first scene in the list.
@@ -657,9 +657,6 @@ object CPEngine:
                 val frameNs = System.nanoTime()
                 val frameMs = frameNs / 1_000_000
 
-                // Clear delayed operations.
-                delayedQ.clear()
-
                 def waitForWakeup(): Unit =
                     while (pause)
                         try pauseMux.wait()
@@ -795,18 +792,21 @@ object CPEngine:
                         myLog = scLog.getLog(myId)
 
                     def doSwitchScene(id: String, delCur: Boolean): Unit =
+                        val cloId = id
+                        val cloDelCur = delCur
+
                         delayedQ += (() => {
-                            if delCur then
-                                scCont.remove(id) match
+                            if cloDelCur then
+                                scenes.remove(cloId) match
                                     case Some(s) => lifecycleStop(s)
                                     case _ => ()
                             else
                                 sc.onDeactivate()
                                 sc.objects.values.foreach(_.onDeactivate())
-                            sc = scCont.grab(id)
+                            sc = scenes.grab(cloId)
                             scLog = engLog.getLog(s"scene:${sc.getId}")
                             scr = null
-                            sceneCache.clear() // NOTE: frame cache is cleared on each frame automatically.
+                            sceneCache.reset()
                             msgQ.clear()
                             lastKbEvt = None
                             camRect = null
@@ -866,7 +866,7 @@ object CPEngine:
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
                     override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
                     override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit = 
-                        delayedQ += (() => scCont.add(newSc))
+                        delayedQ += (() => scenes.add(newSc))
                         if switchTo then doSwitchScene(newSc.getId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
@@ -874,7 +874,7 @@ object CPEngine:
                         else
                             val colId = id
                             delayedQ += (() => {
-                                scCont.remove(colId) match
+                                scenes.remove(colId) match
                                     case Some(s) => lifecycleStop(s)
                                     case _ => ()
                             })
@@ -970,7 +970,9 @@ object CPEngine:
                 val startSysNs = System.nanoTime()
 
                 // Perform all delayed operations for the next frame.
-                delayedQ.foreach(_())
+                for (f <- delayedQ if !stopFrame) f()
+                // Clear delayed operations.
+                delayedQ.clear()
 
                 // Rendering...
                 if !stopFrame then
@@ -1043,7 +1045,7 @@ object CPEngine:
             end while
         finally
             // Stop all the scenes and their scene objects.
-            for (sc <- scCont.values)
+            for (sc <- scenes.values)
                 // Stop scene object first.
                 sc.objects.values.foreach(lifecycleStop)
                 // Stop the scene itself.
