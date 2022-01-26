@@ -17,7 +17,7 @@
   limitations under the License.
 -->
 
-<Configuration starus="TRACE" strict="true">
+<Configuration status="TRACE" strict="true">
     <Appenders>
         <RollingFile
             name="file"

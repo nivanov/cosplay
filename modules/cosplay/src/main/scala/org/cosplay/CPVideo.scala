@@ -136,21 +136,16 @@ object CPVideo:
             CPGameInfo(
                 name = s"Video Preview (${vid.getFrameCount} ${vidDim.width}x${vidDim.height} frames)",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(scDim)
+                initDim = Option(scDim)
             ),
             emuTerm = emuTerm
         )
         spr = new CPVideoSprite("spr", vid, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
         try
-            CPEngine.rootLog().info(s"Video preview [" +
-                s"origin=${vid.getOrigin}, " +
-                s"frameCount=${vid.getFrameCount}, " +
-                s"frameDim=${vid.getFrameDim}, " +
-                s"class=${vid.getClass.getName}" +
-            s"]")
+            CPEngine.rootLog().info(s"Video preview [origin=${vid.getOrigin}, frameCount=${vid.getFrameCount}, frameDim=${vid.getFrameDim}, class=${vid.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(scDim),
+                Option(scDim),
                 bg,
                 spr, // Video we are previewing.
                 makeKbCtrl(),

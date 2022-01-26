@@ -216,7 +216,7 @@ object CPCameraExample:
         objs ++= palmSeq
 
         // Create the scene.
-        val sc = new CPScene("scene", Some(dim), bgPx, objs):
+        val sc = new CPScene("scene", Option(dim), bgPx, objs):
             // Setup camera panning for 'ufo' scene object.
             override val getCamera: CPCamera = CPCamera("ufo", new CPInsets(10, 0))
 
@@ -225,7 +225,7 @@ object CPCameraExample:
             CPGameInfo(
                 name = "Camera Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(initDim),
+                initDim = Option(initDim),
             ),
             System.console() == null || args.contains("emuterm")
         )
@@ -235,7 +235,7 @@ object CPCameraExample:
             CPEngine.startGame(
                 new CPLogoScene(
                     id = "logo",
-                    Some(initDim),
+                    Option(initDim),
                     bgPx,
                     Seq(C_ORANGE1, C_SKY_BLUE1, C_CYAN1, C_DARK_ORANGE3, C_GREEN_YELLOW),
                     nextSc = "scene"

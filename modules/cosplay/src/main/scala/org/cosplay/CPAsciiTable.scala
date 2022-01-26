@@ -298,7 +298,7 @@ class CPAsciiTable:
                 var curr = 0
                 val len = line.length
 
-                def addLine(s: String): Unit = buf += (if (buf.isEmpty) s else space(leader) + s)
+                def addLine(s: String): Unit = buf += (if (buf.isEmpty) s else s"${space(leader)}$s")
 
                 while (curr < len)
                     if curr - start > maxWidth then
@@ -399,9 +399,9 @@ class CPAsciiTable:
     private def aligned(txt: String, width: Int, sty: Style): String =
         val d = width - txt.length
         sty.align match
-            case "center" => space(d / 2) + txt + space(d / 2 + d % 2)
-            case "left" => space(sty.leftPad) + txt + space(d - sty.leftPad)
-            case "right" => space(d - sty.rightPad) + txt + space(sty.rightPad)
+            case "center" => s"${space(d / 2)}$txt${space(d / 2 + d % 2)}"
+            case "left" => s"${space(sty.leftPad)}$txt${space(d - sty.leftPad)}"
+            case "right" => s"${space(d - sty.rightPad)}$txt${space(sty.rightPad)}"
             case _ => throw new AssertionError(s"Invalid align option: $sty")
 
     override def toString: String = mkString()

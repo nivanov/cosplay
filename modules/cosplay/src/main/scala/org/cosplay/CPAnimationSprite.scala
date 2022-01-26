@@ -121,7 +121,7 @@ class CPAnimationSprite(
       */
     def splice(id: String, reset: Boolean = true, finish: Boolean = true): Unit =
         if curAni.getId != id then
-            pausedAni = Some(curAni)
+            pausedAni = Option(curAni)
             switchAni(id, reset, finish)
 
     /**
@@ -148,7 +148,7 @@ class CPAnimationSprite(
       */
     private def switchAni(id: String, reset: Boolean, finish: Boolean): Unit =
         val ani = getAni(id)
-        if finish then delayedAni = Some(ani) else curAni = ani
+        if finish then delayedAni = Option(ani) else curAni = ani
         if reset then ani.reset()
 
     /**

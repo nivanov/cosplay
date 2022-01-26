@@ -151,7 +151,7 @@ object CPShaderExample:
                         case _ => ()
                     case None => ()
 
-        val sc = new CPScene("scene", Some(dim), bgPx,
+        val sc = new CPScene("scene", Option(dim), bgPx,
             bulbSpr,
             CPStaticImageSprite((dim.width - ctrlImg.getWidth) / 2, 24, 0, ctrlImg),
             // Just for the initial scene fade-in effect.
@@ -165,7 +165,7 @@ object CPShaderExample:
             CPGameInfo(
                 name = "Shaders Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )

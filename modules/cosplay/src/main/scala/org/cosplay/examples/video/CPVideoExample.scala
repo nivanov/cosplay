@@ -70,7 +70,7 @@ object CPVideoExample:
         val vidSpr = new CPVideoSprite("spr", CPVideoClip, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
         val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
         // Create the scene.
-        val sc = new CPScene("scene", Some(dim), bgPx,
+        val sc = new CPScene("scene", Option(dim), bgPx,
             vidSpr,
             new CPKeyboardSprite((_, key) => key match // Separate keyboard control (as an example).
                 case KEY_LO_R => vidSpr.rewind()
@@ -88,7 +88,7 @@ object CPVideoExample:
             CPGameInfo(
                 name = "Video Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )

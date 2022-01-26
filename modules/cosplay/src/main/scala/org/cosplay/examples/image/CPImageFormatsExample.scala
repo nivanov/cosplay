@@ -122,7 +122,7 @@ object CPImageFormatsExample:
         val gitarSpr = CPStaticImageSprite(50, 20, 0, gitarImg)
         val gitarLbl = CPLabelSprite(70, 29, 0, "*.txt image", c1)
 
-        val sc = new CPScene("scene", Some(dim), bgPx,
+        val sc = new CPScene("scene", Option(dim), bgPx,
             alienSpr, alienLbl,
             speckSpr, speckLbl,
             gitarSpr, gitarLbl,
@@ -137,13 +137,13 @@ object CPImageFormatsExample:
             CPGameInfo(
                 name = "Image Formats Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Some(dim), bgPx, List(C_LIME, C_PURPLE, C_GREY, C_STEEL_BLUE1), "scene"), sc)
+        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_LIME, C_PURPLE, C_GREY, C_STEEL_BLUE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

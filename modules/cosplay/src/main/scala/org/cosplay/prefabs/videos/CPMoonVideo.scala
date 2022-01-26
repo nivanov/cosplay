@@ -4741,7 +4741,7 @@ object CPMoonVideo extends CPVideo("moon_vid", "https://ascii.co.uk/animated-art
             CPArrayImage(padded, (ch, _, _) => {
                 ch match
                     case ' ' => XRAY
-                    case ch => ch&C_WHITE
+                    case _ => ch&C_WHITE
             })
         ).toSeq
 

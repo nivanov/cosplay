@@ -227,7 +227,7 @@ object CPAnimation:
             CPGameInfo(
                 name = s"Animation Preview $dim",
                 devName = "(C) 2022 Rowan Games, Inc.",
-                initDim = Some(dim),
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -237,7 +237,7 @@ object CPAnimation:
         try
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 spr, // Animation we are previewing.
                 CPUtils.makeExitGameOnLoQ()
@@ -311,7 +311,7 @@ object CPAnimation:
                         else
                             idx += idxIncr
                     if playing then
-                        Some(CPAnimationKeyFrame(
+                        Option(CPAnimationKeyFrame(
                             id,
                             frames(idx)._1,
                             idx

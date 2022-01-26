@@ -35,4 +35,5 @@ package org.cosplay;
  * fail with "missing javadoc" error.
  */
 public class CPJavaDocStub {
+    // No-op on purpose.
 }

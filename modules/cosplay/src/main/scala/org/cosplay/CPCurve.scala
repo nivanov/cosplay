@@ -62,7 +62,7 @@ object CPCurve:
       * @see https://en.wikipedia.org/wiki/Lagrange_polynomial
       */
     def lagrangePoly(points: Seq[(Float, Float)]): Float => Float =
-        if points.size < 2 then E(s"Need two or more interpolating points.")
+        if points.sizeIs < 2 then E(s"Need two or more interpolating points.")
         try
             val poly = PolynomialFunctionLagrangeForm(
                 points.map(_._1.toDouble).toArray,

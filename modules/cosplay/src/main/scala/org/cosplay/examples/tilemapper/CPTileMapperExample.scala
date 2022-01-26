@@ -145,28 +145,27 @@ object CPTileMapperExample:
         // Layout tile sprites and add them to the scene.
         // Use brick's dimension as a tile dimension.
         CPTileMapper.layout(0, 0, tileMap, tileDim = brickDim, (ppx, x, y) => ppx.char match
-            case '#' => Some(new CPStaticImageSprite(x, y, 0, brick))
+            case '#' => Option(new CPStaticImageSprite(x, y, 0, brick))
             // Account for the door's different height relative to the brick.
-            case 'D' => Some(new CPStaticImageSprite(x + 1, y - 5, 0, door))
-            case 'X' => Some(new CPStaticImageSprite(
+            case 'D' => Option(new CPStaticImageSprite(x + 1, y - 5, 0, door))
+            case 'X' => Option(new CPStaticImageSprite(
                 x,
                 // Account for the alien's different height relative to the brick.
                 y - alienDim.height + brickDim.height + 1,
                 0,
-                alien)
-            )
+                alien))
             case _ => None
         ).foreach(objs ::= _)
 
         // Create the scene.
-        val sc = new CPScene("scene", Some(dim), bgPx, objs)
+        val sc = new CPScene("scene", Option(dim), bgPx, objs)
 
         // Initialize the engine.
         CPEngine.init(
             CPGameInfo(
                 name = "TileMapper Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )

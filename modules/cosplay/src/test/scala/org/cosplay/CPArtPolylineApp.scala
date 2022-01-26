@@ -48,7 +48,7 @@ object CPArtPolylineApp:
             CPGameInfo(
                 name = s"Art Polyline Test",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim),
+                initDim = Option(dim),
             ),
             emuTerm = System.console() == null || args.contains("emuterm")
         )

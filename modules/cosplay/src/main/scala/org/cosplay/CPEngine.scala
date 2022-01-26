@@ -54,7 +54,7 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   * CosPlay game engine.
   *
   * Game engine is mostly an internal object and it is only used at the beginning of the game. It provides
-  * veriety of utility and miscellanious methods for games.
+  * variety of utility and miscellaneous methods for games.
   *
   * Most CosPlay games follow this basic game organization:
   * {{{
@@ -84,7 +84,7 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   * }}}
   * Notes:
   *  - Game start in a standard Scala way. It is recommended to use `main(...)` function for better
-  *    compatiblity.
+  *    compatibility.
   *  - Create [[CPGameInfo]] object that describes the game and its properties.
   *  - Initialize game engine by calling [[CPEngine.init()]] method passing it game descriptor and terminal emulation
   *    flag.
@@ -122,6 +122,7 @@ object CPEngine:
     private var engLog: Log4jWrapper = _
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
+    private var savedEx: Throwable = _
     @volatile private var state = State.ENG_INIT
     @volatile private var playing = true
 
@@ -129,22 +130,22 @@ object CPEngine:
 
     /**
       * Target FPS of the game engine. If the actual frame rate exceeds this value the game engine will
-      * throttle the execution and release spare cycle to the user logic. Defualt value is `30`.
+      * throttle the execution and release spare cycle to the user logic. Default value is `30`.
       */
     val fps: Int = FPS
 
     /**
-      * Millisconds per frame assumig target FPS.
+      * Milliseconds per frame assuming target FPS.
       */
     val frameMillis: Long = FRAME_MILLIS
 
     /**
-      * Nanoseconds per frame assumig target FPS.
+      * Nanoseconds per frame assuming target FPS.
       */
     val frameNanos: Long = FRAME_NANOS
 
     /**
-      * Microseconds per frame assumig target FPS.
+      * Microseconds per frame assuming target FPS.
       */
     val frameMicros: Long = FRAME_MICROS
 
@@ -335,7 +336,7 @@ object CPEngine:
             case Some(dim) => dim.toString
             case None => "n/a"
         )
-        tbl.info(engLog, Some("Game started:"))
+        tbl.info(engLog, Option("Game started:"))
 
     /**
       *
@@ -357,7 +358,7 @@ object CPEngine:
 
     /**
       * Shows or hides the built-in FPS overlay in the right top corner. Can
-      * also be turned on or off by pressing `Ctrl-q`` in the game.
+      * also be turned on or off by pressing `Ctrl-q` in the game.
       *
       * @param show Show/hide flag.
       */
@@ -365,7 +366,7 @@ object CPEngine:
 
     /**
       * Opens GUI-based log window by bringing it upfront.
-      * Can also be open by pressing `Ctrl-l`` in the game.
+      * Can also be open by pressing `Ctrl-l` in the game.
       */
     def openLog(): Unit =
         rootLog().info(CPUtils.PING_MSG)
@@ -381,6 +382,7 @@ object CPEngine:
             kbReader.join()
         if term != null then term.dispose()
         state = State.ENG_STOPPED
+        if savedEx != null then savedEx.printStackTrace()
 
     /**
       * Pauses the game.
@@ -410,7 +412,7 @@ object CPEngine:
         checkState()
         pauseMux.synchronized {
             if !pause then E(s"Game must be paused for debugging.")
-            dbgStopAtFrameCnt = Some(frameCnt + 1)
+            dbgStopAtFrameCnt = Option(frameCnt + 1)
             dbgKbKey = kbKey
             pause = false
             pauseMux.notifyAll()
@@ -518,7 +520,7 @@ object CPEngine:
       * @param camRect
       */
     private def showFps(canv: CPCanvas, stats: CPRenderStats, camRect: CPRect): Unit =
-        def leftPad(s: String): String = ' '.toString * (12 - s.length()) + s
+        def leftPad(s: String): String = s"${' '.toString * (12 - s.length())}$s"
 
         def rightPad(s: String): String = s.padTo(7, ' ')
 
@@ -748,7 +750,7 @@ object CPEngine:
 
                         lastKbEvt match
                             case Some(lastEvt) =>
-                                kbEvt = Some(CPKeyboardEvent(
+                                kbEvt = Option(CPKeyboardEvent(
                                     kbKey,
                                     lastEvt.key == kbKey,
                                     frameCnt,
@@ -757,7 +759,7 @@ object CPEngine:
                                     lastEvt.eventNs
                                 ))
                             case None =>
-                                kbEvt = Some(CPKeyboardEvent(
+                                kbEvt = Option(CPKeyboardEvent(
                                     kbKey,
                                     sameAsLast = false,
                                     frameCnt,
@@ -852,7 +854,7 @@ object CPEngine:
                         if kbFocusOwner.isDefined && kbFocusOwner.get != id then
                             scLog.trace(s"Input focus is currently held by '${kbFocusOwner.get}', switching to '$id'.")
                         val cloId = id
-                        delayedQ += (() => kbFocusOwner = Some(cloId))
+                        delayedQ += (() => kbFocusOwner = Option(cloId))
                     override def acquireMyFocus(): Unit = acquireFocus(myId)
                     override def getFocusOwner: Option[String] = kbFocusOwner
                     override def releaseFocus(id: String): Unit =
@@ -1022,7 +1024,7 @@ object CPEngine:
                     val avgFps = fpsSum / fpsCnt
                     val avgLow1Fps = low1FpsList.sum / low1FpsCnt
 
-                    stats = Some(CPRenderStats(frameCnt, scFrameCnt, fps, avgFps, avgLow1Fps, usrNs, sysNs, objs.length, visObjCnt, kbEvt))
+                    stats = Option(CPRenderStats(frameCnt, scFrameCnt, fps, avgFps, avgLow1Fps, usrNs, sysNs, objs.length, visObjCnt, kbEvt))
 
                     // Update GUI log if it is used.
                     if engLog.impl.isInstanceOf[CPGuiLog] then CPGuiLog.updateStats(stats.get)
@@ -1043,6 +1045,7 @@ object CPEngine:
                 frameCnt += 1
                 if !stopFrame then scFrameCnt += 1
             end while
+        catch case e: Throwable => savedEx = e
         finally
             // Stop all the scenes and their scene objects.
             for (sc <- scenes.values)

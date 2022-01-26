@@ -59,5 +59,5 @@ abstract class CPGameObject(id: String = CPUtils.guid6, tags: Set[String] = Set.
     def getTags: Set[String] = tags
 
     override def equals(obj: Any): Boolean = obj match
-        case obj: CPGameObject => obj.getId == getId
+        case o: CPGameObject => o.getId == getId
         case _ => false

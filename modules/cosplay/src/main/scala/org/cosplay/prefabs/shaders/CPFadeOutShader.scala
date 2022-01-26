@@ -94,7 +94,7 @@ class CPFadeOutShader(
                             val balance = 1.0f - frmCnt.toFloat / maxFrmCnt
                             val newFg = CPColor.mixture(px.fg, bgBg, frmCnt.toFloat / maxFrmCnt)
                             val newBg = px.bg match
-                                case Some(c) => Some(CPColor.mixture(c, bgBg, frmCnt.toFloat / maxFrmCnt))
+                                case Some(c) => Option(CPColor.mixture(c, bgBg, frmCnt.toFloat / maxFrmCnt))
                                 case None => None
                             var newPx = px.withFg(newFg).withBg(newBg)
                             if newFg.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char)

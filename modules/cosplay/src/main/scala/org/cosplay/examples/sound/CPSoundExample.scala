@@ -56,7 +56,7 @@ object CPSoundExample:
             CPGameInfo(
                 name = "Sound Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )

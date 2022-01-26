@@ -172,7 +172,7 @@ object CPAnimationExample:
             CPGameInfo(
                 name = "Animation Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )
@@ -188,7 +188,7 @@ object CPAnimationExample:
                 CPAnimation.filmStrip("left", 150, imgs = imgsLeft),
                 // In time-based animation each frame has its own duration.
                 CPAnimation.timeBased("idle", frames = Seq(
-                    imgsIdle(0) -> 1000,
+                    imgsIdle.head -> 1000,
                     imgsIdle(1) -> 100,
                     imgsIdle(2) -> 1000,
                     imgsIdle(3) -> 1000,
@@ -200,8 +200,7 @@ object CPAnimationExample:
             val fiShdr = new CPFadeInShader(true, 500, bgPx)
             val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
-            val player = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false,
-                Seq(fiShdr, foShdr)):
+            val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
                 // Use 'float' type for coordinates to smooth out the movement.
                 private var x = super.getX.toFloat
                 private var y = super.getY.toFloat
@@ -222,7 +221,7 @@ object CPAnimationExample:
                     bgSnd.setVolume(0.5f) // Make background 50% volume.
                     bgSnd.loopAll(1500) // Auto-play with fade-in.
                     // Example of the per-frame sound synchronization.
-                    setOnKeyFrameChange("vert", Some((_, _) => stepSnd.playOnce()))
+                    setOnKeyFrameChange("vert", Option((_, _) => stepSnd.playOnce()))
                 override def getX: Int = x.round
                 override def getY: Int = y.round
                 override def update(ctx: CPSceneObjectContext): Unit =
@@ -241,7 +240,7 @@ object CPAnimationExample:
                         // Switch to 'idle' waiting for the current animation to complete (default).
                         case None => change("idle")
 
-            val sc = new CPScene("scene", Some(dim), bgPx,
+            val sc = new CPScene("scene", Option(dim), bgPx,
                 player,
                 CPStaticImageSprite(28, 28, 0, imgHelp),
                 // On 'Ctrl-q' kick in fade out shader that will exit the game once it is finished.
@@ -252,7 +251,7 @@ object CPAnimationExample:
             CPEngine.startGame(
                 new CPLogoScene(
                     "logo",
-                    Some(dim),
+                    Option(dim),
                     bgPx,
                     Seq(C_ORANGE1, C_STEEL_BLUE1, C_DARK_ORANGE, C_WHITE, C_LIGHT_CORAL),
                     "scene"

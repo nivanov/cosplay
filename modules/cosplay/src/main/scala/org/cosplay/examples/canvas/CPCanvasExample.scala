@@ -141,7 +141,7 @@ object CPCanvasExample:
                 )
 
         // Create the scene (exit the game on 'q' press).
-        val sc = new CPScene("scene", Some(dim), bgPx,
+        val sc = new CPScene("scene", Option(dim), bgPx,
             drawSpr,
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // ¯\_(ツ)_/¯
         )
@@ -151,7 +151,7 @@ object CPCanvasExample:
             CPGameInfo(
                 name = "Canvas Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )
@@ -161,7 +161,7 @@ object CPCanvasExample:
             CPEngine.startGame(
                 new CPLogoScene(
                     "logo",
-                    Some(dim),
+                    Option(dim),
                     bgPx,
                     Seq(C_STEEL_BLUE1, C_INDIAN_RED, C_LIGHT_STEEL_BLUE),
                     "scene"

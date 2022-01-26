@@ -111,7 +111,7 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
       * Gets a new pixel with inverse foreground and background color. If background color
       * is not set, returns this instance.
       */
-    lazy val inverse: CPPixel = if bg.isEmpty then this else CPPixel(char, bg.get, Some(fg), tag)
+    lazy val inverse: CPPixel = if bg.isEmpty then this else CPPixel(char, bg.get, Option(fg), tag)
 
     /**
       * Gets a copy of this pixel with a new character.
@@ -201,7 +201,7 @@ object CPPixel:
       * @param bg Pixel background.
       * @note Pixel tag will be set to zero.
       */
-    def apply(char: Char, fg: CPColor, bg: CPColor): CPPixel = new CPPixel(char, fg, Some(bg), 0)
+    def apply(char: Char, fg: CPColor, bg: CPColor): CPPixel = new CPPixel(char, fg, Option(bg), 0)
 
     /**
       * Creates new pixel.
@@ -221,7 +221,7 @@ object CPPixel:
       * @param bg Pixel background.
       * @param tag Pixel tag.
       */
-    def apply(char: Char, fg: CPColor, bg: CPColor, tag: Int): CPPixel = new CPPixel(char, fg, Some(bg), tag)
+    def apply(char: Char, fg: CPColor, bg: CPColor, tag: Int): CPPixel = new CPPixel(char, fg, Option(bg), tag)
 
     /**
       * Creates new pixel.

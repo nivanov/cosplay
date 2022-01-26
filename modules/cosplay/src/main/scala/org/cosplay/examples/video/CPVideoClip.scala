@@ -66,7 +66,7 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
                             case 'i' => ch&c.darker(0.15)
                             case '1' => ch&c.darker(0.05)
                             case ' ' => XRAY
-                            case ch => ch&c
+                            case _ => ch&c
                     })
                 }
             }

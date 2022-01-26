@@ -85,7 +85,7 @@ object CPParticleExample:
             CPGameInfo(
                 name = "Particle Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )
@@ -158,8 +158,8 @@ object CPParticleExample:
                     Seq.empty
         val kaboomSpr = CPParticleSprite("kaboom", Seq(emitter))
 
-        kaboomSpr.setOnStart(Some(_ => boomSnd.playOnce()))
-        kaboomSpr.setOnEnd(Some(_ => boomSnd.stop(1000)))
+        kaboomSpr.setOnStart(Option(_ => boomSnd.playOnce()))
+        kaboomSpr.setOnEnd(Option(_ => boomSnd.stop(1000)))
 
         val ctrlSpr = new CPOffScreenSprite():
             override def update(ctx: CPSceneObjectContext): Unit =
@@ -173,7 +173,7 @@ object CPParticleExample:
         val bombX = (w - bw) / 2
         val bombY = (h - bh) / 2
 
-        val sc = new CPScene("scene", Some(dim), bgPx,
+        val sc = new CPScene("scene", Option(dim), bgPx,
             kaboomSpr,
             ctrlSpr,
             new CPStaticImageSprite("bomb", bombX, bombY, 0, bomb),
@@ -185,7 +185,7 @@ object CPParticleExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Some(dim), bgPx, COLORS, "scene"), sc)
+        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

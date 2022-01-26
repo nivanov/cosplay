@@ -146,7 +146,7 @@ object CPUtils:
       * @param s Name of the system property or environment variable.
       */
     def sysEnvBool(s: String): Boolean = sysEnv(s) match
-        case Some(s) => java.lang.Boolean.valueOf(s)
+        case Some(ss) => java.lang.Boolean.valueOf(ss)
         case None => false
 
     /**

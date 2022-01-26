@@ -85,7 +85,7 @@ open class CPCamera:
       */
     def this(focusTrackId: String, focusFrameInsets: CPInsets) =
         this()
-        setFocusTrackId(Some(focusTrackId))
+        setFocusTrackId(Option(focusTrackId))
         setFocusFrameInsets(focusFrameInsets)
 
     /**

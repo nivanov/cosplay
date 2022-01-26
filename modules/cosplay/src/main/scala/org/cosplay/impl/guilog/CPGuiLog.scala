@@ -140,7 +140,7 @@ object CPGuiLog:
 
     private val copyLogAct: Action = mkAction(
         "Copy",
-        Some(mkIcon(COPY)),
+        Option(mkIcon(COPY)),
         "",
         enabled = false,
         None,
@@ -148,7 +148,7 @@ object CPGuiLog:
             try
                 val txt = logPanel.getSelectedText
                 if txt != null then
-                    val sel = new StringSelection(txt)
+                    val sel = new StringSelection(txt);
                     clipboard.setContents(sel, sel)
             catch case _: Exception => ()
     )
@@ -163,7 +163,7 @@ object CPGuiLog:
         })
     private val saveLogAct: Action = mkAction(
         "Save Log",
-        Some(mkIcon(SAVE)),
+        Option(mkIcon(SAVE)),
         "<html>Save log to a file.<br/>Log must be paused.</html>",
         enabled = false,
         None,
@@ -189,25 +189,25 @@ object CPGuiLog:
         })
     private val searchNextAct: Action = mkAction(
         "Next",
-        Some(mkIcon(STEP_FORWARD)),
+        Option(mkIcon(STEP_FORWARD)),
         "<html>Next search result.<br/>Log must be paused.</html>",
         enabled = false,
-        Some('N'),
+        Option('N'),
         _ => {
             logSearchPrevNext(true)
         })
     private val searchPrevAct: Action = mkAction(
         "Prev",
-        Some(mkIcon(STEP_BACKWARD)),
+        Option(mkIcon(STEP_BACKWARD)),
         "<html>Previous search result.<br/>Log must be paused.</html>",
         enabled = false,
-        Some('P'),
+        Option('P'),
         _ => {
             logSearchPrevNext(false)
         })
     private val searchClearAct: Action = mkAction(
         "",
-        Some(mkIcon(TRASH_ALT)),
+        Option(mkIcon(TRASH_ALT)),
         "<html>Clear the search.<br/>Log must be paused.</html>",
         enabled = false,
         None,
@@ -217,7 +217,7 @@ object CPGuiLog:
         })
     private val searchFirstAct: Action = mkAction(
         "",
-        Some(mkIcon(FAST_BACKWARD)),
+        Option(mkIcon(FAST_BACKWARD)),
         "<html>Go to the first match.<br/>Log must be paused.</html>",
         enabled = false,
         None,
@@ -229,7 +229,7 @@ object CPGuiLog:
         })
     private val searchLastAct: Action = mkAction(
         "",
-        Some(mkIcon(FAST_FORWARD)),
+        Option(mkIcon(FAST_FORWARD)),
         "<html>Go to the last match.<br/>Log must be paused.</html>",
         enabled = false,
         None,
@@ -301,7 +301,7 @@ object CPGuiLog:
         })
     private val clearLogAct: Action = mkAction(
         "Clear",
-        Some(mkIcon(TRASH_ALT)),
+        Option(mkIcon(TRASH_ALT)),
         "Clear entire log.",
         enabled = true,
         None,
@@ -311,7 +311,7 @@ object CPGuiLog:
         })
     private val pauseLogAct: Action = mkAction(
         "Pause",
-        Some(mkIcon(PAUSE)),
+        Option(mkIcon(PAUSE)),
         "<html>Pause new log entries.<br/>Log must be paused for search.</html>",
         enabled = true,
         None,
@@ -327,7 +327,7 @@ object CPGuiLog:
         })
     private val resumeLogAct: Action = mkAction(
         "Resume",
-        Some(mkIcon(PLAY)),
+        Option(mkIcon(PLAY)),
         "Resume new log entries.",
         enabled = false,
         None,
@@ -350,7 +350,7 @@ object CPGuiLog:
         )
     private val pauseGameAct: Action = mkAction(
         "Pause",
-        Some(mkIcon(PAUSE)),
+        Option(mkIcon(PAUSE)),
         "Pause game play.",
         enabled = CPEngine.isGamePaused,
         None,
@@ -365,7 +365,7 @@ object CPGuiLog:
         })
     private val resumeGameAct: Action = mkAction(
         "Resume",
-        Some(mkIcon(PLAY)),
+        Option(mkIcon(PLAY)),
         "Resume game play.",
         enabled = !CPEngine.isGamePaused,
         None,
@@ -380,7 +380,7 @@ object CPGuiLog:
         })
     private val audioOffAct: Action = mkAction(
         "Audio Off",
-        Some(mkIcon(VOLUME_MUTE)),
+        Option(mkIcon(VOLUME_MUTE)),
         "Silence all audio.",
         enabled = true,
         None,
@@ -392,7 +392,7 @@ object CPGuiLog:
         })
     private val audioOnAct: Action = mkAction(
         "Audio On",
-        Some(mkIcon(VOLUME_UP)),
+        Option(mkIcon(VOLUME_UP)),
         "Resume all audio.",
         enabled = false,
         None,
@@ -404,10 +404,10 @@ object CPGuiLog:
         })
     private val dbgStepAct: Action = mkAction(
         "Step",
-        Some(mkIcon(BUG)),
+        Option(mkIcon(BUG)),
         "<html>Step one frame at a time.<br/>Game must be paused.</html>",
         enabled = CPEngine.isGamePaused,
-        Some('S'.toInt),
+        Option('S'.toInt),
         _ => {
             val kbKey = Option.when(dbgSimKbChkBox.isSelected)(CPKeyboardKey.ofId(dbgKbCombo.getSelectedItem.asInstanceOf[String]))
             if kbKey.isDefined then kbKey.get.clear() // Clear potential metadata from the key.
@@ -487,7 +487,7 @@ object CPGuiLog:
         })
     private val stopGameAct: Action = mkAction(
         "Stop Game",
-        Some(mkIcon(TIMES)),
+        Option(mkIcon(TIMES)),
         "Stop and exit game.",
         enabled = true,
         None,
@@ -568,9 +568,9 @@ object CPGuiLog:
                 logSearchOffs.find(_ > curPos)
             else
                 val s = logSearchOffs.filter(_ < curPos)
-                if s.isEmpty then None else Some(s.max)
+                if s.isEmpty then None else Option(s.max)
             posOpt match
-                case Some(pos) =>
+                case Option(pos) =>
                     activeLogSearchOff = pos
                     logPanel.setCaretPosition(pos)
                     searchLog()
@@ -832,11 +832,11 @@ object CPGuiLog:
       * @param bytes
       */
     private def formatMem(bytes: Long): String =
-        if bytes < KB then numFmt.format(bytes) + 'B'
-        else if bytes < MB then numFmt.format(bytes / KB) + "KB"
-        else if bytes < GB then numFmt.format(bytes / MB) + "MB"
-        else if bytes < TB then numFmt.format(bytes / GB) + "GB"
-        else numFmt.format(bytes / TB) + "TB"
+        if bytes < KB then s"${numFmt.format(bytes)}B"
+        else if bytes < MB then s"${numFmt.format(bytes / KB)}KB"
+        else if bytes < GB then s"${numFmt.format(bytes / MB)}MB"
+        else if bytes < TB then s"${numFmt.format(bytes / GB)}GB"
+        else s"${numFmt.format(bytes / TB)}TB"
 
     /**
       *

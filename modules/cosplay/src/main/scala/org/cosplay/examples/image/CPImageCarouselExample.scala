@@ -150,13 +150,13 @@ object CPImageCarouselExample:
             case KEY_LEFT | KEY_LO_A => // Scroll carousel left.
                 val curSpr = sprs(sprIdx)
                 if !curSpr.isMoving then
-                    curSpr.fadeOutToLeft()
+                    curSpr.fadeOutToLeft();
                     sprIdx = if sprIdx == 0 then sprs.size - 1 else sprIdx - 1
                     sprs(sprIdx).fadeInFromRight()
             case KEY_RIGHT | KEY_LO_D => // Scroll carousel right.
                 val curSpr = sprs(sprIdx)
                 if !curSpr.isMoving then
-                    curSpr.fadeOutToRight()
+                    curSpr.fadeOutToRight();
                     sprIdx = if sprIdx == sprs.size - 1 then 0 else sprIdx + 1
                     sprs(sprIdx).fadeInFromLeft()
             // Exit the game on 'q' press.
@@ -164,7 +164,7 @@ object CPImageCarouselExample:
             case _ => ()
         )
 
-        val sc = new CPScene("scene", Some(dim), bgPx,
+        val sc = new CPScene("scene", Option(dim), bgPx,
             (
                 // Control sprites.
                 Seq(
@@ -185,13 +185,13 @@ object CPImageCarouselExample:
             CPGameInfo(
                 name = "Image Carousel Example",
                 devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
+                initDim = Option(dim)
             ),
             System.console() == null || args.contains("emuterm")
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Some(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)
