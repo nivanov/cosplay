@@ -52,6 +52,7 @@ ThisBuild / organizationName := "Rowan Games, Inc."
 ThisBuild / description := "2D ASCII Game Engine for Scala3."
 ThisBuild / licenses := List("Apache-2.0" -> url("https://github.com/sbt/sbt/blob/develop/LICENSE"))
 ThisBuild / homepage := Some(url("https://github.com/nivanov/cosplay"))
+ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/nivanov/cosplay"), "scm:git@github.com:nivanov/cosplay.git"))
 ThisBuild / developers ++= List(
     "nivanov" -> "Nikita Ivanov"
 ).map { case (username, fullName) =>

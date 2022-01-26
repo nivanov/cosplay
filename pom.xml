@@ -52,6 +52,10 @@
         <module>modules/cosplay</module>
     </modules>
 
+    <scm>
+        <url>https://github.com/nivanov/cosplay.git</url>
+    </scm>
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -103,6 +107,7 @@
         <miglayout.ver>11.0</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
+        <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
 
         <gpg.keyname>0xB56A1A29</gpg.keyname>
 
@@ -364,6 +369,20 @@
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.ver}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
