@@ -54,28 +54,27 @@ ThisBuild / licenses := List("Apache-2.0" -> url("https://github.com/sbt/sbt/blo
 ThisBuild / homepage := Some(url("https://github.com/nivanov/cosplay"))
 ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/nivanov/cosplay"), "scm:git@github.com:nivanov/cosplay.git"))
 ThisBuild / developers ++= List(
-    "nivanov" -> "Nikita Ivanov"
-).map { case (username, fullName) =>
-    Developer(username, fullName, s"@$username", url(s"https://github.com/$username"))
+    "nivanov" -> "Nikita Ivanov",
+    "vlad94568" -> "Vlad Ivanov"
+).map {
+    case (username, fullName) => Developer(username, fullName, s"@$username", url(s"https://github.com/$username"))
 }
 
 lazy val cosplay = (project in file("modules/cosplay"))
     .settings(
         name := "CosPlay",
-
         Compile / doc / scalacOptions ++= Seq(
-                "-project-footer", "(C) 2021 Rowan Games, Inc.",
-                "-project-version", cosPlayVer,
-                "-siteroot", ".",
-                "-skip-by-id:org.cosplay.impl",
-                "-skip-by-id:org.cosplay.impl.emuterm",
-                "-skip-by-id:org.cosplay.impl.jlineterm",
-                "-skip-by-id:org.cosplay.impl.guilog",
-                "-doc-root-content", "docroot.md",
-                "-source-links:github://nivanov/cosplay/master",
-                "-social-links:github::https://github.com/nivanov/cosplay"
+            "-project-footer", "(C) 2021 Rowan Games, Inc.",
+            "-project-version", cosPlayVer,
+            "-siteroot", ".",
+            "-skip-by-id:org.cosplay.impl",
+            "-skip-by-id:org.cosplay.impl.emuterm",
+            "-skip-by-id:org.cosplay.impl.jlineterm",
+            "-skip-by-id:org.cosplay.impl.guilog",
+            "-doc-root-content", "docroot.md",
+            "-source-links:github://nivanov/cosplay/master",
+            "-social-links:github::https://github.com/nivanov/cosplay"
         ),
-
         libraryDependencies += "org.apache.commons" % "commons-math3" % s"$commonsMath3Ver",
         libraryDependencies += "org.apache.commons" % "commons-lang3" % s"$commonsLang3Ver",
         libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % s"$log4jVer",
