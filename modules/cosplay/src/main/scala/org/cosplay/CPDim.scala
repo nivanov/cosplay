@@ -103,7 +103,7 @@ final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width,
       */
     final val nonEmpty: Boolean = area > 0
 
-    override def toString: String = s"[w=$width,h=$height]"
+    override def toString: String = s"[${width}x$height]"
 
 /**
   * Companion object with static utility functions.

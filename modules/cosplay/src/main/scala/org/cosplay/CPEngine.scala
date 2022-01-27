@@ -336,7 +336,7 @@ object CPEngine:
             case Some(dim) => dim.toString
             case None => "n/a"
         )
-        tbl.info(engLog, Option("Game started:"))
+        tbl.info(engLog, Option("Game initialized:"))
 
     /**
       *
@@ -644,7 +644,15 @@ object CPEngine:
         var lastScDim: CPDim = null
         var scr: CPScreen = null
 
+        def logSceneSwitch(x: CPScene): Unit =
+            val dimS = x.getDim match
+                case Some(d) => d.toString
+                case None => "[adaptive]"
+            engLog.info(s"Switching to scene: ${x.getId} $dimS")
+
         try
+            logSceneSwitch(sc) // Initial scene.
+
             // Main game loop.
             while (playing)
                 val termDim = term.getDim
@@ -816,6 +824,7 @@ object CPEngine:
                             scFrameCnt = 0
                             stopFrame = true
                             startScMs = System.currentTimeMillis()
+                            logSceneSwitch(sc)
                         })
 
                     override def getId: String = myId
@@ -868,7 +877,10 @@ object CPEngine:
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
                     override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
                     override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit = 
-                        delayedQ += (() => scenes.add(newSc))
+                        delayedQ += (() =>
+                            engLog.info(s"Scene added: ${newSc.getId}")
+                            scenes.add(newSc)
+                        )
                         if switchTo then doSwitchScene(newSc.getId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
@@ -877,7 +889,9 @@ object CPEngine:
                             val colId = id
                             delayedQ += (() => {
                                 scenes.remove(colId) match
-                                    case Some(s) => lifecycleStop(s)
+                                    case Some(s) =>
+                                        engLog.info(s"Scene deleted: ${s.getId}")
+                                        lifecycleStop(s)
                                     case _ => ()
                             })
                     override def deleteObject(id: String): Unit =
@@ -1047,6 +1061,8 @@ object CPEngine:
             end while
         catch case e: Throwable => savedEx = e
         finally
+            engLog.info("Game stopped.")
+
             // Stop all the scenes and their scene objects.
             for (sc <- scenes.values)
                 // Stop scene object first.
