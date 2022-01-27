@@ -22,3 +22,8 @@
    - [[file:org/cosplay/examples/particle.html Particle Effect Examples]]
    - [[file:org/cosplay/examples/font.html Font Examples]]
    - [[file:org/cosplay/examples/tilemapper.html Tile Mapping Examples]]
+
+Maven/SBT install:
+<pre>
+
+</pre>
