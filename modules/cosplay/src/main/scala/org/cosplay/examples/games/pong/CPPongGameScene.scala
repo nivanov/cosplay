@@ -29,6 +29,7 @@ import CPKeyboardKey.*
 import prefabs.images.*
 import prefabs.scenes.*
 
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -46,7 +47,10 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private var playerScore = 0
     private var enemyScore = 0
 
-    private val playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).skin(
+    private var playerPosY = 30
+    private var enemyPosY = 30
+
+    private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).skin(
         (px, _, _) => px.char match
             case ':' => px.withFg(C_GREY70)
             case _ => px
@@ -61,17 +65,48 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private val playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            setX((canv.dim.width - playerScoreImg.getWidth) / 20)
-            setY((canv.dim.height - playerScoreImg.getHeight) / 20)
+            setX((canv.dim.width - playerScoreImg.getWidth) / 4)
+            setY(0)
 
     private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            setX((canv.dim.width - enemyScoreImg.getWidth))
-            setY((canv.dim.height - enemyScoreImg.getHeight) / 20)
+            setX((canv.dim.width - enemyScoreImg.getWidth) - ((canv.dim.width / 4) - 1))
+            setY(0)
 
+    private val border = new CPCanvasSprite("border", Seq(new CPFadeInShader(true, 500, bgPx))):
+        override def render(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+
+            canv.drawPolyline(Seq(
+                canv.dim.width / 2 -> 0,
+                canv.dim.width / 2 -> canv.dim.height
+            ), 100, '|'&C_AQUA)
+
+    private val player = new CPCanvasSprite("player", Seq(new CPFadeInShader(true, 500, bgPx))):
+        override def render(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+
+            canv.drawPolyline(Seq(
+                1 -> playerPosY,
+                1 -> playerPosY.-(5)
+            ), 100, '|'&C_AQUA)
+
+    private val enemy = new CPCanvasSprite("enemy", Seq(new CPFadeInShader(true, 500, bgPx))):
+        override def render(ctx: CPSceneObjectContext): Unit =
+            super.render(ctx)
+
+            val canv = ctx.getCanvas
+
+            canv.drawPolyline(Seq(
+                canv.dim.width.-(2) -> enemyPosY,
+                canv.dim.width.-(2) -> enemyPosY.-(5)
+            ), 100, '|'&C_AQUA)
 
 
     addObject(CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
     addObject(playerScoreSpr)
     addObject(enemyScoreSpr)
+    addObject(border)
+    addObject(player)
+    addObject(enemy)
