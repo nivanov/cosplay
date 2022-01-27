@@ -28,7 +28,7 @@ CosPlay is 2D ASCII game engine written in [Scala3](https://www.scala-lang.org/)
 * 277 built-in FIGLet fonts with full rendering
 * Built-in log viewer, debugger and terminal emulator
 
-### Install
+## Install
 Prerequisites:
 * Java 11+ ([download](https://www.java.com/en/download/))
 
@@ -45,9 +45,7 @@ Using Scala SBT:
 libraryDependencies += "org.cosplayengine" % "cosplay" % "0.1.0"
 ```
 
-If you cloned GitHub [repository](https://github.com/nivanov/cosplay) or downloaded source archive - use `mvn clean package` to build it.
-
-### Questions?
+## Questions?
 * Join [discord](https://discord.gg/gDQuYJDM)
 * Post a question at [Stack Overflow](https://stackoverflow.com/questions/ask) using <code>cosplay</code> tag
 * File a bug or improvement in [GitHub Issues](https://github.com/nivanov/cosplay/issues)
