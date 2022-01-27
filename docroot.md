@@ -23,7 +23,16 @@
    - [[file:org/cosplay/examples/font.html Font Examples]]
    - [[file:org/cosplay/examples/tilemapper.html Tile Mapping Examples]]
 
-Maven/SBT install:
+Maven dependency:
 <pre>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.cosplayengine&lt;/groupId&gt;
+  &lt;artifactId&gt;cosplay&lt;/artifactId&gt;
+  &lt;version&gt;0.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
 
+SBT dependency:
+<pre>
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.1.0"
 </pre>
