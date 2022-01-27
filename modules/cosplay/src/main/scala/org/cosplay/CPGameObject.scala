@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import impl.{CPContainer, CPUtils}
+import impl.CPUtils
 
 /*
    _________            ______________
