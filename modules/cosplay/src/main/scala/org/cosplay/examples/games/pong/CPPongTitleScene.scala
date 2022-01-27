@@ -52,26 +52,25 @@ object CPPongTitleScene extends CPScene("title", None, bgPx):
     val helpImg = CPArrayImage(
         prepSeq(
             """
-              |   HOW TO PLAY
+              |    HOW TO PLAY
               |
               |GET 10 POINTS TO WIN
               |
               |
-              |   UP       Down
-              | .----.    .----.
-              | | W  |    | S  |
-              | `----'    `----'
+              |    UP       Down
+              |  .----.    .----.
+              |  | W  |    | S  |
+              |  `----'    `----'
               |
-              |     [Q] Quit
+              |    [ENTER] Play
+              |      [Q] Quit
                 """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C_STEEL_BLUE1
             case '|' | '.' | '`' | '-' | '\'' => ch&C_LIME
             case _ => ch.toUpper&C_DARK_ORANGE
     ).trimBg()
-
-    private val logoW = logoImg.getWidth
-    private val logoH = logoImg.getHeight
+    
     private val logoSpr = new CPImageSprite("logoSpr", 0, 0, 0, logoImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
@@ -84,7 +83,8 @@ object CPPongTitleScene extends CPScene("title", None, bgPx):
             setX((canv.dim.width - helpImg.getWidth) / 2)
             setY((canv.dim.height - helpImg.getHeight))
 
-
     // Add scene objects...
     addObject(logoSpr)
     addObject(helpSpr1)
+    addObject(CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
+    addObject(CPKeyboardSprite(KEY_ENTER, _.switchScene("game")))
