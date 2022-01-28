@@ -95,3 +95,4 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "org.junit.jupiter" % s"junit-jupiter-engine" % s"$junitVer" % Test
     )
 
+

@@ -210,7 +210,7 @@ object CPAnimationExample:
                         // Change animation without waiting for the current one to complete.
                         change(if dx < 0 then "left" else "right", finish = false)
                         x += dx
-                        if dx == 1.0f || ctx.getFrameCount % 6 == 0 then hopSnd.playOnce()
+                        if dx.abs.round == 1.0f || ctx.getFrameCount % 6 == 0 then hopSnd.playOnce()
                     else if dy != 0f then
                         // Change animation without waiting for the current one to complete.
                         change("vert", finish = false)
@@ -218,7 +218,7 @@ object CPAnimationExample:
 
                 override def onStart(): Unit =
                     super.onActivate()
-                    bgSnd.setVolume(0.5f) // Make background 50% volume.
+                    bgSnd.setVolume(0.2f) // Make background 20% volume.
                     bgSnd.loopAll(1500) // Auto-play with fade-in.
                     // Example of the per-frame sound synchronization.
                     setOnKeyFrameChange("vert", Option((_, _) => stepSnd.playOnce()))
