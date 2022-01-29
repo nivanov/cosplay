@@ -19,6 +19,7 @@ CosPlay is 2D ASCII game engine written in [Scala3](https://www.scala-lang.org/)
 * Native support for any ANSI terminal on macOS, Windows, Linux, Unix, or z/OS
 * 8-bit and "True Color" 24-bit color modes
 * Advanced sprite-based animation
+* Camera focus tracking 
 * Extensive 2D ASCII graphics support
 * Powerful user-programmable shaders
 * Built-in particle effects support
