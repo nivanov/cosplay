@@ -103,7 +103,7 @@
         <scalatest.ver>3.2.11</scalatest.ver>
         <openjfx.ver>17.0.0.1</openjfx.ver>
         <flatlaf.ver>1.6.1</flatlaf.ver>
-        <ikonli.ver>12.2.0</ikonli.ver>
+        <ikonli.ver>12.3.0</ikonli.ver>
         <miglayout.ver>11.0</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>

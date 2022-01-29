@@ -43,7 +43,7 @@ val junitVer = "5.8.2"
 val scalaTestVer = "3.2.11"
 val openjfxVer = "15.0.1"
 val flatlafVer = "1.6.1"
-val ikonliVer = "12.2.0"
+val ikonliVer = "12.3.0"
 val miglayoutVer = "11.0"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
