@@ -92,6 +92,24 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
                 1 -> playerPosY.-(5)
             ), 100, '|'&C_AQUA)
 
+            def move(dy: Int): Unit =
+                if dy != 0 then
+                    if dy > 0 then
+                        if playerPosY < canv.height - 1 then
+                            playerPosY += dy
+
+                    if dy < 0 then
+                        if playerPosY > 0 + 5 then
+                            playerPosY += dy
+
+            ctx.getKbEvent match
+                case Some(evt) =>
+                    evt.key match
+                        case KEY_LO_W => move(-1)
+                        case KEY_LO_S => move(1)
+                        case _ => ()
+                case None => ()
+
     private val enemy = new CPCanvasSprite("enemy", Seq(new CPFadeInShader(true, 500, bgPx))):
         override def render(ctx: CPSceneObjectContext): Unit =
             super.render(ctx)
@@ -102,7 +120,6 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
                 canv.dim.width.-(2) -> enemyPosY,
                 canv.dim.width.-(2) -> enemyPosY.-(5)
             ), 100, '|'&C_AQUA)
-
 
     addObject(CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
     addObject(playerScoreSpr)
