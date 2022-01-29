@@ -42,7 +42,7 @@ val scalaReflectVer = "1.0.0"
 val junitVer = "5.8.2"
 val scalaTestVer = "3.2.9"
 val openjfxVer = "15.0.1"
-val flatlafVer = "1.6.1"
+val flatlafVer = "1.6.5"
 val ikonliVer = "12.2.0"
 val miglayoutVer = "11.0"
 
