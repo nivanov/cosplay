@@ -50,6 +50,9 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private var playerPosY = 30
     private var enemyPosY = 30
 
+    private var ballX = 0
+    private var ballY = -5
+
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).skin(
         (px, _, _) => px.char match
             case ':' => px.withFg(C_GREY70)
@@ -120,6 +123,15 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
                 canv.dim.width.-(2) -> enemyPosY,
                 canv.dim.width.-(2) -> enemyPosY.-(5)
             ), 100, '|'&C_AQUA)
+
+            if ballY > enemyPosY then
+                enemyPosY += 1
+            else if ballY < enemyPosY then
+                enemyPosY -= 1
+
+            if ballY < canv.height then
+                ballY += 1
+            println(ballY)
 
     addObject(CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
     addObject(playerScoreSpr)
