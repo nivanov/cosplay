@@ -52,7 +52,7 @@ object CPCameraExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel(' ', C_BLACK, C_GRAY1)
+        val bgPx = CPPixel(' ', C_BLACK, CPColor("#230A24"))
         val bgW = 200
         val bgH = 40
         val dim = CPDim(bgW, bgH)

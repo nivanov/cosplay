@@ -8,9 +8,9 @@
    🕹 2D ASCII JVM GAME ENGINE FOR SCALA3
 
 </pre>
- - GitHub project [[https://github.com/nivanov/cosplay]]
- - Main API is located in [[file:org/cosplay.html org.cosplay]] package.
- - Examples located under `org.cosplay.examples` package:
+- <b>Main API</b> is located in [[file:org/cosplay.html org.cosplay]] package.
+- GitHub project [[https://github.com/nivanov/cosplay]]
+- Examples located under `org.cosplay.examples` package:
    - [[file:org/cosplay/examples/animation.html Animation Examples]] 
    - [[file:org/cosplay/examples/camera.html Camera Examples]]       
    - [[file:org/cosplay/examples/vide.html Video Examples]]
