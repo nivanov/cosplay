@@ -102,10 +102,10 @@ import scala.util.Using
   * ### Loading images
   * You can load images from the external source like URL or file path in one of the following formats:
   *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native binary format supported by
-  *    [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor. This format support full color information.
+  *    [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor. This format supports full color information.
   *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
   *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
-  *    supported by CosPlay to save an image with. This format support full color information.
+  *    supported by CosPlay to save an image with. This format supports full color information.
   *  - `*.txt` format. Image in this format is a simple *.txt file and it does not provide or store any color
   *     information.
   *
@@ -124,11 +124,11 @@ import scala.util.Using
   * )
   * }}}
   *
-  * ### Saving (exporting) image
+  * ### Saving images
   * You can save image to the local file path in the following format:
   *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
   *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
-  *    supported by CosPlay to save an image with. This format support full color information.
+  *    supported by CosPlay to save an image with. This format supports full color information.
   *
   *  Use one of the following methods from the companion object to save the image to the file path:
   *   - [[save() save(...)]]

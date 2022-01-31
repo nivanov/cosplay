@@ -90,7 +90,7 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *    flag.
   *  - Create all necessary scenes, scene objects and assets. You can organize these objects in any desirable way - CosPlay
   *    does not impose any restrictions or limitation on how it is should be done.
-  *  - Once you have all scenes are constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
+  *  - Once you have all scenes constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
   *  - Make sure to call [[CPEngine.dispose()]] method upon exit from [[CPEngine.startGame()]] method.
   *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of

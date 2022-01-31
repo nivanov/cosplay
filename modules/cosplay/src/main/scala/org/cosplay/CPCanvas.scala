@@ -48,19 +48,18 @@ import scala.collection.mutable
   * You can also create the canvas object outside of game loop using companion object methods.
   *
   * Canvas `(0,0)` coordinate point is located in the top left corner. X-axis goes to the right and Y-axis
-  * points down. Every drawn pixel on the canvas also has a Z-index or depth (i.e. the imaginary Z-axis points
-  * behind the screen). Note that pixel with larger or equal Z-index ("closer" to the visual surface) visually
-  * overrides the pixel with the smaller Z-index.
+  * points down. Every drawn pixel on the canvas also has a Z-index or depth. Pixel with larger or equal
+  * Z-index visually overrides the pixel with the smaller Z-index.
   *
-  * ASCII-based graphics are vastly different from the traditional raster pixel-based graphics.
+  * ASCII-based graphics are vastly different from the traditional raster-based graphics.
   * Since ASCII-based drawing uses printable characters from ASCII character set that are displayed on basic text terminal
   * most differences are obvious but some are more subtle and unexpected. For example, while straight vertical and
   * horizontal lines are easy to implement many curved lines are much trickier to draw. Specifically, circles
   * and ellipses, for example, are hard to do properly in automated way. Moreover, many complex curves need to
   * be done manually, especially if they are dynamically redrawn on each frame update.
   *
-  * This class contains many routines for basic line and rectangular drawing, circle and polylines, anti-aliasing,
-  * "color" fill in, and much more. Most functions have multiple variants with different parameters so that they
+  * This class provides many methods for basic line and rectangular drawing, circle and polylines, anti-aliasing,
+  * "color" fill in, and much more. Most functions have multiple overriden variants with different parameters so that they
   * can be easily used in different contexts. Note also that this class deals primarily with line ASCII art and has
   * only few functions like [[antialias() antialiasing]] for the solid ASCII art.
   *
