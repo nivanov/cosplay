@@ -73,6 +73,9 @@ import impl.CPUtils
 abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id) with CPLifecycle:
     private var visible = true
 
+    private[cosplay] def toExtStr: String =
+        s"[id=$id, tags=(${getTags.mkString(",")}), visible=$isVisible, pos=($getX,$getY), z=$getZ, dim=$getDim]"
+
     /**
       * Checks the visibility flag.
       *

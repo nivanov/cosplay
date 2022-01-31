@@ -354,7 +354,9 @@ object CPEngine:
     /**
       * Gets root log for the game engine.
       */
-    def rootLog(): CPLog = engLog
+    def rootLog(): CPLog =
+        checkState()
+        engLog
 
     /**
       * Shows or hides the built-in FPS overlay in the right top corner. Can
@@ -362,7 +364,9 @@ object CPEngine:
       *
       * @param show Show/hide flag.
       */
-    def showFpsOverlay(show: Boolean): Unit = isShowFps = show
+    def showFpsOverlay(show: Boolean): Unit =
+        checkState()
+        isShowFps = show
 
     /**
       * Opens GUI-based log window by bringing it upfront.
@@ -648,7 +652,18 @@ object CPEngine:
             val dimS = x.getDim match
                 case Some(d) => d.toString
                 case None => "[adaptive]"
-            engLog.info(s"Switching to scene: ${x.getId} $dimS")
+            val tbl = CPAsciiTable("ID", "Tags", "Init Pos", "Z-index", "Visible", "Dim")
+            x.objects.foreach(scObj => {
+                tbl += (
+                    scObj.getId,
+                    scObj.getTags.mkString(","),
+                    s"(${scObj.getX},${scObj.getY})",
+                    scObj.getZ,
+                    scObj.isVisible,
+                    scObj.getDim
+                )
+            })
+            tbl.info(engLog, Option(s"Switching to scene '${x.getId}' $dimS with scene objects:"))
 
         try
             logSceneSwitch(sc) // Initial scene.
@@ -872,7 +887,10 @@ object CPEngine:
                     override def releaseMyFocus(): Unit = releaseFocus(myId)
                     override def addObject(obj: CPSceneObject): Unit =
                         val cloObj = obj
-                        delayedQ += (() => sc.objects.add(cloObj))
+                        delayedQ += (() =>
+                            sc.objects.add(cloObj)
+                            engLog.info(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
+                        )
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
                     override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
@@ -898,7 +916,9 @@ object CPEngine:
                         val colId = id
                         delayedQ += (() => {
                             sc.objects.remove(colId) match
-                                case Some(obj) => lifecycleStop(obj)
+                                case Some(obj) =>
+                                    engLog.info(s"Scene object deleted from '${sc.getId}' scene: ${obj.toExtStr}")
+                                    lifecycleStop(obj)
                                 case _ => ()
                         })
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
