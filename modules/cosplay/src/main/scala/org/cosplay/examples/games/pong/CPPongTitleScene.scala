@@ -70,14 +70,16 @@ object CPPongTitleScene extends CPScene("title", None, bgPx):
             case '|' | '.' | '`' | '-' | '\'' => ch&C_LIME
             case _ => ch.toUpper&C_DARK_ORANGE
     ).trimBg()
+
+    private val fadeInShdr = CPFadeInShader(true, 1500, bgPx)
     
-    private val logoSpr = new CPImageSprite("logoSpr", 0, 0, 0, logoImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
+    private val logoSpr = new CPImageSprite("logoSpr", 0, 0, 0, logoImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.width - logoImg.getWidth) / 2)
             setY((canv.dim.height - logoImg.getHeight) / 20)
 
-    private val helpSpr1 = new CPImageSprite("helpSpr1", 0, 0, 0, helpImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
+    private val helpSpr1 = new CPImageSprite("helpSpr1", 0, 0, 0, helpImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.width - helpImg.getWidth) / 2)

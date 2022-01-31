@@ -50,7 +50,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private var playerPosY = 30
     private var enemyPosY = 30
 
-    private var ballX = 0
+    private var ballX = 5
     private var ballY = -5
 
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).skin(
@@ -59,25 +59,41 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             case _ => px
     ).trimBg()
 
-    private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).skin(
-        (px, _, _) => px.char match
-            case ':' => px.withFg(C_GREY70)
-            case _ => px
+    private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg()
+
+    val ballImg = CPArrayImage(
+        prepSeq(
+            """
+              | _
+              |(_)
+            """
+        ),
+        (ch, _, _) => ch&C_AQUA
     ).trimBg()
 
-    private val playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
+    println(ballImg)
+
+    private val fadeInShdr = CPFadeInShader(true, 1500, bgPx)
+
+    private val playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.width - playerScoreImg.getWidth) / 4)
             setY(0)
 
-    private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
+    private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.width - enemyScoreImg.getWidth) - ((canv.dim.width / 4) - 1))
             setY(0)
 
-    private val border = new CPCanvasSprite("border", Seq(new CPFadeInShader(true, 500, bgPx))):
+    private val ballSpr = new CPImageSprite("ballSpr", 0, 0, 0, ballImg, shaders = Seq(fadeInShdr)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+            setX(ballX)
+            setY(ballY)
+
+    private val border = new CPCanvasSprite("border", Seq(fadeInShdr)):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
@@ -86,7 +102,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
                 canv.dim.width / 2 -> canv.dim.height
             ), 100, '|'&C_AQUA)
 
-    private val player = new CPCanvasSprite("player", Seq(new CPFadeInShader(true, 500, bgPx))):
+    private val player = new CPCanvasSprite("player", Seq(fadeInShdr)):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
@@ -113,7 +129,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
                         case _ => ()
                 case None => ()
 
-    private val enemy = new CPCanvasSprite("enemy", Seq(new CPFadeInShader(true, 500, bgPx))):
+    private val enemy = new CPCanvasSprite("enemy", Seq(fadeInShdr)):
         override def render(ctx: CPSceneObjectContext): Unit =
             super.render(ctx)
 
@@ -139,3 +155,4 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     addObject(border)
     addObject(player)
     addObject(enemy)
+    addObject(ballSpr)
