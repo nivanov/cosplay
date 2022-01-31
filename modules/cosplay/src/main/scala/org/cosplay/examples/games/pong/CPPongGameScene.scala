@@ -149,10 +149,4 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
                 ballY += 1
             println(ballY)
 
-    addObject(CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
-    addObject(playerScoreSpr)
-    addObject(enemyScoreSpr)
-    addObject(border)
-    addObject(player)
-    addObject(enemy)
-    addObject(ballSpr)
+    addObjects(CPKeyboardSprite(KEY_LO_Q, _.exitGame()), playerScoreSpr, enemyScoreSpr, border, player, enemy, ballSpr)

@@ -86,7 +86,4 @@ object CPPongTitleScene extends CPScene("title", None, bgPx):
             setY((canv.dim.height - helpImg.getHeight))
 
     // Add scene objects...
-    addObject(logoSpr)
-    addObject(helpSpr1)
-    addObject(CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
-    addObject(CPKeyboardSprite(KEY_ENTER, _.switchScene("game")))
+    addObjects(logoSpr, helpSpr1, CPKeyboardSprite(KEY_LO_Q, _.exitGame()), CPKeyboardSprite(KEY_ENTER, _.switchScene("game")))

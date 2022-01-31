@@ -86,11 +86,11 @@ open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGame
     private[cosplay] val objects = CPContainer[CPSceneObject]()
 
     /**
-      * Adds scene object to this scene.
+      * Adds scene object(s) to this scene.
       *
-      * @param obj Scene object to add.
+      * @param objs Scene objects to add.
       */
-    protected def addObject(obj: CPSceneObject): Unit = objects.add(obj)
+    protected def addObjects(objs: CPSceneObject*): Unit = objs.foreach(objects.add)
 
     /**
       * Gets camera panning descriptor associated with this scene. By default, the camera panning
