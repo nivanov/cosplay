@@ -43,27 +43,34 @@ import prefabs.scenes.*
 */
 
 object CPPongTitleScene extends CPScene("title", None, bgPx):
-    private val logoImg = FIG_DOH.render("Pong", C_WHITE).skin(
+    private val logoImg = FIG_BIG_MONEY_NE.render("Pong", C_WHITE).skin(
         (px, _, _) => px.char match
-            case ':' => px.withFg(C_GREY70)
-            case _ => px
+            case '$' => px.withFg(C_DARK_CYAN)
+            case _ => px.withFg(C_DARK_GOLDEN_ROD)
     ).trimBg()
 
     val helpImg = CPArrayImage(
         prepSeq(
             """
-              |    HOW TO PLAY
-              |
-              |GET 10 POINTS TO WIN
+              |       GET 10 POINTS TO WIN
               |
               |
-              |    UP       Down
-              |  .----.    .----.
-              |  | W  |    | S  |
-              |  `----'    `----'
+              |       
+              |           Up      Down
+              |         .----.    .----.
+              |         | W  |    | S  |
+              |         `----'    `----'
+              |           or        or
+              |         .----.    .----.
+              |         | Up |    | Dn |
+              |         `----'    `----'
+              |       
+              |           [ENTER] Play
+              |             [Q] Quit
               |
-              |    [ENTER] Play
-              |      [Q] Quit
+              |
+              |
+              |Copyright (C) 2022 Rowan Games, Inc
                 """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C_STEEL_BLUE1
@@ -76,14 +83,18 @@ object CPPongTitleScene extends CPScene("title", None, bgPx):
     private val logoSpr = new CPImageSprite("logoSpr", 0, 0, 0, logoImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            setX((canv.dim.width - logoImg.getWidth) / 2)
-            setY((canv.dim.height - logoImg.getHeight) / 20)
+            val y = Math.max(0, canv.dim.height / 2 - logoImg.getHeight - 1)
+            val x = (canv.dim.width - logoImg.getWidth) / 2
+            setX(x)
+            setY(y)
 
-    private val helpSpr1 = new CPImageSprite("helpSpr1", 0, 0, 0, helpImg, shaders = Seq(fadeInShdr)):
+    private val helpSpr = new CPImageSprite("helpSpr1", 0, 0, 0, helpImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            setX((canv.dim.width - helpImg.getWidth) / 2)
-            setY((canv.dim.height - helpImg.getHeight))
+            val y = Math.max(0, canv.dim.height / 2 + 1)
+            val x = (canv.dim.width - helpImg.getWidth) / 2
+            setX(x)
+            setY(y)
 
     // Add scene objects...
-    addObjects(logoSpr, helpSpr1, CPKeyboardSprite(KEY_LO_Q, _.exitGame()), CPKeyboardSprite(KEY_ENTER, _.switchScene("game")))
+    addObjects(logoSpr, helpSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()), CPKeyboardSprite(KEY_ENTER, _.switchScene("game")))
