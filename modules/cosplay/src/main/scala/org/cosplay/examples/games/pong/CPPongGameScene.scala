@@ -47,12 +47,15 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private var playerScore = 0
     private var enemyScore = 0
 
-    private var playerPosY = 30
-    private var enemyPosY = 30
+    private var playerPosY: Float = 30
+    private var enemyPosY: Float = 30
 
-    private var ballX = 5
-    private var ballY = -5
+    private var ballX: Float = 5
+    private var ballY: Float = -5
+    private val paddleSpeed: Float = 0.4
+
     private var ballAngle = 45
+    private var ballSpeed = 0.1
 
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).skin(
         (px, _, _) => px.char match
@@ -92,12 +95,11 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
-            ballX = ballX + Math.cos(Math.toRadians(ballAngle) * 2)
-            ballY = ballY + Math.sin(Math.toRadians(ballAngle) * 2)
+            ballX = (ballX + Math.cos(Math.toRadians(ballAngle) * ballSpeed)).round
+            ballY = (ballY + Math.sin(Math.toRadians(ballAngle) * ballSpeed)).round
 
-            setX(ballX)
-            setY(ballY)
-
+            setX(ballX.round.toInt)
+            setY(ballY.round.toInt)
 
     private val border = new CPCanvasSprite("border", Seq(fadeInShdr)):
         override def render(ctx: CPSceneObjectContext): Unit =
@@ -113,11 +115,11 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             val canv = ctx.getCanvas
 
             canv.drawPolyline(Seq(
-                1 -> playerPosY,
-                1 -> playerPosY.-(5)
+                1 -> playerPosY.round.toInt,
+                1 -> (playerPosY.-(5)).round.toInt
             ), 100, '|'&C_AQUA)
 
-            def move(dy: Int): Unit =
+            def move(dy: Float): Unit =
                 if dy != 0 then
                     if dy > 0 then
                         if playerPosY < canv.height - 1 then
@@ -130,8 +132,8 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_LO_W => move(-1)
-                        case KEY_LO_S => move(1)
+                        case KEY_LO_W => move(-paddleSpeed)
+                        case KEY_LO_S => move(paddleSpeed)
                         case _ => ()
                 case None => ()
 
@@ -142,14 +144,14 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             val canv = ctx.getCanvas
 
             canv.drawPolyline(Seq(
-                canv.dim.width.-(2) -> enemyPosY,
-                canv.dim.width.-(2) -> enemyPosY.-(5)
+                canv.dim.width.-(2) -> enemyPosY.round.toInt,
+                canv.dim.width.-(2) -> (enemyPosY.-(5)).round.toInt
             ), 100, '|'&C_AQUA)
 
             if ballY > enemyPosY then
-                enemyPosY += 1
+                enemyPosY = (enemyPosY + paddleSpeed).round
             else if ballY < enemyPosY then
-                enemyPosY -= 1
+                enemyPosY = (enemyPosY - paddleSpeed).round
 
             if ballY < canv.height then
                 ballY += 1
