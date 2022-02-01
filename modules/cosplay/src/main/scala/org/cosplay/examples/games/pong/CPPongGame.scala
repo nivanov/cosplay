@@ -54,6 +54,13 @@ object CPPongGame:
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
 
+        /*
+        // DEBUG GAME - UNCOMMENT.
+        // =======================
+        CPEngine.pauseGame()
+        CPEngine.openLog()
+        */
+
         // Start the game & wait for exit.
         try CPEngine.startGame(CPPongTitleScene, CPPongGameScene)
         finally CPEngine.dispose()

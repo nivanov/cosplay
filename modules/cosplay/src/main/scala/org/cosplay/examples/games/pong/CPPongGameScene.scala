@@ -72,10 +72,10 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
               |(_)
             """
         ),
-        (ch, _, _) => ch&C_AQUA
+        (ch, _, _) => ch&C_DARK_GOLDEN_ROD
     ).trimBg()
 
-    println(ballImg)
+    //println(ballImg)
 
     private val fadeInShdr = CPFadeInShader(true, 1500, bgPx)
 
@@ -116,8 +116,8 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
 
             canv.drawPolyline(Seq(
                 1 -> playerPosY.round.toInt,
-                1 -> (playerPosY.-(5)).round.toInt
-            ), 100, '|'&C_AQUA)
+                1 -> (playerPosY - 5).round.toInt
+            ), 100, CPPixel(' ', C_BLACK, Option(C_AQUA)))
 
             def move(dy: Float): Unit =
                 if dy != 0 then
@@ -132,8 +132,8 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_LO_W => move(-paddleSpeed)
-                        case KEY_LO_S => move(paddleSpeed)
+                        case KEY_LO_W | KEY_UP => move(-paddleSpeed)
+                        case KEY_LO_S | KEY_DOWN => move(paddleSpeed)
                         case _ => ()
                 case None => ()
 
@@ -146,7 +146,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             canv.drawPolyline(Seq(
                 canv.dim.width.-(2) -> enemyPosY.round.toInt,
                 canv.dim.width.-(2) -> (enemyPosY.-(5)).round.toInt
-            ), 100, '|'&C_AQUA)
+            ), 100, CPPixel(' ', C_BLACK, Option(C_GREEN_YELLOW)))
 
             if ballY > enemyPosY then
                 enemyPosY = (enemyPosY + paddleSpeed).round
@@ -155,6 +155,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
 
             if ballY < canv.height then
                 ballY += 1
-            println(ballY)
+            //println(ballY)
 
     addObjects(CPKeyboardSprite(KEY_LO_Q, _.exitGame()), playerScoreSpr, enemyScoreSpr, border, player, enemy, ballSpr)
+    
