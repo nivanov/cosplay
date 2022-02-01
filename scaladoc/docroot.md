@@ -9,19 +9,25 @@
 
 </pre>
 - <b>Main API</b> is located in [[file:org/cosplay.html org.cosplay]] package.
+- Full [[https://www.cosplayengine.com/docs.html documentation]]
 - GitHub project [[https://github.com/nivanov/cosplay]]
-- Examples located under `org.cosplay.examples` package:
-   - [[file:org/cosplay/examples/animation.html Animation Examples]] 
-   - [[file:org/cosplay/examples/camera.html Camera Examples]]       
-   - [[file:org/cosplay/examples/vide.html Video Examples]]
-   - [[file:org/cosplay/examples/image.html Image Examples]]
-   - [[file:org/cosplay/examples/canvas.html Canvas Examples]]
-   - [[file:org/cosplay/examples/shader.html Shaders Examples]]
-   - [[file:org/cosplay/examples/sound.html Sound Examples]]
-   - [[file:org/cosplay/examples/image.html Image Examples]]
-   - [[file:org/cosplay/examples/particle.html Particle Effect Examples]]
-   - [[file:org/cosplay/examples/font.html Font Examples]]
-   - [[file:org/cosplay/examples/tilemapper.html Tile Mapping Examples]]
+
+[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/apache/opennlp/master/LICENSE)
+[![build](https://github.com/nivanov/cosplay/actions/workflows/build.yml/badge.svg)](https://github.com/nivanov/cosplay/actions/workflows/build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/org.cosplayengine/cosplay.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.cosplayengine%22%20AND%20a:%22cosplay%22)
+
+Examples located under `org.cosplay.examples` package:
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/animation Animation Examples]] 
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/camera Camera Examples]]       
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/video Video Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/image Image Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/canvas Canvas Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/shader Shaders Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/sound Sound Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/textinput Text Input Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/particle Particle Effect Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/fonts Font Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/tilemapper Tile Mapping Examples]]
 
 Maven dependency:
 <pre>
