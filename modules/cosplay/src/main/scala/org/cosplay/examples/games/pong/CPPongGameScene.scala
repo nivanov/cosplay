@@ -52,6 +52,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
 
     private var ballX = 5
     private var ballY = -5
+    private var ballAngle = 45
 
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).skin(
         (px, _, _) => px.char match
@@ -90,8 +91,13 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private val ballSpr = new CPImageSprite("ballSpr", 0, 0, 0, ballImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
+
+            ballX = ballX + Math.cos(Math.toRadians(ballAngle) * 2)
+            ballY = ballY + Math.sin(Math.toRadians(ballAngle) * 2)
+
             setX(ballX)
             setY(ballY)
+
 
     private val border = new CPCanvasSprite("border", Seq(fadeInShdr)):
         override def render(ctx: CPSceneObjectContext): Unit =
