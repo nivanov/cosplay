@@ -195,7 +195,6 @@ object CPEngine:
             while (!st0p)
                 var key = KEY_UNKNOWN
 
-                //noinspection ScalaUnnecessaryParentheses
                 try
                     read(0) match // Blocking wait (timeout = 0).
                         case ESC => read(1) match
@@ -770,6 +769,7 @@ object CPEngine:
                         // will never be available to the user...
                         if kbKey == KEY_CTRL_H then kbKey = KEY_BACKSPACE
                         else if kbKey == KEY_CTRL_I then kbKey = KEY_TAB
+                        else if kbKey == KEY_CTRL_M then kbKey = KEY_ENTER
 
                         lastKbEvt match
                             case Some(lastEvt) =>
