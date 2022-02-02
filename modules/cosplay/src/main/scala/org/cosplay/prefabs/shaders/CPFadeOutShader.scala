@@ -92,7 +92,7 @@ class CPFadeOutShader(
                         val px = zpx.px
                         if px != bgPx && !skip(zpx, x, y) then
                             val balance = 1.0f - frmCnt.toFloat / maxFrmCnt
-                            val newFg = CPColor.mixture(px.fg, bgBg, frmCnt.toFloat / maxFrmCnt)
+                            val newFg = CPColor.mixture(px.fg, bgFg, frmCnt.toFloat / maxFrmCnt)
                             val newBg = px.bg match
                                 case Some(c) => Option(CPColor.mixture(c, bgBg, frmCnt.toFloat / maxFrmCnt))
                                 case None => None
