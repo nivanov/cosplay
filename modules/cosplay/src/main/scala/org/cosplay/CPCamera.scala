@@ -83,7 +83,7 @@ open class CPCamera:
       *     to follow the focus subject.
       * @param focusFrameInsets Focus frame defined as insets from screen size.
       */
-    private[cosplay] def this(focusTrackId: String, focusFrameInsets: CPInsets) =
+    def this(focusTrackId: String, focusFrameInsets: CPInsets) =
         this()
         setFocusTrackId(Option(focusTrackId))
         setFocusFrameInsets(focusFrameInsets)

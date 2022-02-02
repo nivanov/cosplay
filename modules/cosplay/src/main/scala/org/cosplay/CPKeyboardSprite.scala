@@ -17,6 +17,8 @@
 
 package org.cosplay
 
+import org.cosplay.impl.CPUtils
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -61,7 +63,7 @@ package org.cosplay
   *
   * @param f Keyboard key handler.
   */
-class CPKeyboardSprite(f: (CPSceneObjectContext, CPKeyboardKey) => Unit) extends CPOffScreenSprite:
+class CPKeyboardSprite(f: (CPSceneObjectContext, CPKeyboardKey) => Unit) extends CPOffScreenSprite(s"kbd-spr-${CPUtils.guid6}"):
     /** @inheritdoc */ 
     override def update(ctx: CPSceneObjectContext): Unit = ctx.getKbEvent match
         case Some(evt) => f(ctx, evt.key)

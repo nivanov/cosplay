@@ -79,22 +79,11 @@ object CPPongTitleScene extends CPScene("title", None, bgPx):
     ).trimBg()
 
     private val fadeInShdr = CPFadeInShader(true, 1500, bgPx)
-    
-    private val logoSpr = new CPImageSprite("logoSpr", 0, 0, 0, logoImg, shaders = Seq(fadeInShdr)):
-        override def update(ctx: CPSceneObjectContext): Unit =
-            val canv = ctx.getCanvas
-            val y = Math.max(0, canv.dim.height / 2 - logoImg.getHeight - 1)
-            val x = (canv.dim.width - logoImg.getWidth) / 2
-            setX(x)
-            setY(y)
-
-    private val helpSpr = new CPImageSprite("helpSpr1", 0, 0, 0, helpImg, shaders = Seq(fadeInShdr)):
-        override def update(ctx: CPSceneObjectContext): Unit =
-            val canv = ctx.getCanvas
-            val y = Math.max(0, canv.dim.height / 2 + 1)
-            val x = (canv.dim.width - helpImg.getWidth) / 2
-            setX(x)
-            setY(y)
 
     // Add scene objects...
-    addObjects(logoSpr, helpSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()), CPKeyboardSprite(KEY_ENTER, _.switchScene("game")))
+    addObjects(
+        CPImageSprite("logoSpr", c => (c.width - logoImg.getWidth) / 2, c => Math.max(0, c.height / 2 - logoImg.getHeight - 1), 0, logoImg, false, Seq(fadeInShdr)),
+        CPImageSprite("helpSpr1", c => (c.width - helpImg.getWidth) / 2, c => Math.max(0, c.height / 2 + 1), 0, helpImg, false, Seq(fadeInShdr)),
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        CPKeyboardSprite(KEY_ENTER, _.switchScene("game"))
+    )

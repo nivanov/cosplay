@@ -175,3 +175,46 @@ class CPImageSprite(
     override def getCollisionRect: Option[CPRect] = Option.when(collidable)(getRect)
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext): Unit = ctx.getCanvas.drawImage(img, getX, getY, getZ)
+
+/**
+  * Companion object contains utility methods.
+  */
+object CPImageSprite:
+    /**
+      * A convenient shortcut constructor for the image sprite that works in adaptive scene.
+      *
+      * Instead of concrete XY-coordinates this method takes two functions that each takes an instance of
+      * [[CPCanvas]] class and produce X or Y coordinate. This way this image sprite can update its position
+      * on the canvas on each frame. See [[CPScene]] on details about adaptive scenes.
+      *
+      * @param id ID of the sprite.
+      * @param xf X-coordinate producing function that takes [[CPCanvas]] parameter.
+      * @param yf Y-coordinate producing function that takes [[CPCanvas]] parameter.
+      * @param z Z-index at which to render the image.
+      * @param img The image to render. It can be changed later.
+      * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
+      * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+      * @see [[CPStaticImageSprite]]
+      * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
+      *     using images.
+      * @example See [[org.cosplay.examples.image.CPImageFormatsExample CPImageFormatsExample]] class for the example of
+      *     using images.
+      */
+    def apply(
+        id: String,
+        xf: CPCanvas => Int,
+        yf: CPCanvas => Int,
+        z: Int,
+        img: CPImage,
+        collidable: Boolean = false,
+        shaders: Seq[CPShader] = Seq.empty): CPImageSprite =
+        new CPImageSprite(id, 0, 0, z, img, collidable, shaders):
+            private var x = initX
+            private var y = initY
+
+            override def getX: Int = x
+            override def getY: Int = y
+            override def update(ctx: CPSceneObjectContext): Unit =
+                val canv = ctx.getCanvas
+                x = xf(canv)
+                y = yf(canv)

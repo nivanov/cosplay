@@ -169,12 +169,12 @@ object CPUtils:
     /**
       *
       */
-    def guid: String = UUID.randomUUID().toString
+    def guid: String = UUID.randomUUID().toString.toLowerCase
 
     /**
       * 
       */
-    def guid6: String = RandomStringUtils.random(6, true, true)
+    def guid6: String = RandomStringUtils.random(6, true, true).toLowerCase
 
     /**
       *
