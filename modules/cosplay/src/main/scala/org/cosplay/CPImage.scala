@@ -730,7 +730,7 @@ object CPImage:
                 "scene",
                 Some(dim),
                 bg,
-                CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
+                new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
                 CPUtils.makeExitGameOnLoQ()
             ))
         finally
