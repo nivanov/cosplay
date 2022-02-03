@@ -222,11 +222,7 @@ object CPCameraExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Camera Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(initDim),
-            ),
+            CPGameInfo(name = "Camera Example", initDim = Option(initDim)),
             System.console() == null || args.contains("emuterm")
         )
 

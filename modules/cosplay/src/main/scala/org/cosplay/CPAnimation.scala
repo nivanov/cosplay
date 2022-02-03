@@ -252,7 +252,6 @@ object CPAnimation:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview $dim",
-                devName = "(C) 2022 Rowan Games, Inc.",
                 initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
@@ -266,7 +265,7 @@ object CPAnimation:
                 Option(dim),
                 bg,
                 spr, // Animation we are previewing.
-                CPUtils.makeExitGameOnLoQ()
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // ¯\_(ツ)_/¯
             ))
         finally
             CPEngine.dispose()

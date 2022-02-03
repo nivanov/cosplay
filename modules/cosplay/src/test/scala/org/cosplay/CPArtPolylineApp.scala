@@ -45,11 +45,7 @@ object CPArtPolylineApp:
         val bgPx = CPPixel(' ', C_GRAY2, C_GRAY1)
 
         CPEngine.init(
-            CPGameInfo(
-                name = s"Art Polyline Test",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim),
-            ),
+            CPGameInfo(name = s"Art Polyline Test", initDim = Option(dim)),
             emuTerm = System.console() == null || args.contains("emuterm")
         )
 

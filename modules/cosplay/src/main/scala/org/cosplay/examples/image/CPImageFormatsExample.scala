@@ -134,11 +134,7 @@ object CPImageFormatsExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Image Formats Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "Image Formats Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 

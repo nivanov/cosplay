@@ -162,11 +162,7 @@ object CPTileMapperExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "TileMapper Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "TileMapper Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 

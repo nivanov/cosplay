@@ -85,11 +85,7 @@ object CPVideoExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Video Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "Video Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 

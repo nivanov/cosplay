@@ -162,11 +162,7 @@ object CPShaderExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Shaders Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "Shaders Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 

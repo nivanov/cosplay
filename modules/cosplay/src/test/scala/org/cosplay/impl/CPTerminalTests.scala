@@ -32,7 +32,6 @@ object CPTerminalTests:
     def termTests(): Unit =
         val gameInfo = CPGameInfo(
             name = "Name",
-            devName = "Developer",
             initDim = Option(CPDim(10, 10)),
             termBg = CPColor.C_DFLT_BG,
             minDim = Option(CPDim(10, 10))

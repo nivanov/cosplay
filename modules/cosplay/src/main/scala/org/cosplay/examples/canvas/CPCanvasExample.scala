@@ -148,11 +148,7 @@ object CPCanvasExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Canvas Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "Canvas Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 

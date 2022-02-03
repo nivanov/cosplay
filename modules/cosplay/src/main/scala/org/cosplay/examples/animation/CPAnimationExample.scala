@@ -169,11 +169,7 @@ object CPAnimationExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Animation Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "Animation Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 
