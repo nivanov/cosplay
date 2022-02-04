@@ -157,9 +157,6 @@ object CPTileMapperExample:
             case _ => None
         ).foreach(objs ::= _)
 
-        // Create the scene.
-        val sc = new CPScene("scene", Option(dim), bgPx, objs)
-
         // Initialize the engine.
         CPEngine.init(
             CPGameInfo(name = "TileMapper Example", initDim = Option(dim)),
@@ -167,7 +164,7 @@ object CPTileMapperExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(sc)
+        try CPEngine.startGame(new CPScene("scene", Option(dim), bgPx, objs))
         finally CPEngine.dispose()
 
         sys.exit(0)

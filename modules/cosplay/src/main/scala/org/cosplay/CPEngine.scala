@@ -58,7 +58,6 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *
   * Most CosPlay games follow this basic game organization:
   * {{{
-  *import org.cosplay.CPColor.*
   *import org.cosplay.*
   *
   *object Game:

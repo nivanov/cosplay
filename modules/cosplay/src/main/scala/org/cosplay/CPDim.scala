@@ -33,7 +33,7 @@ import scala.annotation.targetName
 */
 
 /**
-  * 2D dimension container.
+  * 2D dimension immutable container.
   *
   * @param width Width in characters.
   * @param height Height in characters.

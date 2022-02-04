@@ -227,7 +227,7 @@ object CPCameraExample:
         )
 
         try
-            // Start the game&wait for exit.
+            // Start the game & wait for exit.
             CPEngine.startGame(
                 new CPLogoScene(
                     id = "logo",

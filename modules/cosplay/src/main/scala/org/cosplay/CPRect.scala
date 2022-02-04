@@ -34,7 +34,12 @@ import impl.CPUtils
 */
 
 /**
-  * Rectangular shape. This class is used to define any arbitrary rectangular shape.
+  * Rectangular shape.
+  *
+  * This class is used to define any arbitrary rectangular shape. Note that this class
+  * only describes the rectangular shape but does not hold any content.
+  *
+  * @see [[CPArray2D]] 2D content holder.
   */
 final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(x, y, width, height):
     if width < 0 || height < 0 then E(s"Rect dimension must be >= 0: [$width, $height]")

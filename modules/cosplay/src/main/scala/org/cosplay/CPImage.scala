@@ -44,7 +44,7 @@ import scala.util.Using
 */
 
 /**
-  * Defines rectangular shape and its content.
+  * Defines rectangular shape and its content as a collection of [[CPPixel pixels]].
   *
   * Image is one of the key types in CosPlay. Almost everything that is drawn on the screen is represented
   * by an image: FIGLet font string, sprites, video and animation frames, etc. Image itself is just a

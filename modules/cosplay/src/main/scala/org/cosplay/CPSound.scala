@@ -47,7 +47,7 @@ import scala.collection.{immutable, mutable}
   * Sounds object requires URI of the sound file in one of the supported formats: `AIFF`, `AU` or `WAV`.
   * Sound object is immutable but its playback can be controlled with changing volume, balance, rate, fade in
   * and out. Sounds are inherently asynchronous objects, you can have many sounds objects, all of them
-  * are independent from each other, and you can play them in parallel.
+  * are independent of each other, and you can play them in parallel.
   *
   * Sound is an asset. Just like other assets such as [[CPFont fonts]], [[CPImage images]], [[CPAnimation animations]] or
   * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPSceneObject scene objects]]

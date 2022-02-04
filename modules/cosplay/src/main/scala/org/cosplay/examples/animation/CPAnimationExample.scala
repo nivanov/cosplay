@@ -173,76 +173,76 @@ object CPAnimationExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        try
-            val bgSnd = CPSound(src = "sounds/examples/bg0.wav")
-            val stepSnd = CPSound(src = "sounds/examples/step.wav")
-            val hopSnd = CPSound(src = "sounds/examples/hop.wav")
+        val bgSnd = CPSound(src = "sounds/examples/bg0.wav")
+        val stepSnd = CPSound(src = "sounds/examples/step.wav")
+        val hopSnd = CPSound(src = "sounds/examples/hop.wav")
 
-            val aniSeq = Seq(
-                // In film strip animation each frame is shown for the same amount of time.
-                CPAnimation.filmStrip("right", 150, imgs = imgsRight),
-                CPAnimation.filmStrip("left", 150, imgs = imgsLeft),
-                // In time-based animation each frame has its own duration.
-                CPAnimation.timeBased("idle", frames = Seq(
-                    imgsIdle.head -> 1000,
-                    imgsIdle(1) -> 100,
-                    imgsIdle(2) -> 1000,
-                    imgsIdle(3) -> 1000,
-                    imgsIdle(4) -> 100
-                )),
-                CPAnimation.filmStrip("vert", 150, imgs = imgVert)
-            )
+        val aniSeq = Seq(
+            // In film strip animation each frame is shown for the same amount of time.
+            CPAnimation.filmStrip("right", 150, imgs = imgsRight),
+            CPAnimation.filmStrip("left", 150, imgs = imgsLeft),
+            // In time-based animation each frame has its own duration.
+            CPAnimation.timeBased("idle", frames = Seq(
+                imgsIdle.head -> 1000,
+                imgsIdle(1) -> 100,
+                imgsIdle(2) -> 1000,
+                imgsIdle(3) -> 1000,
+                imgsIdle(4) -> 100
+            )),
+            CPAnimation.filmStrip("vert", 150, imgs = imgVert)
+        )
 
-            val fiShdr = new CPFadeInShader(true, 500, bgPx)
-            val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
+        val fiShdr = new CPFadeInShader(true, 500, bgPx)
+        val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
-            val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
-                // Use 'float' type for coordinates to smooth out the movement.
-                private var x = super.getX.toFloat
-                private var y = super.getY.toFloat
+        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
+            // Use 'float' type for coordinates to smooth out the movement.
+            private var x = super.getX.toFloat
+            private var y = super.getY.toFloat
 
-                private def move(ctx: CPSceneObjectContext, dx: Float, dy: Float): Unit =
-                    if dx != 0f then
-                        // Change animation without waiting for the current one to complete.
-                        change(if dx < 0 then "left" else "right", finish = false)
-                        x += dx
-                        if dx.abs.round == 1.0f || ctx.getFrameCount % 6 == 0 then hopSnd.playOnce()
+            private def move(ctx: CPSceneObjectContext, dx: Float, dy: Float): Unit =
+                if dx != 0f then
+                    // Change animation without waiting for the current one to complete.
+                    change(if dx < 0 then "left" else "right", finish = false)
+                    x += dx
+                    if dx.abs.round == 1.0f || ctx.getFrameCount % 6 == 0 then hopSnd.playOnce()
                     else if dy != 0f then
-                        // Change animation without waiting for the current one to complete.
+                    // Change animation without waiting for the current one to complete.
                         change("vert", finish = false)
-                        y += dy
+                    y += dy
 
-                override def onStart(): Unit =
-                    super.onActivate()
-                    bgSnd.setVolume(0.2f) // Make background 20% volume.
-                    bgSnd.loopAll(1500) // Auto-play with fade-in.
-                    // Example of the per-frame sound synchronization.
-                    setOnKeyFrameChange("vert", Option((_, _) => stepSnd.playOnce()))
-                override def getX: Int = x.round
-                override def getY: Int = y.round
-                override def update(ctx: CPSceneObjectContext): Unit =
-                    super.update(ctx)
-                    ctx.getKbEvent match
-                        case Some(evt) =>
-                            evt.key match
-                                // NOTE: if keyboard event is repeated (same key pressed in consecutive frames) -
-                                // we use smaller movement amount to smooth out the movement. If key press
-                                // is "new" we move the entire character position to avoid an initial "dead keystroke" feel.
-                                case KEY_LO_A | KEY_LEFT => move(ctx, if evt.isRepeated then -0.35f else -1.0f, 0)
-                                case KEY_LO_D | KEY_RIGHT => move(ctx, if evt.isRepeated then 0.35f else 1.0f, 0)
-                                case KEY_LO_W | KEY_UP => move(ctx, 0, if evt.isRepeated then -0.3f else -1.0f)
-                                case KEY_LO_S | KEY_DOWN => move(ctx, 0, if evt.isRepeated then 0.3f else 1.0f)
-                                case _ => ()
-                        // Switch to 'idle' waiting for the current animation to complete (default).
-                        case None => change("idle")
+            override def onStart(): Unit =
+                super.onActivate()
+                bgSnd.setVolume(0.2f) // Make background 20% volume.
+                bgSnd.loopAll(1500) // Auto-play with fade-in.
+                // Example of the per-frame sound synchronization.
+                setOnKeyFrameChange("vert", Option((_, _) => stepSnd.playOnce()))
+            override def getX: Int = x.round
+            override def getY: Int = y.round
+            override def update(ctx: CPSceneObjectContext): Unit =
+                super.update(ctx)
+                ctx.getKbEvent match
+                    case Some(evt) =>
+                        evt.key match
+                            // NOTE: if keyboard event is repeated (same key pressed in consecutive frames) -
+                            // we use smaller movement amount to smooth out the movement. If key press
+                            // is "new" we move the entire character position to avoid an initial "dead keystroke" feel.
+                            case KEY_LO_A | KEY_LEFT => move(ctx, if evt.isRepeated then -0.35f else -1.0f, 0)
+                            case KEY_LO_D | KEY_RIGHT => move(ctx, if evt.isRepeated then 0.35f else 1.0f, 0)
+                            case KEY_LO_W | KEY_UP => move(ctx, 0, if evt.isRepeated then -0.3f else -1.0f)
+                            case KEY_LO_S | KEY_DOWN => move(ctx, 0, if evt.isRepeated then 0.3f else 1.0f)
+                            case _ => ()
+                    // Switch to 'idle' waiting for the current animation to complete (default).
+                    case None => change("idle")
 
-            val sc = new CPScene("scene", Option(dim), bgPx,
-                player,
-                CPStaticImageSprite(28, 28, 0, imgHelp),
-                // On 'Ctrl-q' kick in fade out shader that will exit the game once it is finished.
-                CPKeyboardSprite(KEY_LO_Q, _ => foShdr.start())
-            )
+        val sc = new CPScene("scene", Option(dim), bgPx,
+            player,
+            CPStaticImageSprite(28, 28, 0, imgHelp),
+            // On 'Ctrl-q' kick in fade out shader that will exit the game once it is finished.
+            CPKeyboardSprite(KEY_LO_Q, _ => foShdr.start())
+        )
 
+        try
             // Start the game & wait for exit.
             CPEngine.startGame(
                 new CPLogoScene(
