@@ -116,8 +116,8 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_LO_W | KEY_UP => move(-paddleSpeed)
-                        case KEY_LO_S | KEY_DOWN => move(paddleSpeed)
+                        case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -paddleSpeed else -1.0f)
+                        case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then paddleSpeed else 1.0f)
                         case _ => ()
                 case None => ()
 

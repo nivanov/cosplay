@@ -56,7 +56,7 @@ object CPPongGame:
 
         /*
         // DEBUG GAME - UNCOMMENT.
-        // =======================
+        // ======================
         CPEngine.pauseGame()
         CPEngine.openLog()
         */
