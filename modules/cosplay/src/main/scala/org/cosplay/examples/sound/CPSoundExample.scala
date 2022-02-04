@@ -57,14 +57,14 @@ object CPSoundExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        val snd = CPSound(src = s"sounds/examples/${CPRand.rand(Seq("bg1", "bg2", "bg3"))}.wav")
+        val snd = CPSound(s"sounds/examples/${CPRand.rand(Seq("bg1", "bg2", "bg3"))}.wav")
         val panel = CPPanelSprite(4, 2, 80, 8, 0, "Audio Player")
         val c1 = C_SKY_BLUE1
         val c2 = C_LIGHT_CYAN1
         val lbl = CPStaticImageSprite(12, 5, 1, new CPArrayImage(
             styleStr("[Space]", c1) ++ styleStr(" Play/Pause", c2) ++
-                styleStr("    [Up]/[Down] ", c1) ++ styleStr("Volume Up/Down", c2) ++
-                styleStr("    [R] ", c1) ++ styleStr("Rewind", c2)
+            styleStr("    [Up]/[Down] ", c1) ++ styleStr("Volume Up/Down", c2) ++
+            styleStr("    [R] ", c1) ++ styleStr("Rewind", c2)
         ).trimBg())
 
         val ctrl = new CPOffScreenSprite:

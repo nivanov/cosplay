@@ -107,6 +107,12 @@ class CPAnimationSprite(
     def contains(id: String): Boolean = anis.exists(_.getId == id)
 
     /**
+      * Gets currently running animation. Note that animation sprite always has a running
+      * animation.
+      */
+    def getCurrentAnimation: CPAnimation = curAni
+
+    /**
       * Splices in given animation. Current animation will be stopped, put on hold and the
       * spliced in animation will play. After it is finished the algorithm will revert back
       * to the stored animation.
@@ -220,6 +226,7 @@ class CPAnimationSprite(
                         case None => ()
                 keyFrameOpt = kfOpt
             case None => ()
+
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext): Unit =
         keyFrameOpt match
