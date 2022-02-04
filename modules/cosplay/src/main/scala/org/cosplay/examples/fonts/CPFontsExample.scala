@@ -55,11 +55,7 @@ object CPFontsExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Fonts Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
-            ),
+            CPGameInfo(name = "Fonts Example", initDim = Some(dim)),
             System.console() == null || args.contains("emuterm")
         )
 

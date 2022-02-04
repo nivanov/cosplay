@@ -82,11 +82,7 @@ object CPParticleExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Particle Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "Particle Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 

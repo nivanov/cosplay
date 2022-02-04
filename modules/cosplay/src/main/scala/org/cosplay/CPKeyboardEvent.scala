@@ -52,7 +52,9 @@ final case class CPKeyboardEvent(
     lastEventNs: Long
 ):
     /**
-      * Whether or not this is a repeated press on keyboard of the same key. It is defined as:
+      * Whether or not this is a repeated press on keyboard of the same key.
+      *
+      * It is defined as:
       * {{{
       * sameAsLast && eventFrame - lastEventFrame == 1
       * }}}

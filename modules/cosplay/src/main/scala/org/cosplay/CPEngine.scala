@@ -63,16 +63,13 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *
   *object Game:
   *    def main(args: Array[String]): Unit =
-  *        val gameInfo = CPGameInfo(
-  *            name = "Game Name",
-  *            devName = "Game Developer",
-  *            initDim = CPDim(100, 50)
+  *        // Initialize the engine.
+  *        CPEngine.init(
+  *             CPGameInfo(name = "My Game"),
+  *             System.console() == null || args.contains("emuterm")
   *        )
   *
-  *        // Initialize the engine.
-  *        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
-  *
-  *        // Create game scenes.
+  *        // Create game scenes & their scene objects.
   *        val sc1 = new CPScene(...)
   *        val sc2 = new CPScene(...)
   *
@@ -245,9 +242,10 @@ object CPEngine:
       * Initialized the game engine.
       *
       * @param gameInfo Game information.
-      * @param emuTerm Whether or not to use built-in terminal emulator.
+      * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
+      *     value will be result of this expression: {{{System.console() == null}}}
       */
-    def init(gameInfo: CPGameInfo, emuTerm: Boolean): Unit =
+    def init(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Unit =
         if state == State.ENG_STARTED then E("Engine is already started.")
         if state == State.ENG_STOPPED then E("Engine is stopped and cannot be restarted.")
 
@@ -318,18 +316,7 @@ object CPEngine:
         val tbl = new CPAsciiTable()
         tbl += ("Game ID", gameInfo.id)
         tbl += ("Game name", gameInfo.name)
-        tbl += ("Game URL", gameInfo.gameUrl)
-        tbl += ("Description", gameInfo.descrShort)
         tbl += ("Version", gameInfo.semVer)
-        tbl += ("Developer", gameInfo.devName)
-        tbl += ("Release Date", gameInfo.relDate)
-        tbl += ("Release Notes", gameInfo.relUrl)
-        tbl += ("License", gameInfo.license)
-        tbl += ("License URL", gameInfo.licenseUrl)
-        tbl += ("Game-pad", gameInfo.requireGamePad)
-        tbl += ("24bit Colors", gameInfo.require24bitColor)
-        tbl += ("1x1 Fonts", gameInfo.require1x1Font)
-        tbl += ("1x2 Fonts", gameInfo.require1x2Font)
         tbl += ("Initial Size", gameInfo.initDim)
         tbl += ("Minimum Size", gameInfo.minDim match
             case Some(dim) => dim.toString

@@ -678,7 +678,6 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview (${w}x$h)",
-                devName = "(C) 2021 Rowan Games, Inc.",
                 initDim = Some(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
@@ -696,7 +695,7 @@ object CPImage:
                 Some(dim),
                 bg,
                 spr, // Animation we are previewing.
-                CPUtils.makeExitGameOnLoQ()
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // ¯\_(ツ)_/¯
             ))
         finally
             CPEngine.dispose()
@@ -714,7 +713,6 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.width}x${imgDim.height})",
-                devName = "(C) 2021 Rowan Games, Inc.",
                 initDim = Some(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
@@ -731,7 +729,7 @@ object CPImage:
                 Some(dim),
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
-                CPUtils.makeExitGameOnLoQ()
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // ¯\_(ツ)_/¯
             ))
         finally
             CPEngine.dispose()

@@ -182,11 +182,7 @@ object CPImageCarouselExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Image Carousel Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "Image Carousel Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 

@@ -321,49 +321,11 @@ object CPUtils:
         buf.toArray
 
     /**
-      * Safely and silently closes the client socket.
-      *
-      * @param sock Client socket to close.
-      */
-    def close(sock: Socket): Unit =
-        if sock != null then
-            try sock.close()
-            catch case _: IOException => ()
-
-    /**
-      * Safely and silently closes the server socket.
-      *
-      * @param sock Server socket to close.
-      */
-    def close(sock: ServerSocket): Unit =
-        if sock != null then
-            try sock.close()
-            catch case _: IOException => ()
-
-    /**
-      *
-      * @param in Stream.
-      */
-    def close(in: InputStream): Unit =
-        if in != null then
-            try in.close()
-            catch case _: IOException => ()
-
-    /**
-      *
-      * @param out Stream.
-      */
-    def close(out: OutputStream): Unit =
-        if out != null then
-            try out.close()
-            catch case _: IOException => ()
-
-    /**
-      * Closes auto-closeable ignoring any exceptions.
+      * Closes closeable ignoring any exceptions.
       *
       * @param a Resource to close.
       */
-    def close(a: AutoCloseable): Unit =
+    def close(a: Closeable): Unit =
         if a != null then
             try a.close()
             catch case _: IOException => ()
@@ -404,13 +366,6 @@ object CPUtils:
     def mapResource[T](res: String, enc: String = "UTF-8", mapper: Iterator[String] => T): T =
         mapStream(getStream(res), enc, mapper)
 
-    /**
-      *
-      */
-    def makeExitGameOnLoQ(): CPSceneObject = new CPOffScreenSprite:
-        override def update(ctx: CPSceneObjectContext): Unit =
-            // Exit preview on 'Q' press.
-            if ctx.getKbEvent.isDefined && ctx.getKbEvent.get.key == KEY_LO_Q then ctx.exitGame()
 
 
 
