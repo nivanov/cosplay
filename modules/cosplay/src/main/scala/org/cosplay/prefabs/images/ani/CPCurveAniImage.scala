@@ -40,14 +40,14 @@ import CPPixel.*
   */
 object CPCurveAniImage extends CPArrayImage(
     // 14x6 (6 frames)
-    prepPadSeq(14 * 4,
+    prepPadSeq(14 * 5,
         """
-            |             /             /             /             /
-            |        ____/          _,-~          _.-~          _.-'
-            |       /             ,^            ,^            ,'
-            |      /             /             /             /
-            |     /             /             /             /
-            |____/         __,-~         __.-~         __.-`
+            |             /             /             /             /             /
+            |        ____/         ____/          _,-~          _.-~          _.-'
+            |       /             ^             ,^            ,^            ,'
+            |      /             /             /             /             /
+            |     /             /             /             /             /
+            |____/         ____,         __,-~         __.-~         __.-`
         """),
     (ch, _, _) => ch&C_DARK_GOLDEN_ROD
 )
