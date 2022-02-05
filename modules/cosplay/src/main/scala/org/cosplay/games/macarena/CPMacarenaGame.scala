@@ -38,9 +38,17 @@ import prefabs.scenes.*
 import prefabs.shaders.*
 
 /**
+  * Five stick-figures dancing macarena. You control dances by pressing their numbers
+  * on the keyboard.
   *
+  * @note See more details at [[https://cosplayengine.org/devguide/quick_game.html]]
   */
 object CPMacarenaGame:
+    /**
+      * Entry point for JVM runtime.
+      *
+      * @param args Ignored.
+      */
     def main(args: Array[String]): Unit =
         val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
         val dim = CPDim(80, 20)
