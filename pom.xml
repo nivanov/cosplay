@@ -102,7 +102,7 @@
         <junit.ver>5.8.2</junit.ver>
         <scalatest.ver>3.2.11</scalatest.ver>
         <openjfx.ver>17.0.0.1</openjfx.ver>
-        <flatlaf.ver>1.6.5</flatlaf.ver>
+        <flatlaf.ver>2.0.1</flatlaf.ver>
         <ikonli.ver>12.3.0</ikonli.ver>
         <miglayout.ver>11.0</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
