@@ -48,11 +48,11 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private var enemyScore = 0
     private var playerPosY = 30f
     private var enemyPosY = 30f
-    private var ballX = 5
-    private var ballY = -5
+    private var ballX = 25
+    private var ballY = 20
     private val paddleSpeed = 0.4f
-    private var ballAngle = 90
-    private var ballSpeed = 0.1f
+    private var ballAngle = 45
+    private var ballSpeed = 1f
 
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).skin(
         (px, _, _) => px.char match
@@ -88,16 +88,19 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
-            ballX = (ballX + Math.cos(ballAngle * (Math.PI / 180) * ballSpeed)).round.toInt
-            ballY = (ballY + Math.sin(ballAngle * (Math.PI / 180) * ballSpeed)).round.toInt
+            ballX = ((ballSpeed * Math.cos(ballAngle * (Math.PI / 180))) + ballX).round.toInt
+            ballY = ((ballSpeed * Math.sin(ballAngle * (Math.PI / 180))) + ballY).round.toInt
 
             setX(ballX)
             setY(ballY)
 
-            if ballX == 1 && ballY <= playerPosY.round && ballY >= (playerPosY - 5).round then
-                ballAngle = -ballAngle
-            else if ballY <= 0  || ballY >= canv.height then
-                ballAngle = -ballAngle
+            if ballX >= canv.xMax || ballX <= 0 || ballY <= 0 || ballY >= canv.height then
+                ballAngle = ballAngle + 270
+
+//            if ballX == 1 && ballY <= playerPosY.round && ballY >= (playerPosY - 5).round then
+//                ballAngle = ballAngle + 180
+//            else if ballY <= 0  || ballY >= canv.height then
+//                ballAngle = ballAngle + 180
 
     private val border = new CPCanvasSprite("border", Seq(fadeInShdr)):
         override def render(ctx: CPSceneObjectContext): Unit =
@@ -134,7 +137,5 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
 
             if ballY > enemyPosY then enemyPosY += paddleSpeed
             else if ballY < enemyPosY then enemyPosY -= paddleSpeed
-
-            if ballY < canv.height then ballY += 1
 
     addObjects(CPKeyboardSprite(KEY_LO_Q, _.exitGame()), playerScoreSpr, enemyScoreSpr, border, player, enemy, ballSpr)
