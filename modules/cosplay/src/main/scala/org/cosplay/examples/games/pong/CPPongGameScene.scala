@@ -70,6 +70,9 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
         (ch, _, _) => ch&C_DARK_GOLDEN_ROD
     ).trimBg()
 
+    private final val ballW = ballImg.getWidth
+    private final val ballH = ballImg.getHeight
+
     private val fadeInShdr = CPFadeInShader(true, 1500, bgPx)
 
     private val playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(fadeInShdr)):
@@ -91,16 +94,34 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             ballX = ((ballSpeed * Math.cos(ballAngle * (Math.PI / 180))) + ballX).round.toInt
             ballY = ((ballSpeed * Math.sin(ballAngle * (Math.PI / 180))) + ballY).round.toInt
 
+            ballX = if ballX < canv.xMin then canv.xMin else ballX
+            ballX = if ballX + ballImg.getWidth > canv.xMax then canv.xMax - ballImg.getWidth else ballX
+
+            ballY = if ballY < canv.yMin then canv.yMin else ballY
+            ballY = if ballY > canv.yMax then canv.yMax else ballY
+
             setX(ballX)
             setY(ballY)
 
-            if ballX >= canv.xMax || ballX <= 0 || ballY <= 0 || ballY >= canv.height then
+            val rect = getRect
+
+            if rect.xMax == canv.xMax || rect.xMin == canv.xMin || rect.yMin == canv.yMin || rect.yMax == canv.yMax then
                 ballAngle = ballAngle + 270
 
-//            if ballX == 1 && ballY <= playerPosY.round && ballY >= (playerPosY - 5).round then
-//                ballAngle = ballAngle + 180
-//            else if ballY <= 0  || ballY >= canv.height then
-//                ballAngle = ballAngle + 180
+
+//            if rect.xMax == canv.xMax then
+////                ballX = canv.xMax - ballImg.getWidth
+//                ballAngle = ballAngle + 270
+//            else if ballX <= canv.xMin then
+////                ballX = canv.xMin
+//                ballAngle = ballAngle + 270
+//
+//            if ballY + ballImg.getHeight >= canv.yMax then
+////                ballY = canv.yMax - ballImg.getHeight
+//                ballAngle = ballAngle + 270
+//            else if ballY <= canv.yMin then
+////                ballY = canv.yMin
+//                ballAngle = ballAngle + 270
 
     private val border = new CPCanvasSprite("border", Seq(fadeInShdr)):
         override def render(ctx: CPSceneObjectContext): Unit =
