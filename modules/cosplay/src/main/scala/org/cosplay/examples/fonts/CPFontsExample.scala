@@ -91,7 +91,7 @@ object CPFontsExample:
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(Seq(new CPFadeInShader(true, 500, bgPx))),
             // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // ¯\_(ツ)_/¯
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
         )
 
         try

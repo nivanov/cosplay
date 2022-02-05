@@ -69,7 +69,7 @@ object CPArtPolylineApp:
 
             CPEngine.startGame(new CPScene("scene", Option(dim), bgPx,
                 spr,
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // ¯\_(ツ)_/¯
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
             ))
         finally
             CPEngine.dispose()
