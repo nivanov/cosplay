@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.examples.games.macarena
+package org.cosplay.games.macarena
 
 /*
    _________            ______________
