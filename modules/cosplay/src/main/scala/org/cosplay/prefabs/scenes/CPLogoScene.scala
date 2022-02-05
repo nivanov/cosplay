@@ -83,4 +83,4 @@ class CPLogoScene(id: String, dim: Option[CPDim], bgPx: CPPixel, colors: Seq[CPC
             setY((canv.dim.height - getImage.getHeight) / 2)
 
     // Add sprite to this scene.
-    addObject(logoSpr)
+    addObjects(logoSpr)

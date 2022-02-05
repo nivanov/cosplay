@@ -38,25 +38,9 @@ import java.util.Date
 /**
   * Descriptor of the game.
   *
-  * Note that only `name` and `devName` parameters don't have default values.
-  *
   * @param id Unique ID of the game. If not provided, the default value will be a randomly generated globally unique ID.
-  * @param name Public, display name of the game.
-  * @param descrShort Optional short, one sentence, description of the game.
-  * @param descrLong Optional longer, one paragraph, descriptor of the game.
-  * @param semVer Semantic version of the game. See https://semver.org/ for details.
-  * @param gameUrl URL of the game website.
-  * @param devName Name of the game's developer. Individual or company name.
-  * @param relDate  Release date. If not provided, the current date is used.
-  * @param relNotesUrl Optional URL of the release notes.
-  * @param devUrl Optional URL of the game's developer.
-  * @param relUrl Optional URL of this game's release.
-  * @param license Optional license of this game.
-  * @param licenseUrl Optional URL of this game's license.
-  * @param requireGamePad Whether or not game-pad is required. Default is `false`.
-  * @param require24bitColor Whether or not 24-bit color terminal is required. Default is `true`.
-  * @param require1x1Font Whether or not 1x1 square font is required. Default is `false`.
-  * @param require1x2Font Whether or not standard 1x2 square font is required. Default is `true`.
+  * @param name Public, display name of the game. This parameter is required and does not have default value.
+  * @param semVer Semantic version of the game. See https://semver.org/ for details. Default value is `1.0.0`
   * @param initDim Optional initial game dimension. It is used only by `emuterm` built-in terminal emulator to
   *     set the initial terminal emulator dimension. It is ignored by the native terminal. If not provided,
   *     terminal emulator will use its default dimension.
@@ -68,21 +52,7 @@ import java.util.Date
 final case class CPGameInfo(
     id: String = CPUtils.guid,
     name: String,
-    descrShort: String = null,
-    descrLong: String = null,
     semVer: String = "1.0.0",
-    gameUrl: String = null,
-    devName: String,
-    relDate: String = new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
-    relNotesUrl: String = null,
-    devUrl: String = null,
-    relUrl: String = null,
-    license: String = null,
-    licenseUrl: String = null,
-    requireGamePad: Boolean = false,
-    require24bitColor: Boolean = true,
-    require1x1Font: Boolean = false,
-    require1x2Font: Boolean = true,
     initDim: Option[CPDim] = None,
     termBg: CPColor = CPColor("0x111111"),
     minDim: Option[CPDim] = None

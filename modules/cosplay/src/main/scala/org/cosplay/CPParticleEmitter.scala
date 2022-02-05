@@ -60,7 +60,7 @@ import impl.CPUtils
   * @example See [[org.cosplay.examples.particle.CPParticleExample CPParticleExample]] class for the example of
   *     using particle effect. 
   */
-abstract class CPParticleEmitter(id: String = CPUtils.guid6, tags: Set[String] = Set.empty) extends CPGameObject(id, tags) with CPAsset:
+abstract class CPParticleEmitter(id: String = s"part-emitter-${CPUtils.guid6}", tags: Set[String] = Set.empty) extends CPGameObject(id, tags) with CPAsset:
     private var paused = true
 
     /** @inheritdoc */

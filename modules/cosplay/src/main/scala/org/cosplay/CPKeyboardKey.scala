@@ -57,6 +57,11 @@ object CPKeyboardKey:
   * The following key strokes will be automatically re-mapped:
   *  - `Ctrl+h` will be mapped to [[CPKeyboardKey.KEY_BACKSPACE]].
   *  - `Ctrl+i` will be mapped to [[CPKeyboardKey.KEY_TAB]].
+  *  - `Ctrl+m` will be mapped to [[CPKeyboardKey.KEY_ENTER]].
+  *
+  * NOTE: `Ctrl+h`, `Ctrl+i` and `Ctrl+m` will not be detected as-is and you should use their conversions
+  * instead. This is the limitation of the ANSI terminals, i.e. `Ctrl+m` generated the same ANSI code as `Enter`
+  * key press.
   *
   * @see [[CPKeyboardEvent.key]]
   */
@@ -140,7 +145,7 @@ enum CPKeyboardKey(val id: String, val isPrintable: Boolean, val ch: Char, val r
     case KEY_CTRL_J extends CPKeyboardKey("Ctrl-j", false, '\u0000', Seq('j' - 96))
     case KEY_CTRL_K extends CPKeyboardKey("Ctrl-k", false, '\u0000', Seq('k' - 96))
     case KEY_CTRL_L extends CPKeyboardKey("Ctrl-l", false, '\u0000', Seq('l' - 96))
-    case KEY_CTRL_M extends CPKeyboardKey("Ctrl-m", false, '\u0000', Seq('m' - 96))
+    case KEY_CTRL_M extends CPKeyboardKey("Ctrl-m", false, '\u0000', Seq('m' - 96)) // Converted to 'KEY_ENTER'.
     case KEY_CTRL_N extends CPKeyboardKey("Ctrl-n", false, '\u0000', Seq('n' - 96))
     case KEY_CTRL_O extends CPKeyboardKey("Ctrl-o", false, '\u0000', Seq('o' - 96))
     case KEY_CTRL_P extends CPKeyboardKey("Ctrl-p", false, '\u0000', Seq('p' - 96))

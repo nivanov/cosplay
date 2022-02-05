@@ -73,6 +73,14 @@ import impl.CPUtils
 abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id) with CPLifecycle:
     private var visible = true
 
+    private[cosplay] def toExtStr: String =
+        val pos = s"($getX,$getY)"
+        val tags = s"(${getTags.mkString(",")})"
+        val collide = getCollisionRect match
+            case Some(rect) => rect.toString
+            case None => "none"
+        s"[id=$id, tags=$tags, vis=$isVisible, pos=$pos, z=$getZ, dim=$getDim, col=$collide]"
+
     /**
       * Checks the visibility flag.
       *

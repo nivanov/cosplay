@@ -68,7 +68,7 @@ import impl.CPUtils
   * @example See [[org.cosplay.examples.image.CPImageFormatsExample CPImageFormatsExample]] class for the example of
   *     using images.
   */
-final class CPStaticImageSprite(
+class CPStaticImageSprite(
     id: String,
     x: Int,
     y: Int,

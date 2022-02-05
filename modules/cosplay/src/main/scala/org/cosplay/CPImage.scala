@@ -44,7 +44,7 @@ import scala.util.Using
 */
 
 /**
-  * Defines rectangular shape and its content.
+  * Defines rectangular shape and its content as a collection of [[CPPixel pixels]].
   *
   * Image is one of the key types in CosPlay. Almost everything that is drawn on the screen is represented
   * by an image: FIGLet font string, sprites, video and animation frames, etc. Image itself is just a
@@ -62,6 +62,11 @@ import scala.util.Using
   * in code with very minimal gestalt. The easiest way is to use [[CPArrayImage]] class that provides utility
   * methods to convert a margin-based Scala string into an image. For [[CPAlienImage example]]:
   * {{{
+  * import org.cosplay.*
+  * import CPColor.*
+  * import CPArrayImage.*
+  * import CPPixel.*
+  *
   * object CPAlienImage extends CPArrayImage(
   *     prepSeq("""
   *         |    .  .
@@ -77,6 +82,11 @@ import scala.util.Using
   * }}}
   * Another [[CPAmigaImage example]] with more sophisticated skinning:
   * {{{
+  * import org.cosplay.*
+  * import CPColor.*
+  * import CPArrayImage.*
+  * import CPPixel.*
+  *
   * object CPAmigaImage extends CPArrayImage(
   *     prepSeq("""
   *       |  .---------.
@@ -102,10 +112,10 @@ import scala.util.Using
   * ### Loading images
   * You can load images from the external source like URL or file path in one of the following formats:
   *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native binary format supported by
-  *    [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor. This format support full color information.
+  *    [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor. This format supports full color information.
   *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
   *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
-  *    supported by CosPlay to save an image with. This format support full color information.
+  *    supported by CosPlay to save an image with. This format supports full color information.
   *  - `*.txt` format. Image in this format is a simple *.txt file and it does not provide or store any color
   *     information.
   *
@@ -124,11 +134,11 @@ import scala.util.Using
   * )
   * }}}
   *
-  * ### Saving (exporting) image
+  * ### Saving images
   * You can save image to the local file path in the following format:
   *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
   *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
-  *    supported by CosPlay to save an image with. This format support full color information.
+  *    supported by CosPlay to save an image with. This format supports full color information.
   *
   *  Use one of the following methods from the companion object to save the image to the file path:
   *   - [[save() save(...)]]
@@ -668,7 +678,6 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview (${w}x$h)",
-                devName = "(C) 2021 Rowan Games, Inc.",
                 initDim = Some(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
@@ -686,7 +695,7 @@ object CPImage:
                 Some(dim),
                 bg,
                 spr, // Animation we are previewing.
-                CPUtils.makeExitGameOnLoQ()
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
             ))
         finally
             CPEngine.dispose()
@@ -704,7 +713,6 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.width}x${imgDim.height})",
-                devName = "(C) 2021 Rowan Games, Inc.",
                 initDim = Some(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
@@ -720,8 +728,8 @@ object CPImage:
                 "scene",
                 Some(dim),
                 bg,
-                CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
-                CPUtils.makeExitGameOnLoQ()
+                new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
             ))
         finally
             CPEngine.dispose()

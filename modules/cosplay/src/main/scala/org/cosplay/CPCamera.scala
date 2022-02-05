@@ -37,7 +37,7 @@ package org.cosplay
   * movement across screen keeping it in a focus. Without camera control a scene object can move beyond the
   * visible screen and become invisible.
   *
-  * Camera descriptor defines an a rectangular sub-region of the screen called *focus frame*. A tracking
+  * Camera descriptor defines a rectangular sub-region of the screen called *focus frame*. A tracking
   * object can move freely as long as it is fully contained in that focus frame. Once the tracking object
   * (at least partially) moves outside of the focus frame, the focus frame and therefore the visible portion of
   * the current scene will shift to bring the tracking object back into the focus frame. The amount of shift as
@@ -185,17 +185,14 @@ open class CPCamera:
         this.focusFrameInset = focusFrameInsets
 
     /**
-      * Gets ID of the scene object to be tracked.
-      *
-      * @return ID of the scene object to track the focus for by panning the
-      *     camera to follow the tracking subject.
+      * Gets ID of the scene object to be tracked. Returning `None` will turn off the focus tracking.
       */
     def getFocusTrackId: Option[String] = focusTrackId
 
     /**
-      * Sets ID of the scene object to be tracked. Default value is `None`.
+      * Sets ID of the scene object to be tracked. Default value is `None` which turns the focus tracking off.
       *
       * @param focusTrackId ID of the scene object to track the focus for by panning the camera
-      *     to follow the tracking subject.
+      *     to follow the tracking subject or `None` to turn the focus tracking off.
       */
     def setFocusTrackId(focusTrackId: Option[String]): Unit = this.focusTrackId = focusTrackId

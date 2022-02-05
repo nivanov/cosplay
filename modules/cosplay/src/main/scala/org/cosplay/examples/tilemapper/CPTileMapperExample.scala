@@ -139,7 +139,7 @@ object CPTileMapperExample:
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // ¯\_(ツ)_/¯
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
         )
 
         // Layout tile sprites and add them to the scene.
@@ -157,21 +157,14 @@ object CPTileMapperExample:
             case _ => None
         ).foreach(objs ::= _)
 
-        // Create the scene.
-        val sc = new CPScene("scene", Option(dim), bgPx, objs)
-
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "TileMapper Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "TileMapper Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(sc)
+        try CPEngine.startGame(new CPScene("scene", Option(dim), bgPx, objs))
         finally CPEngine.dispose()
 
         sys.exit(0)

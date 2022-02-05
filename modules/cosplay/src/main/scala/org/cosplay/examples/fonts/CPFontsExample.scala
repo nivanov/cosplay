@@ -55,50 +55,46 @@ object CPFontsExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Fonts Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Some(dim)
-            ),
+            CPGameInfo(name = "Fonts Example", initDim = Some(dim)),
             System.console() == null || args.contains("emuterm")
         )
 
-        try
-            val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
 
-            val sysFontImg1 = CPSystemFont.renderMulti(
-                """
+        val sysFontImg1 = CPSystemFont.renderMulti(
+            """
                 |Rendering multi-line text
                 |using system font with CENTER (0) alignment (default).
                 |""".stripMargin, C_WHITE).trimBg()
-            val sysFontImg2 = CPSystemFont.renderMulti(
-                """
+        val sysFontImg2 = CPSystemFont.renderMulti(
+            """
                 |Rendering multi-line text
                 |using system font with LEFT (-1) alignment.
                 |""".stripMargin, C_WHITE, align = -1).trimBg()
-            val sysFontImg3 = CPSystemFont.renderMulti(
-                """
+        val sysFontImg3 = CPSystemFont.renderMulti(
+            """
                 |Rendering multi-line text
                 |using system font with RIGHT (1) alignment.
                 |""".stripMargin, C_WHITE, align = 1).trimBg()
 
-            val sc = new CPScene("scene", Some(dim), bgPx,
-                // Same text with different alignment.
-                CPStaticImageSprite((dim.width - sysFontImg1.getWidth) / 2, 1, 4, sysFontImg1),
-                CPStaticImageSprite((dim.width - sysFontImg2.getWidth) / 2, 5, 4, sysFontImg2),
-                CPStaticImageSprite((dim.width - sysFontImg3.getWidth) / 2, 9, 4, sysFontImg3),
+        val sc = new CPScene("scene", Some(dim), bgPx,
+            // Same text with different alignment.
+            CPStaticImageSprite((dim.width - sysFontImg1.getWidth) / 2, 1, 4, sysFontImg1),
+            CPStaticImageSprite((dim.width - sysFontImg2.getWidth) / 2, 5, 4, sysFontImg2),
+            CPStaticImageSprite((dim.width - sysFontImg3.getWidth) / 2, 9, 4, sysFontImg3),
 
-                // Same font with different spacing.
-                CPStaticImageSprite(30, 14, 4, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
-                CPStaticImageSprite(30, 20, 4, FIG_OGRE.withKerning().render("CosPlay", C_LIGHT_STEEL_BLUE).trimBg()),
-                CPStaticImageSprite(30, 27, 4, FIG_OGRE.withFullWidth().render("CosPlay", C_LIGHT_CORAL).trimBg()),
+            // Same font with different spacing.
+            CPStaticImageSprite(30, 14, 4, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
+            CPStaticImageSprite(30, 20, 4, FIG_OGRE.withKerning().render("CosPlay", C_LIGHT_STEEL_BLUE).trimBg()),
+            CPStaticImageSprite(30, 27, 4, FIG_OGRE.withFullWidth().render("CosPlay", C_LIGHT_CORAL).trimBg()),
 
-                // Just for the initial scene fade-in effect.
-                new CPOffScreenSprite(Seq(new CPFadeInShader(true, 500, bgPx))),
-                // Exit the game on 'q' press.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // ¯\_(ツ)_/¯
-            )
+            // Just for the initial scene fade-in effect.
+            new CPOffScreenSprite(Seq(new CPFadeInShader(true, 500, bgPx))),
+            // Exit the game on 'q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+        )
 
+        try
             // Start the game & wait for exit.
             CPEngine.startGame(
                 new CPLogoScene(

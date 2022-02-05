@@ -57,6 +57,32 @@ import org.cosplay.impl.CPUtils
   *  - [[CPAnimation.timeBased()]]
   *  - [[CPAnimation.filmStrip()]]
   *
+  * ### Refresh Rate
+  * Even though CosPlay's effective FPS is usually around 1,000 on modern computers, the typical ANSI
+  * terminal struggles to render a full screen update even at partly 30 FPS. Large frame updates tend to
+  * result in "rolling shutter" effect, which is pronounced more for certain shapes and certain movement
+  * directions.
+  *
+  * It is important to note that this effect is more pronounced for horizontal movement of large
+  * vertical shapes. Try to avoid this type of movement in your games.
+  *
+  * ### Discrete Animation
+  * It should come as no surprise that animation in ANSI terminal can only happen in one
+  * character units. You can't move by individual pixel - you only move by 10-20 pixel at a time depending
+  * on the font size used by your terminal. Even the specific font size is not directly available to
+  * the native ASCII game.
+  *
+  * Discrete animation is obviously more jerky and more stuttering comparing to the pixel-based animation of
+  * the traditional graphics games. Vertical movement is more jerky than horizontal one since character height
+  * is usually larger than the character width (and we can move only a one character at a time).
+  *
+  * There are two ways to mitigate this limitation:
+  *  - Use smaller shapes for animation, prefer horizontal movement, and avoid prolong movements.
+  *    "Rolling shutter" effect does not happen on each frame (more like every 20-40 frames) and so
+  *    shorter animation sequences have a lesser chance of encountering this effect.
+  *  - Use discrete animation as an artistic tool. When used properly and consistently it can result
+  *    in a unique visual design of the game.
+  *
   * ### Different ways to animate
   * In CosPlay there are different ways one could implement animated scene objects. In the end, all of these
   * approaches deliver the same result but each individual technique is tailor-made for a specific animation type:
@@ -226,7 +252,6 @@ object CPAnimation:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview $dim",
-                devName = "(C) 2022 Rowan Games, Inc.",
                 initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
@@ -240,7 +265,7 @@ object CPAnimation:
                 Option(dim),
                 bg,
                 spr, // Animation we are previewing.
-                CPUtils.makeExitGameOnLoQ()
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
             ))
         finally
             CPEngine.dispose()

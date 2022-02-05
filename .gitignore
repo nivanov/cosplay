@@ -45,5 +45,6 @@ hs_err_pid*
 .idea/
 .bsp/
 venv/
+null/
 target
 out

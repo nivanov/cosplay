@@ -62,7 +62,7 @@ import impl.CPUtils
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   * @param shaders Optional set of shaders for this sprite.
   */
-class CPOffScreenSprite(id: String = CPUtils.guid6, shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+class CPOffScreenSprite(id: String = s"off-scr-spr-${CPUtils.guid6}", shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
     setVisible(false)
 
     /**

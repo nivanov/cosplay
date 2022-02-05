@@ -102,11 +102,7 @@ object CPTextInputExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Text Input Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(termDim)
-            ),
+            CPGameInfo(name = "Text Input Example", initDim = Option(termDim)),
             System.console() == null || args.contains("emuterm")
         )
 

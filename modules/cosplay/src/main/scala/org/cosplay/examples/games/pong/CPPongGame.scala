@@ -46,13 +46,17 @@ object CPPongGame:
      * @param args Ignored.
      */
     def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(
-            name = "Classic Pong",
-            devName = "(C) 2021 Rowan Games, Inc."
-        )
+        val gameInfo = CPGameInfo(name = "Classic Pong")
 
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
+
+        /*
+        // DEBUG GAME - UNCOMMENT.
+        // ======================
+        CPEngine.pauseGame()
+        CPEngine.openLog()
+        */
 
         // Start the game & wait for exit.
         try CPEngine.startGame(CPPongTitleScene, CPPongGameScene)

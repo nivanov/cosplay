@@ -135,7 +135,6 @@ object CPVideo:
         CPEngine.init(
             CPGameInfo(
                 name = s"Video Preview (${vid.getFrameCount} ${vidDim.width}x${vidDim.height} frames)",
-                devName = "(C) 2021 Rowan Games, Inc.",
                 initDim = Option(scDim)
             ),
             emuTerm = emuTerm

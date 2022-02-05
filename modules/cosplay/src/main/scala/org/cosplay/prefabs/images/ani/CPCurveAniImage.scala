@@ -36,33 +36,32 @@ import CPPixel.*
 */
 
 /**
-  * https://www.incredibleart.org/links/ascii/Scarecrow3-DGallery.html
+  *
   */
-object CPCubeAniImage extends CPArrayImage(
-    // 13x7 (8 frames)
-    prepPadSeq(13 * 8,
+object CPCurveAniImage extends CPArrayImage(
+    // 14x6 (6 frames)
+    prepPadSeq(14 * 5,
         """
-          |+------+      +------+      +------+      +------+      +------+   +-------+    +------+   +------+
-          ||`.    |`.    |\     |\     |      |     /|     /|    .'|    .'|  / |     /|    |      |   |\     |\
-          ||  `+--+---+  | +----+-+    +------+    +-+----+ |  +---+--+'  |  +-+----+ |    +------+   | +----+-+
-          ||   |  |   |  | |    | |    |      |    | |    | |  |   |  |   |  | |    | |    |      |   | |    | |
-          |+---+--+   |  +-+----+ |    +------+    | +----+-+  |   +--+---+  | +----+-+    +------+   +-+----+ |
-          | `. |   `. |   \|     \|    |      |    |/     |/   | .'   | .'   |/     |/     |      |    \|     \|
-          |   `+------+    +------+    +------+    +------+    +------+'     +------+      +------+     +------+
+            |             /             /             /             /             /
+            |        ____/         ____/          _,-~          _.-~          _.-'
+            |       /             ^             ,^            ,^            ,'
+            |      /             /             /             /             /
+            |     /             /             /             /             /
+            |____/         ____,         __,-~         __.-~         __.-`
         """),
-    (ch, _, _) => ch&C_WHITE
+    (ch, _, _) => ch&C_DARK_GOLDEN_ROD
 )
 
 /**
   * Previews image using the built-in image viewer.
   */
-@main def previewCubeAniImage(): Unit =
+@main def previewCurveAniImage(): Unit =
     val ani = CPAnimation.filmStrip(
         "ani",
-        200,
+        150,
         true,
         false,
-        CPCubeAniImage.trimBg().split(13, 7)
+        CPCurveAniImage.trimBg().split(14, 6)
     )
-    CPAnimation.previewAnimation(ani, CPDim(13, 7))
+    CPAnimation.previewAnimation(ani, CPDim(14, 6))
     sys.exit(0)

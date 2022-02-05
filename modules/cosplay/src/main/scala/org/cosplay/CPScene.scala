@@ -53,12 +53,11 @@ import org.cosplay.impl.CPContainer
   *        val myScene = new CPScene("id", None, bgPx, spr1, spr2)
   *    }}}
   *  - Extend [[CPScene]] class.<br/>
-  *    When subclassing [[CPScene]] you need to use [[addObject()]] method available to the sub-classes to add
+  *    When subclassing [[CPScene]] you need to use [[addObjects()]] method available to the sub-classes to add
   *    initial scene objects.
   *    {{{
   *         object MyScene extends CPScene("id", None, bgPx):
-  *             addObject(spr1)
-  *             addObject(spr2)
+  *             addObjects(spr1, spr2)
   *    }}}
   *
   * Note that you can dynamically add and remove scene as well as scene objects via [[CPSceneObjectContext]] instance.
@@ -86,11 +85,11 @@ open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGame
     private[cosplay] val objects = CPContainer[CPSceneObject]()
 
     /**
-      * Adds scene object to this scene.
+      * Adds scene object(s) to this scene.
       *
-      * @param obj Scene object to add.
+      * @param objs Scene objects to add.
       */
-    protected def addObject(obj: CPSceneObject): Unit = objects.add(obj)
+    protected def addObjects(objs: CPSceneObject*): Unit = objs.foreach(objects.add)
 
     /**
       * Gets camera panning descriptor associated with this scene. By default, the camera panning

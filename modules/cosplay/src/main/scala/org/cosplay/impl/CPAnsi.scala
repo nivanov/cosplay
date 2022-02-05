@@ -116,4 +116,7 @@ object CPAnsi:
       * @param x 0-based x coordinate.
       * @param y 0-based y coordinate.
       */
-    inline def curPos(x: Int, y: Int): String = s"$CSI${y + 1};${x + 1}H"
+    inline def curPos(x: Int, y: Int): String =
+        val y1 = y + 1
+        val x1 = x + 1
+        s"$CSI$y1;${x1}H"

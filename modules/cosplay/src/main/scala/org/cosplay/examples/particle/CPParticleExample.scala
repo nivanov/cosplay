@@ -82,11 +82,7 @@ object CPParticleExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(
-                name = "Particle Example",
-                devName = "(C) 2021 Rowan Games, Inc.",
-                initDim = Option(dim)
-            ),
+            CPGameInfo(name = "Particle Example", initDim = Option(dim)),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -181,7 +177,7 @@ object CPParticleExample:
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // ¯\_(ツ)_/¯
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
         )
 
         // Start the game & wait for exit.

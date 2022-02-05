@@ -58,21 +58,17 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *
   * Most CosPlay games follow this basic game organization:
   * {{{
-  *import org.cosplay.CPColor.*
   *import org.cosplay.*
   *
   *object Game:
   *    def main(args: Array[String]): Unit =
-  *        val gameInfo = CPGameInfo(
-  *            name = "Game Name",
-  *            devName = "Game Developer",
-  *            initDim = CPDim(100, 50)
+  *        // Initialize the engine.
+  *        CPEngine.init(
+  *             CPGameInfo(name = "My Game"),
+  *             System.console() == null || args.contains("emuterm")
   *        )
   *
-  *        // Initialize the engine.
-  *        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
-  *
-  *        // Create game scenes.
+  *        // Create game scenes & their scene objects.
   *        val sc1 = new CPScene(...)
   *        val sc2 = new CPScene(...)
   *
@@ -90,7 +86,7 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *    flag.
   *  - Create all necessary scenes, scene objects and assets. You can organize these objects in any desirable way - CosPlay
   *    does not impose any restrictions or limitation on how it is should be done.
-  *  - Once you have all scenes are constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
+  *  - Once you have all scenes constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
   *  - Make sure to call [[CPEngine.dispose()]] method upon exit from [[CPEngine.startGame()]] method.
   *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
@@ -195,7 +191,6 @@ object CPEngine:
             while (!st0p)
                 var key = KEY_UNKNOWN
 
-                //noinspection ScalaUnnecessaryParentheses
                 try
                     read(0) match // Blocking wait (timeout = 0).
                         case ESC => read(1) match
@@ -246,9 +241,10 @@ object CPEngine:
       * Initialized the game engine.
       *
       * @param gameInfo Game information.
-      * @param emuTerm Whether or not to use built-in terminal emulator.
+      * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
+      *     value will be result of this expression: {{{System.console() == null}}}
       */
-    def init(gameInfo: CPGameInfo, emuTerm: Boolean): Unit =
+    def init(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Unit =
         if state == State.ENG_STARTED then E("Engine is already started.")
         if state == State.ENG_STOPPED then E("Engine is stopped and cannot be restarted.")
 
@@ -319,18 +315,7 @@ object CPEngine:
         val tbl = new CPAsciiTable()
         tbl += ("Game ID", gameInfo.id)
         tbl += ("Game name", gameInfo.name)
-        tbl += ("Game URL", gameInfo.gameUrl)
-        tbl += ("Description", gameInfo.descrShort)
         tbl += ("Version", gameInfo.semVer)
-        tbl += ("Developer", gameInfo.devName)
-        tbl += ("Release Date", gameInfo.relDate)
-        tbl += ("Release Notes", gameInfo.relUrl)
-        tbl += ("License", gameInfo.license)
-        tbl += ("License URL", gameInfo.licenseUrl)
-        tbl += ("Game-pad", gameInfo.requireGamePad)
-        tbl += ("24bit Colors", gameInfo.require24bitColor)
-        tbl += ("1x1 Fonts", gameInfo.require1x1Font)
-        tbl += ("1x2 Fonts", gameInfo.require1x2Font)
         tbl += ("Initial Size", gameInfo.initDim)
         tbl += ("Minimum Size", gameInfo.minDim match
             case Some(dim) => dim.toString
@@ -354,7 +339,9 @@ object CPEngine:
     /**
       * Gets root log for the game engine.
       */
-    def rootLog(): CPLog = engLog
+    def rootLog(): CPLog =
+        checkState()
+        engLog
 
     /**
       * Shows or hides the built-in FPS overlay in the right top corner. Can
@@ -362,7 +349,9 @@ object CPEngine:
       *
       * @param show Show/hide flag.
       */
-    def showFpsOverlay(show: Boolean): Unit = isShowFps = show
+    def showFpsOverlay(show: Boolean): Unit =
+        checkState()
+        isShowFps = show
 
     /**
       * Opens GUI-based log window by bringing it upfront.
@@ -648,7 +637,18 @@ object CPEngine:
             val dimS = x.getDim match
                 case Some(d) => d.toString
                 case None => "[adaptive]"
-            engLog.info(s"Switching to scene: ${x.getId} $dimS")
+            val tbl = CPAsciiTable("ID", "Tags", "Init Pos", "Z-index", "Visible", "Dim")
+            x.objects.foreach(scObj => {
+                tbl += (
+                    scObj.getId,
+                    scObj.getTags.mkString(","),
+                    s"(${scObj.getX},${scObj.getY})",
+                    scObj.getZ,
+                    scObj.isVisible,
+                    scObj.getDim
+                )
+            })
+            tbl.info(engLog, Option(s"Switching to scene '${x.getId}' $dimS with scene objects:"))
 
         try
             logSceneSwitch(sc) // Initial scene.
@@ -755,6 +755,7 @@ object CPEngine:
                         // will never be available to the user...
                         if kbKey == KEY_CTRL_H then kbKey = KEY_BACKSPACE
                         else if kbKey == KEY_CTRL_I then kbKey = KEY_TAB
+                        else if kbKey == KEY_CTRL_M then kbKey = KEY_ENTER
 
                         lastKbEvt match
                             case Some(lastEvt) =>
@@ -872,7 +873,10 @@ object CPEngine:
                     override def releaseMyFocus(): Unit = releaseFocus(myId)
                     override def addObject(obj: CPSceneObject): Unit =
                         val cloObj = obj
-                        delayedQ += (() => sc.objects.add(cloObj))
+                        delayedQ += (() =>
+                            sc.objects.add(cloObj)
+                            engLog.info(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
+                        )
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
                     override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
@@ -898,7 +902,9 @@ object CPEngine:
                         val colId = id
                         delayedQ += (() => {
                             sc.objects.remove(colId) match
-                                case Some(obj) => lifecycleStop(obj)
+                                case Some(obj) =>
+                                    engLog.info(s"Scene object deleted from '${sc.getId}' scene: ${obj.toExtStr}")
+                                    lifecycleStop(obj)
                                 case _ => ()
                         })
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
