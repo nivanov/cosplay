@@ -150,17 +150,17 @@ object CPImageCarouselExample:
             case KEY_LEFT | KEY_LO_A => // Scroll carousel left.
                 val curSpr = sprs(sprIdx)
                 if !curSpr.isMoving then
-                    curSpr.fadeOutToLeft();
+                    curSpr.fadeOutToLeft()
                     sprIdx = if sprIdx == 0 then sprs.size - 1 else sprIdx - 1
                     sprs(sprIdx).fadeInFromRight()
             case KEY_RIGHT | KEY_LO_D => // Scroll carousel right.
                 val curSpr = sprs(sprIdx)
                 if !curSpr.isMoving then
-                    curSpr.fadeOutToRight();
+                    curSpr.fadeOutToRight()
                     sprIdx = if sprIdx == sprs.size - 1 then 0 else sprIdx + 1
                     sprs(sprIdx).fadeInFromLeft()
             // Exit the game on 'q' press.
-            case KEY_LO_Q => ctx.exitGame() // ¯\_(ツ)_/¯
+            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'q' press.
             case _ => ()
         )
 

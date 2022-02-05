@@ -8,8 +8,8 @@
    🕹 2D ASCII JVM GAME ENGINE FOR SCALA3
 
 </pre>
+- Full documentation at [[https://www.cosplayengine.com]]
 - <b>Main API</b> is located in [[file:org/cosplay.html org.cosplay]] package.
-- Full [[https://www.cosplayengine.com/docs.html documentation]]
 - GitHub project [[https://github.com/nivanov/cosplay]]
 
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/apache/opennlp/master/LICENSE)
@@ -28,6 +28,8 @@ Examples located under `org.cosplay.examples` package:
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/particle Particle Effect Examples]]
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/fonts Font Examples]]
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/tilemapper Tile Mapping Examples]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/games/pong Classic Pong Game]]
+   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/games/macarena Macarena Game]]
 
 Maven dependency:
 <pre>

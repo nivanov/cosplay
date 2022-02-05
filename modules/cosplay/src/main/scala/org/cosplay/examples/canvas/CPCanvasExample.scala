@@ -143,7 +143,7 @@ object CPCanvasExample:
         // Create the scene (exit the game on 'q' press).
         val sc = new CPScene("scene", Option(dim), bgPx,
             drawSpr,
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // ¯\_(ツ)_/¯
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
         )
 
         // Initialize the engine.

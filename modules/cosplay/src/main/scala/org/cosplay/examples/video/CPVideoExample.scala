@@ -80,7 +80,7 @@ object CPVideoExample:
             new CPStaticImageSprite((dim.width - ctrlDim.width) / 2, dim.height - 4, 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // ¯\_(ツ)_/¯ // Separate 'end of game' control.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
         )
 
         // Initialize the engine.

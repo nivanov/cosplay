@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.examples.games.macarena
+package org.cosplay.games.macarena
 
 /*
    _________            ______________
@@ -38,9 +38,17 @@ import prefabs.scenes.*
 import prefabs.shaders.*
 
 /**
+  * Five stick-figures dancing macarena. You control dances by pressing their numbers
+  * on the keyboard.
   *
+  * @note See more details at [[https://cosplayengine.org/devguide/quick_game.html]]
   */
 object CPMacarenaGame:
+    /**
+      * Entry point for JVM runtime.
+      *
+      * @param args Ignored.
+      */
     def main(args: Array[String]): Unit =
         val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
         val dim = CPDim(80, 20)
@@ -74,7 +82,7 @@ object CPMacarenaGame:
             mkSprite("4", CPMacarena4AniImage.trimBg().split(3, 3), x + 7 * 3, y, KEY_4),
             mkSprite("5", CPMacarena5AniImage.trimBg().split(3, 3), x + 7 * 4, y, KEY_5),
             new CPLabelSprite(24, 12, 0, "[1]    [2]    [3]    [4]    [5]", C_DARK_CYAN),
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
             new CPOffScreenSprite:
                 override def onStart(): Unit =
                     super.onStart()
@@ -83,13 +91,8 @@ object CPMacarenaGame:
 
         // Start the game & wait for exit.
         try CPEngine.startGame(
-            new CPLogoScene( // CosPlay logo scene.
-                "logo",
-                Option(dim),
-                bgPx,
-                CS_X11_ORANGES ++ CS_X11_BLUES,
-                "danceFloor" // Next scene.
-            ),
+            // CosPlay logo scene.
+            new CPLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES,"danceFloor"),
             sc
         )
         finally CPEngine.dispose()
