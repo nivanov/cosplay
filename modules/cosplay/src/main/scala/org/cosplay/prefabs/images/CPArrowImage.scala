@@ -38,28 +38,24 @@ import CPPixel.*
 /**
  * https://www.asciiart.eu
  */
-object CPIcecreamImage extends CPArrayImage(
+object CPArrowImage extends CPArrayImage(
   // 13x11
   prepSeq("""
-    |xxxxxxxxxxxxxxxxx_.-.xx
-    |xxxxxxxxxxxxxxx,'/ //\xx
-    |xxxxxxxxxxxxxx/// // /)
-    |xxxxxxxxxxxxx/// // //|
-    |xxxxxxxxxxxx/// // ///x
-    |xxxxxxxxxxx/// // ///xx
-    |xxxxxxxxxx(`: // ///xxx
-    |xxxxxxxxxxx`;`: ///xxxx
-    |xxxxxxxxxxx/ /:`:/xxxxx
-    |xxxxxxxxxx/ /  `'xxxxxx
-    |xxxxxxxxx/ /xxxxxxxxxxx
-    |xxxxxxxx(_/xxxxxxxxxxxx
+   |/ \
+   |x|x
+   |x|x
+   |x|x
+   |x|x
+   |x|x
+   |x|x
+   |/|\
     """),
-  (ch, _, _) => if ch == 'x' then XRAY else ch&C_PINK1
+  (ch, _, _) => if ch == 'x' then XRAY else ch&C_SANDY_BROWN
 )
 
 /**
  * Previews image using the built-in image viewer.
  */
-@main def reviewIcecreamImage(): Unit =
-  CPImage.previewImage(CPIcecreamImage)
+@main def reviewArrowImage(): Unit =
+  CPImage.previewImage(CPArrowImage)
   sys.exit(0)
