@@ -165,8 +165,8 @@ object CPArrayImage:
 
             if arr.nonEmpty then
                 if trim then
-                    while arr.head.trim.isEmpty do arr = arr.tail // Trim leading empty string.
-                    while arr.last.trim.isEmpty do arr = arr.dropRight(1) // Trim trailing empty strings.
+                    if arr.head.trim.isEmpty then arr = arr.tail // Trim leading empty string.
+                    if arr.last.trim.isEmpty then arr = arr.dropRight(1) // Trim trailing empty strings.
                 arr.toSeq
             else
                 Seq.empty
