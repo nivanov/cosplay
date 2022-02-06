@@ -392,7 +392,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                         bufImg = null
         )
         panel.setBackground(bg)
-        panel.setPreferredSize(safeDim(curDim.width * chW, curDim.height * chH))
+        panel.setPreferredSize(safeDim(curDim.w * chW, curDim.h * chH))
         panel.setMinimumSize(new Dimension(10 * chW, 10 * chH)) // 10x10 char is minimum dimension.
         frame.setBackground(bg)
         frame.getContentPane.setBackground(bg)
@@ -423,10 +423,10 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     override def render(scr: CPScreen, camRect: CPRect, forceRedraw: Boolean): Unit =
         require(scr.getRect.contains(camRect), s"src: ${scr.getRect}, cam: $camRect")
 
-        val tw = curDim.width
-        val th = curDim.height
-        val cw = camRect.width
-        val ch = camRect.height
+        val tw = curDim.w
+        val th = curDim.h
+        val cw = camRect.w
+        val ch = camRect.h
         val effW = tw.min(cw)
         val effH = th.min(ch)
         val effRect = CPRect(camRect.x, camRect.y, effW, effH)

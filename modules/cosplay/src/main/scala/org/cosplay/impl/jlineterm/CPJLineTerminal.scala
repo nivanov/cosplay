@@ -74,20 +74,20 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
 
         /**
           *
-              */
+          */
         private def centerCamRect(): CPRect =
             val camDim = camRect.dim
             var x, y = 0
-            var w = camDim.width
-            var h = camDim.height
-            if termDim.width > camDim.width then
-                x = (termDim.width - camDim.width) / 2
-            else if termDim.width < camDim.width then
-                w = termDim.width
-            if termDim.height > camDim.height then
-                y = (termDim.height - camDim.height) / 2
-            else if termDim.height < camDim.height then
-                h = termDim.height
+            var w = camDim.w
+            var h = camDim.h
+            if termDim.w > camDim.w then
+                x = (termDim.w - camDim.w) / 2
+            else if termDim.w < camDim.w then
+                w = termDim.w
+            if termDim.h > camDim.h then
+                y = (termDim.h - camDim.h) / 2
+            else if termDim.h < camDim.h then
+                h = termDim.h
             CPRect(x, y, w, h)
 
         def getPx(x: Int, y: Int): CPPixel = if termCamRect.contains(x, y) then scr.getPixel(x + xOff, y + yOff).px else bgPx

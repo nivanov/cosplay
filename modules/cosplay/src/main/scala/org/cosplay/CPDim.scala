@@ -46,6 +46,16 @@ final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width,
     override def compare(that: CPDim): Int = area.compareTo(that.area)
 
     /**
+      * Width in characters (shortcut API).
+      */
+    val w: Int = width
+
+    /**
+      * Height in characters (shortcut API).
+      */
+    val h: Int = height
+
+    /**
       * Creates `d`x`d` square dimension.
       *
       * @param d Square dimension.

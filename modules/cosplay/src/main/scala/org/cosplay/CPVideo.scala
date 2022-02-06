@@ -130,11 +130,11 @@ object CPVideo:
         ).trimBg()
         val vidDim = vid.getFrameDim
         val lblDim = lblImg.getDim
-        val scDim = CPDim((vidDim.width + 8).max(lblDim.width + 4), vidDim.height + 8)
+        val scDim = CPDim((vidDim.w + 8).max(lblDim.w + 4), vidDim.h + 8)
 
         CPEngine.init(
             CPGameInfo(
-                name = s"Video Preview (${vid.getFrameCount} ${vidDim.width}x${vidDim.height} frames)",
+                name = s"Video Preview (${vid.getFrameCount} ${vidDim.w}x${vidDim.h} frames)",
                 initDim = Option(scDim)
             ),
             emuTerm = emuTerm
@@ -148,7 +148,7 @@ object CPVideo:
                 bg,
                 spr, // Video we are previewing.
                 makeKbCtrl(),
-                new CPStaticImageSprite((scDim.width - lblDim.width) / 2, scDim.height - 4, 0, lblImg)
+                new CPStaticImageSprite((scDim.w - lblDim.w) / 2, scDim.h - 4, 0, lblImg)
             ))
         finally
             CPEngine.dispose()

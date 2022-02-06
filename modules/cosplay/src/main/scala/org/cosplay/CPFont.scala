@@ -135,11 +135,11 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
         if ss.sizeIs == 1 then render(ss.head, fg, bg)
         else
             val imgs: Seq[CPImage] = ss.map(render(_, fg, bg))
-            val maxW = imgs.maxBy(_.getWidth).getWidth
+            val maxW = imgs.maxBy(_.w).w
             val bgPx = CPPixel(' ', fg, bg)
 
             def doAlign(img: CPImage): CPImage =
-                val w = img.getWidth
+                val w = img.w
                 val d = maxW - w
                 if d == 0 then img
                     else if align == -1 then img.resizeByInsets(CPInsets(0, 0, 0, d), bgPx)

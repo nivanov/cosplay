@@ -105,10 +105,16 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     final val dim: CPDim = pane.getDim
 
     /** Width of this canvas. */
-    final val width: Int = dim.width
+    final val width: Int = dim.w
+
+    /** Width of this canvas (shortcut API). */
+    final val w: Int = dim.w
 
     /** Height of this canvas. */
-    final val height: Int = dim.height
+    final val height: Int = dim.h
+
+    /** Height of this canvas (shortcut API). */
+    final val h: Int = dim.h
 
     /** Maximum X-coordinate of this canvas. */
     final val xMax = width - 1
@@ -151,7 +157,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param isBlank Predicate defining whether a partcular pixel should be considered as a blank.
       */
     def antialias(x: Int, y: Int, dim: CPDim, isBlank: CPPixel => Boolean): Unit =
-        antialias(x, y, x + dim.width - 1, y + dim.height - 1, isBlank)
+        antialias(x, y, x + dim.w - 1, y + dim.h - 1, isBlank)
 
     /**
       * Antialiases solid ascii-art canvas region. Works `only` for solid ascii-art.
@@ -170,8 +176,8 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
             if !isBlank(px) then
                 val top = y > 0 && !isBlank(pane.getPixel(x, y - 1).px)
                 val left = x > 0 && !isBlank(pane.getPixel(x - 1, y).px)
-                val bottom = y < dim.height - 1 && !isBlank(pane.getPixel(x, y + 1).px)
-                val right = x < dim.width - 1 && !isBlank(pane.getPixel(x + 1, y).px)
+                val bottom = y < dim.h - 1 && !isBlank(pane.getPixel(x, y + 1).px)
+                val right = x < dim.w - 1 && !isBlank(pane.getPixel(x + 1, y).px)
 
                 pane.addPixel(px.withChar(CPUtils.aaChar(px.char, top, left, bottom, right)), x, y, zpx.z)
             else
@@ -765,7 +771,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param px Pixel to use for drawing.
       */
     def drawRect(x1: Int, y1: Int, dim: CPDim, z: Int, px: CPPixel): Unit =
-        drawRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, (_, _) => px)
+        drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, (_, _) => px)
 
     /**
       * Draws a rectangle.
@@ -806,7 +812,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Pixel producing function.
       */
     def drawRect(x1: Int, y1: Int, dim: CPDim, z: Int, pxf: (Int, Int) => CPPixel): Unit =
-        drawRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, pxf)
+        drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, pxf)
 
     /**
       * Draws rectangle.
@@ -897,7 +903,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         rightTop: CPPixel,
         right: CPPixel
     ): Unit =
-        drawRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
+        drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
 
     /**
       * Draws rectangle with speific pixels for lines and corners.
@@ -1005,7 +1011,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param destY New Y-coordinate of the top left corner.
       */
     def copyRect(x1: Int, y1: Int, dim: CPDim, destX: Int, destY: Int): Unit =
-        copyRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, destX, destY)
+        copyRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, destX, destY)
 
     /**
       * Copies one rectangular areas in this canvas to another location in the same canvas.
@@ -1111,7 +1117,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param px Pixel to fill in with.
       */
     def fillRect(x1: Int, y1: Int, dim: CPDim, z: Int, px: CPPixel): Unit =
-        fillRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, (_, _) => px)
+        fillRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, (_, _) => px)
 
     /**
       * Fills the rectangular shape.
@@ -1123,7 +1129,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Fill in pixel producing function.
       */
     def fillRect(x1: Int, y1: Int, dim: CPDim, z: Int, pxf: (Int, Int) => CPPixel): Unit =
-        fillRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, pxf)
+        fillRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, pxf)
 
     /**
       * Fills the rectangular shape.
@@ -1135,7 +1141,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxs Pixels to use for filling in.
       */
     def fillRect(x1: Int, y1: Int, dim: CPDim, z: Int, pxs: Seq[CPPixel]): Unit =
-        fillRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, pxs)
+        fillRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, pxs)
 
     /**
       * Fills the rectangular shape.
@@ -1219,7 +1225,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param y1 Y-coordinate of the top left corner of the region.
       */
     def capture(x1: Int, y1: Int, dim: CPDim): CPImage =
-        captureRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, _.px)
+        captureRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, _.px)
 
     /**
       * Captures given rectangular canvas region as an image. This method will capture only
@@ -1259,7 +1265,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param zdx Z-indexes to capture.
       */
     def capture(x1: Int, y1: Int, dim: CPDim, zdx: Int*): CPImage =
-        captureRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, zpx => if zdx.contains(zpx.z) then zpx.px else CPPixel.XRAY)
+        captureRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, zpx => if zdx.contains(zpx.z) then zpx.px else CPPixel.XRAY)
 
     /**
       * Captures given rectangular canvas region as an image. This method will capture only specified

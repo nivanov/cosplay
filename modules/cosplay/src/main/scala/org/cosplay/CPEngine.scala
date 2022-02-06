@@ -328,7 +328,7 @@ object CPEngine:
       * @param dim
       */
     private def updateTitle(dim: CPDim): Unit =
-        term.setTitle(s"CosPlay - ${gameInfo.name} v${gameInfo.semVer}, ${dim.width}x${dim.height}")
+        term.setTitle(s"CosPlay - ${gameInfo.name} v${gameInfo.semVer}, ${dim.w}x${dim.h}")
 
     /**
       *
@@ -518,7 +518,7 @@ object CPEngine:
 
         import CPStyledString.styleStr
 
-        val w = camRect.width.min(canv.dim.width)
+        val w = camRect.w.min(canv.dim.w)
         val fg = C_BLACK
         val bg = C_WHITE
         val sep = styleStr("-----------+-------", bg.darker(0.3), bg)
@@ -696,8 +696,8 @@ object CPEngine:
                 // Transition objects states.
                 objs.foreach(lifecycleStart)
 
-                val termW = termDim.width
-                val termH = termDim.height
+                val termW = termDim.w
+                val termH = termDim.h
                 val redraw = forceRedraw || scFrameCnt == 0 || lastTermDim != termDim
                 forceRedraw = false
                 lastTermDim = termDim

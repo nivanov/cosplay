@@ -75,12 +75,12 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private val playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            setX((canv.dim.width - playerScoreImg.getWidth) / 4)
+            setX((canv.dim.w - playerScoreImg.getWidth) / 4)
 
     private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            setX((canv.dim.width - enemyScoreImg.getWidth) - ((canv.dim.width / 4) - 1))
+            setX((canv.dim.w - enemyScoreImg.getWidth) - ((canv.dim.w / 4) - 1))
 
     private val ballSpr = new CPImageSprite("ballSpr", 0, 0, 0, ballImg):
         private def clip(v: Int, min: Int, max: Int): Int =
@@ -120,8 +120,8 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             val canv = ctx.getCanvas
 
             canv.drawPolyline(Seq(
-                canv.dim.width / 2 -> 0,
-                canv.dim.width / 2 -> canv.dim.height
+                canv.dim.w / 2 -> 0,
+                canv.dim.w / 2 -> canv.dim.h
             ), 100, '|'&C_AQUA)
 
     private val playerPx = CPPixel(' ', C_BLACK, Option(C_AQUA))
@@ -147,7 +147,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private val enemySpr = new CPCanvasSprite("enemy"):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            canv.drawLine(canv.dim.width - 2, enemyPosY.round, canv.dim.width - 2, (enemyPosY - 5).round, 100, enemyPx)
+            canv.drawLine(canv.dim.w - 2, enemyPosY.round, canv.dim.w - 2, (enemyPosY - 5).round, 100, enemyPx)
 
             if ballY > enemyPosY then enemyPosY += paddleSpeed
             else if ballY < enemyPosY then enemyPosY -= paddleSpeed

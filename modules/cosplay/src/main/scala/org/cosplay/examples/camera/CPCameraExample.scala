@@ -115,7 +115,7 @@ object CPCameraExample:
             override def render(ctx: CPSceneObjectContext): Unit =
                 val camFrame = ctx.getCameraFrame
                 // Produce parallax effect for background sprite.
-                if lastCamFrame != null && lastCamFrame.width == camFrame.width then
+                if lastCamFrame != null && lastCamFrame.w == camFrame.w then
                     xf -= (lastCamFrame.x - camFrame.x).sign * 0.7f
                 lastCamFrame = ctx.getCameraFrame
                 super.render(ctx)
