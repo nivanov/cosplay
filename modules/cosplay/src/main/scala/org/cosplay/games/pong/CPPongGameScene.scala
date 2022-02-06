@@ -43,7 +43,10 @@ import prefabs.scenes.*
                 ALl rights reserved.
 */
 
-object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRAY1)):
+/**
+  * Pong main scene.
+  */
+object CPPongGameScene extends CPScene("game", None, bgPx):
     private var playerScore = 0
     private var enemyScore = 0
     private var playerPosY = 30f
@@ -54,11 +57,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private var ballAngle = 45
     private var ballSpeed = 1f
 
-    private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).skin(
-        (px, _, _) => px.char match
-            case ':' => px.withFg(C_GREY70)
-            case _ => px
-    ).trimBg()
+    private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
     private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg()
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -73,21 +72,17 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
 
-    private val fadeInShdr = CPFadeInShader(true, 1500, bgPx)
-
-    private val playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(fadeInShdr)):
+    private val playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.width - playerScoreImg.getWidth) / 4)
-            setY(0)
 
-    private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg, shaders = Seq(fadeInShdr)):
+    private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.width - enemyScoreImg.getWidth) - ((canv.dim.width / 4) - 1))
-            setY(0)
 
-    private val ballSpr = new CPImageSprite("ballSpr", 0, 0, 0, ballImg, shaders = Seq(fadeInShdr)):
+    private val ballSpr = new CPImageSprite("ballSpr", 0, 0, 0, ballImg):
         private def clip(v: Int, min: Int, max: Int): Int =
             if v < min then min
             else if v > max then max
@@ -97,8 +92,8 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             val canv = ctx.getCanvas
 
             val rad = ballAngle * Math.PI / 180
-            ballX = clip((ballX + ballSpeed * Math.cos(rad)).round.toInt, canv.xMin, canv.xMax - ballImg.getWidth + 1)
-            ballY = clip((ballY + ballSpeed * Math.sin(rad)).round.toInt, canv.yMin, canv.yMax - ballImg.getHeight + 1)
+            ballX = clip((ballX + ballSpeed * Math.cos(rad)).round.toInt, canv.xMin, canv.xMax - ballW + 1)
+            ballY = clip((ballY + ballSpeed * Math.sin(rad)).round.toInt, canv.yMin, canv.yMax - ballH + 1)
 
             setX(ballX)
             setY(ballY)
@@ -120,7 +115,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             else if rect.yMax == canv.yMax then bounce(0, -1)
             else if rect.yMin == canv.yMin then bounce(0, 1)
 
-    private val border = new CPCanvasSprite("border", Seq(fadeInShdr)):
+    private val borderSpr = new CPCanvasSprite("border"):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
@@ -130,15 +125,17 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             ), 100, '|'&C_AQUA)
 
     private val playerPx = CPPixel(' ', C_BLACK, Option(C_AQUA))
-    private val player = new CPCanvasSprite("player", Seq(fadeInShdr)):
+    private val enemyPx = CPPixel(' ', C_BLACK, Option(C_GREEN_YELLOW))
+
+    private val playerSpr = new CPCanvasSprite("player"):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            canv.drawLine(1, playerPosY.round, 1, (playerPosY - 5).round, 100, playerPx)
 
             def move(dy: Float): Unit =
                 if dy > 0 && playerPosY < canv.height - 1 then playerPosY += dy
                 else if dy < 0 && playerPosY > 5 then playerPosY += dy
 
+            canv.drawLine(1, playerPosY.round, 1, (playerPosY - 5).round, 100, playerPx)
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
@@ -147,8 +144,7 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
                         case _ => ()
                 case None => ()
 
-    private val enemyPx = CPPixel(' ', C_BLACK, Option(C_GREEN_YELLOW))
-    private val enemy = new CPCanvasSprite("enemy", Seq(fadeInShdr)):
+    private val enemySpr = new CPCanvasSprite("enemy"):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             canv.drawLine(canv.dim.width - 2, enemyPosY.round, canv.dim.width - 2, (enemyPosY - 5).round, 100, enemyPx)
@@ -156,4 +152,11 @@ object CPPongGameScene extends CPScene("game", None, CPPixel('.', C_GRAY2, C_GRA
             if ballY > enemyPosY then enemyPosY += paddleSpeed
             else if ballY < enemyPosY then enemyPosY -= paddleSpeed
 
-    addObjects(CPKeyboardSprite(KEY_LO_Q, _.exitGame()), playerScoreSpr, enemyScoreSpr, border, player, enemy, ballSpr)
+    addObjects(CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        playerScoreSpr,
+        enemyScoreSpr,
+        borderSpr,
+        playerSpr,
+        enemySpr,
+        ballSpr
+    )
