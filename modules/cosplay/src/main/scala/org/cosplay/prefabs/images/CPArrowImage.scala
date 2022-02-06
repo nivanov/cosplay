@@ -36,7 +36,7 @@ import CPPixel.*
 */
 
 /**
- * https://www.asciiart.eu
+ * Made by Leo Ivanov
  */
 object CPArrowImage extends CPArrayImage(
   // 13x11
