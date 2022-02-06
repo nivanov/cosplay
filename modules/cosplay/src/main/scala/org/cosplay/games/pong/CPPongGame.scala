@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.examples.games.pong
+package org.cosplay.games.pong
 
 import org.cosplay.CPColor.*
 import org.cosplay.*
