@@ -36,24 +36,24 @@ import CPPixel.*
 */
 
 /**
- * https://www.asciiart.eu
- */
+  * https://www.asciiart.eu
+  */
 object CPMouseImage extends CPArrayImage(
-  // 13x11
-  prepSeq("""
-    |            /
-    |          __|_
-    |         |____|
-    |         |    |
-    |         |    |
-    |         \____/
+    // 13x11
+    prepSeq("""
+      |   /
+      | __|_
+      ||__|_|
+      ||    |
+      ||    |
+      |\____/
     """),
-  (ch, _, _) => if ch == 'x' then XRAY else ch&C_RED1
+    (ch, _, _) => ch&C_X11_ANTIQUE_WHITE
 )
 
 /**
- * Previews image using the built-in image viewer.
- */
+  * Previews image using the built-in image viewer.
+  */
 @main def reviewMouseImage(): Unit =
-  CPImage.previewImage(CPMouseImage.trimBg())
-  sys.exit(0)
+    CPImage.previewImage(CPMouseImage.trimBg())
+    sys.exit(0)

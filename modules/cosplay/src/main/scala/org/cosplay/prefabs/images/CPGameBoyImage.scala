@@ -36,22 +36,22 @@ import CPPixel.*
 */
 
 /**
- * https://www.asciiart.eu
- */
+  * https://www.asciiart.eu
+  */
 object CPGameBoyImage extends CPArrayImage(
-  // 13x11
-  prepSeq("""
-    |          ___
-    |         |[_]|
-    |         |+ ;|
-    |         `---'
+    // 13x11
+    prepSeq("""
+      | ___
+      ||[_]|
+      ||+ ;|
+      |`---'
     """),
-  (ch, _, _) => if ch == '+' then ch&C_RED1  else ch&C_WHITE
+    (ch, _, _) => if ch == '+' then ch&C_RED1 else ch&C_WHITE
 )
 
 /**
- * Previews image using the built-in image viewer.
- */
+  * Previews image using the built-in image viewer.
+  */
 @main def reviewGameBoyImage(): Unit =
-  CPImage.previewImage(CPGameBoyImage.trimBg())
-  sys.exit(0)
+    CPImage.previewImage(CPGameBoyImage.trimBg())
+    sys.exit(0)
