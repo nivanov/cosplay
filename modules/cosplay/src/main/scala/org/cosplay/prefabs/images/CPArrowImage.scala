@@ -43,20 +43,24 @@ object CPArrowImage extends CPArrayImage(
     prepSeq("""
         | ^
         |/|\
-        |x|x
-        |x|x
-        |x|x
-        |x|x
-        |x|x
-        |x|x
-        |/|\
+        | | 
+        | | 
+        | | 
+        | | 
+        | | 
+        | | 
+        |/#\
     """),
-    (ch, _, _) => if ch == 'x' then XRAY else ch&C_SANDY_BROWN
+    (ch, _, _) => ch match
+        case '^' => '^'&C_CYAN1
+        case '/' | '\\' => ch&C_CYAN3
+        case '#' => '|'&C_CYAN3
+        case _ => ch&C_SANDY_BROWN
 )
 
 /**
   * Previews image using the built-in image viewer.
   */
 @main def reviewArrowImage(): Unit =
-    CPImage.previewImage(CPArrowImage)
+    CPImage.previewImage(CPArrowImage.trimBg())
     sys.exit(0)
