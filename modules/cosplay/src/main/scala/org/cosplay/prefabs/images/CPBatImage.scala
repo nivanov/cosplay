@@ -36,22 +36,22 @@ import CPPixel.*
 */
 
 /**
- * https://www.asciiart.eu
- */
+  * https://www.asciiart.eu
+  */
 object CPBatImage extends CPArrayImage(
-  // 13x11
-  prepSeq("""
+    // 16x4
+    prepSeq("""
         |xxx_xxx,_,xxx_xx
         |xx/ `'=) (='` \x
         |x/.-.-.\ /.-.-.\
         |x`xxxxxx"xxxxxx`
     """),
-  (ch, _, _) => if ch == 'x' then XRAY else ch&C_BLUE
+    (ch, _, _) => if ch == 'x' then XRAY else ch&C_BLUE
 )
 
 /**
- * Previews image using the built-in image viewer.
- */
+  * Previews image using the built-in image viewer.
+  */
 @main def reviewBatImage(): Unit =
-  CPImage.previewImage(CPBatImage)
-  sys.exit(0)
+    CPImage.previewImage(CPBatImage)
+    sys.exit(0)

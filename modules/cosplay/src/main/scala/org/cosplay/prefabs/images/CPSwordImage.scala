@@ -36,29 +36,29 @@ import CPPixel.*
 */
 
 /**
- * Made by Leo Ivanov :)
- */
+  * Made by Leo Ivanov :)
+  */
 object CPSwordImage extends CPArrayImage(
-  // 13x11
-  prepSeq("""
- |xxxxx/\xxxx
- |xxxx|  |xxx
- |xxxx|  |xxx
- |xxxx|  |xxx
- |xxxx|  |xxx
- |xxxx|  |xxx
- |xx__|  |__x
- |x|__    __|
- |xxxx|  |xxx
- |xxxx|  |xxx
- |xxxx|__|xxx
+    // 11x11
+    prepSeq("""
+        |xxxxx/\xxxx
+        |xxxx|  |xxx
+        |xxxx|  |xxx
+        |xxxx|  |xxx
+        |xxxx|  |xxx
+        |xxxx|  |xxx
+        |xx__|  |__x
+        |x|__    __|
+        |xxxx|  |xxx
+        |xxxx|  |xxx
+        |xxxx|__|xxx
     """),
-  (ch, _, _) => if ch == 'x' then XRAY else ch&C_SILVER
+    (ch, _, _) => if ch == 'x' then XRAY else ch&C_SILVER
 )
 
 /**
- * Previews image using the built-in image viewer.
- */
+  * Previews image using the built-in image viewer.
+  */
 @main def reviewSwordImage(): Unit =
-  CPImage.previewImage(CPSwordImage)
-  sys.exit(0)
+    CPImage.previewImage(CPSwordImage)
+    sys.exit(0)
