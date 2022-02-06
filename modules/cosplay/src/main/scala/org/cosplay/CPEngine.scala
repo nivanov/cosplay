@@ -682,9 +682,9 @@ object CPEngine:
 
                 // Handle pause/resume of the game.
                 pauseMux.synchronized {
-                    if pause then pauseMux.synchronized(waitForWakeup())
+                    if pause then waitForWakeup()
                 }
-                
+
                 // Transition the state of the scene, if necessary.
                 lifecycleStart(sc)
 
