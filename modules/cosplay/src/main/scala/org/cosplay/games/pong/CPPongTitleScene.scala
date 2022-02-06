@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.examples.games.pong
+package org.cosplay.games.pong
 
 import org.cosplay.CPColor.*
 import org.cosplay.*
@@ -78,12 +78,10 @@ object CPPongTitleScene extends CPScene("title", None, bgPx):
             case _ => ch.toUpper&C_DARK_ORANGE
     ).trimBg()
 
-    private val fadeInShdr = CPFadeInShader(true, 1500, bgPx)
-
     // Add scene objects...
     addObjects(
-        CPImageSprite("logoSpr", c => (c.width - logoImg.getWidth) / 2, c => Math.max(0, c.height / 2 - logoImg.getHeight - 1), 0, logoImg, false, Seq(fadeInShdr)),
-        CPImageSprite("helpSpr1", c => (c.width - helpImg.getWidth) / 2, c => Math.max(0, c.height / 2 + 1), 0, helpImg, false, Seq(fadeInShdr)),
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        CPKeyboardSprite(KEY_ENTER, _.switchScene("game"))
+        CPImageSprite("logoSpr", c => (c.w - logoImg.w) / 2, c => Math.max(0, c.h / 2 - logoImg.h - 1), 0, logoImg, false, Seq(CPFadeInShader(true, 1500, bgPx))),
+        CPImageSprite("helpSpr1", c => (c.w - helpImg.w) / 2, c => Math.max(0, c.h / 2 + 1), 0, helpImg),
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
+        CPKeyboardSprite(KEY_ENTER, _.switchScene("game"))// Transition to the next scene on 'Enter' press.
     )

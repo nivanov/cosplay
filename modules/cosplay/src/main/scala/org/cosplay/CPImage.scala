@@ -198,7 +198,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     def save(file: File, bg: CPColor): Unit =
         Using.resource(new PrintStream(file)) { ps =>
             val dim = getDim
-            ps.println(s"CosPlay image [${dim.width}x${dim.height}, origin=$origin, bg=${bg.hex}]")
+            ps.println(s"CosPlay image [${dim.w}x${dim.h}, origin=$origin, bg=${bg.hex}]")
             loop((px, x, y) => ps.println(s"$x,$y,${px.char.toInt},${px.fg.hex},${px.bg.getOrElse(bg).hex}"))
         }
 
@@ -237,7 +237,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       */
     def resizeByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
-        resizeByInsets(new CPInsets((newDim.width - dim.width) / 2, (newDim.height - dim.height) / 2))
+        resizeByInsets(new CPInsets((newDim.w - dim.w) / 2, (newDim.h - dim.h) / 2))
 
     /**
       * Resizes this image using given insets. Insets can be positive or negative.
@@ -248,8 +248,8 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       */
     def resizeByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
-        val w = dim.width + insets.horOffset
-        val h = dim.height + insets.verOffset
+        val w = dim.w + insets.horOffset
+        val h = dim.h + insets.verOffset
         val data = new CPArray2D[CPPixel](w, h, bgPx)
 
         loop((px, x, y) => {
@@ -294,8 +294,8 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             if !isBlank(px) then
                 val top = y > 0 && !isBlank(getPixel(x, y - 1))
                 val left = x > 0 && !isBlank(getPixel(x - 1, y))
-                val bottom = y < dim.height - 1 && !isBlank(getPixel(x, y + 1))
-                val right = x < dim.width - 1 && !isBlank(getPixel(x + 1, y))
+                val bottom = y < dim.h - 1 && !isBlank(getPixel(x, y + 1))
+                val right = x < dim.w - 1 && !isBlank(getPixel(x + 1, y))
 
                 data.set(x, y, px.withChar(CPUtils.aaChar(px.char, top, left, bottom, right)))
             else
@@ -505,12 +505,22 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     /**
       * Shortcut to get image width.
       */
-    def getWidth: Int = getDim.width
+    def getWidth: Int = getDim.w
+
+    /**
+      * Shortcut to get image width.
+      */
+    def w: Int = getDim.w
 
     /**
       * Shortcut to get image height.
       */
-    def getHeight: Int = getDim.height
+    def getHeight: Int = getDim.h
+
+    /**
+      * Shortcut to get image height.
+      */
+    def h: Int = getDim.h
 
 /**
   * Companion object with utility functions.
@@ -672,12 +682,10 @@ object CPImage:
         require(fps < 1_000)
         val frameDim = imgs.head.getDim
         require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
-        val w = frameDim.width
-        val h = frameDim.height
-        val dim = CPDim(w + 8, h + 8)
+        val dim = CPDim(frameDim.w + 8, frameDim.h + 8)
         CPEngine.init(
             CPGameInfo(
-                name = s"Animation Preview (${w}x$h)",
+                name = s"Animation Preview (${frameDim.w}x${frameDim.h})",
                 initDim = Some(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
@@ -712,7 +720,7 @@ object CPImage:
         val dim = imgDim + 8
         CPEngine.init(
             CPGameInfo(
-                name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.width}x${imgDim.height})",
+                name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.w}x${imgDim.h})",
                 initDim = Some(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),

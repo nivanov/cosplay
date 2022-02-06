@@ -63,10 +63,7 @@ object CPVideoExample:
         ).trimBg()
         val vidDim = CPVideoClip.getFrameDim
         val ctrlDim = ctrlImg.getDim
-        val dim = CPDim(
-            (vidDim.width + 8).max(ctrlDim.width + 4),
-            vidDim.height + 8
-        )
+        val dim = CPDim((vidDim.w + 8).max(ctrlDim.w + 4), vidDim.h + 8)
         val vidSpr = new CPVideoSprite("spr", CPVideoClip, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
         val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
         // Create the scene.
@@ -77,7 +74,7 @@ object CPVideoExample:
                 case KEY_SPACE => vidSpr.toggle()
                 case _ => ()
             ),
-            new CPStaticImageSprite((dim.width - ctrlDim.width) / 2, dim.height - 4, 0, ctrlImg), // Help label.
+            new CPStaticImageSprite((dim.w - ctrlDim.w) / 2, dim.h - 4, 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.

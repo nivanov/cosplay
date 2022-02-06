@@ -68,10 +68,10 @@ object CPImageCarouselExample:
     private val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
 
     class CarouselSprite(img: CPImage, viewDim: CPDim) extends CPSceneObject:
-        private final val centerY = (viewDim.height - img.getHeight) / 2
-        private final val centerX = (viewDim.width - img.getWidth) / 2
-        private final val leftOffScrX = -(img.getWidth + 1)
-        private final val rightOffScrX = viewDim.width
+        private final val centerY = (viewDim.h - img.h) / 2
+        private final val centerX = (viewDim.w - img.w) / 2
+        private final val leftOffScrX = -(img.w + 1)
+        private final val rightOffScrX = viewDim.w
         private final val stepX = 1.0f
         private val fadeInShdr = new CPFadeInShader(false, 2000, bgPx, autoStart = false)
         private val fadeOutShdr = new CPFadeOutShader(false, 1000, bgPx, onFinish = _ => setVisible(false))
@@ -119,8 +119,8 @@ object CPImageCarouselExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val maxImgW = imgs.maxBy(_.getDim.width).getWidth
-        val maxImgH = imgs.maxBy(_.getDim.height).getHeight
+        val maxImgW = imgs.maxBy(_.getDim.w).getWidth
+        val maxImgH = imgs.maxBy(_.getDim.h).getHeight
 
         val ctrlImg = CPArrayImage(
             prepSeq(
@@ -138,8 +138,8 @@ object CPImageCarouselExample:
                 case _ => ch.toUpper&C_DARK_ORANGE
         ).trimBg()
 
-        val dim = CPDim(maxImgW + 8 * 2, maxImgH + ctrlImg.getHeight + 4)
-        val viewDim = CPDim(dim.width, maxImgH)
+        val dim = CPDim(maxImgW + 8 * 2, maxImgH + ctrlImg.h + 4)
+        val viewDim = CPDim(dim.w, maxImgH)
         var sprIdx = 0
         val sprs = imgs.map(img => new CarouselSprite(img, viewDim)).toIndexedSeq
 
@@ -169,7 +169,7 @@ object CPImageCarouselExample:
                 // Control sprites.
                 Seq(
                     // Control image/label.
-                    CPStaticImageSprite((dim.width - ctrlImg.getWidth) / 2, dim.height - ctrlImg.getHeight - 2, 0, ctrlImg),
+                    CPStaticImageSprite((dim.w - ctrlImg.w) / 2, dim.h - ctrlImg.h - 2, 0, ctrlImg),
                     kbCtrl,
                     // Just for the initial scene fade-in effect.
                     new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),

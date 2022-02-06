@@ -62,8 +62,8 @@ object CPTileMapper:
         var b = y
         val buf = mutable.ArrayBuffer.empty[CPSceneObject]
         map.loop((px, mapX, mapY) => {
-            a = x + mapX * tileDim.width
-            b = y + mapY * tileDim.height
+            a = x + mapX * tileDim.w
+            b = y + mapY * tileDim.h
             mapping(CPPosPixel(px, mapX, mapY), a, b) match
                 case Some(obj) => buf += obj
                 case None => ()

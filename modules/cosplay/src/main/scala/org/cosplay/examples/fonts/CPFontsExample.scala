@@ -79,9 +79,9 @@ object CPFontsExample:
 
         val sc = new CPScene("scene", Some(dim), bgPx,
             // Same text with different alignment.
-            CPStaticImageSprite((dim.width - sysFontImg1.getWidth) / 2, 1, 4, sysFontImg1),
-            CPStaticImageSprite((dim.width - sysFontImg2.getWidth) / 2, 5, 4, sysFontImg2),
-            CPStaticImageSprite((dim.width - sysFontImg3.getWidth) / 2, 9, 4, sysFontImg3),
+            CPStaticImageSprite((dim.w - sysFontImg1.getWidth) / 2, 1, 4, sysFontImg1),
+            CPStaticImageSprite((dim.w - sysFontImg2.getWidth) / 2, 5, 4, sysFontImg2),
+            CPStaticImageSprite((dim.w - sysFontImg3.getWidth) / 2, 9, 4, sysFontImg3),
 
             // Same font with different spacing.
             CPStaticImageSprite(30, 14, 4, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),

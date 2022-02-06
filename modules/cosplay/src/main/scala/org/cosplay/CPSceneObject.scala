@@ -140,7 +140,7 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
       * @see [[getHeight]]
       * @see [[getDim]]
       */
-    inline def getWidth: Int = getDim.width
+    inline def getWidth: Int = getDim.w
 
     /**
       * Gets current height of this object.
@@ -148,7 +148,7 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
       * @see [[getWidth]]
       * @see [[getDim]]
       */
-    inline def getHeight: Int = getDim.height
+    inline def getHeight: Int = getDim.h
 
     /**
       * Gets rectangular shape of this sprite. It is basically a combination of its top-left

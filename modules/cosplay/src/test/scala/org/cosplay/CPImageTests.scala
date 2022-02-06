@@ -53,15 +53,15 @@ object CPImageTests:
         val img = CPSystemFont.render("test image", C_WHITE)
         val szImg = img.resizeByDim(CPDim(img.getWidth + 10, img.getHeight))
         val szDim = szImg.getDim
-        assertTrue(szDim.width == img.getDim.width + 10)
-        assertTrue(szDim.height == img.getDim.height)
+        assertTrue(szDim.w == img.getDim.w + 10)
+        assertTrue(szDim.h == img.getDim.h)
 
         val szImg2 = img.resizeByInsets(CPInsets(1, 2, 1, 5))
         val szDim2 = szImg2.getDim
-        assertTrue(szDim2.width == img.getDim.width + 2 + 5)
-        assertTrue(szDim2.height == img.getDim.height + 1 + 1)
+        assertTrue(szDim2.w == img.getDim.w + 2 + 5)
+        assertTrue(szDim2.h == img.getDim.h + 1 + 1)
 
         val szImg3 = img.resizeByInsets(CPInsets(-1, 2, 1, -5))
         val szDim3 = szImg3.getDim
-        assertTrue(szDim3.width == img.getDim.width + 2 - 5)
-        assertTrue(szDim3.height == img.getDim.height - 1 + 1)
+        assertTrue(szDim3.w == img.getDim.w + 2 - 5)
+        assertTrue(szDim3.h == img.getDim.h - 1 + 1)

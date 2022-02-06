@@ -128,8 +128,8 @@ object CPShaderExample:
 
         val bulbSpr = new CPImageSprite("bulb",
             // Center it on the screen.
-            (dim.width - bulbImg.getWidth) / 2,
-            (dim.height - bulbImg.getHeight) / 2 - 5, 1, bulbImg, false, Seq(FlashLightShader)):
+            (dim.w - bulbImg.w) / 2,
+            (dim.h - bulbImg.h) / 2 - 5, 1, bulbImg, false, Seq(FlashLightShader)):
             private var x = initX.toFloat
             private var y = initY.toFloat
 
@@ -153,7 +153,7 @@ object CPShaderExample:
 
         val sc = new CPScene("scene", Option(dim), bgPx,
             bulbSpr,
-            CPStaticImageSprite((dim.width - ctrlImg.getWidth) / 2, 24, 0, ctrlImg),
+            CPStaticImageSprite((dim.w - ctrlImg.w) / 2, 24, 0, ctrlImg),
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             // Exit the game on 'q' press.

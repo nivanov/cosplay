@@ -36,30 +36,30 @@ import CPPixel.*
 */
 
 /**
- * https://www.asciiart.eu
- */
+  * https://www.asciiart.eu
+  */
 object CPIceCreamImage extends CPArrayImage(
-  // 13x11
-  prepSeq("""
-    |xxxxxxxxxxxxxxxxx_.-.xx
-    |xxxxxxxxxxxxxxx,'/ //\x
-    |xxxxxxxxxxxxxx/// // /)
-    |xxxxxxxxxxxxx/// // //|
-    |xxxxxxxxxxxx/// // ///x
-    |xxxxxxxxxxx/// // ///xx
-    |xxxxxxxxxx(`: // ///xxx
-    |xxxxxxxxxxx`;`: ///xxxx
-    |xxxxxxxxxxx/ /:`:/xxxxx
-    |xxxxxxxxxx/ /  `'xxxxxx
-    |xxxxxxxxx/ /xxxxxxxxxxx
-    |xxxxxxxx(_/xxxxxxxxxxxx
+    // 15x12
+    prepSeq("""
+        |xxxxxxxxx_.-.xx
+        |xxxxxxx,'/ //\x
+        |xxxxxx/// // /)
+        |xxxxx/// // //|
+        |xxxx/// // ///x
+        |xxx/// // ///xx
+        |xx(`: // ///xxx
+        |xxx`;`: ///xxxx
+        |xxx/ /:`:/xxxxx
+        |xx/ /  `'xxxxxx
+        |x/ /xxxxxxxxxxx
+        |(_/xxxxxxxxxxxx
     """),
-  (ch, _, _) => if ch == 'x' then XRAY else ch&C_PINK1
+    (ch, _, _) => if ch == 'x' then XRAY else ch&C_PINK1
 )
 
 /**
- * Previews image using the built-in image viewer.
- */
+  * Previews image using the built-in image viewer.
+  */
 @main def reviewIceCreamImage(): Unit =
-  CPImage.previewImage(CPIceCreamImage)
-  sys.exit(0)
+    CPImage.previewImage(CPIceCreamImage)
+    sys.exit(0)

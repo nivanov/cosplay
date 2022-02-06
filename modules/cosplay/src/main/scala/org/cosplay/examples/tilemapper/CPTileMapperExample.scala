@@ -130,10 +130,7 @@ object CPTileMapperExample:
         val brickDim = brick.getDim
         val mapDim = tileMap.getDim
         val alienDim = alien.getDim
-        val dim = CPDim(
-            mapDim.width * brickDim.width,
-            mapDim.height * brickDim.height
-        )
+        val dim = CPDim(mapDim.w * brickDim.w, mapDim.h * brickDim.h)
         val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
         var objs = List[CPSceneObject](
             // Just for the initial scene fade-in effect.

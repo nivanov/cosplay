@@ -39,6 +39,10 @@ import impl.CPUtils
   * This class is used to define any arbitrary rectangular shape. Note that this class
   * only describes the rectangular shape but does not hold any content.
   *
+  * @param x X-coordinate of the left top corner.
+  * @param y Y-coordinate of the left top corner.
+  * @param width Width of the rectangular.
+  * @param height Height of the rectangular.
   * @see [[CPArray2D]] 2D content holder.
   */
 final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(x, y, width, height):
@@ -85,6 +89,16 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     final val yMin = y
 
     /**
+      * Width of the rectangular (shortcut API).
+      */
+    final val w = width
+
+    /**
+      * Height of the rectangular (shortcut API).
+      */
+    final val h = height
+
+    /**
       * X-coordinate of the center point.
       */
     final val centerX = if width == 0 then x else x + (xMax - x) / 2
@@ -120,7 +134,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
       * @param dim Dimension of the rectangle.
       */
     def this(x: Int, y: Int, dim: CPDim) = 
-        this(x, y, dim.width, dim.height)
+        this(x, y, dim.w, dim.h)
 
     /**
       * Creates rectangle with `(0,0)` left top corner and given dimension.
@@ -128,7 +142,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
       * @param dim Rectangle dimension.
       */
     def this(dim: CPDim) = 
-        this(0, 0, dim.width, dim.height)
+        this(0, 0, dim.w, dim.h)
 
     /**
       * Gets random X-coordinate within this rectangle.

@@ -100,7 +100,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       * @param clearVal Clear value.
       */
     def this(dim: CPDim, clearVal: T)(using ClassTag[T]) =
-        this(dim.width, dim.height)
+        this(dim.w, dim.h)
         this.clearVal = clearVal
         clear()
 
@@ -110,7 +110,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       * @param dim Array dimension.
       */
     def this(dim: CPDim)(using ClassTag[T]) =
-        this(dim.width, dim.height)
+        this(dim.w, dim.h)
 
     /**
       * Checks whether given XY-coordinate is valid for this array.

@@ -128,8 +128,8 @@ object CPParticleExample:
             override def getPixel: CPPixel = CPRand.randSymbol()&cf()
             override def isAlive: Boolean = age < MAX_AGE
 
-        val bw = bomb.getDim.width
-        val bh = bomb.getDim.height
+        val bw = bomb.getDim.w
+        val bh = bomb.getDim.h
 
         val emitter = new CPParticleEmitter():
             // Maximum age (frames) of the particle after which it "dies".
@@ -173,7 +173,7 @@ object CPParticleExample:
             kaboomSpr,
             ctrlSpr,
             new CPStaticImageSprite("bomb", bombX, bombY, 0, bomb),
-            new CPStaticImageSprite((w - ctrlDim.width) / 2, h - 4, 0, ctrlImg), // Help label.
+            new CPStaticImageSprite((w - ctrlDim.w) / 2, h - 4, 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             // Exit the game on 'q' press.

@@ -79,8 +79,8 @@ class CPLogoScene(id: String, dim: Option[CPDim], bgPx: CPPixel, colors: Seq[CPC
         override def update(ctx: CPSceneObjectContext): Unit =
             // Center the logo on each frame (ensuring the support for adaptive scenes).
             val canv = ctx.getCanvas
-            setX((canv.dim.width - getImage.getWidth) / 2)
-            setY((canv.dim.height - getImage.getHeight) / 2)
+            setX((canv.dim.w - getImage.w) / 2)
+            setY((canv.dim.h - getImage.h) / 2)
 
     // Add sprite to this scene.
     addObjects(logoSpr)
