@@ -206,9 +206,9 @@ object CPAnimationExample:
                     change(if dx < 0 then "left" else "right", finish = false)
                     x += dx
                     if dx.abs.round == 1.0f || ctx.getFrameCount % 6 == 0 then hopSnd.playOnce()
-                    else if dy != 0f then
+                else if dy != 0f then
                     // Change animation without waiting for the current one to complete.
-                        change("vert", finish = false)
+                    change("vert", finish = false)
                     y += dy
 
             override def onStart(): Unit =
