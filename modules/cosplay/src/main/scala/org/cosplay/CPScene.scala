@@ -92,7 +92,7 @@ open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGame
     protected def addObjects(objs: CPSceneObject*): Unit = objs.foreach(objects.add)
 
     /**
-      * Gets camera panning descriptor associated with this scene. By default, the camera panning
+      * Gets mutable camera panning descriptor associated with this scene. By default, the camera panning
       * is not attached to any scene object. You need to configure the returning camera descriptor
       * if you need camera tracking.
       */

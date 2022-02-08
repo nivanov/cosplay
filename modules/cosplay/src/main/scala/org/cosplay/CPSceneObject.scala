@@ -51,16 +51,16 @@ import impl.CPUtils
   * minimum you need to implement all abstract methods and at least one of either
   * [[render()]] or [[update()]] methods.
   *
-  * Here's a basic minimal scene object implementation:
+  * Here's a basic minimal scene object implementation that prints "Hello CosPlay!" text at <code>(0,0)</code>
+  * coordinate in black color:
   * {{{
   * object HelloSprite extends CPSceneObject:
   *     override def getX: Int = 0
   *     override def getY: Int = 0
   *     override def getZ: Int = 0
-  *     override def getDim: CPDim = CPDim(20, 5)
+  *     override def getDim: CPDim = CPDim(15, 1)
   *     override def render(ctx: CPSceneContext): Unit =
   *         ctx.getCanvas.drawString(0, 0, 0, "Hello CosPlay!", CPColor.C_BLACK)
-  *
   * }}}
   *
   * If scene object is [[isVisible invisible]] than only [[update()]] method will be called
