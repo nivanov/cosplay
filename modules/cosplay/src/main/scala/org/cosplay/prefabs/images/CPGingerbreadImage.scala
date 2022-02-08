@@ -36,23 +36,23 @@ import CPPixel.*
 */
 
 /**
- * https://www.asciiart.eu
- */
+  * https://www.asciiart.eu
+  */
 object CPGingerbreadImage extends CPArrayImage(
-  // 13x11
-  prepSeq("""
-    |            ,-.
-    |          _(*_*)_
-    |         (_  o  _)
-    |           / o \
-    |          (_/ \_)
+    // 13x11
+    prepSeq("""
+      |   ,-.
+      | _(*_*)_
+      |(_  o  _)
+      |  / o \
+      | (_/ \_)
     """),
-  (ch, _, _) => if ch == '*' then ch&C_RED1 else ch&C_SANDY_BROWN
+    (ch, _, _) => if ch == '*' then ch&C_RED1 else ch&C_SANDY_BROWN
 )
 
 /**
- * Previews image using the built-in image viewer.
- */
+  * Previews image using the built-in image viewer.
+  */
 @main def reviewGingerbreadImage(): Unit =
-  CPImage.previewImage(CPGingerbreadImage.trimBg())
-  sys.exit(0)
+    CPImage.previewImage(CPGingerbreadImage.trimBg())
+    sys.exit(0)

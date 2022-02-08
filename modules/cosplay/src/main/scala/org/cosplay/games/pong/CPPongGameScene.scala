@@ -51,11 +51,11 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var enemyScore = 0
     private var playerPosY = 30f
     private var enemyPosY = 30f
-    private var ballX = 25
-    private var ballY = 20
+    private var ballX = 25f
+    private var ballY = 20f
     private val paddleSpeed = 0.4f
-    private var ballAngle = 45
-    private var ballSpeed = 1f
+    private var ballAngle = 35
+    private val ballSpeed = 1.5f
 
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
     private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg()
@@ -83,37 +83,44 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             setX((canv.dim.w - enemyScoreImg.getWidth) - ((canv.dim.w / 4) - 1))
 
     private val ballSpr = new CPImageSprite("ballSpr", 0, 0, 0, ballImg):
-        private def clip(v: Int, min: Int, max: Int): Int =
-            if v < min then min
-            else if v > max then max
-            else v
-
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
+            val rad = ballAngle * (Math.PI / 180)
+            val ballMaxX = (canv.xMax - ballImg.w + 1).toFloat
+            val ballMaxY = (canv.yMax - ballImg.h + 1).toFloat
 
-            val rad = ballAngle * Math.PI / 180
-            ballX = clip((ballX + ballSpeed * Math.cos(rad)).round.toInt, canv.xMin, canv.xMax - ballW + 1)
-            ballY = clip((ballY + ballSpeed * Math.sin(rad)).round.toInt, canv.yMin, canv.yMax - ballH + 1)
+            ballX = ballX + ballSpeed * Math.cos(rad).toFloat
+            ballY = ballY + (ballSpeed * 0.7 * -Math.sin(rad)).toFloat
 
-            setX(ballX)
-            setY(ballY)
+            def bounce(x: Float, y: Float, vert: Boolean): Unit =
+                ballX = x
+                ballY = y
+                if (vert && ballAngle >= 180 && ballAngle <= 270) ||
+                    (vert && ballAngle >= 0 && ballAngle <= 90) ||
+                    (!vert && ballAngle >= 90 && ballAngle <= 180) ||
+                    (!vert && ballAngle >= 270 && ballAngle <= 360) then
+                    ballAngle += 450
+                else
+                    ballAngle += 270
+                if !vert then ballAngle += CPRand.randInt(1, 5)
+                ballAngle = ballAngle % 360
 
-            val rect = getRect
+                if ballAngle >= 0 && ballAngle <= 10 then ballAngle = 11
+                else if ballAngle >= 80 && ballAngle <= 90 then ballAngle = 79
+                else if ballAngle >= 90 && ballAngle <= 100 then ballAngle = 101
+                else if ballAngle >= 170 && ballAngle <= 180 then ballAngle = 169
+                else if ballAngle >= 180 && ballAngle <= 190 then ballAngle = 191
+                else if ballAngle >= 260 && ballAngle <= 270 then ballAngle = 259
+                else if ballAngle >= 270 && ballAngle <= 280 then ballAngle = 281
+                else if ballAngle >= 350 && ballAngle <= 360 then ballAngle = 349
 
-            ctx.getLog.info(s"ball=$rect, canv=${canv.rect}")
+            if ballX < canv.xMin then bounce(canv.xMin, ballY, true)
+            else if ballY < canv.yMin then bounce(ballX, canv.yMin, false)
+            else if ballX > ballMaxX then bounce(ballMaxX, ballY, true)
+            else if ballY > ballMaxY then bounce(ballX, ballMaxY, false)
 
-            def bounce(dx: Int, dy: Int): Unit =
-                ballAngle = (ballAngle + 270) % 360
-                ballX += dx
-                ballY += dy
-                setX(ballX)
-                setY(ballY)
-                ctx.getLog.trace(s"New angle: $ballAngle")
-
-            if rect.xMax == canv.xMax then bounce(0, -1)
-            else if rect.xMin == canv.xMin then bounce(1, 0)
-            else if rect.yMax == canv.yMax then bounce(0, -1)
-            else if rect.yMin == canv.yMin then bounce(0, 1)
+            setX(ballX.round.toInt)
+            setY(ballY.round.toInt)
 
     private val borderSpr = new CPCanvasSprite("border"):
         override def render(ctx: CPSceneObjectContext): Unit =

@@ -36,22 +36,25 @@ import CPPixel.*
 */
 
 /**
- * https://www.asciiart.eu
- */
+  * https://www.asciiart.eu
+  */
 object CPCarImage extends CPArrayImage(
-  // 13x11
-  prepSeq("""
-    |   ______
-    |  /|_||_\`.__
-    | (   _    _ _\
-    | =`-(_)--(_)-'
+    // 13x11
+    prepSeq("""
+      |   ______
+      |  /|_||_\`.__
+      | {   z    z _\
+      | =`-(z)--(z)-'
     """),
-  (ch, _, _) => if ch == 'x' then XRAY else ch&C_RED1
+    (ch, _, _) => ch match
+        case '(' | ')' => ch&C_WHITE
+        case 'z' => '_'&C_WHITE
+        case _ => ch&C_GOLD3A
 )
 
 /**
- * Previews image using the built-in image viewer.
- */
+  * Previews image using the built-in image viewer.
+  */
 @main def reviewCarImage(): Unit =
-  CPImage.previewImage(CPCarImage.trimBg())
-  sys.exit(0)
+    CPImage.previewImage(CPCarImage.trimBg())
+    sys.exit(0)
