@@ -58,9 +58,9 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *
   * Most CosPlay games follow this basic game organization:
   * {{{
-  *import org.cosplay.*
+  * import org.cosplay.*
   *
-  *object Game:
+  * object Game:
   *    def main(args: Array[String]): Unit =
   *        // Initialize the engine.
   *        CPEngine.init(
@@ -88,6 +88,18 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *    does not impose any restrictions or limitation on how it is should be done.
   *  - Once you have all scenes constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
   *  - Make sure to call [[CPEngine.dispose()]] method upon exit from [[CPEngine.startGame()]] method.
+  *
+  * ### System Properties
+  * CosPlay game engine accepts number of system proprties that control various aspects of its
+  * operation:
+  *
+  * | System Property                               | Type | Description  |
+  * | --------------------------------------------- | ---- | ------------ |
+  * | <code>COSPLAY_EMUTERM_FONT_NAME</code>        |      |              |
+  * | <code>COSPLAY_EMUTERM_FONT_SIZE</code>        |      |              |
+  * | <code>COSPLAY_EMUTERM_CH_WIDTH_OFFSET</code>  |      |              |
+  * | <code>COSPLAY_EMUTERM_CH_HEIGHT_OFFSET</code> |      |              |
+  * | <code>COSPLAY_EMUTERM_ANTIALIAS</code>        |      |              |
   *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
   *     working with game engine including initialization and game start.

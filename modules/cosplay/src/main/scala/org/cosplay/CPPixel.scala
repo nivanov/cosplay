@@ -37,7 +37,7 @@ import CPPixel.*
 /**
   * Single character pixel.
   *
-  * Character-pixel is a fundamental graphics unit in ASCII-based games. Just like the raster pixel on graphics
+  * Character-pixel is a fundamental graphics unit in ASCII-based games. Just like the raster pixel on a graphics
   * screen it represents the smallest area that can be rendered on the screen.
   *
   * CosPlay pixel is immutable and consists of a character from the ASCII character set, a foreground color, an optional
