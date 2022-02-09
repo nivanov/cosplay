@@ -36,7 +36,7 @@ import java.awt.Color
 */
 
 /**
-  * An RGB color.
+  * An RGB/HSB color.
   *
   * A color is an immutable container for 24-bit RGB value.
   *

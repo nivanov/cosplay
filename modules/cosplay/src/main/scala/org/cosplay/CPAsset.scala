@@ -34,8 +34,8 @@ package org.cosplay
   * Mark up type indicating that the object is an asset.
   *
   * Assets like [[CPImage images]], [[CPSound sounds]], [[CPFont fonts]], [[CPAnimation animations]] or [[CPVideo videos]]
-  * are not managed or governed by the CosPlay game engine unlike [[CPSceneObject scene objects]] that are managed and governed
-  * by the game engine. Assets are typically created outside of the game engine and managed by the developer, they
+  * are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]] that are managed and governed
+  * by the game engine. Assets are typically created outside of the game loop and managed by the developer, they
   * can be freely shared between scenes or scene objects as any other standard Scala objects.
   *
   * Here's current list of assets:

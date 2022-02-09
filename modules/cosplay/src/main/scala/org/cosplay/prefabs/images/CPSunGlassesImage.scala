@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay
+package org.cosplay.prefabs.images
 
+import org.cosplay.*
 import CPColor.*
+import CPArrayImage.*
 import CPPixel.*
-
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 
 /*
    _________            ______________
@@ -31,31 +30,31 @@ import org.junit.jupiter.api.Test
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
 /**
-  *
-  */
-object CPPixelTest:
-    /**
-      *
-      */
-    @Test
-    def pixelTest(): Unit =
-        val p1 = 'x'&C_BLACK
-        val p4 = CPPixel('x', C_BLACK)
-        val p5 = new CPPixel('x', C_BLACK, None, 0)
+ * https://www.asciiart.eu
+ */
+object CPSunGlassesImage extends CPArrayImage(
+    prepSeq("""
+      |     __         __
+      |    /.-'       `-.\
+      |   //             \\
+      |  /j_______________j\
+      | /o.-==-. .-. .-==-.o\
+      | ||      )) ((      ||
+      |  \\____//   \\____//
+      |   `-==-'     `-==-'
+    """),
+    (ch, _, _) => ch&C_SANDY_BROWN
+)
 
-        import scala.language.implicitConversions
-
-        val p2: CPPixel = 'x' -> C_BLACK
-        val p3: CPPixel = ('x', C_BLACK)
-
-        assertTrue(p1 == p2)
-        assertTrue(p2 == p3)
-        assertTrue(p3 == p4)
-        assertTrue(p4 == p5)
-
+/**
+ * Previews image using the built-in image viewer.
+ */
+@main def reviewSunGlassesImage(): Unit =
+    CPImage.previewImage(CPSunGlassesImage.trimBg())
+    sys.exit(0)

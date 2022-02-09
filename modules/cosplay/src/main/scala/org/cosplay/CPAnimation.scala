@@ -45,8 +45,8 @@ import org.cosplay.impl.CPUtils
   * rendered differently. Once such rendering is implemented by the built-in sprite [[CPAnimationSprite]] class.
   *
   * Animation is an asset. Just like other assets such as [[CPImage images]], [[CPSound sounds]], [[CPFont fonts]] or
-  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPSceneObject scene objects]]
-  * that are managed and governed by the game engine. Assets are typically created outside of the game engine and
+  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]]
+  * that are managed and governed by the game engine. Assets are typically created outside of the game loop and
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
