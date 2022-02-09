@@ -54,12 +54,12 @@ import impl.CPUtils
   * Here's a basic minimal scene object implementation that prints "Hello CosPlay!" text at <code>(0,0)</code>
   * coordinate in black color:
   * {{{
-  * object HelloSprite extends CPSceneObject:
+  * object HelloSprite extends CPSceneObject("id"):
   *     override def getX: Int = 0
   *     override def getY: Int = 0
   *     override def getZ: Int = 0
   *     override def getDim: CPDim = CPDim(15, 1)
-  *     override def render(ctx: CPSceneContext): Unit =
+  *     override def render(ctx: CPSceneObjectContext): Unit =
   *         ctx.getCanvas.drawString(0, 0, 0, "Hello CosPlay!", CPColor.C_BLACK)
   * }}}
   *
