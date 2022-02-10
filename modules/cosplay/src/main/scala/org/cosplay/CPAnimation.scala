@@ -247,7 +247,6 @@ object CPAnimation:
       * @see [[CPImage.previewImage()]]
       */
     def previewAnimation(ani: CPAnimation, frameDim: CPDim, emuTerm: Boolean = true, bg: CPPixel = DFLT_BG): Unit =
-        if bg.bg.isDefined then System.setProperty("COSPLAY_TERM_BG_RGB", bg.bg.get.rgb.toString)
         val dim = frameDim + 8
         CPEngine.init(
             CPGameInfo(
