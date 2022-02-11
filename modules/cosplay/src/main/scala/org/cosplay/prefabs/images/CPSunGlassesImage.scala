@@ -39,18 +39,17 @@ import CPPixel.*
  * https://www.asciiart.eu
  */
 object CPSunGlassesImage extends CPArrayImage(
-    // 7x21
     prepSeq("""
-      |                  __         __
-      |                 /.-'       `-.\
-      |                //             \\
-      |               /j_______________j\
-      |             /o.-==-. .-. .-==-.o\
-      |              ||      )) ((      ||
-      |               \\____//   \\____//
-      |                `-==-'     `-==-'
+      |     __         __
+      |    /.-'       `-.\
+      |   //             \\
+      |  /j_______________j\
+      | /o.-==-. .-. .-==-.o\
+      | ||      )) ((      ||
+      |  \\____//   \\____//
+      |   `-==-'     `-==-'
     """),
-    (ch, _, _) => if ch == 'x' then XRAY else ch&C_SANDY_BROWN
+    (ch, _, _) => ch&C_SANDY_BROWN
 )
 
 /**

@@ -58,9 +58,9 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *
   * Most CosPlay games follow this basic game organization:
   * {{{
-  *import org.cosplay.*
+  * import org.cosplay.*
   *
-  *object Game:
+  * object Game:
   *    def main(args: Array[String]): Unit =
   *        // Initialize the engine.
   *        CPEngine.init(
@@ -89,8 +89,23 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *  - Once you have all scenes constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
   *  - Make sure to call [[CPEngine.dispose()]] method upon exit from [[CPEngine.startGame()]] method.
   *
+  * ### System Properties
+  * CosPlay game engine supports the following system proprties that control various aspects of its
+  * operation:
+  *
+  * | System Property | Type | Description  |
+  * | ----------------| ---- | ------------ |
+  * | `COSPLAY_EMUTERM_FONT_NAME` | `String` | Applies to the built-in terminal emulator only. Specifies the font name to use. |
+  * | `COSPLAY_EMUTERM_FONT_SIZE` | `Int` | Applies to the built-in terminal emulator only. Specifies the font size to use. |
+  * | `COSPLAY_EMUTERM_CH_WIDTH_OFFSET` | `Int` | Applies to the built-in terminal emulator only. Specifies character width offset. Can be positive or negative. Default is zero. |
+  * | `COSPLAY_EMUTERM_CH_HEIGHT_OFFSET` | `Int` | Applies to the built-in terminal emulator only. Specifies character height offset. Can be positive or negative. Default is zero. |
+  * | `COSPLAY_EMUTERM_ANTIALIAS` | | Applies to the built-in terminal emulator only. If system property is present - the font rendering will use antialiasing. By default, no antialiasing is used. |
+  * | `COSPLAY_FORCE_8BIT_COLOR`| `Boolean` | Forces the automatic conversion from 24-bit color to 8-bit color. Only needed when running in the native terminal that does not support 24-bit color. Default value is `false`. |
+  * | `COSPLAY_TERM_CLASSNAME`| `String` | Fully qualified class name for the custom terminal implementation. Class must implement [[org.cosplay.CPTerminal]] trait. |
+  *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
   *     working with game engine including initialization and game start.
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPEngine:
     private enum State:

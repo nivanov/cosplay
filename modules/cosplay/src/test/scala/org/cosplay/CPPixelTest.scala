@@ -45,13 +45,14 @@ object CPPixelTest:
       */
     @Test
     def pixelTest(): Unit =
-        import scala.language.implicitConversions
-
         val p1 = 'x'&C_BLACK
-        val p2: CPPixel = 'x' -> C_BLACK
-        val p3: CPPixel = ('x', C_BLACK)
         val p4 = CPPixel('x', C_BLACK)
         val p5 = new CPPixel('x', C_BLACK, None, 0)
+
+        import scala.language.implicitConversions
+
+        val p2: CPPixel = 'x' -> C_BLACK
+        val p3: CPPixel = ('x', C_BLACK)
 
         assertTrue(p1 == p2)
         assertTrue(p2 == p3)
