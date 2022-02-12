@@ -39,7 +39,6 @@ import CPPixel.*
  * https://www.asciiart.eu
  */
 object CPCrownImage extends CPArrayImage(
-    // 5x27
     prepSeq("""
       |       o
       |    o^/|\^o
