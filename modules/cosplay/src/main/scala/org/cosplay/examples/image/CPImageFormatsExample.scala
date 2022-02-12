@@ -43,6 +43,7 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
   * 
   * @see [[CPImage]]
   * @see [[CPArrayImage]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPImageFormatsExample:
     /**

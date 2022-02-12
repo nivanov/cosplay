@@ -45,6 +45,7 @@ import org.cosplay.prefabs.shaders.*
   * @see [[CPShader]]
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPShaderExample:
     /**

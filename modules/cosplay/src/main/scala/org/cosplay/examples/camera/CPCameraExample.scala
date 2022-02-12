@@ -43,6 +43,8 @@ import scala.collection.mutable
 
 /**
   * Code example for camera management.
+  * 
+  * @note See developer guide at [[https://cosplayengine.com]] 
   */
 //noinspection DuplicatedCode
 object CPCameraExample:

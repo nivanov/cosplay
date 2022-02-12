@@ -41,6 +41,7 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
   * Code example for tile mapping functionality.
   * 
   * @see [[CPTileMapper]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPTileMapperExample:
     /**

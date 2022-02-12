@@ -39,11 +39,12 @@ import org.cosplay.prefabs.shaders.*
 /**
   * Code example for video functionality.
   *
+  * @see [[CPVideo]]
+  * @see [[CPVideoSprite]]
+  * @see [[CPVideoSpriteListener]]
   * @note Use [[https://www.ffmpeg.org/]] to convert video into separate JPEG images.
   * @note Use [[https://github.com/cslarsen/jp2a]] or similar to convert individual JPEG into ASCII.
-  * @see [[CPVideo]]      
-  * @see [[CPVideoSprite]]
-  * @see [[CPVideoSpriteListener]]      
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPVideoExample:
     /**
