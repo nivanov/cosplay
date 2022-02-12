@@ -41,19 +41,19 @@ import java.awt.Color
   * A color is an immutable container for 24-bit RGB value.
   *
   * ### Color Creation
-  * Color companion object provides 100s of the pre-build color constants for all xterm and X11 standard colors.
-  * New color creation is an expensive process. It is highly recommended to use one of the many built-in color
+  * Color companion object provides 100s of the pre-built color constants for all xterm and X11 standard colors.
+  * New color creation is an expensive process. It is highly recommended using one of the many built-in color
   * constants or pre-create the colors you need upfront. As a rule of thumb - avoid new color creation on each frame
   * update.
   *
-  * ### 8-Bit vs. 24-Bit (True Color) colors
-  * Most modern terminals support "True Color" [[https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit 24-bit colors]],
-  * the unlimited combination of Red, Green, and Blue values in RGB. Some of the older terminals, however, only
+  * ### 8-Bit & 24-Bit Color Depth
+  * Most modern ANSI terminals support "True Color" [[https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit 24-bit colors]],
+  * the unlimited combination of Red, Green, and Blue values in RGB. Some older terminals, however, only
   * provide support for [[https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit 8-bit colors]] where each color is a
   * lookup number into 256-color lookup table (LUT). These are also often called xterm colors despite the fact
   * that xterm terminal application does support the 24-bit colors. Note that there's only an approximate translation
   * from a true 24-bit color to 8-bit color, i.e. the closest 8-bit color will be used when translating from
-  * 24-bit color to 8-bit color. Note that many darker 24-bit colors will convert as 8-bit dark grey.
+  * 24-bit color to 8-bit color. More specifically, many darker 24-bit colors will convert as 8-bit dark grey.
   *
   * By default, CosPlay stores all colors in 24-bit format internally and renders all colors as 24-bit colors in both native
   * terminal and the built-in terminal emulator. If, however, you want to automatically convert 24-bit color to the nearest
@@ -63,12 +63,12 @@ import java.awt.Color
   * native terminal that does not support 24-bit colors.
   *
   * Note also that since 8-bit color space is much smaller many color effects like fade in and fade out, color gradients,
-  * etc. will look less smoother when using 8-bit colors.
+  * etc. will look less smooth when using 8-bit colors.
   *
-  * ### xterm vs X11 color names
+  * ### XTerm vs X11 Color Names
   * Companion object provides constants for pre-built colors:
   *  - Names starting with `C_` represent colors in [[https://www.ditig.com/256-colors-cheat-sheet xterm naming convention]].
-  *  - Names starting with `C_X11_` represent colors in [[https://en.wikipedia.org/wiki/X11_color_names X11 color naming convention]]
+  *  - Names starting with `C_X11_` represent colors in [[https://en.wikipedia.org/wiki/X11_color_names X11 color naming convention]].
   *  - Names starting with `CS_X11_` represent colors grouped by the primary color in [[https://en.wikipedia.org/wiki/X11_color_names X11 color naming convention]].
   *
   * You are free to use any constants with any naming convention, as well as mix and match - they are all just colors. Note
@@ -99,7 +99,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     final val rgb: Int = ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff)
 
     /**
-      * HSB (Hue, Saturation, Brightness) values of this color.
+      * HSB (Hue, Saturation, Brightness) values as 3-element array for this color.
       *
       * @see [[hue]]
       * @see [[saturation]]
@@ -110,15 +110,33 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     /**
       * 8-bit xterm lookup number for this color.
       *
-      * Note that if converted from 24-bit color this only an approximation unless there's a direct match
+      * Note that if converted from 24-bit color this is only an approximation unless there's a direct match
       * between 24-bit color space and 8-bit color space.
       */
     final val xterm: Int = toXterm(red, green, blue)
 
-    /** If 8-bit color space is used. */
+    /**
+     * If 8-bit color space is used.
+     *
+     * By default, CosPlay stores all colors in 24-bit format internally and renders all colors as 24-bit colors in both native
+     * terminal and the built-in terminal emulator. If, however, you want to automatically convert 24-bit color to the nearest
+     * 8-bit color during rendering you need to set system property `COSPLAY_FORCE_8BIT_COLOR=true`. Note that this will force
+     * both native terminal and built-in terminal emulator to use 8-bit color conversion even though technically the
+     * built-in terminal emulator can always display true 24-bit color. This is only necessary if running the game in the
+     * native terminal that does not support 24-bit colors.
+     */
     final val color8Bit: Boolean = force8Bit
 
-    /** If 24-bit color space is used (default behavior). */
+    /**
+     * If 24-bit color space is used (default behavior).
+     *
+     * By default, CosPlay stores all colors in 24-bit format internally and renders all colors as 24-bit colors in both native
+     * terminal and the built-in terminal emulator. If, however, you want to automatically convert 24-bit color to the nearest
+     * 8-bit color during rendering you need to set system property `COSPLAY_FORCE_8BIT_COLOR=true`. Note that this will force
+     * both native terminal and built-in terminal emulator to use 8-bit color conversion even though technically the
+     * built-in terminal emulator can always display true 24-bit color. This is only necessary if running the game in the
+     * native terminal that does not support 24-bit colors.
+     */
     final val color24Bit: Boolean = !force8Bit
 
     /** Color's hue. */
@@ -130,17 +148,23 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     /** Color's brightness. */
     final val brightness: Float = hsb(2)
 
-    /** Hexadecimal string representation of this color's RGB value. */
-    final val hex: String = s"0x${rgb.toHexString}"
+    /** Hexadecimal string representation of this color's RGB value in `0x000000` upper case format */
+    final val hex: String = s"0x${rgb.toHexString.toUpperCase}"
 
-    /**  */
-    private[cosplay] final val fgAnsi = if force8Bit then fg8Bit(xterm) else fg24Bit(red, green, blue)
+    /**
+     * ANSI foreground color sequence for this color. It automatically accounts for 8-bit or 24-bit color rendering.
+     */
+    final val fgAnsi = if force8Bit then fg8Bit(xterm) else fg24Bit(red, green, blue)
 
-    /**  */
-    private[cosplay] final val bgAnsi = if force8Bit then bg8Bit(xterm) else bg24Bit(red, green, blue)
+    /**
+     * ANSI background color sequence for this color. It automatically accounts for 8-bit or 24-bit color rendering.
+     */
+    final val bgAnsi = if force8Bit then bg8Bit(xterm) else bg24Bit(red, green, blue)
 
-    /**  */
-    private[cosplay] final val awt = if force8Bit then new Color(XTERM_COLORS(xterm)) else new Color(red, green, blue)
+    /**
+     * Standard Java AWT color. It automatically accounts for 8-bit or 24-bit color rendering.
+     */
+    final val awt = if force8Bit then new Color(XTERM_COLORS(xterm)) else new Color(red, green, blue)
 
     /**
       * Gets a new color by multiplying RGB values by given `factor`.
@@ -495,9 +519,9 @@ object CPColor:
 
     /**
       *
-      * @param r
-      * @param g
-      * @param b
+      * @param r Red.
+      * @param g Green
+      * @param b Blue.
       */
     private def toXterm(r: Int, g: Int, b: Int): Int =
         // https://stackoverflow.com/questions/11765623/convert-hex-to-closest-x11-color-number

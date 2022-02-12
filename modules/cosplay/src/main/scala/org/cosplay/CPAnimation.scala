@@ -83,7 +83,7 @@ import org.cosplay.impl.CPUtils
   *  - Use discrete animation as an artistic tool. When used properly and consistently it can result
   *    in a unique visual design of the game.
   *
-  * ### Different ways to animate
+  * ### Different Ways To Animate
   * In CosPlay there are different ways one could implement animated scene objects. In the end, all of these
   * approaches deliver the same result but each individual technique is tailor-made for a specific animation type:
   *  - **Animated Sprites**
@@ -101,7 +101,7 @@ import org.cosplay.impl.CPUtils
   * banking left or right, taking off or landing are ideally suited for sprite-based animation as they can
   * easily be defined as a short sequence of individual images.
   *
-  * ### Particle effects
+  * ### Particle Effects
   * [[CPParticle Particle effect]] animation is based on the concept of a [[CPPixel pixel]]-based particle and particle
   * emitter. Particle emitter emits particles. Each particle and its emitter have a fully programmable behavior.
   * The key characteristic of particle effect animation is the randomness over the large number of individual elements
@@ -112,7 +112,7 @@ import org.cosplay.impl.CPUtils
   * process would be very tidies and lack the desired randomness. Particle effect-based animation fits the bill
   * perfectly in such cases allowing to implement such random explosion animation in just a few lines of code.
   *
-  * ### Canvas drawing
+  * ### Canvas Drawing
   * Sometime, a simple drawing on the [[CPCanvas canvas]] is all that's needed for a desired animation. Consider
   * how one could implement a laser strike in our airplane example. A laser strike can be defined as a variable
   * length line of pixel shown for a split second. The best way to implement it is with one line of code using

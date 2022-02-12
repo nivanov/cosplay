@@ -49,6 +49,25 @@ object CPColorTests:
         assertTrue(c2 == c3)
 
     /**
+     *
+     */
+    @Test
+    def modificationsTest(): Unit =
+        val c = CPColor(32, 64, 128)
+
+        val c1 = c.bw()
+        val c2 = c.bw2()
+        val c3 = c.awt
+        val c4 = c.bgAnsi
+        val c5 = c.fgAnsi
+        val c6 = c.darker(0.5)
+        val c7 = c.lighter(0.5)
+        val c8 = c.transform(0.2, 0.8, 0.5)
+        val c9 = c.color8Bit
+        val f1 = CPColor.gradientFun(C_WHITE, C_BLACK, 20)
+        val s1 = CPColor.gradientSeq(C_WHITE, C_BLACK, 20)
+
+    /**
       *
       */
     @Test
@@ -105,3 +124,12 @@ object CPColorTests:
         val c3 = CPColor(0, 128, 0)
         assertTrue(c1 != c2)
         assertTrue(c1 == c3)
+
+        val c1a = CPColor("0x008000")
+        val c2a = CPColor("#808000")
+        val c1b = CPColor("#008000")
+
+        assert(c1 == c1a)
+        assert(c1 == c1b)
+        assert(c2 == c2a)
+        assert(c1b == c1a)
