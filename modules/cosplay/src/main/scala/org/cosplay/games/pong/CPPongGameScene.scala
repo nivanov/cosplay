@@ -54,7 +54,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var ballX = 25f
     private var ballY = 20f
     private val paddleSpeed = 0.4f
-    private var ballAngle = 35
+    private var ballAngle = 180
     private val ballSpeed = 1.5f
 
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
@@ -114,10 +114,28 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
                 else if ballAngle >= 270 && ballAngle <= 280 then ballAngle = 281
                 else if ballAngle >= 350 && ballAngle <= 360 then ballAngle = 349
 
-            if ballX < canv.xMin then bounce(canv.xMin, ballY, true)
+            //if ballX < canv.xMin then bounce(canv.xMin, ballY, true)
+            if ballX < canv.xMin then
+                ballX = canv.xMax/2
+                ballY = canv.yMax/2
+                ballAngle = -ballAngle
+
+                playerScore += 1
             else if ballY < canv.yMin then bounce(ballX, canv.yMin, false)
-            else if ballX > ballMaxX then bounce(ballMaxX, ballY, true)
+            //else if ballX > ballMaxX then bounce(ballMaxX, ballY, true)
+            else if ballX > ballMaxX then
+                ballX = canv.xMax/2
+                ballY = canv.yMax/2
+                ballAngle = -ballAngle
+
+                enemyScore += 1
             else if ballY > ballMaxY then bounce(ballX, ballMaxY, false)
+            else if ballY <= (playerPosY).round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
+                bounce(3, ballY, true)
+                println("Hit player paddle")
+            else if ballY <= (enemyPosY).round && ballY >= (enemyPosY - 6).round && ballX.round >= canv.xMax - 3 then
+                bounce(canv.xMax - 6, ballY, true)
+                println("Hit enemy paddle")
 
             setX(ballX.round.toInt)
             setY(ballY.round.toInt)
@@ -156,8 +174,8 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             val canv = ctx.getCanvas
             canv.drawLine(canv.dim.w - 2, enemyPosY.round, canv.dim.w - 2, (enemyPosY - 5).round, 100, enemyPx)
 
-            if ballY > enemyPosY then enemyPosY += paddleSpeed
-            else if ballY < enemyPosY then enemyPosY -= paddleSpeed
+            if ballY > (enemyPosY - 2.5).round then enemyPosY += paddleSpeed
+            else if ballY < (enemyPosY - 2.5).round then enemyPosY -= paddleSpeed
 
     addObjects(CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         playerScoreSpr,
