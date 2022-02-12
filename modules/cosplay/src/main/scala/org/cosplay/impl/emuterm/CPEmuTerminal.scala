@@ -140,13 +140,14 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private def initFontMetrics(): Unit =
         termFont = new Font(fontName, Font.PLAIN, fontSize)
         // Correct for extra-wide monospace fonts on Mac OS and Linux.
-        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") && (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) then chWOff = -5
+//        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") && (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) then chWOff = -5
         val g = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).createGraphics()
         configFont(g)
         val fm = g.getFontMetrics(termFont)
         descent = fm.getMaxDescent
         chW = fm.getWidths.max + chWOff
         chH = fm.getHeight - fm.getLeading + chHOff
+        println(s"maxWidth=${fm.getWidths.max}, height=${fm.getHeight}")
         g.dispose()
 
     /**
