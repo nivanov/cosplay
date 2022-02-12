@@ -36,7 +36,7 @@ package org.cosplay
   * Shader is a piece of user-defined code that is executed on each frame pass for each scene object that has one or 
   * more shaders attached to it.
   *
-  * ### Different ways to animate
+  * ### Different Ways To Animate
   * In CosPlay there are different ways one could implement animated scene objects. In the end, all of these
   * approaches deliver the same result but each individual technique is tailor-made for a specific animation type:
   *  - [[CPAnimation Animated Sprites]]
@@ -45,7 +45,7 @@ package org.cosplay
   *  - [[CPVideo Video Sprites]]
   *  - **Shaders**
   *
-  * ### Animated sprites
+  * ### Animated Sprites
   * This is a classic sprite animation technique ideally suited for animations that can be defined as a
   * sequence of individual similarly or identically sized images. When played, each individual images is
   * shown for a short period of time one after another delivering animation effect.
@@ -54,7 +54,7 @@ package org.cosplay
   * banking left or right, taking off or landing are ideally suited for sprite-based animation as they can
   * easily be defined as a short sequence of individual images.
   *
-  * ### Particle effects
+  * ### Particle Effects
   * [[CPParticle Particle effect]] animation is based on the concept of a [[CPPixel pixel]]-based particle and particle
   * emitter. Particle emitter emits particles. Each particle and its emitter have a fully programmable behavior.
   * The key characteristic of particle effect animation is the randomness over the large number of individual elements
@@ -65,14 +65,14 @@ package org.cosplay
   * process would be very tidies and lack the desired randomness. Particle effect-based animation fits the bill
   * perfectly in such cases allowing to implement such random explosion animation in just a few lines of code.
   *
-  * ### Canvas drawing
+  * ### Canvas Drawing
   * Sometime, a simple drawing on the [[CPCanvas canvas]] is all that's needed for a desired animation. Consider
   * how one could implement a laser strike in our airplane example. A laser strike can be defined as a variable
   * length line of pixel shown for a split second. The best way to implement it is with one line of code using
   * many of the drawing functions in [[CPCanvas]] class and putting this logic into [[CPSceneObject.render()]]
   * method.
   *
-  * ### Video sprites
+  * ### Video Sprites
   * [[CPVideoSprite Video sprite]] is a variation of sprite-based animation. In case of video, there are typically a lot more frames
   * (often 1000s of frames) and all these frames have the same dimension. [[CPVideo]] and [[CPVideoSprite]] provide
   * easy-to-use mechanism to implement it. Back to our airplane example, the video-based animation would be ideal

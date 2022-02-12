@@ -57,7 +57,7 @@ import scala.util.Using
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
-  * ### In-Code images
+  * ### In-Code Images
   * One of the convenient features of CosPlay is that images can be created & painted (a.k.a. skinned) right
   * in code with very minimal gestalt. The easiest way is to use [[CPArrayImage]] class that provides utility
   * methods to convert a margin-based Scala string into an image. For [[CPAlienImage example]]:
@@ -109,7 +109,7 @@ import scala.util.Using
   * )
   * }}}
   *
-  * ### Loading images
+  * ### Loading Images
   * You can load images from the external source like URL or file path in one of the following formats:
   *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native binary format supported by
   *    [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor. This format supports full color information.
@@ -134,7 +134,7 @@ import scala.util.Using
   * )
   * }}}
   *
-  * ### Saving images
+  * ### Saving Images
   * You can save image to the local file path in the following format:
   *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
   *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
@@ -143,7 +143,7 @@ import scala.util.Using
   *  Use one of the following methods from the companion object to save the image to the file path:
   *   - [[save() save(...)]]
   *
-  * ### ASCII art online
+  * ### ASCII Art Online
   * There's a vast collection of existing ASCII art imagery online. Here's some of the main resources where
   * you can find it:
   *  - http://www.asciiworld.com/
@@ -160,7 +160,7 @@ import scala.util.Using
   * CosPlay comes with a list of prefab image, animations and video clips. All of them are shipped with CosPlay
   * and can be found in `org.cosplay.prefabs` package an its sub-packages.
   *
-  * ### ASCII art editors
+  * ### ASCII Art Editors
   * [[https://www.gridsagegames.com/rexpaint REXPaint]] ASCII editor is an excellent free editor for ASCII art
   * from the creator of the [[https://www.gridsagegames.com/cogmind/ Cogmind]] game.
   * [[https://www.gridsagegames.com/rexpaint REXPaint]] editor is highly recommended for images with non-trivial

@@ -71,7 +71,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private final val DFLT_DIM = CPDim(100, 50)
     private var frame: JFrame = _
     private var panel: JPanel = _
-    private val fontName = CPUtils.sysEnv("COSPLAY_EMUTERM_FONT_NAME").getOrElse("Courier New")
+    private val fontName = CPUtils.sysEnv("COSPLAY_EMUTERM_FONT_NAME").getOrElse("Monospaced")
     private val fontSize = Integer.decode(CPUtils.sysEnv("COSPLAY_EMUTERM_FONT_SIZE").getOrElse("14"))
     private var chWOff = Integer.decode(CPUtils.sysEnv("COSPLAY_EMUTERM_CH_WIDTH_OFFSET").getOrElse("0"))
     private val chHOff = Integer.decode(CPUtils.sysEnv("COSPLAY_EMUTERM_CH_HEIGHT_OFFSET").getOrElse("0"))
@@ -139,14 +139,22 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       */
     private def initFontMetrics(): Unit =
         termFont = new Font(fontName, Font.PLAIN, fontSize)
-        // Correct for extra-wide monospace fonts on Mac OS and Linux.
-        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") && (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) then chWOff = -5
         val g = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).createGraphics()
         configFont(g)
         val fm = g.getFontMetrics(termFont)
         descent = fm.getMaxDescent
         chW = fm.getWidths.max + chWOff
         chH = fm.getHeight - fm.getLeading + chHOff
+        val maxW = fm.getWidths.max
+        val maxH = fm.getHeight
+
+        // Fix sometime incorrect font width (on MacOS or Linux).
+        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") then
+            if maxW > maxH / 2 then
+                chWOff = -(maxW - maxH / 2)
+
+        chW = maxW + chWOff
+        chH = maxH - fm.getLeading + chHOff
         g.dispose()
 
     /**

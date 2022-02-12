@@ -36,7 +36,7 @@ package org.cosplay
   * This sprite can be used to render static or moving image, the same image or changing images. For
   * static unchanging images see [[CPStaticImageSprite]] for even simpler API.
   *
-  * ### Dynamic image position
+  * ### Dynamic Image Position
   * If a game is intended to work with [[CPScene adaptive scene sizing]] than all of its scene objects
   * must adapt to changing size of the scene. Image sprite provides simple and convenient way to support
   * this logic. Here's an example of using image sprite to display an image at the center of the screen

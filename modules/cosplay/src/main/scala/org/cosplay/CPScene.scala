@@ -40,7 +40,7 @@ import org.cosplay.impl.CPContainer
   * a simple flat structure inside of the scene. Just like with any other [[CPGameObject game objects]], you can use
   * [[CPGameObject.getTags tags]] to organize scenes and scene objects.
   *
-  * ### Creating a scene
+  * ### Creating A Scene
   * Scene has a strong encapsulation contract in relation to its scene objects: you can only add initial scene objects to
   * the scene at the time of scene creation. Once scene is created, its constituent scene objects can only be
   * manipulated via methods in [[CPSceneObjectContext]] class passed to scene objects on each frame update.
@@ -63,7 +63,7 @@ import org.cosplay.impl.CPContainer
   * Note that you can dynamically add and remove scene as well as scene objects via [[CPSceneObjectContext]] instance.
   * See [[CPSceneObjectContext]] API for more details.
   *
-  * ### Scene dimension
+  * ### Scene Dimension
   * CosPlay scene can be *adaptive* or *static* in terms of its dimensions. When scene dimension
   * is set it becomes unchangeable (static) for the lifecycle of the scene and its scene objects can rely on this fact. However,
   * if scene dimension is set as `None`, it will adapt to the terminal dimension on each frame meaning that the scene's

@@ -60,7 +60,7 @@ package org.cosplay
   * and pass the appropriate flag into one of the [[CPEngine.init()]] methods. This way your game will automatically
   * choose the appropriate terminal implementation based on what environment it is running on.
   *
-  * ### Custom terminal implementation
+  * ### Custom Terminal Implementation
   * You may decide to provide your own terminal implementation, for example, targeting iOS, Android or WebGL output.
   * Here are the steps to do it:
   *  - Create a class that implements this trait.
