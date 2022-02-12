@@ -46,6 +46,7 @@ import org.cosplay.prefabs.shaders.*
   * @see [[CPKeyboardKey]]
   * @see [[CPKeyboardEvent]]
   * @see [[CPKeyboardSprite]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPTextInputExample:
     /**

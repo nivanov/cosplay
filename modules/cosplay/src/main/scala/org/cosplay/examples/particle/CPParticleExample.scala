@@ -45,6 +45,7 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
   * @see [[CPParticle]]
   * @see [[CPParticleEmitter]]
   * @see [[CPParticleSprite]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPParticleExample:
     /**

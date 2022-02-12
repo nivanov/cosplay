@@ -40,11 +40,12 @@ import scala.util.Using
 /**
   * 40 frames from [[https://ascii.co.uk/animated-art/3d-tunnel-animated-ascii-art.html]].
   *
-  * @note Use [[https://www.ffmpeg.org/]] to convert video into separate JPEG images.
-  * @note Use [[https://github.com/cslarsen/jp2a]] or similar to convert individual JPEG into ASCII.
   * @see [[CPVideo]]
   * @see [[CPVideoSprite]]
   * @see [[CPVideoSpriteListener]]
+  * @note Use [[https://www.ffmpeg.org/]] to convert video into separate JPEG images.
+  * @note Use [[https://github.com/cslarsen/jp2a]] or similar to convert individual JPEG into ASCII.
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-tunnel-animated-ascii-art.html"):
     private final val RAW_FOOTAGE = "prefab/video/tunnel.txt" // Under 'resources' folder...

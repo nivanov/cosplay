@@ -44,6 +44,7 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
   * Code example for canvas drawing functionality.
   *
   * @see [[CPCanvas]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPCanvasExample:
     /**

@@ -46,6 +46,7 @@ import org.cosplay.*
   * @see [[CPAnimationContext]]
   * @see [[CPAnimationSprite]]
   * @see [[CPAnimationKeyFrame]]
+  * @note See developer guide at [[https://cosplayengine.com]]     
   */
 object CPAnimationExample:
     /**

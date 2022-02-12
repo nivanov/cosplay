@@ -43,6 +43,7 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
   * @see [[CPFont]]
   * @see [[CPSystemFont]]
   * @see [[CPFIGLetFont]]
+  * @note See developer guide at [[https://cosplayengine.com]]     
   */
 object CPFontsExample:
     /**

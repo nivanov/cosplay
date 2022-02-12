@@ -41,6 +41,7 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
   * Code example for audio functionality.
   * 
   * @see [[CPSound]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPSoundExample:
     /**

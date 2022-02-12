@@ -44,6 +44,7 @@ import prefabs.shaders.*
   *
   * @see [[CPImage]]
   * @see [[CPArrayImage]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPImageCarouselExample:
     // Images for the carousel.
