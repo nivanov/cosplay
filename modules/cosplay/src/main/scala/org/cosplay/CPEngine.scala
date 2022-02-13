@@ -53,7 +53,7 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
 /**
   * CosPlay game engine.
   *
-  * Game engine is mostly an internal object and it is only used at the beginning of the game. It provides
+  * Game engine is mostly an internal object, and it is only used at the beginning of the game. It provides
   * variety of utility and miscellaneous methods for games.
   *
   * Most CosPlay games follow this basic game organization:
@@ -90,18 +90,18 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *  - Make sure to call [[CPEngine.dispose()]] method upon exit from [[CPEngine.startGame()]] method.
   *
   * ### System Properties
-  * CosPlay game engine supports the following system proprties that control various aspects of its
-  * operation:
+  * CosPlay game engine supports the following system properties that control various aspects of its
+  * operation. Note that these properties must be set before method [[CPEngine.init()]] is called:
   *
-  * | System Property | Type | Description  |
-  * | ----------------| ---- | ------------ |
+  * | System Property | Value Type | Description  |
+  * | ----------------| ---------- | ------------ |
   * | `COSPLAY_EMUTERM_FONT_NAME` | `String` | Applies to the built-in terminal emulator only. Specifies the font name to use. |
   * | `COSPLAY_EMUTERM_FONT_SIZE` | `Int` | Applies to the built-in terminal emulator only. Specifies the font size to use. |
   * | `COSPLAY_EMUTERM_CH_WIDTH_OFFSET` | `Int` | Applies to the built-in terminal emulator only. Specifies character width offset. Can be positive or negative. Default is zero. |
   * | `COSPLAY_EMUTERM_CH_HEIGHT_OFFSET` | `Int` | Applies to the built-in terminal emulator only. Specifies character height offset. Can be positive or negative. Default is zero. |
   * | `COSPLAY_EMUTERM_ANTIALIAS` | | Applies to the built-in terminal emulator only. If system property is present - the font rendering will use antialiasing. By default, no antialiasing is used. |
   * | `COSPLAY_FORCE_8BIT_COLOR`| `Boolean` | Forces the automatic conversion from 24-bit color to 8-bit color. Only needed when running in the native terminal that does not support 24-bit color. Default value is `false`. |
-  * | `COSPLAY_TERM_CLASSNAME`| `String` | Fully qualified class name for the custom terminal implementation. Class must implement [[org.cosplay.CPTerminal]] trait. |
+  * | `COSPLAY_TERM_CLASSNAME`| `String` | Fully qualified class name for the custom terminal emulator implementation. Class must implement [[org.cosplay.CPTerminal]] trait. |
   *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
   *     working with game engine including initialization and game start.
