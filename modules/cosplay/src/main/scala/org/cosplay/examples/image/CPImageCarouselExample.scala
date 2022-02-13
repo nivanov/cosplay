@@ -63,6 +63,15 @@ object CPImageCarouselExample:
         CPSaturnImage.trimBg(),
         CPSkullImage.trimBg(),
         CPTruckImage.trimBg(),
+        CPBananaImage.trimBg(),
+        CPBatImage.trimBg(),
+        CPCrownImage.trimBg(),
+        CPDolphinImage.trimBg(),
+        CPGameBoyImage.trimBg(),
+        CPGrimReaperImage.trimBg(),
+        CPIceCreamImage.trimBg(),
+        CPSunGlassesImage.trimBg(),
+        CPSwordImage.trimBg(),
         CPGitarImage,
         CPSpeckImage
     )
