@@ -30,6 +30,6 @@ All examples are packaged into CosPlay maven releases:
 ## Copyright
 Copyright (C) 2021 Rowan Games, Inc.
 
-<img src="cosplay-grey.gif" height="24px" alt="CosPlay Logo">
+<img src="https://cosplayengine.com/images/cosplay-grey.gif" height="24px" alt="CosPlay Logo">
 
 
