@@ -99,8 +99,8 @@ object CPImageFormatsExample:
         )
 
         // Load a simple *.txt image and "paint" it in the code..
-        val gitarImg = CPImage.load(
-            "prefab/images/gitar.txt",
+        val guitarImg = CPImage.load(
+            "prefab/images/guitar.txt",
             (px, _, _) => px.char match
                 // Manually mark up the transparent background instead of calling 'trimBg()'.
                 case 'x' => ' '&C_BLACK
@@ -120,13 +120,13 @@ object CPImageFormatsExample:
         val speckSpr = CPStaticImageSprite(70, 2, 0, specImg)
         val speckLbl = CPLabelSprite(67, 9, 0, "REXPaint *.xp image", c1)
 
-        val gitarSpr = CPStaticImageSprite(50, 20, 0, gitarImg)
-        val gitarLbl = CPLabelSprite(70, 29, 0, "*.txt image", c1)
+        val guitarSpr = CPStaticImageSprite(50, 20, 0, guitarImg)
+        val guitarLbl = CPLabelSprite(70, 29, 0, "*.txt image", c1)
 
         val sc = new CPScene("scene", Option(dim), bgPx,
             alienSpr, alienLbl,
             speckSpr, speckLbl,
-            gitarSpr, gitarLbl,
+            guitarSpr, guitarLbl,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             // Exit the game on 'q' press.

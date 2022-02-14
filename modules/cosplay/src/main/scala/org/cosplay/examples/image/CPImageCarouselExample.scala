@@ -73,7 +73,7 @@ object CPImageCarouselExample:
         CPSunGlassesImage.trimBg(),
         CPSwordImage.trimBg(),
         CPFlamingoImage.trimBg(),
-        CPGitarImage,
+        CPGuitarImage,
         CPSpeckImage
     )
     private val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)

@@ -134,6 +134,7 @@ object CPEngine:
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
     private var savedEx: Throwable = _
+    private var stats: Option[CPRenderStats] = None
     @volatile private var state = State.ENG_INIT
     @volatile private var playing = true
 
@@ -486,6 +487,13 @@ object CPEngine:
         engLog.info("Game exited.")
 
     /**
+      * Gets current rendering statistics, if available.
+      *
+      * @see [[CPSceneObjectContext.getRenderStats]]
+      */
+    def getRenderStats: Option[CPRenderStats] = stats
+
+    /**
       * Adds the rendering stats listener.
       *
       * @param f Listener to add.
@@ -608,7 +616,6 @@ object CPEngine:
         var camY = 0
         var camPanX = 0f
         var camPanY = 0f
-        var stats: Option[CPRenderStats] = None
         var fpsList: List[Int] = Nil
         var fpsCnt = 0
         var fpsSum = 0

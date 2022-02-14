@@ -39,7 +39,7 @@ package org.cosplay
   * @param avgFps Average frames-per-second (FPS) over the last 500 frames.
   * @param low1PctFps Average frames-per-second (FPS) value across lowest 1% of all FPS values for the last 500 frames.
   * @param userTimeNs Time in nanoseconds spent in user logic for the current frame.
-  * @param sysTimeNs Average time in nanoseconds spent by the CosPlay engine for the current frame.
+  * @param sysTimeNs Average time in nanoseconds spent by the CosPlay game engine for the processing and rendering the current frame.
   * @param objCount Total count of scene objects (including visible and invisible ones).
   * @param visObjCount Total count of visible scene objects.
   * @param kbEvent Keyboard event, if any, for the current frame.

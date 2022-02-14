@@ -222,6 +222,7 @@ object CPAnimationExample:
             override def getY: Int = y.round
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
+                if ctx.getFrameCount % 30 == 0 then ctx.getLog.snapshot()
                 ctx.getKbEvent match
                     case Some(evt) =>
                         evt.key match
