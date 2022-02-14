@@ -22,7 +22,7 @@ All examples are packaged into CosPlay maven releases:
 
 ## Questions?
 * Join [discord](https://discord.gg/gDQuYJDM)
-* [Documentation & APIs](https://www.cosplayengine.com/docs.html)
+* [Documentation](https://www.cosplayengine.com), [examples](https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples) and built-in [games](https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/games)
 * Post a question at [Stack Overflow](https://stackoverflow.com/questions/ask) using <code>cosplay</code> tag
 * File a bug or improvement in [GitHub Issues](https://github.com/nivanov/cosplay/issues)
 * Join project on [GitHub](https://github.com/nivanov/cosplay/issues)
