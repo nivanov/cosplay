@@ -71,6 +71,52 @@ object CPColorTests:
       *
       */
     @Test
+    def genX11ColorSwatches(): Unit = genColorSwatches(CPColor.CS_X11_ALL)
+
+    /**
+      *
+      */
+    @Test
+    def genXTermColorSwatches(): Unit = genColorSwatches(CPColor.CS_XTERM_ALL)
+
+    /**
+      *
+      */
+    private def genColorSwatches(cs: Seq[CPColor]): Unit =
+        // ^(\s+)final val ([\d\w_]+) = CPColor\((\d{1,3}, \d{1,3}, \d{1,3})\)$
+        // $1final val $2 = new CPColor($3, "$2")
+        /*
+            <tr>
+                <td>
+                    <div class="color-swatch" style="background: rgb(230, 230, 250)"></div>
+                </td>
+                <td>
+                    <code>C_X11_LAVENDER</code>
+                </td>
+                <td>
+                    <b>r</b>:&nbsp;230&nbsp;&nbsp;<b>g</b>:&nbsp;230&nbsp;&nbsp;<b>b</b>:&nbsp;250&nbsp;&nbsp;<code>#11f48e</code>
+                </td>
+            </tr>
+        */
+        for (c ← cs)
+            println(
+                s"""
+                  |<tr>
+                  |    <td>
+                  |        <div class="color-swatch" style="background: rgb(${c.red}, ${c.green}, ${c.blue})"></div>
+                  |    </td>
+                  |    <td>
+                  |        <code>${c.getName}</code>
+                  |    </td>
+                  |    <td>
+                  |        <b>r</b>:&nbsp;${c.red}&nbsp;&nbsp;<b>g</b>:&nbsp;${c.green}&nbsp;&nbsp;<b>b</b>:&nbsp;${c.blue}&nbsp;&nbsp;<code>${c.css}</code>
+                  |    </td>
+                  |</tr>""".stripMargin)
+
+    /**
+      *
+      */
+    @Test
     def xterm256Test(): Unit =
         assertTrue(16 == CPColor(0,0,0).xterm)
         assertTrue(17 == CPColor(0,0,95).xterm)
