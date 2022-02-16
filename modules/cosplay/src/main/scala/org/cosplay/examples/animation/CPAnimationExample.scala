@@ -222,7 +222,8 @@ object CPAnimationExample:
             override def getY: Int = y.round
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                if ctx.getFrameCount % 30 == 0 then ctx.getLog.snapshot()
+                // Demo the log snapshoting (rendering stats get logged in every 2 seconds).
+                if ctx.getFrameCount % 60 == 0 then ctx.getLog.snapshot()
                 ctx.getKbEvent match
                     case Some(evt) =>
                         evt.key match
@@ -236,7 +237,7 @@ object CPAnimationExample:
                             case _ => ()
                     // Switch to 'idle' waiting for the current animation to complete (default).
                     case None => change("idle")
-
+        
         val sc = new CPScene("scene", Option(dim), bgPx,
             player,
             CPStaticImageSprite(28, 28, 0, imgHelp),
