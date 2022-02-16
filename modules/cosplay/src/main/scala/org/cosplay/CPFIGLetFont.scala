@@ -56,7 +56,7 @@ import scala.util.Try
 /**
   * [[http://www.figlet.org/ FIGLet]] font.
   *
-  * FIGLet fonts allow to create art text out of ordinary letters, for example:
+  * FIGLet fonts allow creating art text out of ordinary letters, for example:
   * <pre>
   *
   *   /$$$$$$                      /$$$$$$$  /$$
