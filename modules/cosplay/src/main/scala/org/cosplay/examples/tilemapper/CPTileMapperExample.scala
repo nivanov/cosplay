@@ -125,7 +125,7 @@ object CPTileMapperExample:
                 |       X
                 |##########
             """),
-            (ch, _, _) => ch&C_BLUE
+            (ch, _, _) => ch&C_BLUE // Does not matter for map.
         )
 
         val brickDim = brick.getDim
