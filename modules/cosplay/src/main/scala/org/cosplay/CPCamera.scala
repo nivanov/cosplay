@@ -39,7 +39,7 @@ package org.cosplay
   *
   * Camera descriptor defines a rectangular sub-region of the screen called *focus frame*. A tracking
   * object can move freely as long as it is fully contained in that focus frame. Once the tracking object
-  * (at least partially) moves outside of the focus frame, the focus frame and therefore the visible portion of
+  * (at least partially) moves outside the focus frame, the focus frame and therefore the visible portion of
   * the current scene will shift to bring the tracking object back into the focus frame. The amount of shift as
   * well as its velocity is also controlled by this descriptor:
   * <pre>
@@ -90,11 +90,11 @@ open class CPCamera:
 
     /**
       * Gets panning step for X-axis defining how fast the camera focus will catch up with
-      * tracking object that is outside of the camera frame. Value of `1.0f` (default) usually
+      * tracking object that is outside the camera frame. Value of `1.0f` (default) usually
       * provides the smoothest panning animation.
       *
       * Note that if tracking object moves faster than the panning of the camera it can move
-      * outside of the visible screen.
+      * outside the visible screen.
       */
     def getPanningStepX: Float = panningStepX
 
@@ -102,11 +102,11 @@ open class CPCamera:
       * Sets the panning step for X-axis.
       *
       * Panning step defines how fast the camera focus will catch up with
-      * tracking object that is outside of the camera frame. Value of `1.0f` (default) usually
+      * tracking object that is outside the camera frame. Value of `1.0f` (default) usually
       * provides the smoothest panning animation.
       *
       * Note that if tracking object moves faster than the panning of the camera it can move
-      * outside of the visible screen.
+      * outside the visible screen.
       *
       * @param panningStepX Panning step for X-axis.
       */
@@ -118,11 +118,11 @@ open class CPCamera:
       * Sets the panning step for Y-axis.
       *
       * Panning step  defines how fast the camera focus will catch up with
-      * tracking object that is outside of the camera frame. Value of `1.0f` (default) usually
+      * tracking object that is outside the camera frame. Value of `1.0f` (default) usually
       * provides the smoothest panning animation.
       *
       * Note that if tracking object moves faster than the panning of the camera it can move
-      * outside of the visible screen.
+      * outside the visible screen.
       *
       * @param panningStepY Panning step for Y-axis.
       */
@@ -132,11 +132,11 @@ open class CPCamera:
 
     /**
       * Gets panning step for Y-axis defining how fast the camera focus will catch up with
-      * tracking object that is outside of the camera frame. Value of `1.0f` (default) usually
+      * tracking object that is outside the camera frame. Value of `1.0f` (default) usually
       * provides the smoothest panning animation.
       *
       * Note that if tracking object moves faster than the panning of the camera it can move
-      * outside of the visible screen.
+      * outside the visible screen.
       */
     def getPanningStepY: Float = panningStepY
 

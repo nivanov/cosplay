@@ -945,7 +945,7 @@ object CPEngine:
 
                 var visObjCnt = 0
 
-                // Update all objects (including invisible and outside of the frame) in the scene.
+                // Update all objects (including invisible and outside the frame) in the scene.
                 for (obj <- objs if !stopFrame)
                     ctx.setSceneObject(obj)
                     obj.update(ctx)
@@ -1003,7 +1003,7 @@ object CPEngine:
                     obj.render(ctx)
                     visObjCnt += 1
 
-                // Shader pass for all objects (including invisible and outside of the frame).
+                // Shader pass for all objects (including invisible and outside the frame).
                 for (obj <- objs if !stopFrame)
                     val shaders = obj.getShaders
                     if shaders.nonEmpty then

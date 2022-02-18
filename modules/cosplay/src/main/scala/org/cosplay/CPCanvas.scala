@@ -45,7 +45,7 @@ import scala.collection.mutable
   * For each game frame, the game engine creates a new empty canvas for all scene objects to draw on.
   * This canvas is available to scene objects via [[CPSceneObjectContext.getCanvas]] method. Game engine
   * then compares previous canvas and this one to determine which areas of the terminal need redrawing.
-  * You can also create the canvas object outside of game loop using companion object methods.
+  * You can also create the canvas object outside game loop using companion object methods.
   *
   * Canvas `(0,0)` coordinate point is located in the top left corner. X-axis goes to the right and Y-axis
   * points down. Every drawn pixel on the canvas also has a Z-index or depth. Pixel with larger or equal

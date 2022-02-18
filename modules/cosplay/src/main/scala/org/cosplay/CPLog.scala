@@ -49,7 +49,7 @@ enum CPLogLevel:
   *    of the game.
   *
   * The instance of this logger is available to any scene object via [[CPSceneObjectContext.getLog]]. You can also
-  * get a root logger at any time outside of the frame update pass via [[CPEngine.rootLog()]] method. Note that
+  * get a root logger at any time outside the frame update pass via [[CPEngine.rootLog()]] method. Note that
   * additionally to the standard familiar logging APIs this interface supports log throttling that's
   * important in games since most of the game logic gets "touched" up to 30 times a second and log throttling is
   * essential for not overflowing logging.

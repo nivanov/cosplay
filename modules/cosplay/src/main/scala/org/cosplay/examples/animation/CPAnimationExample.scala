@@ -150,10 +150,10 @@ object CPAnimationExample:
                   |                    UP
                   |               .----..----.
                   |               | /\ || w  |
-                  |    LEFT       `----'`----'         RIGHT
-                  |.----..----.                    .----..----.
-                  || <- || a  |                    | -> || d  |
-                  |`----'`----'                    `----'`----'
+                  |    LEFT       `----'`----'       RIGHT
+                  |.----..----.                  .----..----.
+                  || <- || a  |                  | -> || d  |
+                  |`----'`----'                  `----'`----'
                   |                   DOWN
                   |               .----..----.
                   |               | \/ || s  |
@@ -196,7 +196,7 @@ object CPAnimationExample:
         val fiShdr = new CPFadeInShader(true, 500, bgPx)
         val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
-        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
+        val player = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
             // Use 'float' type for coordinates to smooth out the movement.
             private var x = super.getX.toFloat
             private var y = super.getY.toFloat
@@ -237,7 +237,7 @@ object CPAnimationExample:
                             case _ => ()
                     // Switch to 'idle' waiting for the current animation to complete (default).
                     case None => change("idle")
-        
+
         val sc = new CPScene("scene", Option(dim), bgPx,
             player,
             CPStaticImageSprite(28, 28, 0, imgHelp),
