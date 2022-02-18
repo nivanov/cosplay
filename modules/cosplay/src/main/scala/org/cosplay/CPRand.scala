@@ -65,9 +65,9 @@ object CPRand:
         RND.nextInt(to - from) + from
 
     /**
-      * Gets random xterm color from the list of [[CPColor.C_XTERM_ALL]].
+      * Gets random xterm color from the list of [[CPColor.CS_XTERM_ALL]].
       */
-    def randXtermColor(): CPColor = rand(CPColor.C_XTERM_ALL)
+    def randXtermColor(): CPColor = rand(CPColor.CS_XTERM_ALL)
 
     /**
       * Gets random xterm color from the list of [[CPColor.CS_X11_ALL]].

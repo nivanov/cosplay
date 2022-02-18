@@ -47,7 +47,7 @@ object CPTileMapper:
       * @param x X-coordinate of the initial tile.
       * @param y Y-coordinate of the initial tile.
       * @param map An image representing the tile map.
-      * @param tileDim The dimension of the individual tile
+      * @param tileDim The dimension of the individual tile. Note that all tiles will have to be of the same dimension.
       * @param mapping Mapping function that takes a pixel and its coordinates from the tile map and
       *     returns a scene object that should represent that tile.
       */

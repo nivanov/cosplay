@@ -51,7 +51,7 @@ import scala.collection.{immutable, mutable}
   *
   * Sound is an asset. Just like other assets such as [[CPFont fonts]], [[CPImage images]], [[CPAnimation animations]] or
   * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]]
-  * that are managed and governed by the game engine. Assets are typically created outside of the game loop and
+  * that are managed and governed by the game engine. Assets are typically created outside the game loop and
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *

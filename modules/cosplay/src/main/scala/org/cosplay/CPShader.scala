@@ -38,7 +38,7 @@ package org.cosplay
   *
   * ### Different Ways To Animate
   * In CosPlay there are different ways one could implement animated scene objects. In the end, all of these
-  * approaches deliver the same result but each individual technique is tailor-made for a specific animation type:
+  * approaches deliver similar results but each individual technique is tailor-made for a specific animation type:
   *  - [[CPAnimation Animated Sprites]]
   *  - [[CPParticle Particle Effects]]
   *  - [[CPCanvas Canvas Drawing]]
@@ -90,11 +90,20 @@ package org.cosplay
   * In our airplane example, shaders can be used for shadow effect or "flashing" the airplane when it is
   * hit by the enemy fire.
   *
+  * Shader is an asset. Just like other assets such as [[CPFont fonts]], [[CPImage images]], [[CPAnimation animations]] or
+  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]]
+  * that are managed and governed by the game engine. Assets are typically created outside the game loop and
+  * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
+  * Scala objects.
+  *
   * @see [[org.cosplay.prefabs.shaders.CPFadeInShader]]
   * @see [[org.cosplay.prefabs.shaders.CPFadeOutShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
-trait CPShader:
+trait CPShader extends CPAsset:
+    /** @inheritdoc */
+    override val getOrigin: String = getClass.getName
+
     /**
       * Called on each frame pass on scene object that has this shaders attached to it. This callback is called
       * regardless of whether or not the scene object is visible or in camera frame.

@@ -42,18 +42,18 @@ import org.cosplay.impl.CPUtils
   * has an [[CPImage image]] and the index of its position in the sequence of key frames. Animation
   * produces a key frame given animation [[CPAnimationContext context]] via method [[keyFrame()]]. Note
   * that animation definition is abstracted out from the way it is rendered. The same animation can be
-  * rendered differently. Once such rendering is implemented by the built-in sprite [[CPAnimationSprite]] class.
+  * rendered differently. One such rendering is implemented by the built-in sprite [[CPAnimationSprite]] class.
   *
   * Animation is an asset. Just like other assets such as [[CPImage images]], [[CPSound sounds]], [[CPFont fonts]] or
   * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]]
-  * that are managed and governed by the game engine. Assets are typically created outside of the game loop and
+  * that are managed and governed by the game engine. Assets are typically created outside the game loop and
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
   * Class [[CPAnimationSprite]] provides convenient built-in support for animation-driven sprites. In most
   * cases you will to use or extend this sprite class to work with this animation.
   *
-  * Companion object also provides factory methods that produce often used types of animation:
+  * Note that companion object provides factory methods that produce often used types of animation:
   *  - [[CPAnimation.timeBased()]]
   *  - [[CPAnimation.filmStrip()]]
   *
@@ -85,7 +85,7 @@ import org.cosplay.impl.CPUtils
   *
   * ### Different Ways To Animate
   * In CosPlay there are different ways one could implement animated scene objects. In the end, all of these
-  * approaches deliver the same result but each individual technique is tailor-made for a specific animation type:
+  * approaches deliver similar results but each individual technique is tailor-made for a specific animation type:
   *  - **Animated Sprites**
   *  - [[CPParticle Particle Effects]]
   *  - [[CPCanvas Canvas Drawing]]
@@ -346,9 +346,9 @@ object CPAnimation:
                     None
 
     /**
-      * Creates new film-strip animation with given parameters.
+      * Creates new filmstrip animation with given parameters.
       *
-      * Film-strip animation is a variation of time-based animation where all key frames have the same
+      * filmstrip animation is a variation of time-based animation where all key frames have the same
       * duration, like in a movie, hence the name.
       *
       * @param id Unique ID of the animation.

@@ -39,7 +39,6 @@ import CPPixel.*
  * https://www.asciiart.eu
  */
 object CPCalculatorImage extends CPArrayImage(
-    // 13x11
     prepSeq("""
       | _____________________
       ||  _________________  |
@@ -56,9 +55,7 @@ object CPCalculatorImage extends CPArrayImage(
       || |___|___|___| |___| |
       ||_____________________|
     """),
-    (ch, _, _) => if ch.isDigit then ch&C_WHITE else ch&C_DARK_GREEN
-
-
+    (ch, _, _) => if ch.isDigit then ch&C_X11_ANTIQUE_WHITE else ch&C_GREEN
 )
 
 /**

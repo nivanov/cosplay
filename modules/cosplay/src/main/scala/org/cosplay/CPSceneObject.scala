@@ -107,14 +107,14 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
 
     /**
       * Gets current X-coordinate of this object within dimensions of its scene. Note that returned value
-      * is allowed to be outside of scene's dimension (e.g. negative value). In such cases, the clipping of the
+      * is allowed to be outside scene's dimension (e.g. negative value). In such cases, the clipping of the
       * scene rendering will result in showing only portion or none of the object.
       */
     def getX: Int
 
     /**
       * Gets current Y-coordinate of this object within dimensions of its scene. Note that returned value
-      * is allowed to be outside of scene's dimension (e.g. negative value). In such cases, the clipping of the
+      * is allowed to be outside scene's dimension (e.g. negative value). In such cases, the clipping of the
       * scene rendering will result in showing only portion or none of the object.
       */
     def getY: Int

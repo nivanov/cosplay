@@ -150,10 +150,10 @@ object CPAnimationExample:
                   |                    UP
                   |               .----..----.
                   |               | /\ || w  |
-                  |    LEFT       `----'`----'         RIGHT
-                  |.----..----.                    .----..----.
-                  || <- || a  |                    | -> || d  |
-                  |`----'`----'                    `----'`----'
+                  |    LEFT       `----'`----'       RIGHT
+                  |.----..----.                  .----..----.
+                  || <- || a  |                  | -> || d  |
+                  |`----'`----'                  `----'`----'
                   |                   DOWN
                   |               .----..----.
                   |               | \/ || s  |
@@ -196,7 +196,7 @@ object CPAnimationExample:
         val fiShdr = new CPFadeInShader(true, 500, bgPx)
         val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
-        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
+        val player = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
             // Use 'float' type for coordinates to smooth out the movement.
             private var x = super.getX.toFloat
             private var y = super.getY.toFloat
@@ -222,7 +222,8 @@ object CPAnimationExample:
             override def getY: Int = y.round
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                if ctx.getFrameCount % 30 == 0 then ctx.getLog.snapshot()
+                // Demo the log snapshoting (rendering stats get logged in every 2 seconds).
+                if ctx.getFrameCount % 60 == 0 then ctx.getLog.snapshot()
                 ctx.getKbEvent match
                     case Some(evt) =>
                         evt.key match

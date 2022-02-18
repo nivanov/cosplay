@@ -35,11 +35,11 @@ import impl.CPUtils
 /**
   * Scene object that has no rendering content of its own.
   *
-  * This type of sprites is typically used for shaders-only rendering, e.g. fade in of the entire screen, etc.
-  * Off-screen sprite has XY-coordinate set to `(0,0)` and its Z-index set to zero. Its dimension
-  * set to [[CPDim.ZERO]] and it shape set to [[CPRect.ZERO]] as well.
+  * This type of sprites is typically used for keyboard handlers or shaders-only rendering, e.g. fade in of the entire
+  * screen, etc. Off-screen sprite has its visible flag set to `false`, XY-coordinate set to `(0,0)` and its Z-index
+  * set to zero. Its dimension set to [[CPDim.ZERO]] and it shape set to [[CPRect.ZERO]] as well.
   *
-  * Since this is an off-screen sprite the method [[CPSceneObject.render()]] will never
+  * Since this is an off-screen, invisible sprite the method [[CPSceneObject.render()]] will never
   * be called. Use [[CPSceneObject.update()]] callback, if necessary, instead and make sure to
   * call `super.update(...)`.
   *
