@@ -58,6 +58,7 @@ object CPImageCarouselExample:
         CPCastleImage.trimBg(),
         CPGlobeImage,
         CPHelicopterImage.trimBg(),
+        CPAstronautImage.trimBg(),
         CPOceanLinerImage,
         CPPlaneImage.trimBg(),
         CPSaturnImage.trimBg(),
