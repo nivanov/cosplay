@@ -53,9 +53,9 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var enemyPosY = 30f
     private var ballX = 25f
     private var ballY = 20f
-    private val paddleSpeed = 0.4f
+    private val paddleSpeed = 1.0f
     private var ballAngle = 45
-    private val ballSpeed = 0.5f
+    private val ballSpeed = 1.0f
 
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
     private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg()
@@ -97,42 +97,20 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
                 ballY = y
 
                 if vert then ballAngle = -ballAngle + 180
-                else if !vert then ballAngle = -ballAngle
-//                if (vert && ballAngle >= 180 && ballAngle <= 270) ||
-//                    (vert && ballAngle >= 0 && ballAngle <= 90) ||
-//                    (!vert && ballAngle >= 90 && ballAngle <= 180) ||
-//                    (!vert && ballAngle >= 270 && ballAngle <= 360) then
-//                    ballAngle += 450
-//                else
-//                    ballAngle += 270
-//                if !vert then ballAngle += CPRand.randInt(1, 5)
-//                ballAngle = ballAngle % 360
-//
-//                if ballAngle >= 0 && ballAngle <= 10 then ballAngle = 11
-//                else if ballAngle >= 80 && ballAngle <= 90 then ballAngle = 79
-//                else if ballAngle >= 90 && ballAngle <= 100 then ballAngle = 101
-//                else if ballAngle >= 170 && ballAngle <= 180 then ballAngle = 169
-//                else if ballAngle >= 180 && ballAngle <= 190 then ballAngle = 191
-//                else if ballAngle >= 260 && ballAngle <= 270 then ballAngle = 259
-//                else if ballAngle >= 270 && ballAngle <= 280 then ballAngle = 281
-//                else if ballAngle >= 350 && ballAngle <= 360 then ballAngle = 349
+                else ballAngle = -ballAngle
 
-            //if ballX < canv.xMin then bounce(canv.xMin, ballY, true)
             if ballX < canv.xMin then
-                ballX = canv.xMax/2
-                ballY = canv.yMax/2
+                ballX = canv.xMax / 2
+                ballY = canv.yMax / 2
                 ballAngle = -ballAngle
-
                 playerScore += 1
             else if ballY < canv.yMin then
                 bounce(ballX, canv.yMin, false)
                 println("Hit wall")
-            //else if ballX > ballMaxX then bounce(ballMaxX, ballY, true)
             else if ballX > ballMaxX then
                 ballX = canv.xMax/2
                 ballY = canv.yMax/2
                 ballAngle = -ballAngle
-
                 enemyScore += 1
             else if ballY > ballMaxY then
                 bounce(ballX, ballMaxY, false)
