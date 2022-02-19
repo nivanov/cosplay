@@ -75,6 +75,7 @@ object CPImageCarouselExample:
         CPSwordImage.trimBg(),
         CPFlamingoImage.trimBg(),
         CPCalculatorImage.trimBg(),
+        CPCarImage.trimBg(),
         CPBedImage.trimBg(),
         CPGuitarImage,
         CPSpeckImage

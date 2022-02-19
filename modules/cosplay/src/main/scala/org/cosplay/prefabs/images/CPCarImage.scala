@@ -39,7 +39,6 @@ import CPPixel.*
   * https://www.asciiart.eu
   */
 object CPCarImage extends CPArrayImage(
-    // 13x11
     prepSeq("""
       |   ______
       |  /|_||_\`.__
