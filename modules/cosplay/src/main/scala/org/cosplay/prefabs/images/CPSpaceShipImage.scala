@@ -39,7 +39,6 @@ import CPPixel.*
  * https://www.asciiart.eu
  */
 object CPSpaceShipImage extends CPArrayImage(
-    // 15x12
     prepSeq("""
       |                     `. ___
       |                    __,' __`.                _..----....____

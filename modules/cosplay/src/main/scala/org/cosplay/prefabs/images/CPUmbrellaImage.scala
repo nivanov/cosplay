@@ -41,14 +41,17 @@ import CPPixel.*
 object CPUmbrellaImage extends CPArrayImage(
     // 15x12
     prepSeq("""
-      |   ____|____
+      |   ____Z____
       | /'  U ^    `\
       ||/\/\/\/\/\/\/|
-      |       |
-      |       |
+      |       Z
+      |       Z
       |       J
     """),
-    (ch, _, _) => if ch == 'J' then ch&C_SANDY_BROWN else ch&C_RED
+    (ch, _, _) => ch match
+        case 'J' ⇒ ch&C_SANDY_BROWN
+        case 'Z' ⇒ '|'&C_SANDY_BROWN
+        case _ ⇒ ch&C_RED
 )
 /**
  * Previews image using the built-in image viewer.

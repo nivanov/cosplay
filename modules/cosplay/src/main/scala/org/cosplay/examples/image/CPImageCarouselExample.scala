@@ -79,6 +79,7 @@ object CPImageCarouselExample:
         CPUmbrellaImage.trimBg(),
         CPSpaceShipImage.trimBg(),
         CPBedImage.trimBg(),
+        CPMoonImage.trimBg(),
         CPGuitarImage,
         CPSpeckImage
     )
