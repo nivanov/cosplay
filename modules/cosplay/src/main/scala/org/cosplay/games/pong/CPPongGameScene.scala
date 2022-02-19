@@ -100,16 +100,16 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
                 else ballAngle = -ballAngle
 
             if ballX < canv.xMin then
-                ballX = canv.xMax / 2
-                ballY = canv.yMax / 2
+                ballX = canv.xMax.toFloat / 2
+                ballY = canv.yMax.toFloat / 2
                 ballAngle = -ballAngle
                 playerScore += 1
             else if ballY < canv.yMin then
                 bounce(ballX, canv.yMin, false)
                 println("Hit wall")
             else if ballX > ballMaxX then
-                ballX = canv.xMax/2
-                ballY = canv.yMax/2
+                ballX = canv.xMax.toFloat / 2
+                ballY = canv.yMax.toFloat / 2
                 ballAngle = -ballAngle
                 enemyScore += 1
             else if ballY > ballMaxY then
