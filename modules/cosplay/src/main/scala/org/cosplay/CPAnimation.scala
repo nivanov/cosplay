@@ -105,7 +105,7 @@ import org.cosplay.impl.CPUtils
   * [[CPParticle Particle effect]] animation is based on the concept of a [[CPPixel pixel]]-based particle and particle
   * emitter. Particle emitter emits particles. Each particle and its emitter have a fully programmable behavior.
   * The key characteristic of particle effect animation is the randomness over the large number of individual elements
-  * that you can easily implement using fully programmable particles and emitters.
+  * that you can easily model and implement using fully programmable particles and emitters.
   *
   * In our airplane example, lets consider how one could implement the explosion when the airplane is hit with
   * the missile. One could potentially implement such animated explosion as a long sequence of images but such

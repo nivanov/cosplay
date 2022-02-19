@@ -89,6 +89,7 @@ object CPParticleExample:
 
         val boomSnd = CPSound(src = "sounds/examples/boom.wav")
         val COLORS = CS_X11_REDS ++ CS_X11_ORANGES ++ CS_X11_CYANS
+        val MAX_AGE = 15
 
         /**
           *
@@ -98,19 +99,18 @@ object CPParticleExample:
           * @param dy Delta for Y-axis.
           */
         class KaboomParticle(initX: Int, initY: Int, dx: Float, dy: Float) extends CPParticle:
-            // Basically, defines how big the explosion (i.e. the radius of explosion) will look like.
-            private final val MAX_AGE = 15
+            // Defines the radius of explosion in terms of the particle age.
             private var x = initX.toFloat
             private var y = initY.toFloat
             // Linear color gradient, slowly dimming.
             private val cf = CPCurve.colorGradient(CPRand.rand(COLORS), C_GRAY1, MAX_AGE)
-            // Curve for slowing down the speed of particle as it moves away from the center.
+            // X-curve for slowing down the speed of particle as it moves away from the center.
             private val dxf = CPCurve.lagrangePoly(Seq(
                 x -> 1f,
                 x + (dx * MAX_AGE) / 4 -> 0.5f,
                 x + dx * MAX_AGE -> 0.3f
             ))
-            // Curve for slowing down the speed of particle as it moves away from the center.
+            // Y-curve for slowing down the speed of particle as it moves away from the center.
             private val dyf = CPCurve.lagrangePoly(Seq(
                 y -> 1f,
                 y + (dy * MAX_AGE) / 4 -> 0.4f,
@@ -133,9 +133,7 @@ object CPParticleExample:
         val bh = bomb.getDim.h
 
         val emitter = new CPParticleEmitter():
-            // Maximum age (frames) of the particle after which it "dies".
-            private final val MAX_AGE = 20
-            // Number of times emitters will emit.
+            // Number of particles this emitter will emit on each update.
             private final val GEN_SIZE = 20
             // Emit from the center of the 'bomb' sprite.
             private final val x = (w - bw) / 2 + bw / 2
@@ -153,6 +151,7 @@ object CPParticleExample:
                     )
                 else
                     Seq.empty
+
         val kaboomSpr = CPParticleSprite("kaboom", Seq(emitter))
 
         kaboomSpr.setOnStart(Option(_ => boomSnd.playOnce()))
