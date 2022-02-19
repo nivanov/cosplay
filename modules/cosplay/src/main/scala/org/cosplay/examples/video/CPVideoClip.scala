@@ -55,8 +55,10 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
         if rsrc != null then
             Using.resource(Source.fromInputStream(rsrc, "UTF-8")) { rs =>
                 val lines = rs.getLines().toSeq.filter(_.trim.nonEmpty) // Load all lines and skip empty ones.
+                val rainbow = CS_X11_REDS ++ CS_X11_ORANGES ++ CS_X11_GREENS ++ CS_X11_PURPLES
                 lines.grouped(lines.size / FRAME_CNT).toSeq.map { frameLines =>
-                    val c = C_SKY_BLUE1
+                    // Psychedelic mode :-)
+                    val c = CPRand.rand(rainbow)
                     CPArrayImage(frameLines, (ch, _, _) => {
                         ch match
                             // Color it for more contrast.
@@ -72,7 +74,7 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
                 }
             }
         else
-            E(s"Unable to find or load: $RAW_FOOTAGE")
+            throw Exception(s"Unable to find or load: $RAW_FOOTAGE")
     }
 
     override val getFrameCount: Int = frames.size
