@@ -60,7 +60,8 @@ class CPFadeOutShader(
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
 ) extends CPShader:
     require(durMs > 0)
-    require(bgPx.bg.isDefined)
+    if bgPx.bg.isEmpty then E(s"Background pixel must have background color defined: $bgPx")
+
     private var frmCnt = 0
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
@@ -91,10 +92,10 @@ class CPFadeOutShader(
                         val zpx = canv.getZPixel(x, y)
                         val px = zpx.px
                         if px != bgPx && !skip(zpx, x, y) then
-                            val balance = 1.0f - frmCnt.toFloat / maxFrmCnt
-                            val newFg = CPColor.mixture(px.fg, bgFg, frmCnt.toFloat / maxFrmCnt)
+                            val balance = frmCnt.toFloat / maxFrmCnt
+                            val newFg = CPColor.mixture(px.fg, bgFg, balance)
                             val newBg = px.bg match
-                                case Some(c) => Option(CPColor.mixture(c, bgBg, frmCnt.toFloat / maxFrmCnt))
+                                case Some(c) => Option(CPColor.mixture(c, bgBg, balance))
                                 case None => None
                             var newPx = px.withFg(newFg).withBg(newBg)
                             val xc = if px.char == ' ' then newBg.getOrElse(newFg) else newFg

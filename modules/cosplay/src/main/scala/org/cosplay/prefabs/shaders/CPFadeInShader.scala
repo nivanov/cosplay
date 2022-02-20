@@ -59,13 +59,15 @@ class CPFadeInShader(
     autoStart: Boolean = true,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
 ) extends CPShader:
+    require(durMs > 0)
     if bgPx.bg.isEmpty then E(s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
     private val maxFrmCnt = durMs / CPEngine.frameMillis
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
-    private val crossOverBrightness = bgFg.brightness
+    private val crossOverBrightness = if bgPx.char == ' ' then bgBg.brightness else bgFg.brightness
+    private var crossedOver = false
     private var go = autoStart
 
     /**
@@ -73,6 +75,7 @@ class CPFadeInShader(
       */
     def start(): Unit =
         frmCnt = 0
+        crossedOver = false
         go = true
 
     /**
@@ -94,13 +97,16 @@ class CPFadeInShader(
                             if px != bgPx && !skip(zpx, x, y) then
                                 val px = zpx.px
                                 val balance = frmCnt.toFloat / maxFrmCnt
-                                val newFg = CPColor.mixture(bgFg, px.fg, frmCnt.toFloat / maxFrmCnt)
+                                val newFg = CPColor.mixture(bgFg, px.fg, balance)
                                 val newBg = px.bg match
-                                    case Some(c) => Option(CPColor.mixture(bgBg, c, frmCnt.toFloat / maxFrmCnt))
+                                    case Some(c) => Option(CPColor.mixture(bgBg, c, balance))
                                     case None => None
                                 var newPx = px.withFg(newFg).withBg(newBg)
                                 val xc = if px.char == ' ' then newBg.getOrElse(newFg) else newFg
-                                if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char)
+                                if px.char != ' ' then
+                                    if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
+                                else if !crossedOver then
+                                    newPx = newPx.withChar(bgPx.char)
                                 canv.drawPixel(newPx, x, y, zpx.z)
                     })
                     frmCnt += 1

@@ -390,6 +390,18 @@ object CPEngine:
         if savedEx != null then savedEx.printStackTrace()
 
     /**
+      * Shortcut for the following two calls:
+      * {{{
+      *     pauseGame()
+      *     openLog()
+      * }}}
+      * This is a convenient call to programmatically start the debugging session.
+      */
+    def startDebug(): Unit =
+        pauseGame()
+        openLog()
+
+    /**
       * Pauses the game.
       */
     def pauseGame(): Unit =
