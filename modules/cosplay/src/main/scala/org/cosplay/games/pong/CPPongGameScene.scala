@@ -57,7 +57,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var ballAngle = 45
     private val ballSpeed = 1.0f
 
-    var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
+    private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
     private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg()
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -72,12 +72,12 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
 
-    var playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
+    private var playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.w - playerScoreImg.getWidth) / 4)
 
-    private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg):
+    private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.w - enemyScoreImg.getWidth) - ((canv.dim.w / 4) - 1))
@@ -106,25 +106,21 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
                 ballAngle = -ballAngle
 
                 playerScore += 1
-                playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
-
+                playerScoreSpr.setImage(FIG_BIG.render(playerScore.toString, C_WHITE).trimBg())
             else if ballY < canv.yMin then
                 bounce(ballX, canv.yMin, false)
-                println("Hit wall")
             else if ballX > ballMaxX then
                 ballX = canv.xMax.toFloat / 2
                 ballY = canv.yMax.toFloat / 2
                 ballAngle = -ballAngle
                 enemyScore += 1
+                enemyScoreSpr.setImage(FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg())
             else if ballY > ballMaxY then
                 bounce(ballX, ballMaxY, false)
-                println("Hit wall")
             else if ballY <= (playerPosY).round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
                 bounce(4, ballY, true)
-                println("Hit player paddle")
             else if ballY <= (enemyPosY).round && ballY >= (enemyPosY - 6).round && ballX.round >= canv.dim.w - 4 then
                 bounce(canv.xMax - 4, ballY, true)
-                println("Hit enemy paddle")
 
             setX(ballX.round.toInt)
             setY(ballY.round.toInt)

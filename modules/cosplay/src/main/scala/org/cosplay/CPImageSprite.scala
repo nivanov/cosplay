@@ -174,7 +174,7 @@ class CPImageSprite(
     /** @inheritdoc */
     override def getCollisionRect: Option[CPRect] = Option.when(collidable)(getRect)
     /** @inheritdoc */
-    override def render(ctx: CPSceneObjectContext): Unit = ctx.getCanvas.drawImage(img, getX, getY, getZ)
+    override def render(ctx: CPSceneObjectContext): Unit = ctx.getCanvas.drawImage(myImg, getX, getY, getZ)
 
 /**
   * Companion object contains utility methods.
