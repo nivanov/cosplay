@@ -59,3 +59,8 @@ object CPPixelTest:
         assertTrue(p3 == p4)
         assertTrue(p4 == p5)
 
+        val p6 = 'x'&&(C_BLACK, C_WHITE)
+        val p7 = new CPPixel('x', C_BLACK, Option(C_WHITE), 0)
+
+        assertTrue(p6 == p7)
+

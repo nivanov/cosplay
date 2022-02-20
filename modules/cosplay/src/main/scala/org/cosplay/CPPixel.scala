@@ -21,6 +21,8 @@ import impl.CPAnsi.*
 import CPColor.*
 import CPPixel.*
 
+import scala.annotation.targetName
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -60,8 +62,8 @@ import CPPixel.*
   *     CPPixel('x', C_BLACK, 2) // Skipping background & setting a '2' ag.
   *     CPPixel('x', C_BLACK, C_WHITE, 2) // Setting up a '2' tag.
   * }}}
-  * You can also use a convenient syntactic sugar based on given conversion and extension of `Char` type.
-  * The following unit test demonstrates that usage. Note that usage of `'&'` extension operator is the
+  * You can also use a convenient syntactic sugar `'&'` and `'&&'`based on given conversion and extension of `Char` type.
+  * The following unit test demonstrates that usage. Note that usage of `'&'` extension operators is the
   * recommended way and that is what is used internally by CosPlay:
   * {{{
   *     import org.cosplay.*
@@ -80,6 +82,11 @@ import CPPixel.*
   *     assertTrue(p2 == p3)
   *     assertTrue(p3 == p4)
   *     assertTrue(p4 == p5)
+  *
+  *     val p6 = 'x'&&(C_BLACK, C_WHITE) // Recommended way.
+  *     val p7 = new CPPixel('x', C_BLACK, Option(C_WHITE), 0)
+  *
+  *     assertTrue(p6 == p7)
   * }}}
   *
   * @param char Pixel character.
@@ -93,6 +100,8 @@ import CPPixel.*
   */
 final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, tag: Int):
     private var shadow: CPPixel = _
+
+    override def toString: String = s"Pixel ['$char', fg=$fg, bg=$bg, tag=$tag]"
 
     /** ANSI sequence to render this pixel on ANSI terminal. */
     final val ansi = s"$RESET_ALL${fg.fgAnsi}${if bg.isEmpty then "" else bg.get.bgAnsi}$char"
@@ -285,11 +294,23 @@ object CPPixel:
 
     extension(ch: Char)
         /**
-          * Adds `'&'` operator to `Char` type as a sugar to create pixel. For example:
+          * Adds `'&'` operator to `Char` type as a sugar to create pixel without background. For example:
           * {{{
           *     val x = 'x'&C_BLACK
           *     val ch = 'a'
           *     val a = ch&C_WHITE
           * }}}
           */
+        @targetName("mkCharFgPixel")
         infix def &(c: CPColor): CPPixel = CPPixel(ch, c)
+
+        /**
+          * Adds `'&&'` operator to `Char` type as a sugar to create pixel with background. For example:
+          * {{{
+          *     val x = 'x'&&(C_BLACK, C_WHITE)
+          *     val ch = 'a'
+          *     val a = ch&&(C_WHITE, C_PINK)
+          * }}}
+          */
+        @targetName("mkCharFgBgPixel")
+        infix def &&(fg: CPColor, bg: CPColor): CPPixel = CPPixel(ch, fg, Option(bg))

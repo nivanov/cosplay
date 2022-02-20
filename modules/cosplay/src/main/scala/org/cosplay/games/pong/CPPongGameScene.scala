@@ -120,10 +120,10 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
                 ballAngle = Random.between(91, 179)
             else if ballY > ballMaxY then
                 bounce(ballX, ballMaxY, false)
-            else if ballY <= (playerPosY).round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
+            else if ballY <= playerPosY.round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
                 bounce(4, ballY, true)
-            else if ballY <= (enemyPosY).round && ballY >= (enemyPosY - 6).round && ballX.round >= canv.dim.w - 4 then
-                bounce(canv.xMax - 4, ballY, true)
+            else if ballY <= enemyPosY.round && ballY >= (enemyPosY - 6).round && ballX.round >= canv.dim.w - 4 then
+                bounce(canv.xMax.toFloat - 4, ballY, true)
 
             setX(ballX.round.toInt)
             setY(ballY.round.toInt)

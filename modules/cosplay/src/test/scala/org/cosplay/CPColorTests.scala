@@ -70,13 +70,13 @@ object CPColorTests:
     /**
       *
       */
-    @Test
+    //@Test
     def genX11ColorSwatches(): Unit = genColorSwatches(CPColor.CS_X11_ALL)
 
     /**
       *
       */
-    @Test
+    //@Test
     def genXTermColorSwatches(): Unit = genColorSwatches(CPColor.CS_XTERM_ALL)
 
     /**
@@ -109,7 +109,7 @@ object CPColorTests:
                   |        <code>${c.getName}</code>
                   |    </td>
                   |    <td>
-                  |        <b>r</b>:&nbsp;${c.red}&nbsp;&nbsp;<b>g</b>:&nbsp;${c.green}&nbsp;&nbsp;<b>b</b>:&nbsp;${c.blue}&nbsp;&nbsp;<code>${c.css}</code>
+                  |        <b>r</b>:&nbsp;${c.red}&nbsp;&nbsp;<b>g</b>:&nbsp;${c.green}&nbsp;&nbsp;<b>b</b>:&nbsp;${c.blue}&nbsp;&nbsp;<code>${c.cssHex}</code>
                   |    </td>
                   |</tr>""".stripMargin)
 

@@ -59,6 +59,8 @@ class CPFadeInShader(
     autoStart: Boolean = true,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
 ) extends CPShader:
+    if bgPx.bg.isEmpty then E(s"Background pixel must have background color defined: $bgPx")
+
     private var frmCnt = 0
     private val maxFrmCnt = durMs / CPEngine.frameMillis
     private val bgBg = bgPx.bg.get

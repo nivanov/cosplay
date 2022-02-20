@@ -88,15 +88,15 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
 
     assert(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
 
-    private var name = ""
-    private val strClr = if name.isEmpty then s"[r=$red,g=$green,b=$blue]" else s"[r=$red,g=$green,b=$blue, name=$name]"
+    private var name: String = _
+    private val strClr = if name == null then s"[r=$red,g=$green,b=$blue]" else s"[r=$red,g=$green,b=$blue,name=$name]"
 
     /**
       *
       * @param red Red RGB component.
       * @param green Green RGB component.
       * @param blue Blue RGB component.
-      * @param name Color name. For built-in color this is color's constant name in this class.
+      * @param name Optional color name. Can be `null` or empty string. For built-in color this is color's constant name in this class.
       */
     def this(red: Int, green: Int, blue: Int, name: String) =
         this(red, green, blue)
@@ -108,7 +108,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         CPColor(rgb.head, rgb(1), rgb(2))
 
     /**
-      * Gets this color name. For built-in color this is color's constant name in this class.
+      * Gets optional color name. Can be `null` or empty string. For built-in color this is color's constant name in this class.
       */
     inline def getName: String = name
 
@@ -174,7 +174,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     final val hex: String = s"0x${toHex(red)}${toHex(green)}${toHex(blue)}"
 
     /** Hexadecimal CSS string representation of this color's RGB value in `#000000` upper case format */
-    final val css: String = s"#${toHex(red)}${toHex(green)}${toHex(blue)}"
+    final val cssHex: String = s"#${toHex(red)}${toHex(green)}${toHex(blue)}"
 
     /**
      * ANSI foreground color sequence for this color. It automatically accounts for 8-bit or 24-bit color rendering.
