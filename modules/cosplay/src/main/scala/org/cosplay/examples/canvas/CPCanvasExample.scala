@@ -77,8 +77,6 @@ object CPCanvasExample:
         // Demo sprite that illustrates working with 'canvas'.
         val drawSpr = new CPCanvasSprite("spr", Seq(new CPFadeInShader(true, 500, bgPx))):
             override def render(ctx: CPSceneObjectContext): Unit =
-                super.render(ctx)
-
                 val canv = ctx.getCanvas
 
                 // Color shortcuts.

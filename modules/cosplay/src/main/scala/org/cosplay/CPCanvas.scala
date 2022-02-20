@@ -59,7 +59,7 @@ import scala.collection.mutable
   * be done manually, especially if they are dynamically redrawn on each frame update.
   *
   * This class provides many methods for basic line and rectangular drawing, circle and polylines, anti-aliasing,
-  * "color" fill in, and much more. Most functions have multiple overriden variants with different parameters so that they
+  * "color" fill in, and much more. Most functions have multiple overridden variants with different parameters so that they
   * can be easily used in different contexts. Note also that this class deals primarily with line ASCII art and has
   * only few functions like [[antialias() antialiasing]] for the solid ASCII art.
   *
@@ -74,7 +74,7 @@ import scala.collection.mutable
   *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Susie_Oviatt.html Susie Oviatt]]
   *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Rowan_Crawford.html Rowan Crawford]]
   *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Normand_Veilleux.html Normand Veilleux]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Targon.htmlm Targon]]
+  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Targon.html Targon]]
   *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Hayley_Wakenshaw.html Hayley Wakenshaw]]
   *
   * See also the following resources for general ASCII art collections:
@@ -82,7 +82,7 @@ import scala.collection.mutable
   *  - https://www.asciiart.eu/
   *  - https://asciiart.website
   *  - https://www.incredibleart.org/links/ascii.html
-  *  - http://www.afn.org/~afn39695/collect.htm
+  *  - http://www.afn.org/~afn39695/collect.html
   *  - http://blocktronics.org/
   *  - http://ansiart.com/
   *  - http://www.ascii-art.de/
@@ -204,7 +204,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *
       * @param x X-coordinate of the circle center.
       * @param y Y-coordinate of the circle center.
-      * @param radius Radius of the cricle in characters.
+      * @param radius Radius of the circle in characters.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param xFactor Horizontal squishing factor. Values below 1.0 will squish the circle horizontally. Values
       *     above 1.0 will stretch the circle horizontally. X-factor of `2.0` and Y-factor of `1.0` typically produce
@@ -214,9 +214,9 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *     correct circle using 1x2 monospace font.
       * @param densFactor Density factor defines "granularity" of drawing. Values below `1.0` allow to compensate
       *     for discreetness of ASCII graphics. Typically, value of `0.5` is a good default.
-      * @param fillGaps Wehther or not to fill potential gaps in circle drawning. Filling the gaps
-      *     slows down the drawning but produces a better looking circle.
-      * @param pxs Sequence of pixels to use in drawning the circle.
+      * @param fillGaps Whether or not to fill potential gaps in circle drawing. Filling the gaps
+      *     slows down the drawing but produces a better looking circle.
+      * @param pxs Sequence of pixels to use in drawing the circle.
       */
     def drawCircle(x: Int, y: Int, radius: Int, z: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, pxs: Seq[CPPixel]): CPRect =
         var i = 0
@@ -228,11 +228,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         })
 
     /**
-      * Draws a circle with a single pixel.
+      * Draws a circle with a single pixel returning its final shape.
       *
       * @param x X-coordinate of the circle center.
       * @param y Y-coordinate of the circle center.
-      * @param radius Radius of the cricle in characters.
+      * @param radius Radius of the circle in characters.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param xFactor Horizontal squishing factor. Values below 1.0 will squish the circle horizontally. Values
       *     above 1.0 will stretch the circle horizontally. X-factor of `2.0` and Y-factor of `1.0` typically produce
@@ -242,19 +242,19 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *     correct circle using 1x2 monospace font.
       * @param densFactor Density factor defines "granularity" of drawing. Values below `1.0` allow to compensate
       *     for discreetness of ASCII graphics. Typically, value of `0.5` is a good default.
-      * @param fillGaps Wehther or not to fill potential gaps in circle drawning. Filling the gaps
-      *     slows down the drawning but produces a better looking circle.
-      * @param px Pixel to draw a cricle with.
+      * @param fillGaps Whether or not to fill potential gaps in circle drawing. Filling the gaps
+      *     slows down the drawing but produces a better looking circle.
+      * @param px Pixel to draw a circle with.
       */
     def drawCircle(x: Int, y: Int, radius: Int, z: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, px: CPPixel): CPRect =
         drawCircle(x, y, radius, z, xFactor, yFactor, densFactor, fillGaps, (_, _) => px)
 
     /**
-      * Draws a circle.
+      * Draws a circle returning its final shape returning its final shape.
       *
       * @param x X-coordinate of the circle center.
       * @param y Y-coordinate of the circle center.
-      * @param radius Radius of the cricle in characters.
+      * @param radius Radius of the circle in characters.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param xFactor Horizontal squishing factor. Values below 1.0 will squish the circle horizontally. Values
       *     above 1.0 will stretch the circle horizontally. X-factor of `2.0` and Y-factor of `1.0` typically produce
@@ -264,8 +264,8 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *     correct circle using 1x2 monospace font.
       * @param densFactor Density factor defines "granularity" of drawing. Values below `1.0` allow to compensate
       *     for discreetness of ASCII graphics. Typically, value of `0.5` is a good default.
-      * @param fillGaps Wehther or not to fill potential gaps in circle drawning. Filling the gaps
-      *     slows down the drawning but produces a better looking circle.
+      * @param fillGaps Whether or not to fill potential gaps in circle drawing. Filling the gaps
+      *     slows down the drawing but produces a better looking circle.
       * @param pxf Pixel producer function.
       */
     def drawCircle(x: Int, y: Int, radius: Int, z: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, pxf: (Int, Int) => CPPixel): CPRect =
@@ -293,7 +293,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *
       * @param x X-coordinate of the circle center.
       * @param y Y-coordinate of the circle center.
-      * @param radius Radius of the cricle in characters.
+      * @param radius Radius of the circle in characters.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param xFactor Horizontal squishing factor. Values below 1.0 will squish the circle horizontally. Values
       *     above 1.0 will stretch the circle horizontally. X-factor of `2.0` and Y-factor of `1.0` typically produce
@@ -303,8 +303,8 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *     correct circle using 1x2 monospace font.
       * @param densFactor Density factor defines "granularity" of drawing. Values below `1.0` allow to compensate
       *     for discreetness of ASCII graphics. Typically, value of `0.5` is a good default.
-      * @param fillGaps Wehther or not to fill potential gaps in circle drawning. Filling the gaps
-      *     slows down the drawning but produces a better looking circle.
+      * @param fillGaps Whether or not to fill potential gaps in circle drawing. Filling the gaps
+      *     slows down the drawing but produces a better looking circle.
       * @param pxf Pixel producer function.
       */
     def circlePixels(x: Int, y: Int, radius: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, pxf: (Int, Int) => CPPixel): mutable.ArrayBuffer[CPPosPixel] =
