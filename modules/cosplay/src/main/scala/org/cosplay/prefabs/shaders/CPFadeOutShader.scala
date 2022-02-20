@@ -97,7 +97,8 @@ class CPFadeOutShader(
                                 case Some(c) => Option(CPColor.mixture(c, bgBg, frmCnt.toFloat / maxFrmCnt))
                                 case None => None
                             var newPx = px.withFg(newFg).withBg(newBg)
-                            if newFg.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char)
+                            val xc = if px.char == ' ' then newBg.getOrElse(newFg) else newFg
+                            if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char)
                             canv.drawPixel(newPx, x, y, zpx.z)
                 })
                 frmCnt += 1
