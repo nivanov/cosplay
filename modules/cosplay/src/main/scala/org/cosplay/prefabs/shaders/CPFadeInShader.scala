@@ -102,8 +102,8 @@ class CPFadeInShader(
                                     case Some(c) => Option(CPColor.mixture(bgBg, c, balance))
                                     case None => None
                                 var newPx = px.withFg(newFg).withBg(newBg)
-                                val xc = if px.char == ' ' then newBg.getOrElse(newFg) else newFg
-                                if px.char != ' ' then
+                                val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
+                                if newPx.char != ' ' then
                                     if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
                                 else if !crossedOver then
                                     newPx = newPx.withChar(bgPx.char)

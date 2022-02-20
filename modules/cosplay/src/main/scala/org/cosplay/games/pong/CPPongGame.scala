@@ -50,7 +50,6 @@ object CPPongGame:
 
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
-        CPEngine.startDebug()
 
         // Start the game & wait for exit.
         try CPEngine.startGame(
