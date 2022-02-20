@@ -66,13 +66,16 @@ class CPLogoScene(id: String, dim: Option[CPDim], bgPx: CPPixel, colors: Seq[CPC
         (ch, _, _) => ch&initFg
     ).replaceBg(bgPx)
 
-    // Skip background pixels from shaders' effect.
-    val skipBg: (CPZPixel, Int, Int) => Boolean = (zpx: CPZPixel, _, _) => zpx.px == bgPx
+    // Skip background & space pixels from shaders' effect.
+    val skipFn: (CPZPixel, Int, Int) => Boolean = (zpx: CPZPixel, _, _) => {
+        val px = zpx.px
+        px.char == ' ' || px == bgPx
+    }
 
     // Shaders to use.
-    private val shimmerShdr = new CPShimmerShader(false, colors, 2, true, skipBg)
-    private val foShdr = new CPFadeOutShader(false, 750, bgPx, _.switchScene(nextSc), false, skipBg)
-    private val fiShdr = new CPFadeInShader(false, 1500, bgPx, _ => foShdr.start(), true, skipBg)
+    private val shimmerShdr = new CPShimmerShader(false, colors, 2, true, skipFn)
+    private val foShdr = new CPFadeOutShader(false, 750, bgPx, _.switchScene(nextSc), false, skipFn)
+    private val fiShdr = new CPFadeInShader(false, 1500, bgPx, _ => foShdr.start(), true, skipFn)
 
     // Main logo sprite with 3 shaders.
     private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, fiShdr, foShdr)):

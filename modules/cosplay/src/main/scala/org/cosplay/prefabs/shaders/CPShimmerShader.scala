@@ -47,6 +47,7 @@ import org.cosplay.*
   * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
   *     or certain Z-index. Default predicate returns `false` for all pixels.
+  * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
   *
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
@@ -57,10 +58,14 @@ class CPShimmerShader(
     colors: Seq[CPColor],
     keyFrame: Int,
     autoStart: Boolean = false,
-    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
+    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
+    durMs: Long = Long.MaxValue
 ) extends CPShader:
     private var go = autoStart
     private var lastImg: CPImage = _
+    private var startMs: Long = 0
+
+    if autoStart then start()
 
     /**
       * Starts the shader effect.
@@ -68,6 +73,7 @@ class CPShimmerShader(
     def start(): Unit =
         go = true
         lastImg = null
+        startMs = System.currentTimeMillis()
 
     /**
       * Stops the shader effect.
@@ -75,6 +81,7 @@ class CPShimmerShader(
     def stop(): Unit =
         go = false
         lastImg = null
+        startMs = 0
 
     /**
       * Tests whether this shader is in progress or not.
@@ -83,6 +90,8 @@ class CPShimmerShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
+        if System.currentTimeMillis() - startMs > durMs then stop()
+
         if go then
             val canv = ctx.getCanvas
             if lastImg == null || ctx.getFrameCount % keyFrame == 0 then
@@ -90,7 +99,10 @@ class CPShimmerShader(
                 rect.loop((x, y) => {
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
-                    if !skip(zpx, x, y) then canv.drawPixel(px.withFg(CPRand.rand(colors)), x, y, 0)
+                    if !skip(zpx, x, y) then
+                        val rc = CPRand.rand(colors)
+                        val newPx = if px.char == ' ' then px.withBg(Option(rc)) else px.withFg(rc)
+                        canv.drawPixel(newPx, x, y, 0)
                 })
                 lastImg = canv.capture(objRect)
             else
