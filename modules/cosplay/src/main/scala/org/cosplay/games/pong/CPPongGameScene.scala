@@ -28,6 +28,7 @@ import CPPixel.*
 import CPKeyboardKey.*
 import prefabs.images.*
 import prefabs.scenes.*
+import scala.util.*
 
 
 /*
@@ -53,9 +54,9 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var enemyPosY = 30f
     private var ballX = 25f
     private var ballY = 20f
-    private val paddleSpeed = 1.0f
-    private var ballAngle = 45
-    private val ballSpeed = 1.0f
+    private val paddleSpeed = 0.7f
+    private var ballAngle = Random.between(91, 179)
+    private val ballSpeed = 1.5f
 
     private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
     private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg()
@@ -100,21 +101,23 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
                 else ballAngle = -ballAngle
 
             if ballX < canv.xMin then
-                ballX = canv.xMax.toFloat / 2
+                ballX = canv.xMax.toFloat / 3
                 ballY = canv.yMax.toFloat / 2
 
-                ballAngle = -ballAngle
+                ballAngle = Random.between(1, 89)
 
-                playerScore += 1
-                playerScoreSpr.setImage(FIG_BIG.render(playerScore.toString, C_WHITE).trimBg())
+                enemyScore += 1
+                enemyScoreSpr.setImage(FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg())
             else if ballY < canv.yMin then
                 bounce(ballX, canv.yMin, false)
             else if ballX > ballMaxX then
-                ballX = canv.xMax.toFloat / 2
+                ballX = canv.xMax.toFloat - canv.xMax.toFloat / 3
                 ballY = canv.yMax.toFloat / 2
-                ballAngle = -ballAngle
-                enemyScore += 1
-                enemyScoreSpr.setImage(FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg())
+
+                playerScore += 1
+                playerScoreSpr.setImage(FIG_BIG.render(playerScore.toString, C_WHITE).trimBg())
+
+                ballAngle = Random.between(91, 179)
             else if ballY > ballMaxY then
                 bounce(ballX, ballMaxY, false)
             else if ballY <= (playerPosY).round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
