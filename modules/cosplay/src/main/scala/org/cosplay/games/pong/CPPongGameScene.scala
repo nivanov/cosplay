@@ -57,7 +57,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var ballAngle = 45
     private val ballSpeed = 1.0f
 
-    private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
+    var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
     private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg()
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -72,7 +72,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
 
-    private val playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
+    var playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.w - playerScoreImg.getWidth) / 4)
@@ -102,8 +102,12 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             if ballX < canv.xMin then
                 ballX = canv.xMax.toFloat / 2
                 ballY = canv.yMax.toFloat / 2
+
                 ballAngle = -ballAngle
+
                 playerScore += 1
+                playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
+
             else if ballY < canv.yMin then
                 bounce(ballX, canv.yMin, false)
                 println("Hit wall")
