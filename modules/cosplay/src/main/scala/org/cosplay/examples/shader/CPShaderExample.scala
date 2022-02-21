@@ -111,8 +111,8 @@ object CPShaderExample:
             override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
                 if on then
                     val canv = ctx.getCanvas
-                    val cx = objRect.centerX
-                    val cy = objRect.centerY
+                    val cx = objRect.xCenter
+                    val cy = objRect.yCenter
                     val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
                     effRect.loop((x, y) => {
                         if canv.isValid(x, y) then

@@ -48,6 +48,8 @@ import org.cosplay.*
   * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
   *     or certain Z-index. Default predicate returns `false` for all pixels.
   * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
+  * @param onDuration Optional callback to call when this shader finishes by exceeding the duration
+  *     specified by `durMs` parameter. Default is a no-op.
   *
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
@@ -59,11 +61,12 @@ class CPShimmerShader(
     keyFrame: Int,
     autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
-    durMs: Long = Long.MaxValue
+    durMs: Long = Long.MaxValue,
+    onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
     private var go = autoStart
     private var lastImg: CPImage = _
-    private var startMs: Long = 0
+    private var startMs = 0L
 
     if autoStart then start()
 
@@ -76,7 +79,8 @@ class CPShimmerShader(
         startMs = System.currentTimeMillis()
 
     /**
-      * Stops the shader effect.
+      * Stops the shader effect without waiting for the duration. Note that `onDuration()` callback will not
+      * be called in this case.
       */
     def stop(): Unit =
         go = false
@@ -90,8 +94,9 @@ class CPShimmerShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if System.currentTimeMillis() - startMs > durMs then stop()
-
+        if go && System.currentTimeMillis() - startMs > durMs then
+            stop()
+            onDuration(ctx)
         if go then
             val canv = ctx.getCanvas
             if lastImg == null || ctx.getFrameCount % keyFrame == 0 then
@@ -102,7 +107,7 @@ class CPShimmerShader(
                     if !skip(zpx, x, y) then
                         val rc = CPRand.rand(colors)
                         val newPx = if px.char == ' ' then px.withBg(Option(rc)) else px.withFg(rc)
-                        canv.drawPixel(newPx, x, y, 0)
+                        canv.drawPixel(newPx, x, y, zpx.z)
                 })
                 lastImg = canv.capture(objRect)
             else
