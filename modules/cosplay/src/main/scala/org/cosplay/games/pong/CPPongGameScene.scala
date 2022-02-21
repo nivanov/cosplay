@@ -145,6 +145,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private val playerSpr = new CPCanvasSprite("player", Seq(playerShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
+            setRect(new CPRect(1, (playerPosY - 5).round, 1, 5))
             val canv = ctx.getCanvas
             def move(dy: Float): Unit =
                 if dy > 0 && playerPosY < canv.height - 1 then playerPosY += dy
@@ -162,6 +163,8 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private val enemySpr = new CPCanvasSprite("enemy", Seq(enemyShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
+            val canv = ctx.getCanvas
+            setRect(new CPRect(canv.dim.w - 2, (enemyPosY - 5).round, 1, 5))
             if ballY > (enemyPosY - 2.5).round then enemyPosY += paddleSpeed
             else if ballY < (enemyPosY - 2.5).round then enemyPosY -= paddleSpeed
         override def render(ctx: CPSceneObjectContext): Unit =
