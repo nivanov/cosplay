@@ -36,41 +36,24 @@ import CPPixel.*
 */
 
 /**
-  * Art by Rowan Crawford
-  * http://www.afn.org/~afn39695/crawford.htm
-  */
-object CPSkullImage extends CPArrayImage(
-    // 34x22
+ * Made by https://www.asciiart.eu/
+ */
+object CPTntImage extends CPArrayImage(
     prepSeq("""
-      |           _,.-----.,_
-      |        ,-~           ~-.
-      |      ,^___           ___^.
-      |     /~"   ~"   .   "~   "~\
-      |    Y  ,--._    I    _.--.  Y
-      |    | Y     ~-. | ,-~     Y |
-      |    | |   x     }:{    x  | |
-      |    j l       / | \       ! l
-      | .-~  (__,.--" .^. "--.,__)  ~-.
-      |(           / / | \ \           )
-      | \.____,   ~  \/"\/  ~   .____,/
-      |  ^.____                 ____.^
-      |     | |T ~\  !   !  /~ T| |
-      |     | |l   _ _ _ _ _   !| |
-      |     | l \/V V V V V V\/ j |
-      |     l  \ \|_|_|_|_|_|/ /  !
-      |      \  \[T T T T T TI/  /
-      |       \  `^-^-^-^-^-^'  /
-      |        \               /
-      |         \.           ,/
-      |           "^-.___,-^"
-      """),
-    (ch, _, _) => ch&C_WHITE
+      | ___________________    . , ; .
+      |(___________________|~~~~~X.;' .
+      |                      ' `" ' `
+    """),
+    (ch, _, _) => ch match
+        case '_' ⇒ ch&C_RED
+        case '(' ⇒ ch&C_RED
+        case '|' ⇒ ch&C_RED
+        case '~' => ch&C_GREY
+        case _ => ch&C_YELLOW
 )
-
 /**
-  * Previews image using the built-in image viewer.
-  */
-@main def previewSkullImage(): Unit =
-    CPImage.previewImage(CPSkullImage.trimBg())
+ * Previews image using the built-in image viewer.
+ */
+@main def reviewTntImage(): Unit =
+    CPImage.previewImage(CPTntImage.trimBg())
     sys.exit(0)
-
