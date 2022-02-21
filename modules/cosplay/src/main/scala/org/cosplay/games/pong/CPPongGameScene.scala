@@ -55,7 +55,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var ballX = 25f
     private var ballY = 20f
     private val paddleSpeed = 0.7f
-    private var ballAngle = Random.between(91, 179)
+    private var ballAngle = Random.between(30, 60)
     private val ballSpeed = 1.5f
 
     private val ballImg = CPArrayImage(
@@ -104,7 +104,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
                 ballX = canv.xMax.toFloat / 3
                 ballY = canv.yMax.toFloat / 2
 
-                ballAngle = Random.between(1, 89)
+                ballAngle = Random.between(30, 60)
 
                 enemyScore += 1
                 enemyScoreSpr.setImage(mkScore(enemyScore))
@@ -117,7 +117,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
                 playerScore += 1
                 playerScoreSpr.setImage(mkScore(playerScore))
 
-                ballAngle = Random.between(91, 179)
+                ballAngle = Random.between(120, 150)
             else if ballY > ballMaxY then
                 bounce(ballX, ballMaxY, false)
             else if ballY <= playerPosY.round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
