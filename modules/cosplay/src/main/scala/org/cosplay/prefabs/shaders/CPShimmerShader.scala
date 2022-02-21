@@ -66,7 +66,7 @@ class CPShimmerShader(
 ) extends CPShader:
     private var go = autoStart
     private var lastImg: CPImage = _
-    private var startMs: Long = 0
+    private var startMs = 0L
 
     if autoStart then start()
 

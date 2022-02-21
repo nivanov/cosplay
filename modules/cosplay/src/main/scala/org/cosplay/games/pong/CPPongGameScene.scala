@@ -56,7 +56,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var ballY = 20f
     private val paddleSpeed = 0.7f
     private var ballAngle = Random.between(91, 179)
-    private val ballSpeed = 1.5f
+    private val ballSpeed = 1f
 
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -112,35 +112,27 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             def bounce(x: Float, y: Float, vert: Boolean): Unit =
                 ballX = x
                 ballY = y
-
                 if vert then ballAngle = -ballAngle + 180
                 else ballAngle = -ballAngle
 
-            if ballX < canv.xMin then
-                ballX = canv.xMax.toFloat / 3
-                ballY = canv.yMax.toFloat / 2
-
-                ballAngle = Random.between(1, 89)
-
-                enemyScore += 1
+            def score(es: Int, ps: Int): Unit =
+                ballX = canv.xMaxF / 2
+                ballY = canv.yMaxF / 2
+                ballAngle = Random.between(135, 235)
+                enemyScore += es
+                playerScore += ps
                 enemyScoreSpr.setImage(mkScoreImage(enemyScore))
-            else if ballY < canv.yMin then
-                bounce(ballX, canv.yMin, false)
-            else if ballX > ballMaxX then
-                ballX = canv.xMax - canv.xMax.toFloat / 3
-                ballY = canv.yMax.toFloat / 2
-
-                playerScore += 1
                 playerScoreSpr.setImage(mkScoreImage(playerScore))
 
-                ballAngle = Random.between(91, 179)
-            else if ballY > ballMaxY then
-                bounce(ballX, ballMaxY, false)
+            if ballX < canv.xMin then score(1, 0)
+            else if ballY < canv.yMin then bounce(ballX, canv.yMin, false)
+            else if ballX > ballMaxX then score(0, 1)
+            else if ballY > ballMaxY then bounce(ballX, ballMaxY, false)
             else if ballY <= playerPosY.round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
                 bounce(4, ballY, true)
                 playerShdr.start()
             else if ballY <= enemyPosY.round && ballY >= (enemyPosY - 6).round && ballX.round >= canv.dim.w - 4 then
-                bounce(canv.xMax.toFloat - 4, ballY, true)
+                bounce(canv.xMaxF - 4, ballY, true)
                 enemyShdr.start()
 
             setX(ballX.round)
@@ -155,8 +147,8 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private val enemyPx = ' '&&(C_BLACK, C_GREEN_YELLOW)
     private val playerColors = Seq(CPColor("#F57064"), CPColor("#4CF5F5"), CPColor("#F5AF33"), CPColor("#40F58E"))
     private val enemyColors = Seq(CPColor("#F57064"), CPColor("#4CF5F5"), CPColor("#F5AF33"), CPColor("#40F58E"))
-    private val playerShdr = new CPShimmerShader(false, playerColors, 2, durMs = 500)
-    private val enemyShdr = new CPShimmerShader(false, enemyColors, 2, durMs = 500)
+    private val playerShdr = CPPongPaddleShader('>', playerColors)
+    private val enemyShdr = CPPongPaddleShader('<', enemyColors)
 
     private val playerSpr = new CPCanvasSprite("player", Seq(playerShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
