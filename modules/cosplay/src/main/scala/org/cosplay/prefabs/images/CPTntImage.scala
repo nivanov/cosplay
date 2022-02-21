@@ -40,9 +40,9 @@ import CPPixel.*
  */
 object CPTntImage extends CPArrayImage(
     prepSeq("""
-      |       ___________________    . , ; .
-      |      (___________________|~~~~~X.;' .
-      |                            ' `" ' `
+      | ___________________    . , ; .
+      |(___________________|~~~~~X.;' .
+      |                      ' `" ' `
     """),
     (ch, _, _) => ch match
         case '_' ⇒ ch&C_RED
