@@ -41,21 +41,22 @@ object CPPongBallShader extends CPShader:
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        val canv = ctx.getCanvas
-        val cx = objRect.xCenter
-        val cy = objRect.yCenter
-        val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
-        effRect.loop((x, y) => {
-            if canv.isValid(x, y) then
-                // Account for character with/height ratio to make a proper circle...
-                // NOTE: we can't get the font metrics in the native ANSI terminal so
-                //       we use 1.85 as a general approximation.
-                val dx = (cx - x).abs.toFloat / 1.85
-                val dy = (cy - y).abs.toFloat
-                val r = Math.sqrt(dx * dx + dy * dy).toFloat
-                if r <= RADIUS then // Flashlight is a circular effect.
-                    val zpx = canv.getZPixel(x, y)
-                    val px = zpx.px
-                    val newFg = px.fg.lighter(0.2f * (1.0f - r / RADIUS))
-                    canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
-        })
+        if ctx.isVisible then
+            val canv = ctx.getCanvas
+            val cx = objRect.xCenter
+            val cy = objRect.yCenter
+            val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
+            effRect.loop((x, y) => {
+                if canv.isValid(x, y) then
+                    // Account for character with/height ratio to make a proper circle...
+                    // NOTE: we can't get the font metrics in the native ANSI terminal so
+                    //       we use 1.85 as a general approximation.
+                    val dx = (cx - x).abs.toFloat / 1.85
+                    val dy = (cy - y).abs.toFloat
+                    val r = Math.sqrt(dx * dx + dy * dy).toFloat
+                    if r <= RADIUS then // Flashlight is a circular effect.
+                        val zpx = canv.getZPixel(x, y)
+                        val px = zpx.px
+                        val newFg = px.fg.lighter(0.2f * (1.0f - r / RADIUS))
+                        canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
+            })

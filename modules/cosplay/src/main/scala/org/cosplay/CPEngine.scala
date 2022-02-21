@@ -868,6 +868,7 @@ object CPEngine:
                     override def getLog: CPLog = myLog
                     override def getOwner: CPSceneObject = myObj
                     override def getCamera: CPCamera = sc.getCamera
+                    override def isVisible: Boolean = myObj.isVisible
                     override def getCameraFrame: CPRect = camRect
                     override def getCanvas: CPCanvas = canv
                     override def getFrameCount: Long = frameCnt

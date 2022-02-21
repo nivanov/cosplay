@@ -85,31 +85,29 @@ class CPFadeInShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go then
-            if frmCnt < maxFrmCnt then
-                if entireFrame || inCamera then
-                    val rect = if entireFrame then ctx.getCameraFrame else objRect
-                    val canv = ctx.getCanvas
-                    rect.loop((x, y) => {
-                        if canv.isValid(x, y) then
-                            val zpx = canv.getZPixel(x, y)
-                            val px = zpx.px
-                            if px != bgPx && !skip(zpx, x, y) then
-                                val px = zpx.px
-                                val balance = frmCnt.toFloat / maxFrmCnt
-                                val newFg = CPColor.mixture(bgFg, px.fg, balance)
-                                val newBg = px.bg match
-                                    case Some(c) => Option(CPColor.mixture(bgBg, c, balance))
-                                    case None => None
-                                var newPx = px.withFg(newFg).withBg(newBg)
-                                val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
-                                if newPx.char != ' ' then
-                                    if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
-                                else if !crossedOver then
-                                    newPx = newPx.withChar(bgPx.char)
-                                canv.drawPixel(newPx, x, y, zpx.z)
-                    })
-                    frmCnt += 1
-                    if frmCnt == maxFrmCnt then
-                        go = false
-                        onFinish(ctx)
+        if go && ctx.isVisible && frmCnt < maxFrmCnt && (entireFrame || inCamera) then
+            val rect = if entireFrame then ctx.getCameraFrame else objRect
+            val canv = ctx.getCanvas
+            rect.loop((x, y) => {
+                if canv.isValid(x, y) then
+                    val zpx = canv.getZPixel(x, y)
+                    val px = zpx.px
+                    if px != bgPx && !skip(zpx, x, y) then
+                        val px = zpx.px
+                        val balance = frmCnt.toFloat / maxFrmCnt
+                        val newFg = CPColor.mixture(bgFg, px.fg, balance)
+                        val newBg = px.bg match
+                            case Some(c) => Option(CPColor.mixture(bgBg, c, balance))
+                            case None => None
+                        var newPx = px.withFg(newFg).withBg(newBg)
+                        val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
+                        if newPx.char != ' ' then
+                            if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
+                        else if !crossedOver then
+                            newPx = newPx.withChar(bgPx.char)
+                        canv.drawPixel(newPx, x, y, zpx.z)
+            })
+            frmCnt += 1
+            if frmCnt == maxFrmCnt then
+                go = false
+                onFinish(ctx)
