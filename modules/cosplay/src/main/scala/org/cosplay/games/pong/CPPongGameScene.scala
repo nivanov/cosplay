@@ -144,7 +144,6 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             if startGame then
                 ballX = ballX + ballSpeed * Math.cos(rad).toFloat
                 ballY = ballY + (ballSpeed * 0.7 * -Math.sin(rad)).toFloat
-            else setVisible(false)
 
             def bounce(x: Float, y: Float, vert: Boolean): Unit =
                 ballX = x
@@ -155,11 +154,12 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             def score(es: Int, ps: Int): Unit =
                 ballX = canv.xMaxF / 2
                 ballY = canv.yMaxF / 2
-                ballAngle = Random.between(135, 235)
+                ballAngle = Random.between(30, 60)
                 enemyScore += es
                 playerScore += ps
                 enemyScoreSpr.setImage(mkScoreImage(enemyScore))
                 playerScoreSpr.setImage(mkScoreImage(playerScore))
+                startGame = false
 
             if ballX < canv.xMin then score(1, 0)
             else if ballY < canv.yMin then bounce(ballX, canv.yMin, false)
