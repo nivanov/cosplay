@@ -39,6 +39,14 @@ import impl.CPUtils
   * That allows its [[CPSceneObject.render()]] method, the only one method that needs to be implemented by
   * the sub-type, to draw on entire visible space of the terminal.
   *
+  * Note that by default this sprite sets its position and dimension equal to the entire camera frame. This may
+  * affect shaders attached to this sprite if they are configured to work with object vs. entire frame since
+  * this sprite will report its size as entire camera frame size.
+  *
+  * To override this default behavior make sure to call [[setRect()]] method to set correct rectangle for this
+  * sprite in its [[CPSceneObject.update()]] callback implementation. Note that in most cases you only
+  * need to be concerned with this if you are using shaders with the canvas sprite.
+  *
   * ### Sprites
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
   * that is custom designed for a particular use case. Built-in sprites provide concrete
@@ -56,10 +64,21 @@ import impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param id ID of this sprite.
-  * @param shaders Optional set of shaders for this sprite.
+  * @param shaders Optional set of shaders for this sprite. If one or more is supplied, make sure to
+  *     call method [[setRect()]] in [[update()]] callback to set the correct rectangle shape for this sprite.
+  *     By default, entire camera frame will be used as this sprite shape which may conflict with the
+  *     shaders behavior.
   */
 abstract class CPCanvasSprite(id: String, shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
     private var rect: CPRect = _
+
+    /**
+      * Sets rectangular shape of this sprite to given value.
+      *
+      * @param rect Shape position and size to set.
+      */
+    protected def setRect(rect: CPRect): Unit =
+        this.rect = rect
 
     /** @inheritdoc */
     override def update(ctx: CPSceneObjectContext): Unit = rect = ctx.getCameraFrame
