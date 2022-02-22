@@ -85,7 +85,7 @@ class CPFadeOutShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go && ctx.isVisible && (entireFrame || inCamera) then
+        if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             val canv = ctx.getCanvas
             rect.loop((x, y) => {
