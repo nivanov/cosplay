@@ -94,13 +94,19 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private val serveImg = CPArrayImage(
         prepSeq(
             """
-              |Serve Ball
-              | [SPACE]
-                """),
+              |+----------------+
+              ||                |
+              ||   Serve Ball   |
+              ||                |
+              ||    [SPACE]     |
+              ||                |
+              |+________________+
+            """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C_STEEL_BLUE1
-            case '|' | '.' | '`' | '-' | '\'' => ch&C_LIME
-            case _ => ch.toUpper&C_DARK_ORANGE
+            case '+' => ch&C_STEEL_BLUE1
+            case '[' | ']' => ch.toUpper&C_DARK_ORANGE
+            case _ => ch&C_LIME
     ).trimBg()
 
     private val playerScoreSpr = new CPImageSprite("pss", 0, 0, 0, mkScoreImage(0)):
@@ -116,13 +122,13 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.w - getImage.getWidth) / 2)
-            setY((canv.dim.y - getImage.getHeight) / 2)
+            setY((canv.dim.h - getImage.getHeight) / 2)
 
             if !startGame then
                 setVisible(true)
                 ballSpr.setVisible(false)
-                playerPosY = (canv.dim.h / 2) + 2
-                enemyPosY = (canv.dim.h / 2) + 2
+                playerPosY = (canv.dim.h / 2) + 2f
+                enemyPosY = (canv.dim.h / 2) + 2f
 
             ctx.getKbEvent match
                 case Some(evt) =>
@@ -233,5 +239,6 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
         playerSpr,
         enemySpr,
         ballSpr,
-        serveSpr
+        serveSpr,
+        CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, bgPx)))
     )

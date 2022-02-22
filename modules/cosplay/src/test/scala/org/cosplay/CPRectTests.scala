@@ -88,7 +88,7 @@ object CPRectTests:
       */
     @Test
     def containsTest(): Unit =
-        val rect = new CPRect(0, 0, (10, 10))
+        val rect = new CPRect(0, 0, CPDim(10, 10))
 
         assertTrue(rect.contains(1, 1))
         assertTrue(rect.contains(9, 9))
@@ -108,7 +108,7 @@ object CPRectTests:
       */
     @Test
     def overlapTest(): Unit =
-        val rect = new CPRect(0, 0, (10, 10))
+        val rect = new CPRect(0, 0, CPDim(10, 10))
 
         assertTrue(rect.overlaps(new CPRect(1, 1, 5, 5)))
         assertTrue(rect.overlaps(new CPRect(1, 1, 50, 5)))
