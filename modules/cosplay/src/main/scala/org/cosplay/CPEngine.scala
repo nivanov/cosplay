@@ -868,6 +868,7 @@ object CPEngine:
                     override def getLog: CPLog = myLog
                     override def getOwner: CPSceneObject = myObj
                     override def getCamera: CPCamera = sc.getCamera
+                    override def isVisible: Boolean = myObj.isVisible
                     override def getCameraFrame: CPRect = camRect
                     override def getCanvas: CPCanvas = canv
                     override def getFrameCount: Long = frameCnt
@@ -985,12 +986,12 @@ object CPEngine:
                                     if focusRect.containsHor(objRect) then
                                         if cam.isMinPanningX then 0 else camPanX
                                     else
-                                        (objRect.centerX - focusRect.centerX).toFloat
+                                        (objRect.xCenter - focusRect.xCenter).toFloat
                                 camPanY =
                                     if focusRect.containsVer(objRect) then
                                         if cam.isMinPanningY then 0 else camPanY
                                     else
-                                        (objRect.centerY - focusRect.centerY).toFloat
+                                        (objRect.yCenter - focusRect.yCenter).toFloat
                             // If not redrawing and tracking object cannot be found - leave the camera frame as is.
                             case None => ()
 

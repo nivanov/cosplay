@@ -32,31 +32,31 @@ import org.cosplay.*
                 ALl rights reserved.
 */
 
-
 /**
-  * Creates slight flashlight effect around the ball.
+  *
+  * @param ch Character to use ('>' or '<').
+  * @param cs Colors for shimmer effect.
   */
-object CPPongBallShader extends CPShader:
-    private final val RADIUS = 6
+class CPPongPaddleShader(ch: Char, cs: Seq[CPColor]) extends CPShader:
+    private final val DUR_MS = 250
+
+    private var startMs = 0L
+    private var go = false
+
+    def start(): Unit =
+        go = true
+        startMs = System.currentTimeMillis()
+
+    def stop(): Unit =
+        go = false
+        startMs = 0
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if ctx.isVisible then
+        if go && System.currentTimeMillis() - startMs > DUR_MS then stop()
+        if go then
             val canv = ctx.getCanvas
-            val cx = objRect.xCenter
-            val cy = objRect.yCenter
-            val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
-            effRect.loop((x, y) => {
-                if canv.isValid(x, y) then
-                    // Account for character with/height ratio to make a proper circle...
-                    // NOTE: we can't get the font metrics in the native ANSI terminal so
-                    //       we use 1.85 as a general approximation.
-                    val dx = (cx - x).abs.toFloat / 1.85
-                    val dy = (cy - y).abs.toFloat
-                    val r = Math.sqrt(dx * dx + dy * dy).toFloat
-                    if r <= RADIUS then // Flashlight is a circular effect.
-                        val zpx = canv.getZPixel(x, y)
-                        val px = zpx.px
-                        val newFg = px.fg.lighter(0.2f * (1.0f - r / RADIUS))
-                        canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
+            objRect.loop((x, y) => {
+                val zpx = canv.getZPixel(x, y)
+                canv.drawPixel(zpx.px.withChar(ch).withFg(CPColor.C_WHITE).withBg(bgPx.bg), x, y, zpx.z)
             })

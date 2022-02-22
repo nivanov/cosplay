@@ -55,76 +55,121 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private var ballX = 25f
     private var ballY = 20f
     private val paddleSpeed = 0.7f
-    private var ballAngle = Random.between(91, 179)
+    private var ballAngle = Random.between(30, 60)
     private val ballSpeed = 1.5f
+    private var startGame = false
 
-    private var playerScoreImg = FIG_BIG.render(playerScore.toString, C_WHITE).trimBg()
-    private val enemyScoreImg = FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg()
     private val ballImg = CPArrayImage(
         prepSeq(
             """
-              | _
-              |(_)
+              |  _
+              | (_)
             """
         ),
         (ch, _, _) => ch&C_DARK_GOLDEN_ROD
     ).trimBg()
 
+    def mkPaddleImage(c: CPColor): CPImage =
+        CPArrayImage(
+            prepSeq(
+                """
+                  |X
+                  |X
+                  |X
+                  |X
+                  |X
+                """
+            ),
+            (ch, _, _) => ' '&&(C_BLACK, c)
+        )
+
+    private val playerImg = mkPaddleImage(C_AQUA)
+    private val enemyImg = mkPaddleImage(C_GREEN_YELLOW)
+
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
 
-    private var playerScoreSpr = new CPImageSprite("playerScoreSpr", 0, 0, 0, playerScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
+    private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C_WHITE).trimBg()
+
+    private val serveImg = CPArrayImage(
+        prepSeq(
+            """
+              |Serve Ball
+              | [SPACE]
+                """),
+        (ch, _, _) => ch match
+            case c if c.isLetter => c&C_STEEL_BLUE1
+            case '|' | '.' | '`' | '-' | '\'' => ch&C_LIME
+            case _ => ch.toUpper&C_DARK_ORANGE
+    ).trimBg()
+
+    private val playerScoreSpr = new CPImageSprite("pss", 0, 0, 0, mkScoreImage(0)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            setX((ctx.getCanvas.dim.w - getImage.getWidth) / 4)
+
+    private val enemyScoreSpr = new CPImageSprite("ess", 0, 0, 0, mkScoreImage(0)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            setX((canv.dim.w - playerScoreImg.getWidth) / 4)
+            setX((canv.dim.w - getImage.getWidth) - ((canv.dim.w / 4) - 1))
 
-    private val enemyScoreSpr = new CPImageSprite("enemyScoreSpr", 0, 0, 0, enemyScoreImg, shaders = Seq(CPFadeInShader(true, 1500, bgPx))):
+    private val serveSpr = new CPImageSprite("serveSpr", 0, 0, 6, serveImg, false):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            setX((canv.dim.w - enemyScoreImg.getWidth) - ((canv.dim.w / 4) - 1))
+            setX((canv.dim.w - getImage.getWidth) / 2)
+            setY((canv.dim.y - getImage.getHeight) / 2)
 
-    private val ballSpr = new CPImageSprite("ballSpr", 0, 0, 0, ballImg, false, Seq(CPPongBallShader)):
+            if !startGame then
+                setVisible(true)
+                ballSpr.setVisible(false)
+                playerPosY = (canv.dim.h / 2) + 2
+                enemyPosY = (canv.dim.h / 2) + 2
+
+            ctx.getKbEvent match
+                case Some(evt) =>
+                    evt.key match
+                        case KEY_SPACE | KEY_DOWN =>
+                            setVisible(false)
+                            ballSpr.setVisible(true)
+                            startGame = true
+                        case _ => ()
+                case None => ()
+
+    private val ballSpr = new CPImageSprite("bs", 0, 0, 0, ballImg, false, Seq(CPPongBallShader)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             val rad = ballAngle * (Math.PI / 180)
             val ballMaxX = (canv.xMax - ballImg.w + 1).toFloat
             val ballMaxY = (canv.yMax - ballImg.h + 1).toFloat
 
-            ballX = ballX + ballSpeed * Math.cos(rad).toFloat
-            ballY = ballY + (ballSpeed * 0.7 * -Math.sin(rad)).toFloat
+            if startGame then
+                ballX = ballX + ballSpeed * Math.cos(rad).toFloat
+                ballY = ballY + (ballSpeed * 0.7 * -Math.sin(rad)).toFloat
 
             def bounce(x: Float, y: Float, vert: Boolean): Unit =
                 ballX = x
                 ballY = y
-
                 if vert then ballAngle = -ballAngle + 180
                 else ballAngle = -ballAngle
 
-            if ballX < canv.xMin then
-                ballX = canv.xMax.toFloat / 3
-                ballY = canv.yMax.toFloat / 2
+            def score(es: Int, ps: Int): Unit =
+                ballX = canv.xMaxF / 2
+                ballY = canv.yMaxF / 2
+                ballAngle = Random.between(30, 60)
+                enemyScore += es
+                playerScore += ps
+                enemyScoreSpr.setImage(mkScoreImage(enemyScore))
+                playerScoreSpr.setImage(mkScoreImage(playerScore))
+                startGame = false
 
-                ballAngle = Random.between(1, 89)
-
-                enemyScore += 1
-                enemyScoreSpr.setImage(FIG_BIG.render(enemyScore.toString, C_WHITE).trimBg())
-            else if ballY < canv.yMin then
-                bounce(ballX, canv.yMin, false)
-            else if ballX > ballMaxX then
-                ballX = canv.xMax.toFloat - canv.xMax.toFloat / 3
-                ballY = canv.yMax.toFloat / 2
-
-                playerScore += 1
-                playerScoreSpr.setImage(FIG_BIG.render(playerScore.toString, C_WHITE).trimBg())
-
-                ballAngle = Random.between(91, 179)
-            else if ballY > ballMaxY then
-                bounce(ballX, ballMaxY, false)
+            if ballX < canv.xMin then score(1, 0)
+            else if ballY < canv.yMin then bounce(ballX, canv.yMin, false)
+            else if ballX > ballMaxX then score(0, 1)
+            else if ballY > ballMaxY then bounce(ballX, ballMaxY, false)
             else if ballY <= playerPosY.round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
                 bounce(4, ballY, true)
                 playerShdr.start()
             else if ballY <= enemyPosY.round && ballY >= (enemyPosY - 6).round && ballX.round >= canv.dim.w - 4 then
-                bounce(canv.xMax.toFloat - 4, ballY, true)
+                bounce(canv.xMaxF - 4, ballY, true)
                 enemyShdr.start()
 
             setX(ballX.round)
@@ -133,37 +178,47 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private val netSpr = new CPCanvasSprite("net"):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, 100, '|'&C_AQUA)
+            canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, 5, '|'&C_AQUA)
 
     private val playerPx = ' '&&(C_BLACK, C_AQUA)
     private val enemyPx = ' '&&(C_BLACK, C_GREEN_YELLOW)
     private val playerColors = Seq(CPColor("#F57064"), CPColor("#4CF5F5"), CPColor("#F5AF33"), CPColor("#40F58E"))
     private val enemyColors = Seq(CPColor("#F57064"), CPColor("#4CF5F5"), CPColor("#F5AF33"), CPColor("#40F58E"))
-    private val playerShdr = new CPShimmerShader(false, playerColors, 2, durMs = 500)
-    private val enemyShdr = new CPShimmerShader(false, playerColors, 2, durMs = 500)
+    private val playerShdr = CPPongPaddleShader('>', playerColors)
+    private val enemyShdr = CPPongPaddleShader('<', enemyColors)
 
     private val playerSpr = new CPCanvasSprite("player", Seq(playerShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
+            setRect(new CPRect(1, (playerPosY - 5).round, 1, 5))
             val canv = ctx.getCanvas
             def move(dy: Float): Unit =
                 if dy > 0 && playerPosY < canv.height - 1 then playerPosY += dy
                 else if dy < 0 && playerPosY > 5 then playerPosY += dy
-            ctx.getKbEvent match
-                case Some(evt) =>
-                    evt.key match
-                        case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -paddleSpeed else -1.0f)
-                        case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then paddleSpeed else 1.0f)
-                        case _ => ()
-                case None => ()
+
+            if startGame then
+                ctx.getKbEvent match
+                    case Some(evt) =>
+                        evt.key match
+                            case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -paddleSpeed else -1.0f)
+                            case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then paddleSpeed else 1.0f)
+                            case _ => ()
+                    case None => ()
         override def render(ctx: CPSceneObjectContext): Unit =
             ctx.getCanvas.drawLine(1, playerPosY.round, 1, (playerPosY - 5).round, 100, playerPx)
 
     private val enemySpr = new CPCanvasSprite("enemy", Seq(enemyShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
-            if ballY > (enemyPosY - 2.5).round then enemyPosY += paddleSpeed
-            else if ballY < (enemyPosY - 2.5).round then enemyPosY -= paddleSpeed
+            val canv = ctx.getCanvas
+            if ballY > enemyPosY - 2.5 then enemyPosY += paddleSpeed
+            else if ballY < enemyPosY - 2.5 then enemyPosY -= paddleSpeed
+            setRect(new CPRect(canv.dim.w - 2, (enemyPosY - 5).round, 1, 5))
+
+            if startGame then
+                if ballY > (enemyPosY - 2.5).round then enemyPosY += paddleSpeed
+                else if ballY < (enemyPosY - 2.5).round then enemyPosY -= paddleSpeed
+
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             canv.drawLine(canv.dim.w - 2, enemyPosY.round, canv.dim.w - 2, (enemyPosY - 5).round, 100, enemyPx)
@@ -174,5 +229,6 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
         netSpr,
         playerSpr,
         enemySpr,
-        ballSpr
+        ballSpr,
+        serveSpr
     )

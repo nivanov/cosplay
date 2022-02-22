@@ -86,6 +86,11 @@ trait CPSceneObjectContext extends CPBaseContext:
     def getCamera: CPCamera
 
     /**
+      * Checks whether the object this context is attached to is visible.
+      */
+    def isVisible: Boolean
+
+    /**
       * Gets current camera frame. Camera frame is always a sub-region of the scene. In most cases, it is
       * smaller of scene dimension and terminal dimension.
       */

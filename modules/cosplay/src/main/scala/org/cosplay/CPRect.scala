@@ -74,9 +74,19 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     final val xMax = x + width - 1
 
     /**
+      * Maximum X-coordinate as a float. If width is zero this will equal to `x - 1`.
+      */
+    final lazy val xMaxF = xMax.toFloat
+
+    /**
       * Maximum Y-coordinate. If height is zero this will equal to `y - 1`.
       */
     final val yMax = y + height - 1
+
+    /**
+      * Maximum Y-coordinate as a float. If height is zero this will equal to `y - 1`.
+      */
+    final lazy val yMaxF = yMax.toFloat
 
     /**
       * Minimal X-coordinate. It is equal to `x`.
@@ -84,9 +94,19 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     final val xMin = x
 
     /**
+      * Minimal X-coordinate as a float. It is equal to `x`.
+      */
+    final lazy val xMinF = x.toFloat
+
+    /**
       * Minimal Y-coordinate. It is equal to `y`.
       */
     final val yMin = y
+
+    /**
+      * Minimal Y-coordinate as a float. It is equal to `y`.
+      */
+    final lazy val yMinF = y.toFloat
 
     /**
       * Width of the rectangular (shortcut API).
@@ -94,19 +114,39 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     final val w = width
 
     /**
+      * Width of the rectangular (shortcut API) as a float.
+      */
+    final lazy val wF = width.toFloat
+
+    /**
       * Height of the rectangular (shortcut API).
       */
     final val h = height
 
     /**
+      * Height of the rectangular (shortcut API) as a float.
+      */
+    final lazy val hF = height.toFloat
+
+    /**
       * X-coordinate of the center point.
       */
-    final val centerX = if width == 0 then x else x + (xMax - x) / 2
+    final val xCenter = if width == 0 then x else x + (xMax - x) / 2
+
+    /**
+      * X-coordinate of the center point as a float.
+      */
+    final lazy val xCenterF = xCenter.toFloat
 
     /**
       * Y-coordinate of the center point.
       */
-    final val centerY = if height == 0 then y else y + (yMax - y) / 2
+    final val yCenter = if height == 0 then y else y + (yMax - y) / 2
+
+    /**
+      * Y-coordinate of the center point as a float.
+      */
+    final lazy val yCenterF = yCenter.toFloat
 
     /**
       * Creates rectangle from two tuples.

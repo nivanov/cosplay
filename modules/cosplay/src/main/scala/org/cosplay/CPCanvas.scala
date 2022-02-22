@@ -119,22 +119,40 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /** Maximum X-coordinate of this canvas. */
     final val xMax = width - 1
 
+    /** Maximum X-coordinate of this canvas as a float. */
+    final lazy val xMaxF = xMax.toFloat
+
     /** Maximum Y-coordinate of this canvas. */
     final val yMax = height - 1
+
+    /** Maximum Y-coordinate of this canvas as a float. */
+    final lazy val yMaxF = yMax.toFloat
 
     /** Minimum X-coordinate of this canvas (always zero). */
     final val xMin = 0
 
+    /** Minimum X-coordinate of this canvas (always zero) as a float. */
+    final lazy val xMinF = 0f
+
     /** Minimum Y-coordinate of this canvas (always zero). */
     final val yMin = 0
 
+    /** Minimum Y-coordinate of this canvas (always zero) as a float. */
+    final lazy val yMinF = 0f
+
     /** X-coordinate of the center point of this canvas. */
-    final val centerX = xMax / 2
+    final val xCenter = xMax / 2
+
+    /** X-coordinate of the center point of this canvas as a float. */
+    final lazy val xCenterF = xMaxF / 2
 
     /** Y-coordinate of the center point of this canvas. */
-    final val centerY = yMax / 2
+    final val yCenter = yMax / 2
 
-    /** Recatangle object (shape) for this canvas. */
+    /** Y-coordinate of the center point of this canvas as a float. */
+    final val yCenterF = yMaxF / 2
+
+    /** Rectangle object (shape) for this canvas. */
     final val rect = new CPRect(0, 0, dim)
 
     /**

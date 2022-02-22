@@ -80,6 +80,8 @@ object CPImageCarouselExample:
         CPSpaceShipImage.trimBg(),
         CPBedImage.trimBg(),
         CPMoonImage.trimBg(),
+        CPKnifeImage.trimBg(),
+        CPTntImage.trimBg(),
         CPGuitarImage,
         CPSpeckImage
     )
