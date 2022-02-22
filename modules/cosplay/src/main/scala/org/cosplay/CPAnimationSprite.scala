@@ -18,6 +18,8 @@
 package org.cosplay
 
 import org.cosplay.*
+import org.cosplay.impl.CPUtils
+
 import scala.collection.mutable
 
 /*
@@ -55,7 +57,7 @@ import scala.collection.mutable
   * overriding [[getX]], [[getY]] and [[getDim]] methods to return current coordinates and dimension.
   * Note that in most cases, one do need to override or change [[render()]] method.
   *
-  * @param id ID of the sprite.
+  * @param id Optional ID of the sprite.
   * @param anis Sequence of animation. Must have at least one animation in it.
   * @param x Initial X-coordinate.
   * @param y Initial Y-coordinate.
@@ -70,7 +72,7 @@ import scala.collection.mutable
   *     example of animation functionality.
   */
 class CPAnimationSprite(
-    id: String,
+    id: String = s"ani-spr-${CPUtils.guid6}",
     anis: Seq[CPAnimation],
     x: Int,
     y: Int,

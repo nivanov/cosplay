@@ -55,7 +55,7 @@ import impl.CPUtils
   *  - [[CPParticleSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of this sprite.
+  * @param id Optional ID of this sprite.
   * @param x X-coordinate of the top-left corner of the label.
   * @param y Y-coordinate of the top-left corner of the label.
   * @param z Z-index at which to render the label.
@@ -71,7 +71,7 @@ import impl.CPUtils
   *     using labels and text input.
   */
 class CPLabelSprite(
-    id: String,
+    id: String = s"lbl-spr-${CPUtils.guid6}",
     x: Int,
     y: Int,
     z: Int,

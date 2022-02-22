@@ -31,6 +31,7 @@ package org.cosplay
 */
 
 import CPKeyboardKey.*
+import org.cosplay.impl.CPUtils
 
 import scala.collection.mutable
 
@@ -58,7 +59,7 @@ import scala.collection.mutable
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of this sprite.
+  * @param id Optional ID of this sprite.
   * @param x X-coordinate of the top-left corner.
   * @param y Y-coordinate of the top-left corner.
   * @param z Z-index at which to render this sprite.
@@ -78,7 +79,7 @@ import scala.collection.mutable
   *     using labels and text input.
   */
 class CPTextInputSprite(
-    id: String,
+    id: String = s"input-spr-${CPUtils.guid6}",
     x: Int,
     y: Int,
     z: Int,

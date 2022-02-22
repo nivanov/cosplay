@@ -63,13 +63,13 @@ import impl.CPUtils
   *  - [[CPParticleSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of this sprite.
+  * @param id Optional ID of this sprite.
   * @param shaders Optional set of shaders for this sprite. If one or more is supplied, make sure to
   *     call method [[setRect()]] in [[update()]] callback to set the correct rectangle shape for this sprite.
   *     By default, entire camera frame will be used as this sprite shape which may conflict with the
   *     shaders behavior.
   */
-abstract class CPCanvasSprite(id: String, shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+abstract class CPCanvasSprite(id: String = s"canv-spr-${CPUtils.guid6}", shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
     private var rect: CPRect = _
 
     /**

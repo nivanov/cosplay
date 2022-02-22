@@ -109,16 +109,16 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             case _ => ch&C_LIME
     ).trimBg()
 
-    private val playerScoreSpr = new CPImageSprite("pss", 0, 0, 0, mkScoreImage(0)):
+    private val playerScoreSpr = new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.dim.w - getImage.getWidth) / 4)
 
-    private val enemyScoreSpr = new CPImageSprite("ess", 0, 0, 0, mkScoreImage(0)):
+    private val enemyScoreSpr = new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.w - getImage.getWidth) - ((canv.dim.w / 4) - 1))
 
-    private val serveSpr = new CPImageSprite("serveSpr", 0, 0, 6, serveImg, false):
+    private val serveSpr = new CPImageSprite(x = 0, y = 0, z = 6, serveImg):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.w - getImage.getWidth) / 2)
@@ -133,7 +133,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_SPACE | KEY_DOWN =>
+                        case KEY_SPACE =>
                             setVisible(false)
                             ballSpr.setVisible(true)
                             startGame = true
