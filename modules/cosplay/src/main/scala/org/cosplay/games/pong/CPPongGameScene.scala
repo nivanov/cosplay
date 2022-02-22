@@ -165,10 +165,10 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             else if ballY < canv.yMin then bounce(ballX, canv.yMin, false)
             else if ballX > ballMaxX then score(0, 1)
             else if ballY > ballMaxY then bounce(ballX, ballMaxY, false)
-            else if ballY <= playerPosY.round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
+            else if ballY <= playerPosY.round && ballY >= (playerPosY - playerImg.getHeight).round && ballX.round <= 1 then
                 bounce(4, ballY, true)
                 playerShdr.start()
-            else if ballY <= enemyPosY.round && ballY >= (enemyPosY - 6).round && ballX.round >= canv.dim.w - 4 then
+            else if ballY <= enemyPosY.round && ballY >= (enemyPosY - enemyImg.getHeight).round && ballX.round >= canv.dim.w - 4 then
                 bounce(canv.xMaxF - 4, ballY, true)
                 enemyShdr.start()
 
@@ -213,6 +213,9 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             val canv = ctx.getCanvas
             if ballY > enemyPosY - 2.5 then enemyPosY += paddleSpeed
             else if ballY < enemyPosY - 2.5 then enemyPosY -= paddleSpeed
+
+            if enemyPosY < canv.height - 1 then enemyPosY += paddleSpeed
+            else if enemyPosY > 5 then enemyPosY -= paddleSpeed
             setRect(new CPRect(canv.dim.w - 2, (enemyPosY - 5).round, 1, 5))
 
             if startGame then
