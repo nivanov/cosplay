@@ -35,9 +35,8 @@ import org.cosplay.*
 /**
   *
   * @param ch Character to use ('>' or '<').
-  * @param cs Colors for shimmer effect.
   */
-class CPPongPaddleShader(ch: Char, cs: Seq[CPColor]) extends CPShader:
+class CPPongPaddleShader(ch: Char) extends CPShader:
     private final val DUR_MS = 250
 
     private var startMs = 0L

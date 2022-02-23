@@ -75,7 +75,7 @@ object CPCanvasExample:
         val dim = CPDim(100, 40)
 
         // Demo sprite that illustrates working with 'canvas'.
-        val drawSpr = new CPCanvasSprite("spr", Seq(new CPFadeInShader(true, 500, bgPx))):
+        val drawSpr = new CPCanvasSprite():
             override def render(ctx: CPSceneObjectContext): Unit =
                 val canv = ctx.getCanvas
 
@@ -142,6 +142,7 @@ object CPCanvasExample:
         // Create the scene (exit the game on 'q' press).
         val sc = new CPScene("scene", Option(dim), bgPx,
             drawSpr,
+            CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)), // Just shader for the entire screen.
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
         )
 

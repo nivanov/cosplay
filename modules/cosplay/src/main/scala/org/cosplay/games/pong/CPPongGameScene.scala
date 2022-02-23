@@ -1,3 +1,5 @@
+package org.cosplay.games.pong
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -14,8 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.cosplay.games.pong
 
 import org.cosplay.CPColor.*
 import org.cosplay.*
@@ -188,15 +188,12 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
 
     private val playerPx = ' '&&(C_BLACK, C_AQUA)
     private val enemyPx = ' '&&(C_BLACK, C_GREEN_YELLOW)
-    private val playerColors = Seq(CPColor("#F57064"), CPColor("#4CF5F5"), CPColor("#F5AF33"), CPColor("#40F58E"))
-    private val enemyColors = Seq(CPColor("#F57064"), CPColor("#4CF5F5"), CPColor("#F5AF33"), CPColor("#40F58E"))
-    private val playerShdr = CPPongPaddleShader('>', playerColors)
-    private val enemyShdr = CPPongPaddleShader('<', enemyColors)
+    private val playerShdr = CPPongPaddleShader('>')
+    private val enemyShdr = CPPongPaddleShader('<')
 
-    private val playerSpr = new CPCanvasSprite("player", Seq(playerShdr)):
+    private val playerSpr = new CPCanvasSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
-            setRect(new CPRect(1, (playerPosY - 5).round, 1, 5))
             val canv = ctx.getCanvas
             def move(dy: Float): Unit =
                 if dy > 0 && playerPosY < canv.height - 1 then playerPosY += dy
@@ -213,7 +210,7 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
         override def render(ctx: CPSceneObjectContext): Unit =
             ctx.getCanvas.drawLine(1, playerPosY.round, 1, (playerPosY - 5).round, 100, playerPx)
 
-    private val enemySpr = new CPCanvasSprite("enemy", Seq(enemyShdr)):
+    private val enemySpr = new CPCanvasSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
@@ -222,7 +219,6 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
 
             if enemyPosY < canv.height - 1 then enemyPosY += paddleSpeed
             else if enemyPosY > 5 then enemyPosY -= paddleSpeed
-            setRect(new CPRect(canv.dim.w - 2, (enemyPosY - 5).round, 1, 5))
 
             if startGame then
                 if ballY > (enemyPosY - 2.5).round then enemyPosY += paddleSpeed
