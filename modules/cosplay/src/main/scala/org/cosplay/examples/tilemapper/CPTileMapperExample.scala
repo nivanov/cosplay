@@ -78,11 +78,11 @@ object CPTileMapperExample:
             """
             ),
             (ch, _, _) => ch match
-                case '^' => CPPixel('^', C_DARK_OLIVE_GREEN3, C_GREEN_YELLOW)
-                case '~' => CPPixel('~', C_DARK_OLIVE_GREEN1, C_GREEN_YELLOW)
-                case '{' => CPPixel('[', C_SANDY_BROWN, C_DARK_ORANGE3)
-                case '-' => CPPixel('_', C_SANDY_BROWN, C_DARK_ORANGE3)
-                case c => CPPixel(c, C_MAROON, C_DARK_ORANGE3)
+                case '^' => '^'&&(C_DARK_OLIVE_GREEN3, C_GREEN_YELLOW)
+                case '~' => '~'&&(C_DARK_OLIVE_GREEN1, C_GREEN_YELLOW)
+                case '{' => '['&&(C_SANDY_BROWN, C_DARK_ORANGE3)
+                case '-' => '_'&&(C_SANDY_BROWN, C_DARK_ORANGE3)
+                case c => c&&(C_MAROON, C_DARK_ORANGE3)
         )
 
         val alien = CPArrayImage(
@@ -132,7 +132,7 @@ object CPTileMapperExample:
         val mapDim = tileMap.getDim
         val alienDim = alien.getDim
         val dim = CPDim(mapDim.w * brickDim.w, mapDim.h * brickDim.h)
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         var objs = List[CPSceneObject](
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),

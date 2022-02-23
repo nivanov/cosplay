@@ -18,11 +18,12 @@
 package org.cosplay.examples.sound
 
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.CPStyledString.*
-import org.cosplay.CPKeyboardKey.*
-import org.cosplay.examples.utils.*
-import org.cosplay.prefabs.shaders.CPFadeInShader
+import CPColor.*
+import CPPixel.*
+import CPStyledString.*
+import CPKeyboardKey.*
+import examples.utils.*
+import prefabs.shaders.*
 
 /*
    _________            ______________
@@ -82,7 +83,7 @@ object CPSoundExample:
                         case _ => ()
                     case None => ()
 
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val sc = new CPScene("scene", Option(dim), bgPx,
             panel,
             lbl,

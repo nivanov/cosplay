@@ -17,9 +17,10 @@
 
 package org.cosplay.games.pong
 
-import org.cosplay.CPColor.*
 import org.cosplay.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import CPColor.*
+import CPPixel.*
+import prefabs.scenes.CPLogoScene
 
 /*
    _________            ______________
@@ -34,7 +35,7 @@ import org.cosplay.prefabs.scenes.CPLogoScene
                 ALl rights reserved.
 */
 
-val BG_PX = CPPixel('.', C_GRAY2, C_GRAY1)
+val BG_PX = '.'&&(C_GRAY2, C_GRAY1)
 
 /**
  *

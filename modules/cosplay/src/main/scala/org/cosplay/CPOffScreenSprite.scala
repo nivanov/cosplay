@@ -91,3 +91,17 @@ class CPOffScreenSprite(id: String = s"off-scr-spr-${CPUtils.guid6}", shaders: S
     override def getRect: CPRect = CPRect.ZERO
     /** @inheritdoc */
     override def getShaders: Seq[CPShader] = shaders
+
+/**
+  * Companion object with utility functions.
+  */
+object CPOffScreenSprite:
+    /**
+      * Convenient shortcut to create off-screen sprite with a function that takes scene object context.
+      *
+      * @param f Function that takes scene object context to perform an action on each [[CPSceneObject.update()]]
+      *     callback.
+      */
+    def apply(f: CPSceneObjectContext ⇒ Unit): CPOffScreenSprite =
+        new CPOffScreenSprite():
+            override def update(ctx: CPSceneObjectContext): Unit = f(ctx)

@@ -19,6 +19,7 @@ package org.cosplay
 
 import CPFIGLetFont.FIG_HDR_MARKER
 import impl.CPUtils
+import org.cosplay.CPPixel.*
 
 import java.nio.charset.MalformedInputException
 import scala.collection.mutable
@@ -310,11 +311,11 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
                                 (ch1 == '}' && ch2 == '{') ||
                                 (ch1 == '(' && ch2 == ')') ||
                                 (ch1 == ')' && ch2 == '(') then
-                                data.set(x2, y, CPPixel('|', fg, bg))
+                                data.set(x2, y, '|'&?(fg, bg))
                         if figSmushRule5 then
-                            if ch1 == '/' && ch2 == '\\' then data.set(x2, y, CPPixel('|', fg, bg))
-                            else if ch1 == '\\' && ch2 == '/' then data.set(x2, y, CPPixel('Y', fg, bg))
-                            else if ch1 == '>' && ch2 == '<' then data.set(x2, y, CPPixel('X', fg, bg))
+                            if ch1 == '/' && ch2 == '\\' then data.set(x2, y, '|'&?(fg, bg))
+                            else if ch1 == '\\' && ch2 == '/' then data.set(x2, y, 'Y'&?(fg, bg))
+                            else if ch1 == '>' && ch2 == '<' then data.set(x2, y, 'X'&?(fg, bg))
                 })
                 chX += figCh.width
         else

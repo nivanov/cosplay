@@ -18,10 +18,11 @@
 package org.cosplay.examples.video
 
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.CPKeyboardKey.*
-import org.cosplay.CPStyledString.styleStr
-import org.cosplay.prefabs.shaders.*
+import CPColor.*
+import CPPixel.*
+import CPKeyboardKey.*
+import CPStyledString.styleStr
+import prefabs.shaders.*
 
 /*
    _________            ______________
@@ -66,7 +67,7 @@ object CPVideoExample:
         val ctrlDim = ctrlImg.getDim
         val dim = CPDim((vidDim.w + 8).max(ctrlDim.w + 4), vidDim.h + 8)
         val vidSpr = new CPVideoSprite(vid = CPVideoClip, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         // Create the scene.
         val sc = new CPScene("scene", Option(dim), bgPx,
             vidSpr,

@@ -87,7 +87,7 @@ object CPImageCarouselExample:
         CPGuitarImage,
         CPSpeckImage
     )
-    private val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+    private val bgPx = '.'&&(C_GRAY2, C_GRAY1)
 
     class CarouselSprite(img: CPImage, viewDim: CPDim) extends CPSceneObject:
         private final val centerY = (viewDim.h - img.h) / 2

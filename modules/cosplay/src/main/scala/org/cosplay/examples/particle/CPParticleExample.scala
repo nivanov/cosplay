@@ -54,7 +54,7 @@ object CPParticleExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val w = 100
         val h = 40
         val dim = CPDim(w, h)

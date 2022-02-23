@@ -18,9 +18,10 @@
 package org.cosplay
 
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.CPKeyboardKey.*
-import org.cosplay.impl.CPUtils
+import CPColor.*
+import CPPixel.*
+import CPKeyboardKey.*
+import impl.CPUtils
 
 /*
    _________            ______________
@@ -205,7 +206,7 @@ abstract class CPAnimation(id: String) extends CPGameObject(id) with CPAsset:
   * Companion object containing factory methods.
   */
 object CPAnimation:
-    private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
+    private final val DFLT_BG = '.'&&(C_GRAY2, C_GRAY1)
 
     /**
       * Previews given animation.

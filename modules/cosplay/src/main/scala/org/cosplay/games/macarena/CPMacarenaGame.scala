@@ -32,6 +32,7 @@ package org.cosplay.games.macarena
 
 import org.cosplay.*
 import CPColor.*
+import CPPixel.*
 import CPKeyboardKey.*
 import prefabs.images.ani.*
 import prefabs.scenes.*
@@ -50,7 +51,7 @@ object CPMacarenaGame:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val dim = CPDim(80, 20)
 
         // Initialize the engine.

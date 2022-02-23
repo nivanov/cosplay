@@ -314,3 +314,14 @@ object CPPixel:
           */
         @targetName("mkCharFgBgPixel")
         infix def &&(fg: CPColor, bg: CPColor): CPPixel = CPPixel(ch, fg, Option(bg))
+
+        /**
+          * Adds `'&?'` operator to `Char` type as a sugar to create pixel with background. For example:
+          * {{{
+          *     val x = 'x'&?(C_BLACK, Option(C_WHITE))
+          *     val ch = 'a'
+          *     val a = ch&?(C_WHITE, Some(C_PINK))
+          * }}}
+          */
+        @targetName("mkCharFgOptBgPixel")
+        infix def &?(fg: CPColor, bg: Option[CPColor]): CPPixel = CPPixel(ch, fg, bg)

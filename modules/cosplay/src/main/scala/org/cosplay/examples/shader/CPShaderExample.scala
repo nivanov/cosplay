@@ -54,7 +54,7 @@ object CPShaderExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val dim = CPDim(80, 40)
 
         // In-code image creation & "painting".
