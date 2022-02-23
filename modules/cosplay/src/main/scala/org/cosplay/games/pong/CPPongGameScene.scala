@@ -1,3 +1,5 @@
+package org.cosplay.games.pong
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,8 +17,6 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong
-
 import org.cosplay.CPColor.*
 import org.cosplay.*
 import org.cosplay.CPArrayImage.*
@@ -26,8 +26,10 @@ import org.cosplay.CPCanvas.*
 import org.cosplay.CPDim.*
 import CPPixel.*
 import CPKeyboardKey.*
+import org.cosplay.games.pong.shaders.*
 import prefabs.images.*
 import prefabs.scenes.*
+
 import scala.util.*
 
 
@@ -47,7 +49,7 @@ import scala.util.*
 /**
   * Pong main scene.
   */
-object CPPongGameScene extends CPScene("game", None, bgPx):
+object CPPongGameScene extends CPScene("game", None, BG_PX):
     private var playerScore = 0
     private var enemyScore = 0
     private var playerPosY = 30f
@@ -94,40 +96,46 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
     private val serveImg = CPArrayImage(
         prepSeq(
             """
-              |Serve Ball
-              | [SPACE]
-                """),
+              |+----------------+
+              ||                |
+              ||   Serve Ball   |
+              ||                |
+              ||    [SPACE]     |
+              ||                |
+              |+________________+
+            """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C_STEEL_BLUE1
-            case '|' | '.' | '`' | '-' | '\'' => ch&C_LIME
-            case _ => ch.toUpper&C_DARK_ORANGE
+            case '+' => ch&C_STEEL_BLUE1
+            case '[' | ']' => ch.toUpper&C_DARK_ORANGE
+            case _ => ch&C_LIME
     ).trimBg()
 
-    private val playerScoreSpr = new CPImageSprite("pss", 0, 0, 0, mkScoreImage(0)):
+    private val playerScoreSpr = new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.dim.w - getImage.getWidth) / 4)
 
-    private val enemyScoreSpr = new CPImageSprite("ess", 0, 0, 0, mkScoreImage(0)):
+    private val enemyScoreSpr = new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.w - getImage.getWidth) - ((canv.dim.w / 4) - 1))
 
-    private val serveSpr = new CPImageSprite("serveSpr", 0, 0, 6, serveImg, false):
+    private val serveSpr = new CPImageSprite(x = 0, y = 0, z = 6, serveImg):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.dim.w - getImage.getWidth) / 2)
-            setY((canv.dim.y - getImage.getHeight) / 2)
+            setY((canv.dim.h - getImage.getHeight) / 2)
 
             if !startGame then
                 setVisible(true)
                 ballSpr.setVisible(false)
-                playerPosY = (canv.dim.h / 2) + 2
-                enemyPosY = (canv.dim.h / 2) + 2
+                playerPosY = (canv.dim.h / 2) + 2f
+                enemyPosY = (canv.dim.h / 2) + 2f
 
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_SPACE | KEY_DOWN =>
+                        case KEY_SPACE =>
                             setVisible(false)
                             ballSpr.setVisible(true)
                             startGame = true
@@ -165,10 +173,10 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
             else if ballY < canv.yMin then bounce(ballX, canv.yMin, false)
             else if ballX > ballMaxX then score(0, 1)
             else if ballY > ballMaxY then bounce(ballX, ballMaxY, false)
-            else if ballY <= playerPosY.round && ballY >= (playerPosY - 6).round && ballX.round <= 1 then
+            else if ballY <= playerPosY.round && ballY >= (playerPosY - playerImg.getHeight).round && ballX.round <= 1 then
                 bounce(4, ballY, true)
                 playerShdr.start()
-            else if ballY <= enemyPosY.round && ballY >= (enemyPosY - 6).round && ballX.round >= canv.dim.w - 4 then
+            else if ballY <= enemyPosY.round && ballY >= (enemyPosY - enemyImg.getHeight).round && ballX.round >= canv.dim.w - 4 then
                 bounce(canv.xMaxF - 4, ballY, true)
                 enemyShdr.start()
 
@@ -182,15 +190,12 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
 
     private val playerPx = ' '&&(C_BLACK, C_AQUA)
     private val enemyPx = ' '&&(C_BLACK, C_GREEN_YELLOW)
-    private val playerColors = Seq(CPColor("#F57064"), CPColor("#4CF5F5"), CPColor("#F5AF33"), CPColor("#40F58E"))
-    private val enemyColors = Seq(CPColor("#F57064"), CPColor("#4CF5F5"), CPColor("#F5AF33"), CPColor("#40F58E"))
-    private val playerShdr = CPPongPaddleShader('>', playerColors)
-    private val enemyShdr = CPPongPaddleShader('<', enemyColors)
+    private val playerShdr = CPPongPaddleShader('>')
+    private val enemyShdr = CPPongPaddleShader('<')
 
-    private val playerSpr = new CPCanvasSprite("player", Seq(playerShdr)):
+    private val playerSpr = new CPCanvasSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
-            setRect(new CPRect(1, (playerPosY - 5).round, 1, 5))
             val canv = ctx.getCanvas
             def move(dy: Float): Unit =
                 if dy > 0 && playerPosY < canv.height - 1 then playerPosY += dy
@@ -207,13 +212,15 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
         override def render(ctx: CPSceneObjectContext): Unit =
             ctx.getCanvas.drawLine(1, playerPosY.round, 1, (playerPosY - 5).round, 100, playerPx)
 
-    private val enemySpr = new CPCanvasSprite("enemy", Seq(enemyShdr)):
+    private val enemySpr = new CPCanvasSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
             if ballY > enemyPosY - 2.5 then enemyPosY += paddleSpeed
             else if ballY < enemyPosY - 2.5 then enemyPosY -= paddleSpeed
-            setRect(new CPRect(canv.dim.w - 2, (enemyPosY - 5).round, 1, 5))
+
+            if enemyPosY < canv.height - 1 then enemyPosY += paddleSpeed
+            else if enemyPosY > 5 then enemyPosY -= paddleSpeed
 
             if startGame then
                 if ballY > (enemyPosY - 2.5).round then enemyPosY += paddleSpeed
@@ -230,5 +237,6 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
         playerSpr,
         enemySpr,
         ballSpr,
-        serveSpr
+        serveSpr,
+        CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )

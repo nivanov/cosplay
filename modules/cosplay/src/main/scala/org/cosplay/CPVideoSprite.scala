@@ -17,6 +17,8 @@
 
 package org.cosplay
 
+import org.cosplay.impl.CPUtils
+
 import scala.collection.mutable
 
 /*
@@ -66,7 +68,7 @@ import scala.collection.mutable
   *  - Use [[https://github.com/cslarsen/jp2a]] or similar to convert individual JPGs into ASCII.
   *  - [[https://john.dev/b?id=2019-02-23-ascii-face]] provides full example of ASCII vide.
   *
-  * @param id ID of the sprite.
+  * @param id Optional ID of the sprite.
   * @param vid Video to render.
   * @param x Initial X-coordinate of the sprite.
   * @param y Initial Y-coordinate of the sprite.
@@ -80,7 +82,7 @@ import scala.collection.mutable
   *     using video support.
   */
 class CPVideoSprite(
-    id: String,
+    id: String = s"video-spr-${CPUtils.guid6}",
     vid: CPVideo,
     x: Int,
     y: Int,

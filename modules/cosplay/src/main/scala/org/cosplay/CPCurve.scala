@@ -47,6 +47,7 @@ object CPCurve:
       * @param steps Number of steps of the gradient. Returned function will cycle back and will start from
       *     the beginning of the gradient if it is called more than `steps` times.
       * @return Gradient producing function.
+      * @see [[CPColor.gradientFun()]]
       */
     def colorGradient(c1: CPColor, c2: CPColor, steps: Int): () => CPColor =
         CPColor.gradientFun(c1, c2, steps)
@@ -55,7 +56,7 @@ object CPCurve:
       * Gets a function that is a polynomial [[https://mathworld.wolfram.com/LagrangeInterpolatingPolynomial.html Lagrange interpolation]]
       * for the given set of interpolating points.
       *
-      * @param points Largange interpolation points (abscissas and function values).
+      * @param points Lagrange interpolation points (abscissas and function values).
       * @return Polynomial Lagrange interpolation for the given set of interpolating
       *     points.
       * @see https://mathworld.wolfram.com/LagrangeInterpolatingPolynomial.html

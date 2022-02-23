@@ -34,7 +34,7 @@ import org.cosplay.prefabs.scenes.CPLogoScene
                 ALl rights reserved.
 */
 
-val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+val BG_PX = CPPixel('.', C_GRAY2, C_GRAY1)
 
 /**
  *
@@ -53,7 +53,7 @@ object CPPongGame:
 
         // Start the game & wait for exit.
         try CPEngine.startGame(
-            new CPLogoScene("logo", None, bgPx, List(C_DARK_GOLDEN_ROD, C_LIME, C_STEEL_BLUE1, C_DARK_ORANGE), "title"),
+            new CPLogoScene("logo", None, BG_PX, List(C_DARK_GOLDEN_ROD, C_LIME, C_STEEL_BLUE1, C_DARK_ORANGE), "title"),
             CPPongTitleScene,
             CPPongGameScene
         )

@@ -17,6 +17,8 @@
 
 package org.cosplay
 
+import org.cosplay.impl.CPUtils
+
 import scala.collection.mutable
 
 /*
@@ -63,7 +65,7 @@ import scala.collection.mutable
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of the sprite.
+  * @param id Optional ID of the sprite.
   * @param emitters Set of particle emitters this sprite will use.
   * @param collidable Whether or not this sprite provides collision shape. Defualt value is `false`.
   * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
@@ -71,7 +73,7 @@ import scala.collection.mutable
   *     using particle effect.
   */
 class CPParticleSprite(
-    id: String,
+    id: String = s"part-spr-${CPUtils.guid6}",
     emitters: Seq[CPParticleEmitter],
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty

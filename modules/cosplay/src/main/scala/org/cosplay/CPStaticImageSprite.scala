@@ -55,7 +55,7 @@ import impl.CPUtils
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of the sprite.
+  * @param id Optional ID of the sprite.
   * @param x X-coordinate of the sprite.
   * @param y Y-coordinate of the sprite.
   * @param z Z-index at which to render the image.
@@ -69,7 +69,7 @@ import impl.CPUtils
   *     using images.
   */
 class CPStaticImageSprite(
-    id: String,
+    id: String = s"static-img-spr-${CPUtils.guid6}",
     x: Int,
     y: Int,
     z: Int,

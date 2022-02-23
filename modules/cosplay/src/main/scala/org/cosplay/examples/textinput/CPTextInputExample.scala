@@ -19,6 +19,7 @@ package org.cosplay.examples.textinput
 
 import org.cosplay.*
 import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPStyledString.styleStr
@@ -61,9 +62,9 @@ object CPTextInputExample:
             (ch: Char, pos: Int, isCur: Boolean) => {
                 val ch2 = if passwd && !ch.isWhitespace then '*' else ch
                 if active then
-                    if isCur then CPPixel(ch2, C_WHITE, C_SLATE_BLUE3)
-                    else CPPixel(ch2, C_BLACK, C_WHITE)
-                else CPPixel(ch2, C_BLACK, C_WHITE.darker(0.3f))
+                    if isCur then ch2&&(C_WHITE, C_SLATE_BLUE3)
+                    else ch2&&(C_BLACK, C_WHITE)
+                else ch2&&(C_BLACK, C_WHITE.darker(0.3f))
             }
 
         val userLbl = new CPLabelSprite(6, 4, 1, text = "Username:", C_LIGHT_STEEL_BLUE)
@@ -75,8 +76,8 @@ object CPTextInputExample:
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
             next = Option("passwd")
         )
-        val passwdLbl = new CPLabelSprite(6, 7, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
-        val passwdTin = CPTextInputSprite("passwd", 6, 8, 1,
+        val pwdLbl = new CPLabelSprite(6, 7, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
+        val pwdTin = CPTextInputSprite("passwd", 6, 8, 1,
             15, 20,
             "",
             mkSkin(true, true),
@@ -95,8 +96,8 @@ object CPTextInputExample:
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             userLbl,
             userTin,
-            passwdLbl,
-            passwdTin,
+            pwdLbl,
+            pwdTin,
             panel,
             ctrl
         )

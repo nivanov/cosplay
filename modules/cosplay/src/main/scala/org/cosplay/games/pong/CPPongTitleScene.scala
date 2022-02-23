@@ -28,6 +28,7 @@ import CPPixel.*
 import CPKeyboardKey.*
 import prefabs.images.*
 import prefabs.scenes.*
+import org.cosplay.games.pong.shaders.*
 
 /*
    _________            ______________
@@ -42,14 +43,14 @@ import prefabs.scenes.*
                 ALl rights reserved.
 */
 
-object CPPongTitleScene extends CPScene("title", None, bgPx):
+object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val logoImg = FIG_BIG_MONEY_NE.render("Pong", C_WHITE).skin(
         (px, _, _) => px.char match
             case '$' => px.withFg(C_DARK_CYAN)
             case _ => px.withFg(C_DARK_GOLDEN_ROD)
     ).trimBg()
 
-    val helpImg = CPArrayImage(
+    private val helpImg = CPArrayImage(
         prepSeq(
             """
               |       GET 10 POINTS TO WIN
@@ -78,10 +79,14 @@ object CPPongTitleScene extends CPScene("title", None, bgPx):
             case _ => ch.toUpper&C_DARK_ORANGE
     ).trimBg()
 
+    private val sparkleShdr = CPPongTitleSparkleShader()
+    private val fadeInShdr = CPFadeInShader(true, 1000, BG_PX, onFinish = _ ⇒ sparkleShdr.start())
+
     // Add scene objects...
     addObjects(
-        CPImageSprite("logoSpr", c => (c.w - logoImg.w) / 2, c => Math.max(0, c.h / 2 - logoImg.h - 1), 0, logoImg, false, Seq(CPFadeInShader(true, 1500, bgPx))),
-        CPImageSprite("helpSpr1", c => (c.w - helpImg.w) / 2, c => Math.max(0, c.h / 2 + 1), 0, helpImg),
+        CPImageSprite(xf = c => (c.w - logoImg.w) / 2, c => Math.max(0, c.h / 2 - logoImg.h - 1), 0, logoImg),
+        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => Math.max(0, c.h / 2 + 1), 0, helpImg),
+        CPOffScreenSprite(shaders = Seq(fadeInShdr, sparkleShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
         CPKeyboardSprite(KEY_ENTER, _.switchScene("game"))// Transition to the next scene on 'Enter' press.
     )

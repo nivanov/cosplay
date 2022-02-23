@@ -17,6 +17,8 @@
 
 package org.cosplay
 
+import org.cosplay.impl.CPUtils
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -74,7 +76,7 @@ package org.cosplay
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of the sprite.
+  * @param id Optional ID of the sprite.
   * @param x Initial X-coordinate of the sprite.
   * @param y Initial Y-coordinate of the sprite.
   * @param z Z-index at which to render the image.
@@ -88,7 +90,7 @@ package org.cosplay
   *     using images.
   */
 class CPImageSprite(
-    id: String,
+    id: String = s"img-spr-${CPUtils.guid6}",
     x: Int,
     y: Int,
     z: Int,
@@ -201,7 +203,7 @@ object CPImageSprite:
       *     using images.
       */
     def apply(
-        id: String,
+        id: String = s"img-spr-${CPUtils.guid6}",
         xf: CPCanvas => Int,
         yf: CPCanvas => Int,
         z: Int,

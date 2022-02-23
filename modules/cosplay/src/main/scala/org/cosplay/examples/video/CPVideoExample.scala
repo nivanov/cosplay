@@ -65,7 +65,7 @@ object CPVideoExample:
         val vidDim = CPVideoClip.getFrameDim
         val ctrlDim = ctrlImg.getDim
         val dim = CPDim((vidDim.w + 8).max(ctrlDim.w + 4), vidDim.h + 8)
-        val vidSpr = new CPVideoSprite("spr", CPVideoClip, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
+        val vidSpr = new CPVideoSprite(vid = CPVideoClip, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
         val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
         // Create the scene.
         val sc = new CPScene("scene", Option(dim), bgPx,

@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import java.util.Random
+import scala.util.Random
 import CPColor.*
 
 /*
@@ -35,6 +35,8 @@ import CPColor.*
 
 /**
   * Provides convenient functions for random number generation and usage.
+  *
+  * @see [[Random]]
   */
 object CPRand:
     private final val RND = new Random()

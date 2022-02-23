@@ -94,10 +94,12 @@ class CPShimmerShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go && System.currentTimeMillis() - startMs > durMs then
+        val flag = go && (entireFrame || (ctx.isVisible && inCamera))
+
+        if flag && System.currentTimeMillis() - startMs > durMs then
             stop()
             onDuration(ctx)
-        if go then
+        if flag then
             val canv = ctx.getCanvas
             if lastImg == null || ctx.getFrameCount % keyFrame == 0 then
                 val rect = if entireFrame then ctx.getCameraFrame else objRect

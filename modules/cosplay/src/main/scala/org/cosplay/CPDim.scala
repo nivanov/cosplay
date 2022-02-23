@@ -123,8 +123,3 @@ object CPDim:
       * Zero dimension.
       */
     final val ZERO = new CPDim(0)
-
-    given Conversion[CPInt2, CPDim] = d => CPDim(d.i1, d.i2)
-    given Conversion[CPDim, CPInt2] = d => CPInt2(d.width, d.height)
-    given Conversion[CPDim, (Int, Int)] = t => t.width -> t.height
-    given Conversion[(Int, Int), CPDim] = t => CPDim(t._1, t._2)
