@@ -119,7 +119,7 @@ import scala.util.Using
   *  - `*.txt` format. Image in this format is a simple *.txt file and it does not provide or store any color
   *     information.
   *
-  *  Use one of the following methods from the companion object to load the image from file path, resource folder
+  *  Use one of the following methods from the companion object to load the image from file path, `resources` folder
   *  or URL:
   *   - [[load()]]
   *   - [[loadRexCsv()]]
@@ -140,7 +140,7 @@ import scala.util.Using
   *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
   *    supported by CosPlay to save an image with. This format supports full color information.
   *
-  *  Use one of the following methods from the companion object to save the image to the file path:
+  *  Use the following method to save the image to the file path:
   *   - [[save() save(...)]]
   *
   * ### ASCII Art Online
@@ -158,7 +158,7 @@ import scala.util.Using
   *
   * ### Prefabs
   * CosPlay comes with a list of prefab image, animations and video clips. All of them are shipped with CosPlay
-  * and can be found in `org.cosplay.prefabs` package an its sub-packages.
+  * and can be found in `org.cosplay.prefabs` package and its sub-packages.
   *
   * ### ASCII Art Editors
   * [[https://www.gridsagegames.com/rexpaint REXPaint]] ASCII editor is an excellent free editor for ASCII art
@@ -228,25 +228,25 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             def getPixel(x: Int, y: Int): CPPixel = f(it.getPixel(x, y), x, y)
 
     /**
-      * Resizes and centers the image returning a new image instance. Given dimension can be bigger
+      * Crops and centers the image returning a new image instance. Given dimension can be bigger
       * or smaller.
       *
-      * @param newDim Dimension ot reize by.
-      * @param bgPx Backgound pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
-      * @see [[resizeByInsets()]]
+      * @param newDim Dimension to crop  by.
+      * @param bgPx Background pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
+      * @see [[cropByInsets()]]
       */
-    def resizeByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
+    def cropByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
-        resizeByInsets(new CPInsets((newDim.w - dim.w) / 2, (newDim.h - dim.h) / 2))
+        cropByInsets(new CPInsets((newDim.w - dim.w) / 2, (newDim.h - dim.h) / 2))
 
     /**
-      * Resizes this image using given insets. Insets can be positive or negative.
+      * Crops this image using given insets. Insets can be positive or negative.
       *
-      * @param insets Insets to resize by.
-      * @param bgPx Backgound pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
-      * @see [[resizeByDim()]]
+      * @param insets Insets to crop by.
+      * @param bgPx Background pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
+      * @see [[cropByDim()]]
       */
-    def resizeByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
+    def cropByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
         val w = dim.w + insets.horOffset
         val h = dim.h + insets.verOffset
@@ -281,6 +281,23 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     /**
       * Antialiases solid ASCII art image returning new image. Works `only` for solid ASCII art.
       * Algorithm is loosely based on https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art.
+      *
+      * Here's an example of antialiasing a solid ASCII art shape:
+      * 
+      * {{{
+      *        xx  xxx  xxx                         db  <xb  <xb
+      *       xxxx  xxx  xxx                       dxxb  Yxb  Yxb
+      *      xxxxxx  xxx  xxx                     dxxxxb  Yxb  Yxb
+      *     xxx  xxx  xxx  xxx                   dxx  xxb  xxb  xxb
+      *     xxxx xxx  xxx  xxx                   Yxxb xxF  xxF  xxF
+      *      xxxxxx  xxx  xxx                     YxxxxF  dxF  dxF
+      *       xxxx  xxx  xxx         ===>          YxxF  dxF  dxF
+      *     x  xx  xxx  xxx  x                   ;  YF  dxF  dxF  ;
+      *     xx    xxx  xxx  xx                   xb    dxF  dxF  dx
+      *     xxx  xxx  xxx  xxx                   xxb  <xF  <xF  <xx
+      *     xxxx  xxx  xxx  xx                   xxxb  Yxb  Yxb  Yx
+      *     xxxxx  xxx  xxx  x                   Yxxx>  Yx>  Yx>  V
+      * }}}
       *
       * @param isBlank Function to determine if given pixel is blank for the purpose of antialiasing.
       * @see https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art

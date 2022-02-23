@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong
+package org.cosplay.games.pong.shaders
 
 import org.cosplay.*
 

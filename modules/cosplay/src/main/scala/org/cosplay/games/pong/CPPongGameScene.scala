@@ -26,8 +26,10 @@ import org.cosplay.CPCanvas.*
 import org.cosplay.CPDim.*
 import CPPixel.*
 import CPKeyboardKey.*
+import org.cosplay.games.pong.shaders.*
 import prefabs.images.*
 import prefabs.scenes.*
+
 import scala.util.*
 
 
@@ -47,7 +49,7 @@ import scala.util.*
 /**
   * Pong main scene.
   */
-object CPPongGameScene extends CPScene("game", None, bgPx):
+object CPPongGameScene extends CPScene("game", None, BG_PX):
     private var playerScore = 0
     private var enemyScore = 0
     private var playerPosY = 30f
@@ -236,5 +238,5 @@ object CPPongGameScene extends CPScene("game", None, bgPx):
         enemySpr,
         ballSpr,
         serveSpr,
-        CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, bgPx)))
+        CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )

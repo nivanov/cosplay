@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong
+package org.cosplay.games.pong.shaders
 
 import org.cosplay.*
+import org.cosplay.games.pong.*
 
 /*
    _________            ______________
@@ -57,5 +58,5 @@ class CPPongPaddleShader(ch: Char) extends CPShader:
             val canv = ctx.getCanvas
             objRect.loop((x, y) => {
                 val zpx = canv.getZPixel(x, y)
-                canv.drawPixel(zpx.px.withChar(ch).withFg(CPColor.C_WHITE).withBg(bgPx.bg), x, y, zpx.z)
+                canv.drawPixel(zpx.px.withChar(ch).withFg(CPColor.C_WHITE).withBg(BG_PX.bg), x, y, zpx.z)
             })
