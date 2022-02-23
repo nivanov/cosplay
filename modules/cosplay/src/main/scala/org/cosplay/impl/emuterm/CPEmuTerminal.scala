@@ -297,17 +297,23 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 }
                 g2.dispose()
                 if bufImg != null then g.asInstanceOf[Graphics2D].drawImage(bufImg, 0, 0, w, h, null)
+
+        // Fix handing of 'Tab' keypress.
+        val tabKeys = frame.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS)
+        val newTabKeys = new java.util.HashSet(tabKeys)
+        newTabKeys.remove(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0))
+        frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, newTabKeys)
+
         frame.addKeyListener(new KeyAdapter:
             override def keyPressed(e: KeyEvent): Unit =
-                def shift(shiftKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey =
-                    if e.isShiftDown then shiftKey else normKey
-                def ctrl(ctrlKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey =
-                    if e.isControlDown then ctrlKey else normKey
+                def shift(shiftKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey = if e.isShiftDown then shiftKey else normKey
+                def ctrl(ctrlKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey = if e.isControlDown then ctrlKey else normKey
+
                 kbKey = kbMux.synchronized {
                     Option(e.getKeyCode match
                         case VK_ENTER => KEY_ENTER
                         case VK_BACK_SPACE => KEY_BACKSPACE
-                        case VK_TAB => KEY_TAB // Doesn't work on Windows...
+                        case VK_TAB => KEY_TAB
                         case VK_ESCAPE => KEY_ESC
                         case VK_SPACE => KEY_SPACE
 

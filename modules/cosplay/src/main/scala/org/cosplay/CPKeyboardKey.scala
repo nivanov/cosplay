@@ -60,7 +60,9 @@ object CPKeyboardKey:
   *  - `Ctrl+m` will be mapped to [[CPKeyboardKey.KEY_ENTER]].
   *
   * NOTE: `Ctrl+h`, `Ctrl+i` and `Ctrl+m` will not be detected as-is and you should use their conversions
-  * instead. This is the limitation of the ANSI terminals, i.e. `Ctrl+m` generated the same ANSI code as `Enter`
+  * instead. Note that even-though this enumeration provides constants for `Ctrl+h`, `Ctrl+i` and `Ctrl+m` they
+  * will never be returned to the scene objects since they would always be automatically remapped.
+  * This is the limitation of the ANSI terminals, i.e. `Ctrl+m` generated the same ANSI code as `Enter`
   * key press.
   *
   * @see [[CPKeyboardEvent.key]]

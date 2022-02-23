@@ -38,10 +38,10 @@ import scala.collection.mutable
 /**
   * Scene object tailor-made for accepting text input.
   *
-  * This sprites acts as a classic input field: user can input text using keyboard and cursor keys.
-  * It supports skinning input (i.e. password field) as well as user-defined set of keys for submission and
-  * cancellation. You can also chain multiple text inputs together to create a auto-navigable forms.
-  * **NOTE**: this sprite works only with system font - you can't use FIGLeft fonts with this sprite.
+  * This sprite acts as a classic input field: user can input text using keyboard and cursor keys.
+  * It supports different field and buffer lengths, skinning input (i.e. password field) as well as user-defined
+  * set of keys for submission and cancellation. You can also chain multiple text inputs together to create an
+  * auto-navigable forms. **NOTE**: this sprite works only with system font - you can't use FIGLeft fonts with this sprite.
   *
   * ### Sprites
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
