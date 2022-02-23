@@ -41,15 +41,15 @@ import CPPixel.*
 object CPCloudImage extends CPArrayImage(
     prepSeq(
         """
-      |          .-~~~-.
-      |  .- ~ ~-(       )_ _
-      | /                     ~ -.
-      ||                           \
-      |\                         .'
-      |   ~- . _____________ . -~
+      |xxxxxxxxxx.-~~~-.xxxxxxxxxxxxx
+      |xx.- ~ ~-(       )_ _xxxxxxx x
+      |x/                     ~ -.xxx
+      ||                           \x
+      |\                         .'xx
+      |xxx~-x.x_____________x.x-~xxxx
         """
     ),
-    (ch, _, _) => ch&C_WHITE
+    (ch, _, _) => (ch, _, _) => if ch == 'x' then XRAY else ch&C_WHITE
 )
 
 /**
