@@ -111,7 +111,7 @@ object CPImageFormatsExample:
         )
 
         val c1 = C_STEEL_BLUE1 // Color shortcut.
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val dim = CPDim(100, 32)
 
         val alienSpr = CPStaticImageSprite(2, 2, 0, alienImg)

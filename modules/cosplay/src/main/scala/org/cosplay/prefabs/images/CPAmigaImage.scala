@@ -52,9 +52,9 @@ object CPAmigaImage extends CPArrayImage(
     """),
     (ch, _, _) => ch match
         case ' ' => XRAY
-        case c @ ('A' | 'M' | 'i' | 'G') => CPPixel(c, C_NAVY, C_WHITE)
+        case c @ ('A' | 'M' | 'i' | 'G') => c&&(C_NAVY, C_WHITE)
         case c @ ('r' | 'u' | 'n' | '#') => c&C_GREEN_YELLOW
-        case 'x' => CPPixel(' ', C_BLACK)
+        case 'x' => ' '&C_BLACK
         case '>' => '>'&C_GREEN_YELLOW
         case '~' => '~'&C_ORANGE_RED1
         case c => c&C_WHITE

@@ -19,10 +19,11 @@ package org.cosplay.examples.fonts
 
 import org.cosplay.*
 import CPColor.*
+import CPPixel.*
 import CPFIGLetFont.*
 import CPKeyboardKey.KEY_LO_Q
-import org.cosplay.prefabs.scenes.CPLogoScene
-import org.cosplay.prefabs.shaders.CPFadeInShader
+import prefabs.scenes.CPLogoScene
+import prefabs.shaders.CPFadeInShader
 
 /*
    _________            ______________
@@ -60,7 +61,7 @@ object CPFontsExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
 
         val sysFontImg1 = CPSystemFont.renderMulti(
             """

@@ -86,11 +86,9 @@ object CPTextInputExample:
             next = Option("user")
         )
         val panel = CPPanelSprite(2, 2, 24, 11, 0, "Login")
-        val ctrl = new CPOffScreenSprite:
-            override def update(ctx: CPSceneObjectContext): Unit =
-                if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user")
+        val focusAcq = CPOffScreenSprite(ctx ⇒ if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user"))
 
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val sc = new CPScene("scene", Option(CPDim(27, 13)), bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
@@ -99,7 +97,7 @@ object CPTextInputExample:
             pwdLbl,
             pwdTin,
             panel,
-            ctrl
+            focusAcq
         )
 
         // Initialize the engine.

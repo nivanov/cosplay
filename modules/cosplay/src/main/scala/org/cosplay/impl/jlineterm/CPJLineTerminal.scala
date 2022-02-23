@@ -18,11 +18,12 @@
 package org.cosplay.impl.jlineterm
 
 import org.apache.commons.lang3.SystemUtils
-import org.cosplay.impl.CPAnsi.*
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.impl.guilog.CPGuiLog
-import org.cosplay.impl.*
+import CPColor.*
+import CPPixel.*
+import impl.CPAnsi.*
+import impl.guilog.CPGuiLog
+import impl.*
 import org.jline.terminal.*
 import org.jline.utils.NonBlockingReader
 
@@ -54,7 +55,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private var last: CPArray2D[CPPixel] = _ // Copy of the last drawn camera frame.
     private val root = new CPGuiLog("")
     // Background pixel in case terminal window is bigger than camera frame.
-    private val bgPx = CPPixel(' ', CPColor.C_BLACK, bg)
+    private val bgPx = ' '&&(CPColor.C_BLACK, bg)
     @volatile private var curDim: CPDim = _
     private var termDimReader: TermDimensionReader = _
 

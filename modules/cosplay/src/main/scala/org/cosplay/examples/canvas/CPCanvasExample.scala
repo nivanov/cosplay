@@ -21,6 +21,7 @@ import org.cosplay.*
 import CPColor.*
 import CPCanvas.ArtLineStyle.*
 import CPArrayImage.*
+import CPPixel.*
 import CPKeyboardKey.*
 import CPStyledString.*
 import CPPixel.*
@@ -67,7 +68,7 @@ object CPCanvasExample:
             (ch, _, _) => ch&C_LIME
         ).trimBg()
 
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val COLORS = CS_X11_GREENS ++ CS_X11_CYANS ++ CS_X11_REDS ++ CS_X11_BLUES
         val fgf = (_: Char) => CPRand.rand(COLORS)
         val pxs = CPPixel.seq("~!@#$%^&*()[]:;'<>?", fgf, _ => None)
@@ -142,7 +143,7 @@ object CPCanvasExample:
         // Create the scene (exit the game on 'q' press).
         val sc = new CPScene("scene", Option(dim), bgPx,
             drawSpr,
-            CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)), // Just shader for the entire screen.
+            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)), // Just shader for the entire screen.
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
         )
 

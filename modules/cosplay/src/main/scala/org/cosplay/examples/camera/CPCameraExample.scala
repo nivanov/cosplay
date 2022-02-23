@@ -54,7 +54,7 @@ object CPCameraExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel(' ', C_BLACK, C_GRAY1)
+        val bgPx = ' '&&(C_BLACK, C_GRAY1)
         val bgW = 200
         val bgH = 40
         val dim = CPDim(bgW, bgH)
@@ -133,12 +133,13 @@ object CPCameraExample:
                 """
             ),
             (ch, _, _) => ch match
-                case '^' => CPPixel('^', C_DARK_GREEN, C_GREEN_YELLOW)
-                case '"' => CPPixel('@', C_GRAY3, C_GREEN_YELLOW)
-                case '{' => CPPixel('[', C_SANDY_BROWN, C_DARK_ORANGE3)
-                case '-' => CPPixel('_', C_DARK_ORANGE3, C_DARK_ORANGE3)
-                case c => CPPixel(c, C_MAROON, C_DARK_ORANGE3)
+                case '^' => '^'&&(C_DARK_GREEN, C_GREEN_YELLOW)
+                case '"' => '@'&&(C_GRAY3, C_GREEN_YELLOW)
+                case '{' => '['&&(C_SANDY_BROWN, C_DARK_ORANGE3)
+                case '-' => '_'&&(C_DARK_ORANGE3, C_DARK_ORANGE3)
+                case c => c&&(C_MAROON, C_DARK_ORANGE3)
         )
+        
         val brickCanv = CPCanvas(CPDim(bgW, 3), bgPx)
         for (i <- 0 until bgW / brickImg.getWidth) brickCanv.drawImage(brickImg, i * 5, 0, 2)
         val brickY = bgH - brickImg.getHeight
