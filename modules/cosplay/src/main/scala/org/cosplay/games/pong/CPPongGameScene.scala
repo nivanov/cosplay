@@ -238,5 +238,5 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
         enemySpr,
         ballSpr,
         serveSpr,
-        CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
+        new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )

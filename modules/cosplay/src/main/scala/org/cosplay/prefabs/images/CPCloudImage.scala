@@ -41,21 +41,24 @@ import CPPixel.*
 object CPCloudImage extends CPArrayImage(
     prepSeq(
         """
-      |xxxxxxxxxx.-~~~-.xxxxxxxxxxxxx
-      |xx.- ~ ~-(       )_ _xxxxxxx x
-      |x/                     ~ -.xxx
-      ||                           \x
-      |\                         .'xx
-      |xxx~-x.x_____________x.x-~xxxx
+          |          .-~~~-.             
+          |  .- ~ ~-(xxxxxxx)_ _
+          | /xxxxxxxxxxxxxxxxxxxxx~ -.
+          ||xxxxxxxxxxxxxxxxxxxxxxxxxxx\
+          |\xxxxxxxxxxxxxxxxxxxxxxxxx.'
+          |   ~- . _____________ . -~    
         """
     ),
-    (ch, _, _) => (ch, _, _) => if ch == 'x' then XRAY else ch&C_WHITE
+    (ch, _, _) => ch match
+        case 'x' ⇒ ' '&C_BLACK
+        case ' ' ⇒ XRAY
+        case _ ⇒ ch&C_WHITE
 )
 
 /**
  * Previews image using the built-in image viewer.
  */
 @main def previewCloudImage(): Unit =
-    CPImage.previewImage(CPCloudImage.trimBg())
+    CPImage.previewImage(CPCloudImage)
     sys.exit(0)
 

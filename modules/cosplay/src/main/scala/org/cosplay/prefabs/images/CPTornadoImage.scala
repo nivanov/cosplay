@@ -41,14 +41,14 @@ import CPPixel.*
 object CPTornadoImage extends CPArrayImage(
     prepSeq(
         """
-      |--_-_-_-_---
-      |  -_-_-_
-      |   -_-_-
-      |    -__-
-      |   _-_
-      |  _-
-      |  -_
-      |   _-_
+          |--_-_-_-_---
+          |  -_-_-_
+          |   -_-_-
+          |    -__-
+          |   _-_
+          |  _-
+          |  -_
+          |   _-_
         """),
     (ch, _, _) => ch&C_GREY
 )

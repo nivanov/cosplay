@@ -86,7 +86,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
     addObjects(
         CPImageSprite(xf = c => (c.w - logoImg.w) / 2, c => Math.max(0, c.h / 2 - logoImg.h - 1), 0, logoImg),
         CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => Math.max(0, c.h / 2 + 1), 0, helpImg),
-        CPOffScreenSprite(shaders = Seq(fadeInShdr, sparkleShdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, sparkleShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
         CPKeyboardSprite(KEY_ENTER, _.switchScene("game"))// Transition to the next scene on 'Enter' press.
     )

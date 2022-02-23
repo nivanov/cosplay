@@ -84,6 +84,8 @@ object CPImageCarouselExample:
         CPTntImage.trimBg(),
         CPCactusImage.trimBg(),
         CPShieldImage.trimBg(),
+        CPCloudImage,
+        CPTornadoImage.trimBg(),
         CPGuitarImage,
         CPSpeckImage
     )
