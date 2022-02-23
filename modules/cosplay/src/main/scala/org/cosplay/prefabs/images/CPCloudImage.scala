@@ -39,7 +39,6 @@ import CPPixel.*
  * https://www.asciiart.eu
  */
 object CPCloudImage extends CPArrayImage(
-   
     prepSeq(
         """
       |          .-~~~-.
