@@ -65,17 +65,17 @@ class CPPongTitleSparkleShader extends CPShader:
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         val canv = ctx.getCanvas
         if go && canv.w >= 40 & canv.h >= 20 then
-            // Remove stale sparkles.
+            // Remove stale sparkles, if any.
             sparkles.filterInPlace(_.isAlive)
 
-            // Replenish with new sparkles, if necessary.
+            // Replenish with new sparkles until full (NUM).
             while sparkles.size < NUM do
                 var found = false
                 while !found do
                     val x = canv.rect.randX()
                     val y = canv.rect.randY()
                     val zpx = canv.getZPixel(x, y)
-                    found = zpx.px.char == BG_PX.char && !sparkles.exists(s ⇒ s.x == x && s.y == y)
+                    found = zpx.px == BG_PX && !sparkles.exists(s ⇒ s.x == x && s.y == y)
                     if found then
                         sparkles += Sparkle(zpx, x, y)
 
