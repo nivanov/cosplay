@@ -39,9 +39,9 @@ import impl.CPUtils
 /**
   * Definition of the video.
   *
-  * Video rendered in ASCII character is rather an acquired taste... However, when used carefully and testfully
-  * it can provide a striking visuals for ASCII-based game. There are [[https://www.google.com/search?q=ascii+video plenty of tooling]]
-  * aviable that can help you to convert a standard video like MP4 into a set of JPEG images and then convert these images into
+  * Video rendered in ASCII character is rather an acquired taste... However, when used carefully and tastefully
+  * it can provide striking visuals for ASCII-based game. There are [[https://www.google.com/search?q=ascii+video plenty of tooling]]
+  * available that can help you to convert a standard video like MP4 into a set of JPEG images and then convert these images into
   * ASCII art images. Once you have ASCII art images you can use CosPlay video support to playback that video.
   *
   * Video support consists of three key components:
@@ -59,10 +59,10 @@ import impl.CPUtils
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
-  * Here's some useful links for ASCII video in general:
+  * Here's some useful links for ASCII videos:
   *  - Use [[https://www.ffmpeg.org/]] or similar to convert video into separate still images.
   *  - Use [[https://github.com/cslarsen/jp2a]] or similar to convert individual JPGs into ASCII.
-  *  - [[https://john.dev/b?id=2019-02-23-ascii-face]] provides full example of ASCII vide.
+  *  - [[https://john.dev/b?id=2019-02-23-ascii-face]] provides full example of ASCII video.
   *
   * @param id ID for this video.
   * @param origin The origin of this video: file path or URL.
