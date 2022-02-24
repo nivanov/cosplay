@@ -55,7 +55,7 @@ class CPPongTitleSparkleShader extends CPShader:
             canv.drawPixel(zpx.px.withFg(grad(gradIdx % gradSz)), x, y, zpx.z)
             gradIdx += 1
 
-    private final val NUM = 10
+    private final val NUM = 500
     private val sparkles = mutable.ArrayBuffer.empty[Sparkle]
     private var go = false
 
