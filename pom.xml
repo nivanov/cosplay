@@ -109,7 +109,7 @@
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
 
-        <gpg.keyname>0xB56A1A29</gpg.keyname>
+        <gpg.keyname>2908C5A9</gpg.keyname>
 
         <!-- JAR with all dependencies. -->
         <cosplay.all.deps.jar>${project.artifactId}-${project.version}-all-deps.jar</cosplay.all.deps.jar>
@@ -284,6 +284,20 @@
                             <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven.javadoc.plugin.ver}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
