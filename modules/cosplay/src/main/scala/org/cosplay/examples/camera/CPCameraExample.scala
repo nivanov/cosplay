@@ -46,7 +46,6 @@ import scala.collection.mutable
   * 
   * @note See developer guide at [[https://cosplayengine.com]] 
   */
-//noinspection DuplicatedCode
 object CPCameraExample:
     /**
       * Entry point for JVM runtime.
