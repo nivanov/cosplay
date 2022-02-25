@@ -56,7 +56,7 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
     private var enemyPosY = 30f
     private var ballX = 25f
     private var ballY = 20f
-    private val paddleSpeed = 0.7f
+    private val paddleSpeed = 1f
     private var ballAngle = Random.between(30, 60)
     private val ballSpeed = 1.5f
     private var startGame = false
@@ -193,13 +193,36 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
     private val playerShdr = CPPongPaddleShader('>')
     private val enemyShdr = CPPongPaddleShader('<')
 
-    private val playerSpr = new CPCanvasSprite():
+//    private val playerSpr = new CPCanvasSprite():
+//        override def update(ctx: CPSceneObjectContext): Unit =
+//            super.update(ctx)
+//            val canv = ctx.getCanvas
+//            def move(dy: Float): Unit =
+//                if dy > 0 && playerPosY < canv.height - 1 then playerPosY += dy
+//                else if dy < 0 && playerPosY > 5 then playerPosY += dy
+//
+//            if startGame then
+//                ctx.getKbEvent match
+//                    case Some(evt) =>
+//                        evt.key match
+//                            case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -paddleSpeed else -1.0f)
+//                            case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then paddleSpeed else 1.0f)
+//                            case _ => ()
+//                    case None => ()
+//        override def render(ctx: CPSceneObjectContext): Unit =
+//            ctx.getCanvas.drawLine(1, playerPosY.round, 1, (playerPosY - 5).round, 100, playerPx)
+
+    private val playerSpr = new CPImageSprite(x = 0, y = 0, z = 0, mkPaddleImage(C_AQUA)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
+
+            setX(1)
+            setY(playerPosY.toInt)
+
             def move(dy: Float): Unit =
-                if dy > 0 && playerPosY < canv.height - 1 then playerPosY += dy
-                else if dy < 0 && playerPosY > 5 then playerPosY += dy
+                if dy > 0 && playerPosY < canv.height - 5 then playerPosY += dy.toInt
+                else if dy < 0 && playerPosY > 0 then playerPosY += dy.toInt
 
             if startGame then
                 ctx.getKbEvent match
@@ -209,8 +232,7 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                             case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then paddleSpeed else 1.0f)
                             case _ => ()
                     case None => ()
-        override def render(ctx: CPSceneObjectContext): Unit =
-            ctx.getCanvas.drawLine(1, playerPosY.round, 1, (playerPosY - 5).round, 100, playerPx)
+
 
     private val enemySpr = new CPCanvasSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -234,9 +256,10 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
         playerScoreSpr,
         enemyScoreSpr,
         netSpr,
-        playerSpr,
+        //playerSpr,
         enemySpr,
         ballSpr,
         serveSpr,
+        playerSpr,
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
