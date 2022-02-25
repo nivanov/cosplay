@@ -219,9 +219,11 @@ object CPCameraExample:
         objs ++= palmSeq
 
         // Create the scene.
-        val sc = new CPScene("scene", Option(dim), bgPx, objs):
-            // Setup camera panning for 'ufo' scene object.
-            override val getCamera: CPCamera = CPCamera("ufo", new CPInsets(10, 0))
+        val sc = new CPScene("scene", Option(dim), bgPx, objs)
+        val cam = sc.getCamera
+
+        cam.setFocusTrackId(Some("ufo"))
+        cam.setFocusFrameInsets(new CPInsets(10, 0))
 
         // Initialize the engine.
         CPEngine.init(

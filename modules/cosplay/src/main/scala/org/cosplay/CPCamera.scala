@@ -33,9 +33,9 @@ package org.cosplay
 /**
   * Camera panning descriptor.
   *
-  * Camera descriptor allows game engine to automatically focus on a particular scene object and track its
-  * movement across screen keeping it in a focus. Without camera control a scene object can move beyond the
-  * visible screen and become invisible.
+  * Camera tracking is the process by which the game engine automatically focuses on a particular scene object
+  * and tracks its movement across screen keeping so that it stays in focus. Without camera tracking a scene object
+  * could move outside the visible screen and become invisible.
   *
   * Camera descriptor defines a rectangular sub-region of the screen called *focus frame*. A tracking
   * object can move freely as long as it is fully contained in that focus frame. Once the tracking object
