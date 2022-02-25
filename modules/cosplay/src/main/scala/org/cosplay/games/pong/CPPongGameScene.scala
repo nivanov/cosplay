@@ -212,12 +212,11 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
 //        override def render(ctx: CPSceneObjectContext): Unit =
 //            ctx.getCanvas.drawLine(1, playerPosY.round, 1, (playerPosY - 5).round, 100, playerPx)
 
-    private val playerSpr = new CPImageSprite(x = 0, y = 0, z = 0, mkPaddleImage(C_AQUA)):
+    private val playerSpr = new CPImageSprite(x = 1, y = 0, z = 0, mkPaddleImage(C_AQUA)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
 
-            setX(1)
             setY(playerPosY.toInt)
 
             def move(dy: Float): Unit =
