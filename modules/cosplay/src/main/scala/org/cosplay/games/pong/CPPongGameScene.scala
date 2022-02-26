@@ -129,7 +129,7 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
             if !startGame then
                 setVisible(true)
                 ballSpr.setVisible(false)
-                playerPosY = (canv.dim.h / 2) + 2f
+                playerPosY = (canv.dim.h / 2) - 2f
                 enemyPosY = (canv.dim.h / 2) + 2f
 
             ctx.getKbEvent match
@@ -169,12 +169,12 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                 playerScoreSpr.setImage(mkScoreImage(playerScore))
                 startGame = false
 
-            if ballX < canv.xMin then score(1, 0)
+            if ballX < canv.xMin - 4 then score(1, 0)
             else if ballY < canv.yMin then bounce(ballX, canv.yMin, false)
-            else if ballX > ballMaxX then score(0, 1)
+            else if ballX > ballMaxX + 2 then score(0, 1)
             else if ballY > ballMaxY then bounce(ballX, ballMaxY, false)
-            else if ballY <= playerPosY.round && ballY >= (playerPosY - playerImg.getHeight).round && ballX.round <= 1 then
-                bounce(4, ballY, true)
+            else if ballY >= playerPosY.round && ballY <= (playerPosY + playerSpr.getHeight).round && ballX.round <= 1 then
+                bounce(1, ballY, true)
                 playerShdr.start()
             else if ballY <= enemyPosY.round && ballY >= (enemyPosY - enemyImg.getHeight).round && ballX.round >= canv.dim.w - 4 then
                 bounce(canv.xMaxF - 4, ballY, true)
