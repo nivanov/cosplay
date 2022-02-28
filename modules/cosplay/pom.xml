@@ -78,11 +78,6 @@
         </dependency>
 
         <dependency>
-            <groupId>co.blocke</groupId>
-            <artifactId>scala-reflection_${scala.major.ver}</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
         </dependency>
