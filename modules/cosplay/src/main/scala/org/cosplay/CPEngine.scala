@@ -266,7 +266,7 @@ object CPEngine:
 
         // Initialize JavaFX toolkit for audio.
         try com.sun.javafx.application.PlatformImpl.startup(() => ())
-        catch case e: Exception => E(s"Failed to start JavaFX.", e)
+        catch case e: Exception => E(s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io).", e)
 
         this.gameInfo = gameInfo
 

@@ -228,7 +228,6 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         write(RESET_ALL) // Drop any CSI remaining settings.
         write(CUR_REST) // Restore cursor position.
         write(CUR_SHOW) // Show the cursor back.
-        write(CLR_SCR)
         if SystemUtils.IS_OS_WINDOWS then write(WIN_TERM_RESET) // Windows-specific terminal reset.
         term.close() // Close terminal to reset it to original state.
 
