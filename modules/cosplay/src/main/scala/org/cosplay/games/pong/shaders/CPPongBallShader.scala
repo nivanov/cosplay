@@ -32,7 +32,6 @@ import org.cosplay.*
                 ALl rights reserved.
 */
 
-
 /**
   * Creates slight flashlight effect around the ball.
   */
