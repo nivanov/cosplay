@@ -61,6 +61,12 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
     private val ballSpeed = 1f
     private var startGame = false
     private var firstRound = true
+    private var playerMovement = 0
+    private var enemyMovement = 0
+
+    private var lastBallY = 0f
+    private var lastPlayerY = 0f
+    private var lastEnemyY = 0f
 
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -154,6 +160,8 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
+            lastBallY = ballY
+
             if firstRound then
                 playerPosY = (canv.dim.h / 2) - 2f
                 enemyPosY = (canv.dim.h / 2) - 2f
@@ -176,6 +184,12 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                 ballY = y
                 if vert then ballAngle = -ballAngle + 180
                 else ballAngle = -ballAngle
+
+                if ballX.round <= 10 && vert then
+                    if lastBallY > ballY && lastPlayerY > playerPosY then
+                        ballAngle = 80
+                    else if lastBallY < ballY && lastPlayerY < playerPosY then
+                        ballAngle = 280
 
             def score(es: Int, ps: Int): Unit =
                 if es < ps then
@@ -222,6 +236,8 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
             super.update(ctx)
             val canv = ctx.getCanvas
 
+            lastPlayerY = playerPosY
+
             setY(playerPosY.toInt)
 
             def move(dy: Float): Unit =
@@ -241,6 +257,8 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
+
+            lastEnemyY = enemyPosY
 
             setX(canv.dim.w - 2)
             setY(enemyPosY.toInt)
