@@ -204,12 +204,13 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                 if es < ps then
                     ballX = enemySpr.getX - 6
                     ballY = (canv.dim.h / 2)
+
                     if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(135, 160)
                     else ballAngle = Random.between(200, 225)
                 else
                     ballX = playerSpr.getX + 2
                     ballY = (canv.dim.h / 2)
-                    ballAngle = Random.between(-45, 45)
+
                     if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(-45, -20)
                     else ballAngle = Random.between(20, 45)
 
