@@ -168,7 +168,10 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
 
                 ballX = canv.dim.w - 8
                 ballY = (canv.dim.h / 2)
-                ballAngle = Random.between(135, 225)
+
+                if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(135, 160)
+                else ballAngle = Random.between(200, 225)
+
                 firstRound = false
 
             val rad = ballAngle * (Math.PI / 180)
@@ -191,15 +194,24 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                     else if lastBallY < ballY && lastPlayerY < playerPosY then
                         ballAngle = 280
 
+                if ballX.round >= canv.width - 10 && vert then
+                    if lastBallY > ballY && lastEnemyY > enemyPosY then
+                        ballAngle = 100
+                    else if lastBallY < ballY && lastEnemyY < enemyPosY then
+                        ballAngle = 300
+
             def score(es: Int, ps: Int): Unit =
                 if es < ps then
                     ballX = enemySpr.getX - 6
                     ballY = (canv.dim.h / 2)
-                    ballAngle = Random.between(135, 225)
+                    if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(135, 160)
+                    else ballAngle = Random.between(200, 225)
                 else
                     ballX = playerSpr.getX + 2
                     ballY = (canv.dim.h / 2)
                     ballAngle = Random.between(-45, 45)
+                    if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(-45, -20)
+                    else ballAngle = Random.between(20, 45)
 
                 enemyScore += es
                 playerScore += ps
