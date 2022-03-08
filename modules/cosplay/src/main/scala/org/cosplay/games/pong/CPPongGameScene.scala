@@ -98,6 +98,8 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
 
+    private final val bounceSnd = CPSound(s"sounds/games/pong/bounce.wav", 0.2f)
+
     private val serveImg = CPArrayImage(
         prepSeq(
             """
@@ -166,8 +168,8 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                 playerPosY = (canv.dim.h / 2) - 2f
                 enemyPosY = (canv.dim.h / 2) - 2f
 
-                ballX = canv.dim.w - 8
-                ballY = (canv.dim.h / 2)
+                ballX = canv.dim.wF - 8
+                ballY = canv.dim.hF / 2
 
                 if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(135, 160)
                 else ballAngle = Random.between(200, 225)
@@ -200,16 +202,18 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                     else if lastBallY < ballY && lastEnemyY < enemyPosY then
                         ballAngle = 300
 
+                bounceSnd.playOnce()
+
             def score(es: Int, ps: Int): Unit =
                 if es < ps then
-                    ballX = enemySpr.getX - 6
-                    ballY = (canv.dim.h / 2)
+                    ballX = enemySpr.getX - 6f
+                    ballY = canv.dim.hF / 2
 
                     if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(135, 160)
                     else ballAngle = Random.between(200, 225)
                 else
-                    ballX = playerSpr.getX + 2
-                    ballY = (canv.dim.h / 2)
+                    ballX = playerSpr.getX + 2f
+                    ballY = canv.dim.hF / 2
 
                     if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(-45, -20)
                     else ballAngle = Random.between(20, 45)
@@ -228,7 +232,7 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                 bounce(1, ballY, true)
                 playerShdr.start()
             else if ballY >= enemyPosY.round - 2 && ballY <= (enemyPosY + enemySpr.getHeight - 1).round && ballX.round >= canv.dim.w - enemySpr.getWidth - 5 then
-                bounce(canv.dim.w - enemySpr.getWidth - 5, ballY, true)
+                bounce(canv.dim.wF - enemySpr.getWidth - 5, ballY, true)
                 enemyShdr.start()
 
             setX(ballX.round)
@@ -250,7 +254,6 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
             val canv = ctx.getCanvas
 
             lastPlayerY = playerPosY
-
             setY(playerPosY.toInt)
 
             def move(dy: Float): Unit =
@@ -270,18 +273,14 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-
             lastEnemyY = enemyPosY
-
             setX(canv.dim.w - 2)
             setY(enemyPosY.toInt)
-
             if startGame then
                 if ballY >= enemyPosY + getHeight then enemyPosY += paddleSpeed
                 else if ballY <= enemyPosY then enemyPosY -= paddleSpeed
-
                 if enemyPosY <= 0 then enemyPosY = 0
-                else if enemyPosY >= canv.height + getHeight + 1 then enemyPosY = canv.height + getHeight + 1
+                else if enemyPosY >= canv.h + getHeight + 1 then enemyPosY = canv.hF + getHeight + 1
 
     addObjects(CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         playerScoreSpr,

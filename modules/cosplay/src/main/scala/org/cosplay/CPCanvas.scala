@@ -110,11 +110,17 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /** Width of this canvas (shortcut API). */
     final val w: Int = dim.w
 
+    /** Width of this canvas as float (shortcut API). */
+    final val wF: Float = dim.wF
+
     /** Height of this canvas. */
     final val height: Int = dim.h
 
     /** Height of this canvas (shortcut API). */
     final val h: Int = dim.h
+
+    /** Height of this canvas as float (shortcut API). */
+    final val hF: Float = dim.hF
 
     /** Maximum X-coordinate of this canvas. */
     final val xMax = width - 1

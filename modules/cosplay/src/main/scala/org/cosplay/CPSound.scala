@@ -290,6 +290,19 @@ object CPSound:
     private val tracks = new CPContainer[CPSound] {}
 
     /**
+      * Shortcut constructor for the sound with specific volume
+      *
+      * @param src RFC-2396 URI as required by `java.net.URI` or 'resource' file. URI should point to a sound file in
+      *     one of the supported format: `AIFF`, `AU` or `WAV`. Only HTTP, FILE, and JAR URIs are supported.
+      * @param vol Audio volume to set. Audio volume range is [0.0, 1.0].
+      * @param tags Optional set of organizational tags. Default is an empty set.
+      */
+    def apply(src: String, vol: Double, tags: Set[String] = Set.empty): CPSound =
+        val snd = new CPSound(src, tags)
+        snd.setVolume(vol)
+        snd
+
+    /**
       * Stops all sounds playback in the system.
       *
       * @param fadeOutMs Fade out duration in milliseconds.
