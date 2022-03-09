@@ -98,7 +98,8 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
 
-    private final val bounceSnd = CPSound(s"sounds/games/pong/bounce.wav", 0.2f)
+    private final val bouncePaddleSnd = CPSound(s"sounds/games/pong/bounce1.wav", 0.2f)
+    private final val bounceWallSnd = CPSound(s"sounds/games/pong/bounce2.wav", 0.6f)
 
     private val serveImg = CPArrayImage(
         prepSeq(
@@ -202,20 +203,20 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
                     else if lastBallY < ballY && lastEnemyY < enemyPosY then
                         ballAngle = 300
 
-                bounceSnd.playOnce()
+                if vert then bouncePaddleSnd.playOnce() else bounceWallSnd.playOnce()
 
             def score(es: Int, ps: Int): Unit =
                 if es < ps then
                     ballX = enemySpr.getX - 6f
                     ballY = canv.dim.hF / 2
 
-                    if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(135, 160)
+                    if Random.between(0, 2) == 1 then ballAngle = Random.between(135, 160)
                     else ballAngle = Random.between(200, 225)
                 else
                     ballX = playerSpr.getX + 2f
                     ballY = canv.dim.hF / 2
 
-                    if Random.between(0, 2).toInt == 1 then ballAngle = Random.between(-45, -20)
+                    if Random.between(0, 2) == 1 then ballAngle = Random.between(-45, -20)
                     else ballAngle = Random.between(20, 45)
 
                 enemyScore += es
