@@ -50,6 +50,8 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
             case _ => px.withFg(C_DARK_GOLDEN_ROD)
     ).trimBg()
 
+    private final val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
+
     private val helpImg = CPArrayImage(
         prepSeq(
             """
@@ -67,12 +69,12 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
               |         `----'    `----'
               |       
               |           [ENTER] Play
-              |             [Q] Quit
+              |        [Q] Quit Any Time
               |
               |
               |
               |Copyright (C) 2022 Rowan Games, Inc
-                """),
+            """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C_STEEL_BLUE1
             case '|' | '.' | '`' | '-' | '\'' => ch&C_LIME
@@ -90,3 +92,11 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
         CPKeyboardSprite(KEY_ENTER, _.switchScene("game"))// Transition to the next scene on 'Enter' press.
     )
+
+    override def onActivate(): Unit =
+        super.onActivate()
+        introSnd.loopAll(2000)
+
+    override def onDeactivate(): Unit =
+        super.onDeactivate()
+        introSnd.stop(400)
