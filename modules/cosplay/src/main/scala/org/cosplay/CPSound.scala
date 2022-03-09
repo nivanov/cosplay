@@ -290,7 +290,7 @@ object CPSound:
     private val tracks = new CPContainer[CPSound] {}
 
     /**
-      * Shortcut constructor for the sound with specific volume
+      * Shortcut constructor for the sound with specific volume.
       *
       * @param src RFC-2396 URI as required by `java.net.URI` or 'resource' file. URI should point to a sound file in
       *     one of the supported format: `AIFF`, `AU` or `WAV`. Only HTTP, FILE, and JAR URIs are supported.
@@ -301,6 +301,14 @@ object CPSound:
         val snd = new CPSound(src, tags)
         snd.setVolume(vol)
         snd
+
+    /**
+      * Shortcut constructor for the sound.
+      *
+      * @param src RFC-2396 URI as required by `java.net.URI` or 'resource' file. URI should point to a sound file in
+      *     one of the supported format: `AIFF`, `AU` or `WAV`. Only HTTP, FILE, and JAR URIs are supported.
+      */
+    def apply(src: String): CPSound = new CPSound(src)
 
     /**
       * Stops all sounds playback in the system.
