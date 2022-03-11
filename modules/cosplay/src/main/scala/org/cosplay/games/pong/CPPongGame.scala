@@ -37,6 +37,24 @@ import prefabs.scenes.CPLogoScene
 
 val BG_PX = '.'&&(C_GRAY2, C_GRAY1)
 
+// Randomly selected color palette.
+val palette = CPRand.rand(
+    // List of colors palettes: https://designs.ai/colors
+    Seq(
+        Seq("#ee3423", "#fbce59", "#72659e", "#a8bbce", "#443c64"),
+        Seq("#d9b54a", "#369231", "#25616c", "#52318f", "#ff56a2"),
+        Seq("#754988", "#4c1264", "#5fb03c", "#ebbcff", "#8dd271"),
+        Seq("#e6f18c", "#72b37e", "#437975", "#555c78", "#ffefbc")
+    ).map(seq ⇒ seq.map(CPColor(_)))
+)
+
+val C1 = palette.head
+val C2 = palette(1)
+val C3 = palette(2)
+val C4 = palette(3)
+val C5 = palette(4)
+val CS = Seq(C1, C2, C3, C4, C5)
+
 /**
  *
  */
@@ -54,7 +72,7 @@ object CPPongGame:
 
         // Start the game & wait for exit.
         try CPEngine.startGame(
-            new CPLogoScene("logo", None, BG_PX, List(C_DARK_GOLDEN_ROD, C_LIME, C_STEEL_BLUE1, C_DARK_ORANGE), "title"),
+            new CPLogoScene("logo", None, BG_PX, CS, "title"),
             CPPongTitleScene,
             CPPongGameScene
         )

@@ -44,14 +44,12 @@ import org.cosplay.games.pong.shaders.*
 */
 
 object CPPongTitleScene extends CPScene("title", None, BG_PX):
+    private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
     private val logoImg = FIG_BIG_MONEY_NE.render("Pong", C_WHITE).skin(
         (px, _, _) => px.char match
-            case '$' => px.withFg(C_DARK_CYAN)
-            case _ => px.withFg(C_DARK_GOLDEN_ROD)
+            case '$' => px.withFg(C5)
+            case _ => px.withFg(C4)
     ).trimBg()
-
-    private final val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
-
     private val helpImg = CPArrayImage(
         prepSeq(
             """
@@ -75,10 +73,13 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
               |
               |Copyright (C) 2022 Rowan Games, Inc
             """),
-        (ch, _, _) => ch match
-            case c if c.isLetter => c&C_STEEL_BLUE1
-            case '|' | '.' | '`' | '-' | '\'' => ch&C_LIME
-            case _ => ch.toUpper&C_DARK_ORANGE
+        (ch, _, y) =>
+            if y == 18 then ch&C3
+            else
+                ch match
+                    case c if c.isLetter => c&C4
+                    case '|' | '.' | '`' | '-' | '\'' => ch&C2
+                    case _ => ch.toUpper&C1
     ).trimBg()
 
     private val sparkleShdr = CPPongTitleSparkleShader()
@@ -95,8 +96,8 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
 
     override def onActivate(): Unit =
         super.onActivate()
-        introSnd.loopAll(2000)
+        introSnd.loopAll(2000) // Start background audio.
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
-        introSnd.stop(400)
+        introSnd.stop(400) // Stop background audio.
