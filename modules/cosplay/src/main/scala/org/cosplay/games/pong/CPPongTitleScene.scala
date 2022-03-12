@@ -66,8 +66,8 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
               |         | Up |    | Dn |
               |         `----'    `----'
               |       
-              |           [ENTER] Play
-              |        [Q] Quit Any Time
+              |         [ENTER]   Play
+              |         [Q]       Quit Any Time
               |
               |
               |
@@ -91,7 +91,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
         CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => Math.max(0, c.h / 2 + 1), 0, helpImg),
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, sparkleShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_ENTER, _.switchScene("game"))// Transition to the next scene on 'Enter' press.
+        CPKeyboardSprite(KEY_ENTER, _.switchScene("play"))// Transition to the next scene on 'Enter' press.
     )
 
     override def onActivate(): Unit =

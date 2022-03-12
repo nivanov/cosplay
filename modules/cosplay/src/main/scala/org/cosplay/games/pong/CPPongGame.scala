@@ -44,7 +44,10 @@ val palette = CPRand.rand(
         Seq("#ee3423", "#fbce59", "#72659e", "#a8bbce", "#443c64"),
         Seq("#d9b54a", "#369231", "#25616c", "#52318f", "#ff56a2"),
         Seq("#754988", "#4c1264", "#5fb03c", "#ebbcff", "#8dd271"),
-        Seq("#e6f18c", "#72b37e", "#437975", "#555c78", "#ffefbc")
+        Seq("#e6f18c", "#72b37e", "#437975", "#555c78", "#ffefbc"),
+        Seq("#e97a7a", "#8b4f80", "#8b76a5", "#b9c0d5", "#b59bff"),
+        Seq("#f5cd54", "#53cef5", "#7d53f5", "#95def5", "#ae95f5"),
+        Seq("#8ef560", "#7153f5", "#f552d6", "#a795f5", "#f594e4")
     ).map(seq ⇒ seq.map(CPColor(_)))
 )
 
@@ -74,7 +77,7 @@ object CPPongGame:
         try CPEngine.startGame(
             new CPLogoScene("logo", None, BG_PX, CS, "title"),
             CPPongTitleScene,
-            CPPongGameScene
+            CPPongPlayScene
         )
         finally CPEngine.dispose()
 
