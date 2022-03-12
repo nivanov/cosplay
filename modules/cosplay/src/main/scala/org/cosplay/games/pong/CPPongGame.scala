@@ -47,8 +47,10 @@ val palette = CPRand.rand(
         Seq("#e6f18c", "#72b37e", "#437975", "#555c78", "#ffefbc"),
         Seq("#e97a7a", "#8b4f80", "#8b76a5", "#b9c0d5", "#b59bff"),
         Seq("#f5cd54", "#53cef5", "#7d53f5", "#95def5", "#ae95f5"),
-        Seq("#8ef560", "#7153f5", "#f552d6", "#a795f5", "#f594e4")
-    ).map(seq ⇒ seq.map(CPColor(_)))
+        Seq("#8ef560", "#7153f5", "#f552d6", "#a795f5", "#f594e4"),
+        Seq("#75f5ae", "#ed53f5", "#f5545b", "#f094f5", "#f5959a"),
+        Seq("#f57cb0", "#99f553", "#5399f5", "#bff595", "#95bff5")
+    ).map(_.map(CPColor(_)))
 )
 
 val C1 = palette.head
