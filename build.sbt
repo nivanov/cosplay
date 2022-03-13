@@ -42,7 +42,7 @@ val junitVer = "5.8.2"
 val scalaTestVer = "3.2.11"
 val openjfxVer = "15.0.1"
 val flatlafVer = "1.6.5"
-val ikonliVer = "12.3.0"
+val ikonliVer = "12.3.1"
 val miglayoutVer = "11.0"
 val jlineVer = "3.21.0"
 
