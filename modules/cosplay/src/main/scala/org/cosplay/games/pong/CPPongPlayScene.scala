@@ -46,6 +46,11 @@ import org.cosplay.games.pong.shaders.*
   * Pong main gameplay scene.
   */
 object CPPongPlayScene extends CPScene("play", None, BG_PX):
+    private var playerScore = 0
+    private var enemyScore = 0
+    private final val paddleSpeed = 1.2f
+    private var playing = false
+
     private val ballImg = CPArrayImage(
         prepSeq(
             """
@@ -56,7 +61,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         (ch, _, _) => ch&C1
     ).trimBg()
 
-    def mkPaddleImage(c: CPColor): CPImage =
+    private def mkPaddleImage(c: CPColor): CPImage =
         CPArrayImage(
             prepSeq(
                 """
@@ -70,7 +75,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             (ch, _, _) => ' '&&(C_BLACK, c)
         )
 
-    private val playerImg = mkPaddleImage(C2)
+    private val playerImg = mkPaddleImage(C5)
     private val enemyImg = mkPaddleImage(C3)
 
     private final val ballW = ballImg.getWidth
@@ -97,37 +102,64 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     /**
       *
-      * @param score
+      * @param score Score value.
       * @return
       */
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
     /**
       *
-      * @param xf
+      * @param xf X-coordinate producer.
       * @return
       */
-    def mkScoreSprite(xf: (CPCanvas, CPImageSprite) ⇒ Int): CPImageSprite =
+    private def mkScoreSprite(xf: (CPCanvas, CPImageSprite) ⇒ Int): CPImageSprite =
         new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)):
             override def update(ctx: CPSceneObjectContext): Unit = setX(xf(ctx.getCanvas, this))
 
+    // Scores sprites.
     private val playerScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.getWidth) / 4)
     private val enemyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.getWidth) - ((canv.dim.w / 4) - 1))
 
+    // Net in the middle.
     private val netSpr = new CPCanvasSprite("net"):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, 5, '|'&C2)
+
+    // Player paddle.
+    private val playerSpr = new CPImageSprite(x = 1, y = 0, z = 0, playerImg):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+
+            if playing then
+                val canv = ctx.getCanvas
+
+                def move(dy: Float): Unit = ()
+
+                ctx.getKbEvent match
+                    case Some(evt) =>
+                        evt.key match
+                            case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -paddleSpeed else -1.0f)
+                            case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then paddleSpeed else 1.0f)
+                            case _ => ()
+                    case None => ()
+
+    // Computer paddle.
+    private val enemySpr = new CPImageSprite(x = 1, y = 0, z = 0, enemyImg):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            val canv = ctx.getCanvas
+            setX(canv.dim.w - 2)
 
     addObjects(
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         playerScoreSpr,
         enemyScoreSpr,
         netSpr,
-//        enemySpr,
+        enemySpr,
+        playerSpr,
 //        ballSpr,
 //        serveSpr,
-//        playerSpr,
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
 
