@@ -71,7 +71,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
               |
               |
               |
-              |Copyright (C) 2022 Rowan Games, Inc
+              |  Copyright (C) 2022 Rowan Games, Inc
             """),
         (ch, _, y) =>
             if y == 18 then ch&C3

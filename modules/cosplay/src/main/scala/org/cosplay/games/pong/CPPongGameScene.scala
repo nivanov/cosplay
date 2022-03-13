@@ -103,13 +103,13 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
     private val serveImg = CPArrayImage(
         prepSeq(
             """
-              |+----------------+
-              ||                |
-              ||   Serve Ball   |
-              ||                |
-              ||    [SPACE]     |
-              ||                |
-              |+________________+
+              |+---------------------------+
+              ||                           |
+              ||   [SPACE]  Serve Ball     |
+              ||   [ESC]    Pause/Resume   |
+              ||   [Q]      Quit Game      |
+              ||                           |
+              |+___________________________+
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C_STEEL_BLUE1

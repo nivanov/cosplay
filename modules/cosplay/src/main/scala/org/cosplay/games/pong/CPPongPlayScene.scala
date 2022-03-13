@@ -90,9 +90,26 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               |+----------------------------+
               ||                            |
               ||  [SPACE]   Serve Ball      |
+              ||  [ESC]     Pause/Resume    |
               ||  [Q]       Quit Any Time   |
               ||                            |
               |+____________________________+
+            """),
+        (ch, _, _) => ch match
+            case c if c.isLetter => c&C4
+            case '+' => ch&C1
+            case _ => ch&C2
+    ).trimBg()
+
+    private val pausedImg = CPArrayImage(
+        prepSeq(
+            """
+              |+---------------------------+
+              ||                           |
+              ||     == Game Paused ==     |
+              ||   Pres [SPACE] To Resume  |
+              ||                           |
+              |+___________________________+
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
@@ -151,15 +168,36 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             val canv = ctx.getCanvas
             setX(canv.dim.w - 2)
 
+    private val serveSpr = new CPImageSprite(x = 0, y = 0, z = 6, serveImg):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+            setX((canv.dim.w - getImage.getWidth) / 2)
+            setY((canv.dim.h - getImage.getHeight) / 2)
+
+            if !playing then
+                setVisible(true)
+                playerSpr.setY(canv.dim.h / 2 - playerImg.h / 2)
+                enemySpr.setY(canv.dim.h / 2 - enemyImg.h / 2)
+
+            ctx.getKbEvent match
+                case Some(evt) =>
+                    evt.key match
+                        case KEY_SPACE =>
+                            setVisible(false)
+                            // ballSpr.setVisible(true)
+                            playing = true
+                        case _ => ()
+                case None => ()
+
     addObjects(
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
         playerScoreSpr,
         enemyScoreSpr,
         netSpr,
         enemySpr,
         playerSpr,
 //        ballSpr,
-//        serveSpr,
+        serveSpr,
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
 
