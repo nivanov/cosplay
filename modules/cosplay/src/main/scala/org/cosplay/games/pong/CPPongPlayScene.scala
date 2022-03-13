@@ -91,6 +91,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             """
               |+----------------------------+
               ||                            |
+              ||  Player 1 Ready            |
+              ||  ==============            |
+              ||                            |
               ||  [SPACE]   Serve Ball      |
               ||  [ESC]     Pause/Resume    |
               ||  [Q]       Quit Any Time   |
@@ -106,12 +109,15 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val pausedImg = CPArrayImage(
         prepSeq(
             """
-              |+---------------------------+
-              ||                           |
-              ||     == Game Paused ==     |
-              ||   Pres [SPACE] To Resume  |
-              ||                           |
-              |+___________________________+
+              |+-------------------------+
+              ||                         |
+              ||  Game Paused            |
+              ||  ===========            |
+              ||                         |
+              ||  [ESC]  Resume          |
+              ||  [Q]    Quit Any Time   |
+              ||                         |
+              |+_________________________+
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
@@ -147,13 +153,21 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Player paddle.
     private val playerSpr = new CPImageSprite(x = 1, y = 0, z = 0, playerImg):
+        private var y = -1f
+
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
 
             if playing then
                 val canv = ctx.getCanvas
 
-                def move(dy: Float): Unit = ()
+                if y == -1f then y = getY.toFloat
+
+                def move(dy: Float): Unit =
+                    val maxY = canv.height - playerImg.h - 1f
+                    if dy > 0 && y < maxY then y = Math.min(maxY, y + dy)
+                    else if dy < 0 && y > 0 then y = Math.max(y + dy, 0)
+                    setY(y.round)
 
                 ctx.getKbEvent match
                     case Some(evt) =>
