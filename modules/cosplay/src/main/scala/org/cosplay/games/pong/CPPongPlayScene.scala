@@ -135,9 +135,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)):
             override def update(ctx: CPSceneObjectContext): Unit = setX(xf(ctx.getCanvas, this))
 
-    // Scores sprites.
-    private val playerScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.getWidth) / 4)
-    private val enemyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.getWidth) - ((canv.dim.w / 4) - 1))
+    // Score sprites.
+    private val playerScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
+    private val enemyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
 
     // Net in the middle.
     private val netSpr = new CPCanvasSprite("net"):
@@ -200,13 +200,13 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     evt.key match
                         case KEY_SPACE =>
                             setVisible(false)
-                            ballSpr.setVisible(true)
                             playing = true
                         case _ => ()
                 case None => ()
 
     addObjects(
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
+        CPKeyboardSprite(KEY_ESC, _ ⇒ playing = !playing), // Handle 'ESC' press globally for this scene.
         playerScoreSpr,
         enemyScoreSpr,
         netSpr,
