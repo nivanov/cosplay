@@ -50,6 +50,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var enemyScore = 0
     private final val paddleSpeed = 1.2f
     private var playing = false
+    private var serving = true
+    private var ballAngle = 135
 
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -168,8 +170,22 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             val canv = ctx.getCanvas
             setX(canv.dim.w - 2)
 
+    // Ball sprite.
+    private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false, Seq(CPPongBallShader)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            val canv = ctx.getCanvas
+            if serving then
+                setX(canv.dim.w - 8)
+                setY(canv.dim.h / 2)
+
+                ballAngle = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
+                serving = false
+
+    // Serve announcement.
     private val serveSpr = new CPImageSprite(x = 0, y = 0, z = 6, serveImg):
         override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
             val canv = ctx.getCanvas
             setX((canv.dim.w - getImage.getWidth) / 2)
             setY((canv.dim.h - getImage.getHeight) / 2)
@@ -184,7 +200,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     evt.key match
                         case KEY_SPACE =>
                             setVisible(false)
-                            // ballSpr.setVisible(true)
+                            ballSpr.setVisible(true)
                             playing = true
                         case _ => ()
                 case None => ()
@@ -196,7 +212,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         netSpr,
         enemySpr,
         playerSpr,
-//        ballSpr,
+        ballSpr,
         serveSpr,
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )

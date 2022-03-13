@@ -117,6 +117,34 @@ object CPRand:
     def randDigit(): Char = rand(DIGITS)
 
     /**
+      * Gets random number in given range.
+      * @param a Inclusive start of the range.
+      * @param b Exclusive end of the range.
+      */
+    def between(a: Int, b: Int): Int = RND.between(a, b)
+
+    /**
+      * Gets random number in given range.
+      * @param a Inclusive start of the range.
+      * @param b Exclusive end of the range.
+      */
+    def between(a: Double, b: Double): Double = RND.between(a, b)
+
+    /**
+      * Gets random number in given range.
+      * @param a Inclusive start of the range.
+      * @param b Exclusive end of the range.
+      */
+    def between(a: Long, b: Long): Long = RND.between(a, b)
+
+    /**
+      * Gets random number in given range.
+      * @param a Inclusive start of the range.
+      * @param b Exclusive end of the range.
+      */
+    def between(a: Float, b: Float): Float = RND.between(a, b)
+
+    /**
       * Gets a random red color from the list of [[CPColor.CS_X11_REDS]].
       */
     def randX11Red(): CPColor = rand(CS_X11_REDS)
