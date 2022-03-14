@@ -49,9 +49,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var playerScore = 0
     private var enemyScore = 0
     private final val paddleSpeed = 1.2f
+    private final val ballSpeed = 1f
     private var playing = false
-    private var serving = true
-    private var ballAngle = 135
+    private var ballAngle = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -157,9 +157,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
+            val canv = ctx.getCanvas
 
             if playing then
-                val canv = ctx.getCanvas
 
                 if y == -1f then y = getY.toFloat
 
@@ -186,28 +186,42 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false, Seq(CPPongBallShader)):
+        private var x, y = -1f
+
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            if serving then
-                setX(canv.dim.w - 8)
-                setY(canv.dim.h / 2)
+            if playing then
+                if x == -1f && y == -1f then
+                    x = getX.toFloat
+                    y = getY.toFloat
 
-                ballAngle = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
-                serving = false
+                val rad = ballAngle * (Math.PI / 180)
+                val xMax = canv.xMax - ballImg.w + 1f
+                val yMax = canv.yMax - ballImg.h + 1f
+
+                x += (ballSpeed * Math.cos(rad)).toFloat
+                y += (ballSpeed * 0.7 * -Math.sin(rad)).toFloat
+
+                setX(Math.min(Math.max(x, 0f), xMax).round)
+                setY(Math.min(Math.max(y, 0f), yMax).round)
 
     // Serve announcement.
     private val serveSpr = new CPImageSprite(x = 0, y = 0, z = 6, serveImg):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
+            // Center itself.
             setX((canv.dim.w - getImage.getWidth) / 2)
             setY((canv.dim.h - getImage.getHeight) / 2)
 
+            // Center ball, player and enemy sprites.
             if !playing then
                 setVisible(true)
                 playerSpr.setY(canv.dim.h / 2 - playerImg.h / 2)
                 enemySpr.setY(canv.dim.h / 2 - enemyImg.h / 2)
+                ballSpr.setX(canv.dim.w - enemyImg.w - ballImg.w - 3)
+                ballSpr.setY(canv.dim.h / 2)
 
             ctx.getKbEvent match
                 case Some(evt) =>
@@ -219,8 +233,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 case None => ()
 
     addObjects(
+        // Scene-wide Keyboard handlers.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_ESC, _ ⇒ playing = !playing), // Handle 'ESC' press globally for this scene.
+        // Main game elements.
         playerScoreSpr,
         enemyScoreSpr,
         netSpr,
@@ -228,6 +244,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         playerSpr,
         ballSpr,
         serveSpr,
+        // Scene-wide shader holder.
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
 
