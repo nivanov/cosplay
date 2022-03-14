@@ -152,7 +152,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, 5, '|'&C2)
 
     // Player paddle.
-    private val playerSpr = new CPImageSprite(x = 1, y = 0, z = 0, playerImg):
+    private val playerSpr = new CPImageSprite(x = 0, y = 0, z = 0, playerImg):
         private var y = -1f
 
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -182,7 +182,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            setX(canv.dim.w - 2)
+            setX(canv.dim.w - enemyImg.w)
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false, Seq(CPPongBallShader)):
