@@ -79,6 +79,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     private val playerImg = mkPaddleImage(C5)
     private val enemyImg = mkPaddleImage(C3)
+    require(playerImg.h == enemyImg.h)
+    require(playerImg.w == enemyImg.w)
+    private val paddleH = playerImg.h
+    private val paddleW = playerImg.w
 
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
@@ -158,15 +162,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-
             if playing then
-
                 if y == -1f then y = getY.toFloat
 
                 def move(dy: Float): Unit =
-                    val maxY = canv.height - playerImg.h - 1f
-                    if dy > 0 && y < maxY then y = Math.min(maxY, y + dy)
-                    else if dy < 0 && y > 0 then y = Math.max(y + dy, 0)
+                    y = clipPaddleY(canv, y, dy)
                     setY(y.round)
 
                 ctx.getKbEvent match
@@ -177,12 +177,33 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                             case _ => ()
                     case None => ()
 
+    /**
+      *
+      * @param canv
+      * @param currY
+      * @param dy
+      */
+    private def clipPaddleY(canv: CPCanvas, currY: Float, dy: Float): Float =
+        val maxY = canv.hF - paddleH
+        if dy > 0 then Math.min(maxY, currY + dy)
+        else if dy < 0 then Math.max(currY + dy, 0)
+        else currY
+
     // Computer paddle.
     private val enemySpr = new CPImageSprite(x = 1, y = 0, z = 0, enemyImg):
+        private var y = -1f
+
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            setX(canv.dim.w - enemyImg.w)
+            setX(canv.dim.w - paddleW)
+
+            if playing then
+                if y == -1 then y = getY.toFloat
+                val ballY = ballSpr.getY.toFloat
+                val dy = if y > ballY then -paddleSpeed else if (y + paddleH / 2) < ballY then paddleSpeed else 0f
+                y = clipPaddleY(canv, y, dy)
+                setY(y.round)
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false, Seq(CPPongBallShader)):
@@ -218,9 +239,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             // Center ball, player and enemy sprites.
             if !playing then
                 setVisible(true)
-                playerSpr.setY(canv.dim.h / 2 - playerImg.h / 2)
-                enemySpr.setY(canv.dim.h / 2 - enemyImg.h / 2)
-                ballSpr.setX(canv.dim.w - enemyImg.w - ballImg.w - 3)
+                playerSpr.setY(canv.dim.h / 2 - paddleH / 2)
+                enemySpr.setY(canv.dim.h / 2 - paddleH / 2)
+                ballSpr.setX(canv.dim.w - paddleW - ballImg.w - 3)
                 ballSpr.setY(canv.dim.h / 2)
 
             ctx.getKbEvent match
