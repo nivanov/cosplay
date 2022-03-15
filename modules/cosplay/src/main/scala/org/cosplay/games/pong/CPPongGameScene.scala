@@ -245,8 +245,8 @@ object CPPongGameScene extends CPScene("game", None, BG_PX):
 
     private val playerPx = ' '&&(C_BLACK, C_AQUA)
     private val enemyPx = ' '&&(C_BLACK, C_GREEN_YELLOW)
-    private val playerShdr = CPPongPaddleShader('>')
-    private val enemyShdr = CPPongPaddleShader('<')
+    private val playerShdr = CPPongPaddleShader()
+    private val enemyShdr = CPPongPaddleShader()
 
     private val playerSpr = new CPImageSprite(x = 1, y = 0, z = 0, mkPaddleImage(C_AQUA)):
         override def update(ctx: CPSceneObjectContext): Unit =
