@@ -113,8 +113,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def setBalance(bal: Double): Unit = player.setBalance(bal)
 
     /**
-      * Starts the playback with specified fade in duration. Playback will automatically stop at the
-      * end of the media.
+      * Starts the playback with specified fade in duration.
       *
       * @param fadeInMs Fade in duration in milliseconds.
       */
@@ -140,7 +139,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def rewind(): Unit = seek(0)
 
     /**
-      * Sets start time of the playback to hte given millisecond mark.
+      * Sets start time of the playback to the given millisecond mark.
       *
       * @param ms Millisecond mark to set the start position to.
       */

@@ -49,7 +49,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var playerScore = 0
     private var enemyScore = 0
     private final val paddleSpeed = 1.2f
-    private final val ballSpeed = 1f
+    private final val ballSpeed = 1.2f
     private var playing = false
     private var ballAngle = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
@@ -84,11 +84,14 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val paddleH = playerImg.h
     private val paddleW = playerImg.w
 
+    private val playerShdr = CPPongPaddleShader()
+    private val enemyShdr = CPPongPaddleShader()
+
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
 
-    private final val bouncePaddleSnd = CPSound(s"sounds/games/pong/bounce1.wav", 0.2f)
-    private final val bounceWallSnd = CPSound(s"sounds/games/pong/bounce2.wav", 0.6f)
+    private final val paddleSnd = CPSound(s"sounds/games/pong/bounce1.wav", 0.2f)
+    private final val wallSnd = CPSound(s"sounds/games/pong/bounce2.wav", 0.6f)
 
     private val serveImg = CPArrayImage(
         prepSeq(
@@ -156,7 +159,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, 5, '|'&C2)
 
     // Player paddle.
-    private val playerSpr = new CPImageSprite(x = 0, y = 0, z = 0, playerImg):
+    private val playerSpr = new CPImageSprite(x = 0, y = 0, z = 0, playerImg, false, Seq(playerShdr)):
         private var y = -1f
 
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -190,7 +193,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         else currY
 
     // Computer paddle.
-    private val enemySpr = new CPImageSprite(x = 1, y = 0, z = 0, enemyImg):
+    private val enemySpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, enemyImg, false, Seq(enemyShdr)):
         private var y = -1f
 
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -223,6 +226,18 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
                 x += (ballSpeed * Math.cos(rad)).toFloat
                 y += (ballSpeed * 0.7 * -Math.sin(rad)).toFloat
+
+                def paddleReturn(isPlayer: Boolean): Unit =
+                    x = if isPlayer then paddleW.toFloat else canv.wF - paddleW - ballW - 2
+                    ballAngle = -ballAngle + 180
+                    paddleSnd.playOnce()
+                    if isPlayer then playerShdr.start() else enemyShdr.start()
+
+                if getRect.overlaps(playerSpr.getRect) then paddleReturn(true)
+                else if getRect.overlaps(enemySpr.getRect) then paddleReturn(false)
+                else if y > yMax || y < 0 then
+                    ballAngle = -ballAngle
+                    wallSnd.playOnce()
 
                 setX(Math.min(Math.max(x, 0f), xMax).round)
                 setY(Math.min(Math.max(y, 0f), yMax).round)
