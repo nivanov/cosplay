@@ -172,6 +172,16 @@ trait CPSceneObjectContext extends CPBaseContext:
     def getKbEvent: Option[CPKeyboardEvent]
 
     /**
+      *
+      * @param key
+      * @return
+      */
+    def isKbKey(key: CPKeyboardKey): Boolean =
+        getKbEvent match
+            case Some(k) ⇒ k == key
+            case None ⇒ false
+
+    /**
       * Tests whether or not current object is a input keyboard focus owner.
       *
       * @see [[acquireFocus()]]

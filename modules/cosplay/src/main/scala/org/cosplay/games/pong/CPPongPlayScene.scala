@@ -53,6 +53,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var enemySpeed = .8f
     private var ballSpeed = 1.2f
     private var playing = false
+    private var paused = false
     private var gameOver = false
     private var ballAngle = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
@@ -160,15 +161,15 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val pausedImg = CPArrayImage(
         prepSeq(
             """
-              |+-------------------------+
-              ||                         |
-              ||  Game Paused            |
-              ||  ===========            |
-              ||                         |
-              ||  [ESC]  Resume          |
-              ||  [Q]    Quit Any Time   |
-              ||                         |
-              |+_________________________+
+              |+----------------------+
+              ||                      |
+              ||    Game Paused       |
+              ||    ===========       |
+              ||                      |
+              ||    [ESC]   Resume    |
+              ||    [Q]     Quit      |
+              ||                      |
+              |+______________________+
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
@@ -298,7 +299,15 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     missSnd.playOnce()
                     enemyScoreSpr.setImage(mkScoreImage(enemyScore))
                     playerScoreSpr.setImage(mkScoreImage(playerScore))
-                    playing = false
+
+                    def doGameOver(spr: CPImageSprite, snd: CPSound): Unit =
+                        playing = false
+                        gameOver = true
+                        spr.setVisible(true)
+                        snd.play(3000)
+
+                    if playerScore == MAX_SCORE then doGameOver(youWonSpr, youWonSnd)
+                    else if enemyScore == MAX_SCORE then doGameOver(youLostSpr, youLostSnd)
 
                 if getRect.overlaps(playerSpr.getRect) then paddleReturn(true)
                 else if getRect.overlaps(enemySpr.getRect) then paddleReturn(false)
@@ -311,8 +320,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 setX(Math.min(Math.max(x, 0f), xMax).round)
                 setY(Math.min(Math.max(y, 0f), yMax).round)
 
-    // Serve announcement.
-    private val serveSpr = new CPImageSprite(x = 0, y = 0, z = 6, serveImg):
+    class CenteredImageSprite(img: CPImage) extends CPImageSprite(x = 0, y = 0, z = 6, img = img):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
@@ -320,37 +328,62 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             setX((canv.dim.w - getImage.getWidth) / 2)
             setY((canv.dim.h - getImage.getHeight) / 2)
 
-            // Center ball, player and enemy sprites.
-            if !playing then
-                setVisible(true)
-                playerSpr.reset()
-                enemySpr.reset()
-                ballSpr.reset()
-                playerSpr.setXY(0, canv.dim.h / 2 - paddleH / 2)
-                enemySpr.setXY(canv.w - paddleW, canv.dim.h / 2 - paddleH / 2)
-                ballSpr.setXY(canv.dim.w - paddleW - ballImg.w - 3, canv.dim.h / 2)
+    // Announcements.
+    private val serveSpr = new CenteredImageSprite(serveImg)
+    private val youLostSpr = new CenteredImageSprite(youLostImg)
+    private val youWonSpr = new CenteredImageSprite(youWonImg)
+    private val pausedSpr = new CenteredImageSprite(pausedImg)
 
-            ctx.getKbEvent match
-                case Some(evt) =>
-                    evt.key match
-                        case KEY_SPACE =>
-                            setVisible(false)
-                            playing = true
-                        case _ => ()
-                case None => ()
+    // All anouncements are invisible initially.
+    serveSpr.setVisible(false)
+    youLostSpr.setVisible(false)
+    youWonSpr.setVisible(false)
+    pausedSpr.setVisible(false)
+
+    private val gameCtrlSpr = new CPOffScreenSprite():
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            val canv = ctx.getCanvas
+            pausedSpr.setVisible(paused)
+            if !playing && !paused then
+                if gameOver then
+                    if ctx.isKbKey(KEY_SPACE) then ctx.switchScene("title")
+                    end if
+                else // Not playin (yet), not puased and not game over...
+                    serveSpr.setVisible(true)
+                    playerSpr.reset()
+                    enemySpr.reset()
+                    ballSpr.reset()
+                    playerSpr.setXY(0, canv.dim.h / 2 - paddleH / 2)
+                    enemySpr.setXY(canv.w - paddleW, canv.dim.h / 2 - paddleH / 2)
+                    ballSpr.setXY(canv.dim.w - paddleW - ballImg.w - 3, canv.dim.h / 2)
+
+                    if ctx.isKbKey(KEY_SPACE) then
+                        serveSpr.setVisible(false)
+                        playing = true
 
     addObjects(
-        // Scene-wide Keyboard handlers.
+        // Scene-wide keyboard handlers.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
-        CPKeyboardSprite(KEY_ESC, _ ⇒ playing = !playing), // Handle 'ESC' press globally for this scene.
-        // Main game elements.
+        CPKeyboardSprite(KEY_ESC, _ ⇒ { // Handle 'ESC' press globally for this scene.
+            playing = !playing
+            paused = !paused
+        }),
+        // Score sprites.
         playerScoreSpr,
         enemyScoreSpr,
+        // Game elements.
         netSpr,
         enemySpr,
         playerSpr,
         ballSpr,
+        // Game controller.
+        gameCtrlSpr,
+        // Announcements.
         serveSpr,
+        youLostSpr,
+        youWonSpr,
+        pausedSpr,
         // Scene-wide shader holder.
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
