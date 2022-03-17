@@ -48,8 +48,9 @@ import org.cosplay.games.pong.shaders.*
 object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var playerScore = 0
     private var enemyScore = 0
-    private final val paddleSpeed = 1.2f
-    private final val ballSpeed = 1.2f
+    private final val playerSpeed = 1.2f
+    private var enemySpeed = .8f
+    private var ballSpeed = 1.2f
     private var playing = false
     private var ballAngle = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
@@ -175,8 +176,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 ctx.getKbEvent match
                     case Some(evt) =>
                         evt.key match
-                            case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -paddleSpeed else -1.0f)
-                            case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then paddleSpeed else 1.0f)
+                            case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -playerSpeed else -1.0f)
+                            case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then playerSpeed else 1.0f)
                             case _ => ()
                     case None => ()
 
@@ -204,7 +205,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             if playing then
                 if y == -1 then y = getY.toFloat
                 val ballY = ballSpr.getY.toFloat
-                val dy = if y > ballY then -paddleSpeed else if (y + paddleH / 2) < ballY then paddleSpeed else 0f
+                val dy = if y > ballY then -enemySpeed else if (y + paddleH / 2) < ballY then enemySpeed else 0f
                 y = clipPaddleY(canv, y, dy)
                 setY(y.round)
 
@@ -216,6 +217,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             super.update(ctx)
             val canv = ctx.getCanvas
             if playing then
+                // Adjust ball speed based on the canvas dimensions.
+                ballSpeed = canv.wF / canv.hF * 1.1f
                 if x == -1f && y == -1f then
                     x = getX.toFloat
                     y = getY.toFloat
