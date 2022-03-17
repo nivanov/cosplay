@@ -46,12 +46,14 @@ import org.cosplay.games.pong.shaders.*
   * Pong main gameplay scene.
   */
 object CPPongPlayScene extends CPScene("play", None, BG_PX):
+    private final val MAX_SCORE = 10
     private var playerScore = 0
     private var enemyScore = 0
     private final val playerSpeed = 1.2f
     private var enemySpeed = .8f
     private var ballSpeed = 1.2f
     private var playing = false
+    private var gameOver = false
     private var ballAngle = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
     private val ballImg = CPArrayImage(
@@ -93,20 +95,61 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     private final val paddleSnd = CPSound(s"sounds/games/pong/bounce1.wav", 0.2f)
     private final val wallSnd = CPSound(s"sounds/games/pong/bounce2.wav", 0.6f)
+    private final val missSnd = CPSound(s"sounds/games/pong/miss.wav")
+    private final val youLostSnd = CPSound(s"sounds/games/pong/you_lost.wav", 0.5f)
+    private final val youWonSnd = CPSound(s"sounds/games/pong/you_won.wav", 0.5f)
 
     private val serveImg = CPArrayImage(
         prepSeq(
             """
-              |+----------------------------+
-              ||                            |
-              ||  Player 1 Ready            |
-              ||  ==============            |
-              ||                            |
-              ||  [SPACE]   Serve Ball      |
-              ||  [ESC]     Pause/Resume    |
-              ||  [Q]       Quit Any Time   |
-              ||                            |
-              |+____________________________+
+              |+------------------------------+
+              ||                              |
+              ||    PLAYER 1 READY            |
+              ||    ==============            |
+              ||                              |
+              ||    [SPACE]   Serve Ball      |
+              ||    [ESC]     Pause/Resume    |
+              ||    [Q]       Quit            |
+              ||                              |
+              |+______________________________+
+            """),
+        (ch, _, _) => ch match
+            case c if c.isLetter => c&C4
+            case '+' => ch&C1
+            case _ => ch&C2
+    ).trimBg()
+
+    private val youLostImg = CPArrayImage(
+        prepSeq(
+            """
+              |+--------------------------+
+              ||                          |
+              ||    YOU LOST :-(          |
+              ||    ============          |
+              ||                          |
+              ||    [SPACE]   Continue    |
+              ||    [Q]       Quit        |
+              ||                          |
+              |+__________________________+
+            """),
+        (ch, _, _) => ch match
+            case c if c.isLetter => c&C4
+            case '+' => ch&C1
+            case _ => ch&C2
+    ).trimBg()
+
+    private val youWonImg = CPArrayImage(
+        prepSeq(
+            """
+              |+--------------------------+
+              ||                          |
+              ||    YOU WON :-(           |
+              ||    ===========           |
+              ||                          |
+              ||    [SPACE]   Continue    |
+              ||    [Q]       Quit        |
+              ||                          |
+              |+__________________________+
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
@@ -163,6 +206,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val playerSpr = new CPImageSprite(x = 0, y = 0, z = 0, playerImg, false, Seq(playerShdr)):
         private var y = -1f
 
+        override def reset(): Unit =
+            super.reset()
+            y = -1f
+
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
@@ -197,10 +244,14 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val enemySpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, enemyImg, false, Seq(enemyShdr)):
         private var y = -1f
 
+        override def reset(): Unit =
+            super.reset()
+            y = -1f
+
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            setX(canv.dim.w - paddleW)
+            setX(canv.w - paddleW)
 
             if playing then
                 if y == -1 then y = getY.toFloat
@@ -212,6 +263,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false, Seq(CPPongBallShader)):
         private var x, y = -1f
+
+        override def reset(): Unit =
+            super.reset()
+            x = -1f
+            y = -1f
 
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -236,11 +292,21 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     paddleSnd.playOnce()
                     if isPlayer then playerShdr.start() else enemyShdr.start()
 
+                def score(plyScr: Int, enyScr: Int): Unit =
+                    playerScore += plyScr
+                    enemyScore += enyScr
+                    missSnd.playOnce()
+                    enemyScoreSpr.setImage(mkScoreImage(enemyScore))
+                    playerScoreSpr.setImage(mkScoreImage(playerScore))
+                    playing = false
+
                 if getRect.overlaps(playerSpr.getRect) then paddleReturn(true)
                 else if getRect.overlaps(enemySpr.getRect) then paddleReturn(false)
                 else if y > yMax || y < 0 then
                     ballAngle = -ballAngle
                     wallSnd.playOnce()
+                else if x <= 0 then score(0, 1)
+                else if x >= canv.xMax then score(1, 0)
 
                 setX(Math.min(Math.max(x, 0f), xMax).round)
                 setY(Math.min(Math.max(y, 0f), yMax).round)
@@ -257,10 +323,12 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             // Center ball, player and enemy sprites.
             if !playing then
                 setVisible(true)
-                playerSpr.setY(canv.dim.h / 2 - paddleH / 2)
-                enemySpr.setY(canv.dim.h / 2 - paddleH / 2)
-                ballSpr.setX(canv.dim.w - paddleW - ballImg.w - 3)
-                ballSpr.setY(canv.dim.h / 2)
+                playerSpr.reset()
+                enemySpr.reset()
+                ballSpr.reset()
+                playerSpr.setXY(0, canv.dim.h / 2 - paddleH / 2)
+                enemySpr.setXY(canv.w - paddleW, canv.dim.h / 2 - paddleH / 2)
+                ballSpr.setXY(canv.dim.w - paddleW - ballImg.w - 3, canv.dim.h / 2)
 
             ctx.getKbEvent match
                 case Some(evt) =>

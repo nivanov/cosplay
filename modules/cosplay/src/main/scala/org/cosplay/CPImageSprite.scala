@@ -141,6 +141,22 @@ class CPImageSprite(
     final val initZ: Int = z
 
     /**
+      * Initial image of the sprite.
+      *
+      * @see [[setImage()]]
+      */
+    final val initImg: CPImage = img
+
+    /**
+      * Resets this sprite to its initial XYZ-coordinates and the initial image.
+      */
+    def reset(): Unit =
+        setX(initX)
+        setY(initY)
+        setZ(initZ)
+        setImage(initImg)
+
+    /**
       * Sets current X-coordinate. This coordinate will be returned from [[getX]] method.
       *
       * @param d X-coordinate to set.
@@ -153,6 +169,16 @@ class CPImageSprite(
       * @param d Y-coordinate to set.
       */
     def setY(d: Int): Unit = myY = d
+
+    /**
+      * Sets both current XY-coordinates.
+      *
+      * @param a X-coordinate to set.
+      * @param b Y-coordinate to set.
+      */
+    def setXY(a: Int, b: Int): Unit =
+        setX(a)
+        setY(b)
 
     /**
       * Sets current Z-index. This index will be returned from [[getZ]] method.
