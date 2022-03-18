@@ -48,6 +48,7 @@ import org.cosplay.games.pong.shaders.*
 object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private def randAngle(): Int = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
+    private final val INIT_VAL = -1f
     private final val MAX_SCORE = 10
     private var playerScore = 0
     private var enemyScore = 0
@@ -55,7 +56,6 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var enemySpeed = .8f
     private var ballSpeed = 1.2f
     private var playing = false
-    private var paused = false
     private var gameOver = false
     private var ballAngle = randAngle()
 
@@ -111,7 +111,6 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               ||    ==============            |
               ||                              |
               ||    [SPACE]   Serve Ball      |
-              ||    [ESC]     Pause/Resume    |
               ||    [Q]       Quit            |
               ||                              |
               |+______________________________+
@@ -146,32 +145,13 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             """
               |+--------------------------+
               ||                          |
-              ||    YOU WON :-(           |
+              ||    YOU WON :-)           |
               ||    ===========           |
               ||                          |
               ||    [SPACE]   Continue    |
               ||    [Q]       Quit        |
               ||                          |
               |+__________________________+
-            """),
-        (ch, _, _) => ch match
-            case c if c.isLetter => c&C4
-            case '+' => ch&C1
-            case _ => ch&C2
-    ).trimBg()
-
-    private val pausedImg = CPArrayImage(
-        prepSeq(
-            """
-              |+----------------------+
-              ||                      |
-              ||    Game Paused       |
-              ||    ===========       |
-              ||                      |
-              ||    [ESC]   Resume    |
-              ||    [Q]     Quit      |
-              ||                      |
-              |+______________________+
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
@@ -207,17 +187,17 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Player paddle.
     private val playerSpr = new CPImageSprite(x = 0, y = 0, z = 0, playerImg, false, Seq(playerShdr)):
-        private var y = -1f
+        private var y = INIT_VAL
 
         override def reset(): Unit =
             super.reset()
-            y = -1f
+            y = INIT_VAL
 
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
             if playing then
-                if y == -1f then y = getY.toFloat
+                if y == INIT_VAL then y = getY.toFloat
 
                 def move(dy: Float): Unit =
                     y = clipPaddleY(canv, y, dy)
@@ -245,11 +225,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Computer paddle.
     private val enemySpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, enemyImg, false, Seq(enemyShdr)):
-        private var y = -1f
+        private var y = INIT_VAL
 
         override def reset(): Unit =
             super.reset()
-            y = -1f
+            y = INIT_VAL
 
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -257,7 +237,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             setX(canv.w - paddleW)
 
             if playing then
-                if y == -1 then y = getY.toFloat
+                if y == INIT_VAL then y = getY.toFloat
                 val ballY = ballSpr.getY.toFloat
                 val dy = if y > ballY then -enemySpeed else if (y + paddleH / 2) < ballY then enemySpeed else 0f
                 y = clipPaddleY(canv, y, dy)
@@ -265,22 +245,23 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false, Seq(CPPongBallShader)):
-        private var x, y = -1f
+        private var x, y = INIT_VAL
 
         override def reset(): Unit =
             super.reset()
-            x = -1f
-            y = -1f
+            x = INIT_VAL
+            y = INIT_VAL
 
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
             if playing then
-                // Adjust ball speed based on the canvas dimensions.
-                ballSpeed = canv.wF / canv.hF * 1.1f
-                if x == -1f && y == -1f then
+                if x == INIT_VAL && y == INIT_VAL then
                     x = getX.toFloat
                     y = getY.toFloat
+
+                // Adjust ball speed based on the canvas dimensions.
+                ballSpeed = canv.wF / canv.hF * 1.1f
 
                 val rad = ballAngle * (Math.PI / 180)
                 val xMax = canv.xMax - ballImg.w + 1f
@@ -302,22 +283,23 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     enemyScoreSpr.setImage(mkScoreImage(enemyScore))
                     playerScoreSpr.setImage(mkScoreImage(playerScore))
 
-                    def doGameOver(spr: CPImageSprite, snd: CPSound): Unit =
+                    def finishGame(spr: CPImageSprite, snd: CPSound): Unit =
                         playing = false
                         gameOver = true
                         spr.setVisible(true)
                         snd.play(3000)
 
-                    if playerScore == MAX_SCORE then doGameOver(youWonSpr, youWonSnd)
-                    else if enemyScore == MAX_SCORE then doGameOver(youLostSpr, youLostSnd)
+                    if playerScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
+                    else if enemyScore == MAX_SCORE then finishGame(youLostSpr, youLostSnd)
+                    else playing = false
 
-                if getRect.overlaps(playerSpr.getRect) then paddleReturn(true)
-                else if getRect.overlaps(enemySpr.getRect) then paddleReturn(false)
+                if x < 1 && y > playerSpr.getY - ballH && y < playerSpr.getY + paddleH then paddleReturn(true)
+                else if x > xMax - 1 && y > enemySpr.getY - ballH && y < enemySpr.getY + paddleH then paddleReturn(false)
                 else if y > yMax || y < 0 then
                     ballAngle = -ballAngle
                     wallSnd.playOnce()
-                else if x <= 0 then score(0, 1)
-                else if x >= canv.xMax then score(1, 0)
+                else if x < 0 then score(0, 1)
+                else if x > canv.xMax then score(1, 0)
 
                 setX(Math.min(Math.max(x, 0f), xMax).round)
                 setY(Math.min(Math.max(y, 0f), yMax).round)
@@ -334,19 +316,19 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val serveSpr = new CenteredImageSprite(serveImg)
     private val youLostSpr = new CenteredImageSprite(youLostImg)
     private val youWonSpr = new CenteredImageSprite(youWonImg)
-    private val pausedSpr = new CenteredImageSprite(pausedImg)
 
     private val gameCtrlSpr = new CPOffScreenSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            pausedSpr.setVisible(paused)
-            if !playing && !paused then
+            if !playing then
                 if gameOver then
                     if ctx.isKbKey(KEY_SPACE) then ctx.switchScene("title")
                     end if
-                else // Not playin (yet), not puased and not game over...
+                else // Not playing and not game over - first serve.
                     serveSpr.setVisible(true)
+
+                    // Reset positions.
                     playerSpr.reset()
                     enemySpr.reset()
                     ballSpr.reset()
@@ -361,10 +343,6 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     addObjects(
         // Scene-wide keyboard handlers.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
-        CPKeyboardSprite(KEY_ESC, _ ⇒ { // Handle 'ESC' press globally for this scene.
-            playing = !playing
-            paused = !paused
-        }),
         // Score sprites.
         playerScoreSpr,
         enemyScoreSpr,
@@ -379,7 +357,6 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         serveSpr,
         youLostSpr,
         youWonSpr,
-        pausedSpr,
         // Scene-wide shader holder.
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
@@ -391,11 +368,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         serveSpr.setVisible(false)
         youLostSpr.setVisible(false)
         youWonSpr.setVisible(false)
-        pausedSpr.setVisible(false)
 
         playing = false
         gameOver = false
-        paused = false
 
         playerScore = 0
         enemyScore = 0
