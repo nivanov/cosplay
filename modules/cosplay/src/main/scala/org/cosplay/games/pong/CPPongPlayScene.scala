@@ -46,6 +46,8 @@ import org.cosplay.games.pong.shaders.*
   * Pong main gameplay scene.
   */
 object CPPongPlayScene extends CPScene("play", None, BG_PX):
+    private def randAngle(): Int = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
+
     private final val MAX_SCORE = 10
     private var playerScore = 0
     private var enemyScore = 0
@@ -55,7 +57,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var playing = false
     private var paused = false
     private var gameOver = false
-    private var ballAngle = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
+    private var ballAngle = randAngle()
 
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -190,7 +192,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
       * @return
       */
     private def mkScoreSprite(xf: (CPCanvas, CPImageSprite) ⇒ Int): CPImageSprite =
-        new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)):
+        new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)): // Initial score is zero.
             override def update(ctx: CPSceneObjectContext): Unit = setX(xf(ctx.getCanvas, this))
 
     // Score sprites.
@@ -334,12 +336,6 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val youWonSpr = new CenteredImageSprite(youWonImg)
     private val pausedSpr = new CenteredImageSprite(pausedImg)
 
-    // All anouncements are invisible initially.
-    serveSpr.setVisible(false)
-    youLostSpr.setVisible(false)
-    youWonSpr.setVisible(false)
-    pausedSpr.setVisible(false)
-
     private val gameCtrlSpr = new CPOffScreenSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -387,6 +383,30 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         // Scene-wide shader holder.
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
+
+    override def onActivate(): Unit =
+        super.onActivate()
+
+        // All anouncements are invisible initially.
+        serveSpr.setVisible(false)
+        youLostSpr.setVisible(false)
+        youWonSpr.setVisible(false)
+        pausedSpr.setVisible(false)
+
+        playing = false
+        gameOver = false
+        paused = false
+
+        playerScore = 0
+        enemyScore = 0
+        enemySpeed = .8f
+        ballSpeed = 1.2f
+        ballAngle = randAngle()
+
+        enemyScoreSpr.setImage(mkScoreImage(enemyScore))
+        playerScoreSpr.setImage(mkScoreImage(playerScore))
+
+
 
 
 

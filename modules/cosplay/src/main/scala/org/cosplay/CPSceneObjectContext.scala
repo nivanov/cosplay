@@ -172,13 +172,15 @@ trait CPSceneObjectContext extends CPBaseContext:
     def getKbEvent: Option[CPKeyboardEvent]
 
     /**
+      * Checks if the current frame's keyboard event, if any, contains given keyboard key.
       *
-      * @param key
-      * @return
+      * @param key Keyboard key to check.
+      * @see [[getKbEvent]]
+      * @see [[CPKeyboardEvent.key]]
       */
     def isKbKey(key: CPKeyboardKey): Boolean =
         getKbEvent match
-            case Some(k) ⇒ k == key
+            case Some(k) ⇒ k.key == key
             case None ⇒ false
 
     /**
