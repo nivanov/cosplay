@@ -271,6 +271,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
         override def reset(): Unit =
             super.reset()
+            boost = false
             x = INIT_VAL
             y = INIT_VAL
 
