@@ -221,7 +221,7 @@ object CPCameraExample:
         val sc = new CPScene("scene", Option(dim), bgPx, objs)
         val cam = sc.getCamera
 
-        cam.setFocusTrackId(Some("ufo"))
+        cam.setFocusTrackId(Option("ufo"))
         cam.setFocusFrameInsets(new CPInsets(10, 0))
 
         // Initialize the engine.

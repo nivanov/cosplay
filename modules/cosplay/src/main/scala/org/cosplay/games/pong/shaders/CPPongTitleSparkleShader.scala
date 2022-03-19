@@ -74,8 +74,7 @@ class CPPongTitleSparkleShader extends CPShader:
                     val y = canv.rect.randY()
                     val zpx = canv.getZPixel(x, y)
                     found = zpx.px == BG_PX && !sparkles.exists(s ⇒ s.x == x && s.y == y)
-                    if found then
-                        sparkles += Sparkle(zpx, x, y)
+                    if found then sparkles += Sparkle(zpx, x, y)
 
             // Draw sparkles.
             sparkles.foreach(_.draw(canv))

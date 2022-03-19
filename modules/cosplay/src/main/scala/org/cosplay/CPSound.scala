@@ -284,6 +284,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
 
     // Constructor.
     init()
+
 /**
   * Companion object with utility functionality.
   */
