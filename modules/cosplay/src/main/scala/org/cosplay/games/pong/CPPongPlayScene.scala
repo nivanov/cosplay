@@ -70,8 +70,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val ballImg = CPArrayImage(
         prepSeq(
             """
-              |  _
-              | (_)
+              | _
+              |(_)
             """
         ),
         (ch, _, _) => ch&C1
@@ -191,6 +191,13 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
     private val enyScorePartSpr = CPParticleSprite(emitters = Seq(enyScoreEmitter))
 
+    private val boostSpr = new CPImageSprite(x = 0, y = 0, z = 10, FIG_RECTANGLES.render("boost", C1).trimBg()):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            val canv = ctx.getCanvas
+            setX((canv.w - getWidth) / 2)
+            setY(canv.h - getHeight - 2)
+
     // Net in the middle.
     private val netSpr = new CPCanvasSprite("net"):
         override def render(ctx: CPSceneObjectContext): Unit =
@@ -257,8 +264,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     setY(y.round)
 
     // Ball sprite.
-    private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false, Seq(CPPongBallShader)):
+    private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false,
+        Seq(CPPongBallBoostShader, CPPongBallFlashlightShader)):
         private var x, y = INIT_VAL
+        private var boost = false
 
         override def reset(): Unit =
             super.reset()
@@ -274,8 +283,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     y = getY.toFloat
 
                 // Adjust ball speed based on the canvas dimensions.
-                val bs = canv.wF / canv.hF * 1.1f
-
+                var bs = canv.wF / canv.hF * 1.1f
+                if boost then bs *= 1.5f
                 val rad = ballAngle * (Math.PI / 180)
                 val xMax = canv.xMax - ballImg.w + 1f
                 val yMax = canv.yMax - ballImg.h + 1f
@@ -284,12 +293,26 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 y += (bs * 0.7 * -Math.sin(rad)).toFloat * ballSpeed
 
                 def paddleReturn(isPlayer: Boolean): Unit =
+                    boost = false
+                    boostSpr.setVisible(false)
+                    CPPongBallBoostShader.stop()
+                    val yr = y.round
+                    val edge =
+                        if isPlayer then yr == plySpr.getY - ballH || yr == plySpr.getY + plyImg.h
+                        else yr == enySpr.getY - ballH || yr == enySpr.getY + enyImg.h
+                    if edge then
+                        boost = true
+                        boostSpr.setVisible(true)
+                        CPPongBallBoostShader.start()
                     x = if isPlayer then paddleW.toFloat else canv.wF - paddleW - ballW - 2
                     ballAngle = -ballAngle + 180 + CPRand.randInt(0, 10) - 5
                     paddleSnd.play()
                     if isPlayer then plyShdr.start() else enyShdr.start()
 
                 def score(plyScr: Int, enyScr: Int): Unit =
+                    boost = false
+                    boostSpr.setVisible(false)
+                    CPPongBallBoostShader.stop()
                     plyScore += plyScr
                     enyScore += enyScr
 
@@ -376,6 +399,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         enySpr,
         plySpr,
         ballSpr,
+        boostSpr,
         // Game controller.
         gameCtrlSpr,
         // Announcements.
@@ -402,6 +426,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         serveSpr.setVisible(false)
         youLostSpr.setVisible(false)
         youWonSpr.setVisible(false)
+        boostSpr.setVisible(false)
 
         // State machine.
         playing = false

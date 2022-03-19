@@ -18,7 +18,7 @@
 package org.cosplay.games.pong.shaders
 
 import org.cosplay.*
-import org.cosplay.games.pong.*
+import games.pong.*
 
 /*
    _________            ______________
@@ -34,29 +34,30 @@ import org.cosplay.games.pong.*
 */
 
 /**
-  *
+  * Creates slight flashlight effect around the ball.
   */
-class CPPongPaddleShader extends CPShader:
-    private final val DUR_MS = 250
-
-    private var startMs = 0L
-    private var go = false
-
-    def start(): Unit =
-        go = true
-        startMs = System.currentTimeMillis()
-
-    def stop(): Unit =
-        go = false
-        startMs = 0
+object CPPongBallFlashlightShader extends CPShader:
+    private final val RADIUS = 6
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go && System.currentTimeMillis() - startMs > DUR_MS then stop()
-        if go then
+        if ctx.isVisible then
             val canv = ctx.getCanvas
-            objRect.loop((x, y) => {
+            val cx = objRect.xCenter
+            val cy = objRect.yCenter
+            val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
+            effRect.loop((x, y) => {
                 if canv.isValid(x, y) then
-                    val zpx = canv.getZPixel(x, y)
-                    canv.drawPixel(zpx.px.withBg(Option(C2)), x, y, zpx.z)
+                    // Account for character with/height ratio to make a proper circle...
+                    // NOTE: we can't get the font metrics in the native ANSI terminal so
+                    //       we use 1.85 as a general approximation.
+                    val dx = (cx - x).abs.toFloat / 1.85
+                    val dy = (cy - y).abs.toFloat
+                    val r = Math.sqrt(dx * dx + dy * dy).toFloat
+                    if r <= RADIUS then // Flashlight is a circular effect.
+                        val zpx = canv.getZPixel(x, y)
+                        val px = zpx.px
+                        if px.char == BG_PX.char then
+                            val newFg = px.fg.lighter(0.2f * (1.0f - r / RADIUS))
+                            canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
             })

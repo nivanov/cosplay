@@ -18,6 +18,7 @@
 package org.cosplay.games.pong.shaders
 
 import org.cosplay.*
+import org.cosplay.games.pong.*
 
 /*
    _________            ______________
@@ -32,30 +33,24 @@ import org.cosplay.*
                 ALl rights reserved.
 */
 
+import org.cosplay.games.pong.*
+
 /**
-  * Creates slight flashlight effect around the ball.
+  *
   */
-object CPPongBallShader extends CPShader:
-    private final val RADIUS = 6
+object CPPongBallBoostShader extends CPShader:
+    private var go = false
+
+    def start(): Unit = go = true
+    def stop(): Unit = go = false
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if ctx.isVisible then
+        if go then
             val canv = ctx.getCanvas
-            val cx = objRect.xCenter
-            val cy = objRect.yCenter
-            val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
-            effRect.loop((x, y) => {
+            objRect.loop((x, y) => {
                 if canv.isValid(x, y) then
-                    // Account for character with/height ratio to make a proper circle...
-                    // NOTE: we can't get the font metrics in the native ANSI terminal so
-                    //       we use 1.85 as a general approximation.
-                    val dx = (cx - x).abs.toFloat / 1.85
-                    val dy = (cy - y).abs.toFloat
-                    val r = Math.sqrt(dx * dx + dy * dy).toFloat
-                    if r <= RADIUS then // Flashlight is a circular effect.
-                        val zpx = canv.getZPixel(x, y)
-                        val px = zpx.px
-                        val newFg = px.fg.lighter(0.2f * (1.0f - r / RADIUS))
-                        canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
+                    val zpx = canv.getZPixel(x, y)
+                    if zpx.px.char != BG_PX.char then
+                        canv.drawPixel(zpx.px.withFg(CPRand.rand(CS)), x, y, zpx.z)
             })

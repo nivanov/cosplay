@@ -123,14 +123,12 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def setBalance(bal: Double): Unit = player.setBalance(bal)
 
     /**
-      * Starts the playback with specified fade in duration. If the current playback is runing it will be
-      * stopped first and rewound back. When playback reaches the end the player will rewind back again to the
-      * beginning and stop.
+      * Starts the playback with specified fade in duration.
+      * When playback reaches the end the player will rewind back again to the beginning and stop.
       *
       * @param fadeInMs Fade in duration in milliseconds. Default is zero.
       */
     def play(fadeInMs: Long = 0): Unit =
-        if isPlaying then stop(0)
         player.setOnEndOfMedia(() => {
             seek(0) // Force rewind.
             player.stop()

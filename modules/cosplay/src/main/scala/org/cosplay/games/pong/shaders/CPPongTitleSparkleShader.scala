@@ -43,8 +43,8 @@ import scala.util.Random
   */
 class CPPongTitleSparkleShader extends CPShader:
     case class Sparkle(zpx: CPZPixel, x: Int, y: Int):
-        private val white = CPRand.rand(CS)
-        private val grad = CPColor.gradientSeq(zpx.px.fg, white, 20) ++ CPColor.gradientSeq(white, zpx.px.fg, 20)
+        private val initCol = CPRand.rand(CS)
+        private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, 20) ++ CPColor.gradientSeq(initCol, zpx.px.fg, 20)
         private val gradSz = grad.size
         private var gradIdx = Random.between(0, gradSz)
 

@@ -53,28 +53,31 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val helpImg = CPArrayImage(
         prepSeq(
             """
-              |       GET 10 POINTS TO WIN
+              |              GET 10 POINTS TO WIN
+              |              ~~~~~~~~~~~~~~~~~~~~
+              |
+              |    >> BEWARE OF INITAL KEYBOARD PRESS DELAY <<
+              |   >> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<
               |
               |
-              |       
-              |           Up      Down
-              |         .----.    .----.
-              |         | W  |    | S  |
-              |         `----'    `----'
-              |           or        or
-              |         .----.    .----.
-              |         | Up |    | Dn |
-              |         `----'    `----'
-              |       
-              |         [ENTER]   Play
-              |         [Q]       Quit Any Time
+              |                   Up      Down
+              |                 .----.    .----.
+              |                 | W  |    | S  |
+              |                 `----'    `----'
+              |                   or        or
+              |                 .----.    .----.
+              |                 | Up |    | Dn |
+              |                 `----'    `----'
+              |             
+              |                  [ENTER]   Play
+              |                  [Q]       Quit
               |
               |
               |
-              |  Copyright (C) 2022 Rowan Games, Inc
+              |         Copyright (C) 2022 Rowan Games, Inc
             """),
         (ch, _, y) =>
-            if y == 18 then ch&C3
+            if y == 21 then ch&C3
             else
                 ch match
                     case c if c.isLetter || c == '(' || c == ')' => c&C4
