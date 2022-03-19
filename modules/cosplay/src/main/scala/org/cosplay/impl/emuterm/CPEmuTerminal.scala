@@ -431,6 +431,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         catch case _: Exception => ()
 
         frame.pack()
+        frame.setMinimumSize(new Dimension(80 * chW, 20 * chH))
         frame.setLocationRelativeTo(null) // Center on the screen.
         frame.setVisible(true) // Show.
 
