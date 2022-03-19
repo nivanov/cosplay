@@ -50,11 +50,16 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     private final val INIT_VAL = -1f
     private final val MAX_SCORE = 10
+    private final val INIT_BALL_SPEED = .9f
+    private final val INIT_ENEMY_SPEED = .55f
+    private final val BALL_SPEED_INCR = .05f
+    private final val ENEMY_SPEED_INCR = .045f
+
     private var playerScore = 0
     private var enemyScore = 0
     private final val playerSpeed = 1.2f
-    private var enemySpeed = .8f
-    private var ballSpeed = 1.2f
+    private var enemySpeed = INIT_ENEMY_SPEED
+    private var ballSpeed = INIT_BALL_SPEED
     private var playing = false
     private var gameOver = false
     private var ballAngle = randAngle()
@@ -261,14 +266,14 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     y = getY.toFloat
 
                 // Adjust ball speed based on the canvas dimensions.
-                ballSpeed = canv.wF / canv.hF * 1.1f
+                val bs = canv.wF / canv.hF * 1.1f
 
                 val rad = ballAngle * (Math.PI / 180)
                 val xMax = canv.xMax - ballImg.w + 1f
                 val yMax = canv.yMax - ballImg.h + 1f
 
-                x += (ballSpeed * Math.cos(rad)).toFloat
-                y += (ballSpeed * 0.7 * -Math.sin(rad)).toFloat
+                x += (bs * Math.cos(rad)).toFloat * ballSpeed
+                y += (bs * 0.7 * -Math.sin(rad)).toFloat * ballSpeed
 
                 def paddleReturn(isPlayer: Boolean): Unit =
                     x = if isPlayer then paddleW.toFloat else canv.wF - paddleW - ballW - 2
@@ -279,6 +284,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 def score(plyScr: Int, enyScr: Int): Unit =
                     playerScore += plyScr
                     enemyScore += enyScr
+
+                    ballSpeed += BALL_SPEED_INCR
+                    enemySpeed += ENEMY_SPEED_INCR
+
                     missSnd.play()
                     enemyScoreSpr.setImage(mkScoreImage(enemyScore))
                     playerScoreSpr.setImage(mkScoreImage(playerScore))
@@ -383,8 +392,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         gameOver = false
         playerScore = 0
         enemyScore = 0
-        enemySpeed = .8f
-        ballSpeed = 1.2f
+        enemySpeed = INIT_ENEMY_SPEED
+        ballSpeed = INIT_BALL_SPEED
         ballAngle = randAngle()
 
         enemyScoreSpr.setImage(mkScoreImage(enemyScore))
