@@ -50,7 +50,7 @@ object CPPongBallFlashlightShader extends CPShader:
                 if canv.isValid(x, y) then
                     // Account for character with/height ratio to make a proper circle...
                     // NOTE: we can't get the font metrics in the native ANSI terminal so
-                    //       we use 1.85 as a general approximation.
+                    //       we use 1.85 as a general approximation.    
                     val dx = (cx - x).abs.toFloat / 1.85
                     val dy = (cy - y).abs.toFloat
                     val r = Math.sqrt(dx * dx + dy * dy).toFloat
