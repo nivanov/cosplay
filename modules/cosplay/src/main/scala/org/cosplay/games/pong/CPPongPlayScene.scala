@@ -2,6 +2,7 @@ package org.cosplay.games.pong
 
 import org.cosplay.CPFIGLetFont.FIG_BIG
 import org.cosplay.CPScene
+import org.cosplay.games.pong.particles.CPPongScoreEmitter
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -46,23 +47,23 @@ import org.cosplay.games.pong.shaders.*
   * Pong main gameplay scene.
   */
 object CPPongPlayScene extends CPScene("play", None, BG_PX):
-    private def randAngle(): Int = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
+    private def randBallAngle(): Int = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
     private final val INIT_VAL = -1f
     private final val MAX_SCORE = 10
     private final val INIT_BALL_SPEED = .9f
-    private final val INIT_ENEMY_SPEED = .55f
+    private final val INIT_ENEMY_SPEED = .7f
     private final val BALL_SPEED_INCR = .05f
-    private final val ENEMY_SPEED_INCR = .045f
+    private final val ENEMY_SPEED_INCR = .06f
 
-    private var playerScore = 0
-    private var enemyScore = 0
-    private final val playerSpeed = 1.2f
-    private var enemySpeed = INIT_ENEMY_SPEED
+    private var plyScore = 0
+    private var enyScore = 0
+    private final val plySpeed = 1.2f
+    private var enySpeed = INIT_ENEMY_SPEED
     private var ballSpeed = INIT_BALL_SPEED
     private var playing = false
     private var gameOver = false
-    private var ballAngle = randAngle()
+    private var ballAngle = randBallAngle()
 
     private val ballImg = CPArrayImage(
         prepSeq(
@@ -88,15 +89,15 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             (ch, _, _) => ' '&&(C_BLACK, c)
         )
 
-    private val playerImg = mkPaddleImage(C5)
-    private val enemyImg = mkPaddleImage(C3)
-    require(playerImg.h == enemyImg.h)
-    require(playerImg.w == enemyImg.w)
-    private val paddleH = playerImg.h
-    private val paddleW = playerImg.w
+    private val plyImg = mkPaddleImage(C5)
+    private val enyImg = mkPaddleImage(C3)
+    require(plyImg.h == enyImg.h)
+    require(plyImg.w == enyImg.w)
+    private val paddleH = plyImg.h
+    private val paddleW = plyImg.w
 
-    private val playerShdr = CPPongPaddleShader()
-    private val enemyShdr = CPPongPaddleShader()
+    private val plyShdr = CPPongPaddleShader()
+    private val enyShdr = CPPongPaddleShader()
 
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
@@ -181,8 +182,12 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             override def update(ctx: CPSceneObjectContext): Unit = setX(xf(ctx.getCanvas, this))
 
     // Score sprites.
-    private val playerScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
-    private val enemyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
+    private val plyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
+    private val enyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
+    private val plyScoreEmitter = new CPPongScoreEmitter(() ⇒ plyScoreSpr.getRect.xCenter, () ⇒ plyScoreSpr.getRect.h / 2)
+    private val enyScoreEmitter = new CPPongScoreEmitter(() ⇒ enyScoreSpr.getRect.xCenter, () ⇒ enyScoreSpr.getRect.h / 2)
+    private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
+    private val enyScorePartSpr = CPParticleSprite(emitters = Seq(enyScoreEmitter))
 
     // Net in the middle.
     private val netSpr = new CPCanvasSprite("net"):
@@ -191,7 +196,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, 5, '|'&C2)
 
     // Player paddle.
-    private val playerSpr = new CPImageSprite(x = 0, y = 0, z = 0, playerImg, false, Seq(playerShdr)):
+    private val plySpr = new CPImageSprite(x = 0, y = 0, z = 0, plyImg, false, Seq(plyShdr)):
         private var y = INIT_VAL
 
         override def reset(): Unit =
@@ -211,8 +216,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 ctx.getKbEvent match
                     case Some(evt) =>
                         evt.key match
-                            case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -playerSpeed else -1.0f)
-                            case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then playerSpeed else 1.0f)
+                            case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -plySpeed else -1.0f)
+                            case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then plySpeed else 1.0f)
                             case _ => ()
                     case None => ()
 
@@ -229,7 +234,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         else currY
 
     // Computer paddle.
-    private val enemySpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, enemyImg, false, Seq(enemyShdr)):
+    private val enySpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, enyImg, false, Seq(enyShdr)):
         private var y = INIT_VAL
 
         override def reset(): Unit =
@@ -243,10 +248,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
             if playing then
                 if y == INIT_VAL then y = getY.toFloat
-                val ballY = ballSpr.getY.toFloat
-                val dy = if y > ballY then -enemySpeed else if (y + paddleH / 2) < ballY then enemySpeed else 0f
-                y = clipPaddleY(canv, y, dy)
-                setY(y.round)
+                if CPRand.randFloat() < 0.95 then // Randomize enemy behavior.
+                    val ballY = ballSpr.getY.toFloat
+                    val dy = if y > ballY then -enySpeed else if (y + paddleH / 2) < ballY then enySpeed else 0f
+                    y = clipPaddleY(canv, y, dy)
+                    setY(y.round)
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false, Seq(CPPongBallShader)):
@@ -277,20 +283,24 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
                 def paddleReturn(isPlayer: Boolean): Unit =
                     x = if isPlayer then paddleW.toFloat else canv.wF - paddleW - ballW - 2
-                    ballAngle = -ballAngle + 180
+                    ballAngle = -ballAngle + 180 + CPRand.randInt(0, 10) - 5
                     paddleSnd.play()
-                    if isPlayer then playerShdr.start() else enemyShdr.start()
+                    if isPlayer then plyShdr.start() else enyShdr.start()
 
                 def score(plyScr: Int, enyScr: Int): Unit =
-                    playerScore += plyScr
-                    enemyScore += enyScr
+                    plyScore += plyScr
+                    enyScore += enyScr
 
-                    ballSpeed += BALL_SPEED_INCR
-                    enemySpeed += ENEMY_SPEED_INCR
+                    if plyScr > 0 then
+                        ballSpeed += BALL_SPEED_INCR
+                        enySpeed += ENEMY_SPEED_INCR
+                        plyScorePartSpr.resume(reset = true)
+                    else
+                        enyScorePartSpr.resume(reset = true)
 
                     missSnd.play()
-                    enemyScoreSpr.setImage(mkScoreImage(enemyScore))
-                    playerScoreSpr.setImage(mkScoreImage(playerScore))
+                    enyScoreSpr.setImage(mkScoreImage(enyScore))
+                    plyScoreSpr.setImage(mkScoreImage(plyScore))
 
                     def finishGame(spr: CPImageSprite, snd: CPSound): Unit =
                         playing = false
@@ -298,12 +308,12 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                         spr.setVisible(true)
                         snd.play(3000)
 
-                    if playerScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
-                    else if enemyScore == MAX_SCORE then finishGame(youLostSpr, youLostSnd)
+                    if plyScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
+                    else if enyScore == MAX_SCORE then finishGame(youLostSpr, youLostSnd)
                     else playing = false
 
-                if x < 1 && y > playerSpr.getY - ballH && y < playerSpr.getY + paddleH then paddleReturn(true)
-                else if x > xMax - 1 && y > enemySpr.getY - ballH && y < enemySpr.getY + paddleH then paddleReturn(false)
+                if x < 1 && y > plySpr.getY - ballH && y < plySpr.getY + paddleH then paddleReturn(true)
+                else if x > xMax - 1 && y > enySpr.getY - ballH && y < enySpr.getY + paddleH then paddleReturn(false)
                 else if y > yMax || y < 0 then
                     ballAngle = -ballAngle
                     wallSnd.play()
@@ -338,27 +348,31 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     serveSpr.setVisible(true)
 
                     // Reset positions.
-                    playerSpr.reset()
-                    enemySpr.reset()
+                    plySpr.reset()
+                    enySpr.reset()
                     ballSpr.reset()
-                    playerSpr.setXY(0, canv.dim.h / 2 - paddleH / 2)
-                    enemySpr.setXY(canv.w - paddleW, canv.dim.h / 2 - paddleH / 2)
+                    plySpr.setXY(0, canv.dim.h / 2 - paddleH / 2)
+                    enySpr.setXY(canv.w - paddleW, canv.dim.h / 2 - paddleH / 2)
                     ballSpr.setXY(canv.dim.w - paddleW - ballImg.w - 3, canv.dim.h / 2)
+                    ballAngle = randBallAngle()
 
                     if ctx.isKbKey(KEY_SPACE) then
                         serveSpr.setVisible(false)
                         playing = true
+                        paddleSnd.play()
 
     addObjects(
         // Scene-wide keyboard handlers.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
         // Score sprites.
-        playerScoreSpr,
-        enemyScoreSpr,
+        plyScoreSpr,
+        enyScoreSpr,
+        plyScorePartSpr,
+        enyScorePartSpr,
         // Game elements.
         netSpr,
-        enemySpr,
-        playerSpr,
+        enySpr,
+        plySpr,
         ballSpr,
         // Game controller.
         gameCtrlSpr,
@@ -390,14 +404,14 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         // State machine.
         playing = false
         gameOver = false
-        playerScore = 0
-        enemyScore = 0
-        enemySpeed = INIT_ENEMY_SPEED
+        plyScore = 0
+        enyScore = 0
+        enySpeed = INIT_ENEMY_SPEED
         ballSpeed = INIT_BALL_SPEED
-        ballAngle = randAngle()
+        ballAngle = randBallAngle()
 
-        enemyScoreSpr.setImage(mkScoreImage(enemyScore))
-        playerScoreSpr.setImage(mkScoreImage(playerScore))
+        enyScoreSpr.setImage(mkScoreImage(enyScore))
+        plyScoreSpr.setImage(mkScoreImage(plyScore))
 
 
 
