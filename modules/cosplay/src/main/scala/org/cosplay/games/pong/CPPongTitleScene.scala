@@ -77,8 +77,8 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
             if y == 18 then ch&C3
             else
                 ch match
-                    case c if c.isLetter => c&C4
-                    case '|' | '.' | '`' | '-' | '\'' => ch&C2
+                    case c if c.isLetter || c == '(' || c == ')' => c&C4
+                    case '[' | ']' | '|' | '.' | '`' | '-' | '\'' => ch&C2
                     case _ => ch.toUpper&C1
     ).trimBg()
 

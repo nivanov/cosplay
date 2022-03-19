@@ -26,6 +26,7 @@ import impl.{CPContainer, CPUtils}
 
 import java.io.File
 import java.net.URL
+import java.util.concurrent.CountDownLatch
 import scala.collection.{immutable, mutable}
 
 /*
@@ -70,9 +71,18 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
         if !CPEngine.isInit then
             E("CosPlay engine must be initialized (CPEngine.init(...) method) before sound can be created.")
         else
-            try new MediaPlayer(new Media(getUri))
+            val latch = new CountDownLatch(1)
+            try
+                val impl = new MediaPlayer(new Media(getUri))
+                // Wait & load the sounds media.
+                impl.setOnReady(new Runnable():
+                    override def run(): Unit = latch.countDown()
+                )
+                latch.await()
+                impl
             catch case e: Exception => E(s"Failed to load sound media: $src", e)
     private var vol = player.getVolume
+    private val totalDur = player.getTotalDuration.toMillis.toLong
 
     /** @inheritdoc */
     override val getOrigin: String = src
@@ -113,28 +123,28 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def setBalance(bal: Double): Unit = player.setBalance(bal)
 
     /**
-      * Starts the playback with specified fade in duration.
+      * Starts the playback with specified fade in duration. If the current playback is runing it will be
+      * stopped first and rewound back. When playback reaches the end the player will rewind back again to the
+      * beginning and stop.
       *
-      * @param fadeInMs Fade in duration in milliseconds.
+      * @param fadeInMs Fade in duration in milliseconds. Default is zero.
       */
-    def play(fadeInMs: Long): Unit = if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
+    def play(fadeInMs: Long = 0): Unit =
+        if isPlaying then stop(0)
+        player.setOnEndOfMedia(() => {
+            seek(0) // Force rewind.
+            player.stop()
+        })
+        if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
 
     /**
-      * Stops any existing playback, rewinds back to the start and plays the media until the end or
-      * stopped.
-      */
-    def playOnce(): Unit =
-        stop(0)
-        rewind()
-        player.play()
+      * Pauses current playback.
+       */
+    def pause(): Unit = player.pause()
 
     /**
-      * Starts the playback without a fade in.
-      */
-    def play(): Unit = play(0)
-
-    /**
-      * Rewinds the media to the zero position.
+      * Rewinds the live media playback to the zero position. No effect
+      * if the playback is not playing.
       */
     def rewind(): Unit = seek(0)
 
@@ -145,7 +155,6 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       */
     def seek(ms: Long): Unit =
         val dur = Duration.millis(ms.toDouble)
-        player.setStartTime(dur)
         player.seek(dur)
 
     /**
@@ -154,14 +163,9 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def getCurrentTime: Long = player.getCurrentTime.toMillis.toLong
 
     /**
-      * Gets current cycle count for the media.
-      */
-    def getCycleCount: Int = player.getCycleCount
-
-    /**
       * Gets media total duration in milliseconds.
       */
-    def getTotalDuration: Long = player.getTotalDuration.toMillis.toLong
+    def getTotalDuration: Long = totalDur
 
     /**
       * Starts the looping playback from the start of the media.
@@ -170,7 +174,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       */
     def loopAll(fadeInMs: Long, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
-        loop(fadeInMs, 0, player.getTotalDuration.toMillis.toLong, endFun)
+        loop(fadeInMs, 0, totalDur, endFun)
 
     /**
       * Starts the looping playback.
@@ -181,8 +185,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       */
     def loop(fadeInMs: Long, startMs: Long, endMs: Long, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
-        val startDur = Duration.millis(startMs.toDouble)
-        player.setStartTime(startDur)
+        player.setStartTime(Duration.millis(startMs.toDouble))
         player.setStopTime(Duration.millis(endMs.toDouble))
         player.setOnEndOfMedia(() => {
             endFun(this)
@@ -238,20 +241,21 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     /**
       * Fades in stopped or fades out the playing audio.
       *
-      * @param fadeMs Fade in or fade out duration in milliseconds.
+      * @param fadeMs Fade in or fade out duration in milliseconds. Default is zero.
       */
-    def toggle(fadeMs: Long): Unit = if isPlaying then stop(fadeMs) else play(fadeMs)
+    def toggle(fadeMs: Long = 0): Unit = if isPlaying then stop(fadeMs) else play(fadeMs)
 
     /**
       * Stops the playback.
       *
-      * @param fadeOutMs Fade out duration in milliseconds.
+      * @param fadeOutMs Fade out duration in milliseconds. Default is zero.
       */
-    def stop(fadeOutMs: Long): Unit =
+    def stop(fadeOutMs: Long = 0): Unit =
         stopTimeline()
         def end(): Unit =
-            player.setStartTime(player.getCurrentTime)
-            player.stop()
+            player.setStartTime(Duration.millis(0))
+            player.setStopTime(Duration.millis(totalDur.toDouble))
+            player.stop() // Also rewinds back.
             player.setOnEndOfMedia(null) // Stop looping, if any.
             player.setVolume(vol) // Restore the volume.
 

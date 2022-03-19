@@ -154,7 +154,7 @@ object CPParticleExample:
 
         val kaboomSpr = CPParticleSprite("kaboom", Seq(emitter))
 
-        kaboomSpr.setOnStart(Option(_ => boomSnd.playOnce()))
+        kaboomSpr.setOnStart(Option(_ => boomSnd.play()))
         kaboomSpr.setOnEnd(Option(_ => boomSnd.stop(1000)))
 
         val ctrlSpr = new CPOffScreenSprite():

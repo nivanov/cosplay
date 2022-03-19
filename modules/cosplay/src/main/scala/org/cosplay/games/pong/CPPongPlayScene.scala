@@ -273,13 +273,13 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 def paddleReturn(isPlayer: Boolean): Unit =
                     x = if isPlayer then paddleW.toFloat else canv.wF - paddleW - ballW - 2
                     ballAngle = -ballAngle + 180
-                    paddleSnd.playOnce()
+                    paddleSnd.play()
                     if isPlayer then playerShdr.start() else enemyShdr.start()
 
                 def score(plyScr: Int, enyScr: Int): Unit =
                     playerScore += plyScr
                     enemyScore += enyScr
-                    missSnd.playOnce()
+                    missSnd.play()
                     enemyScoreSpr.setImage(mkScoreImage(enemyScore))
                     playerScoreSpr.setImage(mkScoreImage(playerScore))
 
@@ -297,7 +297,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 else if x > xMax - 1 && y > enemySpr.getY - ballH && y < enemySpr.getY + paddleH then paddleReturn(false)
                 else if y > yMax || y < 0 then
                     ballAngle = -ballAngle
-                    wallSnd.playOnce()
+                    wallSnd.play()
                 else if x < 0 then score(0, 1)
                 else if x > canv.xMax then score(1, 0)
 
@@ -361,6 +361,15 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
 
+    override def onDeactivate(): Unit =
+        super.onDeactivate()
+
+        // Stop all audio for this scene.
+        youWonSnd.stop(400) // Stop background audio.
+        youLostSnd.stop(400)
+        wallSnd.stop()
+        paddleSnd.stop()
+
     override def onActivate(): Unit =
         super.onActivate()
 
@@ -369,9 +378,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         youLostSpr.setVisible(false)
         youWonSpr.setVisible(false)
 
+        // State machine.
         playing = false
         gameOver = false
-
         playerScore = 0
         enemyScore = 0
         enemySpeed = .8f
