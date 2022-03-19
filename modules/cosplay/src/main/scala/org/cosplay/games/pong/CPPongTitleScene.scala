@@ -43,6 +43,9 @@ import org.cosplay.games.pong.shaders.*
                 ALl rights reserved.
 */
 
+/**
+  * Title scene for pong game.
+  */
 object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
     private val logoImg = FIG_BIG_MONEY_NE.render("Pong", C_WHITE).skin(

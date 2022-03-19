@@ -36,7 +36,7 @@ import org.cosplay.games.pong.*
 import org.cosplay.games.pong.*
 
 /**
-  *
+  * Ball boost shader.
   */
 object CPPongBallBoostShader extends CPShader:
     private var go = false

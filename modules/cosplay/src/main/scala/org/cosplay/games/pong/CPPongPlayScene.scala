@@ -54,14 +54,14 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private final val MAX_SCORE = 10
     private final val IS_WIN = SystemUtils.IS_OS_WINDOWS
     private final val INIT_BALL_SPEED = if IS_WIN then .8f else .9f
-    private final val INIT_ENEMY_SPEED = if IS_WIN then .6f else .7f
+    private final val INIT_NPC_SPEED = if IS_WIN then .6f else .7f
     private final val BALL_SPEED_INCR = if IS_WIN then .045f else .05f
     private final val ENEMY_SPEED_INCR = if IS_WIN then .045f else .06f
 
     private var plyScore = 0
-    private var enyScore = 0
+    private var npcScore = 0
     private final val plySpeed = 1.2f
-    private var enySpeed = INIT_ENEMY_SPEED
+    private var npcSpeed = INIT_NPC_SPEED
     private var ballSpeed = INIT_BALL_SPEED
     private var playing = false
     private var gameOver = false
@@ -92,23 +92,26 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         )
 
     private val plyImg = mkPaddleImage(C5)
-    private val enyImg = mkPaddleImage(C3)
-    require(plyImg.h == enyImg.h)
-    require(plyImg.w == enyImg.w)
+    private val npcImg = mkPaddleImage(C3)
+    require(plyImg.h == npcImg.h)
+    require(plyImg.w == npcImg.w)
     private val paddleH = plyImg.h
     private val paddleW = plyImg.w
 
     private val plyShdr = CPPongPaddleShader()
-    private val enyShdr = CPPongPaddleShader()
+    private val npcShdr = CPPongPaddleShader()
 
     private final val ballW = ballImg.getWidth
     private final val ballH = ballImg.getHeight
 
+    // Audio assets.
     private final val paddleSnd = CPSound(s"sounds/games/pong/bounce1.wav", 0.2f)
     private final val wallSnd = CPSound(s"sounds/games/pong/bounce2.wav", 0.6f)
     private final val missSnd = CPSound(s"sounds/games/pong/miss.wav", 0.3f)
     private final val youLostSnd = CPSound(s"sounds/games/pong/you_lost.wav", 0.5f)
     private final val youWonSnd = CPSound(s"sounds/games/pong/you_won.wav", 0.5f)
+    private final val bgSnd = CPSound(s"sounds/games/pong/bg.wav", 0.02f)
+    private final val boostSnd = CPSound(s"sounds/games/pong/boost.wav", 0.2f)
 
     private val serveImg = CPArrayImage(
         prepSeq(
@@ -168,16 +171,16 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     ).trimBg()
 
     /**
+      * Creates score image.
       *
       * @param score Score value.
-      * @return
       */
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
     /**
+      * Create score sprite.
       *
       * @param xf X-coordinate producer.
-      * @return
       */
     private def mkScoreSprite(xf: (CPCanvas, CPImageSprite) ⇒ Int): CPImageSprite =
         new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)): // Initial score is zero.
@@ -185,12 +188,13 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Score sprites.
     private val plyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
-    private val enyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
+    private val npcScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
     private val plyScoreEmitter = new CPPongScoreEmitter(() ⇒ plyScoreSpr.getRect.xCenter, () ⇒ plyScoreSpr.getRect.h / 2)
-    private val enyScoreEmitter = new CPPongScoreEmitter(() ⇒ enyScoreSpr.getRect.xCenter, () ⇒ enyScoreSpr.getRect.h / 2)
+    private val npcScoreEmitter = new CPPongScoreEmitter(() ⇒ npcScoreSpr.getRect.xCenter, () ⇒ npcScoreSpr.getRect.h / 2)
     private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
-    private val enyScorePartSpr = CPParticleSprite(emitters = Seq(enyScoreEmitter))
+    private val npcScorePartSpr = CPParticleSprite(emitters = Seq(npcScoreEmitter))
 
+    // Boost announcement sprite.
     private val boostSpr = new CPImageSprite(x = 0, y = 0, z = 10, FIG_RECTANGLES.render("boost", C1).trimBg()):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -231,10 +235,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     case None => ()
 
     /**
-      *
-      * @param canv
-      * @param currY
-      * @param dy
+      * Clips the position of the paddle on the screen.
       */
     private def clipPaddleY(canv: CPCanvas, currY: Float, dy: Float): Float =
         val maxY = canv.hF - paddleH
@@ -242,8 +243,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         else if dy < 0 then Math.max(currY + dy, 0)
         else currY
 
-    // Computer paddle.
-    private val enySpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, enyImg, false, Seq(enyShdr)):
+    // NPC paddle sprite.
+    private val npcSpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, npcImg, false, Seq(npcShdr)):
         private var y = INIT_VAL
 
         override def reset(): Unit =
@@ -259,7 +260,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 if y == INIT_VAL then y = getY.toFloat
                 if CPRand.randFloat() < 0.95 then // Randomize enemy behavior.
                     val ballY = ballSpr.getY.toFloat
-                    val dy = if y > ballY then -enySpeed else if (y + paddleH / 2) < ballY then enySpeed else 0f
+                    val dy = if y > ballY then -npcSpeed else if (y + paddleH / 2) < ballY then npcSpeed else 0f
                     y = clipPaddleY(canv, y, dy)
                     setY(y.round)
 
@@ -267,11 +268,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false,
         Seq(CPPongBallBoostShader, CPPongBallFlashlightShader)):
         private var x, y = INIT_VAL
-        private var boost = false
+        private var boosted = false
 
         override def reset(): Unit =
             super.reset()
-            boost = false
+            boosted = false
             x = INIT_VAL
             y = INIT_VAL
 
@@ -285,7 +286,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
                 // Adjust ball speed based on the canvas dimensions.
                 var bs = canv.wF / canv.hF * 1.1f
-                if boost then bs *= 1.5f
+                if boosted then bs *= 1.5f
                 val rad = ballAngle * (Math.PI / 180)
                 val xMax = canv.xMax - ballImg.w + 1f
                 val yMax = canv.yMax - ballImg.h + 1f
@@ -293,53 +294,58 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 x += (bs * Math.cos(rad)).toFloat * ballSpeed
                 y += (bs * 0.7 * -Math.sin(rad)).toFloat * ballSpeed
 
-                def paddleReturn(isPlayer: Boolean): Unit =
-                    boost = false
-                    boostSpr.setVisible(false)
-                    CPPongBallBoostShader.stop()
+                def setBoost(on: Boolean): Unit =
+                    boosted = on
+                    boostSpr.setVisible(on)
+                    if on then
+                        CPPongBallBoostShader.start()
+                        boostSnd.play()
+                    else
+                        CPPongBallBoostShader.stop()
+                        boostSnd.stop()
+
+                def paddleReturn(isPly: Boolean): Unit =
+                    setBoost(false)
                     val yr = y.round
                     val edge =
-                        if isPlayer then yr == plySpr.getY - ballH || yr == plySpr.getY + plyImg.h
-                        else yr == enySpr.getY - ballH || yr == enySpr.getY + enyImg.h
-                    if edge then
-                        boost = true
-                        boostSpr.setVisible(true)
-                        CPPongBallBoostShader.start()
-                    x = if isPlayer then paddleW.toFloat else canv.wF - paddleW - ballW - 2
+                        if isPly then yr == plySpr.getY - ballH || yr == plySpr.getY + plyImg.h
+                        else yr == npcSpr.getY - ballH || yr == npcSpr.getY + npcImg.h
+                    if edge then setBoost(true)
+                    x = if isPly then paddleW.toFloat else canv.wF - paddleW - ballW - 2
                     ballAngle = -ballAngle + 180 + CPRand.randInt(0, 10) - 5
                     paddleSnd.play()
-                    if isPlayer then plyShdr.start() else enyShdr.start()
+                    if isPly then plyShdr.start() else npcShdr.start()
 
-                def score(plyScr: Int, enyScr: Int): Unit =
-                    boost = false
-                    boostSpr.setVisible(false)
-                    CPPongBallBoostShader.stop()
+                def score(plyScr: Int, npcScr: Int): Unit =
+                    setBoost(false)
+
                     plyScore += plyScr
-                    enyScore += enyScr
+                    npcScore += npcScr
 
                     if plyScr > 0 then
                         ballSpeed += BALL_SPEED_INCR
-                        enySpeed += ENEMY_SPEED_INCR
+                        npcSpeed += ENEMY_SPEED_INCR
                         plyScorePartSpr.resume(reset = true)
                     else
-                        enyScorePartSpr.resume(reset = true)
+                        npcScorePartSpr.resume(reset = true)
 
                     missSnd.play()
-                    enyScoreSpr.setImage(mkScoreImage(enyScore))
+                    npcScoreSpr.setImage(mkScoreImage(npcScore))
                     plyScoreSpr.setImage(mkScoreImage(plyScore))
 
                     def finishGame(spr: CPImageSprite, snd: CPSound): Unit =
                         playing = false
                         gameOver = true
+                        bgSnd.stop(500) // Stop background audio.
                         spr.setVisible(true)
                         snd.play(3000)
 
                     if plyScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
-                    else if enyScore == MAX_SCORE then finishGame(youLostSpr, youLostSnd)
+                    else if npcScore == MAX_SCORE then finishGame(youLostSpr, youLostSnd)
                     else playing = false
 
                 if x < 1 && y > plySpr.getY - ballH && y < plySpr.getY + paddleH then paddleReturn(true)
-                else if x > xMax - 1 && y > enySpr.getY - ballH && y < enySpr.getY + paddleH then paddleReturn(false)
+                else if x > xMax - 1 && y > npcSpr.getY - ballH && y < npcSpr.getY + paddleH then paddleReturn(false)
                 else if y > yMax || y < 0 then
                     ballAngle = -ballAngle
                     wallSnd.play()
@@ -375,10 +381,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
                     // Reset positions.
                     plySpr.reset()
-                    enySpr.reset()
+                    npcSpr.reset()
                     ballSpr.reset()
                     plySpr.setXY(0, canv.dim.h / 2 - paddleH / 2)
-                    enySpr.setXY(canv.w - paddleW, canv.dim.h / 2 - paddleH / 2)
+                    npcSpr.setXY(canv.w - paddleW, canv.dim.h / 2 - paddleH / 2)
                     ballSpr.setXY(canv.dim.w - paddleW - ballImg.w - 3, canv.dim.h / 2)
                     ballAngle = randBallAngle()
 
@@ -392,12 +398,12 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
         // Score sprites.
         plyScoreSpr,
-        enyScoreSpr,
+        npcScoreSpr,
         plyScorePartSpr,
-        enyScorePartSpr,
+        npcScorePartSpr,
         // Game elements.
         netSpr,
-        enySpr,
+        npcSpr,
         plySpr,
         ballSpr,
         boostSpr,
@@ -419,11 +425,14 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         youLostSnd.stop(400)
         wallSnd.stop()
         paddleSnd.stop()
+        bgSnd.stop() // Stop background audio.
 
     override def onActivate(): Unit =
         super.onActivate()
 
-        // All anouncements are invisible initially.
+        bgSnd.loopAll(5000) // Start background audio.
+
+        // All announcements are invisible initially.
         serveSpr.setVisible(false)
         youLostSpr.setVisible(false)
         youWonSpr.setVisible(false)
@@ -433,12 +442,12 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         playing = false
         gameOver = false
         plyScore = 0
-        enyScore = 0
-        enySpeed = INIT_ENEMY_SPEED
+        npcScore = 0
+        npcSpeed = INIT_NPC_SPEED
         ballSpeed = INIT_BALL_SPEED
         ballAngle = randBallAngle()
 
-        enyScoreSpr.setImage(mkScoreImage(enyScore))
+        npcScoreSpr.setImage(mkScoreImage(npcScore))
         plyScoreSpr.setImage(mkScoreImage(plyScore))
 
 

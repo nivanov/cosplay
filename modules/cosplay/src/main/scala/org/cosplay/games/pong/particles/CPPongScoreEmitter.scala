@@ -35,7 +35,8 @@ import CPColor.*
 */
 
 /**
-  *
+  * Particle emitter for score effect.
+  * 
   * @param xf X-coordinate producer for emission center.
   * @param yf Y-coordinate producer for emission center.
   */

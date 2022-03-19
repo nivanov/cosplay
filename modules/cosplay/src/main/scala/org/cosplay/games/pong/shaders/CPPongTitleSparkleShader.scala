@@ -39,7 +39,7 @@ import scala.collection.mutable
 import scala.util.Random
 
 /**
-  *
+  * Title screen "sparkle" shader.
   */
 class CPPongTitleSparkleShader extends CPShader:
     case class Sparkle(zpx: CPZPixel, x: Int, y: Int):

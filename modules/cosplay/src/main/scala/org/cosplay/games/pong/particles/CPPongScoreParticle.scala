@@ -35,6 +35,7 @@ import CPColor.*
 */
 
 /**
+  * Particle for score particle effect.
   *
   * @param initX Initial x-coordinate.
   * @param initY Initial y-coordinate.

@@ -34,7 +34,7 @@ import games.pong.*
 */
 
 /**
-  * Creates slight flashlight effect around the ball.
+  * Flashlight effect around the ball.
   */
 object CPPongBallFlashlightShader extends CPShader:
     private final val RADIUS = 6

@@ -61,8 +61,10 @@ val C5 = palette(4)
 val CS = Seq(C1, C2, C3, C4, C5)
 
 /**
- *
- */
+  * Classic pong game.
+  *
+  * @see https://cosplayengine.com/devguide/pong_game.html
+  */
 object CPPongGame:
     /**
      * Entry point for JVM runtime.
