@@ -1,5 +1,6 @@
 package org.cosplay.games.pong
 
+import org.apache.commons.lang3.SystemUtils
 import org.cosplay.CPFIGLetFont.FIG_BIG
 import org.cosplay.CPScene
 import org.cosplay.games.pong.particles.CPPongScoreEmitter
@@ -51,10 +52,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     private final val INIT_VAL = -1f
     private final val MAX_SCORE = 10
-    private final val INIT_BALL_SPEED = .9f
-    private final val INIT_ENEMY_SPEED = .7f
-    private final val BALL_SPEED_INCR = .05f
-    private final val ENEMY_SPEED_INCR = .06f
+    private final val IS_WIN = SystemUtils.IS_OS_WINDOWS
+    private final val INIT_BALL_SPEED = if IS_WIN then .8f else .9f
+    private final val INIT_ENEMY_SPEED = if IS_WIN then .6f else .7f
+    private final val BALL_SPEED_INCR = if IS_WIN then .045f else .05f
+    private final val ENEMY_SPEED_INCR = if IS_WIN then .045f else .06f
 
     private var plyScore = 0
     private var enyScore = 0
@@ -104,7 +106,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     private final val paddleSnd = CPSound(s"sounds/games/pong/bounce1.wav", 0.2f)
     private final val wallSnd = CPSound(s"sounds/games/pong/bounce2.wav", 0.6f)
-    private final val missSnd = CPSound(s"sounds/games/pong/miss.wav")
+    private final val missSnd = CPSound(s"sounds/games/pong/miss.wav", 0.3f)
     private final val youLostSnd = CPSound(s"sounds/games/pong/you_lost.wav", 0.5f)
     private final val youWonSnd = CPSound(s"sounds/games/pong/you_won.wav", 0.5f)
 
