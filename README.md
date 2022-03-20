@@ -41,12 +41,12 @@ Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
 <dependency>
   <groupId>org.cosplayengine</groupId>
   <artifactId>cosplay</artifactId>
-  <version>0.2.0</version>
+  <version>0.5.0</version>
 </dependency>
 ```
 Using Scala SBT:
 ```scala
-libraryDependencies += "org.cosplayengine" % "cosplay" % "0.2.0"
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.5.0"
 ```
 
 ## Questions?
