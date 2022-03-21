@@ -13,7 +13,7 @@ $ mvn package
 ```
 To run example:
 ```shell
-$ mvn -f modules/cosplay -P ex:video exec:java
+$ mvn -f modules/cosplay -P ex:textinput exec:java
 ```
 
 ## Copyright
