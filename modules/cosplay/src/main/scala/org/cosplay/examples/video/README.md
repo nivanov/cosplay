@@ -16,7 +16,7 @@
 Check out [www.cosplayengine.com](https://www.cosplayengine.com) for the full documentation.
 
 ## Run
-One time - Git clone & build:
+One-time Git clone & build:
 ```shell
 $ git clone https://github.com/nivanov/cosplay.git
 $ cd cosplay
