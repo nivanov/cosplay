@@ -40,6 +40,18 @@ import prefabs.shaders.*
 
 /**
   * Code example for audio functionality.
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:sound exec:java
+  * }}}
   * 
   * @see [[CPSound]]
   * @note See developer guide at [[https://cosplayengine.com]]

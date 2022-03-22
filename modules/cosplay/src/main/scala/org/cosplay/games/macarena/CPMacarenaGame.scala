@@ -42,6 +42,18 @@ import prefabs.shaders.*
   * Five stick-figures dancing macarena. You control dances by pressing their numbers
   * on the keyboard.
   *
+  * ### Running Game
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run the game:
+  * {{{
+  *     $ mvn -f modules/cosplay -P macarena exec:java
+  * }}}
+  *
   * @note See more details at [[https://cosplayengine.org/devguide/quick_game.html]]
   */
 object CPMacarenaGame:

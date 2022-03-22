@@ -42,6 +42,18 @@ import org.cosplay.prefabs.shaders.*
 /**
   * Code example for shaders functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:shader exec:java
+  * }}}
+  *
   * @see [[CPShader]]
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]

@@ -63,6 +63,18 @@ val CS = Seq(C1, C2, C3, C4, C5)
 /**
   * Classic pong game.
   *
+  * ### Running Game
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run the game:
+  * {{{
+  *     $ mvn -f modules/cosplay -P pong exec:java
+  * }}}
+  *
   * @see https://cosplayengine.com/devguide/pong_game.html
   */
 object CPPongGame:

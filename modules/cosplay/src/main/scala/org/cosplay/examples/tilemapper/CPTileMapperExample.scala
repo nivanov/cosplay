@@ -39,7 +39,19 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /**
   * Code example for tile mapping functionality.
-  * 
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:tilemapper exec:java
+  * }}}
+  *
   * @see [[CPTileMapper]]
   * @note See developer guide at [[https://cosplayengine.com]]
   */

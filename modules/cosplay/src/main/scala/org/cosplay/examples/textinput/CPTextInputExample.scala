@@ -42,6 +42,18 @@ import org.cosplay.prefabs.shaders.*
 /**
   * Code example for built-in text input functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:textinput exec:java
+  * }}}
+  *
   * @see [[CPLabelSprite]]
   * @see [[CPTextInputSprite]]
   * @see [[CPKeyboardKey]]

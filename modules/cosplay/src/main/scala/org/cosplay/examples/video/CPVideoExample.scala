@@ -40,6 +40,18 @@ import prefabs.shaders.*
 /**
   * Code example for video functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:video exec:java
+  * }}}
+  *
   * @see [[CPVideo]]
   * @see [[CPVideoSprite]]
   * @see [[CPVideoSpriteListener]]

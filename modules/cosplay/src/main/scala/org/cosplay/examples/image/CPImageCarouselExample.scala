@@ -42,6 +42,18 @@ import prefabs.shaders.*
 /**
   * Code example for image functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:image_carousel exec:java
+  * }}}
+  *
   * @see [[CPImage]]
   * @see [[CPArrayImage]]
   * @note See developer guide at [[https://cosplayengine.com]]
