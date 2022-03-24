@@ -74,6 +74,7 @@ object CPAnimationExample:
 
         val imgsRight = CPArrayImage(
             // 8 frames @ 6x3
+            // See http://www.asciiworld.com/ for more details.
             prepSeq(
                 """
                   |  _ o
