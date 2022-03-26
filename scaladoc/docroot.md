@@ -8,6 +8,26 @@
    🕹 2D ASCII JVM GAME ENGINE FOR SCALA3
 
 </pre>
+
+<table style="margin-top: 10px; border: none; border-collapse: collapse" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr style="border: none">
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot1.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot2.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot3.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot4.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot4-1.gif"></td>
+        </tr>
+        <tr style="border: none">
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot5.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot6.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot7.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot8.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot9.gif"></td>
+        </tr>
+    </tbody>
+</table>
+
 - Full documentation at [[https://cosplayengine.com]]
 - Examples [[https://cosplayengine.com/devguide/examples.html]]
 - <b>Main API</b> is located in [[file:org/cosplay.html org.cosplay]] package.
