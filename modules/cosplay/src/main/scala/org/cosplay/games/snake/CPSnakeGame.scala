@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.asciiBird
+package org.cosplay.games.snake
 
 /*
    _________            ______________
@@ -32,22 +32,20 @@ package org.cosplay.games.asciiBird
 
 import org.cosplay.*
 import CPColor.*
+import CPPixel.*
 import CPKeyboardKey.*
-import prefabs.images.ani.*
-import prefabs.scenes.*
-import prefabs.shaders.*
+import org.cosplay.prefabs.scenes.CPLogoScene
 
+val BG_PX = '.'&&(C_GRAY2, C_GRAY1) // Background pixel.
 
-object CPAsciiBirdGame:
+object CPSnakeGame:
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1) // Background pixel.
         val dim = CPDim(50, 50) // Dimension for the scenes.
 
         // Initialize the engine.
-        CPEngine.init(CPGameInfo(name = "ASCII Bird", initDim = Option(dim)))
+        CPEngine.init(CPGameInfo(name = "Ascii Snake", initDim = Option(dim)))
 
-        val startMenu = CPScene("startMenu", Option(dim), bgPx,
-            new CPLabelSprite(10, 40, 0, "Ascii Bird", C_DARK_CYAN),
+        val startMenu = CPScene("title", Option(dim), BG_PX,
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
         )
 
@@ -56,9 +54,9 @@ object CPAsciiBirdGame:
             new CPLogoScene(
                 "logo",
                 Option(dim),
-                bgPx,
+                BG_PX,
                 CS_X11_ORANGES ++ CS_X11_BLUES, // Colors to use for shimmer.
-                "startMenu" // ID of the scene to switch to when logo animation is done.
+                "title" // ID of the scene to switch to when logo animation is done.
             ),
             startMenu
         )

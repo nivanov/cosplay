@@ -84,7 +84,7 @@ object CPPongGame:
      * @param args Ignored.
      */
     def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(name = "Classic Pong")
+        val gameInfo = CPGameInfo(name = "Ascii Pong")
 
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
