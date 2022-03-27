@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong.shaders
+package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
 import games.pong.*
@@ -34,10 +34,31 @@ import games.pong.*
 */
 
 /**
-  * Flashlight effect around the ball.
+  * Circular flashlight effect shader.
+  *
+  * This shader can be used to create a circular flashlight effect around the object. It renders its
+  * effect only for a scene object this shader is attached to (i.e. it does not work for entire screen).
+  *
+  * @param radius Radius of circular flashlight effect.
+  * @param autoPlay Whether or not to toggle on the shader effect automatically. Default value is `false`.
+  * @see [[CPFadeInShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPFadeOutShader]]
+  * @see [[CPOffScreenSprite]]
+  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
-object CPPongBallFlashlightShader extends CPShader:
-    private final val RADIUS = 6
+class CPFlashlightShader(radius: Int, autoPlay: Boolean = false) extends CPShader:
+    private var on = autoPlay
+
+    /**
+      * Toggles this shader effect on and off.
+      */
+    def toggle(): Unit = on = !on
+
+    /**
+      * Returns `true` if this shader effect is on, `false` otherwise.
+      */
+    def isOn: Boolean = on
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
@@ -45,7 +66,7 @@ object CPPongBallFlashlightShader extends CPShader:
             val canv = ctx.getCanvas
             val cx = objRect.xCenter
             val cy = objRect.yCenter
-            val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
+            val effRect = CPRect(cx - radius * 2, cy - radius, radius * 4, radius * 2)
             effRect.loop((x, y) => {
                 if canv.isValid(x, y) then
                     // Account for character with/height ratio to make a proper circle...
@@ -54,10 +75,10 @@ object CPPongBallFlashlightShader extends CPShader:
                     val dx = (cx - x).abs.toFloat / 1.85
                     val dy = (cy - y).abs.toFloat
                     val r = Math.sqrt(dx * dx + dy * dy).toFloat
-                    if r <= RADIUS then // Flashlight is a circular effect.
+                    if r <= radius then // Flashlight is a circular effect.
                         val zpx = canv.getZPixel(x, y)
                         val px = zpx.px
                         if px.char == BG_PX.char then
-                            val newFg = px.fg.lighter(0.2f * (1.0f - r / RADIUS))
+                            val newFg = px.fg.lighter(0.2f * (1.0f - r / radius))
                             canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
             })

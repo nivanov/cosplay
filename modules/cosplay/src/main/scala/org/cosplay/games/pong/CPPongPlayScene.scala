@@ -1,11 +1,3 @@
-package org.cosplay.games.pong
-
-import org.cosplay.games.*
-import org.apache.commons.lang3.SystemUtils
-import org.cosplay.CPFIGLetFont.FIG_BIG
-import org.cosplay.CPScene
-import org.cosplay.games.pong.particles.CPPongScoreEmitter
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -23,14 +15,20 @@ import org.cosplay.games.pong.particles.CPPongScoreEmitter
  * limitations under the License.
  */
 
+package org.cosplay.games.pong
+
 import org.cosplay.*
+import games.*
 import CPColor.*
 import CPPixel.*
 import CPArrayImage.*
 import CPFIGLetFont.*
-import prefabs.shaders.*
 import CPKeyboardKey.*
+import prefabs.shaders.*
+import games.pong.particles.*
 import games.pong.shaders.*
+
+import org.apache.commons.lang3.SystemUtils
 
 /*
    _________            ______________
@@ -267,7 +265,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false,
-        Seq(CPPongBallBoostShader, CPPongBallFlashlightShader)):
+        Seq(CPPongBallBoostShader, new CPFlashlightShader(6))):
         private var x, y = INIT_VAL
         private var boosted = false
 

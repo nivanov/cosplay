@@ -48,6 +48,8 @@ import org.cosplay.*
   * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
   *     or certain Z-index. Default predicate returns `false` for all pixels.
   * @see [[CPFadeInShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPFlashlightShader]]     
   * @see [[CPOffScreenSprite]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.      
   */
