@@ -31,9 +31,9 @@ package org.cosplay.games.pong.shaders
 */
 
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.games.pong.*
-import org.cosplay.impl.CPUtils
+import games.*
+import CPColor.*
+import games.pong.*
 
 import scala.collection.mutable
 import scala.util.Random

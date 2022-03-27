@@ -15,21 +15,15 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong
+package org.cosplay.games.snake
 
+import org.cosplay.games.*
 import org.cosplay.*
-import games.*
 import CPColor.*
 import CPArrayImage.*
 import prefabs.shaders.*
-import CPFIGLetFont.*
-import CPCanvas.*
-import CPDim.*
 import CPPixel.*
 import CPKeyboardKey.*
-import prefabs.images.*
-import prefabs.scenes.*
-import games.pong.shaders.*
 
 /*
    _________            ______________
@@ -45,58 +39,49 @@ import games.pong.shaders.*
 */
 
 /**
-  * Title scene for pong game.
+  * Title scene for snake game.
   */
-object CPPongTitleScene extends CPScene("title", None, BG_PX):
+object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
-    private val logoImg = FIG_BIG_MONEY_NE.render("Pong", C_WHITE).skin(
-        (px, _, _) => px.char match
-            case '$' => px.withFg(C5)
-            case _ => px.withFg(C4)
-    ).trimBg()
     private val helpImg = CPArrayImage(
         prepSeq(
             """
-              |              GET 10 POINTS TO WIN
-              |              ~~~~~~~~~~~~~~~~~~~~
-              |
-              |    >> BEWARE OF INITIAL KEYBOARD PRESS DELAY <<
-              |   >> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<
-              |
-              |
-              |                   Up      Down
-              |                 .----.    .----.
-              |                 | W  |    | S  |
-              |                 `----'    `----'
-              |                   or        or
-              |                 .----.    .----.
-              |                 | Up |    | Dn |
-              |                 `----'    `----'
-              |             
-              |                  [ENTER]   Play
-              |                  [Q]       Quit
+              | ______     __   __     ______     __  __     ______
+              |/\  ___\   /\ "-.\ \   /\  __ \   /\ \/ /    /\  ___\
+              |\ \___  \  \ \ \-.  \  \ \  __ \  \ \  _"-.  \ \  __\
+              | \/\_____\  \ \_\\"\_\  \ \_\ \_\  \ \_\ \_\  \ \_____\
+              |  \/_____/   \/_/ \/_/   \/_/\/_/   \/_/\/_/   \/_____/
               |
               |
               |
-              |         Copyright (C) 2022 Rowan Games, Inc
+              |       >> BEWARE OF INITIAL KEYBOARD PRESS DELAY <<
+              |      >> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<
+              |
+              |                 ____ ____ ____ ____
+              |                ||w |||a |||s |||d ||
+              |                ||__|||__|||__|||__||
+              |                |/__\|/__\|/__\|/__\|
+              |
+              |                    [ENTER]   Play
+              |                    [Q]       Quit
+              |
+              |
+              |
+              |            Copyright (C) 2022 Rowan Games, Inc
             """),
         (ch, _, y) =>
             if y == 21 then ch&C3
             else
                 ch match
-                    case c if c.isLetter || c == '(' || c == ')' => c&C4
-                    case '[' | ']' | '|' | '.' | '`' | '-' | '\'' => ch&C2
+                    case c if c.isLetter => c&C4
+                    case '<' | '>' => ch&C2
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val sparkleShdr = CPPongTitleSparkleShader()
-    private val fadeInShdr = CPFadeInShader(true, 1000, BG_PX, onFinish = _ ⇒ sparkleShdr.start())
-
     // Add scene objects...
     addObjects(
-        CPImageSprite(xf = c => (c.w - logoImg.w) / 2, c => Math.max(0, c.h / 2 - logoImg.h - 1), 0, logoImg),
-        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => Math.max(0, c.h / 2 + 1), 0, helpImg),
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, sparkleShdr)),
+        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg),
+        new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 2000, BG_PX))),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
         CPKeyboardSprite(KEY_ENTER, _.switchScene("play"))// Transition to the next scene on 'Enter' press.
     )

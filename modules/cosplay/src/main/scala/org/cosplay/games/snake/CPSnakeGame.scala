@@ -30,36 +30,45 @@ package org.cosplay.games.snake
                 ALl rights reserved.
 */
 
+import org.cosplay.games.*
 import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import prefabs.scenes.CPLogoScene
 
-val BG_PX = '.'&&(C_GRAY2, C_GRAY1) // Background pixel.
+val BG_PX = ':'&&(CPColor("0x181818"), C_GRAY1) // Background pixel.
 
+/**
+  * Classic snake game.
+  *
+  * ### Running Game
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run the game:
+  * {{{
+  *     $ mvn -f modules/cosplay -P snake exec:java
+  * }}}
+  *
+  * @see https://cosplayengine.com/devguide/snake_game.html
+  */
 object CPSnakeGame:
     def main(args: Array[String]): Unit =
-        val dim = CPDim(50, 50) // Dimension for the scenes.
+        val gameInfo = CPGameInfo(name = "Ascii Snake")
 
         // Initialize the engine.
-        CPEngine.init(CPGameInfo(name = "Ascii Snake", initDim = Option(dim)))
+        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
 
-        val startMenu = CPScene("title", Option(dim), BG_PX,
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
-        )
-
-        try CPEngine.startGame(
-            // CosPlay logo scene.
-            new CPLogoScene(
-                "logo",
-                Option(dim),
-                BG_PX,
-                CS_X11_ORANGES ++ CS_X11_BLUES, // Colors to use for shimmer.
-                "title" // ID of the scene to switch to when logo animation is done.
-            ),
-            startMenu
-        )
+        // Start the game & wait for exit.
+        try
+            CPEngine.startGame(
+                new CPLogoScene("logo", None, BG_PX, CS, "title"),
+                CPSnakeTitleScene
+            )
         finally CPEngine.dispose()
 
         sys.exit(0)

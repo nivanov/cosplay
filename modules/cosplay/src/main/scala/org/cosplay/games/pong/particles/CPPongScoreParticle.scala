@@ -17,7 +17,8 @@
 
 package org.cosplay.games.pong.particles
 
-import org.cosplay.games.pong.*
+import org.cosplay.games.*
+import pong.*
 import org.cosplay.*
 import CPColor.*
 

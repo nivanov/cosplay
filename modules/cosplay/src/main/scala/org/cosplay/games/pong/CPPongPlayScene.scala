@@ -1,5 +1,6 @@
 package org.cosplay.games.pong
 
+import org.cosplay.games.*
 import org.apache.commons.lang3.SystemUtils
 import org.cosplay.CPFIGLetFont.FIG_BIG
 import org.cosplay.CPScene
@@ -29,7 +30,7 @@ import CPArrayImage.*
 import CPFIGLetFont.*
 import prefabs.shaders.*
 import CPKeyboardKey.*
-import org.cosplay.games.pong.shaders.*
+import games.pong.shaders.*
 
 /*
    _________            ______________
