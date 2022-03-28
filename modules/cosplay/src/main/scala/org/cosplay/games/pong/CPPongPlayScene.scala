@@ -307,8 +307,16 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     setBoost(false)
                     val yr = y.round
                     val edge =
-                        if isPly then yr == plySpr.getY - ballH || yr == plySpr.getY + plyImg.h
-                        else yr == npcSpr.getY - ballH || yr == npcSpr.getY + npcImg.h
+                        if isPly then
+                            yr == plySpr.getY - ballH ||
+                            yr == plySpr.getY - ballH + 1 ||
+                            yr == plySpr.getY + plyImg.h ||
+                            yr == plySpr.getY + plyImg.h - 1
+                        else
+                            yr == npcSpr.getY - ballH ||
+                            yr == npcSpr.getY - ballH  + 1 ||
+                            yr == npcSpr.getY + npcImg.h ||
+                            yr == npcSpr.getY + npcImg.h - 1
                     if edge then setBoost(true)
                     x = if isPly then paddleW.toFloat else canv.wF - paddleW - ballW - 2
                     ballAngle = -ballAngle + 180 + CPRand.randInt(0, 10) - 5

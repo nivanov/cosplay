@@ -17,8 +17,6 @@
 
 package org.cosplay.prefabs.shaders
 
-import org.cosplay.*
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -32,20 +30,25 @@ import org.cosplay.*
                 ALl rights reserved.
 */
 
+import org.cosplay.*
+import games.*
+import CPColor.*
+
+import scala.collection.mutable
+import scala.util.Random
+
 /**
-  * Color shimmer shader.
+  * Color sparkle shader.
   *
-  * This shader provides color shimmer effect for the entire camera frame or the individual scene object
-  * it is attached to. Shimmering consists of randomly changing a color of the pixel for a small period of time.
-  * If used for entire camera frame effect it can be attached to an off-screen sprite. Note that unlike [[CPSparkleShader]]
-  * that provides similar effect but with gradual dimming and brightening of color, the shimmer effect employs
-  * random color selection from the given set of colors.
+  * This shader provides color sparkle effect for the entire camera frame. Sparkling consists of picking number
+  * of random pixels on the frame and gradually dimming and brightening their colors creating a sparkling effect.
+  * Not that unlike [[CPShimmerShader]] that produces a random color changes, this shader relies on smooth gradual
+  * dimming and brightening. Both effects are visually similar but work differently.
   *
-  * @param entireFrame Whether apply to the entire camera frame or just the object this
-  *     shader is attached to.
-  * @param colors Sequence of colors to use for shimmering effect. Colors will be selected randomly from this set.
-  * @param keyFrame nth-frame to render the effect. For example, if key frame is `5` than the colors will
-  *     change on each 5th frame and remain the same on all subsequent frames until next key frame is reached.
+  * @param colors Set of color to use for sparking effect.
+  * @param ratio Percentage of pixels to sparkle at the same time. Default value is `0.04`, i.e. 4%. For example,
+  *         if the camera frame size is 100x50 characters then the default 4% ratio will result in 200 pixels
+  *         sparkling at any given time.
   * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader.
   *     or certain Z-index. Default predicate returns `false` for all pixels.
@@ -56,20 +59,30 @@ import org.cosplay.*
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
   * @see [[CPFlashlightShader]]
-  * @see [[CPSparkleShader]]
+  * @see [[CPShimmerShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
-class CPShimmerShader(
-    entireFrame: Boolean,
+class CPSparkleShader(
     colors: Seq[CPColor],
-    keyFrame: Int,
+    ratio: Float = 0.04f,
     autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
+    case class Sparkle(zpx: CPZPixel, x: Int, y: Int):
+        private val initCol = CPRand.rand(colors)
+        private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, 20) ++ CPColor.gradientSeq(initCol, zpx.px.fg, 20)
+        private val gradSz = grad.size
+        private var gradIdx = Random.between(0, gradSz)
+
+        def isAlive: Boolean = gradIdx < gradSz
+        def draw(canv: CPCanvas): Unit =
+            canv.drawPixel(zpx.px.withFg(grad(gradIdx % gradSz)), x, y, zpx.z)
+            gradIdx += 1
+
+    private val sparkles = mutable.ArrayBuffer.empty[Sparkle]
     private var go = autoStart
-    private var lastImg: CPImage = _
     private var startMs = 0L
 
     if autoStart then start()
@@ -81,7 +94,6 @@ class CPShimmerShader(
       */
     def start(): Unit =
         go = true
-        lastImg = null
         startMs = System.currentTimeMillis()
 
     /**
@@ -92,7 +104,7 @@ class CPShimmerShader(
       */
     def stop(): Unit =
         go = false
-        lastImg = null
+        sparkles.clear()
         startMs = 0
 
     /**
@@ -110,26 +122,26 @@ class CPShimmerShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        val flag = go && (entireFrame || (ctx.isVisible && inCamera))
-
-        if flag && System.currentTimeMillis() - startMs > durMs then
+        if go && System.currentTimeMillis() - startMs > durMs then
             stop()
             onDuration(ctx)
-        if flag then
+
+        if go then
+            // Remove stale sparkles, if any.
+            sparkles.filterInPlace(_.isAlive)
+
             val canv = ctx.getCanvas
-            if lastImg == null || ctx.getFrameCount % keyFrame == 0 then
-                val rect = if entireFrame then ctx.getCameraFrame else objRect
-                rect.loop((x, y) => {
+
+            // Replenish with new sparkles until full.
+            val num = (canv.w * canv.h * ratio).round
+            while sparkles.size < num do
+                var found = false
+                while !found do
+                    val x = canv.rect.randX()
+                    val y = canv.rect.randY()
                     val zpx = canv.getZPixel(x, y)
-                    val px = zpx.px
-                    if !skip(zpx, x, y) then
-                        val rc = CPRand.rand(colors)
-                        val newPx = if px.char == ' ' then px.withBg(Option(rc)) else px.withFg(rc)
-                        canv.drawPixel(newPx, x, y, zpx.z)
-                })
-                lastImg = canv.capture(objRect)
-            else
-                canv.drawImage(lastImg, objRect.x, objRect.y, 0)
+                    found = !skip(zpx, x, y) && !sparkles.exists(s ⇒ s.x == x && s.y == y)
+                    if found then sparkles += Sparkle(zpx, x, y)
 
-
-
+            // Draw sparkles.
+            sparkles.foreach(_.draw(canv))

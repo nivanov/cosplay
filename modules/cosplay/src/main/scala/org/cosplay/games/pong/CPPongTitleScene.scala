@@ -89,8 +89,8 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val sparkleShdr = CPPongTitleSparkleShader()
-    private val fadeInShdr = CPFadeInShader(true, 1000, BG_PX, onFinish = _ ⇒ sparkleShdr.start())
+    private val sparkleShdr = CPSparkleShader(CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
+    private val fadeInShdr = CPFadeInShader(true, 1000, BG_PX)
 
     // Add scene objects...
     addObjects(

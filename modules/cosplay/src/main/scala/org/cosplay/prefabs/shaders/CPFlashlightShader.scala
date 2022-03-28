@@ -52,8 +52,25 @@ class CPFlashlightShader(radius: Int, autoPlay: Boolean = false) extends CPShade
 
     /**
       * Toggles this shader effect on and off.
+      *
+      * @see [[start()]]
+      * @see [[stop()]]
       */
     def toggle(): Unit = on = !on
+
+    /**
+      * Starts the shader effect.
+      *
+      * @see [[toggle()]]
+      */
+    def start(): Unit = on = true
+
+    /**
+      * Stops the shader effect.
+      *
+      * @see [[toggle()]]
+      */
+    def stop(): Unit = on = false
 
     /**
       * Returns `true` if this shader effect is on, `false` otherwise.
