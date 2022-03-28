@@ -42,7 +42,7 @@ import CPKeyboardKey.*
   * Title scene for snake game.
   */
 object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
-    private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
+    private val introSnd = CPSound(s"sounds/games/snake/intro.wav", 0.5f)
     private val helpImg = CPArrayImage(
         prepSeq(
             """
@@ -66,7 +66,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |                    [Q]       Quit
               |
               |
-              |
+              |                                            
               |            Copyright (C) 2022 Rowan Games, Inc
             """),
         (ch, _, y) =>
