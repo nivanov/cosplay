@@ -34,6 +34,7 @@ import org.cosplay.*
 import CPColor.*
 import CPKeyboardKey.*
 import CPPixel.*
+import org.cosplay.CPFIGLetFont.*
 import prefabs.images.ani.*
 import prefabs.scenes.*
 import prefabs.shaders.*
@@ -42,13 +43,19 @@ val BG_PX = '.'&&(C_GRAY2, C_GRAY1)
 
 object CPBirdGame:
     def main(args: Array[String]): Unit =
-        val dim = CPDim(50, 50) // Dimension for the scenes.
+        val dim = CPDim(60, 50) // Dimension for the scenes.
 
         // Initialize the engine.
         CPEngine.init(CPGameInfo(name = "ASCII Bird", initDim = Option(dim)))
 
+        val logoImg = FIG_4MAX.render("Ascii Bird", C_WHITE).skin(
+            (px, _, _) => px.char match
+                case _ => px.withFg(C_GREEN)
+        ).trimBg()
+
         val startMenu = CPScene("startMenu", Option(dim), BG_PX,
-            new CPLabelSprite(10, 40, 0, "Ascii Bird", C_DARK_CYAN),
+            new CPLabelSprite(20, 25, 0, "Press [ENTER] To Play", C_GREEN),
+            new CPImageSprite("logo", 1, 10, 0, logoImg),
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
         )
 
