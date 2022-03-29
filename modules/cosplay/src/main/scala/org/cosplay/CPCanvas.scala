@@ -1055,7 +1055,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Pixel producing function.
       */
     def drawPolyline(pts: Seq[(Int, Int)], z: Int, pxf: (Int, Int) => CPPixel): Unit =
-        require(pts.length >= 2)
+        require(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         val max = pts.length - 1
         var i = 0
@@ -1073,7 +1073,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Pixel producing function.
       */
     def polylinePixels(pts: Seq[(Int, Int)], z: Int, pxf: (Int, Int) => CPPixel): mutable.ArrayBuffer[CPPosPixel] =
-        require(pts.length >= 2)
+        require(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         val buf = new mutable.ArrayBuffer[CPPosPixel]()
         val max = pts.length - 1
@@ -1111,7 +1111,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param style Art style to use. Default value is [[ART_BLOCK]].
       */
     def drawArtPolyline(pts: Seq[(Int, Int)], z: Int, pxf: CPPosPixel => CPPixel, style: ArtLineStyle = ART_BLOCK): Unit =
-        require(pts.length >= 2)
+        require(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         for (i <- 0 until pts.length - 1)
             val pt1 = pts(i)

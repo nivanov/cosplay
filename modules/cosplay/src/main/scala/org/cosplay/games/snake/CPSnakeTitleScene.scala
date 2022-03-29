@@ -83,13 +83,14 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
     ).trimBg()
 
     private val sparkleShdr = CPSparkleShader(CS.map(_.darker(0.5f)), ratio = 0.01f, steps = 80, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
-    private val fadeInShdr = CPFadeInShader(true, 2000, BG_PX)
+    private val fadeInShdr = CPFadeInShader(true, 2000, BG_PX, shimmer = 0.8f)
+    private val fadeOutShdr = CPFadeOutShader(true, 2000, BG_PX, shimmer = 0.8f, onFinish = _.exitGame())
 
     // Add scene objects...
     addObjects(
         CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg),
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, sparkleShdr)),
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, sparkleShdr)),
+        CPKeyboardSprite(KEY_LO_Q, _ ⇒ fadeOutShdr.start()), // Exit on 'Q' press.
         // Transition to the next scene on 'Enter' press.
         CPKeyboardSprite(KEY_ENTER, ctx ⇒ ctx.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true))
     )

@@ -696,7 +696,7 @@ object CPImage:
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       */
     def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_BG): Unit =
-        require(fps < 1_000)
+        require(fps < 1_000, "FPS must be < 1,000.")
         val frameDim = imgs.head.getDim
         require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
         val dim = CPDim(frameDim.w + 8, frameDim.h + 8)

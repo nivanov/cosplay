@@ -33,45 +33,41 @@ import org.cosplay.*
 */
 
 /**
-  * Fade out shader. 
-  * 
-  * This shader can be used for 'fade out' effect for the entire
+  * Dissolve in shader.
+  *
+  * This shader can be used for 'dissolve in' effect for the entire
   * camera frame or the individual scene object it is attached to. If used for entire
   * camera frame effect it can be attached to an off-screen sprite.
   *
   * @param entireFrame Whether apply to the entire camera frame or just the object this
   *     shader is attached to.
-  * @param durMs Duration of the fade out effect in millis.
-  * @param bgPx Background pixel to fade out to.
+  * @param durMs Duration of the dissolve in effect in millis.
+  * @param bgPx Background pixel to dissolve in from.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
-  * @param autoStart Whether to start shader right away. Default value is `false`.
+  * @param autoStart Whether to start shader right away. Default value is `true`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
   *     or certain Z-index. Default predicate returns `false` for all pixels.
-  * @see [[CPFadeInShader]]
-  * @see [[CPShimmerShader]]
-  * @see [[CPFlashlightShader]]     
   * @see [[CPOffScreenSprite]]
-  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.      
+  * @see [[CPFadeInShader]]
+  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
-class CPFadeOutShader(
+class CPDissolveInShader(
     entireFrame: Boolean,
     durMs: Long,
     bgPx: CPPixel,
     onFinish: CPSceneObjectContext => Unit = _ => (),
-    autoStart: Boolean = false,
-    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
-    shimmer: Float = 1.0f
+    autoStart: Boolean = true,
+    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
 ) extends CPShader:
-    require(durMs > 0, "Duration must be > 0.")
-    require(shimmer >= 0f && shimmer <= 1f, "Shimmer must be in [0, 1] range.")
-    require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
+    require(durMs > 0)
+    if bgPx.bg.isEmpty then E(s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
+    private val maxFrmCnt = durMs / CPEngine.frameMillis
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
     private val crossOverBrightness = if bgPx.char == ' ' then bgBg.brightness else bgFg.brightness
     private var crossedOver = false
-    private val maxFrmCnt = durMs / CPEngine.frameMillis
     private var go = autoStart
 
     /**
@@ -97,16 +93,18 @@ class CPFadeOutShader(
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
-                        if frmCnt == maxFrmCnt || CPRand.randFloat() < shimmer then
+                        if frmCnt == maxFrmCnt || CPRand.randFloat() < .1f then
                             val balance = frmCnt.toFloat / maxFrmCnt
-                            val newFg = CPColor.mixture(px.fg, bgFg, balance)
+                            val px = zpx.px
+                            val newFg = CPColor.mixture(bgFg, px.fg, balance)
                             val newBg = px.bg match
-                                case Some(c) => Option(CPColor.mixture(c, bgBg, balance))
+                                case Some(c) => Option(CPColor.mixture(bgBg, c, balance))
                                 case None => None
                             var newPx = px.withFg(newFg).withBg(newBg)
                             val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
                             if newPx.char != ' ' then
-                                if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
+                                if xc.brightness <= crossOverBrightness then
+                                    newPx = newPx.withChar(bgPx.char) else crossedOver = true
                             else if !crossedOver then
                                 newPx = newPx.withChar(bgPx.char)
                             canv.drawPixel(newPx, x, y, zpx.z)
@@ -115,4 +113,3 @@ class CPFadeOutShader(
             if frmCnt == maxFrmCnt then
                 go = false
                 onFinish(ctx)
-

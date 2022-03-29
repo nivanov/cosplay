@@ -80,7 +80,7 @@ class CPAnimationSprite(
     initAniId: String,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
-    require(anis.nonEmpty)
+    require(anis.nonEmpty, "Sequence of animation cannot be empty.")
 
     private var keyFrameOpt: Option[CPAnimationKeyFrame] = None
     private var curAni: CPAnimation = getAni(initAniId)
