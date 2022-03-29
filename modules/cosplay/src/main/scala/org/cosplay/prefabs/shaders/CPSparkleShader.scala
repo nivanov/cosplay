@@ -49,6 +49,7 @@ import scala.util.Random
   * @param ratio Percentage of pixels to sparkle at the same time. Default value is `0.04`, i.e. 4%. For example,
   *         if the camera frame size is 100x50 characters then the default 4% ratio will result in 200 pixels
   *         sparkling at any given time.
+  * @param steps Number of frames that it takes for entire sparkle cycle from brightening to dimming back.
   * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader.
   *     or certain Z-index. Default predicate returns `false` for all pixels.
@@ -65,6 +66,7 @@ import scala.util.Random
 class CPSparkleShader(
     colors: Seq[CPColor],
     ratio: Float = 0.04f,
+    steps: Int = 40,
     autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     durMs: Long = Long.MaxValue,
@@ -72,7 +74,7 @@ class CPSparkleShader(
 ) extends CPShader:
     case class Sparkle(zpx: CPZPixel, x: Int, y: Int):
         private val initCol = CPRand.rand(colors)
-        private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, 20) ++ CPColor.gradientSeq(initCol, zpx.px.fg, 20)
+        private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, steps / 2) ++ CPColor.gradientSeq(initCol, zpx.px.fg, steps / 2)
         private val gradSz = grad.size
         private var gradIdx = Random.between(0, gradSz)
 

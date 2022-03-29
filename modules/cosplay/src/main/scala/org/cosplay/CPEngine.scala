@@ -728,7 +728,7 @@ object CPEngine:
                 // Visible scene objects sorted by layer.
                 val objs = sc.objects.values.toSeq.sortBy(_.getZ)
 
-                if objs.isEmpty then E(s"Scene has no objects: ${sc.getId}")
+                if objs.isEmpty then E(s"Scene '${sc.getId}' has no objects.")
 
                 // Transition objects states.
                 objs.foreach(lifecycleStart)

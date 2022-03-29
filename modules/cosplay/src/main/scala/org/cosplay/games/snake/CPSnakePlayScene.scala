@@ -15,13 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong
+package org.cosplay.games.snake
 
-import org.cosplay.games.*
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import prefabs.scenes.CPLogoScene
 
 /*
    _________            ______________
@@ -36,46 +32,8 @@ import prefabs.scenes.CPLogoScene
                 ALl rights reserved.
 */
 
-val BG_PX = '.'&&(CPColor("0x181818"), C_GRAY1)
-
 /**
-  * Classic pong game.
   *
-  * ### Running Game
-  * One-time Git clone & build:
-  * {{{
-  *     $ git clone https://github.com/nivanov/cosplay.git
-  *     $ cd cosplay
-  *     $ mvn package
-  * }}}
-  * to run the game:
-  * {{{
-  *     $ mvn -f modules/cosplay -P pong exec:java
-  * }}}
-  *
-  * @see https://cosplayengine.com/devguide/pong_game.html
+  * @param dim Dimension for this scene.
   */
-object CPPongGame:
-    /**
-     * Entry point for JVM runtime.
-     *
-     * @param args Ignored.
-     */
-    def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(name = "Ascii Pong")
-
-        // Initialize the engine.
-        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
-
-        // Start the game & wait for exit.
-        try
-            CPEngine.startGame(
-                new CPLogoScene("logo", None, BG_PX, CS, "title"),
-                CPPongTitleScene,
-                CPPongPlayScene
-            )
-        finally CPEngine.dispose()
-
-        sys.exit(0)
-
-
+class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX)

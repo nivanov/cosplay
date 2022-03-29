@@ -37,7 +37,7 @@ import CPPixel.*
 import CPKeyboardKey.*
 import prefabs.scenes.CPLogoScene
 
-val BG_PX = ':'&&(CPColor("0x181818"), C_GRAY1) // Background pixel.
+val BG_PX = '~'&&(CPColor("0x181818"), C_GRAY1) // Background pixel.
 
 /**
   * Classic snake game.

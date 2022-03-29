@@ -53,12 +53,12 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |       \/_____/   \/_/ \/_/   \/_/\/_/   \/_/\/_/   \/_____/
               |       
               |     
-              |>> BEWARE OF INITIAL KEYBOARD PRESS DELAY   <<   ---_ ......._-_--.
+              |>> BEWARE OF INITIAL KEYBOARD PRESS DELAY   <<   ---_,......._-_--.
               |>> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<  (|\ /      / /| \  \
               |                                                /  /     .'  -=-'   `.
               | ____ ____ ____ ____                           /  /    .'             )
-              |||w |||a |||s |||d ||                        _/  /   .'        _.)   /
-              |||__|||__|||__|||__||                      / o   o        _.-' /  .'
+              |||w |||a |||s |||d ||                       __/  /   .'       ,_.)   /
+              |||__|||__|||__|||__||                      / o   o        _.-' /  .''
               ||/__\|/__\|/__\|/__\|                      \          _.-'    / .'*|
               |                                            \______.-'//    .'.' \*|
               |                                             \|  \ | //   .'.' _ |*|
@@ -82,12 +82,16 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
                     case _ => ch.toUpper&C1
     ).trimBg()
 
+    private val sparkleShdr = CPSparkleShader(CS.map(_.darker(0.5f)), ratio = 0.01f, steps = 80, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
+    private val fadeInShdr = CPFadeInShader(true, 2000, BG_PX)
+
     // Add scene objects...
     addObjects(
         CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg),
-        new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 2000, BG_PX))),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, sparkleShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_ENTER, _.switchScene("play"))// Transition to the next scene on 'Enter' press.
+        // Transition to the next scene on 'Enter' press.
+        CPKeyboardSprite(KEY_ENTER, ctx ⇒ ctx.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true))
     )
 
     override def onActivate(): Unit =
