@@ -19,9 +19,11 @@ package org.cosplay.games.snake
 
 import org.cosplay.*
 import games.*
-import CPFIGLetFont._
-import CPPixel._
-import CPKeyboardKey._
+import prefabs.shaders.*
+import CPFIGLetFont.*
+import CPPixel.*
+import CPColor.*
+import CPKeyboardKey.*
 
 /*
    _________            ______________
@@ -42,23 +44,30 @@ import CPKeyboardKey._
   */
 class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private var score = 0
-    private val scoreSpr = new CPImageSprite(x = 0, y = 0, z = 0, img = mkScoreImage):
+    private val scoreSpr = new CPImageSprite(x = 0, y = 0, z = 1, img = mkScoreImage):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             setX((canv.w - getImage.w) / 2)
     private val borderSpr = new CPCanvasSprite:
         private val px = ' '&&(C1, C1)
+        private val px2 = ' '&&(C2, C2)
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             val scoreH = scoreSpr.getHeight
             canv.drawRect(0, scoreH, CPDim(canv.w, canv.h - scoreH), 0, (_, _) ⇒ px)
+            canv.drawLine(1, scoreH + 1, 1, canv.h, 0, px)
+            canv.drawLine(canv.w - 2, scoreH + 1, canv.w - 2, canv.h, 0, px)
+
+            // Border rect fill.
+            canv.fillRect(0, 0, canv.w, scoreH - 1, 0, (_, _) ⇒ px2)
 
     /**
       * Creates score image.
       */
-    private def mkScoreImage: CPImage = FIG_RECTANGLES.render(s"SCORE : $score", C4).trimBg()
+    private def mkScoreImage: CPImage = FIG_RECTANGLES.render(s"SCORE : $score", C_BLACK).trimBg()
 
     addObjects(
+        new CPOffScreenSprite(CPFadeInShader(true, 1000, BG_PX)),
         // Scene-wide keyboard handlers.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
         scoreSpr,

@@ -17,8 +17,8 @@
 
 package org.cosplay.games.pong
 
-import org.cosplay.games.*
 import org.cosplay.*
+import games.*
 import CPColor.*
 import CPPixel.*
 import prefabs.scenes.CPLogoScene
@@ -36,7 +36,7 @@ import prefabs.scenes.CPLogoScene
                 ALl rights reserved.
 */
 
-val BG_PX = '.'&&(CPColor("0x181818"), C_GRAY1)
+val BG_PX = '.'&&(C_GRAY18, C_GRAY1)
 
 /**
   * Classic pong game.

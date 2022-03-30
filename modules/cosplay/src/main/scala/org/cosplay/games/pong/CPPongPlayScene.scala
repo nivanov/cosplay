@@ -25,8 +25,8 @@ import CPArrayImage.*
 import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
-import games.pong.particles.*
-import games.pong.shaders.*
+import pong.particles.*
+import pong.shaders.*
 
 import org.apache.commons.lang3.SystemUtils
 

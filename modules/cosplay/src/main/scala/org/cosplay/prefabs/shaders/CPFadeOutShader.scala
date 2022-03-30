@@ -71,13 +71,18 @@ class CPFadeOutShader(
     private var crossedOver = false
     private val maxFrmCnt = durMs / CPEngine.frameMillis
     private var go = autoStart
+    private var cb: CPSceneObjectContext ⇒ Unit = onFinish
 
     if autoStart then start()
 
     /**
       * Resets this shaders to its initial state starting its effect on the next frame.
+      *
+      * @param onFinishOverride Optional override for the callback to call when shader effect is finished.
+      *         If not provided, the default value is the callback supplied at the creation of this shader.
       */
-    def start(): Unit =
+    def start(onFinishOverride: CPSceneObjectContext ⇒ Unit = onFinish): Unit =
+        cb = onFinishOverride
         frmCnt = 0
         crossedOver = false
         go = true
@@ -113,5 +118,5 @@ class CPFadeOutShader(
             frmCnt += 1
             if frmCnt == maxFrmCnt then
                 go = false
-                onFinish(ctx)
+                cb(ctx)
 

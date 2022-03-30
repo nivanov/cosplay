@@ -165,6 +165,54 @@
             </build>
         </profile>
         <profile>
+            <id>snake</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.games.snake.CPSnakeGame</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>life</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.games.life.CPLifeGame</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>bird</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.games.bird.CPBirdGame</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>macarena</id>
             <build>
                 <plugins>

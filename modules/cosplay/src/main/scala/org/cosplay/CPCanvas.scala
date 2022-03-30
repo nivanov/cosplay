@@ -172,13 +172,13 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Antialiases solid ascii-art canvas region. Works `only` for solid ascii-art.
       *
-      * The antialiasing algorithm is based on implemenation described at
+      * The antialiasing algorithm is based on implementation described at
       * https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
       *
       * @param x X-coordinate of the top level corner of the region.
       * @param y Y-coordinate of the top level corner of the region.
       * @param dim Dimension of the region.
-      * @param isBlank Predicate defining whether a partcular pixel should be considered as a blank.
+      * @param isBlank Predicate defining whether a particular pixel should be considered as a blank.
       */
     def antialias(x: Int, y: Int, dim: CPDim, isBlank: CPPixel => Boolean): Unit =
         antialias(x, y, x + dim.w - 1, y + dim.h - 1, isBlank)
@@ -186,11 +186,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Antialiases solid ascii-art canvas region. Works `only` for solid ascii-art.
       *
-      * The antialiasing algorithm is based on implemenation described at
+      * The antialiasing algorithm is based on implementation described at
       * https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
       *
       * @param rect Region to antialias.
-      * @param isBlank Predicate defining whether a partcular pixel should be considered as a blank.
+      * @param isBlank Predicate defining whether a particular pixel should be considered as a blank.
       */
     def antialias(rect: CPRect, isBlank: CPPixel => Boolean): Unit =
         rect.loop((x, y) => {
@@ -211,14 +211,14 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Antialiasing solid ascii-art canvas region. Works `only` for solid ascii-art.
       *
-      * The antialiasing algorithm is based on implemenation described at
+      * The antialiasing algorithm is based on implementation described at
       * https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
       *
       * @param x1 X-coordinate of the top left corner for the region.
       * @param y1 Y-coordinate of the top left corner for the region.
       * @param x2 X-coordinate of the bottom right corner for the region.
       * @param y2 Y-coordinate of the bottom right corner for the region.
-      * @param isBlank Predicate defining whether a partcular pixel should be considered as a blank.
+      * @param isBlank Predicate defining whether a particular pixel should be considered as a blank.
       */
     def antialias(x1: Int, y1: Int, x2: Int, y2: Int, isBlank: CPPixel => Boolean): Unit =
         antialias(new CPRect(x1 -> y1, x2 -> y2), isBlank)
@@ -1170,7 +1170,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Fills the rectangular shape.
       *
-      * @param rect Rechnagle shape to fill in.
+      * @param rect Rectangle shape to fill in.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param px Pixel to use for filling in.
       */
@@ -1194,7 +1194,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Fills the rectangular shape.
       *
-      * @param rect Recntagular shape to fill in.
+      * @param rect Rectangular shape to fill in.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param pxf Fill in pixel producing function.
       */
@@ -1216,7 +1216,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
 
     /**
       * Fills the rectangular shape.
-      * @param rect Rectangluar shapre to fill in.
+      * @param rect Rectangular shape to fill in.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param pxs Pixels to use for filling in.
       */
@@ -1351,7 +1351,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param y Y-coordinate of the start point.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param len Number of pixel to draw.
-      * @param pxf Pixel producting function.
+      * @param pxf Pixel producing function.
       */
     def drawPixels(x: Int, y: Int, z: Int, len: Int, pxf: (Int, Int) => CPPixel): Unit =
         var i = 0
