@@ -82,9 +82,9 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val sparkleShdr = CPSparkleShader(CS.map(_.darker(0.5f)), ratio = 0.01f, steps = 80, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
-    private val fadeInShdr = CPFadeInShader(true, 2000, BG_PX, shimmer = 0.8f)
-    private val fadeOutShdr = CPFadeOutShader(true, 2000, BG_PX, shimmer = 0.8f, onFinish = _.exitGame())
+    private val sparkleShdr = CPSparkleShader(CS, ratio = 0.01f, steps = 80, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
+    private val fadeInShdr = CPFadeInShader(true, 2000, BG_PX)
+    private val fadeOutShdr = CPFadeOutShader(true, 1000, BG_PX, onFinish = _.exitGame())
 
     // Add scene objects...
     addObjects(

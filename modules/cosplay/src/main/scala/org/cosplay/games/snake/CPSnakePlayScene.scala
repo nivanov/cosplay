@@ -18,6 +18,10 @@
 package org.cosplay.games.snake
 
 import org.cosplay.*
+import games.*
+import CPFIGLetFont._
+import CPPixel._
+import CPKeyboardKey._
 
 /*
    _________            ______________
@@ -36,4 +40,27 @@ import org.cosplay.*
   *
   * @param dim Dimension for this scene.
   */
-class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX)
+class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
+    private var score = 0
+    private val scoreSpr = new CPImageSprite(x = 0, y = 0, z = 0, img = mkScoreImage):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+            setX((canv.w - getImage.w) / 2)
+    private val borderSpr = new CPCanvasSprite:
+        private val px = ' '&&(C1, C1)
+        override def render(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+            val scoreH = scoreSpr.getHeight
+            canv.drawRect(0, scoreH, CPDim(canv.w, canv.h - scoreH), 0, (_, _) ⇒ px)
+
+    /**
+      * Creates score image.
+      */
+    private def mkScoreImage: CPImage = FIG_RECTANGLES.render(s"SCORE : $score", C4).trimBg()
+
+    addObjects(
+        // Scene-wide keyboard handlers.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
+        scoreSpr,
+        borderSpr
+    )

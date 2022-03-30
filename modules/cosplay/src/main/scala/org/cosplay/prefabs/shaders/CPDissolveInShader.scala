@@ -59,8 +59,8 @@ class CPDissolveInShader(
     autoStart: Boolean = true,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
 ) extends CPShader:
-    require(durMs > 0)
-    if bgPx.bg.isEmpty then E(s"Background pixel must have background color defined: $bgPx")
+    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}")
+    require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
     private val maxFrmCnt = durMs / CPEngine.frameMillis
@@ -69,6 +69,9 @@ class CPDissolveInShader(
     private val crossOverBrightness = if bgPx.char == ' ' then bgBg.brightness else bgFg.brightness
     private var crossedOver = false
     private var go = autoStart
+    private var matrix: Array[Array[Int]] = _
+
+    if autoStart then start()
 
     /**
       * Resets this shaders to its initial state starting its effect on the next frame.
@@ -77,6 +80,7 @@ class CPDissolveInShader(
         frmCnt = 0
         crossedOver = false
         go = true
+        matrix = null
 
     /**
       * Tests whether this shader is in progress or not.
@@ -88,13 +92,17 @@ class CPDissolveInShader(
         if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             val canv = ctx.getCanvas
+            if matrix == null then
+                matrix = Array.ofDim(canv.w, canv.h)
+                for (x ← 0 until canv.w; y ← 0 until canv.h)
+                    matrix(x)(y) = if CPRand.randFloat() < .5f then 0 else 30
             rect.loop((x, y) => {
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
-                        if frmCnt == maxFrmCnt || CPRand.randFloat() < .1f then
-                            val balance = frmCnt.toFloat / maxFrmCnt
+                        if frmCnt > matrix(x)(y) then
+                            val balance = frmCnt.toFloat / (maxFrmCnt + matrix(x)(y))
                             val px = zpx.px
                             val newFg = CPColor.mixture(bgFg, px.fg, balance)
                             val newBg = px.bg match
@@ -108,6 +116,8 @@ class CPDissolveInShader(
                             else if !crossedOver then
                                 newPx = newPx.withChar(bgPx.char)
                             canv.drawPixel(newPx, x, y, zpx.z)
+                        else
+                            canv.drawPixel(bgPx, x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then

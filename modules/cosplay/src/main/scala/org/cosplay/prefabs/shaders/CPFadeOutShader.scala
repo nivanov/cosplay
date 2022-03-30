@@ -59,11 +59,9 @@ class CPFadeOutShader(
     bgPx: CPPixel,
     onFinish: CPSceneObjectContext => Unit = _ => (),
     autoStart: Boolean = false,
-    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
-    shimmer: Float = 1.0f
+    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
 ) extends CPShader:
-    require(durMs > 0, "Duration must be > 0.")
-    require(shimmer >= 0f && shimmer <= 1f, "Shimmer must be in [0, 1] range.")
+    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}.")
     require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
@@ -73,6 +71,8 @@ class CPFadeOutShader(
     private var crossedOver = false
     private val maxFrmCnt = durMs / CPEngine.frameMillis
     private var go = autoStart
+
+    if autoStart then start()
 
     /**
       * Resets this shaders to its initial state starting its effect on the next frame.
@@ -97,19 +97,18 @@ class CPFadeOutShader(
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
-                        if frmCnt == maxFrmCnt || CPRand.randFloat() < shimmer then
-                            val balance = frmCnt.toFloat / maxFrmCnt
-                            val newFg = CPColor.mixture(px.fg, bgFg, balance)
-                            val newBg = px.bg match
-                                case Some(c) => Option(CPColor.mixture(c, bgBg, balance))
-                                case None => None
-                            var newPx = px.withFg(newFg).withBg(newBg)
-                            val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
-                            if newPx.char != ' ' then
-                                if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
-                            else if !crossedOver then
-                                newPx = newPx.withChar(bgPx.char)
-                            canv.drawPixel(newPx, x, y, zpx.z)
+                        val balance = frmCnt.toFloat / maxFrmCnt
+                        val newFg = CPColor.mixture(px.fg, bgFg, balance)
+                        val newBg = px.bg match
+                            case Some(c) => Option(CPColor.mixture(c, bgBg, balance))
+                            case None => None
+                        var newPx = px.withFg(newFg).withBg(newBg)
+                        val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
+                        if newPx.char != ' ' then
+                            if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
+                        else if !crossedOver then
+                            newPx = newPx.withChar(bgPx.char)
+                        canv.drawPixel(newPx, x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then

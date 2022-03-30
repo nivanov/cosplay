@@ -47,10 +47,6 @@ import org.cosplay.*
   * @param autoStart Whether to start shader right away. Default value is `true`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
   *     or certain Z-index. Default predicate returns `false` for all pixels.
-  * @param shimmer A value between 0 and 1. Zero value will result in zero fade in effect, i.e. the scene object
-  *        or the frame will appear instantly as specified duration expires. Value of one will produce a standard
-  *        fade in effect without any shimmer. Values between 0 and 1 will produce visible shimmer as the scene object
-  *        or the frame fade in. Values closer to one will produce more pronounced visual shimmer. Default value is `1`.
   * @see [[CPOffScreenSprite]]
   * @see [[CPFadeOutShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.      
@@ -61,11 +57,9 @@ class CPFadeInShader(
     bgPx: CPPixel,
     onFinish: CPSceneObjectContext => Unit = _ => (),
     autoStart: Boolean = true,
-    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
-    shimmer: Float = 1.0f
+    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
 ) extends CPShader:
-    require(durMs > 0, "Duration must be > 0.")
-    require(shimmer >= 0f && shimmer <= 1f, "Shimmer must be in [0, 1] range.")
+    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}.")
     require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
@@ -75,6 +69,8 @@ class CPFadeInShader(
     private val crossOverBrightness = if bgPx.char == ' ' then bgBg.brightness else bgFg.brightness
     private var crossedOver = false
     private var go = autoStart
+
+    if autoStart then start()
 
     /**
       * Resets this shaders to its initial state starting its effect on the next frame.
@@ -99,20 +95,19 @@ class CPFadeInShader(
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
-                        if frmCnt == maxFrmCnt || CPRand.randFloat() < shimmer then
-                            val px = zpx.px
-                            val balance = frmCnt.toFloat / maxFrmCnt
-                            val newFg = CPColor.mixture(bgFg, px.fg, balance)
-                            val newBg = px.bg match
-                                case Some(c) => Option(CPColor.mixture(bgBg, c, balance))
-                                case None => None
-                            var newPx = px.withFg(newFg).withBg(newBg)
-                            val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
-                            if newPx.char != ' ' then
-                                if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
-                            else if !crossedOver then
-                                newPx = newPx.withChar(bgPx.char)
-                            canv.drawPixel(newPx, x, y, zpx.z)
+                        val px = zpx.px
+                        val balance = frmCnt.toFloat / maxFrmCnt
+                        val newFg = CPColor.mixture(bgFg, px.fg, balance)
+                        val newBg = px.bg match
+                            case Some(c) => Option(CPColor.mixture(bgBg, c, balance))
+                            case None => None
+                        var newPx = px.withFg(newFg).withBg(newBg)
+                        val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
+                        if newPx.char != ' ' then
+                            if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
+                        else if !crossedOver then
+                            newPx = newPx.withChar(bgPx.char)
+                        canv.drawPixel(newPx, x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then
