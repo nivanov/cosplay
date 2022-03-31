@@ -84,7 +84,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
     ).trimBg()
 
     private val fadeInShdr = CPFadeInShader(true, 2000, BG_PX)
-    private val fadeOutShdr = CPFadeOutShader(true, 1000, BG_PX)
+    private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
 
     // Add scene objects...
     addObjects(

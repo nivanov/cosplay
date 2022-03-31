@@ -130,40 +130,52 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             this.dx = dx
             this.dy = dy
 
+        /**
+          *
+          * @param c
+          * @return
+          */
+        private def isDead(c: CPCanvas): Boolean =
+            val (hx, hy) = snake.head
+            val rx = x * 2
+            // Check for self-bite death.
+            snake.tail.exists((a, b) ⇒ a == hx && b == hy) || y > c.yMax - 1 || y < scoreH || rx < 1 || rx > c.xMax - 2
+
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
 
             if go then
                 val canv = ctx.getCanvas
-                val cx = canv.xCenter / 2
-                val cy = canv.yCenter
                 if snake.isEmpty then
                     // Initialize the snake.
+                    val cx = canv.xCenter / 2
+                    val cy = canv.yCenter
                     for (i ← 0 to 5) snake +:= cx + i -> cy
-                    val headPos = snake.head
-                    x = headPos._1.toFloat
-                    y = headPos._2.toFloat
+                    val (hx, hy) = snake.head
+                    x = hx.toFloat
+                    y = hy.toFloat
                     dx = speed
                     dy = 0
-                // Move snake.
-                x += dx
-                y += dy
-                val xInt = x.round
-                val yInt = y.round
-                val headPos = snake.head
-                // Check for self-bite death.
-                if snake.tail.exists((x, y) ⇒ x == headPos._1 && y == headPos._2) then
+                // Check for snake death.
+                if isDead(canv) then
                     go = false
                     dead = true
                     youLostSpr.setVisible(true)
                     youLostSnd.play(1000)
                     bgSnd.stop(1000)
                 else
-                    if headPos._1 != xInt || headPos._2 != yInt then
+                    // Move snake.
+                    x += dx
+                    y += dy
+                    val xInt = x.round
+                    val yInt = y.round
+                    val (hx, hy) = snake.head
+                    if hx != xInt || hy != yInt then
                         snake = snake.dropRight(1)
                         snake +:= xInt -> yInt
                     ctx.getKbEvent match
                         case Some(evt) =>
+                            // Turn snake.
                             evt.key match
                                 case KEY_LO_W | KEY_UP => turn(0, -speed)
                                 case KEY_LO_S | KEY_DOWN => turn(0, speed)
@@ -179,14 +191,15 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             val canv = ctx.getCanvas
 
             def draw(xy: (Int, Int), px: CPPixel): Unit =
-                canv.drawPixel(px, xy._1 * 2, xy._2, 0)
-                canv.drawPixel(px, xy._1 * 2 + 1, xy._2, 0)
+                canv.drawPixel(px, xy._1 * 2, xy._2, 1)
+                canv.drawPixel(px, xy._1 * 2 + 1, xy._2, 1)
 
-            val hpx = if !go && dead then headPx.withChar('X').withFg(C_BLACK) else headPx
+            val hpx = if !go && dead then headPx.withChar('8').withFg(C_BLACK) else headPx
             val bpx = if !go && dead then bodyPx.withChar('X').withFg(C_BLACK) else bodyPx
 
-            draw(snake.head, hpx)
-            snake.tail.foreach(draw(_, bpx))
+            // Draw snake.
+            draw(snake.head, hpx) // Head.
+            snake.tail.foreach(draw(_, bpx)) // Rest of the body.
 
     // Announcements.
     private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6)
@@ -201,8 +214,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private def mkScoreImage: CPImage = FIG_RECTANGLES.render(s"SCORE : $score", C_BLACK).trimBg()
 
     // Shaders.
-    private val fadeInShdr = CPFadeInShader(true, 1000, BG_PX)
-    private val fadeOutShdr = CPFadeOutShader(true, 1000, BG_PX)
+    private val fadeInShdr = CPFadeInShader(true, 500, BG_PX)
+    private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
 
     addObjects(
         new CPOffScreenSprite(Seq(fadeInShdr, fadeOutShdr)),
