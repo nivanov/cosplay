@@ -97,6 +97,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
 
     override def onActivate(): Unit =
         super.onActivate()
+        fadeInShdr.start() // Reset the shader.
         introSnd.loopAll(2000) // Start background audio.
 
     override def onDeactivate(): Unit =

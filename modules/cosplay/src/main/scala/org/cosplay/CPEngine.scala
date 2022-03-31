@@ -862,7 +862,7 @@ object CPEngine:
 
                         delayedQ += (() => {
                             if cloDelCur then
-                                scenes.remove(cloId) match
+                                scenes.remove(sc.getId) match
                                     case Some(s) => lifecycleStop(s)
                                     case _ => ()
                             else
