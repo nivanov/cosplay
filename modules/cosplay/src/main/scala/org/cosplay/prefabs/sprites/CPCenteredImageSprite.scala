@@ -34,9 +34,10 @@ import org.cosplay.impl.CPUtils
 */
 
 /**
+  * Image sprite that centers its image on the canvas on each frame update.
   *
   * @param id Optional ID of the sprite.
-  * @param img The image to render. It can be changed later.
+  * @param img The image to render. It can be [[CPImageSprite.setImage() changed later]].
   * @param z Z-index at which to render the image.
   * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
   */
