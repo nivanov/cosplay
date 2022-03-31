@@ -25,6 +25,7 @@ import CPArrayImage.*
 import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 import pong.particles.*
 import pong.shaders.*
 
@@ -362,18 +363,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 setX(Math.min(Math.max(x, 0f), xMax).round)
                 setY(Math.min(Math.max(y, 0f), yMax).round)
 
-    class CenteredImageSprite(img: CPImage) extends CPImageSprite(x = 0, y = 0, z = 6, img = img):
-        override def update(ctx: CPSceneObjectContext): Unit =
-            super.update(ctx)
-            val canv = ctx.getCanvas
-            // Center itself.
-            setX((canv.dim.w - getImage.getWidth) / 2)
-            setY((canv.dim.h - getImage.getHeight) / 2)
-
     // Announcements.
-    private val serveSpr = new CenteredImageSprite(serveImg)
-    private val youLostSpr = new CenteredImageSprite(youLostImg)
-    private val youWonSpr = new CenteredImageSprite(youWonImg)
+    private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6)
+    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6)
+    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6)
 
     private val gameCtrlSpr = new CPOffScreenSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -428,11 +421,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         super.onDeactivate()
 
         // Stop all audio for this scene.
-        youWonSnd.stop(400) // Stop background audio.
-        youLostSnd.stop(400)
+        youWonSnd.stop()
+        youLostSnd.stop()
         wallSnd.stop()
         paddleSnd.stop()
-        bgSnd.stop() // Stop background audio.
+        bgSnd.stop()
 
     override def onActivate(): Unit =
         super.onActivate()
