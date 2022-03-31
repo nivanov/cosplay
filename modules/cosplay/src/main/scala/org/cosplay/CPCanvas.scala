@@ -738,17 +738,27 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Draws a single pixel.
       * 
-      * @param newPx Pixel to draw.
+      * @param px Pixel to draw.
       * @param x X-coordinate of the pixel.
       * @param y Y-coordinate of the pixel.
       * @param z Z-index for this pixel. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       */
-    def drawPixel(newPx: CPPixel, x: Int, y: Int, z: Int): Unit =
-        if !newPx.isXray && clip.contains(x, y) then
+    def drawPixel(px: CPPixel, x: Int, y: Int, z: Int): Unit =
+        if !px.isXray && clip.contains(x, y) then
             val currZpx = pane.getPixel(x, y)
             if z >= currZpx.z then
-                val normPx = if newPx.bg.isEmpty then newPx.withBg(currZpx.bg.orElse(pane.getBgPixel.bg)) else newPx
+                val normPx = if px.bg.isEmpty then px.withBg(currZpx.bg.orElse(pane.getBgPixel.bg)) else px
                 pane.addPixel(normPx, x, y, z)
+
+    /**
+      * Draws a single pixel.
+      *
+      * @param px Pixel to draw.
+      * @param xy Xy-coordinate tuple of the pixel.
+      * @param z Z-index for this pixel. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
+      */
+    def drawPixel(px: CPPixel, xy: (Int, Int), z: Int): Unit =
+        drawPixel(px, xy._1, xy._2, z)
 
     /**
       * Draws a pixel.
