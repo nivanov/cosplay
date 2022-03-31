@@ -64,27 +64,63 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             // Draw score rectangle fill.
             canv.fillRect(0, 0, canv.w, scoreH - 1, 0, (_, _) ⇒ scorePx)
     private val snakeSpr = new CPCanvasSprite:
+        private final val INIT_SPEED = 0.5f
         private var snake: List[(Int, Int)] = Nil
+        private var dx = 0f
+        private var dy = 0f
+        private var x = 0f
+        private var y = 0f
+        private var speed = INIT_SPEED
 
         override def onActivate(): Unit =
             super.onActivate()
             snake = Nil
+            dx = 0f
+            dy = 0f
+            speed = INIT_SPEED
+
+        /**
+          *
+          * @param dx
+          * @param dy
+          */
+        private def turn(dx: Float, dy: Float): Unit =
+            this.dx = dx
+            this.dy = dy
 
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
             val cx = canv.xCenter
             val cy = canv.yCenter
-            if snake.isEmpty then // Initialize the snake.
+            if snake.isEmpty then
+                // Initialize the snake.
                 for (i ← 0 to 5) snake +:= cx + i -> cy
+                val headPos = snake.head
+                x = headPos._1.toFloat
+                y = headPos._2.toFloat
+                dx = speed
+                dy = 0
+
+            // Move snake.
+            x += dx
+            y += dy
+            val xInt = x.round
+            val yInt = y.round
+            val headPos = snake.head
+            if headPos._1 != xInt || headPos._2 != yInt then
+                snake = snake.dropRight(1)
+                snake +:= xInt -> yInt
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_LO_W | KEY_UP => move(if evt.isRepeated then -plySpeed else -1.0f)
-                        case KEY_LO_S | KEY_DOWN => move(if evt.isRepeated then plySpeed else 1.0f)
+                        case KEY_LO_W | KEY_UP => turn(0, -speed)
+                        case KEY_LO_S | KEY_DOWN => turn(0, speed)
+                        case KEY_LO_A | KEY_LEFT => turn(-speed, 0)
+                        case KEY_LO_D | KEY_RIGHT => turn(speed, 0)
                         case _ => ()
                 case None => ()
-        
+
         override def render(ctx: CPSceneObjectContext): Unit =
             require(snake.nonEmpty)
             val canv = ctx.getCanvas
