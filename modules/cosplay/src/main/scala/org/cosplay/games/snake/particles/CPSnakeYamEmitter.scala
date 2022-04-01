@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong.particles
+package org.cosplay.games.snake.particles
 
 import org.cosplay.*
-import games.pong.*
 import CPColor.*
+import games.snake.*
 
 /*
    _________            ______________
@@ -35,14 +35,14 @@ import CPColor.*
 */
 
 /**
-  * Particle emitter for score effect.
+  * Particle emitter for yam effect.
   * 
   * @param xf X-coordinate producer for emission center.
   * @param yf Y-coordinate producer for emission center.
   */
-class CPPongScoreEmitter(xf: () ⇒ Int, yf: () ⇒ Int) extends CPParticleEmitter():
+class CPSnakeYamEmitter(xf: () ⇒ Int, yf: () ⇒ Int) extends CPParticleEmitter():
     // Number of particles this emitter will emit on each update.
-    private final val GEN_SIZE = 20
+    private final val GEN_SIZE = 10
     private val MAX_AGE = 15
     private var age = 0
 
@@ -51,7 +51,7 @@ class CPPongScoreEmitter(xf: () ⇒ Int, yf: () ⇒ Int) extends CPParticleEmitt
         if !isPaused && age < MAX_AGE then
             age += 1
             // Emit particles in 360 degree semi-circle.
-            for (_ <- 0 to GEN_SIZE) yield CPPongScoreParticle(xf(), yf(),
+            for (_ <- 0 to GEN_SIZE) yield CPSnakeYamParticle(xf(), yf(),
                 (CPRand.randFloat() - 0.5f) * 3.5f,
                 (CPRand.randFloat() - 0.5f) * 2f,
             )

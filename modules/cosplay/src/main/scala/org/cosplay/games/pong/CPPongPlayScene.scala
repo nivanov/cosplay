@@ -345,7 +345,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                         playing = false
                         gameOver = true
                         bgSnd.stop(500) // Stop background audio.
-                        spr.setVisible(true)
+                        spr.show()
                         snd.play(3000)
 
                     if plyScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
@@ -377,7 +377,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     if ctx.isKbKey(KEY_SPACE) then ctx.switchScene("title")
                     end if
                 else // Not playing and not game over - first serve.
-                    serveSpr.setVisible(true)
+                    serveSpr.show()
 
                     // Reset positions.
                     plySpr.reset()
@@ -389,7 +389,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     ballAngle = randBallAngle()
 
                     if ctx.isKbKey(KEY_SPACE) then
-                        serveSpr.setVisible(false)
+                        serveSpr.hide()
                         playing = true
                         paddleSnd.play()
 
@@ -433,10 +433,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         bgSnd.loopAll(5000) // Start background audio.
 
         // All announcements are invisible initially.
-        serveSpr.setVisible(false)
-        youLostSpr.setVisible(false)
-        youWonSpr.setVisible(false)
-        boostSpr.setVisible(false)
+        serveSpr.hide()
+        youLostSpr.hide()
+        youWonSpr.hide()
+        boostSpr.hide()
 
         // State machine.
         playing = false

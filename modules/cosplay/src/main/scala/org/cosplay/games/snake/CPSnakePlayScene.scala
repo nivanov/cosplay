@@ -19,6 +19,7 @@ package org.cosplay.games.snake
 
 import org.cosplay.*
 import games.*
+import particles.*
 import prefabs.shaders.*
 import prefabs.sprites.*
 import CPFIGLetFont.*
@@ -45,6 +46,7 @@ import CPKeyboardKey.*
   * @param dim Dimension for this scene.
   */
 class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
+    private val WIN_SCORE = 100
     private var score = 0
     private var go = true
     private var dead = false
@@ -52,8 +54,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private val scorePx = ' '&&(C2, C2)
     private val bodyPx = ' '&&(C3, C3)
     private val headPx = ' '&&(C4, C4)
-    private val applePx = ' '&&(C5, C5)
-
+    private val yamImg = CPArrayImage(Seq(":)"), (ch, _, _) => ch&&(C_BLACK, C5))
     private val youLostImg = CPArrayImage(
         prepSeq(
             """
@@ -72,7 +73,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             case c if c.isLetter => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
-
     private val youWonImg = CPArrayImage(
         prepSeq(
             """
@@ -91,7 +91,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             case c if c.isLetter => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
-
+    private val yamEmitter = new CPSnakeYamEmitter(() ⇒ yamSpr.getX, () ⇒ yamSpr.getY)
+    private val yamPartSpr = CPParticleSprite(emitters = Seq(yamEmitter))
     private val scoreSpr = new CPImageSprite(x = 0, y = 0, z = 1, img = mkScoreImage):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
@@ -106,6 +107,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             canv.drawLine(canv.w - 2, scoreH + 1, canv.w - 2, canv.h, 0, borderPx)
             // Draw score rectangle fill.
             canv.fillRect(0, 0, canv.w, scoreH - 1, 0, (_, _) ⇒ scorePx)
+    private val yamSpr = new CPImageSprite(x = 0, y = 0, z = 1, img = yamImg)
     private val snakeSpr = new CPCanvasSprite:
         private final val INIT_SPEED = .5f
         private var snake: List[(Int, Int)] = Nil
@@ -113,6 +115,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         private var dy = 0f
         private var x = 0f
         private var y = 0f
+        private var ateYam = false
         private var speed = INIT_SPEED
 
         override def onActivate(): Unit =
@@ -132,14 +135,23 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
 
         /**
           *
-          * @param c
+          * @param c Current canvas.
           * @return
           */
         private def isDead(c: CPCanvas): Boolean =
             val (hx, hy) = snake.head
             val rx = x * 2
             // Check for self-bite death.
-            snake.tail.exists((a, b) ⇒ a == hx && b == hy) || y > c.yMax - 1 || y < scoreH || rx < 1 || rx > c.xMax - 2
+            snake.tail.exists((a, b) ⇒ a == hx && b == hy) ||
+            // Check borders.
+            y > c.yMax - 1 || y < scoreH || rx < 1 || rx > c.xMax - 3
+
+        /**
+          * Drops yam at the random location.
+          */
+        def dropYam(c: CPCanvas): Unit =
+            yamSpr.setX(CPRand.randInt(2, c.xMax - 4))
+            yamSpr.setY(CPRand.randInt(scoreH + 1, c.yMax - 1))
 
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -156,12 +168,14 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     y = hy.toFloat
                     dx = speed
                     dy = 0
+                    dropYam(canv)
                 // Check for snake death.
                 if isDead(canv) then
                     go = false
                     dead = true
-                    youLostSpr.setVisible(true)
+                    youLostSpr.show()
                     youLostSnd.play(1000)
+                    yamSpr.hide()
                     bgSnd.stop(1000)
                 else
                     // Move snake.
@@ -170,8 +184,25 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     val xInt = x.round
                     val yInt = y.round
                     val (hx, hy) = snake.head
+                    // Check for yam.
+                    if yamSpr.getY == hy && (yamSpr.getX - hx * 2).abs <= 1 then
+                        score += 1
+                        speed += 0.005f
+                        scoreSpr.setImage(mkScoreImage)
+                        yamSnd.play()
+                        yamPartSpr.resume(reset = true)
+                        if score == WIN_SCORE then
+                            go = false
+                            dead = false
+                            youWonSpr.show()
+                            youWonSnd.play(1000)
+                            yamSpr.hide()
+                            bgSnd.stop(1000)
+                        else
+                            ateYam = true
+                            dropYam(canv)
                     if hx != xInt || hy != yInt then
-                        snake = snake.dropRight(1)
+                        if !ateYam then snake = snake.dropRight(1) else ateYam = false
                         snake +:= xInt -> yInt
                     ctx.getKbEvent match
                         case Some(evt) =>
@@ -211,7 +242,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private final val youWonSnd = CPSound(s"sounds/games/snake/you_won.wav")
 
     /** Creates score image. */
-    private def mkScoreImage: CPImage = FIG_RECTANGLES.render(s"SCORE : $score", C_BLACK).trimBg()
+    private def mkScoreImage: CPImage = FIG_RECTANGLES.withFullWidth().render(s"SCORE : $score", C_BLACK).trimBg()
 
     // Shaders.
     private val fadeInShdr = CPFadeInShader(true, 500, BG_PX)
@@ -224,6 +255,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         scoreSpr,
         borderSpr,
         snakeSpr,
+        yamSpr,
+        yamPartSpr,
         youWonSpr,
         youLostSpr
     )
@@ -237,10 +270,9 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
 
     override def onActivate(): Unit =
         super.onActivate()
-
         score = 0
         go = true
         dead = false
         bgSnd.loopAll(5000) // Start background audio.
-        youWonSpr.setVisible(false)
-        youLostSpr.setVisible(false)
+        youWonSpr.hide()
+        youLostSpr.hide()

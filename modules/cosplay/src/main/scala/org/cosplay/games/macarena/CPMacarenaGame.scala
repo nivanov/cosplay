@@ -63,7 +63,8 @@ object CPMacarenaGame:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
+        val BLUE_BLACK = CPColor("0x00000F")
+        val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
         val dim = CPDim(80, 20)
 
         // Initialize the engine.
