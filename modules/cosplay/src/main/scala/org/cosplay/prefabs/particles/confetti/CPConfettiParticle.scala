@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong.particles
+package org.cosplay.prefabs.particles.confetti
 
-import org.cosplay.games.*
-import pong.*
 import org.cosplay.*
-import CPColor.*
+import CPPixel.*
 
 /*
    _________            ______________
@@ -36,31 +34,44 @@ import CPColor.*
 */
 
 /**
-  * Particle for score particle effect.
+  * Particle for confetti effect.
   *
   * @param initX Initial x-coordinate.
   * @param initY Initial y-coordinate.
-  * @param dx X-speed.
-  * @param dy Y-speed.
+  * @param dx Per-frame x-speed.
+  * @param dy Per-frame y-speed.
+  * @param maxAge Maximum age of the particle, i.e. how many frames it will be visible.
+  * @param colors Set of colors to randomly color the particle at each frame.
+  * @param bgFg A color to fade in to when this particle dies.
+  * @param chf Function that takes current age and return character to use for that frame.
+  * @param z Z-index to use to draw this particle.
   */
-class CPPongScoreParticle(initX: Int, initY: Int, dx: Float, dy: Float) extends CPParticle:
-    private val MAX_AGE = 15
+class CPConfettiParticle(
+    initX: Int,
+    initY: Int,
+    dx: Float,
+    dy: Float,
+    maxAge: Int,
+    colors: Seq[CPColor],
+    bgFg: CPColor,
+    chf: Int ⇒ Char,
+    z: Int) extends CPParticle:
     // Defines the radius of explosion in terms of the particle age.
     private var x = initX.toFloat
     private var y = initY.toFloat
     // Linear color gradient, slowly dimming.
-    private val cf = CPCurve.colorGradient(CPRand.rand(CS), BG_PX.fg, MAX_AGE)
+    private val cf = CPCurve.colorGradient(CPRand.rand(colors), bgFg, maxAge)
     // X-curve for slowing down the speed of particle as it moves away from the center.
     private val dxf = CPCurve.lagrangePoly(Seq(
         x -> 1f,
-        x + (dx * MAX_AGE) / 4 -> 0.5f,
-        x + dx * MAX_AGE -> 0.3f
+        x + (dx * maxAge) / 4 -> 0.5f,
+        x + dx * maxAge -> 0.3f
     ))
     // Y-curve for slowing down the speed of particle as it moves away from the center.
     private val dyf = CPCurve.lagrangePoly(Seq(
         y -> 1f,
-        y + (dy * MAX_AGE) / 4 -> 0.4f,
-        y + dy * MAX_AGE -> 0.2f
+        y + (dy * maxAge) / 4 -> 0.4f,
+        y + dy * maxAge -> 0.2f
     ))
     private var age = 0
 
@@ -71,6 +82,6 @@ class CPPongScoreParticle(initX: Int, initY: Int, dx: Float, dy: Float) extends 
         y += dy * dyf(y)
     override def getX: Int = x.round
     override def getY: Int = y.round
-    override val getZ: Int = 1
-    override def getPixel: CPPixel = BG_PX.withFg(cf())
-    override def isAlive: Boolean = age < MAX_AGE
+    override val getZ: Int = z
+    override def getPixel: CPPixel = chf(age)&cf()
+    override def isAlive: Boolean = age < maxAge

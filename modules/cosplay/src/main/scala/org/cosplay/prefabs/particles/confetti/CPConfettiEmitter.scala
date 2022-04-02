@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong.particles
+package org.cosplay.prefabs.particles.confetti
 
 import org.cosplay.*
-import games.pong.*
 import CPColor.*
+import games.snake.*
 
 /*
    _________            ______________
@@ -35,14 +35,28 @@ import CPColor.*
 */
 
 /**
-  * Particle emitter for score effect.
-  * 
+  * Particle emitter for confetti effect.
+  *
   * @param xf X-coordinate producer for emission center.
   * @param yf Y-coordinate producer for emission center.
+  * @param genSize Number of particles this emitter will emit on each frame update.
+  * @param maxAge Maximum age of the particle, i.e. how many frames it will be visible.
+  * @param colors Set of colors to randomly color the particles.
+  * @param bgFg A color to fade in to when a particle dies.
+  * @param chf Function that takes current age and return character to use for that frame.
+  * @param z Z-index to use to draw particles from this emitter.
   */
-class CPPongScoreEmitter(xf: () ⇒ Int, yf: () ⇒ Int) extends CPParticleEmitter():
+class CPConfettiEmitter(
+    xf: () ⇒ Int,
+    yf: () ⇒ Int,
+    genSize: Int,
+    maxAge: Int,
+    colors: Seq[CPColor],
+    bgFg: CPColor,
+    chf: Int ⇒ Char,
+    z: Int) extends CPParticleEmitter():
     // Number of particles this emitter will emit on each update.
-    private final val GEN_SIZE = 20
+    private final val GEN_SIZE = 10
     private val MAX_AGE = 15
     private var age = 0
 
@@ -51,9 +65,17 @@ class CPPongScoreEmitter(xf: () ⇒ Int, yf: () ⇒ Int) extends CPParticleEmitt
         if !isPaused && age < MAX_AGE then
             age += 1
             // Emit particles in 360 degree semi-circle.
-            for (_ <- 0 to GEN_SIZE) yield CPPongScoreParticle(xf(), yf(),
-                (CPRand.randFloat() - 0.5f) * 3.5f,
-                (CPRand.randFloat() - 0.5f) * 2f,
-            )
+            for (_ <- 0 to GEN_SIZE) yield
+                CPConfettiParticle(
+                    xf(),
+                    yf(),
+                    (CPRand.randFloat() - 0.5f) * 3.5f,
+                    (CPRand.randFloat() - 0.5f) * 2f,
+                    maxAge,
+                    colors,
+                    bgFg,
+                    chf,
+                    z
+                )
         else
             Seq.empty

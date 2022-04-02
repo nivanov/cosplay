@@ -26,10 +26,9 @@ import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
 import prefabs.sprites.*
-import pong.particles.*
 import pong.shaders.*
-
 import org.apache.commons.lang3.SystemUtils
+import org.cosplay.prefabs.particles.confetti.CPConfettiEmitter
 
 /*
    _________            ______________
@@ -189,8 +188,26 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     // Score sprites.
     private val plyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
     private val npcScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
-    private val plyScoreEmitter = new CPPongScoreEmitter(() ⇒ plyScoreSpr.getRect.xCenter, () ⇒ plyScoreSpr.getRect.h / 2)
-    private val npcScoreEmitter = new CPPongScoreEmitter(() ⇒ npcScoreSpr.getRect.xCenter, () ⇒ npcScoreSpr.getRect.h / 2)
+    private val plyScoreEmitter = new CPConfettiEmitter(
+        () ⇒ plyScoreSpr.getRect.xCenter,
+        () ⇒ plyScoreSpr.getRect.h / 2,
+        15,
+        15,
+        CS,
+        BG_PX.fg,
+        _ ⇒ CPRand.rand("1234567890"),
+        1
+    )
+    private val npcScoreEmitter = new CPConfettiEmitter(
+        () ⇒ npcScoreSpr.getRect.xCenter,
+        () ⇒ npcScoreSpr.getRect.h / 2,
+        15,
+        15,
+        CS,
+        BG_PX.fg,
+        _ ⇒ CPRand.rand("1234567890"),
+        1
+    )
     private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
     private val npcScorePartSpr = CPParticleSprite(emitters = Seq(npcScoreEmitter))
 

@@ -19,7 +19,6 @@ package org.cosplay.games.snake
 
 import org.cosplay.*
 import games.*
-import particles.*
 import prefabs.shaders.*
 import prefabs.sprites.*
 import CPFIGLetFont.*
@@ -27,6 +26,7 @@ import CPArrayImage.*
 import CPPixel.*
 import CPColor.*
 import CPKeyboardKey.*
+import prefabs.particles.confetti.*
 
 /*
    _________            ______________
@@ -91,7 +91,16 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             case c if c.isLetter => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
-    private val yamEmitter = new CPSnakeYamEmitter(() ⇒ yamSpr.getX, () ⇒ yamSpr.getY)
+    private val yamEmitter = new CPConfettiEmitter(
+        () ⇒ yamSpr.getX,
+        () ⇒ yamSpr.getY,
+        10,
+        15,
+        CS,
+        BG_PX.fg,
+        _ ⇒ CPRand.rand("x+XoO"),
+        1
+    )
     private val yamPartSpr = CPParticleSprite(emitters = Seq(yamEmitter))
     private val scoreSpr = new CPImageSprite(x = 0, y = 0, z = 1, img = mkScoreImage):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -140,11 +149,12 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
           */
         private def isDead(c: CPCanvas): Boolean =
             val (hx, hy) = snake.head
-            val rx = x * 2
+            val rx = (x * 2).round
+            val ry = y.round
             // Check for self-bite death.
             snake.tail.exists((a, b) ⇒ a == hx && b == hy) ||
             // Check borders.
-            y > c.yMax - 1 || y < scoreH || rx < 1 || rx > c.xMax - 3
+            ry > c.yMax - 1 || ry < scoreH + 1 || rx < 1 || rx > c.xMax - 3
 
         /**
           * Drops yam at the random location.
@@ -166,8 +176,12 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     val (hx, hy) = snake.head
                     x = hx.toFloat
                     y = hy.toFloat
-                    dx = speed
-                    dy = 0
+                    if CPRand.randFloat() < .5f then
+                        dx = speed
+                        dy = 0
+                    else
+                        dx = 0
+                        dy = speed
                     dropYam(canv)
                 // Check for snake death.
                 if isDead(canv) then
@@ -208,10 +222,10 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                         case Some(evt) =>
                             // Turn snake.
                             evt.key match
-                                case KEY_LO_W | KEY_UP => turn(0, -speed)
-                                case KEY_LO_S | KEY_DOWN => turn(0, speed)
-                                case KEY_LO_A | KEY_LEFT => turn(-speed, 0)
-                                case KEY_LO_D | KEY_RIGHT => turn(speed, 0)
+                                case KEY_LO_W | KEY_UP => if dy == 0 then turn(0, -speed)
+                                case KEY_LO_S | KEY_DOWN => if dy == 0 then turn(0, speed)
+                                case KEY_LO_A | KEY_LEFT => if dx == 0 then turn(-speed, 0)
+                                case KEY_LO_D | KEY_RIGHT => if dx == 0 then turn(speed, 0)
                                 case _ => ()
                         case None => ()
             else
