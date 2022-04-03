@@ -41,13 +41,18 @@ import games.pong.*
   *
   * @param radius Radius of circular flashlight effect.
   * @param autoPlay Whether or not to toggle on the shader effect automatically. Default value is `false`.
+  * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
+  *     or certain Z-index. Default predicate returns `false` for all pixels.
   * @see [[CPFadeInShader]]
   * @see [[CPShimmerShader]]
   * @see [[CPFadeOutShader]]
   * @see [[CPOffScreenSprite]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
-class CPFlashlightShader(radius: Int, autoPlay: Boolean = false) extends CPShader:
+class CPFlashlightShader(
+    radius: Int,
+    autoPlay: Boolean = false,
+    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false) extends CPShader:
     private var on = autoPlay
 
     /**
@@ -86,16 +91,17 @@ class CPFlashlightShader(radius: Int, autoPlay: Boolean = false) extends CPShade
             val effRect = CPRect(cx - radius * 2, cy - radius, radius * 4, radius * 2)
             effRect.loop((x, y) => {
                 if canv.isValid(x, y) then
-                    // Account for character with/height ratio to make a proper circle...
-                    // NOTE: we can't get the font metrics in the native ANSI terminal so
-                    //       we use 1.85 as a general approximation.
-                    val dx = (cx - x).abs.toFloat / 1.85
-                    val dy = (cy - y).abs.toFloat
-                    val r = Math.sqrt(dx * dx + dy * dy).toFloat
-                    if r <= radius then // Flashlight is a circular effect.
-                        val zpx = canv.getZPixel(x, y)
+                    val zpx = canv.getZPixel(x, y)
+                    if !skip(zpx, x, y) then
                         val px = zpx.px
-                        if px.char == BG_PX.char then
-                            val newFg = px.fg.lighter(0.2f * (1.0f - r / radius))
-                            canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
+                        // Account for character with/height ratio to make a proper circle...
+                        // NOTE: we can't get the font metrics in the native ANSI terminal so
+                        //       we use 1.85 as a general approximation.
+                        val dx = (cx - x).abs.toFloat / 1.85
+                        val dy = (cy - y).abs.toFloat
+                        val r = Math.sqrt(dx * dx + dy * dy).toFloat
+                        if r <= radius then // Flashlight is a circular effect.
+                            if px.char == BG_PX.char then
+                                val newFg = px.fg.lighter(0.2f * (1.0f - r / radius))
+                                canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
             })

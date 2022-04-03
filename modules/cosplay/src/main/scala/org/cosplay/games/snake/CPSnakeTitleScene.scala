@@ -39,7 +39,7 @@ import CPKeyboardKey.*
 */
 
 /**
-  * Title scene for snake game.
+  * Snake game title scene.
   */
 object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/snake/intro.wav", 0.5f)

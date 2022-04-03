@@ -42,8 +42,9 @@ import prefabs.particles.confetti.*
 */
 
 /**
+  * Snake main gameplay scene.
   *
-  * @param dim Dimension for this scene.
+  * @param dim Fixed dimension for this scene.
   */
 class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private val WIN_SCORE = 100
@@ -61,7 +62,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
               |*****************************
               |**                         **
               |**    YOU LOST :-(         **
-              |**    ~~~~~~~~~~~~         **
+              |**    ------------         **
               |**                         **
               |**    [SPACE]   Continue   **
               |**    [Q]       Quit       **
@@ -79,7 +80,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
               |*****************************
               |**                         **
               |**    YOU WON :-)          **
-              |**    ~~~~~~~~~~~          **
+              |**    -----------          **
               |**                         **
               |**    [SPACE]   Continue   **
               |**    [Q]       Quit       **
@@ -99,7 +100,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         CS,
         BG_PX.fg,
         _ ⇒ CPRand.rand("x+XoO"),
-        1
+        2
     )
     private val yamPartSpr = CPParticleSprite(emitters = Seq(yamEmitter))
     private val scoreSpr = new CPImageSprite(x = 0, y = 0, z = 1, img = mkScoreImage):
@@ -111,14 +112,15 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             // Draw border.
-            canv.drawRect(0, scoreH, CPDim(canv.w, canv.h - scoreH), 0, (_, _) ⇒ borderPx)
-            canv.drawLine(1, scoreH + 1, 1, canv.h, 0, borderPx)
-            canv.drawLine(canv.w - 2, scoreH + 1, canv.w - 2, canv.h, 0, borderPx)
+            canv.drawRect(0, scoreH, CPDim(canv.w, canv.h - scoreH), 1, (_, _) ⇒ borderPx)
+            canv.drawLine(1, scoreH + 1, 1, canv.h, 1, borderPx)
+            canv.drawLine(canv.w - 2, scoreH + 1, canv.w - 2, canv.h, 1, borderPx)
             // Draw score rectangle fill.
-            canv.fillRect(0, 0, canv.w, scoreH - 1, 0, (_, _) ⇒ scorePx)
-    private val yamSpr = new CPImageSprite(x = 0, y = 0, z = 1, img = yamImg)
+            canv.fillRect(0, 0, canv.w, scoreH - 1, 1, (_, _) ⇒ scorePx)
+    private val yamSpr = new CPImageSprite(x = 0, y = 0, z = 2, img = yamImg)
     private val snakeSpr = new CPCanvasSprite:
         private final val INIT_SPEED = .5f
+        private final val yelps = Seq("Yam", "Tasty", "Num", "Okay", "Nice", "Right", "Bam", "Wow", "Yep", "Yes")
         private var snake: List[(Int, Int)] = Nil
         private var dx = 0f
         private var dy = 0f
@@ -201,10 +203,27 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     // Check for yam.
                     if yamSpr.getY == hy && (yamSpr.getX - hx * 2).abs <= 1 then
                         score += 1
-                        speed += 0.005f
+                        speed += 0.002f
+                        // Update score.
                         scoreSpr.setImage(mkScoreImage)
+                        // Play yam sound.
                         yamSnd.play()
+                        // Particle effect (for new location).
                         yamPartSpr.resume(reset = true)
+                        // Bubble sprite (for current location).
+                        val img = FIG_CHUNKY.render(s"${CPRand.rand(yelps)}!", CPRand.rand(CS), None)
+                        val bubbleSpr = new CPBubbleSprite(
+                            img = img,
+                            // Make sure the bubble fits on the screen.
+                            yamSpr.getX.min(canv.xMax - img.w - 2),
+                            yamSpr.getY.min(canv.yMax - img.h - 1),
+                            z = 0,
+                            _ ⇒ 0f,
+                            _ ⇒ -0.3f,
+                            BG_PX,
+                            1000
+                        )
+                        ctx.addObject(bubbleSpr)
                         if score == WIN_SCORE then
                             go = false
                             dead = false
@@ -236,8 +255,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             val canv = ctx.getCanvas
 
             def draw(xy: (Int, Int), px: CPPixel): Unit =
-                canv.drawPixel(px, xy._1 * 2, xy._2, 1)
-                canv.drawPixel(px, xy._1 * 2 + 1, xy._2, 1)
+                canv.drawPixel(px, xy._1 * 2, xy._2, 2)
+                canv.drawPixel(px, xy._1 * 2 + 1, xy._2, 2)
 
             val hpx = if !go && dead then headPx.withChar('8').withFg(C_BLACK) else headPx
             val bpx = if !go && dead then bodyPx.withChar('X').withFg(C_BLACK) else bodyPx
@@ -256,7 +275,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private final val youWonSnd = CPSound(s"sounds/games/snake/you_won.wav")
 
     /** Creates score image. */
-    private def mkScoreImage: CPImage = FIG_ANSI_REGULAR.render(s"SCORE : $score", C_BLACK).trimBg()
+    private def mkScoreImage: CPImage = FIG_ANSI_REGULAR.render(s"SCORE : $score", C4).trimBg()
 
     // Shaders.
     private val fadeInShdr = CPFadeInShader(true, 500, BG_PX)

@@ -77,7 +77,7 @@ import scala.collection.mutable
   * @param autoPlay Whether to autoplay the video.
   * @param loop Whether or not to loop the playback.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
-  * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @example See [[org.cosplay.examples.video.CPVideoExample CPVideoExample]] class for the example of
   *     using video support.
   */

@@ -949,7 +949,8 @@ object CPEngine:
                                     case Some(s) =>
                                         engLog.info(s"Scene deleted: ${s.getId}")
                                         lifecycleStop(s)
-                                    case _ => ()
+                                    case _ =>
+                                        engLog.warn(s"Ignored an attempt to delete unknown scene: $colId")
                             })
                     override def deleteObject(id: String): Unit =
                         val colId = id
@@ -958,7 +959,8 @@ object CPEngine:
                                 case Some(obj) =>
                                     engLog.info(s"Scene object deleted from '${sc.getId}' scene: ${obj.toExtStr}")
                                     lifecycleStop(obj)
-                                case _ => ()
+                                case _ =>
+                                    engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $colId")
                         })
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
                         if myObj.getCollisionRect.isEmpty then E(s"Current object does not provide collision shape: ${myObj.getId}")

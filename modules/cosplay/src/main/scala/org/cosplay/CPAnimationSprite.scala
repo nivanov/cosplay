@@ -64,7 +64,7 @@ import scala.collection.mutable
   * @param z Initial Z-index.
   * @param initAniId ID of the initial animation to play. This animation starts to play immediately.
   * @param collidable Whether or not this sprite is collidable.
-  * @param shaders Optional list of shaders for this sprite. Default value is an empty list.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty list.
   * @see [[CPParticleSprite]]
   * @see [[CPShader]]
   * @see [[CPAnimation]]

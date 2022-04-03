@@ -45,7 +45,7 @@ import games.pong.shaders.*
 */
 
 /**
-  * Title scene for pong game.
+  * Pong game title scene.
   */
 object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)

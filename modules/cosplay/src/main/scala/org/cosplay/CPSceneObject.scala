@@ -74,12 +74,12 @@ abstract class CPSceneObject(id: String = CPRand.guid6) extends CPGameObject(id)
     private var visible = true
 
     private[cosplay] def toExtStr: String =
-        val pos = s"($getX,$getY)"
+        val xy = s"($getX,$getY)"
         val tags = s"(${getTags.mkString(",")})"
         val collide = getCollisionRect match
             case Some(rect) => rect.toString
             case None => "none"
-        s"[id=$id, tags=$tags, vis=$isVisible, pos=$pos, z=$getZ, dim=$getDim, col=$collide]"
+        s"[id=$id, tags=$tags, vis=$isVisible, xy=$xy, z=$getZ, dim=$getDim, col=$collide]"
 
     /**
       * Checks the visibility flag.

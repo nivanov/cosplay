@@ -51,7 +51,7 @@ import scala.util.Random
   *         sparkling at any given time.
   * @param steps Number of frames that it takes for entire sparkle cycle from brightening to dimming back.
   * @param autoStart Whether to start shader right away. Default value is `false`.
-  * @param skip Predicate allowing to skip certain pixel from the shader.
+  * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
   *     or certain Z-index. Default predicate returns `false` for all pixels.
   * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
   * @param onDuration Optional callback to call when this shader finishes by exceeding the duration

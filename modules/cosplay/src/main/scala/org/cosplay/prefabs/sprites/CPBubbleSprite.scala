@@ -18,6 +18,7 @@
 package org.cosplay.prefabs.sprites
 
 import org.cosplay.*
+import prefabs.shaders.*
 
 /*
    _________            ______________
@@ -33,12 +34,55 @@ import org.cosplay.*
 */
 
 /**
+  * Image sprite that provides moving and fading out image effect.
+  * This typically can be used for word or speech bubbles in the game and such.
   *
+  * @param id Optional ID of the sprite.
+  * @param img The image to render. It can be changed later.
+  * @param initX Initial X-coordinate of the sprite.
+  * @param initY Initial Y-coordinate of the sprite.
+  * @param z Z-index at which to render the image.
+  * @param dxf Function providing per-frame X-coordinate delta. Defines speed of movement on X-axis.
+  * @param dyf Function providing per-frame Y-coordinate delta. Defines speed of movement on Y-axis.
+  * @param bgPx Background pixel to fade out to.
+  * @param durMs Duration of the shader effect in milliseconds.
+  * @param onFinish Optional callback to call when the effect is finished. Default is a np-op.
+  * @param autoDelete Optional flag on whether or not to auto-delete the sprite from its scene
+  *     when the effect is finished. Default value is `true`.
   */
 class CPBubbleSprite(
-    id: String = s"center-img-spr-${CPRand.guid6}",
+    id: String = s"bubble-img-spr-${CPRand.guid6}",
     img: CPImage,
-    x: Int,
-    y: Int,
+    initX: Int,
+    initY: Int,
     z: Int,
-    shaders: Seq[CPShader] = Seq.empty) extends CPImageSprite(id, x, y, z, img, shaders = shaders)
+    dxf: CPSceneObjectContext ⇒ Float,
+    dyf: CPSceneObjectContext ⇒ Float,
+    bgPx: CPPixel,
+    durMs: Long,
+    onFinish: CPSceneObjectContext => Unit = _ => (),
+    autoDelete: Boolean = true) extends CPImageSprite(id, initX, initY, z, img):
+    private val shdrs = Seq(
+        CPFadeOutShader(
+            false,
+            durMs,
+            bgPx,
+            autoStart = true,
+            onFinish = ctx ⇒ {
+                // Delete the sprite when shader is finished, if required.
+                if autoDelete then ctx.deleteObject(id)
+                onFinish(ctx)
+            },
+            skip = (zpx, _, _) ⇒ zpx.z > z // Don't modify above Z-layers.
+        )
+    )
+    private var x: Float = initX.toFloat
+    private var y: Float = initY.toFloat
+
+    override def getShaders: Seq[CPShader] = shdrs
+    override def update(ctx: CPSceneObjectContext): Unit =
+        super.update(ctx)
+        x += dxf(ctx)
+        y += dyf(ctx)
+        setX(x.round)
+        setY(y.round)

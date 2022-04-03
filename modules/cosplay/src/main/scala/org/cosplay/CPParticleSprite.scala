@@ -68,7 +68,7 @@ import scala.collection.mutable
   * @param id Optional ID of the sprite.
   * @param emitters Set of particle emitters this sprite will use.
   * @param collidable Whether or not this sprite provides collision shape. Defualt value is `false`.
-  * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @example See [[org.cosplay.examples.particle.CPParticleExample CPParticleExample]] class for the example of
   *     using particle effect.
   */

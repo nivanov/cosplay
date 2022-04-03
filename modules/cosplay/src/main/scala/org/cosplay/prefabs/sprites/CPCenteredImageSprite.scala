@@ -39,7 +39,7 @@ import org.cosplay.impl.CPUtils
   * @param id Optional ID of the sprite.
   * @param img The image to render. It can be [[CPImageSprite.setImage() changed later]].
   * @param z Z-index at which to render the image.
-  * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   */
 class CPCenteredImageSprite(
     id: String = s"center-img-spr-${CPRand.guid6}",

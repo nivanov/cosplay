@@ -61,7 +61,7 @@ import impl.CPUtils
   * @param z Z-index at which to render the image.
   * @param img The image to render.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
-  * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @see [[CPImageSprite]]
   * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
   *     using images.

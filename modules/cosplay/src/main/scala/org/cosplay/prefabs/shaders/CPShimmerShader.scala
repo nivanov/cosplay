@@ -47,7 +47,7 @@ import org.cosplay.*
   * @param keyFrame nth-frame to render the effect. For example, if key frame is `5` than the colors will
   *     change on each 5th frame and remain the same on all subsequent frames until next key frame is reached.
   * @param autoStart Whether to start shader right away. Default value is `false`.
-  * @param skip Predicate allowing to skip certain pixel from the shader.
+  * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
   *     or certain Z-index. Default predicate returns `false` for all pixels.
   * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
   * @param onDuration Optional callback to call when this shader finishes by exceeding the duration

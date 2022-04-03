@@ -32,6 +32,11 @@ import org.cosplay.{CPColor, CPRand}
                 ALl rights reserved.
 */
 
+/*
+ * Globals used by all built-in games.
+ * ===================================
+ */
+
 // Randomly selected color palette.
 private val palette = CPRand.rand(
     // List of colors palettes: https://designs.ai/colors
