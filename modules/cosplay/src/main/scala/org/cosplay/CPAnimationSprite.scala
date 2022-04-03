@@ -72,7 +72,7 @@ import scala.collection.mutable
   *     example of animation functionality.
   */
 class CPAnimationSprite(
-    id: String = s"ani-spr-${CPUtils.guid6}",
+    id: String = s"ani-spr-${CPRand.guid6}",
     anis: Seq[CPAnimation],
     x: Int,
     y: Int,

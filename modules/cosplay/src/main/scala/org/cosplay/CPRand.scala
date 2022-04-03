@@ -19,6 +19,8 @@ package org.cosplay
 
 import scala.util.Random
 import CPColor.*
+import org.apache.commons.lang3.RandomStringUtils
+import java.util.UUID
 
 /*
    _________            ______________
@@ -45,6 +47,16 @@ object CPRand:
     private final val LETTERS = s"$LO_LETTERS$UP_LETTERS"
     private final val DIGITS = "1234567890"
     private final val SYMBOLS = "~!@#$%^&*()_+-=[]{}';:\",.<>/?"
+
+    /**
+      * Creates new globally unique 16-bytes type 4 UUID.
+      */
+    def guid: String = UUID.randomUUID().toString.toLowerCase
+
+    /**
+      * Creates new 6-bytes UUID. This UUID is NOT globally unique.
+      */
+    def guid6: String = RandomStringUtils.random(6, true, true).toLowerCase
 
     /**
       * Gets random value from the given sequence. It's equivalent to:

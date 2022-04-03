@@ -45,7 +45,7 @@ import impl.CPUtils
   *     empty set is used.
   * @see [[CPSceneObjectContext.getObjectsForTags()]]
   */
-abstract class CPGameObject(id: String = CPUtils.guid6, tags: Set[String] = Set.empty):
+abstract class CPGameObject(id: String = CPRand.guid6, tags: Set[String] = Set.empty):
     /**
       * Gets unique ID of this game object.
       */

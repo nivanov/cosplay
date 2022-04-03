@@ -71,7 +71,7 @@ import impl.CPUtils
   *     using labels and text input.
   */
 class CPLabelSprite(
-    id: String = s"lbl-spr-${CPUtils.guid6}",
+    id: String = s"lbl-spr-${CPRand.guid6}",
     x: Int,
     y: Int,
     z: Int,
@@ -99,7 +99,7 @@ class CPLabelSprite(
       * @param fg Foreground color.
       */
     def this(x: Int, y: Int, z: Int, text: String, fg: CPColor) =
-        this(CPUtils.guid6, x, y, z, text = text, fg = fg)
+        this(CPRand.guid6, x, y, z, text = text, fg = fg)
 
     private def reset(): Unit =
         img = font.render(lblTxt, fg, bg).trimBg().skin(skin)

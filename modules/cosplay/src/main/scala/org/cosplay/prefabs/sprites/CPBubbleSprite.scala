@@ -18,7 +18,6 @@
 package org.cosplay.prefabs.sprites
 
 import org.cosplay.*
-import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -34,21 +33,12 @@ import org.cosplay.impl.CPUtils
 */
 
 /**
-  * Image sprite that centers its image on the canvas on each frame update.
   *
-  * @param id Optional ID of the sprite.
-  * @param img The image to render. It can be [[CPImageSprite.setImage() changed later]].
-  * @param z Z-index at which to render the image.
-  * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
   */
-class CPCenteredImageSprite(
+class CPBubbleSprite(
     id: String = s"center-img-spr-${CPRand.guid6}",
     img: CPImage,
+    x: Int,
+    y: Int,
     z: Int,
-    shaders: Seq[CPShader] = Seq.empty) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders):
-    override def update(ctx: CPSceneObjectContext): Unit =
-        super.update(ctx)
-        val canv = ctx.getCanvas
-        // Center itself.
-        setX((canv.dim.w - getImage.getWidth) / 2)
-        setY((canv.dim.h - getImage.getHeight) / 2)
+    shaders: Seq[CPShader] = Seq.empty) extends CPImageSprite(id, x, y, z, img, shaders = shaders)

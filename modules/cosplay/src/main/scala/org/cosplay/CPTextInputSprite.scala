@@ -79,7 +79,7 @@ import scala.collection.mutable
   *     using labels and text input.
   */
 class CPTextInputSprite(
-    id: String = s"input-spr-${CPUtils.guid6}",
+    id: String = s"input-spr-${CPRand.guid6}",
     x: Int,
     y: Int,
     z: Int,

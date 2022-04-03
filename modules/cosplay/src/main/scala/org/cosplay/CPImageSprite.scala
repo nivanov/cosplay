@@ -90,7 +90,7 @@ import org.cosplay.impl.CPUtils
   *     using images.
   */
 class CPImageSprite(
-    id: String = s"img-spr-${CPUtils.guid6}",
+    id: String = s"img-spr-${CPRand.guid6}",
     x: Int,
     y: Int,
     z: Int,
@@ -229,7 +229,7 @@ object CPImageSprite:
       *     using images.
       */
     def apply(
-        id: String = s"img-spr-${CPUtils.guid6}",
+        id: String = s"img-spr-${CPRand.guid6}",
         xf: CPCanvas => Int,
         yf: CPCanvas => Int,
         z: Int,

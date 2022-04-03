@@ -62,7 +62,7 @@ import impl.CPUtils
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   * @param shaders Optional set of shaders for this sprite.
   */
-class CPOffScreenSprite(id: String = s"off-scr-spr-${CPUtils.guid6}", shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+class CPOffScreenSprite(id: String = s"off-scr-spr-${CPRand.guid6}", shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
     setVisible(false)
 
     /**
@@ -70,14 +70,14 @@ class CPOffScreenSprite(id: String = s"off-scr-spr-${CPUtils.guid6}", shaders: S
       *
       * @param shaders Set of shaders for this sprite.
       */
-    def this(shaders: Seq[CPShader]) = this(CPUtils.guid6, shaders)
+    def this(shaders: Seq[CPShader]) = this(CPRand.guid6, shaders)
 
     /**
       * Creates off-screen sprite with default ID and given shaders.
       *
       * @param shader Shader for this sprite.
       */
-    def this(shader: CPShader) = this(CPUtils.guid6, Seq(shader))
+    def this(shader: CPShader) = this(CPRand.guid6, Seq(shader))
 
     /** @inheritdoc */
     override def getX: Int = 0

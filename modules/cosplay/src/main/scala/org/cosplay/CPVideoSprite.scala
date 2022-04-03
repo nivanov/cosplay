@@ -82,7 +82,7 @@ import scala.collection.mutable
   *     using video support.
   */
 class CPVideoSprite(
-    id: String = s"video-spr-${CPUtils.guid6}",
+    id: String = s"video-spr-${CPRand.guid6}",
     vid: CPVideo,
     x: Int,
     y: Int,

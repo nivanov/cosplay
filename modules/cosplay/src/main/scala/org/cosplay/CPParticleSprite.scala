@@ -73,7 +73,7 @@ import scala.collection.mutable
   *     using particle effect.
   */
 class CPParticleSprite(
-    id: String = s"part-spr-${CPUtils.guid6}",
+    id: String = s"part-spr-${CPRand.guid6}",
     emitters: Seq[CPParticleEmitter],
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty

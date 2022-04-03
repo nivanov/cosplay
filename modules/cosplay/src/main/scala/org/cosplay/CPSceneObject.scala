@@ -70,7 +70,7 @@ import impl.CPUtils
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   */
-abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id) with CPLifecycle:
+abstract class CPSceneObject(id: String = CPRand.guid6) extends CPGameObject(id) with CPLifecycle:
     private var visible = true
 
     private[cosplay] def toExtStr: String =
