@@ -16,9 +16,8 @@
 Check out [www.cosplayengine.com](https://cosplayengine.com) for the full documentation.
 
 ## Games
-This package contains built-in games that are shipped with CosPlay:
-* You can view game source code on [GitHub](https://github.com/nivanov/cosplay).
-* To run the game, simply run its class. Each game main class contains <code>main(...)</code> method. 
+This package contains built-in games that are shipped with CosPlay. Check individual packages for the instructions on
+how to run the games. 
 
 ## Questions?
 * Join [discord](https://discord.gg/gDQuYJDM)

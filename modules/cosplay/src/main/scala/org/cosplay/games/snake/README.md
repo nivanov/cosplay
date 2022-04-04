@@ -28,10 +28,6 @@ To run the game:
 $ mvn -f modules/cosplay -P snake exec:java
 ```
 
-<video width="640" controls autoplay>
-    <source src="https://cosplayengine.org/videos/snake.mp4" type="video/mp4">
-</video>
-
 ## Questions?
 * Join [discord](https://discord.gg/gDQuYJDM)
 * [Documentation](https://cosplayengine.com), [examples](https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples) and built-in [games](https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/games)
