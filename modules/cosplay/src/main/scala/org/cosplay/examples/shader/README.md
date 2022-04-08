@@ -14,6 +14,7 @@ $ mvn package
 To run example:
 ```shell
 $ mvn -f modules/cosplay -P ex:shader exec:java
+$ mvn -f modules/cosplay -P ex:slide_shader exec:java
 ```
 
 ## Copyright

@@ -369,6 +369,26 @@
             </build>
         </profile>
         <profile>
+            <id>ex:slide_shader</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.examples.shader.CPSlideShaderExample</mainClass>
+                            <arguments>
+                                <argument>--add-opens</argument>
+                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>ex:sound</id>
             <build>
                 <plugins>

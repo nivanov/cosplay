@@ -43,7 +43,24 @@ import org.apache.commons.math3.analysis.function.*
 import scala.collection.mutable
 
 /**
+  * Code demo for slide in and slide out shaders functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:slide_shader exec:java
+  * }}}
+  *
+  * @see [[CPShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPSlideShaderExample:
     private val BLUE_BLACK = CPColor("0x00000F")
@@ -100,20 +117,36 @@ object CPSlideShaderExample:
             System.console() == null || args.contains("emuterm")
         )
 
+        val labelSpr = new CPImageSprite("label", 0, 0, 0, CPSystemFont.render("", C_ORANGE1, None)):
+            override def update(ctx: CPSceneObjectContext): Unit =
+                super.update(ctx)
+                val canv = ctx.getCanvas
+                // Center itself.
+                setX((canv.dim.w - getImage.getWidth) / 2)
+                setY(canv.dim.h - 3)
+
         val sigmoid = new Sigmoid()
         var lastShdr: CPSlideOutShader = null
-        val shdrs = mutable.Buffer.empty[CPShader]
+        val shdrs = mutable.Buffer.empty[CPSlideInShader | CPSlideOutShader]
         for (dir <- CPSlideDirection.values)
             val s1 = new CPSlideInShader(dir, false, 1500, BG_PX, _ => (), lastShdr == null, balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat)
-            val s2 = new CPSlideOutShader(dir, false, 1500, BG_PX, _ => (), false, balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat)
-            s1.setOnFinish(_ => s2.start())
-            if lastShdr != null then lastShdr.setOnFinish(_ => s1.start())
+            val s2 = new CPSlideOutShader(dir, false, 1500, BG_PX, _ => labelSpr.reset(), false, balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat)
+            s1.setOnFinish(_ => {
+                labelSpr.setImage(CPSystemFont.render(dir.toString, C_ORANGE1, None))
+                s2.start()
+            })
+            if lastShdr != null then lastShdr.setOnFinish(_ => {
+                labelSpr.setImage(CPSystemFont.render(dir.toString, C_ORANGE1, None))
+                s1.start()
+            })
+            else
+                labelSpr.setImage(CPSystemFont.render(dir.toString, C_ORANGE1, None))
             shdrs.append(s1)
             shdrs.append(s2)
             lastShdr = s2
 
-        val spr = new CPCenteredImageSprite(img = img, 0, shdrs.toSeq)
-        val sc = new CPScene("scene", Option(dim), BG_PX, spr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
+        val imgSpr = new CPCenteredImageSprite(img = img, 0, shdrs.toSeq)
+        val sc = new CPScene("scene", Option(dim), BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
 
         // Start the game & wait for exit.
         try CPEngine.startGame(new CPLogoScene("logo", Option(dim), BG_PX, cols, "scene"), sc)

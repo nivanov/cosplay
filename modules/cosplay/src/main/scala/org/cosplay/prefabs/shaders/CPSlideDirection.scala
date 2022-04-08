@@ -39,22 +39,34 @@ import org.cosplay.*
   * @see [[CPSlideOutShader]]
   */
 enum CPSlideDirection:
-    /**  Smooth slide effect from left to right. */
+    /**  Slide effect of collapsing from top and bottom. */
+    case HOR_COLLAPSE
+
+    /**  Slide effect of expanding from center towards top and bottom. */
+    case HOR_EXPAND
+
+    /**  Slide effect of collapsing from left and right. */
+    case VER_COLLAPSE
+
+    /**  Slide effect of expanding from center towards left and right. */
+    case VER_EXPAND
+
+    /**  Slide effect from left to right. */
     case LEFT_TO_RIGHT
 
-    /**  Smooth slide effect from right to left. */
+    /**  Slide effect from right to left. */
     case RIGHT_TO_LEFT
 
-    /**  Smooth slide effect top to down. */
+    /**  Slide effect top to down. */
     case TOP_TO_BOTTOM
 
-    /**  Smooth slide effect down up. */
+    /**  Slide effect down up. */
     case BOTTOM_TO_TOP
 
-    /**  Smooth slide effect from center outward. */
+    /**  Slide effect from center outward. */
     case CENTRIFUGAL
 
-    /**  Smooth slide effect from outward to center. */
+    /**  Slide effect from outward to center. */
     case CENTRIPETAL
 
     /**  Slide using random-pixel effect. */
@@ -79,6 +91,66 @@ object CPSlideDirection:
         val h = dim.h
         val matrix = Array.ofDim[Int](w, h)
         dir match
+            case HOR_COLLAPSE ⇒
+                var d = 0f
+                val dx = maxFrmCnt.toFloat / h * 2
+                var x = 0
+                var y = 0
+                val n = h / 2
+                while (y < n)
+                    x = 0
+                    while (x < w)
+                        val dr = d.round
+                        matrix(x)(y) = dr
+                        matrix(x)(h - 1 - y) = dr
+                        x += 1
+                    y += 1
+                    d += dx
+            case HOR_EXPAND ⇒
+                var d = maxFrmCnt.toFloat
+                val dx = d / h * 2
+                var x = 0
+                var y = 0
+                val n = h / 2
+                while (y < n)
+                    x = 0
+                    while (x < w)
+                        val dr = d.round
+                        matrix(x)(y) = dr
+                        matrix(x)(h - 1 - y) = dr
+                        x += 1
+                    y += 1
+                    d -= dx
+            case VER_COLLAPSE ⇒
+                var d = 0f
+                val dx = maxFrmCnt.toFloat / w * 2
+                var x = 0
+                var y = 0
+                val n = w / 2
+                while (x < n)
+                    y = 0
+                    while (y < h)
+                        val dr = d.round
+                        matrix(x)(y) = dr
+                        matrix(w - 1 - x)(y) = dr
+                        y += 1
+                    x += 1
+                    d += dx
+            case VER_EXPAND ⇒
+                var d = maxFrmCnt.toFloat
+                val dx = d / w * 2
+                var x = 0
+                var y = 0
+                val n = w / 2
+                while (x < n)
+                    y = 0
+                    while (y < h)
+                        val dr = d.round
+                        matrix(x)(y) = dr
+                        matrix(w - 1 - x)(y) = dr
+                        y += 1
+                    x += 1
+                    d -= dx
             case LEFT_TO_RIGHT ⇒
                 var d = maxFrmCnt.toFloat
                 val dx = d / w
