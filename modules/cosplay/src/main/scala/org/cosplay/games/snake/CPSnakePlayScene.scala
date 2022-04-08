@@ -118,7 +118,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             // Draw score rectangle fill.
             canv.fillRect(0, 0, canv.w, scoreH - 1, 1, (_, _) ⇒ scorePx)
     private val yamSpr = new CPImageSprite(x = 0, y = 0, z = 2, img = yamImg)
-    private val snakeSpr = new CPCanvasSprite:
+    private val snakeSpr: CPCanvasSprite = new CPCanvasSprite:
         private final val INIT_SPEED = .5f
         private final val yelps = Seq("Yam", "Tasty", "Num", "Okay", "Nice", "Right", "Bam", "Wow", "Yep", "Yes")
         private var snake: List[(Int, Int)] = Nil

@@ -41,12 +41,20 @@ import org.cosplay.*
   *
   * @param entireFrame Whether apply to the entire camera frame or just the object this
   *     shader is attached to.
-  * @param durMs Duration of the fade out effect in millis.
+  * @param durMs Duration of the fade out effect in milliseconds.
   * @param bgPx Background pixel to fade out to.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
   * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
   *     or certain Z-index. Default predicate returns `false` for all pixels.
+  * @param balance A function that produces value in [0, 1] range that is used in color mixture.
+  *     Value `0` means that the color will be 100% background, value `1` means that the color will be
+  *     100% the actual pixel color, value `0.5` means that the color will be a 50% mix between the background
+  *     and the actual pixel color. The function takes two parameters: first is a current frame number since the start
+  *     of the effect, and the second parameter is the last frame number of the effect. First parameter is always less
+  *     then the second one. By default, the the `(a, b) ⇒ a.toFloat / b` function is used that gives gradual color
+  *     transition through the frames range. Another popular function to use here is a sigmoid
+  *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat()` that gives a different visual effect.
   * @see [[CPFadeInShader]]
   * @see [[CPShimmerShader]]
   * @see [[CPFlashlightShader]]     
@@ -59,9 +67,10 @@ class CPFadeOutShader(
     bgPx: CPPixel,
     onFinish: CPSceneObjectContext => Unit = _ => (),
     autoStart: Boolean = false,
-    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
+    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
+    balance: (Int, Int) ⇒ Float = (a, b) ⇒ a.toFloat / b
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}.")
+    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
     require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0

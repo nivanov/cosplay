@@ -667,11 +667,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param bx X-coordinate of the end point.
       * @param by Y-coordinate of the end point.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param pxf Pixel producting function.
+      * @param pxf Pixel producing function.
       * @param style Art style to use. Default value is [[ART_BLOCK]].
       */
     def drawArtLine(ax: Int, ay: Int, bx: Int, by: Int, z: Int, pxf: CPPosPixel => CPPixel, style: ArtLineStyle = ART_BLOCK): Unit =
-        var pxs = artLinePixels(ax, ay, bx, by, z, pxf, style)
+        val pxs = artLinePixels(ax, ay, bx, by, z, pxf, style)
         if pxs.nonEmpty then
             // Actually drawing.
             pxs.foreach(ppx => drawPixel(pxf(ppx), ppx.x, ppx.y, z))
@@ -859,7 +859,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         drawRect(rect.xMin, rect.yMin, rect.xMax, rect.yMax, z, pxf)
 
     /**
-      * Draws rectangle with speific pixels for lines and corners.
+      * Draws rectangle with specific pixels for lines and corners.
       *
       * @param x1 X-coordinate of the left top corner.
       * @param y1 Y-coordinate of the left top corner.
@@ -908,7 +908,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         )
 
     /**
-      * Draws rectangle with speific pixels for lines and corners.
+      * Draws rectangle with specific pixels for lines and corners.
       *
       * @param x1 X-coordinate of the top left corner.
       * @param y1 Y-coordinate of the top left corner.
@@ -940,7 +940,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
 
     /**
-      * Draws rectangle with speific pixels for lines and corners.
+      * Draws rectangle with specific pixels for lines and corners.
       *
       * @param rect Rectangle shape.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
@@ -1136,7 +1136,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param x2 X-coordinate of the bottom right corner of the shape.
       * @param y2 Y-coordinate of the bottom right corner of the shape.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param px Pixel to fill in wigth.
+      * @param px Pixel to fill in with.
       */
     def fillRect(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, px: CPPixel): Unit =
         fillRect(x1, y1, x2, y2, z, (_, _) => px)

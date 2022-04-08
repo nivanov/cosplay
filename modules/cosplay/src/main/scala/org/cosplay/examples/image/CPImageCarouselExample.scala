@@ -101,7 +101,8 @@ object CPImageCarouselExample:
         CPGuitarImage,
         CPSpeckImage
     )
-    private val bgPx = '.'&&(C_GRAY2, C_GRAY1)
+    private val BLUE_BLACK = CPColor("0x00000F")
+    private val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
 
     class CarouselSprite(img: CPImage, viewDim: CPDim) extends CPSceneObject:
         private final val centerY = (viewDim.h - img.h) / 2

@@ -24,6 +24,7 @@ import CPArrayImage.*
 import prefabs.shaders.*
 import CPPixel.*
 import CPKeyboardKey.*
+import org.apache.commons.math3.analysis.function.*
 
 /*
    _________            ______________
@@ -61,34 +62,47 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |||__|| ||__|| ||__|| ||__||                / o   o        _.-' /  .''
               ||/__\| |/__\| |/__\| |/__\|                \          _.-'    / .'*|
               |                                            \______.-'//    .'.' \*|
-              |                                             \|  \ | //   .'.' _ |*|
-              |[ENTER]   Play                                `   \|//  .'.'_ _ _|*|
+              |[ENTER]   Play                               \|  \ | //   .'.' _ |*|
+              |[CTRL@A]  Audio On~Off                        `   \|//  .'.'_ _ _|*|
               |[Q]       Quit                                 .  .// .'.' | _ _ \*|
-              |                                                \`-|\_/ /    \ _ _ \*\
-              |                                                 `/'\__/      \ _ _ \*\
-              |Copyright (C) 2022 Rowan Games, Inc             /^|            \ _ _ \*
-              |                                               '  `             \ _ _ \
+              |----------------------                         \`-|\_/ /   | _ _ \*|
+              |[CTRL@L]  Log Console                           `/'\__/    \ _ _ |*\
+              |[CTRL@Q]  FPS Overlay                          /^|          \ _ _ \*\
+              |                                              '  `           \ _ _ \*\
+              |                                                              \ _ _ \*\
+              |Copyright (C) 2022 Rowan Games, Inc                            \ _ _ \*`
+              |                                                                | _ _ |
               |                                                                / _ _ /
-              |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-.' _ _ /
+              |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-.' _ _ '
               | + _ - * - _ * _ - - _ + _ - - _ * _ - + _ - * - _ * _ - - _ * _ _  /
               |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,.'"
             """),
         (ch, x, y) =>
-            if y < 5 || (y == 20 && x <= 35) then ch&C3
+            if y < 5 || (y == 23 && x <= 35) then ch&C3
             else
                 ch match
                     case c if c.isLetter => c&C4
+                    case '~' ⇒ '/'&C4
+                    case '@' ⇒ '+'&C4
                     case '<' | '>' => ch&C2
                     case '[' | ']' => ch&C5
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val fadeInShdr = CPFadeInShader(true, 2000, BG_PX)
+    private val sigmoid = new Sigmoid()
+    private val fadeInShdr = CPSlideInShader(
+        CPSlideDirection.RANDOM_HOR_LINE,
+        true,
+        3000,
+        BG_PX,
+        balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat // Demo custom color balance function.
+    )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
 
     // Add scene objects...
     addObjects(
         CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg),
+        // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
         // Transition to the next scene on 'Enter' press fixing the dimension.
