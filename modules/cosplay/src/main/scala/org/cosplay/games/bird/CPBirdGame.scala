@@ -51,8 +51,7 @@ def main(args: Array[String]): Unit =
     try
         CPEngine.startGame(
             new CPLogoScene("logo", None, BG_PX, CS, "title"),
-            CPBirdTitleScene,
-            CPBirdGameScene
+            CPBirdTitleScene
         )
     finally CPEngine.dispose()
 

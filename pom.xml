@@ -361,34 +361,34 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven.enforcer.plugin.ver}</version>
-                <configuration>
-                    <rules>
-                        <requireJavaVersion>
-                            <message>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-enforcer-plugin</artifactId>-->
+<!--                <version>${maven.enforcer.plugin.ver}</version>-->
+<!--                <configuration>-->
+<!--                    <rules>-->
+<!--                        <requireJavaVersion>-->
+<!--                            <message>-->
 
-                                ------------------------------------------------------------------------
-                                You are trying to compile CosPlay with inappropriate JDK version!
-                                Detected JDK Version: ${java.runtime.version}.
-                                JDK version should be 11 or later.
-                                ------------------------------------------------------------------------
+<!--                                &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--                                You are trying to compile CosPlay with inappropriate JDK version!-->
+<!--                                Detected JDK Version: ${java.runtime.version}.-->
+<!--                                JDK version should be 11 or later.-->
+<!--                                &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
 
-                            </message>
-                            <version>11</version>
-                        </requireJavaVersion>
-                    </rules>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--                            </message>-->
+<!--                            <version>11</version>-->
+<!--                        </requireJavaVersion>-->
+<!--                    </rules>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>enforce</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
