@@ -91,7 +91,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
 
     private val sigmoid = new Sigmoid()
     private val fadeInShdr = CPSlideInShader(
-        CPSlideDirection.LEFT_TO_RIGHT,
+        CPSlideDirection.RANDOM_HOR_LINE,
         true,
         3000,
         BG_PX,
@@ -102,6 +102,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
     // Add scene objects...
     addObjects(
         CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg),
+        // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
         // Transition to the next scene on 'Enter' press fixing the dimension.
