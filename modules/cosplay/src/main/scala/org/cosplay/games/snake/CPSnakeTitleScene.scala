@@ -91,7 +91,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
 
     private val sigmoid = new Sigmoid()
     private val fadeInShdr = CPSlideInShader(
-        CPSlideDirection.RANDOM_HOR_LINE,
+        CPSlideDirection.CENTRIPETAL,
         true,
         3000,
         BG_PX,

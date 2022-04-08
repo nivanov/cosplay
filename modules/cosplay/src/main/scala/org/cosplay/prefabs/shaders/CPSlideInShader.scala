@@ -185,7 +185,36 @@ class CPSlideInShader(
                         matrix(x)(y) = d
                         x += 1
                     y += 1
-            case _ ⇒ ()
+            case CENTRIFUGAL =>
+                val hFactor = 2f
+                val cx = w / 2
+                val cy = h / 2
+                val r = Math.min(w.toFloat, h * hFactor) / 2
+                var x = 0
+                var y = 0
+                while (y < h)
+                    x = 0
+                    while (x < w)
+                        val k = Math.sqrt(Math.pow(cx - x, 2) + Math.pow((cy - y) * hFactor, 2)).toFloat
+                        val d = (maxFrmCnt * k.min(r) / r).round
+                        matrix(x)(y) = d
+                        x += 1
+                    y += 1
+            case CENTRIPETAL =>
+                val hFactor = 2f
+                val cx = w / 2
+                val cy = h / 2
+                val r = Math.min(w.toFloat, h * hFactor) / 2
+                var x = 0
+                var y = 0
+                while (y < h)
+                    x = 0
+                    while (x < w)
+                        val k = Math.sqrt(Math.pow(cx - x, 2) + Math.pow((cy - y) * hFactor, 2)).toFloat
+                        val d = (maxFrmCnt * (1 - k.min(r) / r)).round
+                        matrix(x)(y) = d
+                        x += 1
+                    y += 1
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
