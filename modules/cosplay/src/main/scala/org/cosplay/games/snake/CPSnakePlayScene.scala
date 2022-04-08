@@ -190,7 +190,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     go = false
                     dead = true
                     youLostSpr.show()
-                    youLostSnd.play(1000)
+                    if audioOn then youLostSnd.play(1000)
                     yamSpr.hide()
                     bgSnd.stop(1000)
                 else
@@ -207,7 +207,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                         // Update score.
                         scoreSpr.setImage(mkScoreImage)
                         // Play yam sound.
-                        yamSnd.play()
+                        if audioOn then yamSnd.play()
                         // Particle effect (for new location).
                         yamPartSpr.resume(reset = true)
                         // Bubble sprite (for current location).
@@ -228,7 +228,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                             go = false
                             dead = false
                             youWonSpr.show()
-                            youWonSnd.play(1000)
+                            if audioOn then youWonSnd.play(1000)
                             yamSpr.hide()
                             bgSnd.stop(1000)
                         else
@@ -285,6 +285,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         new CPOffScreenSprite(Seq(fadeInShdr, fadeOutShdr)),
         // Scene-wide keyboard handlers.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()), // Toggle audio on 'Ctrl+A' press.
         scoreSpr,
         borderSpr,
         snakeSpr,
@@ -293,6 +294,20 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         youWonSpr,
         youLostSpr
     )
+
+    private def stopAudio(): Unit =
+        bgSnd.stop()
+        yamSnd.stop()
+        youLostSnd.stop()
+        youWonSnd.stop()
+
+    private def toggleAudio(): Unit =
+        if audioOn then
+            stopAudio() // Stop all sounds.
+            audioOn = false
+        else
+            bgSnd.loopAll(2000)
+            audioOn = true
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
@@ -306,6 +321,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         score = 0
         go = true
         dead = false
-        bgSnd.loopAll(5000) // Start background audio.
+        if audioOn then bgSnd.loopAll(2000) // Start background audio.
         youWonSpr.hide()
         youLostSpr.hide()

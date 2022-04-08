@@ -105,15 +105,30 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()), // Toggle audio on 'Ctrl+A' press.
         // Transition to the next scene on 'Enter' press fixing the dimension.
         CPKeyboardSprite(KEY_ENTER, ctx ⇒ fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true)))
     )
 
+    private def startBgAudio(): Unit = introSnd.loopAll(2000)
+    private def stopBgAudio(): Unit = introSnd.stop(400)
+
+    /**
+      * Toggles audio on and off.
+      */
+    private def toggleAudio(): Unit =
+        if audioOn then
+            stopBgAudio()
+            audioOn = false
+        else
+            startBgAudio()
+            audioOn = true
+
     override def onActivate(): Unit =
         super.onActivate()
         fadeInShdr.start() // Reset the shader.
-        introSnd.loopAll(2000) // Start background audio.
+        if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
-        introSnd.stop(400) // Stop background audio.
+        stopBgAudio()

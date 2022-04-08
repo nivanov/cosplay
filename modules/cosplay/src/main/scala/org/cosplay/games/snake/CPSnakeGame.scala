@@ -39,6 +39,7 @@ import prefabs.scenes.CPLogoScene
 
 val BLUE_BLACK = CPColor("0x00000F")
 val BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
+var audioOn = true // By default, the audio is ON.
 
 /**
   * Classic snake game.
