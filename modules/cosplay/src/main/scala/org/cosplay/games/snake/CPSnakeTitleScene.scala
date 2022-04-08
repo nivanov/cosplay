@@ -55,7 +55,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |       
               |     
               |>> BEWARE OF INITIAL KEYBOARD PRESS DELAY   <<   ---_,......._-_--.
-              |>> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<  (|\ /      / /| \  \
+              |>> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<  (&\ /      / /& \  \
               |                                                /  /     .'  -=-'   `.
               | ____   ____   ____   ____                     /  /    .'             )
               |||w || ||a || ||s || ||d ||                 __/  /   .'       ,_.)   /
@@ -84,6 +84,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
                     case c if c.isLetter => c&C4
                     case '~' ⇒ '/'&C4
                     case '@' ⇒ '+'&C4
+                    case '&' ⇒ '8'&C1
                     case '<' | '>' => ch&C2
                     case '[' | ']' => ch&C5
                     case _ => ch.toUpper&C1
@@ -95,13 +96,15 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         true,
         3000,
         BG_PX,
-        balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat // Demo custom color balance function.
+        balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat, // Demo custom color balance function.
+        onFinish = _ ⇒ eyesShdr.start()
     )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
+    private val eyesShdr = CPShimmerShader(false, CS, 7, false, (zpx, _, _) ⇒ zpx.px.char != '8')
 
     // Add scene objects...
     addObjects(
-        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg),
+        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg, shaders = Seq(eyesShdr)),
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
