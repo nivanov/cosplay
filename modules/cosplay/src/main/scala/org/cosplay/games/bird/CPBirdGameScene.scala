@@ -17,14 +17,6 @@
 
 package org.cosplay.games.bird
 
-import org.cosplay.*
-import games.*
-import CPColor.*
-import CPPixel.*
-import prefabs.scenes.CPLogoScene
-
-val BG_PX = '.'&&(C_GRAY18, C_GRAY1)
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -39,22 +31,4 @@ val BG_PX = '.'&&(C_GRAY18, C_GRAY1)
 */
 
 
-object CPBirdGame
-
-def main(args: Array[String]): Unit =
-    val gameInfo = CPGameInfo(name = "Ascii Bird")
-
-    // Initialize the engine.
-    CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
-
-    // Start the game & wait for exit.
-    try
-        CPEngine.startGame(
-            new CPLogoScene("logo", None, BG_PX, CS, "title"),
-            CPBirdTitleScene,
-            CPBirdGameScene
-        )
-    finally CPEngine.dispose()
-
-    sys.exit(0)
-
+object CPBirdGameScene 
