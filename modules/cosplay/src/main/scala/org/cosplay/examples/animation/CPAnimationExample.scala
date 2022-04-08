@@ -253,8 +253,8 @@ object CPAnimationExample:
         val sc = new CPScene("scene", Option(dim), bgPx,
             player,
             CPStaticImageSprite(28, 28, 0, imgHelp),
-            // On 'Ctrl-q' kick in fade out shader that will exit the game once it is finished.
-            CPKeyboardSprite(KEY_LO_Q, _ => foShdr.start()) // Exit the game on 'q' press.
+            // On 'q' kick in fade out shader that will exit the game once it is finished.
+            CPKeyboardSprite(KEY_LO_Q, _ => foShdr.start()) // Exit the game on 'Q' press.
         )
 
         try

@@ -196,8 +196,7 @@ object CPImageCarouselExample:
                     curSpr.fadeOutToRight()
                     sprIdx = if sprIdx == sprs.size - 1 then 0 else sprIdx + 1
                     sprs(sprIdx).fadeInFromLeft()
-            // Exit the game on 'q' press.
-            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'q' press.
+            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'Q' press.
             case _ => ()
         )
 

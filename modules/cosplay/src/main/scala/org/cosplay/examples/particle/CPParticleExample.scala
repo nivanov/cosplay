@@ -188,8 +188,8 @@ object CPParticleExample:
             new CPStaticImageSprite((w - ctrlDim.w) / 2, h - 4, 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
 
         // Start the game & wait for exit.

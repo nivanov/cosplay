@@ -92,11 +92,18 @@ class CPFadeInShader(
       * @param onFinishOverride Optional override for the callback to call when shader effect is finished.
       *         If not provided, the default value is the callback supplied at the creation of this shader.
       */
-    def start(onFinishOverride: CPSceneObjectContext ⇒ Unit = onFinish): Unit =
+    def start(onFinishOverride: CPSceneObjectContext ⇒ Unit = cb): Unit =
         cb = onFinishOverride
         frmCnt = 0
         crossedOver = false
         go = true
+
+    /**
+      * Set the callback to call when shader effect is finished.
+      *
+      * @param onFinishOverride Override for the callback to call when shader effect is finished.
+      */
+    def setOnFinish(onFinishOverride: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinishOverride        
 
     /**
       * Tests whether this shader is in progress or not.
