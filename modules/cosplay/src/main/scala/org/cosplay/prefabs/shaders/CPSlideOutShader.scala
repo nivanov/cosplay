@@ -18,6 +18,7 @@
 package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
+import CPSlideDirection.*
 
 /*
    _________            ______________
@@ -33,16 +34,17 @@ import org.cosplay.*
 */
 
 /**
-  * Fade in shader. 
-  * 
-  * This shader can be used for 'fade in' effect for the entire
+  * Slide out shader.
+  *
+  * This shader can be used for 'slide out' or the directional gradual hide effect for the entire
   * camera frame or the individual scene object it is attached to. If used for entire
   * camera frame effect it can be attached to an off-screen sprite.
   *
+  * @param dir Slide direction as defined by [[CPSlideDirection]].
   * @param entireFrame Whether apply to the entire camera frame or just the object this
   *     shader is attached to.
-  * @param durMs Duration of the fade in effect in milliseconds.
-  * @param bgPx Background pixel to fade in from.
+  * @param durMs Duration of the effect in milliseconds.
+  * @param bgPx Background pixel to fade out to.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
   * @param autoStart Whether to start shader right away. Default value is `true`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
@@ -55,15 +57,14 @@ import org.cosplay.*
   *     then the second one. By default, the the `(a, b) ⇒ a.toFloat / b` function is used that gives gradual color
   *     transition through the frames range. Another popular function to use here is a sigmoid
   *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat()` that gives a different visual effect.
-  * @see [[CPFadeOutShader]]
-  * @see [[CPSlideInShader]]
-  * @see [[CPSlideOutShader]]
-  * @see [[CPShimmerShader]]
-  * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
-  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.      
+  * @see [[CPSlideInShader]]
+  * @see [[CPFadeInShader]]
+  * @see [[CPFadeOutShader]]
+  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
-class CPFadeInShader(
+class CPSlideOutShader(
+    dir: CPSlideDirection,
     entireFrame: Boolean,
     durMs: Long,
     bgPx: CPPixel,
@@ -83,6 +84,7 @@ class CPFadeInShader(
     private var crossedOver = false
     private var go = autoStart
     private var cb: CPSceneObjectContext ⇒ Unit = onFinish
+    private var matrix: Array[Array[Int]] = _
 
     if autoStart then start()
 
@@ -107,16 +109,19 @@ class CPFadeInShader(
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
+            if matrix == null then matrix = CPSlideDirection.mkMatrix(dir, rect.dim, maxFrmCnt)
             val canv = ctx.getCanvas
             rect.loop((x, y) => {
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
-                        val bal = balance(frmCnt, maxFrmCnt)
-                        val newFg = CPColor.mixture(bgFg, px.fg, bal)
+                        val px = zpx.px
+                        val maxFrame = matrix(x - rect.x)(y - rect.y)
+                        val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
+                        val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(bgBg, c, bal))
+                            case Some(c) => Option(CPColor.mixture(c, bgBg, bal))
                             case None => None
                         var newPx = px.withFg(newFg).withBg(newBg)
                         val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg

@@ -56,6 +56,8 @@ import org.cosplay.*
   *     transition through the frames range. Another popular function to use here is a sigmoid
   *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat()` that gives a different visual effect.
   * @see [[CPFadeInShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
   * @see [[CPShimmerShader]]
   * @see [[CPFlashlightShader]]     
   * @see [[CPOffScreenSprite]]
@@ -74,11 +76,11 @@ class CPFadeOutShader(
     require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
+    private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
     private val crossOverBrightness = if bgPx.char == ' ' then bgBg.brightness else bgFg.brightness
     private var crossedOver = false
-    private val maxFrmCnt = durMs / CPEngine.frameMillis
     private var go = autoStart
     private var cb: CPSceneObjectContext ⇒ Unit = onFinish
 
@@ -111,10 +113,10 @@ class CPFadeOutShader(
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
-                        val balance = frmCnt.toFloat / maxFrmCnt
-                        val newFg = CPColor.mixture(px.fg, bgFg, balance)
+                        val bal = balance(frmCnt, maxFrmCnt)
+                        val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(c, bgBg, balance))
+                            case Some(c) => Option(CPColor.mixture(c, bgBg, bal))
                             case None => None
                         var newPx = px.withFg(newFg).withBg(newBg)
                         val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
