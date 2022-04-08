@@ -13,11 +13,20 @@
 [![build](https://github.com/nivanov/cosplay/actions/workflows/build.yml/badge.svg)](https://github.com/nivanov/cosplay/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/org.cosplayengine/cosplay.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.cosplayengine%22%20AND%20a:%22cosplay%22)
 
-Check out [www.cosplayengine.com](https://cosplayengine.com) for the full documentation.
+Five stick-figures dancing macarena. You control dances by pressing their numbers on the keyboard. 
+Check out [www.cosplayengine.com](https://cosplayengine.com/devguide/macarena_game.html) for the full documentation.
 
-## Games
-This package contains built-in games that are shipped with CosPlay. Check individual packages for the instructions on
-how to run the games. 
+## Run
+One-time Git clone & build:
+```shell
+$ git clone https://github.com/nivanov/cosplay.git
+$ cd cosplay
+$ mvn package
+```
+To run the game:
+```shell
+$ mvn -f modules/cosplay -P macarena exec:java
+```
 
 ## Questions?
 * Join [discord](https://discord.gg/gDQuYJDM)

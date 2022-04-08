@@ -184,7 +184,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         antialias(x, y, x + dim.w - 1, y + dim.h - 1, isBlank)
 
     /**
-      * Antialiases solid ascii-art canvas region. Works `only` for solid ascii-art.
+      * Antialiases solid ASCII-art canvas region. Works `only` for solid ASCII-art.
       *
       * The antialiasing algorithm is based on implementation described at
       * https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
@@ -209,7 +209,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         })
 
     /**
-      * Antialiasing solid ascii-art canvas region. Works `only` for solid ascii-art.
+      * Antialiasing solid ASCII-art canvas region. Works `only` for solid ASCII-art.
       *
       * The antialiasing algorithm is based on implementation described at
       * https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
@@ -1455,7 +1455,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         drawBorder(x1, y1, x2, y2, z, hor, corner, ver, corner, hor, corner, ver, corner, title, titleX, titleY)
 
 /**
-  * Compantion object with utility functions.
+  * Companion object with utility functions.
   */
 object CPCanvas:
     /**
@@ -1480,7 +1480,7 @@ object CPCanvas:
         case ART_BLOCK
 
         /**
-          * Antialiazed, smoothed out style:
+          * Antialiased, smoothed out style:
           * {{{
           *     ART_SMOOTH
           *  +-------------+

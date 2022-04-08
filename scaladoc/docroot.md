@@ -51,19 +51,20 @@
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/tilemapper Tile Mapping Examples]]
 
 Built-in [[https://cosplayengine.com/devguide/examples.html games]] located under `org.cosplay.games` package:
-   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/games/pong Classic Pong Game]]
-   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/games/macarena Macarena Game]]
+   - [[https://cosplayengine.com/devguide/pong_game.html Pong Game]]
+   - [[https://cosplayengine.com/devguide/snake_game.html Snake Game]]
+   - [[https://cosplayengine.com/devguide/macarena_game.html Macarena Game]]
 
 Maven dependency:
 <pre>
 &lt;dependency&gt;
   &lt;groupId&gt;org.cosplayengine&lt;/groupId&gt;
   &lt;artifactId&gt;cosplay&lt;/artifactId&gt;
-  &lt;version&gt;0.5.1&lt;/version&gt;
+  &lt;version&gt;0.6.0&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
 
 SBT dependency:
 <pre>
-libraryDependencies += "org.cosplayengine" % "cosplay" % "0.5.1"
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.6.0"
 </pre>
