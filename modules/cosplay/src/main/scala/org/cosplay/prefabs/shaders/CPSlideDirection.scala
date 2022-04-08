@@ -31,17 +31,35 @@ package org.cosplay.prefabs.shaders
 */
 
 /**
+  * Direction of the slide effect produced by [[CPSlideInShader]] and [[CPSlideOutShader]] shaders.
   *
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
   */
 enum CPSlideDirection:
-    /**  */
+    /**  Smooth slide effect from left to right. */
     case LEFT_TO_RIGHT
 
-    /**  */
+    /**  Smooth slide effect from right to left. */
     case RIGHT_TO_LEFT
 
-    /**  */
+    /**  Smooth slide effect top to down. */
     case TOP_TO_BOTTOM
 
-    /**  */
+    /**  Smooth slide effect down up. */
     case BOTTOM_TO_TOP
+
+    /**  Smooth slide effect from center outward. */
+    case CENTRIFUGAL
+
+    /**  Smooth slide effect from outward to center. */
+    case CENTRIPETAL
+
+    /**  Slide using random-pixel effect. */
+    case RANDOM
+
+    /**  Slide using random vertical line effect. */
+    case RANDOM_VERT_LINE
+
+    /**  Slide using random horizontal line effect. */
+    case RANDOM_HOR_LINE
