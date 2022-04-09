@@ -208,7 +208,7 @@ object CPAnimationExample:
         val fiShdr = new CPFadeInShader(true, 500, bgPx)
         val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
-        val player = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
+        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
             // Use 'float' type for coordinates to smooth out the movement.
             private var x = super.getX.toFloat
             private var y = super.getY.toFloat

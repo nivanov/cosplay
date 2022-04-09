@@ -62,10 +62,10 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |||__|| ||__|| ||__|| ||__||                / o   o        _.-' /  .''
               ||/__\| |/__\| |/__\| |/__\|                \          _.-'    / .'*|
               |                                            \______.-'//    .'.' \*|
-              |[ENTER]   Play                               \|  \ | //   .'.' _ |*|
-              |[CTRL@A]  Audio On~Off                        `   \|//  .'.'_ _ _|*|
-              |[Q]       Quit                                 .  .// .'.' | _ _ \*|
-              |----------------------                         \`-|\_/ /   | _ _ \*|
+              |                                             \|  \ | //   .'.' _ |*|
+              |[ENTER]   Play                                `   \|//  .'.'_ _ _|*|
+              |[CTRL@A]  Audio On~Off                         .  .// .'.' | _ _ \*|
+              |[Q]       Quit                                 \`-|\_/ /   | _ _ \*|
               |[CTRL@L]  Log Console                           `/'\__/    \ _ _ |*\
               |[CTRL@Q]  FPS Overlay                          /^|          \ _ _ \*\
               |                                              '  `           \ _ _ \*\
@@ -84,7 +84,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
                     case c if c.isLetter => c&C4
                     case '~' ⇒ '/'&C4
                     case '@' ⇒ '+'&C4
-                    case '&' ⇒ '8'&C1
+                    case '&' ⇒ '8'&C1 // Eyes.
                     case '<' | '>' => ch&C2
                     case '[' | ']' => ch&C5
                     case _ => ch.toUpper&C1
