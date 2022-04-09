@@ -24,7 +24,6 @@ import CPArrayImage.*
 import prefabs.shaders.*
 import CPPixel.*
 import CPKeyboardKey.*
-import org.apache.commons.math3.analysis.function.*
 
 /*
    _________            ______________
@@ -64,13 +63,13 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |                                            \______.-'//    .'.' \*|
               |                                             \|  \ | //   .'.' _ |*|
               |[ENTER]   Play                                `   \|//  .'.'_ _ _|*|
-              |[CTRL@A]  Audio On~Off                         .  .// .'.' | _ _ \*|
-              |[Q]       Quit                                 \`-|\_/ /   | _ _ \*|
+              |[Q]       Quit                                 .  .// .'.' | _ _ |*|
+              |[CTRL@A]  Audio On~Off                         \`-|\_/ /   | _ _ |*|
               |[CTRL@L]  Log Console                           `/'\__/    \ _ _ |*\
               |[CTRL@Q]  FPS Overlay                          /^|          \ _ _ \*\
               |                                              '  `           \ _ _ \*\
               |                                                              \ _ _ \*\
-              |Copyright (C) 2022 Rowan Games, Inc                            \ _ _ \*`
+              |Copyright (C) 2022 Rowan Games, Inc                            \ _ _ \.'
               |                                                                | _ _ |
               |                                                                / _ _ /
               |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-.' _ _ '
@@ -90,13 +89,12 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val sigmoid = new Sigmoid()
     private val fadeInShdr = CPSlideInShader(
-        CPSlideDirection.CENTRIPETAL,
+        CPSlideDirection.LEFT_TO_RIGHT,
         true,
         3000,
         BG_PX,
-        balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat, // Demo custom color balance function.
+        balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat,
         onFinish = _ ⇒ eyesShdr.start()
     )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)

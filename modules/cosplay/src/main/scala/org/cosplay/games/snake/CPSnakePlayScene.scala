@@ -21,6 +21,7 @@ import org.cosplay.*
 import games.*
 import prefabs.shaders.*
 import prefabs.sprites.*
+import CPSlideDirection.*
 import CPFIGLetFont.*
 import CPArrayImage.*
 import CPPixel.*
@@ -91,7 +92,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             """),
         (ch, _, _) => ch match
             case '*' ⇒ ' '&&(C2, C2)
-            case c if c.isLetter => c&&(C4, BG_PX.bg.get)
+            case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
     private val youWonImg = CPArrayImage(
@@ -112,7 +113,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             """),
         (ch, _, _) => ch match
             case '*' ⇒ ' '&&(C2, C2)
-            case c if c.isLetter => c&&(C4, BG_PX.bg.get)
+            case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
     private val yamEmitter = new CPConfettiEmitter(
@@ -290,8 +291,9 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             snake.tail.foreach(draw(_, bpx)) // Rest of the body.
 
     // Announcements.
-    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6)
-    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6)
+    private val lostWonShdr = CPSlideInShader(LEFT_TO_RIGHT, false, 1000, BG_PX, balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat)
+    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, z = 6, shaders = Seq(lostWonShdr))
+    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, z = 6, shaders = Seq(lostWonShdr))
 
     private final val bgSnd = CPSound(s"sounds/games/snake/snake.wav", 0.7f)
     private final val yamSnd = CPSound(s"sounds/games/snake/yam.wav")
