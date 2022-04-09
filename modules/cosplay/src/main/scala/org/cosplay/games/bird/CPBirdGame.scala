@@ -39,21 +39,20 @@ val BG_PX = '.'&&(C_GRAY18, C_GRAY1)
 */
 
 
-object CPBirdGame
+object CPBirdGame:
+    def main(args: Array[String]): Unit =
+        val gameInfo = CPGameInfo(name = "Ascii Bird")
 
-def main(args: Array[String]): Unit =
-    val gameInfo = CPGameInfo(name = "Ascii Bird")
+        // Initialize the engine.
+        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
 
-    // Initialize the engine.
-    CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
+        // Start the game & wait for exit.
+        try
+            CPEngine.startGame(
+                new CPLogoScene("logo", None, BG_PX, CS, "title"),
+                CPBirdTitleScene
+            )
+        finally CPEngine.dispose()
 
-    // Start the game & wait for exit.
-    try
-        CPEngine.startGame(
-            new CPLogoScene("logo", None, BG_PX, CS, "title"),
-            CPBirdTitleScene
-        )
-    finally CPEngine.dispose()
-
-    sys.exit(0)
+        sys.exit(0)
 
