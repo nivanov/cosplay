@@ -35,10 +35,13 @@ import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*
+import org.apache.commons.math3.analysis.function.*
 import prefabs.scenes.CPLogoScene
 
 val BLUE_BLACK = CPColor("0x00000F")
 val BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
+var audioOn = true // By default, the audio is ON.
+val sigmoid = new Sigmoid()
 
 /**
   * Classic snake game.

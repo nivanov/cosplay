@@ -54,7 +54,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |       
               |     
               |>> BEWARE OF INITIAL KEYBOARD PRESS DELAY   <<   ---_,......._-_--.
-              |>> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<  (|\ /      / /| \  \
+              |>> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<  (&\ /      / /& \  \
               |                                                /  /     .'  -=-'   `.
               | ____   ____   ____   ____                     /  /    .'             )
               |||w || ||a || ||s || ||d ||                 __/  /   .'       ,_.)   /
@@ -63,43 +63,73 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |                                            \______.-'//    .'.' \*|
               |                                             \|  \ | //   .'.' _ |*|
               |[ENTER]   Play                                `   \|//  .'.'_ _ _|*|
-              |[Q]       Quit                                 .  .// .'.' | _ _ \*|
-              |                                                \`-|\_/ /    \ _ _ \*\
-              |                                                 `/'\__/      \ _ _ \*\
-              |Copyright (C) 2022 Rowan Games, Inc             /^|            \ _ _ \*
-              |                                               '  `             \ _ _ \
+              |[Q]       Quit                                 .  .// .'.' | _ _ |*|
+              |[CTRL@A]  Audio On~Off                         \`-|\_/ /   | _ _ |*|
+              |[CTRL@L]  Log Console                           `/'\__/    \ _ _ |*\
+              |[CTRL@Q]  FPS Overlay                          /^|          \ _ _ \*\
+              |                                              '  `           \ _ _ \*\
+              |                                                              \ _ _ \*\
+              |Copyright (C) 2022 Rowan Games, Inc                            \ _ _ \.'
+              |                                                                | _ _ |
               |                                                                / _ _ /
-              |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-.' _ _ /
+              |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-.' _ _ '
               | + _ - * - _ * _ - - _ + _ - - _ * _ - + _ - * - _ * _ - - _ * _ _  /
               |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,.'"
             """),
         (ch, x, y) =>
-            if y < 5 || (y == 20 && x <= 35) then ch&C3
+            if y < 5 || (y == 23 && x <= 35) then ch&C3
             else
                 ch match
                     case c if c.isLetter => c&C4
+                    case '~' ⇒ '/'&C4
+                    case '@' ⇒ '+'&C4
+                    case '&' ⇒ '8'&C1 // Eyes.
                     case '<' | '>' => ch&C2
                     case '[' | ']' => ch&C5
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val fadeInShdr = CPFadeInShader(true, 2000, BG_PX)
+    private val fadeInShdr = CPSlideInShader(
+        CPSlideDirection.LEFT_TO_RIGHT,
+        true,
+        3000,
+        BG_PX,
+        balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat,
+        onFinish = _ ⇒ eyesShdr.start()
+    )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
+    private val eyesShdr = CPShimmerShader(false, CS, 7, false, (zpx, _, _) ⇒ zpx.px.char != '8')
 
     // Add scene objects...
     addObjects(
-        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg),
+        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg, shaders = Seq(eyesShdr)),
+        // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()), // Toggle audio on 'Ctrl+A' press.
         // Transition to the next scene on 'Enter' press fixing the dimension.
         CPKeyboardSprite(KEY_ENTER, ctx ⇒ fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true)))
     )
 
+    private def startBgAudio(): Unit = introSnd.loopAll(2000)
+    private def stopBgAudio(): Unit = introSnd.stop(400)
+
+    /**
+      * Toggles audio on and off.
+      */
+    private def toggleAudio(): Unit =
+        if audioOn then
+            stopBgAudio()
+            audioOn = false
+        else
+            startBgAudio()
+            audioOn = true
+
     override def onActivate(): Unit =
         super.onActivate()
         fadeInShdr.start() // Reset the shader.
-        introSnd.loopAll(2000) // Start background audio.
+        if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
-        introSnd.stop(400) // Stop background audio.
+        stopBgAudio()

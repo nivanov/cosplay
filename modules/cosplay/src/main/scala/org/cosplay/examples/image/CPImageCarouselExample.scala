@@ -101,7 +101,8 @@ object CPImageCarouselExample:
         CPGuitarImage,
         CPSpeckImage
     )
-    private val bgPx = '.'&&(C_GRAY2, C_GRAY1)
+    private val BLUE_BLACK = CPColor("0x00000F")
+    private val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
 
     class CarouselSprite(img: CPImage, viewDim: CPDim) extends CPSceneObject:
         private final val centerY = (viewDim.h - img.h) / 2
@@ -195,8 +196,7 @@ object CPImageCarouselExample:
                     curSpr.fadeOutToRight()
                     sprIdx = if sprIdx == sprs.size - 1 then 0 else sprIdx + 1
                     sprs(sprIdx).fadeInFromLeft()
-            // Exit the game on 'q' press.
-            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'q' press.
+            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'Q' press.
             case _ => ()
         )
 

@@ -21,6 +21,7 @@ import org.cosplay.*
 import games.*
 import prefabs.shaders.*
 import prefabs.sprites.*
+import CPSlideDirection.*
 import CPFIGLetFont.*
 import CPArrayImage.*
 import CPPixel.*
@@ -55,41 +56,64 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private val scorePx = ' '&&(C2, C2)
     private val bodyPx = ' '&&(C3, C3)
     private val headPx = ' '&&(C4, C4)
-    private val yamImg = CPArrayImage(Seq(":)"), (ch, _, _) => ch&&(C_BLACK, C5))
+    private val yamImgs = CPArrayImage(
+        prepSeq(
+            """
+              |oO
+              |------
+              |OO
+              |------
+              |Oo
+              |------
+              |oo
+              |------
+            """).filter(!_.endsWith("------")
+        ),
+        (ch, _, _) => ch&C1
+    ).split(2, 1)
+    private val yamAniSeq = Seq(
+        CPAnimation.filmStrip("yamAni", 150, imgs = yamImgs)
+    )
     private val youLostImg = CPArrayImage(
         prepSeq(
             """
-              |*****************************
-              |**                         **
-              |**    YOU LOST :-(         **
-              |**    ------------         **
-              |**                         **
-              |**    [SPACE]   Continue   **
-              |**    [Q]       Quit       **
-              |**                         **
-              |*****************************
+              |**********************************
+              |**                              **
+              |**    YOU LOST :-(              **
+              |**    ------------              **
+              |**                              **
+              |**    [SPACE]   Continue        **
+              |**    [Q]       Quit            **
+              |**    [CTRL+A]  Audio On/OFF    **
+              |**    [CTRL+Q]  FPD Overlay     **
+              |**    [CTRL+L]  Log Console     **
+              |**                              **
+              |**********************************
             """),
         (ch, _, _) => ch match
             case '*' ⇒ ' '&&(C2, C2)
-            case c if c.isLetter => c&&(C4, BG_PX.bg.get)
+            case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
     private val youWonImg = CPArrayImage(
         prepSeq(
             """
-              |*****************************
-              |**                         **
-              |**    YOU WON :-)          **
-              |**    -----------          **
-              |**                         **
-              |**    [SPACE]   Continue   **
-              |**    [Q]       Quit       **
-              |**                         **
-              |*****************************
+              |**********************************
+              |**                              **
+              |**    YOU WON :-)               **
+              |**    -----------               **
+              |**                              **
+              |**    [SPACE]   Continue        **
+              |**    [Q]       Quit            **
+              |**    [CTRL+A]  Audio On/OFF    **
+              |**    [CTRL+Q]  FPD Overlay     **
+              |**    [CTRL+L]  Log Console     **
+              |**                              **
+              |**********************************
             """),
         (ch, _, _) => ch match
             case '*' ⇒ ' '&&(C2, C2)
-            case c if c.isLetter => c&&(C4, BG_PX.bg.get)
+            case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
     private val yamEmitter = new CPConfettiEmitter(
@@ -99,8 +123,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         15,
         CS,
         BG_PX.fg,
-        _ ⇒ CPRand.rand("x+XoO"),
-        2
+        _ ⇒ CPRand.rand("oO0Xx"),
+        0
     )
     private val yamPartSpr = CPParticleSprite(emitters = Seq(yamEmitter))
     private val scoreSpr = new CPImageSprite(x = 0, y = 0, z = 1, img = mkScoreImage):
@@ -117,8 +141,9 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             canv.drawLine(canv.w - 2, scoreH + 1, canv.w - 2, canv.h, 1, borderPx)
             // Draw score rectangle fill.
             canv.fillRect(0, 0, canv.w, scoreH - 1, 1, (_, _) ⇒ scorePx)
-    private val yamSpr = new CPImageSprite(x = 0, y = 0, z = 2, img = yamImg)
-    private val snakeSpr = new CPCanvasSprite:
+    private val yamShdr = CPShimmerShader(false, CS, 7, true)
+    private val yamSpr = new CPAnimationSprite(anis = yamAniSeq, 0, 0, 0, "yamAni", false, shaders = Seq(yamShdr))
+    private val snakeSpr: CPCanvasSprite = new CPCanvasSprite:
         private final val INIT_SPEED = .5f
         private final val yelps = Seq("Yam", "Tasty", "Num", "Okay", "Nice", "Right", "Bam", "Wow", "Yep", "Yes")
         private var snake: List[(Int, Int)] = Nil
@@ -190,7 +215,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     go = false
                     dead = true
                     youLostSpr.show()
-                    youLostSnd.play(1000)
+                    if audioOn then youLostSnd.play(1000)
                     yamSpr.hide()
                     bgSnd.stop(1000)
                 else
@@ -207,7 +232,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                         // Update score.
                         scoreSpr.setImage(mkScoreImage)
                         // Play yam sound.
-                        yamSnd.play()
+                        if audioOn then yamSnd.play()
                         // Particle effect (for new location).
                         yamPartSpr.resume(reset = true)
                         // Bubble sprite (for current location).
@@ -228,7 +253,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                             go = false
                             dead = false
                             youWonSpr.show()
-                            youWonSnd.play(1000)
+                            if audioOn then youWonSnd.play(1000)
                             yamSpr.hide()
                             bgSnd.stop(1000)
                         else
@@ -266,8 +291,9 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             snake.tail.foreach(draw(_, bpx)) // Rest of the body.
 
     // Announcements.
-    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6)
-    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6)
+    private val lostWonShdr = CPSlideInShader(LEFT_TO_RIGHT, false, 1000, BG_PX, balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat)
+    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, z = 6, shaders = Seq(lostWonShdr))
+    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, z = 6, shaders = Seq(lostWonShdr))
 
     private final val bgSnd = CPSound(s"sounds/games/snake/snake.wav", 0.7f)
     private final val yamSnd = CPSound(s"sounds/games/snake/yam.wav")
@@ -285,6 +311,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         new CPOffScreenSprite(Seq(fadeInShdr, fadeOutShdr)),
         // Scene-wide keyboard handlers.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()), // Toggle audio on 'Ctrl+A' press.
         scoreSpr,
         borderSpr,
         snakeSpr,
@@ -293,6 +320,20 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         youWonSpr,
         youLostSpr
     )
+
+    private def stopAudio(): Unit =
+        bgSnd.stop()
+        yamSnd.stop()
+        youLostSnd.stop()
+        youWonSnd.stop()
+
+    private def toggleAudio(): Unit =
+        if audioOn then
+            stopAudio() // Stop all sounds.
+            audioOn = false
+        else
+            bgSnd.loopAll(2000)
+            audioOn = true
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
@@ -306,6 +347,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         score = 0
         go = true
         dead = false
-        bgSnd.loopAll(5000) // Start background audio.
+        if audioOn then bgSnd.loopAll(2000) // Start background audio.
         youWonSpr.hide()
         youLostSpr.hide()

@@ -34,9 +34,9 @@ import CPSlideDirection.*
 */
 
 /**
-  * Slide in shader.
+  * Slide out shader.
   *
-  * This shader can be used for 'slide in' or the directional gradual reveal effect for the entire
+  * This shader can be used for 'slide out' or the directional gradual hide effect for the entire
   * camera frame or the individual scene object it is attached to. If used for entire
   * camera frame effect it can be attached to an off-screen sprite.
   *
@@ -44,7 +44,7 @@ import CPSlideDirection.*
   * @param entireFrame Whether apply to the entire camera frame or just the object this
   *     shader is attached to.
   * @param durMs Duration of the effect in milliseconds.
-  * @param bgPx Background pixel to fade in from.
+  * @param bgPx Background pixel to fade out to.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
   * @param autoStart Whether to start shader right away. Default value is `true`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
@@ -58,10 +58,12 @@ import CPSlideDirection.*
   *     transition through the frames range. Another popular function to use here is a sigmoid
   *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat()` that gives a different visual effect.
   * @see [[CPOffScreenSprite]]
-  * @see [[CPSlideOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPFadeInShader]]
+  * @see [[CPFadeOutShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
-class CPSlideInShader(
+class CPSlideOutShader(
     dir: CPSlideDirection,
     entireFrame: Boolean,
     durMs: Long,
@@ -103,7 +105,7 @@ class CPSlideInShader(
       *
       * @param onFinishOverride Override for the callback to call when shader effect is finished.
       */
-    def setOnFinish(onFinishOverride: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinishOverride
+    def setOnFinish(onFinishOverride: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinishOverride        
 
     /**
       * Tests whether this shader is in progress or not.
@@ -124,9 +126,9 @@ class CPSlideInShader(
                         val px = zpx.px
                         val maxFrame = matrix(x - rect.x)(y - rect.y)
                         val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
-                        val newFg = CPColor.mixture(bgFg, px.fg, bal)
+                        val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(bgBg, c, bal))
+                            case Some(c) => Option(CPColor.mixture(c, bgBg, bal))
                             case None => None
                         var newPx = px.withFg(newFg).withBg(newBg)
                         val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg

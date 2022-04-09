@@ -96,7 +96,7 @@ object CPMacarenaGame:
             mkSprite("4", CPMacarena4AniImage.trimBg().split(3, 3), x + 7 * 3, y, KEY_4),
             mkSprite("5", CPMacarena5AniImage.trimBg().split(3, 3), x + 7 * 4, y, KEY_5),
             new CPLabelSprite(24, 12, 0, "[1]    [2]    [3]    [4]    [5]", C_DARK_CYAN),
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             new CPOffScreenSprite:
                 override def onStart(): Unit =
                     super.onStart()

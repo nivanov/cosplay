@@ -148,8 +148,8 @@ object CPTileMapperExample:
         var objs = List[CPSceneObject](
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         )
 
         // Layout tile sprites and add them to the scene.
