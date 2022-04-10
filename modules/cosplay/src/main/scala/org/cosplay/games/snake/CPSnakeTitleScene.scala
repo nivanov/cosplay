@@ -90,12 +90,11 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val fadeInShdr = CPSlideInShader(
+    private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.LEFT_TO_RIGHT,
         true,
         3000,
         BG_PX,
-        balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat,
         onFinish = _ ⇒ eyesShdr.start()
     )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)

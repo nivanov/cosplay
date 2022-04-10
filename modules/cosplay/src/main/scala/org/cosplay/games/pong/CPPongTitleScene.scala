@@ -104,7 +104,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
 
     private val sparkleShdr = CPSparkleShader(CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
     private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
-    private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 1000, BG_PX)
+    private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
 
     // Add scene objects...
     addObjects(

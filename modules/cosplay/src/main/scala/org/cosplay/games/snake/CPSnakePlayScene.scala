@@ -291,7 +291,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             snake.tail.foreach(draw(_, bpx)) // Rest of the body.
 
     // Announcements.
-    private val lostWonShdr = CPSlideInShader(LEFT_TO_RIGHT, false, 1000, BG_PX, balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat)
+    private val lostWonShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000, BG_PX)
     private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, z = 6, shaders = Seq(lostWonShdr))
     private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, z = 6, shaders = Seq(lostWonShdr))
 
@@ -309,9 +309,10 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
 
     addObjects(
         new CPOffScreenSprite(Seq(fadeInShdr, fadeOutShdr)),
-        // Scene-wide keyboard handlers.
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
-        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()), // Toggle audio on 'Ctrl+A' press.
+        // Handle 'Q' press globally for this scene.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        // Toggle audio on 'Ctrl+A' press.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         scoreSpr,
         borderSpr,
         snakeSpr,
@@ -337,10 +338,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
-        bgSnd.stop()
-        yamSnd.stop()
-        youLostSnd.stop()
-        youWonSnd.stop()
+        stopAudio()
 
     override def onActivate(): Unit =
         super.onActivate()
