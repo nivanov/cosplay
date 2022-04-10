@@ -28,6 +28,8 @@ import org.jline.terminal.*
 import org.jline.utils.NonBlockingReader
 
 import java.io.*
+import java.util.logging.LogManager
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /*
@@ -50,7 +52,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private var term: Terminal = _
     private var writer: PrintWriter = _
     private var reader: NonBlockingReader = _
-    private val buf = new StringBuilder(10000)
+    private val buf = new mutable.StringBuilder(10000)
     private val bg = gameInfo.termBg
     private var last: CPArray2D[CPPixel] = _ // Copy of the last drawn camera frame.
     private val root = new CPGuiLog("")
@@ -115,7 +117,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 catch case _: InterruptedException => ()
 
     override def render(scr: CPScreen, camRect: CPRect, forceRedraw: Boolean): Unit =
-        require(scr.getRect.contains(camRect))
+        require(scr.getRect.contains(camRect), s"scr=${scr.getRect}, cam=$camRect")
 
         val termDim = getDim
         val termScr = new TermScreen(termDim, scr, camRect)

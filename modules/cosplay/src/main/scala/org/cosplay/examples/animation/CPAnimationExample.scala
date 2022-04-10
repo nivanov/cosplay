@@ -42,6 +42,18 @@ import org.cosplay.*
 /**
   * Code example for animation functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:animation exec:java
+  * }}}
+  *
   * @see [[CPAnimation]]
   * @see [[CPAnimationContext]]
   * @see [[CPAnimationSprite]]
@@ -196,7 +208,7 @@ object CPAnimationExample:
         val fiShdr = new CPFadeInShader(true, 500, bgPx)
         val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
-        val player = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
+        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
             // Use 'float' type for coordinates to smooth out the movement.
             private var x = super.getX.toFloat
             private var y = super.getY.toFloat
@@ -241,8 +253,8 @@ object CPAnimationExample:
         val sc = new CPScene("scene", Option(dim), bgPx,
             player,
             CPStaticImageSprite(28, 28, 0, imgHelp),
-            // On 'Ctrl-q' kick in fade out shader that will exit the game once it is finished.
-            CPKeyboardSprite(KEY_LO_Q, _ => foShdr.start()) // Exit the game on 'q' press.
+            // On 'q' kick in fade out shader that will exit the game once it is finished.
+            CPKeyboardSprite(KEY_LO_Q, _ => foShdr.start()) // Exit the game on 'Q' press.
         )
 
         try

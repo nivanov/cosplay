@@ -1,10 +1,3 @@
-package org.cosplay.games.pong
-
-import org.apache.commons.lang3.SystemUtils
-import org.cosplay.CPFIGLetFont.FIG_BIG
-import org.cosplay.CPScene
-import org.cosplay.games.pong.particles.CPPongScoreEmitter
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -22,14 +15,20 @@ import org.cosplay.games.pong.particles.CPPongScoreEmitter
  * limitations under the License.
  */
 
+package org.cosplay.games.pong
+
 import org.cosplay.*
+import games.*
 import CPColor.*
 import CPPixel.*
 import CPArrayImage.*
 import CPFIGLetFont.*
-import prefabs.shaders.*
 import CPKeyboardKey.*
-import org.cosplay.games.pong.shaders.*
+import prefabs.shaders.*
+import prefabs.sprites.*
+import pong.shaders.*
+import org.apache.commons.lang3.SystemUtils
+import org.cosplay.prefabs.particles.confetti.CPConfettiEmitter
 
 /*
    _________            ______________
@@ -189,8 +188,26 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     // Score sprites.
     private val plyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
     private val npcScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
-    private val plyScoreEmitter = new CPPongScoreEmitter(() ⇒ plyScoreSpr.getRect.xCenter, () ⇒ plyScoreSpr.getRect.h / 2)
-    private val npcScoreEmitter = new CPPongScoreEmitter(() ⇒ npcScoreSpr.getRect.xCenter, () ⇒ npcScoreSpr.getRect.h / 2)
+    private val plyScoreEmitter = new CPConfettiEmitter(
+        () ⇒ plyScoreSpr.getRect.xCenter,
+        () ⇒ plyScoreSpr.getRect.h / 2,
+        15,
+        15,
+        CS,
+        BG_PX.fg,
+        _ ⇒ CPRand.rand("1234567890"),
+        1
+    )
+    private val npcScoreEmitter = new CPConfettiEmitter(
+        () ⇒ npcScoreSpr.getRect.xCenter,
+        () ⇒ npcScoreSpr.getRect.h / 2,
+        15,
+        15,
+        CS,
+        BG_PX.fg,
+        _ ⇒ CPRand.rand("1234567890"),
+        1
+    )
     private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
     private val npcScorePartSpr = CPParticleSprite(emitters = Seq(npcScoreEmitter))
 
@@ -266,7 +283,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false,
-        Seq(CPPongBallBoostShader, CPPongBallFlashlightShader)):
+        Seq(CPPongBallBoostShader, new CPFlashlightShader(radius = 6))):
         private var x, y = INIT_VAL
         private var boosted = false
 
@@ -308,8 +325,16 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     setBoost(false)
                     val yr = y.round
                     val edge =
-                        if isPly then yr == plySpr.getY - ballH || yr == plySpr.getY + plyImg.h
-                        else yr == npcSpr.getY - ballH || yr == npcSpr.getY + npcImg.h
+                        if isPly then
+                            yr == plySpr.getY - ballH ||
+                            yr == plySpr.getY - ballH + 1 ||
+                            yr == plySpr.getY + plyImg.h ||
+                            yr == plySpr.getY + plyImg.h - 1
+                        else
+                            yr == npcSpr.getY - ballH ||
+                            yr == npcSpr.getY - ballH  + 1 ||
+                            yr == npcSpr.getY + npcImg.h ||
+                            yr == npcSpr.getY + npcImg.h - 1
                     if edge then setBoost(true)
                     x = if isPly then paddleW.toFloat else canv.wF - paddleW - ballW - 2
                     ballAngle = -ballAngle + 180 + CPRand.randInt(0, 10) - 5
@@ -337,7 +362,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                         playing = false
                         gameOver = true
                         bgSnd.stop(500) // Stop background audio.
-                        spr.setVisible(true)
+                        spr.show()
                         snd.play(3000)
 
                     if plyScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
@@ -355,18 +380,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 setX(Math.min(Math.max(x, 0f), xMax).round)
                 setY(Math.min(Math.max(y, 0f), yMax).round)
 
-    class CenteredImageSprite(img: CPImage) extends CPImageSprite(x = 0, y = 0, z = 6, img = img):
-        override def update(ctx: CPSceneObjectContext): Unit =
-            super.update(ctx)
-            val canv = ctx.getCanvas
-            // Center itself.
-            setX((canv.dim.w - getImage.getWidth) / 2)
-            setY((canv.dim.h - getImage.getHeight) / 2)
-
     // Announcements.
-    private val serveSpr = new CenteredImageSprite(serveImg)
-    private val youLostSpr = new CenteredImageSprite(youLostImg)
-    private val youWonSpr = new CenteredImageSprite(youWonImg)
+    private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6)
+    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6)
+    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6)
 
     private val gameCtrlSpr = new CPOffScreenSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -377,7 +394,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     if ctx.isKbKey(KEY_SPACE) then ctx.switchScene("title")
                     end if
                 else // Not playing and not game over - first serve.
-                    serveSpr.setVisible(true)
+                    serveSpr.show()
 
                     // Reset positions.
                     plySpr.reset()
@@ -389,7 +406,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     ballAngle = randBallAngle()
 
                     if ctx.isKbKey(KEY_SPACE) then
-                        serveSpr.setVisible(false)
+                        serveSpr.hide()
                         playing = true
                         paddleSnd.play()
 
@@ -421,11 +438,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         super.onDeactivate()
 
         // Stop all audio for this scene.
-        youWonSnd.stop(400) // Stop background audio.
-        youLostSnd.stop(400)
+        youWonSnd.stop()
+        youLostSnd.stop()
         wallSnd.stop()
         paddleSnd.stop()
-        bgSnd.stop() // Stop background audio.
+        bgSnd.stop()
 
     override def onActivate(): Unit =
         super.onActivate()
@@ -433,10 +450,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         bgSnd.loopAll(5000) // Start background audio.
 
         // All announcements are invisible initially.
-        serveSpr.setVisible(false)
-        youLostSpr.setVisible(false)
-        youWonSpr.setVisible(false)
-        boostSpr.setVisible(false)
+        serveSpr.hide()
+        youLostSpr.hide()
+        youWonSpr.hide()
+        boostSpr.hide()
 
         // State machine.
         playing = false

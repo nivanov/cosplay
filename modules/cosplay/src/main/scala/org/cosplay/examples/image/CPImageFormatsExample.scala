@@ -22,8 +22,8 @@ import CPPixel.*
 import CPArrayImage.*
 import CPColor.*
 import CPKeyboardKey.*
-import org.cosplay.prefabs.scenes.CPLogoScene
-import org.cosplay.prefabs.shaders.CPFadeInShader
+import prefabs.scenes.*
+import prefabs.shaders.*
 
 /*
    _________            ______________
@@ -40,7 +40,19 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /**
   * Code example for image functionality.
-  * 
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:image_formats exec:java
+  * }}}
+  *
   * @see [[CPImage]]
   * @see [[CPArrayImage]]
   * @note See developer guide at [[https://cosplayengine.com]]
@@ -129,8 +141,8 @@ object CPImageFormatsExample:
             guitarSpr, guitarLbl,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
 
         // Initialize the engine.

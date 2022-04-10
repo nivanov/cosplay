@@ -17,18 +17,19 @@
 
 package org.cosplay.games.pong
 
-import org.cosplay.CPColor.*
 import org.cosplay.*
-import org.cosplay.CPArrayImage.*
+import games.*
+import CPColor.*
+import CPArrayImage.*
 import prefabs.shaders.*
-import org.cosplay.CPFIGLetFont.*
-import org.cosplay.CPCanvas.*
-import org.cosplay.CPDim.*
+import CPFIGLetFont.*
+import CPCanvas.*
+import CPDim.*
 import CPPixel.*
 import CPKeyboardKey.*
 import prefabs.images.*
 import prefabs.scenes.*
-import org.cosplay.games.pong.shaders.*
+import games.pong.shaders.*
 
 /*
    _________            ______________
@@ -44,7 +45,7 @@ import org.cosplay.games.pong.shaders.*
 */
 
 /**
-  * Title scene for pong game.
+  * Pong game title scene.
   */
 object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
@@ -59,7 +60,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
               |              GET 10 POINTS TO WIN
               |              ~~~~~~~~~~~~~~~~~~~~
               |
-              |    >> BEWARE OF INITAL KEYBOARD PRESS DELAY <<
+              |    >> BEWARE OF INITIAL KEYBOARD PRESS DELAY <<
               |   >> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<
               |
               |
@@ -88,8 +89,9 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val sparkleShdr = CPPongTitleSparkleShader()
-    private val fadeInShdr = CPFadeInShader(true, 1000, BG_PX, onFinish = _ ⇒ sparkleShdr.start())
+    private val sparkleShdr = CPSparkleShader(CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
+    //private val fadeInShdr = CPFadeInShader(true, 1000, BG_PX)
+    private val fadeInShdr = CPSlideInShader(CPSlideDirection.LEFT_TO_RIGHT, true, 3000, BG_PX)
 
     // Add scene objects...
     addObjects(
