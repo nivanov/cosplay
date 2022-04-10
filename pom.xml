@@ -94,7 +94,7 @@
         <maven.shade.plugin.ver>3.2.1</maven.shade.plugin.ver>
         <maven.install.plugin.ver>2.5.2</maven.install.plugin.ver>
         <maven.source.plugin.ver>3.0.1</maven.source.plugin.ver>
-        <maven.clean.plugin.ver>3.1.0</maven.clean.plugin.ver>
+        <maven.clean.plugin.ver>3.3.4</maven.clean.plugin.ver>
         <jline.ver>3.20.0</jline.ver>
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
         <commons.math.ver>3.6.1</commons.math.ver>
