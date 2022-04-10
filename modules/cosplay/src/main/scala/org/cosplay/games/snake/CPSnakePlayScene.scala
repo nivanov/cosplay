@@ -215,7 +215,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     go = false
                     dead = true
                     youLostSpr.show()
-                    if audioOn then youLostSnd.play(1000)
+                    if audioOn then youLostSnd.replay(1000)
                     yamSpr.hide()
                     bgSnd.stop(1000)
                 else
@@ -232,7 +232,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                         // Update score.
                         scoreSpr.setImage(mkScoreImage)
                         // Play yam sound.
-                        if audioOn then yamSnd.play()
+                        if audioOn then yamSnd.replay()
                         // Particle effect (for new location).
                         yamPartSpr.resume(reset = true)
                         // Bubble sprite (for current location).
@@ -253,7 +253,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                             go = false
                             dead = false
                             youWonSpr.show()
-                            if audioOn then youWonSnd.play(1000)
+                            if audioOn then youWonSnd.replay(1000)
                             yamSpr.hide()
                             bgSnd.stop(1000)
                         else
@@ -332,7 +332,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             stopAudio() // Stop all sounds.
             audioOn = false
         else
-            bgSnd.loopAll(2000)
+            bgSnd.loop(2000)
             audioOn = true
 
     override def onDeactivate(): Unit =
@@ -347,6 +347,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         score = 0
         go = true
         dead = false
-        if audioOn then bgSnd.loopAll(2000) // Start background audio.
+        if audioOn then bgSnd.loop(2000) // Start background audio.
         youWonSpr.hide()
         youLostSpr.hide()

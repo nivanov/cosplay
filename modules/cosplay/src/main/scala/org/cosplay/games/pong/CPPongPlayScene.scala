@@ -316,7 +316,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     boostSpr.setVisible(on)
                     if on then
                         CPPongBallBoostShader.start()
-                        boostSnd.play()
+                        if audioOn then boostSnd.replay()
                     else
                         CPPongBallBoostShader.stop()
                         boostSnd.stop()
@@ -338,7 +338,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     if edge then setBoost(true)
                     x = if isPly then paddleW.toFloat else canv.wF - paddleW - ballW - 2
                     ballAngle = -ballAngle + 180 + CPRand.randInt(0, 10) - 5
-                    paddleSnd.play()
+                    if audioOn then paddleSnd.replay()
                     if isPly then plyShdr.start() else npcShdr.start()
 
                 def score(plyScr: Int, npcScr: Int): Unit =
@@ -354,7 +354,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     else
                         npcScorePartSpr.resume(reset = true)
 
-                    missSnd.play()
+                    if audioOn then missSnd.replay()
                     npcScoreSpr.setImage(mkScoreImage(npcScore))
                     plyScoreSpr.setImage(mkScoreImage(plyScore))
 
@@ -363,7 +363,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                         gameOver = true
                         bgSnd.stop(500) // Stop background audio.
                         spr.show()
-                        snd.play(3000)
+                        if audioOn then snd.replay(3000)
 
                     if plyScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
                     else if npcScore == MAX_SCORE then finishGame(youLostSpr, youLostSnd)
@@ -373,7 +373,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 else if x > xMax - 1 && y > npcSpr.getY - ballH && y < npcSpr.getY + paddleH then paddleReturn(false)
                 else if y > yMax || y < 0 then
                     ballAngle = -ballAngle
-                    wallSnd.play()
+                    if audioOn then wallSnd.replay()
                 else if x < 0 then score(0, 1)
                 else if x > canv.xMax then score(1, 0)
 
@@ -408,7 +408,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     if ctx.isKbKey(KEY_SPACE) then
                         serveSpr.hide()
                         playing = true
-                        paddleSnd.play()
+                        if audioOn then paddleSnd.replay()
 
     addObjects(
         // Scene-wide keyboard handlers.
@@ -447,7 +447,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     override def onActivate(): Unit =
         super.onActivate()
 
-        bgSnd.loopAll(5000) // Start background audio.
+        if audioOn then bgSnd.loop(5000) // Start background audio.
 
         // All announcements are invisible initially.
         serveSpr.hide()

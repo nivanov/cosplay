@@ -120,7 +120,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
         CPKeyboardSprite(KEY_ENTER, _ => fadeOutShdr.start(_.switchScene("play")))
     )
 
-    private def startBgAudio(): Unit = introSnd.loopAll(2000)
+    private def startBgAudio(): Unit = introSnd.loop(2000)
     private def stopBgAudio(): Unit = introSnd.stop(400)
 
     /**
@@ -136,6 +136,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
 
     override def onActivate(): Unit =
         super.onActivate()
+        fadeInShdr.start() // Reset the shader.
         if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =

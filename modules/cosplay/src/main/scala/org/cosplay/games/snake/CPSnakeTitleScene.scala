@@ -115,7 +115,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         CPKeyboardSprite(KEY_ENTER, ctx ⇒ fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true)))
     )
 
-    private def startBgAudio(): Unit = introSnd.loopAll(2000)
+    private def startBgAudio(): Unit = introSnd.loop(2000)
     private def stopBgAudio(): Unit = introSnd.stop(400)
 
     /**
