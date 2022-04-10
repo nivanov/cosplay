@@ -36,7 +36,9 @@ import prefabs.scenes.CPLogoScene
                 ALl rights reserved.
 */
 
-val BG_PX = '.'&&(C_GRAY18, C_GRAY1)
+val BLUE_BLACK = CPColor("0x00000F")
+val BG_PX = '.'&&(C_GRAY18, BLUE_BLACK)
+var audioOn = true // By default, the audio is ON.
 
 /**
   * Classic pong game.

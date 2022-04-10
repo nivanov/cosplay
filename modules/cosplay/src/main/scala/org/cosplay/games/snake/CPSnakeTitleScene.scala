@@ -22,6 +22,7 @@ import org.cosplay.*
 import CPColor.*
 import CPArrayImage.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 import CPPixel.*
 import CPKeyboardKey.*
 
@@ -43,7 +44,7 @@ import CPKeyboardKey.*
   */
 object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/snake/intro.wav", 0.5f)
-    private val helpImg = CPArrayImage(
+    private val logoImg = CPArrayImage(
         prepSeq(
             """
               |      ______     __   __     ______     __  __     ______
@@ -102,11 +103,14 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
 
     // Add scene objects...
     addObjects(
-        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg, shaders = Seq(eyesShdr)),
+        // Main logo.
+        CPCenteredImageSprite(img = logoImg, 0, shaders = Seq(eyesShdr)),
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()), // Toggle audio on 'Ctrl+A' press.
+        // Exit on 'Q' press.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        // Toggle audio on 'Ctrl+A' press.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Transition to the next scene on 'Enter' press fixing the dimension.
         CPKeyboardSprite(KEY_ENTER, ctx ⇒ fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true)))
     )

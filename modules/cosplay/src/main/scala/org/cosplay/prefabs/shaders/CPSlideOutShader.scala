@@ -69,7 +69,7 @@ class CPSlideOutShader(
     durMs: Long,
     bgPx: CPPixel,
     onFinish: CPSceneObjectContext => Unit = _ => (),
-    autoStart: Boolean = true,
+    autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) ⇒ Float = (a, b) ⇒ a.toFloat / b
 ) extends CPShader:
