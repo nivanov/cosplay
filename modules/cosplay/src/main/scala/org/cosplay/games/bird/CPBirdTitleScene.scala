@@ -49,17 +49,17 @@ object CPBirdTitleScene extends CPScene("title", None, BG_PX):
     private val helpImg = CPArrayImage(
         prepSeq(
             """
-              |              GET AS FAR AS YOU CAN
-              |             ~~~~~~~~~~~~~~~~~~~~~~~
+              |       GET AS FAR AS YOU CAN
+              |      ~~~~~~~~~~~~~~~~~~~~~~~
               |
-              |                [SPACE] - JUMP
+              |         [SPACE] - JUMP
               |
-              |                [ENTER]   Play
-              |                [Q]       Quit
+              |         [ENTER] - Play
+              |         [Q]   -   Quit
               |
               |
               |
-              |         Copyright (C) 2022 Rowan Games, Inc
+              |Copyright (C) 2022 Rowan Games, Inc
             """),
         (ch, _, y) =>
             if y >= 21 then ch&C_YELLOW

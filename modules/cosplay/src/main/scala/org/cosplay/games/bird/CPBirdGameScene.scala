@@ -17,6 +17,16 @@
 
 package org.cosplay.games.bird
 
+import org.cosplay.*
+import games.*
+import CPColor.*
+import CPPixel.*
+import CPArrayImage.*
+import CPFIGLetFont.*
+import CPKeyboardKey.*
+import prefabs.shaders.*
+import prefabs.sprites.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -31,4 +41,32 @@ package org.cosplay.games.bird
 */
 
 
-object CPBirdGameScene 
+object CPBirdGameScene extends CPScene("play", None, BG_PX):
+    private val speed = 5
+    private var vel = 0
+
+    private val birdImg = CPArrayImage(
+        prepSeq(
+            """
+              | \\
+              |( ^)>
+              | //
+            """
+        ),
+        (ch, _, _) => ch&C_YELLOW
+    ).trimBg()
+
+    private val birdSpr = new CPImageSprite("bird", 15, 15, 0, birdImg):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            val canv = ctx.getCanvas
+            println("Bird")
+
+            ctx.getKbEvent match
+                case Some(evt) =>
+                    evt.key match
+                        case KEY_LO_W | KEY_UP | KEY_SPACE => vel += 5
+                        case _ => ()
+                case None => ()
+
+
