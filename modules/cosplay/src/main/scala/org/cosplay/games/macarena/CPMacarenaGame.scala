@@ -100,7 +100,7 @@ object CPMacarenaGame:
             new CPOffScreenSprite:
                 override def onStart(): Unit =
                     super.onStart()
-                    music.loopAll(1500) // Auto-play with fade-in.
+                    music.loop(1500) // Auto-play with fade-in.
         )
 
         // Start the game & wait for exit.

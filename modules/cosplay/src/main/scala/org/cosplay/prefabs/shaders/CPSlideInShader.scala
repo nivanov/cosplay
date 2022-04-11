@@ -19,6 +19,7 @@ package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
 import CPSlideDirection.*
+import org.apache.commons.math3.analysis.function.*
 
 /*
    _________            ______________
@@ -56,9 +57,10 @@ import CPSlideDirection.*
   *     of the effect, and the second parameter is the last frame number of the effect. First parameter is always less
   *     then the second one. By default, the the `(a, b) ⇒ a.toFloat / b` function is used that gives gradual color
   *     transition through the frames range. Another popular function to use here is a sigmoid
-  *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat()` that gives a different visual effect.
+  *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat` that gives a different visual effect.
   * @see [[CPOffScreenSprite]]
   * @see [[CPSlideOutShader]]
+  * @see [[CPSlideInShader#sigmoid]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
 class CPSlideInShader(
@@ -140,3 +142,33 @@ class CPSlideInShader(
             if frmCnt == maxFrmCnt then
                 go = false
                 cb(ctx)
+
+/**
+  * Companion object with utility methods.
+  */
+object CPSlideInShader:
+    /**
+      * Creates new slide in shader with sigmoid-based color balance function.
+      *
+      * @param dir Slide direction as defined by [[CPSlideDirection]].
+      * @param entireFrame Whether apply to the entire camera frame or just the object this
+      *     shader is attached to.
+      * @param durMs Duration of the effect in milliseconds.
+      * @param bgPx Background pixel to fade in from.
+      * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
+      * @param autoStart Whether to start shader right away. Default value is `true`.
+      * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
+      *     or certain Z-index. Default predicate returns `false` for all pixels.
+      */
+    def sigmoid(
+        dir: CPSlideDirection,
+        entireFrame: Boolean,
+        durMs: Long,
+        bgPx: CPPixel,
+        onFinish: CPSceneObjectContext => Unit = _ => (),
+        autoStart: Boolean = true,
+        skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
+    ): CPSlideInShader =
+        val sigmoid = new Sigmoid()
+        new CPSlideInShader(dir, entireFrame, durMs, bgPx, onFinish, autoStart, skip, (a, b) => sigmoid.value(a - b / 2).toFloat)
+

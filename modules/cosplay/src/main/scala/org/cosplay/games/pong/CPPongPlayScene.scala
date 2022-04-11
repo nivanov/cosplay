@@ -27,6 +27,7 @@ import CPKeyboardKey.*
 import prefabs.shaders.*
 import prefabs.sprites.*
 import pong.shaders.*
+import CPSlideDirection.*
 import org.apache.commons.lang3.SystemUtils
 import org.cosplay.prefabs.particles.confetti.CPConfettiEmitter
 
@@ -121,6 +122,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               ||    ==============            |
               ||                              |
               ||    [SPACE]   Serve Ball      |
+              ||    [CTRL&A]  Audio On/Off    |
+              ||    [CTRL&L]  Log Console     |
+              ||    [CTRL&Q]  FPS Overlay     |
               ||    [Q]       Quit            |
               ||                              |
               |+______________________________+
@@ -128,24 +132,29 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
             case '+' => ch&C1
+            case '&' ⇒ '+'&C4
             case _ => ch&C2
     ).trimBg()
 
     private val youLostImg = CPArrayImage(
         prepSeq(
             """
-              |+--------------------------+
-              ||                          |
-              ||    YOU LOST :-(          |
-              ||    ============          |
-              ||                          |
-              ||    [SPACE]   Continue    |
-              ||    [Q]       Quit        |
-              ||                          |
-              |+__________________________+
+              |+------------------------------+
+              ||                              |
+              ||    YOU LOST :-(              |
+              ||    ============              |
+              ||                              |
+              ||    [SPACE]   Continue        |
+              ||    [CTRL&A]  Audio On/Off    |
+              ||    [CTRL&L]  Log Console     |
+              ||    [CTRL&Q]  FPS Overlay     |
+              ||    [Q]       Quit            |
+              ||                              |
+              |+______________________________+
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
+            case '&' ⇒ '+'&C4
             case '+' => ch&C1
             case _ => ch&C2
     ).trimBg()
@@ -153,18 +162,22 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val youWonImg = CPArrayImage(
         prepSeq(
             """
-              |+--------------------------+
-              ||                          |
-              ||    YOU WON :-)           |
-              ||    ===========           |
-              ||                          |
-              ||    [SPACE]   Continue    |
-              ||    [Q]       Quit        |
-              ||                          |
-              |+__________________________+
+              |+------------------------------+
+              ||                              |
+              ||    YOU WON 8-)               |
+              ||    ===========               |
+              ||                              |
+              ||    [SPACE]   Continue        |
+              ||    [CTRL&A]  Audio On/Off    |
+              ||    [CTRL&L]  Log Console     |
+              ||    [CTRL&Q]  FPS Overlay     |
+              ||    [Q]       Quit            |
+              ||                              |
+              |+______________________________+
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
+            case '&' ⇒ '+'&C4
             case '+' => ch&C1
             case _ => ch&C2
     ).trimBg()
@@ -212,7 +225,14 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val npcScorePartSpr = CPParticleSprite(emitters = Seq(npcScoreEmitter))
 
     // Boost announcement sprite.
-    private val boostSpr = new CPImageSprite(x = 0, y = 0, z = 10, FIG_RECTANGLES.render("boost", C1).trimBg()):
+    private val boostShdr = new CPShimmerShader(
+        false,
+        CS,
+        2,
+        true,
+        skip = (zpx, _, _) ⇒ zpx.z != 10 || zpx.char == BG_PX.char || zpx.char == ' '
+    )
+    private val boostSpr = new CPImageSprite(x = 0, y = 0, z = 10, FIG_RECTANGLES.render("boost", C1).trimBg(), shaders = Seq(boostShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
@@ -316,7 +336,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     boostSpr.setVisible(on)
                     if on then
                         CPPongBallBoostShader.start()
-                        boostSnd.play()
+                        if audioOn then boostSnd.replay()
                     else
                         CPPongBallBoostShader.stop()
                         boostSnd.stop()
@@ -338,7 +358,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     if edge then setBoost(true)
                     x = if isPly then paddleW.toFloat else canv.wF - paddleW - ballW - 2
                     ballAngle = -ballAngle + 180 + CPRand.randInt(0, 10) - 5
-                    paddleSnd.play()
+                    if audioOn then paddleSnd.replay()
                     if isPly then plyShdr.start() else npcShdr.start()
 
                 def score(plyScr: Int, npcScr: Int): Unit =
@@ -354,7 +374,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     else
                         npcScorePartSpr.resume(reset = true)
 
-                    missSnd.play()
+                    if audioOn then missSnd.replay()
                     npcScoreSpr.setImage(mkScoreImage(npcScore))
                     plyScoreSpr.setImage(mkScoreImage(plyScore))
 
@@ -363,7 +383,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                         gameOver = true
                         bgSnd.stop(500) // Stop background audio.
                         spr.show()
-                        snd.play(3000)
+                        if audioOn then snd.replay(3000)
 
                     if plyScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
                     else if npcScore == MAX_SCORE then finishGame(youLostSpr, youLostSnd)
@@ -373,7 +393,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 else if x > xMax - 1 && y > npcSpr.getY - ballH && y < npcSpr.getY + paddleH then paddleReturn(false)
                 else if y > yMax || y < 0 then
                     ballAngle = -ballAngle
-                    wallSnd.play()
+                    if audioOn then wallSnd.replay()
                 else if x < 0 then score(0, 1)
                 else if x > canv.xMax then score(1, 0)
 
@@ -381,9 +401,13 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 setY(Math.min(Math.max(y, 0f), yMax).round)
 
     // Announcements.
-    private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6)
-    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6)
-    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6)
+    private def mkShader = CPSlideInShader.sigmoid(CENTRIFUGAL, false, 500, BG_PX)
+    private val serveShdr = mkShader
+    private val youLostShdr = mkShader
+    private val youWonShdr = mkShader
+    private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6, Seq(serveShdr))
+    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6, Seq(youLostShdr))
+    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6, Seq(youWonShdr))
 
     private val gameCtrlSpr = new CPOffScreenSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -407,12 +431,15 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
                     if ctx.isKbKey(KEY_SPACE) then
                         serveSpr.hide()
+                        serveShdr.start()
                         playing = true
-                        paddleSnd.play()
+                        if audioOn then paddleSnd.replay()
 
     addObjects(
-        // Scene-wide keyboard handlers.
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Handle 'Q' press globally for this scene.
+        // Handle 'Q' press globally for this scene.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        // Toggle audio on 'Ctrl+A' press.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Score sprites.
         plyScoreSpr,
         npcScoreSpr,
@@ -434,20 +461,22 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
     )
 
-    override def onDeactivate(): Unit =
-        super.onDeactivate()
-
-        // Stop all audio for this scene.
+    private def stopAudio(): Unit =
         youWonSnd.stop()
         youLostSnd.stop()
         wallSnd.stop()
         paddleSnd.stop()
         bgSnd.stop()
 
+    override def onDeactivate(): Unit =
+        super.onDeactivate()
+        stopAudio()
+
     override def onActivate(): Unit =
         super.onActivate()
 
-        bgSnd.loopAll(5000) // Start background audio.
+        // Start background audio.
+        if audioOn then bgSnd.loop(2000)
 
         // All announcements are invisible initially.
         serveSpr.hide()
@@ -466,6 +495,14 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
         npcScoreSpr.setImage(mkScoreImage(npcScore))
         plyScoreSpr.setImage(mkScoreImage(plyScore))
+
+    private def toggleAudio(): Unit =
+        if audioOn then
+            stopAudio() // Stop all sounds.
+            audioOn = false
+        else
+            bgSnd.loop(2000)
+            audioOn = true
 
 
 

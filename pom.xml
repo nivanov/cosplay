@@ -95,7 +95,7 @@
         <maven.install.plugin.ver>2.5.2</maven.install.plugin.ver>
         <maven.source.plugin.ver>3.0.1</maven.source.plugin.ver>
         <maven.clean.plugin.ver>3.1.0</maven.clean.plugin.ver>
-        <jline.ver>3.20.0</jline.ver>
+        <jline.ver>3.21.0</jline.ver>
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
         <commons.math.ver>3.6.1</commons.math.ver>
         <scala3.reflect.ver>1.1.4</scala3.reflect.ver>

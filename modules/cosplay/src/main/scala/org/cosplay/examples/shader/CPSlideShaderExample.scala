@@ -39,7 +39,6 @@ import prefabs.scenes.*
 import prefabs.sprites.*
 import prefabs.shaders.*
 import CPSlideDirection.*
-import org.apache.commons.math3.analysis.function.*
 import scala.collection.mutable
 
 /**
@@ -125,12 +124,11 @@ object CPSlideShaderExample:
                 setX((canv.dim.w - getImage.getWidth) / 2)
                 setY(canv.dim.h - 3)
 
-        val sigmoid = new Sigmoid()
         var lastShdr: CPSlideOutShader = null
         val shdrs = mutable.Buffer.empty[CPSlideInShader | CPSlideOutShader]
         for (dir <- CPSlideDirection.values)
-            val s1 = new CPSlideInShader(dir, false, 1500, BG_PX, _ => (), lastShdr == null, balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat)
-            val s2 = new CPSlideOutShader(dir, false, 1500, BG_PX, _ => labelSpr.reset(), false, balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat)
+            val s1 = CPSlideInShader.sigmoid(dir, false, 1500, BG_PX, _ => (), lastShdr == null)
+            val s2 = CPSlideOutShader.sigmoid(dir, false, 1500, BG_PX, _ => labelSpr.reset(), false)
             s1.setOnFinish(_ => {
                 labelSpr.setImage(CPSystemFont.render(dir.toString, C_ORANGE1, None))
                 s2.start()

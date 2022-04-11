@@ -123,8 +123,9 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def setBalance(bal: Double): Unit = player.setBalance(bal)
 
     /**
-      * Starts the playback with specified fade in duration.
-      * When playback reaches the end the player will rewind back again to the beginning and stop.
+      * Starts the playback with specified fade in duration. If previously paused, then playback
+      * resumes where it was paused. If playback was stopped, playback starts from the start.
+      * When playback reaches the end the player will rewind back to the beginning and stops.
       *
       * @param fadeInMs Fade in duration in milliseconds. Default is zero.
       */
@@ -136,8 +137,19 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
         if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
 
     /**
+      * Stops the playback first, rewinds and then starts the playback with specified fade in duration.
+      * If previously paused or stopped, then playback resumes from the start.
+      * When playback reaches the end the player will rewind back to the beginning and stops.
+      *
+      * @param fadeInMs Fade in duration in milliseconds. Default is zero.
+      */
+    def replay(fadeInMs: Long = 0): Unit =
+        stop()
+        play(fadeInMs)
+
+    /**
       * Pauses current playback.
-       */
+      */
     def pause(): Unit = player.pause()
 
     /**
@@ -171,23 +183,10 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * @param fadeInMs Fade in duration in milliseconds.
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       */
-    def loopAll(fadeInMs: Long, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
-        loop(fadeInMs, 0, totalDur, endFun)
-
-    /**
-      * Starts the looping playback.
-      *
-      * @param fadeInMs Fade in duration in milliseconds.
-      * @param startMs Millisecond mark for the loop start.
-      * @param endMs Millisecond mark for the loop end.
-      * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
-      */
-    def loop(fadeInMs: Long, startMs: Long, endMs: Long, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
-        player.setStartTime(Duration.millis(startMs.toDouble))
-        player.setStopTime(Duration.millis(endMs.toDouble))
+    def loop(fadeInMs: Long, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
         player.setOnEndOfMedia(() => {
             endFun(this)
-            seek(startMs)
+            seek(0)
             player.play()
         })
         if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
@@ -251,8 +250,6 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def stop(fadeOutMs: Long = 0): Unit =
         stopTimeline()
         def end(): Unit =
-            player.setStartTime(Duration.millis(0))
-            player.setStopTime(Duration.millis(totalDur.toDouble))
             player.stop() // Also rewinds back.
             player.setOnEndOfMedia(null) // Stop looping, if any.
             player.setVolume(vol) // Restore the volume.
