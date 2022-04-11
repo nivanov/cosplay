@@ -378,15 +378,16 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     npcScoreSpr.setImage(mkScoreImage(npcScore))
                     plyScoreSpr.setImage(mkScoreImage(plyScore))
 
-                    def finishGame(spr: CPImageSprite, snd: CPSound): Unit =
+                    def finishGame(spr: CPImageSprite, shdr: CPSlideInShader, snd: CPSound): Unit =
                         playing = false
                         gameOver = true
                         bgSnd.stop(500) // Stop background audio.
+                        shdr.start()
                         spr.show()
                         if audioOn then snd.replay(3000)
 
-                    if plyScore == MAX_SCORE then finishGame(youWonSpr, youWonSnd)
-                    else if npcScore == MAX_SCORE then finishGame(youLostSpr, youLostSnd)
+                    if plyScore == MAX_SCORE then finishGame(youWonSpr, youWonShdr, youWonSnd)
+                    else if npcScore == MAX_SCORE then finishGame(youLostSpr, youLostShdr, youLostSnd)
                     else playing = false
 
                 if x < 1 && y > plySpr.getY - ballH && y < plySpr.getY + paddleH then paddleReturn(true)
