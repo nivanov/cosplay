@@ -22,6 +22,7 @@ import org.cosplay.*
 import CPColor.*
 import CPArrayImage.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 import CPPixel.*
 import CPKeyboardKey.*
 
@@ -43,7 +44,7 @@ import CPKeyboardKey.*
   */
 object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/snake/intro.wav", 0.5f)
-    private val helpImg = CPArrayImage(
+    private val logoImg = CPArrayImage(
         prepSeq(
             """
               |      ______     __   __     ______     __  __     ______
@@ -89,12 +90,11 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val fadeInShdr = CPSlideInShader(
+    private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.LEFT_TO_RIGHT,
         true,
         3000,
         BG_PX,
-        balance = (a, b) ⇒ sigmoid.value(a - b / 2).toFloat,
         onFinish = _ ⇒ eyesShdr.start()
     )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
@@ -102,16 +102,19 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
 
     // Add scene objects...
     addObjects(
-        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => (c.h - helpImg.h) / 2, 0, helpImg, shaders = Seq(eyesShdr)),
+        // Main logo.
+        CPCenteredImageSprite(img = logoImg, 0, shaders = Seq(eyesShdr)),
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()), // Toggle audio on 'Ctrl+A' press.
+        // Exit on 'Q' press.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        // Toggle audio on 'Ctrl+A' press.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Transition to the next scene on 'Enter' press fixing the dimension.
         CPKeyboardSprite(KEY_ENTER, ctx ⇒ fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true)))
     )
 
-    private def startBgAudio(): Unit = introSnd.loopAll(2000)
+    private def startBgAudio(): Unit = introSnd.loop(2000)
     private def stopBgAudio(): Unit = introSnd.stop(400)
 
     /**
