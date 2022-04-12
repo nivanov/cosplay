@@ -62,7 +62,7 @@ import impl.CPUtils
   *
   * @param id Optional ID of this sprite.
   */
-abstract class CPCanvasSprite(id: String = s"canv-spr-${CPUtils.guid6}") extends CPSceneObject(id):
+abstract class CPCanvasSprite(id: String = s"canv-spr-${CPRand.guid6}") extends CPSceneObject(id):
     private var rect: CPRect = _
 
     /** @inheritdoc */

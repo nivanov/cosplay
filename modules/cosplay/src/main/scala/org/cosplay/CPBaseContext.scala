@@ -99,7 +99,5 @@ trait CPBaseContext:
       * This value will be the same for all objects across all callbacks for the entirety of the
       * current frame processing. It is used to provide the time ```simultaneity``` across all scene
       * objects at a given frame.
-      *
-      * @see [[CPAnimationContext.getFrameMs()]]
       */
     def getFrameMs: Long

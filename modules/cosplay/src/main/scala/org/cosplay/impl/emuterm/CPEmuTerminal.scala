@@ -436,7 +436,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         frame.setVisible(true) // Show.
 
     override def render(scr: CPScreen, camRect: CPRect, forceRedraw: Boolean): Unit =
-        require(scr.getRect.contains(camRect), s"src: ${scr.getRect}, cam: $camRect")
+        require(scr.getRect.contains(camRect), s"Screen: ${scr.getRect} does not contain camera: $camRect")
 
         val tw = curDim.w
         val th = curDim.h

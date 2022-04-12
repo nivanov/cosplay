@@ -39,7 +39,19 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /**
   * Code example for tile mapping functionality.
-  * 
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:tilemapper exec:java
+  * }}}
+  *
   * @see [[CPTileMapper]]
   * @note See developer guide at [[https://cosplayengine.com]]
   */
@@ -136,8 +148,8 @@ object CPTileMapperExample:
         var objs = List[CPSceneObject](
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         )
 
         // Layout tile sprites and add them to the scene.

@@ -102,6 +102,15 @@ trait CPSceneObjectContext extends CPBaseContext:
     def exitGame(): Unit
 
     /**
+      * Schedules given function to run at least `delayMs` milliseconds later.
+      *
+      * @param delayMs Minimum number of milliseconds before given function will run. Note that the actual
+      *         delay can be bigger but never smaller than this parameter.
+      * @param f A function to run later.
+      */
+    def runLater(delayMs: Long, f: CPBaseContext ⇒ Unit): Unit
+
+    /**
       * Deletes given scene object after this update cycle. Change will be visible only
       * on the next frame update.
       *

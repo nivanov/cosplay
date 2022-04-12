@@ -41,6 +41,18 @@ import prefabs.shaders.CPFadeInShader
 /**
   * Code example for the built-in FIGLet font functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:fonts exec:java
+  * }}}
+  *
   * @see [[CPFont]]
   * @see [[CPSystemFont]]
   * @see [[CPFIGLetFont]]
@@ -92,8 +104,8 @@ object CPFontsExample:
 
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(Seq(new CPFadeInShader(true, 500, bgPx))),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
 
         try
