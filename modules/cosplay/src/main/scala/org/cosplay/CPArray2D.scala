@@ -129,7 +129,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       *     sequence will be returned.
       */
     def split(num: Int)(using c: ClassTag[T]): Seq[CPArray2D[T]] =
-        require(num > 0)
+        require(num > 0, "Number of splits must be > 0.")
         if isEmpty then Seq.empty
         else
             if width > height && width % num == 0 then split(width / num, height)
@@ -148,7 +148,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       *     sequence will be returned.
       */
     def split(w: Int, h: Int)(using c: ClassTag[T]): Seq[CPArray2D[T]] =
-        require(w > 0 && h > 0)
+        require(w > 0 && h > 0, "Width and height must be > 0.")
         if isEmpty then Seq.empty
         else
             if w > width then E(s"Invalid split width (too big): $w")

@@ -17,8 +17,9 @@
 
 package org.cosplay.games.pong.shaders
 
+import org.cosplay.games.*
 import org.cosplay.*
-import org.cosplay.games.pong.*
+import games.pong.*
 
 /*
    _________            ______________

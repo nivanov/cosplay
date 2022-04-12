@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.pong.particles
+package org.cosplay.prefabs.sprites
 
-import org.cosplay.games.pong.*
 import org.cosplay.*
-import CPColor.*
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -29,31 +28,27 @@ import CPColor.*
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
 /**
-  * Particle emitter for score effect.
-  * 
-  * @param xf X-coordinate producer for emission center.
-  * @param yf Y-coordinate producer for emission center.
+  * Image sprite that centers its image on the canvas on each frame update.
+  *
+  * @param id Optional ID of the sprite.
+  * @param img The image to render. It can be [[CPImageSprite.setImage() changed later]].
+  * @param z Z-index at which to render the image.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   */
-class CPPongScoreEmitter(xf: () ⇒ Int, yf: () ⇒ Int) extends CPParticleEmitter():
-    // Number of particles this emitter will emit on each update.
-    private final val GEN_SIZE = 20
-    private val MAX_AGE = 15
-    private var age = 0
-
-    override def reset(): Unit = age = 0
-    override def emit(ctx: CPBaseContext): Iterable[CPParticle] =
-        if !isPaused && age < MAX_AGE then
-            age += 1
-            // Emit particles in 360 degree semi-circle.
-            for (_ <- 0 to GEN_SIZE) yield CPPongScoreParticle(xf(), yf(),
-                (CPRand.randFloat() - 0.5f) * 3.5f,
-                (CPRand.randFloat() - 0.5f) * 2f,
-            )
-        else
-            Seq.empty
+class CPCenteredImageSprite(
+    id: String = s"center-img-spr-${CPRand.guid6}",
+    img: CPImage,
+    z: Int,
+    shaders: Seq[CPShader] = Seq.empty) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders):
+    override def update(ctx: CPSceneObjectContext): Unit =
+        super.update(ctx)
+        val canv = ctx.getCanvas
+        // Center itself.
+        setX((canv.dim.w - getImage.getWidth) / 2)
+        setY((canv.dim.h - getImage.getHeight) / 2)

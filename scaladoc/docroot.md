@@ -8,7 +8,28 @@
    🕹 2D ASCII JVM GAME ENGINE FOR SCALA3
 
 </pre>
-- Full documentation at [[https://www.cosplayengine.com]]
+
+<table style="margin-top: 10px; border: none; border-collapse: collapse" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr style="border: none">
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot1.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot2.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot3.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot4.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot4-1.gif"></td>
+        </tr>
+        <tr style="border: none">
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot5.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot6.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot7.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot8.gif"></td>
+            <td style="border: none"><img width="128px" alt="" src="https://cosplayengine.com/images/cosplay_screenshot9.gif"></td>
+        </tr>
+    </tbody>
+</table>
+
+- Full documentation at [[https://cosplayengine.com]]
+- Examples [[https://cosplayengine.com/devguide/examples.html]]
 - <b>Main API</b> is located in [[file:org/cosplay.html org.cosplay]] package.
 - GitHub project [[https://github.com/nivanov/cosplay]]
 
@@ -16,7 +37,7 @@
 [![build](https://github.com/nivanov/cosplay/actions/workflows/build.yml/badge.svg)](https://github.com/nivanov/cosplay/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/org.cosplayengine/cosplay.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.cosplayengine%22%20AND%20a:%22cosplay%22)
 
-Examples located under `org.cosplay.examples` package:
+[[https://cosplayengine.com/devguide/examples.html Examples]] located under `org.cosplay.examples` package:
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/animation Animation Examples]] 
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/camera Camera Examples]]       
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/video Video Examples]]
@@ -28,19 +49,22 @@ Examples located under `org.cosplay.examples` package:
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/particle Particle Effect Examples]]
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/fonts Font Examples]]
    - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/tilemapper Tile Mapping Examples]]
-   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/examples/games/pong Classic Pong Game]]
-   - [[https://github.com/nivanov/cosplay/tree/master/modules/cosplay/src/main/scala/org/cosplay/games/macarena Macarena Game]]
+
+Built-in [[https://cosplayengine.com/devguide/examples.html games]] located under `org.cosplay.games` package:
+   - [[https://cosplayengine.com/devguide/pong_game.html Pong Game]]
+   - [[https://cosplayengine.com/devguide/snake_game.html Snake Game]]
+   - [[https://cosplayengine.com/devguide/macarena_game.html Macarena Game]]
 
 Maven dependency:
 <pre>
 &lt;dependency&gt;
   &lt;groupId&gt;org.cosplayengine&lt;/groupId&gt;
   &lt;artifactId&gt;cosplay&lt;/artifactId&gt;
-  &lt;version&gt;0.5.0&lt;/version&gt;
+  &lt;version&gt;0.6.0&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
 
 SBT dependency:
 <pre>
-libraryDependencies += "org.cosplayengine" % "cosplay" % "0.5.0"
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.6.0"
 </pre>

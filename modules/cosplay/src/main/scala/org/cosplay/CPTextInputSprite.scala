@@ -79,7 +79,7 @@ import scala.collection.mutable
   *     using labels and text input.
   */
 class CPTextInputSprite(
-    id: String = s"input-spr-${CPUtils.guid6}",
+    id: String = s"input-spr-${CPRand.guid6}",
     x: Int,
     y: Int,
     z: Int,
@@ -92,8 +92,8 @@ class CPTextInputSprite(
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER)
 ) extends CPSceneObject(id):
-    require(maxBuf >= visLen)
-    require(initTxt != null)
+    require(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
+    require(initTxt != null, "Initial text cannot be 'null'.")
 
     private val dim = CPDim(visLen, 1)
     private val buf = mutable.ArrayBuffer.empty[Char]

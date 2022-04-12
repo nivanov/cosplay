@@ -82,7 +82,7 @@ import org.cosplay.impl.CPUtils
   * @param z Z-index at which to render the image.
   * @param img The image to render. It can be changed later.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
-  * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @see [[CPStaticImageSprite]]
   * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
   *     using images.
@@ -90,7 +90,7 @@ import org.cosplay.impl.CPUtils
   *     using images.
   */
 class CPImageSprite(
-    id: String = s"img-spr-${CPUtils.guid6}",
+    id: String = s"img-spr-${CPRand.guid6}",
     x: Int,
     y: Int,
     z: Int,
@@ -221,7 +221,7 @@ object CPImageSprite:
       * @param z Z-index at which to render the image.
       * @param img The image to render. It can be changed later.
       * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
-      * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+      * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
       * @see [[CPStaticImageSprite]]
       * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
       *     using images.
@@ -229,7 +229,7 @@ object CPImageSprite:
       *     using images.
       */
     def apply(
-        id: String = s"img-spr-${CPUtils.guid6}",
+        id: String = s"img-spr-${CPRand.guid6}",
         xf: CPCanvas => Int,
         yf: CPCanvas => Int,
         z: Int,
