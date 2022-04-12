@@ -109,7 +109,7 @@
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
         <exec.maven.ver>3.0.0</exec.maven.ver>
-        <jna.ver>5.10.0</jna.ver>
+        <jna.ver>5.11.0</jna.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
 
