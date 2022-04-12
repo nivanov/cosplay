@@ -34,7 +34,21 @@
             <id>nivanov</id>
             <name>Nikita Ivanov</name>
             <roles>
-                <role>architect</role>
+                <role>dev</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>vlad94568</id>
+            <name>Vlad Ivanov</name>
+            <roles>
+                <role>dev</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>leo94582</id>
+            <name>Leo Ivanov</name>
+            <roles>
+                <role>dev</role>
             </roles>
         </developer>
     </developers>
