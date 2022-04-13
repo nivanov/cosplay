@@ -42,8 +42,11 @@ import prefabs.sprites.*
 
 
 object CPBirdGameScene extends CPScene("play", None, BG_PX):
-    private val speed = 5
-    private var vel = 0
+    private val speed = 5f
+    private var vel = 0f
+    private val jump = 7f
+    private val gravity = 0.3f
+    private var change = 0.4f
 
     private val birdImg = CPArrayImage(
         prepSeq(
@@ -60,13 +63,30 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            println("Bird")
 
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_LO_W | KEY_UP | KEY_SPACE => vel += 5
+                        case KEY_LO_W | KEY_UP | KEY_SPACE =>
+                            vel = 0
+                            vel -= jump
+                            change = 0.6f
                         case _ => ()
                 case None => ()
+
+            vel += change
+
+            if vel < 0 then
+                setY(getY - 1)
+                vel += 1
+            else if vel > 0 then
+                setY(getY + (gravity * vel).toInt)
+                change += 0.001f
+
+    addObjects(
+        // Handle 'Q' press globally for this scene.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        birdSpr
+    )
 
 

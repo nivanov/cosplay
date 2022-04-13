@@ -50,7 +50,8 @@ object CPBirdGame:
         try
             CPEngine.startGame(
                 new CPLogoScene("logo", None, BG_PX, CS, "title"),
-                CPBirdTitleScene
+                CPBirdTitleScene,
+                CPBirdGameScene
             )
         finally CPEngine.dispose()
 
