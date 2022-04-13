@@ -67,6 +67,8 @@ lazy val cosplay = (project in file("modules/cosplay"))
     .settings(
         name := "CosPlay",
         version := cosPlayVer,
+
+        // Scaladoc config.
         Compile / doc / scalacOptions ++= Seq(
             "-project-footer", "(C) 2021 Rowan Games, Inc.",
             "-project-version", cosPlayVer,
@@ -79,6 +81,11 @@ lazy val cosplay = (project in file("modules/cosplay"))
             "-source-links:github://nivanov/cosplay/master",
             "-social-links:github::https://github.com/nivanov/cosplay"
         ),
+        // JVM options for Java 17+.
+        javaOptions += "--add-opens",
+        javaOptions += "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
+
+        // Dependencies.
         libraryDependencies += "org.apache.commons" % "commons-math3" % s"$commonsMath3Ver",
         libraryDependencies += "org.apache.commons" % "commons-lang3" % s"$commonsLang3Ver",
         libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % s"$log4jVer",
