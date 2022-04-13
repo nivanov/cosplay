@@ -45,8 +45,10 @@ val flatlafVer = "1.6.5"
 val ikonliVer = "12.3.0"
 val miglayoutVer = "11.0"
 val jlineVer = "3.21.0"
+val jnaVer = "5.10.0"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
+ThisBuild / version := cosPlayVer
 ThisBuild / organization := "org.cosplay"
 ThisBuild / organizationName := "Rowan Games, Inc."
 ThisBuild / description := "2D ASCII Game Engine for Scala3."
@@ -55,7 +57,8 @@ ThisBuild / homepage := Some(url("https://github.com/nivanov/cosplay"))
 ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/nivanov/cosplay"), "scm:git@github.com:nivanov/cosplay.git"))
 ThisBuild / developers ++= List(
     "nivanov" -> "Nikita Ivanov",
-    "vlad94568" -> "Vlad Ivanov"
+    "vlad94568" -> "Vlad Ivanov",
+    "leo94582" → "Leo Ivanov"
 ).map {
     case (username, fullName) => Developer(username, fullName, s"@$username", url(s"https://github.com/$username"))
 }
@@ -63,6 +66,9 @@ ThisBuild / developers ++= List(
 lazy val cosplay = (project in file("modules/cosplay"))
     .settings(
         name := "CosPlay",
+        version := cosPlayVer,
+
+        // Scaladoc config.
         Compile / doc / scalacOptions ++= Seq(
             "-project-footer", "(C) 2021 Rowan Games, Inc.",
             "-project-version", cosPlayVer,
@@ -75,6 +81,11 @@ lazy val cosplay = (project in file("modules/cosplay"))
             "-source-links:github://nivanov/cosplay/master",
             "-social-links:github::https://github.com/nivanov/cosplay"
         ),
+        // JVM options for Java 17+.
+        javaOptions += "--add-opens",
+        javaOptions += "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
+
+        // Dependencies.
         libraryDependencies += "org.apache.commons" % "commons-math3" % s"$commonsMath3Ver",
         libraryDependencies += "org.apache.commons" % "commons-lang3" % s"$commonsLang3Ver",
         libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % s"$log4jVer",
@@ -87,8 +98,9 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "org.openjfx" % "javafx-media" % s"$openjfxVer",
         libraryDependencies += "co.blocke" %% s"scala-reflection" % s"$scalaReflectVer",
         libraryDependencies += "com.typesafe.scala-logging" % s"scala-logging_$scalaMajVer" % s"$scalaLoggingVer",
-        libraryDependencies += "org.jline" % s"jline-terminal" % s"$jlineVer",
-        libraryDependencies += "org.scala-lang.modules" %% s"scala-parallel-collections" % s"$scalaParColVer",
+        libraryDependencies += "org.jline" % "jline-terminal" % s"$jlineVer",
+        libraryDependencies += "net.java.dev.jna" % "jna" % s"$jnaVer",
+        libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % s"$scalaParColVer",
 
         // Test scope.
         libraryDependencies += "org.scalatest" %% s"scalatest" % s"$scalaTestVer" % Test,
