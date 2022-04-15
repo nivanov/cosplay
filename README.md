@@ -55,17 +55,17 @@ CosPlay is 2D ASCII game engine written in [Scala3](https://www.scala-lang.org/)
 Prerequisites:
 * Java 11+ ([download](https://www.java.com/en/download/))
 
+Using SBT:
+```scala
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.6.5"
+```
 Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
 ```xml
 <dependency>
   <groupId>org.cosplayengine</groupId>
   <artifactId>cosplay</artifactId>
-  <version>0.6.0</version>
+  <version>0.6.5</version>
 </dependency>
-```
-Using Scala SBT:
-```scala
-libraryDependencies += "org.cosplayengine" % "cosplay" % "0.6.0"
 ```
 
 ## Questions?
