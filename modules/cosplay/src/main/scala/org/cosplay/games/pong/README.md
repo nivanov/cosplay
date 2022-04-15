@@ -17,14 +17,19 @@ Classic pong game. Check out [www.cosplayengine.com](https://cosplayengine.com/d
 documentation.
 
 ## Run
-One-time Git clone & build:
+#### Git clone:
 ```shell
 $ git clone https://github.com/nivanov/cosplay.git
 $ cd cosplay
-$ mvn package
 ```
-To run the game:
+#### SBT:
 ```shell
+$ sbt package
+$ sbt "package cosplay; runMain org.cosplay.games.pong.CPPongGame"
+```
+#### Maven:
+```shell
+$ mvn package
 $ mvn -f modules/cosplay -P pong exec:java
 ```
 
