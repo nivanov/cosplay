@@ -51,7 +51,7 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
 
     private var start = false
 
-    private var pipeGap = 10f
+    private val pipeGap = 10f
     private var pipeX = 0f
     private var curPipe = false
     private var pipeCut = 0f
@@ -109,6 +109,7 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
     private val startSpr = new CPImageSprite("start", 9, 15, 0, startImg)
 
     private val pipeSpr = new CPCanvasSprite("pipe"):
+        private val px = '|'&C_GREEN
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
@@ -116,16 +117,16 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
             if start then
                 if !curPipe then
                     curPipe = true
-                    pipeX = canv.xMax
-                    pipeCut = Random.between(12, canv.yMax - 2)
+                    pipeX = canv.xMax.toFloat
+                    pipeCut = CPRand.between(12f, canv.yMax - 2f)
                 else
                     if pipeX <= 0 then
                         curPipe = false
                     else
                         pipeX -= speed
 
-                canv.drawLine(pipeX.toInt, pipeCut.toInt, pipeX.toInt, canv.dim.h, 0, '|'&C_GREEN)
-                canv.drawLine(pipeX.toInt, pipeCut.toInt - pipeGap.toInt, pipeX.toInt, 0, 0, '|'&C_GREEN)
+                canv.drawLine(pipeX.toInt, pipeCut.toInt, pipeX.toInt, canv.dim.h, 0, px)
+                canv.drawLine(pipeX.toInt, pipeCut.toInt - pipeGap.toInt, pipeX.toInt, 0, 0, px)
 
     addObjects(
         // Handle 'Q' press globally for this scene.
