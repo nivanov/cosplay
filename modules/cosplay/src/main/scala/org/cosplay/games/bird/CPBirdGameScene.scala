@@ -26,6 +26,7 @@ import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
 import prefabs.sprites.*
+import scala.util.*
 
 /*
    _________            ______________
@@ -42,11 +43,18 @@ import prefabs.sprites.*
 
 
 object CPBirdGameScene extends CPScene("play", None, BG_PX):
-    private val speed = 5f
+    private val speed = 1f
     private var vel = 0f
     private val jump = 7f
     private val gravity = 0.3f
     private var change = 0.4f
+
+    private var start = false
+
+    private var pipeGap = 10f
+    private var pipeX = 0f
+    private var curPipe = false
+    private var pipeCut = 0f
 
     private val birdImg = CPArrayImage(
         prepSeq(
@@ -57,6 +65,16 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
             """
         ),
         (ch, _, _) => ch&C_YELLOW
+    ).trimBg()
+
+    private val startImg = CPArrayImage(
+        prepSeq(
+            """
+              |---->
+              |Jump!
+            """
+        ),
+        (ch, _, _) => ch&C_GREEN
     ).trimBg()
 
     private val birdSpr = new CPImageSprite("bird", 15, 15, 0, birdImg):
@@ -71,10 +89,15 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                             vel = 0
                             vel -= jump
                             change = 0.6f
+
+                            if !start then start = true
+
                         case _ => ()
                 case None => ()
 
-            vel += change
+            if start then
+                vel += change
+                startSpr.setVisible(false)
 
             if vel < 0 then
                 setY(getY - 1)
@@ -83,10 +106,33 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                 setY(getY + (gravity * vel).toInt)
                 change += 0.001f
 
+    private val startSpr = new CPImageSprite("start", 9, 15, 0, startImg)
+
+    private val pipeSpr = new CPCanvasSprite("pipe"):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            val canv = ctx.getCanvas
+
+            if start then
+                if !curPipe then
+                    curPipe = true
+                    pipeX = canv.xMax
+                    pipeCut = Random.between(12, canv.yMax - 2)
+                else
+                    if pipeX <= 0 then
+                        curPipe = false
+                    else
+                        pipeX -= speed
+
+                canv.drawLine(pipeX.toInt, pipeCut.toInt, pipeX.toInt, canv.dim.h, 0, '|'&C_GREEN)
+                canv.drawLine(pipeX.toInt, pipeCut.toInt - pipeGap.toInt, pipeX.toInt, 0, 0, '|'&C_GREEN)
+
     addObjects(
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        birdSpr
+        birdSpr,
+        startSpr,
+        pipeSpr
     )
 
 
