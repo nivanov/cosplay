@@ -55,6 +55,9 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
     private var pipeX = 0f
     private var curPipe = false
     private var pipeCut = 0f
+    private var pipeWidth = 5f
+
+    private val dead = false
 
     private val birdImg = CPArrayImage(
         prepSeq(
@@ -106,6 +109,10 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                 setY(getY + (gravity * vel).toInt)
                 change += 0.001f
 
+            if (getY <= pipeCut.toInt - pipeGap.toInt) || (getY + getHeight) >= pipeCut.toInt then
+                if ((getX + getWidth) >= pipeX.toInt) && getX <= pipeX.toInt + (pipeWidth - 1) then
+                    println("Died :(")
+
     private val startSpr = new CPImageSprite("start", 9, 15, 0, startImg)
 
     private val pipeSpr = new CPCanvasSprite("pipe"):
@@ -120,13 +127,17 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                     pipeX = canv.xMax.toFloat
                     pipeCut = CPRand.between(12f, canv.yMax - 2f)
                 else
-                    if pipeX <= 0 then
+                    if pipeX <= -pipeWidth then
                         curPipe = false
                     else
                         pipeX -= speed
 
                 canv.drawLine(pipeX.toInt, pipeCut.toInt, pipeX.toInt, canv.dim.h, 0, px)
                 canv.drawLine(pipeX.toInt, pipeCut.toInt - pipeGap.toInt, pipeX.toInt, 0, 0, px)
+
+                for x <- 0 until pipeWidth.toInt - 1 do
+                    canv.drawLine(pipeX.toInt + x, pipeCut.toInt, pipeX.toInt + x, canv.dim.h, 0, px)
+                    canv.drawLine(pipeX.toInt + x, pipeCut.toInt - pipeGap.toInt, pipeX.toInt + x, 0, 0, px)
 
     addObjects(
         // Handle 'Q' press globally for this scene.
