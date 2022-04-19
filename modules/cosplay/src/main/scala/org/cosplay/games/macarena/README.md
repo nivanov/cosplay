@@ -17,14 +17,19 @@ Five stick-figures dancing macarena. You control dances by pressing their number
 Check out [www.cosplayengine.com](https://cosplayengine.com/devguide/macarena_game.html) for the full documentation.
 
 ## Run
-One-time Git clone & build:
+#### Git clone:
 ```shell
 $ git clone https://github.com/nivanov/cosplay.git
 $ cd cosplay
-$ mvn package
 ```
-To run the game:
+#### SBT:
 ```shell
+$ sbt package
+$ sbt "package cosplay; runMain org.cosplay.games.macarena.CPMacarenaGame"
+```
+#### Maven:
+```shell
+$ mvn package
 $ mvn -f modules/cosplay -P macarena exec:java
 ```
 

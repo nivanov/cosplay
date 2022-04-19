@@ -51,8 +51,9 @@ import scala.util.Random
   *         sparkling at any given time.
   * @param steps Number of frames that it takes for entire sparkle cycle from brightening to dimming back.
   * @param autoStart Whether to start shader right away. Default value is `false`.
-  * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
-  *     or certain Z-index. Default predicate returns `false` for all pixels.
+  * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
+  *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
+  *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
   * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
   * @param onDuration Optional callback to call when this shader finishes by exceeding the duration
   *     specified by `durMs` parameter. Default is a no-op.
@@ -136,11 +137,12 @@ class CPSparkleShader(
 
             // Replenish with new sparkles until full.
             val num = (canv.w * canv.h * ratio).round
+            val rect = canv.rect
             while sparkles.size < num do
                 var found = false
                 while !found do
-                    val x = canv.rect.randX()
-                    val y = canv.rect.randY()
+                    val x = rect.randX()
+                    val y = rect.randY()
                     val zpx = canv.getZPixel(x, y)
                     found = !skip(zpx, x, y) && !sparkles.exists(s ⇒ s.x == x && s.y == y)
                     if found then sparkles += Sparkle(zpx, x, y)
