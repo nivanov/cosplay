@@ -41,8 +41,9 @@ import games.pong.*
   *
   * @param radius Radius of circular flashlight effect.
   * @param autoPlay Whether or not to toggle on the shader effect automatically. Default value is `false`.
-  * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
-  *     or certain Z-index. Default predicate returns `false` for all pixels.
+  * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
+  *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
+  *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
   * @see [[CPFadeInShader]]
   * @see [[CPShimmerShader]]
   * @see [[CPFadeOutShader]]

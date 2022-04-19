@@ -5,14 +5,20 @@
 Check out [www.cosplayengine.com](https://cosplayengine.com) for the full documentation.
 
 ## Run
-One-time Git clone & build:
+#### Git clone:
 ```shell
 $ git clone https://github.com/nivanov/cosplay.git
 $ cd cosplay
-$ mvn package
 ```
-To run example:
+#### SBT:
 ```shell
+$ sbt package
+$ sbt "package cosplay; runMain org.cosplay.examples.shader.CPShaderExample"
+$ sbt "package cosplay; runMain org.cosplay.examples.shader.CPSlideShaderExample"
+```
+#### Maven:
+```shell
+$ mvn package
 $ mvn -f modules/cosplay -P ex:shader exec:java
 $ mvn -f modules/cosplay -P ex:slide_shader exec:java
 ```
