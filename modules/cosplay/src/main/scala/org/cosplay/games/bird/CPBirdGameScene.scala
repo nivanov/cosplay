@@ -39,6 +39,7 @@ import scala.util.*
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
                 ALl rights reserved.
+
 */
 
 
@@ -50,7 +51,6 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
     private var change = 0.4f
 
     private var start = false
-
     private val pipeGap = 10f
     private var pipeX = 0f
     private var curPipe = false

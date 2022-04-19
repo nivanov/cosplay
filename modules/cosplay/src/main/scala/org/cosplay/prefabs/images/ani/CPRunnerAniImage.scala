@@ -30,29 +30,30 @@ import CPPixel.*
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
-
-object CPBirdAniImage extends CPArrayImage(
-    // 5x3
+/**
+  * Runner image.
+  */
+object CPRunnerAniImage extends CPArrayImage(
     prepSeq(
         """
-          | \\   //
-          |( ^)>( ^)>
-          | //   \\
+          |  @      @       @      @   
+          |,-|`._  ,|L     /L   ,'/`_
+          |' J_    '|     `|      |_
+          |-"  \_  / >   -'/    ~" /
         """),
     (ch, _, y) => ch match
         case ' ' => XRAY
-        case _ if y != 2 => ch&C_WHITE
-        case _ if y == 2 => ch&C_DARK_ORANGE3
+        case _ => ch&C_WHITE
 )
 
 /**
- * Previews image using the built-in image viewer.
- */
-@main def previewBirdAniImage(): Unit =
-    CPImage.previewAnimation(CPBirdAniImage.trimBg().split(5, 3))
+  * Previews image using the built-in image viewer.
+  */
+@main def previewRunnerAniImage(): Unit =
+    CPImage.previewAnimation(CPRunnerAniImage.trimBg().split(7, 4))
     sys.exit(0)

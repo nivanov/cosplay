@@ -77,10 +77,10 @@ object CPAnimationExample:
             prepSeq(
                 """
                   |  _ o
-                  |   /\
-                  |  | \
-                  |------
-                  |
+                  |   /\                                           
+                  |  | \                                           
+                  |------                                          
+                  |                                                
                   |  ,\o
                   | /)|
                   |------
