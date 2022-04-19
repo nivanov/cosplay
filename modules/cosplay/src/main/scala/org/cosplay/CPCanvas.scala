@@ -1323,7 +1323,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     private def captureRect(x1: Int, y1: Int, x2: Int, y2: Int, f: CPZPixel => CPPixel): CPImage =
         val rect = new CPRect(x1 -> y1, x2 -> y2)
         val arr = new CPArray2D[CPPixel](rect.dim)
-        rect.loop((x, y) => arr.set(x - rect.x, y - rect.y, f(pane.getPixel(x, y))))
+        rect.loop((x, y) =>
+            val px = if isValid(x, y) then f(pane.getPixel(x, y)) else CPPixel.XRAY
+            arr.set(x - rect.x, y - rect.y, px)
+        )
         CPArrayImage(arr, "code")
 
     /**

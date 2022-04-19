@@ -86,6 +86,7 @@ class CPSlideInShader(
     private var go = autoStart
     private var cb: CPSceneObjectContext ⇒ Unit = onFinish
     private var matrix: Array[Array[Int]] = _
+    private var matrixDim: CPDim = _
 
     if autoStart then start()
 
@@ -117,7 +118,9 @@ class CPSlideInShader(
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
-            if matrix == null then matrix = CPSlideDirection.mkMatrix(dir, rect.dim, maxFrmCnt)
+            if matrix == null || matrixDim != rect.dim then
+                matrix = CPSlideDirection.mkMatrix(dir, rect.dim, maxFrmCnt)
+                matrixDim = rect.dim
             val canv = ctx.getCanvas
             rect.loop((x, y) => {
                 if canv.isValid(x, y) then
