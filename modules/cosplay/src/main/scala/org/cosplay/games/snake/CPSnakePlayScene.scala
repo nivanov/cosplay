@@ -301,7 +301,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private final val youWonSnd = CPSound(s"sounds/games/snake/you_won.wav")
 
     /** Creates score image. */
-    private def mkScoreImage: CPImage = FIG_ANSI_REGULAR.render(s"SCORE : $score", C4).trimBg()
+    private def mkScoreImage: CPImage = FIG_ANSI_REGULAR.render(s"SCORE : $score", C3).trimBg()
 
     // Shaders.
     private val fadeInShdr = CPFadeInShader(true, 500, BG_PX)
