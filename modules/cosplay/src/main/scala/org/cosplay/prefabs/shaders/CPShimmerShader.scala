@@ -47,8 +47,9 @@ import org.cosplay.*
   * @param keyFrame nth-frame to render the effect. For example, if key frame is `5` than the colors will
   *     change on each 5th frame and remain the same on all subsequent frames until next key frame is reached.
   * @param autoStart Whether to start shader right away. Default value is `false`.
-  * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
-  *     or certain Z-index. Default predicate returns `false` for all pixels.
+  * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
+  *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
+  *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
   * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
   * @param onDuration Optional callback to call when this shader finishes by exceeding the duration
   *     specified by `durMs` parameter. Default is a no-op.
@@ -120,12 +121,13 @@ class CPShimmerShader(
             if lastImg == null || ctx.getFrameCount % keyFrame == 0 then
                 val rect = if entireFrame then ctx.getCameraFrame else objRect
                 rect.loop((x, y) => {
-                    val zpx = canv.getZPixel(x, y)
-                    val px = zpx.px
-                    if !skip(zpx, x, y) then
-                        val rc = CPRand.rand(colors)
-                        val newPx = if px.char == ' ' then px.withBg(Option(rc)) else px.withFg(rc)
-                        canv.drawPixel(newPx, x, y, zpx.z)
+                    if canv.isValid(x, y) then
+                        val zpx = canv.getZPixel(x, y)
+                        val px = zpx.px
+                        if !skip(zpx, x, y) then
+                            val rc = CPRand.rand(colors)
+                            val newPx = if px.char == ' ' then px.withBg(Option(rc)) else px.withFg(rc)
+                            canv.drawPixel(newPx, x, y, zpx.z)
                 })
                 lastImg = canv.capture(objRect)
             else
