@@ -107,7 +107,7 @@
         <maven.surefire.plugin.ver>2.22.1</maven.surefire.plugin.ver>
         <maven.shade.plugin.ver>3.2.1</maven.shade.plugin.ver>
         <maven.install.plugin.ver>2.5.2</maven.install.plugin.ver>
-        <maven.source.plugin.ver>3.0.1</maven.source.plugin.ver>
+        <maven.source.plugin.ver>3.3.9.1</maven.source.plugin.ver>
         <maven.clean.plugin.ver>3.1.0</maven.clean.plugin.ver>
         <jline.ver>3.21.0</jline.ver>
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
@@ -120,9 +120,9 @@
         <ikonli.ver>12.3.0</ikonli.ver>
         <miglayout.ver>11.0</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
-        <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
+        <maven.gpg.plugin.ver>3.3.9.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
-        <exec.maven.ver>3.0.0</exec.maven.ver>
+        <exec.maven.ver>3.3.9.0</exec.maven.ver>
         <jna.ver>5.11.0</jna.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
