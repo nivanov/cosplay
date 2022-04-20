@@ -106,7 +106,7 @@ object CPMacarenaGame:
         // Start the game & wait for exit.
         try CPEngine.startGame(
             // CosPlay logo scene.
-            new CPLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES,"danceFloor"),
+            new CPLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES, nextSc = "danceFloor"),
             sc
         )
         finally CPEngine.dispose()
