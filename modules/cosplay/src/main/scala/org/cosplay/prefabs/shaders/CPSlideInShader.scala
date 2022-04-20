@@ -110,9 +110,9 @@ class CPSlideInShader(
     def setOnFinish(onFinishOverride: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinishOverride
 
     /**
-      * Tests whether this shader is in progress or not.
+      * Tests whether this shader is in progress.
       */
-    def isFinished: Boolean = !go
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =

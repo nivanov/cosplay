@@ -210,6 +210,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                         dx = 0
                         dy = speed
                     dropYam(canv)
+
                 // Check for snake death.
                 if isDead(canv) then
                     go = false
@@ -273,7 +274,9 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                                 case _ => ()
                         case None => ()
             else
-                if ctx.isKbKey(KEY_SPACE) then fadeOutShdr.start(_.switchScene("title", true))
+                if ctx.isKbKey(KEY_SPACE) then
+                    youLostSnd.stop(500)
+                    fadeOutShdr.start(ctx ⇒ ctx.switchScene("title", true))
 
         override def render(ctx: CPSceneObjectContext): Unit =
             require(snake.nonEmpty)

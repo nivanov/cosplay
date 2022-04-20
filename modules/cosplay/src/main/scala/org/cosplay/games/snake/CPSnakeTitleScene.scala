@@ -111,7 +111,10 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         // Toggle audio on 'Ctrl+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Transition to the next scene on 'Enter' press fixing the dimension.
-        CPKeyboardSprite(KEY_ENTER, ctx ⇒ fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true)))
+        CPKeyboardSprite(KEY_ENTER, ctx ⇒
+            if !fadeOutShdr.isActive then
+                fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true))
+        )
     )
 
     private def startBgAudio(): Unit = introSnd.loop(2000)
