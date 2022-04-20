@@ -42,9 +42,9 @@ object CPRunnerAniImage extends CPArrayImage(
     prepSeq(
         """
           |  @      @       @      @   
-          |,-|`._  ,|L     /L   ,'/`_
-          |' J_    '|     `|      |_
-          |-"  \_  / >   -'/    ~" /
+          |,"|`._  ,|`     /_   ,'/`_
+          |  |_    '|     `|      |_
+          |-'  \_  / |   -'/    _/ /
         """),
     (ch, _, y) => ch match
         case ' ' => XRAY
@@ -55,5 +55,5 @@ object CPRunnerAniImage extends CPArrayImage(
   * Previews image using the built-in image viewer.
   */
 @main def previewRunnerAniImage(): Unit =
-    CPImage.previewAnimation(CPRunnerAniImage.trimBg().split(7, 4))
+    CPImage.previewAnimation(fps = 10, imgs = CPRunnerAniImage.trimBg().split(7, 4))
     sys.exit(0)
