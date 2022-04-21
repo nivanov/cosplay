@@ -32,7 +32,7 @@ val cosPlayVer = "0.1.1"
 
 val scalaMajVer = "3"
 val scalaMinVer = "1.0"
-val log4jVer = "2.17.2"
+val log4jVer = "2.17.1"
 val scalaLoggingVer = "3.9.4"
 val scalaParColVer = "1.0.4"
 val commonsLang3Ver = "3.12.0"
