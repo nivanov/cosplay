@@ -31,7 +31,7 @@
 val cosPlayVer = "0.6.5"
 
 val scalaMajVer = "3"
-val scalaMinVer = "1.0"
+val scalaMinVer = "1.2"
 val log4jVer = "2.17.1"
 val scalaLoggingVer = "3.9.4"
 val scalaParColVer = "1.0.4"
@@ -53,7 +53,7 @@ ThisBuild / organization := "org.cosplay"
 ThisBuild / organizationName := "Rowan Games, Inc."
 ThisBuild / description := "2D ASCII Game Engine for Scala3."
 ThisBuild / licenses := List("Apache-2.0" -> url("https://github.com/sbt/sbt/blob/develop/LICENSE"))
-ThisBuild / homepage := Some(url("https://github.com/nivanov/cosplay"))
+ThisBuild / homepage := Some(url("https://cosplayengine.com"))
 ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/nivanov/cosplay"), "scm:git@github.com:nivanov/cosplay.git"))
 ThisBuild / developers ++= List(
     "nivanov" -> "Nikita Ivanov",
