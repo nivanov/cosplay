@@ -56,6 +56,16 @@ final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width,
     val h: Int = height
 
     /**
+      * Width in characters as float (shortcut API).
+      */
+    val wF: Float = width.toFloat
+
+    /**
+      * Height in characters as float (shortcut API).
+      */
+    val hF: Float = height.toFloat
+
+    /**
       * Creates `d`x`d` square dimension.
       *
       * @param d Square dimension.

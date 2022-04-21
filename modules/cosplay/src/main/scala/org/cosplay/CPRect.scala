@@ -352,7 +352,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
 
     /**
       * Tests whether or not this rectangle overlaps with the given one.
-      * Note that touching rectangles do not intersect as far as this method is concerned.
+      * Note that "touching" rectangles do not intersect as far as this method is concerned.
       *
       * @param rect Rectangle to test.
       */

@@ -18,6 +18,7 @@
 package org.cosplay.games.pong
 
 import org.cosplay.*
+import games.*
 import CPColor.*
 import CPPixel.*
 import prefabs.scenes.CPLogoScene
@@ -35,11 +36,27 @@ import prefabs.scenes.CPLogoScene
                 ALl rights reserved.
 */
 
-val BG_PX = '.'&&(C_GRAY2, C_GRAY1)
+val BLUE_BLACK = CPColor("0x00000F")
+val BG_PX = '.'&&(C_GRAY18, BLUE_BLACK)
+var audioOn = true // By default, the audio is ON.
 
 /**
- *
- */
+  * Classic pong game.
+  *
+  * ### Running Game
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run the game:
+  * {{{
+  *     $ mvn -f modules/cosplay -P pong exec:java
+  * }}}
+  *
+  * @see https://cosplayengine.com/devguide/pong_game.html
+  */
 object CPPongGame:
     /**
      * Entry point for JVM runtime.
@@ -47,17 +64,18 @@ object CPPongGame:
      * @param args Ignored.
      */
     def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(name = "Classic Pong")
+        val gameInfo = CPGameInfo(name = "Ascii Pong")
 
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(
-            new CPLogoScene("logo", None, BG_PX, List(C_DARK_GOLDEN_ROD, C_LIME, C_STEEL_BLUE1, C_DARK_ORANGE), "title"),
-            CPPongTitleScene,
-            CPPongGameScene
-        )
+        try
+            CPEngine.startGame(
+                new CPLogoScene("logo", None, BG_PX, CS, "title"),
+                CPPongTitleScene,
+                CPPongPlayScene
+            )
         finally CPEngine.dispose()
 
         sys.exit(0)

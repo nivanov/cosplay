@@ -50,7 +50,7 @@ import java.util.Date
   *     For terminal emulator it is ignored.
   */
 final case class CPGameInfo(
-    id: String = CPUtils.guid,
+    id: String = CPRand.guid,
     name: String,
     semVer: String = "1.0.0",
     initDim: Option[CPDim] = None,

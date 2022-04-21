@@ -24,7 +24,7 @@
     <name>CosPlay Parent</name>
     <groupId>org.cosplayengine</groupId>
     <artifactId>cosplay-parent</artifactId>
-    <version>0.1.1</version>
+    <version>0.6.5</version>
     <packaging>pom</packaging>
     <description>An open-source 2D ASCII game engine for Scala3</description>
     <url>https://github.com/nivanov/cosplay</url>
@@ -34,7 +34,21 @@
             <id>nivanov</id>
             <name>Nikita Ivanov</name>
             <roles>
-                <role>architect</role>
+                <role>dev</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>vlad94568</id>
+            <name>Vlad Ivanov</name>
+            <roles>
+                <role>dev</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>leo94582</id>
+            <name>Leo Ivanov</name>
+            <roles>
+                <role>dev</role>
             </roles>
         </developer>
     </developers>
@@ -74,7 +88,7 @@
 
         <!-- Major Java/Scala version. -->
         <scala.major.ver>3</scala.major.ver>
-        <scala3.ver>${scala.major.ver}.1.1</scala3.ver>
+        <scala3.ver>${scala.major.ver}.1.2</scala3.ver>
         <scala2.ver>2.13.8</scala2.ver>
         <java.ver>11</java.ver>
 
@@ -108,6 +122,8 @@
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
+        <exec.maven.ver>3.0.0</exec.maven.ver>
+        <jna.ver>5.11.0</jna.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
 
@@ -117,6 +133,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>${jna.ver}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math3</artifactId>
@@ -145,6 +167,12 @@
                 <groupId>com.formdev</groupId>
                 <artifactId>flatlaf</artifactId>
                 <version>${flatlaf.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.maven.ver}</version>
             </dependency>
 
             <dependency>
@@ -356,35 +384,6 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven.enforcer.plugin.ver}</version>
-                <configuration>
-                    <rules>
-                        <requireJavaVersion>
-                            <message>
-
-                                ------------------------------------------------------------------------
-                                You are trying to compile CosPlay with inappropriate JDK version!
-                                Detected JDK Version: ${java.runtime.version}.
-                                JDK version should be 11 or later.
-                                ------------------------------------------------------------------------
-
-                            </message>
-                            <version>11</version>
-                        </requireJavaVersion>
-                    </rules>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven.source.plugin.ver}</version>
                 <executions>
@@ -395,6 +394,16 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.maven.ver}</version>
+                <configuration>
+                    <skip>true</skip>
+                    <executable>java</executable>
+                </configuration>
             </plugin>
         </plugins>
     </build>

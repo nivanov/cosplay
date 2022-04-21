@@ -43,6 +43,18 @@ import scala.collection.mutable
 
 /**
   * Code example for camera management.
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:camera exec:java
+  * }}}
   * 
   * @note See developer guide at [[https://cosplayengine.com]] 
   */
@@ -221,7 +233,7 @@ object CPCameraExample:
         val sc = new CPScene("scene", Option(dim), bgPx, objs)
         val cam = sc.getCamera
 
-        cam.setFocusTrackId(Some("ufo"))
+        cam.setFocusTrackId(Option("ufo"))
         cam.setFocusFrameInsets(new CPInsets(10, 0))
 
         // Initialize the engine.

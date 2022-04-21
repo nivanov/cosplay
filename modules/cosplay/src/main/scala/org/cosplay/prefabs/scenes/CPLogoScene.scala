@@ -50,12 +50,14 @@ import org.cosplay.prefabs.shaders.*
   * @param nextSc ID of the next scene to switch to once this scene has finished its shimmering logo effect.
   */
 class CPLogoScene(id: String, dim: Option[CPDim], bgPx: CPPixel, colors: Seq[CPColor], nextSc: String) extends CPScene(id, dim, bgPx):
-    require(colors.nonEmpty)
+    require(colors.nonEmpty, "Color sequence cannot be empty.")
 
     private val initFg = bgPx.bg.getOrElse(bgPx.fg)
     private val logoImg = CPArrayImage(
         prepSeq(
             """
+              |POWERED BY
+              |
               |_________            ______________
               |__  ____/_______________  __ \__  /_____ _____  __
               |_  /    _  __ \_  ___/_  /_/ /_  /_  __ `/_  / / /

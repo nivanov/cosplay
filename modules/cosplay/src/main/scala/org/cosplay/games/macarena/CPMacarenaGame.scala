@@ -42,6 +42,18 @@ import prefabs.shaders.*
   * Five stick-figures dancing macarena. You control dances by pressing their numbers
   * on the keyboard.
   *
+  * ### Running Game
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run the game:
+  * {{{
+  *     $ mvn -f modules/cosplay -P macarena exec:java
+  * }}}
+  *
   * @note See more details at [[https://cosplayengine.org/devguide/quick_game.html]]
   */
 object CPMacarenaGame:
@@ -51,7 +63,8 @@ object CPMacarenaGame:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
+        val BLUE_BLACK = CPColor("0x00000F")
+        val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
         val dim = CPDim(80, 20)
 
         // Initialize the engine.
@@ -83,17 +96,17 @@ object CPMacarenaGame:
             mkSprite("4", CPMacarena4AniImage.trimBg().split(3, 3), x + 7 * 3, y, KEY_4),
             mkSprite("5", CPMacarena5AniImage.trimBg().split(3, 3), x + 7 * 4, y, KEY_5),
             new CPLabelSprite(24, 12, 0, "[1]    [2]    [3]    [4]    [5]", C_DARK_CYAN),
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             new CPOffScreenSprite:
                 override def onStart(): Unit =
                     super.onStart()
-                    music.loopAll(1500) // Auto-play with fade-in.
+                    music.loop(1500) // Auto-play with fade-in.
         )
 
         // Start the game & wait for exit.
         try CPEngine.startGame(
             // CosPlay logo scene.
-            new CPLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES,"danceFloor"),
+            new CPLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES, nextSc = "danceFloor"),
             sc
         )
         finally CPEngine.dispose()

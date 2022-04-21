@@ -353,7 +353,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Detects all background pixels and replaces them with a given pixel returning new image.
       *
       * A pixel is considered to be a background pixel when:
-      *  - It's [[CPPixel.char characater]] is space (' ').
+      *  - It's [[CPPixel.char character]] is space (' ').
       *  - It's not equal to given `bgPx`.
       *  - It's on the edge of the image or there's a path from it to the edge of the image through background
       *    pixels only.
@@ -417,7 +417,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Attaches given image underneath this image returning a new combined image.
       *
       * @param img Image to attached.
-      * @param bgPx Background pixel to use when combines image has larged width.
+      * @param bgPx Background pixel to use when combined image has large width.
       */
     def stitchBelow(img: CPImage, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val w = getWidth.max(img.getWidth)
@@ -431,7 +431,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Attaches given image to the right of this image returning a new combined image.
       *
       * @param img Image to attached.
-      * @param bgPx Background pixel to use when combines image has larged height.
+      * @param bgPx Background pixel to use when combined image has large height.
       */
     def stitchRight(img: CPImage, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val w = getWidth + img.getWidth
@@ -696,7 +696,7 @@ object CPImage:
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       */
     def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_BG): Unit =
-        require(fps < 1_000)
+        require(fps < 1_000, "FPS must be < 1,000.")
         val frameDim = imgs.head.getDim
         require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
         val dim = CPDim(frameDim.w + 8, frameDim.h + 8)
@@ -720,7 +720,7 @@ object CPImage:
                 Some(dim),
                 bg,
                 spr, // Animation we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()
@@ -754,7 +754,7 @@ object CPImage:
                 Some(dim),
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()

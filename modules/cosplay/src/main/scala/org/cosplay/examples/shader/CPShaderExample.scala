@@ -42,6 +42,18 @@ import org.cosplay.prefabs.shaders.*
 /**
   * Code example for shaders functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:shader exec:java
+  * }}}
+  *
   * @see [[CPShader]]
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
@@ -74,9 +86,6 @@ object CPShaderExample:
                 case '_' => ch&C_SKY_BLUE1
                 case _ => ch&C_WHITE
         ).trimBg()
-
-        val c1 = C_LIGHT_GREEN
-        val c2 = C_ORANGE1
 
         val ctrlImg = CPArrayImage(
             prepSeq(
@@ -159,8 +168,8 @@ object CPShaderExample:
             CPStaticImageSprite((dim.w - ctrlImg.w) / 2, 24, 0, ctrlImg),
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
 
         // Initialize the engine.
