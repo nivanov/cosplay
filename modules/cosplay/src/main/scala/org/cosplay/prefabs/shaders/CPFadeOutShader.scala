@@ -42,7 +42,7 @@ import org.cosplay.*
   * @param entireFrame Whether apply to the entire camera frame or just the object this
   *     shader is attached to.
   * @param durMs Duration of the fade out effect in milliseconds.
-  * @param bgPx Background pixel to fade out to.
+  * @param bgPx Background pixel to fade out to. Background pixel don't participate in shader effect.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
   * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
