@@ -44,9 +44,9 @@ hs_err_pid*
 *.iml
 .idea/
 .bsp/
-venv/
 null/
 target
+project
 out
 
 # OS generated files.

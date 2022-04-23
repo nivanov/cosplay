@@ -48,8 +48,9 @@ import org.apache.commons.math3.analysis.function.*
   * @param bgPx Background pixel to fade out to.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
   * @param autoStart Whether to start shader right away. Default value is `true`.
-  * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
-  *     or certain Z-index. Default predicate returns `false` for all pixels.
+  * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
+  *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
+  *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
   * @param balance A function that produces value in [0, 1] range that is used in color mixture.
   *     Value `0` means that the color will be 100% background, value `1` means that the color will be
   *     100% the actual pixel color, value `0.5` means that the color will be a 50% mix between the background
@@ -109,9 +110,9 @@ class CPSlideOutShader(
     def setOnFinish(onFinishOverride: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinishOverride        
 
     /**
-      * Tests whether this shader is in progress or not.
+      * Tests whether this shader is in progress.
       */
-    def isFinished: Boolean = !go
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =

@@ -56,6 +56,8 @@ class CPLogoScene(id: String, dim: Option[CPDim], bgPx: CPPixel, colors: Seq[CPC
     private val logoImg = CPArrayImage(
         prepSeq(
             """
+              |POWERED BY
+              |
               |_________            ______________
               |__  ____/_______________  __ \__  /_____ _____  __
               |_  /    _  __ \_  ___/_  /_/ /_  /_  __ `/_  / / /
