@@ -57,7 +57,7 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
     private var pipeCut = 0f
     private var pipeWidth = 5f
 
-    private val dead = false
+    private var dead = false
 
     private val birdImg = CPArrayImage(
         prepSeq(
@@ -102,16 +102,18 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                 vel += change
                 startSpr.setVisible(false)
 
-            if vel < 0 then
-                setY(getY - 1)
-                vel += 1
-            else if vel > 0 then
-                setY(getY + (gravity * vel).toInt)
-                change += 0.001f
+            if !dead then
+                if vel < 0 then
+                    setY(getY - 1)
+                    vel += 1
+                else if vel > 0 then
+                    setY(getY + (gravity * vel).toInt)
+                    change += 0.001f
 
-            if (getY <= pipeCut.toInt - pipeGap.toInt) || (getY + getHeight) >= pipeCut.toInt then
+            if (getY <= pipeCut.toInt - pipeGap.toInt) || (getY + getHeight) >= pipeCut.toInt && start then
                 if ((getX + getWidth) >= pipeX.toInt) && getX <= pipeX.toInt + (pipeWidth - 1) then
                     println("Died :(")
+                    dieBird(canv.height)
 
     private val startSpr = new CPImageSprite("start", 9, 15, 0, startImg)
 
@@ -139,6 +141,24 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                     canv.drawLine(pipeX.toInt + x, pipeCut.toInt, pipeX.toInt + x, canv.dim.h, 0, px)
                     canv.drawLine(pipeX.toInt + x, pipeCut.toInt - pipeGap.toInt, pipeX.toInt + x, 0, 0, px)
 
+    def dieBird(canvH: Int): Unit = {
+        start = false
+        change = 0.6
+        vel = 0f
+        while birdSpr.getY <= canvH do
+            println("e")
+            vel += change
+
+            if vel < 0 then
+                birdSpr.setY(birdSpr.getY - 1)
+                vel += 1
+            else if vel > 0 then
+                birdSpr.setY(birdSpr.getY + (gravity * vel).toInt)
+                change += 0.001f
+
+            if birdSpr.getY >= canvH then
+                dead = true
+    }
     addObjects(
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
