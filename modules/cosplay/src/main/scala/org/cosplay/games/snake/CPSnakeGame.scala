@@ -35,7 +35,7 @@ import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*
-import prefabs.scenes.CPLogoScene
+import prefabs.scenes.CPFadeShimmerLogoScene
 
 val BLUE_BLACK = CPColor("0x00000F")
 val BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
@@ -68,7 +68,7 @@ object CPSnakeGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPLogoScene("logo", None, BG_PX, CS, "title"),
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, CS, "title"),
                 CPSnakeTitleScene
             )
         finally CPEngine.dispose()

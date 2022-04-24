@@ -25,7 +25,7 @@ import CPPixel.*
 import CPKeyboardKey.*
 import CPStyledString.*
 import CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
@@ -168,7 +168,7 @@ object CPCanvasExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     Option(dim),
                     bgPx,

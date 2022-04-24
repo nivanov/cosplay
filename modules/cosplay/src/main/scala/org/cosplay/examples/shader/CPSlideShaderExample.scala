@@ -147,7 +147,7 @@ object CPSlideShaderExample:
         val sc = new CPScene("scene", Option(dim), BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), BG_PX, cols, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), BG_PX, cols, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

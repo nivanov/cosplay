@@ -62,7 +62,7 @@ object CPMirGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     None,
                     BG_PX,

@@ -51,7 +51,7 @@ import org.cosplay.prefabs.shaders.*
   * @param fadeOutMs Optional fade out duration in milliseconds. Default value is 1000.
   * @param shimmerKeyFrame Optional shimmer shader keyframe. DEfault value is 2.
   */
-class CPLogoScene(
+class CPSlideShimmerLogoScene(
     id: String,
     dim: Option[CPDim],
     bgPx: CPPixel,
@@ -84,10 +84,11 @@ class CPLogoScene(
     // Shaders to use.
     private val shimmerShdr = new CPShimmerShader(false, colors, shimmerKeyFrame, true, skipFn)
     private val foShdr = new CPFadeOutShader(false, fadeOutMs, bgPx, _.switchScene(nextSc), false)
-    private val fiShdr = new CPFadeInShader(false, fadeInMs, bgPx, _ => foShdr.start(), true)
+    private val foShdr2 = new CPSlideOutShader(CPSlideDirection.VER_EXPAND, false, fadeOutMs, bgPx, _.switchScene(nextSc), false)
+    private val fiShdr = new CPFadeInShader(false, fadeInMs, bgPx, _ => foShdr2.start(), true)
 
     // Main logo sprite with 3 shaders.
-    private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, fiShdr, foShdr)):
+    private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, fiShdr, foShdr2)):
         override def update(ctx: CPSceneObjectContext): Unit =
             // Center the logo on each frame (ensuring the support for adaptive scenes).
             val canv = ctx.getCanvas

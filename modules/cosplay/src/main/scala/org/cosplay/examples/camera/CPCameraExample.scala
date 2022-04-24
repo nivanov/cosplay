@@ -22,7 +22,7 @@ import org.cosplay.CPCanvas.ArtLineStyle.ART_SMOOTH
 import org.cosplay.CPColor.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.*
 
@@ -245,7 +245,7 @@ object CPCameraExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     id = "logo",
                     Option(initDim),
                     bgPx,

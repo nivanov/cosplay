@@ -14,9 +14,9 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.cosplayengine/cosplay.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.cosplayengine%22%20AND%20a:%22cosplay%22)
 
 ## "Escape From Mir" Game
-"Escape From Mir" is a full game about an astronaut stranded on the damaged space station "Mir". It is a game that will 
+"Escape From Mir" is a game about an astronaut stranded on the damaged space station "Mir". It is a game that will 
 challenge you survival, detective, orbital physics, puzzle solving and resource management skills and is targeted towards 
-engineers and programmers. It is largely based on real events. Check out [www.cosplayengine.com](https://cosplayengine.com/devguide/mir_game.html) for the full 
+engineers and programmers. It is based on real events. Check out [www.cosplayengine.com](https://cosplayengine.com/devguide/mir_game.html) for the full 
 documentation.
 
 ## Introduction

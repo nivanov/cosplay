@@ -152,7 +152,7 @@ object CPImageFormatsExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_LIME, C_PURPLE, C_GREY, C_STEEL_BLUE1), "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_LIME, C_PURPLE, C_GREY, C_STEEL_BLUE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)
