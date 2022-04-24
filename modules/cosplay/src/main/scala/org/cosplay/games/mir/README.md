@@ -19,7 +19,7 @@ challenge you survival, detective, orbital physics, puzzle solving and resource 
 engineers and programmers. It is based on real events. Check out [www.cosplayengine.com](https://cosplayengine.com/devguide/mir_game.html) for the full 
 documentation.
 
-## Introduction
+## Plot
 The year is 1997. It’s been 11 years since the launch of the Mir space station - the world’s first permanent human 
 habitat in orbit above the planet Earth. Over the decade the Mir station has been assembled from 7 separate modules 
 and is now manned by an international crew of 5 astronauts.

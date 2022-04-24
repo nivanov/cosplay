@@ -35,9 +35,17 @@ import CPPixel.*
                ALl rights reserved.
 */
 
-val GREEN_BG = CPColor("0x001000")
-val GREEN_FG = CPColor("0x00AF00")
-val BG_PX = ' '&&(GREEN_BG, GREEN_BG)
+private val palette = CPRand.rand(
+    Seq( //     BG          FG
+         //  ________    ________
+        Seq("0x001000", "0x00AF00"), // Retro green.
+        Seq("0x141200", "0xE6CA05"), // Retro yellow.
+    ).map(_.map(CPColor(_)))
+)
+
+val BG = palette.head
+val FG = palette(1)
+val BG_PX = ' '&&(BG, BG)
 var audioOn = true // By default, the audio is ON.
 
 /**
@@ -53,7 +61,7 @@ object CPMirGame:
         val gameInfo = CPGameInfo(
             name = "Escape From Mir",
             semVer = "0.0.1",
-            termBg = GREEN_BG
+            termBg = BG
         )
 
         // Initialize the engine.
@@ -66,7 +74,7 @@ object CPMirGame:
                     "logo",
                     None,
                     BG_PX,
-                    Seq(GREEN_FG),
+                    Seq(FG),
                     "title",
                     fadeInMs = 3000
                 )
