@@ -44,12 +44,22 @@ import org.cosplay.prefabs.shaders.*
   *     terminal dimension on each frame. That means that the scene's canvas on which all scene objects are
   *     rendered can change its size from frame to frame. In such case, make sure that all scene objects take this into
   *     account in their rendering routines.
-  * @param bgPx Background pixel of the scene. Background pixel is shown when none of the scene objects
-  *     has drawn a pixel at that particular coordinate.
+  * @param bgPx Background pixel of the scene.
   * @param colors Logo will shimmer with these colors. Typically, these should be the game's primary colors.
   * @param nextSc ID of the next scene to switch to once this scene has finished its shimmering logo effect.
+  * @param fadeInMs Optional fade in duration in milliseconds. Default value is 2000.
+  * @param fadeOutMs Optional fade out duration in milliseconds. Default value is 1000.
+  * @param shimmerKeyFrame Optional shimmer shader keyframe. DEfault value is 2.
   */
-class CPLogoScene(id: String, dim: Option[CPDim], bgPx: CPPixel, colors: Seq[CPColor], nextSc: String) extends CPScene(id, dim, bgPx):
+class CPSlideShimmerLogoScene(
+    id: String,
+    dim: Option[CPDim],
+    bgPx: CPPixel,
+    colors: Seq[CPColor],
+    nextSc: String,
+    fadeInMs: Long = 2000,
+    fadeOutMs: Long = 1000,
+    shimmerKeyFrame: Int = 2) extends CPScene(id, dim, bgPx):
     require(colors.nonEmpty, "Color sequence cannot be empty.")
 
     private val initFg = bgPx.bg.getOrElse(bgPx.fg)
@@ -69,18 +79,16 @@ class CPLogoScene(id: String, dim: Option[CPDim], bgPx: CPPixel, colors: Seq[CPC
     ).replaceBg(bgPx)
 
     // Skip background & space pixels from shaders' effect.
-    val skipFn: (CPZPixel, Int, Int) => Boolean = (zpx: CPZPixel, _, _) => {
-        val px = zpx.px
-        px.char == ' ' || px == bgPx
-    }
+    val skipFn: (CPZPixel, Int, Int) => Boolean = (zpx: CPZPixel, _, _) => zpx.px.char == ' ' || zpx.px == bgPx
 
     // Shaders to use.
-    private val shimmerShdr = new CPShimmerShader(false, colors, 2, true, skipFn)
-    private val foShdr = new CPFadeOutShader(false, 750, bgPx, _.switchScene(nextSc), false, skipFn)
-    private val fiShdr = new CPFadeInShader(false, 1500, bgPx, _ => foShdr.start(), true, skipFn)
+    private val shimmerShdr = new CPShimmerShader(false, colors, shimmerKeyFrame, true, skipFn)
+    private val foShdr = new CPFadeOutShader(false, fadeOutMs, bgPx, _.switchScene(nextSc), false)
+    private val foShdr2 = new CPSlideOutShader(CPSlideDirection.VER_EXPAND, false, fadeOutMs, bgPx, _.switchScene(nextSc), false)
+    private val fiShdr = new CPFadeInShader(false, fadeInMs, bgPx, _ => foShdr2.start(), true)
 
     // Main logo sprite with 3 shaders.
-    private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, fiShdr, foShdr)):
+    private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, fiShdr, foShdr2)):
         override def update(ctx: CPSceneObjectContext): Unit =
             // Center the logo on each frame (ensuring the support for adaptive scenes).
             val canv = ctx.getCanvas

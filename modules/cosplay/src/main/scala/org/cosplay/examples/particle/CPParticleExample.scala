@@ -23,7 +23,7 @@ import CPColor.*
 import CPKeyboardKey.*
 import CPStyledString.styleStr
 import CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
@@ -193,7 +193,7 @@ object CPParticleExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

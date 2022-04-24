@@ -15,7 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.snake
+package org.cosplay.games.mir
+
+import org.cosplay.*
+import prefabs.scenes.*
+import CPColor.*
+import CPPixel.*
 
 /*
    _________            ______________
@@ -25,42 +30,39 @@ package org.cosplay.games.snake
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
-import org.cosplay.games.*
-import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
-import prefabs.scenes.CPFadeShimmerLogoScene
+private val palette = CPRand.rand(
+    Seq( //     BG          FG
+         //  ________    ________
+        Seq("0x001000", "0x00AF00"), // Retro green.
+        Seq("0x141200", "0xE6CA05"), // Retro yellow.
+    ).map(_.map(CPColor(_)))
+)
 
-val BLUE_BLACK = CPColor("0x00000F")
-val BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
+val BG = palette.head
+val FG = palette(1)
+val BG_PX = ' '&&(BG, BG)
 var audioOn = true // By default, the audio is ON.
 
 /**
-  * Classic snake game.
   *
-  * ### Running Game
-  * One-time Git clone & build:
-  * {{{
-  *     $ git clone https://github.com/nivanov/cosplay.git
-  *     $ cd cosplay
-  *     $ mvn package
-  * }}}
-  * to run the game:
-  * {{{
-  *     $ mvn -f modules/cosplay -P snake exec:java
-  * }}}
-  *
-  * @see https://cosplayengine.com/devguide/snake_game.html
   */
-object CPSnakeGame:
+object CPMirGame:
+    /**
+      * Entry point for JVM runtime.
+      *
+      * @param args Ignored.
+      */
     def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(name = "Ascii Snake")
+        val gameInfo = CPGameInfo(
+            name = "Escape From Mir",
+            semVer = "0.0.1",
+            termBg = BG
+        )
 
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
@@ -68,8 +70,14 @@ object CPSnakeGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPFadeShimmerLogoScene("logo", None, BG_PX, CS, "title"),
-                CPSnakeTitleScene
+                new CPFadeShimmerLogoScene(
+                    "logo",
+                    None,
+                    BG_PX,
+                    Seq(FG),
+                    "title",
+                    fadeInMs = 3000
+                )
             )
         finally CPEngine.dispose()
 

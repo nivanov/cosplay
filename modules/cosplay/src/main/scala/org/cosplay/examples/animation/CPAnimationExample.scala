@@ -22,7 +22,7 @@ import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.XRAY
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.*
 
@@ -260,7 +260,7 @@ object CPAnimationExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     Option(dim),
                     bgPx,
