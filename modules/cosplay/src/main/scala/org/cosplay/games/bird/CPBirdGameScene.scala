@@ -19,7 +19,6 @@ package org.cosplay.games.bird
 
 import org.cosplay.*
 import games.*
-import CPColor.*
 import CPPixel.*
 import CPArrayImage.*
 import CPFIGLetFont.*
@@ -27,6 +26,7 @@ import CPKeyboardKey.*
 import prefabs.shaders.*
 import prefabs.sprites.*
 import scala.util.*
+import CPColor.*
 
 /*
    _________            ______________
@@ -44,20 +44,22 @@ import scala.util.*
 
 
 object CPBirdGameScene extends CPScene("play", None, BG_PX):
-    private val speed = 1f
+    private var speed = 1f
     private var vel = 0f
     private val jump = 7f
     private val gravity = 0.3f
     private var change = 0.4f
 
     private var start = false
-    private val pipeGap = 10f
+    private val pipeGap = 15f
     private var pipeX = 0f
     private var curPipe = false
     private var pipeCut = 0f
     private var pipeWidth = 5f
 
     private var dead = false
+
+    private var score = 0
 
     private val birdImg = CPArrayImage(
         prepSeq(
@@ -89,11 +91,12 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                 case Some(evt) =>
                     evt.key match
                         case KEY_LO_W | KEY_UP | KEY_SPACE =>
-                            vel = 0
-                            vel -= jump
-                            change = 0.6f
+                            if !dead then
+                                vel = 0
+                                vel -= jump
+                                change = 0.6f
 
-                            if !start then start = true
+                                if !start then start = true
 
                         case _ => ()
                 case None => ()
@@ -102,8 +105,8 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                 vel += change
                 startSpr.setVisible(false)
 
-            if !dead then
-                if vel < 0 then
+            if start then
+                if vel <= 0 then
                     setY(getY - 1)
                     vel += 1
                 else if vel > 0 then
@@ -113,7 +116,14 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
             if (getY <= pipeCut.toInt - pipeGap.toInt) || (getY + getHeight) >= pipeCut.toInt && start then
                 if ((getX + getWidth) >= pipeX.toInt) && getX <= pipeX.toInt + (pipeWidth - 1) then
                     println("Died :(")
-                    dieBird(canv.height)
+                    dead = true
+                    change = 0.4
+                    vel = 0
+                    speed = 0f
+                    setX(pipeX.toInt - (pipeWidth + 2).toInt)
+
+            if dead && getY >= canv.height then
+                start = false
 
     private val startSpr = new CPImageSprite("start", 9, 15, 0, startImg)
 
@@ -141,24 +151,6 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                     canv.drawLine(pipeX.toInt + x, pipeCut.toInt, pipeX.toInt + x, canv.dim.h, 0, px)
                     canv.drawLine(pipeX.toInt + x, pipeCut.toInt - pipeGap.toInt, pipeX.toInt + x, 0, 0, px)
 
-    def dieBird(canvH: Int): Unit = {
-        start = false
-        change = 0.6
-        vel = 0f
-        while birdSpr.getY <= canvH do
-            println("e")
-            vel += change
-
-            if vel < 0 then
-                birdSpr.setY(birdSpr.getY - 1)
-                vel += 1
-            else if vel > 0 then
-                birdSpr.setY(birdSpr.getY + (gravity * vel).toInt)
-                change += 0.001f
-
-            if birdSpr.getY >= canvH then
-                dead = true
-    }
     addObjects(
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),

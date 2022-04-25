@@ -21,7 +21,7 @@ import org.cosplay.*
 import games.*
 import CPColor.*
 import CPPixel.*
-import prefabs.scenes.CPLogoScene
+import prefabs.scenes.{CPFadeShimmerLogoScene}
 
 val BG_PX = '.'&&(C_GRAY18, C_GRAY1)
 
@@ -49,7 +49,8 @@ object CPBirdGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPLogoScene("logo", None, BG_PX, CS, "title"),
+//                new CPLogoScene("logo", None, BG_PX, CS, "title"),
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, CS, "title", 200),
                 CPBirdTitleScene,
                 CPBirdGameScene
             )
