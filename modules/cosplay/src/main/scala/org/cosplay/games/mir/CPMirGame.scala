@@ -46,7 +46,6 @@ private val palette = CPRand.rand(
 val BG = palette.head
 val FG = palette(1)
 val BG_PX = ' '&&(BG, BG)
-var audioOn = true // By default, the audio is ON.
 
 /**
   *
@@ -77,7 +76,8 @@ object CPMirGame:
                     Seq(FG),
                     "title",
                     fadeInMs = 3000
-                )
+                ),
+                CPMirTitleScene
             )
         finally CPEngine.dispose()
 

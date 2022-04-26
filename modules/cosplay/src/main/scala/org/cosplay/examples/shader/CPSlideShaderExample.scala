@@ -36,7 +36,6 @@ import CPColor.*
 import CPArrayImage.*
 import CPKeyboardKey.*
 import prefabs.scenes.*
-import prefabs.sprites.*
 import prefabs.shaders.*
 import CPSlideDirection.*
 import scala.collection.mutable

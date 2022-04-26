@@ -25,7 +25,6 @@ import CPArrayImage.*
 import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
-import prefabs.sprites.*
 import pong.shaders.*
 import CPSlideDirection.*
 import org.apache.commons.lang3.SystemUtils

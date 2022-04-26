@@ -20,7 +20,6 @@ package org.cosplay.games.snake
 import org.cosplay.*
 import games.*
 import prefabs.shaders.*
-import prefabs.sprites.*
 import CPSlideDirection.*
 import CPFIGLetFont.*
 import CPArrayImage.*

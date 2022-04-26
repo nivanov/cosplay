@@ -21,15 +21,9 @@ import org.cosplay.*
 import games.*
 import CPColor.*
 import CPArrayImage.*
-import prefabs.shaders.*
-import CPFIGLetFont.*
-import CPCanvas.*
-import CPDim.*
 import CPPixel.*
 import CPKeyboardKey.*
-import prefabs.images.*
-import prefabs.sprites.*
-import prefabs.scenes.*
+import prefabs.shaders.*
 import games.pong.shaders.*
 
 /*
