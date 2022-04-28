@@ -72,7 +72,7 @@ object CPAnimationExample:
             case 'o' => ch&C_LIGHT_CORAL
             case _ => ch&C_WHITE
 
-        val imgsRight = CPArrayImage(
+        val imgsRight = new CPArrayImage(
             // 8 frames @ 6x3
             prepSeq(
                 """
@@ -108,7 +108,7 @@ object CPAnimationExample:
             ),
             skin).split(6, 3)
         val imgsLeft = imgsRight.map(_.horFlip())
-        val imgsIdle = CPArrayImage(
+        val imgsIdle = new CPArrayImage(
             prepSeq(
                 """
                   |   o
@@ -134,7 +134,7 @@ object CPAnimationExample:
                 """).filter(!_.endsWith("------")
             ),
             skin).split(5, 3)
-        val imgVert = CPArrayImage(
+        val imgVert = new CPArrayImage(
             prepSeq(
                 """
                   |   o/
@@ -156,7 +156,7 @@ object CPAnimationExample:
                 """).filter(!_.endsWith("------")
             ),
             skin).split(5, 3)
-        val imgHelp = CPArrayImage(
+        val imgHelp = new CPArrayImage(
             prepSeq(
                 """
                   |                    UP

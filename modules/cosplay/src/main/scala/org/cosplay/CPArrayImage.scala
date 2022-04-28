@@ -33,7 +33,7 @@ package org.cosplay
 import CPArrayImage.*
 
 /**
-  * Two-dimensional pixel array image.
+  * An image based on two-dimensional pixel array.
   *
   * This is the primary tool for creating in-code images.
   * This class has number of constructors and companion utility methods to aid in creating
@@ -151,6 +151,22 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
   * Companion object contains utility functions.
   */
 object CPArrayImage:
+    /**
+      *
+      * @param data
+      * @param dfltFg
+      * @param dfltBg
+      * @param markupSeq
+      * @return
+      */
+    def apply(
+        data: Seq[String],
+        dfltFg: CPColor,
+        dfltBg: Option[CPColor],
+        markupSeq: Seq[(String, String, (Char, Int, Int) => CPPixel)]
+    ): CPArrayImage =
+        ???
+
     /**
       * Converts margin-based Scala string into sequence of strings.
       *

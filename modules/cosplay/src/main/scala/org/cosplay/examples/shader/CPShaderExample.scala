@@ -70,7 +70,7 @@ object CPShaderExample:
         val dim = CPDim(80, 40)
 
         // In-code image creation & "painting".
-        val bulbImg = CPArrayImage(
+        val bulbImg = new CPArrayImage(
             prepSeq("""
               |  ___
               | /   \
@@ -87,7 +87,7 @@ object CPShaderExample:
                 case _ => ch&C_WHITE
         ).trimBg()
 
-        val ctrlImg = CPArrayImage(
+        val ctrlImg = new CPArrayImage(
             prepSeq(
                 """
                   |                    UP

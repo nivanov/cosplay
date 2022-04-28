@@ -62,7 +62,7 @@ object CPTileMapperExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val door = CPArrayImage(
+        val door = new CPArrayImage(
             prepSeq(
             """
                 | ___EXIT__
@@ -81,7 +81,7 @@ object CPTileMapperExample:
                 case _ => ch&C_SANDY_BROWN
         ).trimBg()
 
-        val brick = CPArrayImage(
+        val brick = new CPArrayImage(
             prepSeq( // 8x3
             """
                 |^^~^^~^^
@@ -97,7 +97,7 @@ object CPTileMapperExample:
                 case c => c&&(C_MAROON, C_DARK_ORANGE3)
         )
 
-        val alien = CPArrayImage(
+        val alien = new CPArrayImage(
             prepSeq(
             """
                 |                  .-.
@@ -116,7 +116,7 @@ object CPTileMapperExample:
                 case c => c&C_LIME
         ).trimBg()
 
-        val tileMap = CPArrayImage(
+        val tileMap = new CPArrayImage(
             // # - brick
             // X - alien
             // D - door

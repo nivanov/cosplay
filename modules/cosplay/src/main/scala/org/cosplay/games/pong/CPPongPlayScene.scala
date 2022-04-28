@@ -66,7 +66,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var gameOver = false
     private var ballAngle = randBallAngle()
 
-    private val ballImg = CPArrayImage(
+    private val ballImg = new CPArrayImage(
         prepSeq(
             """
               | _
@@ -77,7 +77,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     ).trimBg()
 
     private def mkPaddleImage(c: CPColor): CPImage =
-        CPArrayImage(
+        new CPArrayImage(
             prepSeq(
                 """
                   |X
@@ -112,7 +112,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private final val bgSnd = CPSound(s"sounds/games/pong/bg.wav", 0.02f)
     private final val boostSnd = CPSound(s"sounds/games/pong/boost.wav", 0.2f)
 
-    private val serveImg = CPArrayImage(
+    private val serveImg = new CPArrayImage(
         prepSeq(
             """
               |+------------------------------+
@@ -135,7 +135,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             case _ => ch&C2
     ).trimBg()
 
-    private val youLostImg = CPArrayImage(
+    private val youLostImg = new CPArrayImage(
         prepSeq(
             """
               |+------------------------------+
@@ -158,7 +158,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             case _ => ch&C2
     ).trimBg()
 
-    private val youWonImg = CPArrayImage(
+    private val youWonImg = new CPArrayImage(
         prepSeq(
             """
               |+------------------------------+

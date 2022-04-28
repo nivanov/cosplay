@@ -70,7 +70,7 @@ class CPSlideShimmerLogoScene(
     require(colors.nonEmpty, "Color sequence cannot be empty.")
 
     private val initFg = bgPx.bg.getOrElse(bgPx.fg)
-    private val logoImg = CPArrayImage(
+    private val logoImg = new CPArrayImage(
         prepSeq(
             """
               |POWERED BY

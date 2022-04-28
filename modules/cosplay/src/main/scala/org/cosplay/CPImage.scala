@@ -259,7 +259,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             if data.isValid(x2, y2) then data.set(x2, y2, px)
         })
 
-        CPArrayImage(data, origin)
+        new CPArrayImage(data, origin)
 
     /**
       * Converts this image into 2D array of pixels.
@@ -602,7 +602,7 @@ object CPImage:
                     val fg = CPColor(Integer.decode(parts(3)))
                     val bg = CPColor(Integer.decode(parts(4)))
 
-                    CPPosPixel(CPPixel(ch, fg, Some(bg)), x, y)
+                    CPPosPixel(CPPixel(ch, fg, Option(bg)), x, y)
                 catch
                     case e: Exception => E(s"Invalid CSV file format at line $idx: $src", e)
             })
@@ -641,7 +641,7 @@ object CPImage:
                 val bgG = unsigned(bb.get)
                 val bgB= unsigned(bb.get)
                 val fg = CPColor(fgR, fgG, fgB)
-                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Some(CPColor(bgR, bgG, bgB)) // Transparency background.
+                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB)) // Transparency background.
                 val px = if ch == ' ' then CPPixel.XRAY else CPPixel(ch, fg, bg)
                 layer.set(x, y, px)
                 idx += 1
@@ -703,7 +703,7 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview (${frameDim.w}x${frameDim.h})",
-                initDim = Some(dim),
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -711,13 +711,10 @@ object CPImage:
         try
             val ani = CPAnimation.filmStrip("ani", 1_000 / fps, true, false, imgs)
             val spr = CPAnimationSprite("spr", Seq(ani), 4, 4, 0, "ani")
-            CPEngine.rootLog().info(s"Animation preview [" +
-                s"frames=${imgs.size}, " +
-                s"frameDim=$frameDim, " +
-                s"]")
+            CPEngine.rootLog().info(s"Animation preview [frames=${imgs.size}, frameDim=$frameDim]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 spr, // Animation we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
@@ -738,20 +735,16 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.w}x${imgDim.h})",
-                initDim = Some(dim),
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
         )
         try
-            CPEngine.rootLog().info(s"Image preview [" +
-                s"origin=${img.getOrigin}, " +
-                s"dim=${img.getDim}, " +
-                s"class=${img.getClass.getName}" +
-            s"]")
+            CPEngine.rootLog().info(s"Image preview [origin=${img.getOrigin}, dim=${img.getDim}, class=${img.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.

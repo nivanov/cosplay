@@ -159,7 +159,7 @@ object CPImageCarouselExample:
         val maxImgW = imgs.maxBy(_.getDim.w).getWidth
         val maxImgH = imgs.maxBy(_.getDim.h).getHeight
 
-        val ctrlImg = CPArrayImage(
+        val ctrlImg = new CPArrayImage(
             prepSeq(
                 """
                   |              LEFT            RIGHT

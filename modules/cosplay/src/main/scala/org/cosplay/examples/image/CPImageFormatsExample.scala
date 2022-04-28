@@ -65,7 +65,7 @@ object CPImageFormatsExample:
       */
     def main(args: Array[String]): Unit =
         // In-code image creation & "painting".
-        val alienImg = CPArrayImage(
+        val alienImg = new CPArrayImage(
             prepSeq("""
                 |.     .       .  .   . .   .   . .    +  .
                 |  .     .  :     .    .. :. .___---------___.

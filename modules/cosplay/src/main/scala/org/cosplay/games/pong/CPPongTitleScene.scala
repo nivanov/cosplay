@@ -44,7 +44,7 @@ import games.pong.shaders.*
   */
 object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
-    private val logoImg = CPArrayImage(
+    private val logoImg = new CPArrayImage(
         prepSeq(
             """
               |       /$$$$$$$
@@ -83,7 +83,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
               |                [Q]       Quit
               |
               |
-              |         Copyright (C) 2022 Rowan Games, Inc
+              |         Copyright (C) 2022 Rowan Games, Inc.
             """),
         (ch, _, y) =>
             if y == 36 then ch&C3

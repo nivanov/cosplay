@@ -255,7 +255,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     /**
       *
       * @param x X-coordinate
-      * @param f
+      * @param f Blank predicate.
       */
     private def isColumnBlank(x: Int, f: T => Boolean): Boolean =
         if nonEmpty then
@@ -271,7 +271,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     /**
       *
       * @param y Y-coordinate
-      * @param f
+      * @param f Blank predicate.
       */
     private def isRowBlank(y: Int, f: T => Boolean): Boolean =
         if nonEmpty then
