@@ -152,22 +152,6 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
   */
 object CPArrayImage:
     /**
-      *
-      * @param data
-      * @param dfltFg
-      * @param dfltBg
-      * @param markupSeq
-      * @return
-      */
-    def apply(
-        data: Seq[String],
-        dfltFg: CPColor,
-        dfltBg: Option[CPColor],
-        markupSeq: Seq[(String, String, (Char, Int, Int) => CPPixel)]
-    ): CPArrayImage =
-        ???
-
-    /**
       * Converts margin-based Scala string into sequence of strings.
       *
       * @param marginCh Margin character.

@@ -201,11 +201,72 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
 
     /**
       * Calls given function for each array element.
+      * Iteration over the elements in this 2D array will be horizontal first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
       *
       * @param f Function to call for each element. The function takes value and its XY-coordinate
       *     in the array.
+      * @see [[loopVert()]]
+      * @see [[loopHor()]]
       */
-    def loop(f: (T, Int, Int) => Unit): Unit = rect.loop((x, y) => f(get(x, y), x, y))
+    def loop(f: (T, Int, Int) => Unit): Unit = loopHor(f)
+
+    /**
+      * Calls given function for each array element.
+      * Iteration over the elements in this 2D array will be horizontal first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
+      *
+      * @param f Function to call for each element. The function takes value and its XY-coordinate
+      *     in the array.
+      * @see [[loopVert()]]
+      * @see [[loop()]]
+      */
+    def loopHor(f: (T, Int, Int) => Unit): Unit = rect.loopHor((x, y) => f(get(x, y), x, y))
+
+    /**
+      * Calls given function for each array element.
+      * Iteration over the elements in this 2D array will be vertical first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)
+      * }}}
+      *
+      * @param f Function to call for each element. The function takes value and its XY-coordinate
+      *     in the array.
+      * @see [[loop()]]
+      * @see [[loopHor()]]
+      */
+    def loopVert(f: (T, Int, Int) => Unit): Unit = rect.loopVert((x, y) => f(get(x, y), x, y))
 
    /**
       *
@@ -375,6 +436,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
 object CPArray2D:
     /**
       * Creates new 2D array from given list of [[CPPosPixel]] instances.
+      * Note that clear value is not set.
       *
       * @param pps List of [[CPPosPixel]] instances to create a new array from.
       */
@@ -387,6 +449,7 @@ object CPArray2D:
 
     /**
       * Creates new 2D array from given sequence of [[CPPixel pixels]] and width.
+      * Note that clear value is not set.
       *
       * @param pxs Sequence of [[CPPixel pixels]].
       * @param width Required width. Height is calculated automatically.
@@ -405,6 +468,7 @@ object CPArray2D:
 
     /**
       * Creates new 2D array of [[Char]] from given string. Height of the array will be 1.
+      * Note that clear value will be set to ' ' (space).
       *
       * @param str String to creates new 2D array from.
       */
@@ -412,17 +476,19 @@ object CPArray2D:
 
     /**
       * Creates new 2D array of [[Char]] from given sequence of strings.
+      * Note that clear value will be set to ' ' (space). All strings will be padded
+      * to the maximum value with clear value ' ' (space) too.
       *
       * @param data Sequence of strings to create new 2D array from.
       */
     def apply(data: Seq[String]): CPArray2D[Char] =
         val w = data.maxBy(_.length).length
         val h = data.length
-        val arr = new CPArray2D[Char](h, w) // Note reverse width and height.
+        val arr = new CPArray2D[Char](h, w, ' ') // Note reverse width and height.
         var y = 0
         while (y < h)
             // Normalize (pad).
-            val s = data(y).padTo(w, ' ')
+            val s = data(y).padTo(w, arr.clearVal)
             val a1 = s.toCharArray
             val a2 = arr.data(y)
             Array.copy(a1, 0, a2, 0, w)
