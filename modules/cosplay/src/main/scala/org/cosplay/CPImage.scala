@@ -378,19 +378,18 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             arr.rect.loop((x, y) =>
                 val px = arr.get(x, y)
                 // Space at the edge of the image is always considered background.
-                if px != bgPx && px.char == ' ' &&
-                    (
-                        x == 0 ||
-                        y == 0 ||
-                        x == xMax ||
-                        y == yMax ||
-                        arr.get(x + 1, y) == bgPx ||
-                        arr.get(x - 1, y) == bgPx ||
-                        arr.get(x, y + 1) == bgPx ||
-                        arr.get(x, y - 1) == bgPx
-                    ) then
-                        arr.set(x, y, bgPx)
-                        ok = true
+                if px != bgPx && px.char == ' ' && (
+                    x == 0 ||
+                    y == 0 ||
+                    x == xMax ||
+                    y == yMax ||
+                    arr.get(x + 1, y) == bgPx ||
+                    arr.get(x - 1, y) == bgPx ||
+                    arr.get(x, y + 1) == bgPx ||
+                    arr.get(x, y - 1) == bgPx) then {
+                    arr.set(x, y, bgPx)
+                    ok = true
+                }
             )
 
         new CPArrayImage(arr, origin)
@@ -585,22 +584,15 @@ object CPImage:
     /**
       *
       * @param data
-      * @param dfltFg
-      * @param dfltBg
-      * @param markupSeq
+      * @param markup
       * @return
       */
-    def markupImage(
-       data: Seq[String],
-       dfltFg: CPColor,
-       dfltBg: Option[CPColor],
-       markupSeq: Seq[(String/*Opening element*/, String/*Closing element*/, (Char, Int, Int) => CPPixel)]
-   ): CPImage =
+    def markupImage(data: Seq[String], markup: CPImageMarkup): CPImage =
         require(data.nonEmpty, "Markup image data cannot be empty.")
-        require(markupSeq.exists(x ⇒ x._1.isEmpty || x._2.isEmpty), "Markup image cannot have empty opening or closing elements.")
+        require(markup.elements.exists(x ⇒ x._1.isEmpty || x._2.isEmpty), "Markup image cannot have empty opening or closing tags.")
 
         val chArr = CPArray2D(data)
-        val dfltSkin = (ch: Char, x: Int, y: Int) ⇒ CPPixel(ch, dfltFg, dfltBg)
+        val dfltSkin = (ch: Char, x: Int, y: Int) ⇒ CPPixel(ch, markup.fg, markup.bg)
         var skin = dfltSkin
         var skinStack = List.empty[(ch: Char, x: Int, y: Int) ⇒ CPPixel]
         val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
