@@ -583,6 +583,60 @@ object CPImage:
     private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
 
     /**
+      *
+      * @param data
+      * @param dfltFg
+      * @param dfltBg
+      * @param markupSeq
+      * @return
+      */
+    def markupImage(
+       data: Seq[String],
+       dfltFg: CPColor,
+       dfltBg: Option[CPColor],
+       markupSeq: Seq[(String/*Opening element*/, String/*Closing element*/, (Char, Int, Int) => CPPixel)]
+   ): CPImage =
+        require(data.nonEmpty, "Markup image data cannot be empty.")
+        require(markupSeq.exists(x ⇒ x._1.isEmpty || x._2.isEmpty), "Markup image cannot have empty opening or closing elements.")
+
+        val chArr = CPArray2D(data)
+        val dfltSkin = (ch: Char, x: Int, y: Int) ⇒ CPPixel(ch, dfltFg, dfltBg)
+        var skin = dfltSkin
+        var skinStack = List.empty[(ch: Char, x: Int, y: Int) ⇒ CPPixel]
+        val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
+        val buf = ArrayBuffer.empty[Char]
+        chArr.loopHor((ch, x, y) ⇒ {
+            buf.append(ch)
+            val bufS = buf.toString()
+            var found = false
+            markupSeq.find(x ⇒ x._1 == bufS) match
+                case Some(m) ⇒
+                    skin = m._3
+                    skinStack ::= skin // Pushed the opened skin.
+                    found = true
+                case None ⇒ ()
+
+            if !found then
+                markupSeq.find(x ⇒ x._2 == bufS) match
+                    case Some(m) ⇒
+                        skinStack = skinStack.tail // Pop the closed skin.
+                        skin = if skinStack.isEmpty then dfltSkin else skinStack.head
+                        found = true
+                    case None ⇒ ()
+
+            if found then
+                buf.clear()
+            else
+
+
+        })
+
+        new CPImage("code"):
+            private val dim = pxArr.dim
+            override def getDim: CPDim = dim
+            override def getPixel(x: Int, y: Int): CPPixel = pxArr.get(x, y)
+
+    /**
       * Loads image using [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *
       * @param src Local filesystem path, resources file or URL.
