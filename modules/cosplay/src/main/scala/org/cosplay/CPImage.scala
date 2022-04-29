@@ -605,31 +605,31 @@ object CPImage:
         var skinStack = List.empty[(ch: Char, x: Int, y: Int) ⇒ CPPixel]
         val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
         val buf = ArrayBuffer.empty[Char]
-        chArr.loopHor((ch, x, y) ⇒ {
-            buf.append(ch)
-            val bufS = buf.toString()
-            var found = false
-            markupSeq.find(x ⇒ x._1 == bufS) match
-                case Some(m) ⇒
-                    skin = m._3
-                    skinStack ::= skin // Pushed the opened skin.
-                    found = true
-                case None ⇒ ()
-
-            if !found then
-                markupSeq.find(x ⇒ x._2 == bufS) match
-                    case Some(m) ⇒
-                        skinStack = skinStack.tail // Pop the closed skin.
-                        skin = if skinStack.isEmpty then dfltSkin else skinStack.head
-                        found = true
-                    case None ⇒ ()
-
-            if found then
-                buf.clear()
-            else
-
-
-        })
+//        chArr.loopHor((ch, x, y) ⇒ {
+//            buf.append(ch)
+//            val bufS = buf.toString()
+//            var found = false
+//            markupSeq.find(x ⇒ x._1 == bufS) match
+//                case Some(m) ⇒
+//                    skin = m._3
+//                    skinStack ::= skin // Pushed the opened skin.
+//                    found = true
+//                case None ⇒ ()
+//
+//            if !found then
+//                markupSeq.find(x ⇒ x._2 == bufS) match
+//                    case Some(m) ⇒
+//                        skinStack = skinStack.tail // Pop the closed skin.
+//                        skin = if skinStack.isEmpty then dfltSkin else skinStack.head
+//                        found = true
+//                    case None ⇒ ()
+//
+//            if found then
+//                buf.clear()
+//            else
+//
+//
+//        })
 
         new CPImage("code"):
             private val dim = pxArr.dim

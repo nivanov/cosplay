@@ -38,8 +38,8 @@ import CPPixel.*
 private val palette = CPRand.rand(
     Seq( //     BG          FG
          //  ________    ________
-        Seq("0x001000", "0x00AF00"), // Retro green.
-        Seq("0x141200", "0xE6CA05"), // Retro yellow.
+        Seq("0x000300", "0x00AF00"), // Retro green.
+        Seq("0x030300", "0xE6CA05"), // Retro yellow.
     ).map(_.map(CPColor(_)))
 )
 
