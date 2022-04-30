@@ -45,6 +45,7 @@ import org.cosplay.CPPixel.*
   * @param y2 Right-bottom Y-coordinate.
   * @param z Z-index of the panel.
   * @param title Title of the panel.
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 class CPPanelSprite(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, title: String) extends CPSceneObject:
     require(x2 > x1 && y2 > y1)

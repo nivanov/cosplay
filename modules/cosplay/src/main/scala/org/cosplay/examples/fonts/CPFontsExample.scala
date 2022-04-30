@@ -19,10 +19,11 @@ package org.cosplay.examples.fonts
 
 import org.cosplay.*
 import CPColor.*
+import CPPixel.*
 import CPFIGLetFont.*
 import CPKeyboardKey.KEY_LO_Q
-import org.cosplay.prefabs.scenes.CPLogoScene
-import org.cosplay.prefabs.shaders.CPFadeInShader
+import prefabs.scenes.CPFadeShimmerLogoScene
+import prefabs.shaders.CPFadeInShader
 
 /*
    _________            ______________
@@ -40,9 +41,22 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 /**
   * Code example for the built-in FIGLet font functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:fonts exec:java
+  * }}}
+  *
   * @see [[CPFont]]
   * @see [[CPSystemFont]]
   * @see [[CPFIGLetFont]]
+  * @note See developer guide at [[https://cosplayengine.com]]     
   */
 object CPFontsExample:
     /**
@@ -59,7 +73,7 @@ object CPFontsExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
 
         val sysFontImg1 = CPSystemFont.renderMulti(
             """
@@ -79,9 +93,9 @@ object CPFontsExample:
 
         val sc = new CPScene("scene", Some(dim), bgPx,
             // Same text with different alignment.
-            CPStaticImageSprite((dim.width - sysFontImg1.getWidth) / 2, 1, 4, sysFontImg1),
-            CPStaticImageSprite((dim.width - sysFontImg2.getWidth) / 2, 5, 4, sysFontImg2),
-            CPStaticImageSprite((dim.width - sysFontImg3.getWidth) / 2, 9, 4, sysFontImg3),
+            CPStaticImageSprite((dim.w - sysFontImg1.getWidth) / 2, 1, 4, sysFontImg1),
+            CPStaticImageSprite((dim.w - sysFontImg2.getWidth) / 2, 5, 4, sysFontImg2),
+            CPStaticImageSprite((dim.w - sysFontImg3.getWidth) / 2, 9, 4, sysFontImg3),
 
             // Same font with different spacing.
             CPStaticImageSprite(30, 14, 4, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
@@ -90,14 +104,14 @@ object CPFontsExample:
 
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(Seq(new CPFadeInShader(true, 500, bgPx))),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
 
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     Some(dim),
                     bgPx,

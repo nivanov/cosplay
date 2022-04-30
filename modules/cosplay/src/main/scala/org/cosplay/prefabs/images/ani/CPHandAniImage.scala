@@ -39,7 +39,7 @@ import CPPixel.*
   * https://llizardakaejm.wordpress.com/2015/11/03/various-other-things-p3/
   */
 object CPHandAniImage extends CPArrayImage(
-    // 25x17
+    // 26x17
     prepSeq(
         """
           |

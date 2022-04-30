@@ -19,6 +19,7 @@ package org.cosplay.examples.textinput
 
 import org.cosplay.*
 import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPStyledString.styleStr
@@ -41,11 +42,24 @@ import org.cosplay.prefabs.shaders.*
 /**
   * Code example for built-in text input functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:textinput exec:java
+  * }}}
+  *
   * @see [[CPLabelSprite]]
   * @see [[CPTextInputSprite]]
   * @see [[CPKeyboardKey]]
   * @see [[CPKeyboardEvent]]
   * @see [[CPKeyboardSprite]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPTextInputExample:
     /**
@@ -60,9 +74,9 @@ object CPTextInputExample:
             (ch: Char, pos: Int, isCur: Boolean) => {
                 val ch2 = if passwd && !ch.isWhitespace then '*' else ch
                 if active then
-                    if isCur then CPPixel(ch2, C_WHITE, C_SLATE_BLUE3)
-                    else CPPixel(ch2, C_BLACK, C_WHITE)
-                else CPPixel(ch2, C_BLACK, C_WHITE.darker(0.3f))
+                    if isCur then ch2&&(C_WHITE, C_SLATE_BLUE3)
+                    else ch2&&(C_BLACK, C_WHITE)
+                else ch2&&(C_BLACK, C_WHITE.darker(0.3f))
             }
 
         val userLbl = new CPLabelSprite(6, 4, 1, text = "Username:", C_LIGHT_STEEL_BLUE)
@@ -74,8 +88,8 @@ object CPTextInputExample:
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
             next = Option("passwd")
         )
-        val passwdLbl = new CPLabelSprite(6, 7, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
-        val passwdTin = CPTextInputSprite("passwd", 6, 8, 1,
+        val pwdLbl = new CPLabelSprite(6, 7, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
+        val pwdTin = CPTextInputSprite("passwd", 6, 8, 1,
             15, 20,
             "",
             mkSkin(true, true),
@@ -84,20 +98,18 @@ object CPTextInputExample:
             next = Option("user")
         )
         val panel = CPPanelSprite(2, 2, 24, 11, 0, "Login")
-        val ctrl = new CPOffScreenSprite:
-            override def update(ctx: CPSceneObjectContext): Unit =
-                if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user")
+        val focusAcq = CPOffScreenSprite(ctx ⇒ if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user"))
 
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val sc = new CPScene("scene", Option(CPDim(27, 13)), bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             userLbl,
             userTin,
-            passwdLbl,
-            passwdTin,
+            pwdLbl,
+            pwdTin,
             panel,
-            ctrl
+            focusAcq
         )
 
         // Initialize the engine.

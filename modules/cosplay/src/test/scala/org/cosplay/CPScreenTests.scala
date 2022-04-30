@@ -86,7 +86,7 @@ object CPScreenTests:
         val bgPx = CPPixel('.', C_PINK1, C_LIGHT_PINK1)
         val scr = CPScreen(dim, bgPx)
 
-        for (x <- 0 until scr.getDim.width; y <- 0 until scr.getDim.height)
+        for (x <- 0 until scr.getDim.w; y <- 0 until scr.getDim.h)
             assert(scr.getPixel(x, y).px == bgPx)
 
     /**

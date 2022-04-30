@@ -52,12 +52,12 @@ import scala.util.Using
   * or resource. To render the image on the screen you can use [[CPCanvas.drawImage()]] method.
   *
   * Image is an asset. Just like other assets such as [[CPFont fonts]], [[CPSound sounds]], [[CPAnimation animations]] or
-  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPSceneObject scene objects]]
-  * that are managed and governed by the game engine. Assets are typically created outside of the game engine and
+  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]]
+  * that are managed and governed by the game engine. Assets are typically created outside the game loop and
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
-  * ### In-Code images
+  * ### In-Code Images
   * One of the convenient features of CosPlay is that images can be created & painted (a.k.a. skinned) right
   * in code with very minimal gestalt. The easiest way is to use [[CPArrayImage]] class that provides utility
   * methods to convert a margin-based Scala string into an image. For [[CPAlienImage example]]:
@@ -109,7 +109,7 @@ import scala.util.Using
   * )
   * }}}
   *
-  * ### Loading images
+  * ### Loading Images
   * You can load images from the external source like URL or file path in one of the following formats:
   *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native binary format supported by
   *    [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor. This format supports full color information.
@@ -119,7 +119,7 @@ import scala.util.Using
   *  - `*.txt` format. Image in this format is a simple *.txt file and it does not provide or store any color
   *     information.
   *
-  *  Use one of the following methods from the companion object to load the image from file path, resource folder
+  *  Use one of the following methods from the companion object to load the image from file path, `resources` folder
   *  or URL:
   *   - [[load()]]
   *   - [[loadRexCsv()]]
@@ -134,16 +134,16 @@ import scala.util.Using
   * )
   * }}}
   *
-  * ### Saving images
+  * ### Saving Images
   * You can save image to the local file path in the following format:
   *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
   *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
   *    supported by CosPlay to save an image with. This format supports full color information.
   *
-  *  Use one of the following methods from the companion object to save the image to the file path:
+  *  Use the following method to save the image to the file path:
   *   - [[save() save(...)]]
   *
-  * ### ASCII art online
+  * ### ASCII Art Online
   * There's a vast collection of existing ASCII art imagery online. Here's some of the main resources where
   * you can find it:
   *  - http://www.asciiworld.com/
@@ -158,9 +158,9 @@ import scala.util.Using
   *
   * ### Prefabs
   * CosPlay comes with a list of prefab image, animations and video clips. All of them are shipped with CosPlay
-  * and can be found in `org.cosplay.prefabs` package an its sub-packages.
+  * and can be found in `org.cosplay.prefabs` package and its sub-packages.
   *
-  * ### ASCII art editors
+  * ### ASCII Art Editors
   * [[https://www.gridsagegames.com/rexpaint REXPaint]] ASCII editor is an excellent free editor for ASCII art
   * from the creator of the [[https://www.gridsagegames.com/cogmind/ Cogmind]] game.
   * [[https://www.gridsagegames.com/rexpaint REXPaint]] editor is highly recommended for images with non-trivial
@@ -198,7 +198,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     def save(file: File, bg: CPColor): Unit =
         Using.resource(new PrintStream(file)) { ps =>
             val dim = getDim
-            ps.println(s"CosPlay image [${dim.width}x${dim.height}, origin=$origin, bg=${bg.hex}]")
+            ps.println(s"CosPlay image [${dim.w}x${dim.h}, origin=$origin, bg=${bg.hex}]")
             loop((px, x, y) => ps.println(s"$x,$y,${px.char.toInt},${px.fg.hex},${px.bg.getOrElse(bg).hex}"))
         }
 
@@ -228,28 +228,28 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             def getPixel(x: Int, y: Int): CPPixel = f(it.getPixel(x, y), x, y)
 
     /**
-      * Resizes and centers the image returning a new image instance. Given dimension can be bigger
+      * Crops and centers the image returning a new image instance. Given dimension can be bigger
       * or smaller.
       *
-      * @param newDim Dimension ot reize by.
-      * @param bgPx Backgound pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
-      * @see [[resizeByInsets()]]
+      * @param newDim Dimension to crop  by.
+      * @param bgPx Background pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
+      * @see [[cropByInsets()]]
       */
-    def resizeByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
+    def cropByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
-        resizeByInsets(new CPInsets((newDim.width - dim.width) / 2, (newDim.height - dim.height) / 2))
+        cropByInsets(new CPInsets((newDim.w - dim.w) / 2, (newDim.h - dim.h) / 2))
 
     /**
-      * Resizes this image using given insets. Insets can be positive or negative.
+      * Crops this image using given insets. Insets can be positive or negative.
       *
-      * @param insets Insets to resize by.
-      * @param bgPx Backgound pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
-      * @see [[resizeByDim()]]
+      * @param insets Insets to crop by.
+      * @param bgPx Background pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
+      * @see [[cropByDim()]]
       */
-    def resizeByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
+    def cropByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
-        val w = dim.width + insets.horOffset
-        val h = dim.height + insets.verOffset
+        val w = dim.w + insets.horOffset
+        val h = dim.h + insets.verOffset
         val data = new CPArray2D[CPPixel](w, h, bgPx)
 
         loop((px, x, y) => {
@@ -259,7 +259,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             if data.isValid(x2, y2) then data.set(x2, y2, px)
         })
 
-        CPArrayImage(data, origin)
+        new CPArrayImage(data, origin)
 
     /**
       * Converts this image into 2D array of pixels.
@@ -282,6 +282,23 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Antialiases solid ASCII art image returning new image. Works `only` for solid ASCII art.
       * Algorithm is loosely based on https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art.
       *
+      * Here's an example of antialiasing a solid ASCII art shape:
+      * 
+      * {{{
+      *        xx  xxx  xxx                         db  <xb  <xb
+      *       xxxx  xxx  xxx                       dxxb  Yxb  Yxb
+      *      xxxxxx  xxx  xxx                     dxxxxb  Yxb  Yxb
+      *     xxx  xxx  xxx  xxx                   dxx  xxb  xxb  xxb
+      *     xxxx xxx  xxx  xxx                   Yxxb xxF  xxF  xxF
+      *      xxxxxx  xxx  xxx                     YxxxxF  dxF  dxF
+      *       xxxx  xxx  xxx         ===>          YxxF  dxF  dxF
+      *     x  xx  xxx  xxx  x                   ;  YF  dxF  dxF  ;
+      *     xx    xxx  xxx  xx                   xb    dxF  dxF  dx
+      *     xxx  xxx  xxx  xxx                   xxb  <xF  <xF  <xx
+      *     xxxx  xxx  xxx  xx                   xxxb  Yxb  Yxb  Yx
+      *     xxxxx  xxx  xxx  x                   Yxxx>  Yx>  Yx>  V
+      * }}}
+      *
       * @param isBlank Function to determine if given pixel is blank for the purpose of antialiasing.
       * @see https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
       */
@@ -294,8 +311,8 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             if !isBlank(px) then
                 val top = y > 0 && !isBlank(getPixel(x, y - 1))
                 val left = x > 0 && !isBlank(getPixel(x - 1, y))
-                val bottom = y < dim.height - 1 && !isBlank(getPixel(x, y + 1))
-                val right = x < dim.width - 1 && !isBlank(getPixel(x + 1, y))
+                val bottom = y < dim.h - 1 && !isBlank(getPixel(x, y + 1))
+                val right = x < dim.w - 1 && !isBlank(getPixel(x + 1, y))
 
                 data.set(x, y, px.withChar(CPUtils.aaChar(px.char, top, left, bottom, right)))
             else
@@ -336,7 +353,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Detects all background pixels and replaces them with a given pixel returning new image.
       *
       * A pixel is considered to be a background pixel when:
-      *  - It's [[CPPixel.char characater]] is space (' ').
+      *  - It's [[CPPixel.char character]] is space (' ').
       *  - It's not equal to given `bgPx`.
       *  - It's on the edge of the image or there's a path from it to the edge of the image through background
       *    pixels only.
@@ -361,19 +378,18 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             arr.rect.loop((x, y) =>
                 val px = arr.get(x, y)
                 // Space at the edge of the image is always considered background.
-                if px != bgPx && px.char == ' ' &&
-                    (
-                        x == 0 ||
-                        y == 0 ||
-                        x == xMax ||
-                        y == yMax ||
-                        arr.get(x + 1, y) == bgPx ||
-                        arr.get(x - 1, y) == bgPx ||
-                        arr.get(x, y + 1) == bgPx ||
-                        arr.get(x, y - 1) == bgPx
-                    ) then
-                        arr.set(x, y, bgPx)
-                        ok = true
+                if px != bgPx && px.char == ' ' && (
+                    x == 0 ||
+                    y == 0 ||
+                    x == xMax ||
+                    y == yMax ||
+                    arr.get(x + 1, y) == bgPx ||
+                    arr.get(x - 1, y) == bgPx ||
+                    arr.get(x, y + 1) == bgPx ||
+                    arr.get(x, y - 1) == bgPx) then {
+                    arr.set(x, y, bgPx)
+                    ok = true
+                }
             )
 
         new CPArrayImage(arr, origin)
@@ -400,7 +416,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Attaches given image underneath this image returning a new combined image.
       *
       * @param img Image to attached.
-      * @param bgPx Background pixel to use when combines image has larged width.
+      * @param bgPx Background pixel to use when combined image has large width.
       */
     def stitchBelow(img: CPImage, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val w = getWidth.max(img.getWidth)
@@ -414,7 +430,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Attaches given image to the right of this image returning a new combined image.
       *
       * @param img Image to attached.
-      * @param bgPx Background pixel to use when combines image has larged height.
+      * @param bgPx Background pixel to use when combined image has large height.
       */
     def stitchRight(img: CPImage, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val w = getWidth + img.getWidth
@@ -505,12 +521,22 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     /**
       * Shortcut to get image width.
       */
-    def getWidth: Int = getDim.width
+    def getWidth: Int = getDim.w
+
+    /**
+      * Shortcut to get image width.
+      */
+    def w: Int = getDim.w
 
     /**
       * Shortcut to get image height.
       */
-    def getHeight: Int = getDim.height
+    def getHeight: Int = getDim.h
+
+    /**
+      * Shortcut to get image height.
+      */
+    def h: Int = getDim.h
 
 /**
   * Companion object with utility functions.
@@ -556,6 +582,52 @@ object CPImage:
     private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
 
     /**
+      *
+      * @param data
+      * @param markup
+      * @return
+      */
+    def markupImage(data: Seq[String], markup: CPImageMarkup): CPImage =
+        require(data.nonEmpty, "Markup image data cannot be empty.")
+
+        val chArr = CPArray2D(data)
+        val dfltSkin = (ch: Char) ⇒ CPPixel(ch, markup.fg, markup.bg)
+        var skin = dfltSkin
+        var skinStack = List.empty[Char ⇒ CPPixel]
+        val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
+        val buf = ArrayBuffer.empty[Char]
+//        chArr.loopHor((ch, x, y) ⇒ {
+//            buf.append(ch)
+//            val bufS = buf.toString()
+//            var found = false
+//            markupSeq.find(x ⇒ x._1 == bufS) match
+//                case Some(m) ⇒
+//                    skin = m._3
+//                    skinStack ::= skin // Pushed the opened skin.
+//                    found = true
+//                case None ⇒ ()
+//
+//            if !found then
+//                markupSeq.find(x ⇒ x._2 == bufS) match
+//                    case Some(m) ⇒
+//                        skinStack = skinStack.tail // Pop the closed skin.
+//                        skin = if skinStack.isEmpty then dfltSkin else skinStack.head
+//                        found = true
+//                    case None ⇒ ()
+//
+//            if found then
+//                buf.clear()
+//            else
+//
+//
+//        })
+
+        new CPImage("code"):
+            private val dim = pxArr.dim
+            override def getDim: CPDim = dim
+            override def getPixel(x: Int, y: Int): CPPixel = pxArr.get(x, y)
+
+    /**
       * Loads image using [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *
       * @param src Local filesystem path, resources file or URL.
@@ -575,7 +647,7 @@ object CPImage:
                     val fg = CPColor(Integer.decode(parts(3)))
                     val bg = CPColor(Integer.decode(parts(4)))
 
-                    CPPosPixel(CPPixel(ch, fg, Some(bg)), x, y)
+                    CPPosPixel(CPPixel(ch, fg, Option(bg)), x, y)
                 catch
                     case e: Exception => E(s"Invalid CSV file format at line $idx: $src", e)
             })
@@ -614,7 +686,7 @@ object CPImage:
                 val bgG = unsigned(bb.get)
                 val bgB= unsigned(bb.get)
                 val fg = CPColor(fgR, fgG, fgB)
-                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Some(CPColor(bgR, bgG, bgB)) // Transparency background.
+                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB)) // Transparency background.
                 val px = if ch == ' ' then CPPixel.XRAY else CPPixel(ch, fg, bg)
                 layer.set(x, y, px)
                 idx += 1
@@ -669,16 +741,14 @@ object CPImage:
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       */
     def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_BG): Unit =
-        require(fps < 1_000)
+        require(fps < 1_000, "FPS must be < 1,000.")
         val frameDim = imgs.head.getDim
         require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
-        val w = frameDim.width
-        val h = frameDim.height
-        val dim = CPDim(w + 8, h + 8)
+        val dim = CPDim(frameDim.w + 8, frameDim.h + 8)
         CPEngine.init(
             CPGameInfo(
-                name = s"Animation Preview (${w}x$h)",
-                initDim = Some(dim),
+                name = s"Animation Preview (${frameDim.w}x${frameDim.h})",
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -686,16 +756,13 @@ object CPImage:
         try
             val ani = CPAnimation.filmStrip("ani", 1_000 / fps, true, false, imgs)
             val spr = CPAnimationSprite("spr", Seq(ani), 4, 4, 0, "ani")
-            CPEngine.rootLog().info(s"Animation preview [" +
-                s"frames=${imgs.size}, " +
-                s"frameDim=$frameDim, " +
-                s"]")
+            CPEngine.rootLog().info(s"Animation preview [frames=${imgs.size}, frameDim=$frameDim]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 spr, // Animation we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()
@@ -712,24 +779,20 @@ object CPImage:
         val dim = imgDim + 8
         CPEngine.init(
             CPGameInfo(
-                name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.width}x${imgDim.height})",
-                initDim = Some(dim),
+                name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.w}x${imgDim.h})",
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
         )
         try
-            CPEngine.rootLog().info(s"Image preview [" +
-                s"origin=${img.getOrigin}, " +
-                s"dim=${img.getDim}, " +
-                s"class=${img.getClass.getName}" +
-            s"]")
+            CPEngine.rootLog().info(s"Image preview [origin=${img.getOrigin}, dim=${img.getDim}, class=${img.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()

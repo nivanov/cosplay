@@ -36,8 +36,8 @@ import impl.CPUtils
   * Font descriptor.
   *
   * Font is an asset. Just like other assets such as [[CPImage images]], [[CPSound sounds]], [[CPAnimation animations]] or
-  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPSceneObject scene objects]]
-  * that are managed and governed by the game engine. Assets are typically created outside of the game engine and
+  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]]
+  * that are managed and governed by the game engine. Assets are typically created outside the game loop and
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
@@ -129,24 +129,24 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @return Image as a rendering of the given string with this font.
       */
     def renderSeq(ss: Seq[String], fg: CPColor, bg: Option[CPColor] = None, align: Int = 0): CPImage =
-        require(ss.nonEmpty)
-        require(align == -1 || align == 0 || align == 1)
+        require(ss.nonEmpty, "Sequence of text lines cannot be empty.")
+        require(align == -1 || align == 0 || align == 1, "Align value must be -1, 1 or 1.")
 
         if ss.sizeIs == 1 then render(ss.head, fg, bg)
         else
             val imgs: Seq[CPImage] = ss.map(render(_, fg, bg))
-            val maxW = imgs.maxBy(_.getWidth).getWidth
+            val maxW = imgs.maxBy(_.w).w
             val bgPx = CPPixel(' ', fg, bg)
 
             def doAlign(img: CPImage): CPImage =
-                val w = img.getWidth
+                val w = img.w
                 val d = maxW - w
                 if d == 0 then img
-                    else if align == -1 then img.resizeByInsets(CPInsets(0, 0, 0, d), bgPx)
-                    else if align == 1 then img.resizeByInsets(CPInsets(0, d, 0, 0), bgPx)
+                    else if align == -1 then img.cropByInsets(CPInsets(0, 0, 0, d), bgPx)
+                    else if align == 1 then img.cropByInsets(CPInsets(0, d, 0, 0), bgPx)
                     else
                         val half1 = d / 2
                         val half2 = d - half1
-                        img.resizeByInsets(CPInsets(0, half1, 0, half2), bgPx) // align == 0
+                        img.cropByInsets(CPInsets(0, half1, 0, half2), bgPx) // align == 0
 
             imgs.tail.foldLeft(doAlign(imgs.head))((a, b) => a.stitchBelow(doAlign(b), bgPx))

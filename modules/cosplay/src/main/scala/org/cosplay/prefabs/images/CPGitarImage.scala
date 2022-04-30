@@ -38,8 +38,8 @@ import CPPixel.*
 /**
   * http://www.afn.org/~afn39695/andersso.htm
   */
-val CPGitarImage = CPImage.load(
-    "prefab/images/gitar.txt",
+val CPGuitarImage = CPImage.load(
+    "prefab/images/guitar.txt",
     // 45x8
     (px, _, _) => px.char match
         case 'x' => ' '&C_BLACK
@@ -52,6 +52,6 @@ val CPGitarImage = CPImage.load(
 /**
   * Previews image using the built-in image viewer.
   */
-@main def previewGitarImage(): Unit =
-    CPImage.previewImage(CPGitarImage)
+@main def previewGuitarImage(): Unit =
+    CPImage.previewImage(CPGuitarImage)
     sys.exit(0)

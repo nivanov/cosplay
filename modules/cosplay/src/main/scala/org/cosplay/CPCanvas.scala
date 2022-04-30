@@ -45,7 +45,7 @@ import scala.collection.mutable
   * For each game frame, the game engine creates a new empty canvas for all scene objects to draw on.
   * This canvas is available to scene objects via [[CPSceneObjectContext.getCanvas]] method. Game engine
   * then compares previous canvas and this one to determine which areas of the terminal need redrawing.
-  * You can also create the canvas object outside of game loop using companion object methods.
+  * You can also create the canvas object outside game loop using companion object methods.
   *
   * Canvas `(0,0)` coordinate point is located in the top left corner. X-axis goes to the right and Y-axis
   * points down. Every drawn pixel on the canvas also has a Z-index or depth. Pixel with larger or equal
@@ -59,7 +59,7 @@ import scala.collection.mutable
   * be done manually, especially if they are dynamically redrawn on each frame update.
   *
   * This class provides many methods for basic line and rectangular drawing, circle and polylines, anti-aliasing,
-  * "color" fill in, and much more. Most functions have multiple overriden variants with different parameters so that they
+  * "color" fill in, and much more. Most functions have multiple overridden variants with different parameters so that they
   * can be easily used in different contexts. Note also that this class deals primarily with line ASCII art and has
   * only few functions like [[antialias() antialiasing]] for the solid ASCII art.
   *
@@ -74,7 +74,7 @@ import scala.collection.mutable
   *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Susie_Oviatt.html Susie Oviatt]]
   *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Rowan_Crawford.html Rowan Crawford]]
   *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Normand_Veilleux.html Normand Veilleux]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Targon.htmlm Targon]]
+  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Targon.html Targon]]
   *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Hayley_Wakenshaw.html Hayley Wakenshaw]]
   *
   * See also the following resources for general ASCII art collections:
@@ -82,7 +82,7 @@ import scala.collection.mutable
   *  - https://www.asciiart.eu/
   *  - https://asciiart.website
   *  - https://www.incredibleart.org/links/ascii.html
-  *  - http://www.afn.org/~afn39695/collect.htm
+  *  - http://www.afn.org/~afn39695/collect.html
   *  - http://blocktronics.org/
   *  - http://ansiart.com/
   *  - http://www.ascii-art.de/
@@ -105,30 +105,60 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     final val dim: CPDim = pane.getDim
 
     /** Width of this canvas. */
-    final val width: Int = dim.width
+    final val width: Int = dim.w
+
+    /** Width of this canvas (shortcut API). */
+    final val w: Int = dim.w
+
+    /** Width of this canvas as float (shortcut API). */
+    final val wF: Float = dim.wF
 
     /** Height of this canvas. */
-    final val height: Int = dim.height
+    final val height: Int = dim.h
+
+    /** Height of this canvas (shortcut API). */
+    final val h: Int = dim.h
+
+    /** Height of this canvas as float (shortcut API). */
+    final val hF: Float = dim.hF
 
     /** Maximum X-coordinate of this canvas. */
     final val xMax = width - 1
 
+    /** Maximum X-coordinate of this canvas as a float. */
+    final lazy val xMaxF = xMax.toFloat
+
     /** Maximum Y-coordinate of this canvas. */
     final val yMax = height - 1
+
+    /** Maximum Y-coordinate of this canvas as a float. */
+    final lazy val yMaxF = yMax.toFloat
 
     /** Minimum X-coordinate of this canvas (always zero). */
     final val xMin = 0
 
+    /** Minimum X-coordinate of this canvas (always zero) as a float. */
+    final lazy val xMinF = 0f
+
     /** Minimum Y-coordinate of this canvas (always zero). */
     final val yMin = 0
 
+    /** Minimum Y-coordinate of this canvas (always zero) as a float. */
+    final lazy val yMinF = 0f
+
     /** X-coordinate of the center point of this canvas. */
-    final val centerX = xMax / 2
+    final val xCenter = xMax / 2
+
+    /** X-coordinate of the center point of this canvas as a float. */
+    final lazy val xCenterF = xMaxF / 2
 
     /** Y-coordinate of the center point of this canvas. */
-    final val centerY = yMax / 2
+    final val yCenter = yMax / 2
 
-    /** Recatangle object (shape) for this canvas. */
+    /** Y-coordinate of the center point of this canvas as a float. */
+    final val yCenterF = yMaxF / 2
+
+    /** Rectangle object (shape) for this canvas. */
     final val rect = new CPRect(0, 0, dim)
 
     /**
@@ -142,25 +172,25 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Antialiases solid ascii-art canvas region. Works `only` for solid ascii-art.
       *
-      * The antialiasing algorithm is based on implemenation described at
+      * The antialiasing algorithm is based on implementation described at
       * https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
       *
       * @param x X-coordinate of the top level corner of the region.
       * @param y Y-coordinate of the top level corner of the region.
       * @param dim Dimension of the region.
-      * @param isBlank Predicate defining whether a partcular pixel should be considered as a blank.
+      * @param isBlank Predicate defining whether a particular pixel should be considered as a blank.
       */
     def antialias(x: Int, y: Int, dim: CPDim, isBlank: CPPixel => Boolean): Unit =
-        antialias(x, y, x + dim.width - 1, y + dim.height - 1, isBlank)
+        antialias(x, y, x + dim.w - 1, y + dim.h - 1, isBlank)
 
     /**
-      * Antialiases solid ascii-art canvas region. Works `only` for solid ascii-art.
+      * Antialiases solid ASCII-art canvas region. Works `only` for solid ASCII-art.
       *
-      * The antialiasing algorithm is based on implemenation described at
+      * The antialiasing algorithm is based on implementation described at
       * https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
       *
       * @param rect Region to antialias.
-      * @param isBlank Predicate defining whether a partcular pixel should be considered as a blank.
+      * @param isBlank Predicate defining whether a particular pixel should be considered as a blank.
       */
     def antialias(rect: CPRect, isBlank: CPPixel => Boolean): Unit =
         rect.loop((x, y) => {
@@ -170,8 +200,8 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
             if !isBlank(px) then
                 val top = y > 0 && !isBlank(pane.getPixel(x, y - 1).px)
                 val left = x > 0 && !isBlank(pane.getPixel(x - 1, y).px)
-                val bottom = y < dim.height - 1 && !isBlank(pane.getPixel(x, y + 1).px)
-                val right = x < dim.width - 1 && !isBlank(pane.getPixel(x + 1, y).px)
+                val bottom = y < dim.h - 1 && !isBlank(pane.getPixel(x, y + 1).px)
+                val right = x < dim.w - 1 && !isBlank(pane.getPixel(x + 1, y).px)
 
                 pane.addPixel(px.withChar(CPUtils.aaChar(px.char, top, left, bottom, right)), x, y, zpx.z)
             else
@@ -179,16 +209,16 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         })
 
     /**
-      * Antialiasing solid ascii-art canvas region. Works `only` for solid ascii-art.
+      * Antialiasing solid ASCII-art canvas region. Works `only` for solid ASCII-art.
       *
-      * The antialiasing algorithm is based on implemenation described at
+      * The antialiasing algorithm is based on implementation described at
       * https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
       *
       * @param x1 X-coordinate of the top left corner for the region.
       * @param y1 Y-coordinate of the top left corner for the region.
       * @param x2 X-coordinate of the bottom right corner for the region.
       * @param y2 Y-coordinate of the bottom right corner for the region.
-      * @param isBlank Predicate defining whether a partcular pixel should be considered as a blank.
+      * @param isBlank Predicate defining whether a particular pixel should be considered as a blank.
       */
     def antialias(x1: Int, y1: Int, x2: Int, y2: Int, isBlank: CPPixel => Boolean): Unit =
         antialias(new CPRect(x1 -> y1, x2 -> y2), isBlank)
@@ -198,7 +228,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *
       * @param x X-coordinate of the circle center.
       * @param y Y-coordinate of the circle center.
-      * @param radius Radius of the cricle in characters.
+      * @param radius Radius of the circle in characters.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param xFactor Horizontal squishing factor. Values below 1.0 will squish the circle horizontally. Values
       *     above 1.0 will stretch the circle horizontally. X-factor of `2.0` and Y-factor of `1.0` typically produce
@@ -208,9 +238,9 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *     correct circle using 1x2 monospace font.
       * @param densFactor Density factor defines "granularity" of drawing. Values below `1.0` allow to compensate
       *     for discreetness of ASCII graphics. Typically, value of `0.5` is a good default.
-      * @param fillGaps Wehther or not to fill potential gaps in circle drawning. Filling the gaps
-      *     slows down the drawning but produces a better looking circle.
-      * @param pxs Sequence of pixels to use in drawning the circle.
+      * @param fillGaps Whether or not to fill potential gaps in circle drawing. Filling the gaps
+      *     slows down the drawing but produces a better looking circle.
+      * @param pxs Sequence of pixels to use in drawing the circle.
       */
     def drawCircle(x: Int, y: Int, radius: Int, z: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, pxs: Seq[CPPixel]): CPRect =
         var i = 0
@@ -222,11 +252,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         })
 
     /**
-      * Draws a circle with a single pixel.
+      * Draws a circle with a single pixel returning its final shape.
       *
       * @param x X-coordinate of the circle center.
       * @param y Y-coordinate of the circle center.
-      * @param radius Radius of the cricle in characters.
+      * @param radius Radius of the circle in characters.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param xFactor Horizontal squishing factor. Values below 1.0 will squish the circle horizontally. Values
       *     above 1.0 will stretch the circle horizontally. X-factor of `2.0` and Y-factor of `1.0` typically produce
@@ -236,19 +266,19 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *     correct circle using 1x2 monospace font.
       * @param densFactor Density factor defines "granularity" of drawing. Values below `1.0` allow to compensate
       *     for discreetness of ASCII graphics. Typically, value of `0.5` is a good default.
-      * @param fillGaps Wehther or not to fill potential gaps in circle drawning. Filling the gaps
-      *     slows down the drawning but produces a better looking circle.
-      * @param px Pixel to draw a cricle with.
+      * @param fillGaps Whether or not to fill potential gaps in circle drawing. Filling the gaps
+      *     slows down the drawing but produces a better looking circle.
+      * @param px Pixel to draw a circle with.
       */
     def drawCircle(x: Int, y: Int, radius: Int, z: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, px: CPPixel): CPRect =
         drawCircle(x, y, radius, z, xFactor, yFactor, densFactor, fillGaps, (_, _) => px)
 
     /**
-      * Draws a circle.
+      * Draws a circle returning its final shape returning its final shape.
       *
       * @param x X-coordinate of the circle center.
       * @param y Y-coordinate of the circle center.
-      * @param radius Radius of the cricle in characters.
+      * @param radius Radius of the circle in characters.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param xFactor Horizontal squishing factor. Values below 1.0 will squish the circle horizontally. Values
       *     above 1.0 will stretch the circle horizontally. X-factor of `2.0` and Y-factor of `1.0` typically produce
@@ -258,8 +288,8 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *     correct circle using 1x2 monospace font.
       * @param densFactor Density factor defines "granularity" of drawing. Values below `1.0` allow to compensate
       *     for discreetness of ASCII graphics. Typically, value of `0.5` is a good default.
-      * @param fillGaps Wehther or not to fill potential gaps in circle drawning. Filling the gaps
-      *     slows down the drawning but produces a better looking circle.
+      * @param fillGaps Whether or not to fill potential gaps in circle drawing. Filling the gaps
+      *     slows down the drawing but produces a better looking circle.
       * @param pxf Pixel producer function.
       */
     def drawCircle(x: Int, y: Int, radius: Int, z: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, pxf: (Int, Int) => CPPixel): CPRect =
@@ -287,7 +317,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *
       * @param x X-coordinate of the circle center.
       * @param y Y-coordinate of the circle center.
-      * @param radius Radius of the cricle in characters.
+      * @param radius Radius of the circle in characters.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param xFactor Horizontal squishing factor. Values below 1.0 will squish the circle horizontally. Values
       *     above 1.0 will stretch the circle horizontally. X-factor of `2.0` and Y-factor of `1.0` typically produce
@@ -297,8 +327,8 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       *     correct circle using 1x2 monospace font.
       * @param densFactor Density factor defines "granularity" of drawing. Values below `1.0` allow to compensate
       *     for discreetness of ASCII graphics. Typically, value of `0.5` is a good default.
-      * @param fillGaps Wehther or not to fill potential gaps in circle drawning. Filling the gaps
-      *     slows down the drawning but produces a better looking circle.
+      * @param fillGaps Whether or not to fill potential gaps in circle drawing. Filling the gaps
+      *     slows down the drawing but produces a better looking circle.
       * @param pxf Pixel producer function.
       */
     def circlePixels(x: Int, y: Int, radius: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, pxf: (Int, Int) => CPPixel): mutable.ArrayBuffer[CPPosPixel] =
@@ -637,11 +667,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param bx X-coordinate of the end point.
       * @param by Y-coordinate of the end point.
       * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param pxf Pixel producting function.
+      * @param pxf Pixel producing function.
       * @param style Art style to use. Default value is [[ART_BLOCK]].
       */
     def drawArtLine(ax: Int, ay: Int, bx: Int, by: Int, z: Int, pxf: CPPosPixel => CPPixel, style: ArtLineStyle = ART_BLOCK): Unit =
-        var pxs = artLinePixels(ax, ay, bx, by, z, pxf, style)
+        val pxs = artLinePixels(ax, ay, bx, by, z, pxf, style)
         if pxs.nonEmpty then
             // Actually drawing.
             pxs.foreach(ppx => drawPixel(pxf(ppx), ppx.x, ppx.y, z))
@@ -708,17 +738,27 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Draws a single pixel.
       * 
-      * @param newPx Pixel to draw.
+      * @param px Pixel to draw.
       * @param x X-coordinate of the pixel.
       * @param y Y-coordinate of the pixel.
       * @param z Z-index for this pixel. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       */
-    def drawPixel(newPx: CPPixel, x: Int, y: Int, z: Int): Unit =
-        if !newPx.isXray && clip.contains(x, y) then
+    def drawPixel(px: CPPixel, x: Int, y: Int, z: Int): Unit =
+        if !px.isXray && clip.contains(x, y) then
             val currZpx = pane.getPixel(x, y)
             if z >= currZpx.z then
-                val normPx = if newPx.bg.isEmpty then newPx.withBg(currZpx.bg.orElse(pane.getBgPixel.bg)) else newPx
+                val normPx = if px.bg.isEmpty then px.withBg(currZpx.bg.orElse(pane.getBgPixel.bg)) else px
                 pane.addPixel(normPx, x, y, z)
+
+    /**
+      * Draws a single pixel.
+      *
+      * @param px Pixel to draw.
+      * @param xy Xy-coordinate tuple of the pixel.
+      * @param z Z-index for this pixel. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
+      */
+    def drawPixel(px: CPPixel, xy: (Int, Int), z: Int): Unit =
+        drawPixel(px, xy._1, xy._2, z)
 
     /**
       * Draws a pixel.
@@ -765,7 +805,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param px Pixel to use for drawing.
       */
     def drawRect(x1: Int, y1: Int, dim: CPDim, z: Int, px: CPPixel): Unit =
-        drawRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, (_, _) => px)
+        drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, (_, _) => px)
 
     /**
       * Draws a rectangle.
@@ -806,7 +846,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Pixel producing function.
       */
     def drawRect(x1: Int, y1: Int, dim: CPDim, z: Int, pxf: (Int, Int) => CPPixel): Unit =
-        drawRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, pxf)
+        drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, pxf)
 
     /**
       * Draws rectangle.
@@ -819,7 +859,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         drawRect(rect.xMin, rect.yMin, rect.xMax, rect.yMax, z, pxf)
 
     /**
-      * Draws rectangle with speific pixels for lines and corners.
+      * Draws rectangle with specific pixels for lines and corners.
       *
       * @param x1 X-coordinate of the left top corner.
       * @param y1 Y-coordinate of the left top corner.
@@ -868,7 +908,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         )
 
     /**
-      * Draws rectangle with speific pixels for lines and corners.
+      * Draws rectangle with specific pixels for lines and corners.
       *
       * @param x1 X-coordinate of the top left corner.
       * @param y1 Y-coordinate of the top left corner.
@@ -897,10 +937,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         rightTop: CPPixel,
         right: CPPixel
     ): Unit =
-        drawRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
+        drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
 
     /**
-      * Draws rectangle with speific pixels for lines and corners.
+      * Draws rectangle with specific pixels for lines and corners.
       *
       * @param rect Rectangle shape.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
@@ -1005,7 +1045,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param destY New Y-coordinate of the top left corner.
       */
     def copyRect(x1: Int, y1: Int, dim: CPDim, destX: Int, destY: Int): Unit =
-        copyRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, destX, destY)
+        copyRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, destX, destY)
 
     /**
       * Copies one rectangular areas in this canvas to another location in the same canvas.
@@ -1025,7 +1065,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Pixel producing function.
       */
     def drawPolyline(pts: Seq[(Int, Int)], z: Int, pxf: (Int, Int) => CPPixel): Unit =
-        require(pts.length >= 2)
+        require(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         val max = pts.length - 1
         var i = 0
@@ -1043,7 +1083,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Pixel producing function.
       */
     def polylinePixels(pts: Seq[(Int, Int)], z: Int, pxf: (Int, Int) => CPPixel): mutable.ArrayBuffer[CPPosPixel] =
-        require(pts.length >= 2)
+        require(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         val buf = new mutable.ArrayBuffer[CPPosPixel]()
         val max = pts.length - 1
@@ -1081,7 +1121,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param style Art style to use. Default value is [[ART_BLOCK]].
       */
     def drawArtPolyline(pts: Seq[(Int, Int)], z: Int, pxf: CPPosPixel => CPPixel, style: ArtLineStyle = ART_BLOCK): Unit =
-        require(pts.length >= 2)
+        require(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         for (i <- 0 until pts.length - 1)
             val pt1 = pts(i)
@@ -1096,7 +1136,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param x2 X-coordinate of the bottom right corner of the shape.
       * @param y2 Y-coordinate of the bottom right corner of the shape.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param px Pixel to fill in wigth.
+      * @param px Pixel to fill in with.
       */
     def fillRect(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, px: CPPixel): Unit =
         fillRect(x1, y1, x2, y2, z, (_, _) => px)
@@ -1111,7 +1151,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param px Pixel to fill in with.
       */
     def fillRect(x1: Int, y1: Int, dim: CPDim, z: Int, px: CPPixel): Unit =
-        fillRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, (_, _) => px)
+        fillRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, (_, _) => px)
 
     /**
       * Fills the rectangular shape.
@@ -1123,7 +1163,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Fill in pixel producing function.
       */
     def fillRect(x1: Int, y1: Int, dim: CPDim, z: Int, pxf: (Int, Int) => CPPixel): Unit =
-        fillRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, pxf)
+        fillRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, pxf)
 
     /**
       * Fills the rectangular shape.
@@ -1135,12 +1175,12 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxs Pixels to use for filling in.
       */
     def fillRect(x1: Int, y1: Int, dim: CPDim, z: Int, pxs: Seq[CPPixel]): Unit =
-        fillRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, z, pxs)
+        fillRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, pxs)
 
     /**
       * Fills the rectangular shape.
       *
-      * @param rect Rechnagle shape to fill in.
+      * @param rect Rectangle shape to fill in.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param px Pixel to use for filling in.
       */
@@ -1164,7 +1204,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     /**
       * Fills the rectangular shape.
       *
-      * @param rect Recntagular shape to fill in.
+      * @param rect Rectangular shape to fill in.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param pxf Fill in pixel producing function.
       */
@@ -1186,7 +1226,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
 
     /**
       * Fills the rectangular shape.
-      * @param rect Rectangluar shapre to fill in.
+      * @param rect Rectangular shape to fill in.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param pxs Pixels to use for filling in.
       */
@@ -1219,7 +1259,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param y1 Y-coordinate of the top left corner of the region.
       */
     def capture(x1: Int, y1: Int, dim: CPDim): CPImage =
-        captureRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, _.px)
+        captureRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, _.px)
 
     /**
       * Captures given rectangular canvas region as an image. This method will capture only
@@ -1259,7 +1299,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param zdx Z-indexes to capture.
       */
     def capture(x1: Int, y1: Int, dim: CPDim, zdx: Int*): CPImage =
-        captureRect(x1, y1, x1 + dim.width - 1, y1 + dim.height - 1, zpx => if zdx.contains(zpx.z) then zpx.px else CPPixel.XRAY)
+        captureRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, zpx => if zdx.contains(zpx.z) then zpx.px else CPPixel.XRAY)
 
     /**
       * Captures given rectangular canvas region as an image. This method will capture only specified
@@ -1283,8 +1323,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     private def captureRect(x1: Int, y1: Int, x2: Int, y2: Int, f: CPZPixel => CPPixel): CPImage =
         val rect = new CPRect(x1 -> y1, x2 -> y2)
         val arr = new CPArray2D[CPPixel](rect.dim)
-        rect.loop((x, y) => arr.set(x - rect.x, y - rect.y, f(pane.getPixel(x, y))))
-        CPArrayImage(arr, "code")
+        rect.loop((x, y) =>
+            val px = if isValid(x, y) then f(pane.getPixel(x, y)) else CPPixel.XRAY
+            arr.set(x - rect.x, y - rect.y, px)
+        )
+        new CPArrayImage(arr, "code")
 
     /**
       * Draws given string using [[CPSystemFont system font]].
@@ -1294,7 +1337,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param str String to draw.
       * @param fg Foreground color.
-      * @param bg Optional background color. Default value is `NOne`.
+      * @param bg Optional background color. Default value is `None`.
       */
     def drawString(x: Int, y: Int, z: Int, str: String, fg: CPColor, bg: Option[CPColor] = None): Unit =
         var i = 0
@@ -1321,7 +1364,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param y Y-coordinate of the start point.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param len Number of pixel to draw.
-      * @param pxf Pixel producting function.
+      * @param pxf Pixel producing function.
       */
     def drawPixels(x: Int, y: Int, z: Int, len: Int, pxf: (Int, Int) => CPPixel): Unit =
         var i = 0
@@ -1415,7 +1458,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         drawBorder(x1, y1, x2, y2, z, hor, corner, ver, corner, hor, corner, ver, corner, title, titleX, titleY)
 
 /**
-  * Compantion object with utility functions.
+  * Companion object with utility functions.
   */
 object CPCanvas:
     /**
@@ -1440,7 +1483,7 @@ object CPCanvas:
         case ART_BLOCK
 
         /**
-          * Antialiazed, smoothed out style:
+          * Antialiased, smoothed out style:
           * {{{
           *     ART_SMOOTH
           *  +-------------+

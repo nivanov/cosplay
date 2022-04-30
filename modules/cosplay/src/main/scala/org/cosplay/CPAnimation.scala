@@ -18,9 +18,10 @@
 package org.cosplay
 
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.CPKeyboardKey.*
-import org.cosplay.impl.CPUtils
+import CPColor.*
+import CPPixel.*
+import CPKeyboardKey.*
+import impl.CPUtils
 
 /*
    _________            ______________
@@ -42,18 +43,18 @@ import org.cosplay.impl.CPUtils
   * has an [[CPImage image]] and the index of its position in the sequence of key frames. Animation
   * produces a key frame given animation [[CPAnimationContext context]] via method [[keyFrame()]]. Note
   * that animation definition is abstracted out from the way it is rendered. The same animation can be
-  * rendered differently. Once such rendering is implemented by the built-in sprite [[CPAnimationSprite]] class.
+  * rendered differently. One such rendering is implemented by the built-in sprite [[CPAnimationSprite]] class.
   *
   * Animation is an asset. Just like other assets such as [[CPImage images]], [[CPSound sounds]], [[CPFont fonts]] or
-  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPSceneObject scene objects]]
-  * that are managed and governed by the game engine. Assets are typically created outside of the game engine and
+  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]]
+  * that are managed and governed by the game engine. Assets are typically created outside the game loop and
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
   * Class [[CPAnimationSprite]] provides convenient built-in support for animation-driven sprites. In most
   * cases you will to use or extend this sprite class to work with this animation.
   *
-  * Companion object also provides factory methods that produce often used types of animation:
+  * Note that companion object provides factory methods that produce often used types of animation:
   *  - [[CPAnimation.timeBased()]]
   *  - [[CPAnimation.filmStrip()]]
   *
@@ -83,9 +84,9 @@ import org.cosplay.impl.CPUtils
   *  - Use discrete animation as an artistic tool. When used properly and consistently it can result
   *    in a unique visual design of the game.
   *
-  * ### Different ways to animate
+  * ### Different Ways To Animate
   * In CosPlay there are different ways one could implement animated scene objects. In the end, all of these
-  * approaches deliver the same result but each individual technique is tailor-made for a specific animation type:
+  * approaches deliver similar results but each individual technique is tailor-made for a specific animation type:
   *  - **Animated Sprites**
   *  - [[CPParticle Particle Effects]]
   *  - [[CPCanvas Canvas Drawing]]
@@ -101,18 +102,18 @@ import org.cosplay.impl.CPUtils
   * banking left or right, taking off or landing are ideally suited for sprite-based animation as they can
   * easily be defined as a short sequence of individual images.
   *
-  * ### Particle effects
+  * ### Particle Effects
   * [[CPParticle Particle effect]] animation is based on the concept of a [[CPPixel pixel]]-based particle and particle
   * emitter. Particle emitter emits particles. Each particle and its emitter have a fully programmable behavior.
   * The key characteristic of particle effect animation is the randomness over the large number of individual elements
-  * that you can easily implement using fully programmable particles and emitters.
+  * that you can easily model and implement using fully programmable particles and emitters.
   *
   * In our airplane example, lets consider how one could implement the explosion when the airplane is hit with
   * the missile. One could potentially implement such animated explosion as a long sequence of images but such
   * process would be very tidies and lack the desired randomness. Particle effect-based animation fits the bill
   * perfectly in such cases allowing to implement such random explosion animation in just a few lines of code.
   *
-  * ### Canvas drawing
+  * ### Canvas Drawing
   * Sometime, a simple drawing on the [[CPCanvas canvas]] is all that's needed for a desired animation. Consider
   * how one could implement a laser strike in our airplane example. A laser strike can be defined as a variable
   * length line of pixel shown for a split second. The best way to implement it is with one line of code using
@@ -205,7 +206,7 @@ abstract class CPAnimation(id: String) extends CPGameObject(id) with CPAsset:
   * Companion object containing factory methods.
   */
 object CPAnimation:
-    private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
+    private final val DFLT_BG = '.'&&(C_GRAY2, C_GRAY1)
 
     /**
       * Previews given animation.
@@ -247,7 +248,6 @@ object CPAnimation:
       * @see [[CPImage.previewImage()]]
       */
     def previewAnimation(ani: CPAnimation, frameDim: CPDim, emuTerm: Boolean = true, bg: CPPixel = DFLT_BG): Unit =
-        if bg.bg.isDefined then System.setProperty("COSPLAY_TERM_BG_RGB", bg.bg.get.rgb.toString)
         val dim = frameDim + 8
         CPEngine.init(
             CPGameInfo(
@@ -265,7 +265,7 @@ object CPAnimation:
                 Option(dim),
                 bg,
                 spr, // Animation we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()
@@ -347,9 +347,9 @@ object CPAnimation:
                     None
 
     /**
-      * Creates new film-strip animation with given parameters.
+      * Creates new filmstrip animation with given parameters.
       *
-      * Film-strip animation is a variation of time-based animation where all key frames have the same
+      * filmstrip animation is a variation of time-based animation where all key frames have the same
       * duration, like in a movie, hence the name.
       *
       * @param id Unique ID of the animation.

@@ -42,8 +42,21 @@ import prefabs.shaders.*
 /**
   * Code example for image functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:image_carousel exec:java
+  * }}}
+  *
   * @see [[CPImage]]
   * @see [[CPArrayImage]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPImageCarouselExample:
     // Images for the carousel.
@@ -57,21 +70,45 @@ object CPImageCarouselExample:
         CPCastleImage.trimBg(),
         CPGlobeImage,
         CPHelicopterImage.trimBg(),
+        CPAstronautImage.trimBg(),
         CPOceanLinerImage,
         CPPlaneImage.trimBg(),
         CPSaturnImage.trimBg(),
         CPSkullImage.trimBg(),
         CPTruckImage.trimBg(),
-        CPGitarImage,
+        CPBananaImage.trimBg(),
+        CPBatImage.trimBg(),
+        CPCrownImage.trimBg(),
+        CPDolphinImage.trimBg(),
+        CPGameBoyImage.trimBg(),
+        CPGrimReaperImage.trimBg(),
+        CPIceCreamImage.trimBg(),
+        CPSunGlassesImage.trimBg(),
+        CPSwordImage.trimBg(),
+        CPFlamingoImage.trimBg(),
+        CPCalculatorImage.trimBg(),
+        CPCarImage.trimBg(),
+        CPUmbrellaImage.trimBg(),
+        CPSpaceShipImage.trimBg(),
+        CPBedImage.trimBg(),
+        CPMoonImage.trimBg(),
+        CPKnifeImage.trimBg(),
+        CPTntImage.trimBg(),
+        CPCactusImage.trimBg(),
+        CPShieldImage.trimBg(),
+        CPCloudImage,
+        CPTornadoImage.trimBg(),
+        CPGuitarImage,
         CPSpeckImage
     )
-    private val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+    private val BLUE_BLACK = CPColor("0x00000F")
+    private val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
 
     class CarouselSprite(img: CPImage, viewDim: CPDim) extends CPSceneObject:
-        private final val centerY = (viewDim.height - img.getHeight) / 2
-        private final val centerX = (viewDim.width - img.getWidth) / 2
-        private final val leftOffScrX = -(img.getWidth + 1)
-        private final val rightOffScrX = viewDim.width
+        private final val centerY = (viewDim.h - img.h) / 2
+        private final val centerX = (viewDim.w - img.w) / 2
+        private final val leftOffScrX = -(img.w + 1)
+        private final val rightOffScrX = viewDim.w
         private final val stepX = 1.0f
         private val fadeInShdr = new CPFadeInShader(false, 2000, bgPx, autoStart = false)
         private val fadeOutShdr = new CPFadeOutShader(false, 1000, bgPx, onFinish = _ => setVisible(false))
@@ -119,10 +156,10 @@ object CPImageCarouselExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val maxImgW = imgs.maxBy(_.getDim.width).getWidth
-        val maxImgH = imgs.maxBy(_.getDim.height).getHeight
+        val maxImgW = imgs.maxBy(_.getDim.w).getWidth
+        val maxImgH = imgs.maxBy(_.getDim.h).getHeight
 
-        val ctrlImg = CPArrayImage(
+        val ctrlImg = new CPArrayImage(
             prepSeq(
                 """
                   |              LEFT            RIGHT
@@ -138,8 +175,8 @@ object CPImageCarouselExample:
                 case _ => ch.toUpper&C_DARK_ORANGE
         ).trimBg()
 
-        val dim = CPDim(maxImgW + 8 * 2, maxImgH + ctrlImg.getHeight + 4)
-        val viewDim = CPDim(dim.width, maxImgH)
+        val dim = CPDim(maxImgW + 8 * 2, maxImgH + ctrlImg.h + 4)
+        val viewDim = CPDim(dim.w, maxImgH)
         var sprIdx = 0
         val sprs = imgs.map(img => new CarouselSprite(img, viewDim)).toIndexedSeq
 
@@ -159,8 +196,7 @@ object CPImageCarouselExample:
                     curSpr.fadeOutToRight()
                     sprIdx = if sprIdx == sprs.size - 1 then 0 else sprIdx + 1
                     sprs(sprIdx).fadeInFromLeft()
-            // Exit the game on 'q' press.
-            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'q' press.
+            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'Q' press.
             case _ => ()
         )
 
@@ -169,7 +205,7 @@ object CPImageCarouselExample:
                 // Control sprites.
                 Seq(
                     // Control image/label.
-                    CPStaticImageSprite((dim.width - ctrlImg.getWidth) / 2, dim.height - ctrlImg.getHeight - 2, 0, ctrlImg),
+                    CPStaticImageSprite((dim.w - ctrlImg.w) / 2, dim.h - ctrlImg.h - 2, 0, ctrlImg),
                     kbCtrl,
                     // Just for the initial scene fade-in effect.
                     new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
@@ -187,7 +223,7 @@ object CPImageCarouselExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

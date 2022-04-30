@@ -35,11 +35,11 @@ import impl.CPUtils
 /**
   * Scene object that has no rendering content of its own.
   *
-  * This type of sprites is typically used for shaders-only rendering, e.g. fade in of the entire screen, etc.
-  * Off-screen sprite has XY-coordinate set to `(0,0)` and its Z-index set to zero. Its dimension
-  * set to [[CPDim.ZERO]] and it shape set to [[CPRect.ZERO]] as well.
+  * This type of sprites is typically used for keyboard handlers or shaders-only rendering, e.g. fade in of the entire
+  * screen, etc. Off-screen sprite has its visible flag set to `false`, XY-coordinate set to `(0,0)` and its Z-index
+  * set to zero. Its dimension set to [[CPDim.ZERO]] and it shape set to [[CPRect.ZERO]] as well.
   *
-  * Since this is an off-screen sprite the method [[CPSceneObject.render()]] will never
+  * Since this is an off-screen, invisible sprite the method [[CPSceneObject.render()]] will never
   * be called. Use [[CPSceneObject.update()]] callback, if necessary, instead and make sure to
   * call `super.update(...)`.
   *
@@ -60,9 +60,9 @@ import impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
-  * @param shaders Optional set of shaders for this sprite.
+  * @param shaders Optional sequence of shaders for this sprite.
   */
-class CPOffScreenSprite(id: String = s"off-scr-spr-${CPUtils.guid6}", shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+class CPOffScreenSprite(id: String = s"off-scr-spr-${CPRand.guid6}", shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
     setVisible(false)
 
     /**
@@ -70,14 +70,14 @@ class CPOffScreenSprite(id: String = s"off-scr-spr-${CPUtils.guid6}", shaders: S
       *
       * @param shaders Set of shaders for this sprite.
       */
-    def this(shaders: Seq[CPShader]) = this(CPUtils.guid6, shaders)
+    def this(shaders: Seq[CPShader]) = this(CPRand.guid6, shaders)
 
     /**
       * Creates off-screen sprite with default ID and given shaders.
       *
       * @param shader Shader for this sprite.
       */
-    def this(shader: CPShader) = this(CPUtils.guid6, Seq(shader))
+    def this(shader: CPShader) = this(CPRand.guid6, Seq(shader))
 
     /** @inheritdoc */
     override def getX: Int = 0
@@ -91,3 +91,17 @@ class CPOffScreenSprite(id: String = s"off-scr-spr-${CPUtils.guid6}", shaders: S
     override def getRect: CPRect = CPRect.ZERO
     /** @inheritdoc */
     override def getShaders: Seq[CPShader] = shaders
+
+/**
+  * Companion object with utility functions.
+  */
+object CPOffScreenSprite:
+    /**
+      * Convenient shortcut to create off-screen sprite with a function that takes scene object context.
+      *
+      * @param f Function that takes scene object context to perform an action on each [[CPSceneObject.update()]]
+      *     callback.
+      */
+    def apply(f: CPSceneObjectContext ⇒ Unit): CPOffScreenSprite =
+        new CPOffScreenSprite():
+            override def update(ctx: CPSceneObjectContext): Unit = f(ctx)

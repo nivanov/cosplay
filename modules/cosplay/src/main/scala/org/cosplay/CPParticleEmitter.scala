@@ -48,8 +48,8 @@ import impl.CPUtils
   * multiple independent particle sprites.
   *
   * Particle emitter is an asset. Just like other assets such as [[CPFont fonts]], [[CPImage images]], [[CPAnimation animations]] or
-  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPSceneObject scene objects]]
-  * that are managed and governed by the game engine. Assets are typically created outside of the game engine and
+  * [[CPVideo videos]] they are not managed or governed by the CosPlay game engine unlike [[CPScene scenes]] and [[CPSceneObject scene objects]]
+  * that are managed and governed by the game engine. Assets are typically created outside the game loop and
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
@@ -60,7 +60,7 @@ import impl.CPUtils
   * @example See [[org.cosplay.examples.particle.CPParticleExample CPParticleExample]] class for the example of
   *     using particle effect. 
   */
-abstract class CPParticleEmitter(id: String = s"part-emitter-${CPUtils.guid6}", tags: Set[String] = Set.empty) extends CPGameObject(id, tags) with CPAsset:
+abstract class CPParticleEmitter(id: String = s"part-emitter-${CPRand.guid6}", tags: Set[String] = Set.empty) extends CPGameObject(id, tags) with CPAsset:
     private var paused = true
 
     /** @inheritdoc */

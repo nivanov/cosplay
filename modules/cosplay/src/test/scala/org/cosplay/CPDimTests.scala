@@ -29,11 +29,11 @@ object CPDimTests:
     def dimTest(): Unit =
         val dim1 = CPDim(5, 5)
         val dim2: CPDim = dim1 + 5
-        assertTrue(dim2.width == 10 && dim2.height == 10)
+        assertTrue(dim2.w == 10 && dim2.h == 10)
 
         val dim3 = CPDim(5, 5)
         val dim4: CPDim = dim3 + dim1
-        assertTrue(dim4.width == 10 && dim4.height == 10)
+        assertTrue(dim4.w == 10 && dim4.h == 10)
         assertTrue(dim4 > dim1 && dim4 > dim3)
 
         val dim5 = CPDim.ZERO

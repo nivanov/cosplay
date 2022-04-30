@@ -40,11 +40,12 @@ import scala.util.Using
 /**
   * 40 frames from [[https://ascii.co.uk/animated-art/3d-tunnel-animated-ascii-art.html]].
   *
-  * @note Use [[https://www.ffmpeg.org/]] to convert video into separate JPEG images.
-  * @note Use [[https://github.com/cslarsen/jp2a]] or similar to convert individual JPEG into ASCII.
   * @see [[CPVideo]]
   * @see [[CPVideoSprite]]
   * @see [[CPVideoSpriteListener]]
+  * @note Use [[https://www.ffmpeg.org/]] to convert video into separate JPEG images.
+  * @note Use [[https://github.com/cslarsen/jp2a]] or similar to convert individual JPEG into ASCII.
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-tunnel-animated-ascii-art.html"):
     private final val RAW_FOOTAGE = "prefab/video/tunnel.txt" // Under 'resources' folder...
@@ -55,8 +56,9 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
             Using.resource(Source.fromInputStream(rsrc, "UTF-8")) { rs =>
                 val lines = rs.getLines().toSeq.filter(_.trim.nonEmpty) // Load all lines and skip empty ones.
                 lines.grouped(lines.size / FRAME_CNT).toSeq.map { frameLines =>
-                    val c = C_SKY_BLUE1
-                    CPArrayImage(frameLines, (ch, _, _) => {
+                    // Psychedelic mode :-)
+                    val c = CPRand.rand(CS_X11_ALL)
+                    new CPArrayImage(frameLines, (ch, _, _) => {
                         ch match
                             // Color it for more contrast.
                             case '.' => ch&c.darker(0.4)
@@ -71,7 +73,7 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
                 }
             }
         else
-            E(s"Unable to find or load: $RAW_FOOTAGE")
+            throw Exception(s"Unable to find or load: $RAW_FOOTAGE")
     }
 
     override val getFrameCount: Int = frames.size

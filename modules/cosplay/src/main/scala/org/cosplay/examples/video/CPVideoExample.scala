@@ -18,10 +18,11 @@
 package org.cosplay.examples.video
 
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.CPKeyboardKey.*
-import org.cosplay.CPStyledString.styleStr
-import org.cosplay.prefabs.shaders.*
+import CPColor.*
+import CPPixel.*
+import CPKeyboardKey.*
+import CPStyledString.styleStr
+import prefabs.shaders.*
 
 /*
    _________            ______________
@@ -39,11 +40,24 @@ import org.cosplay.prefabs.shaders.*
 /**
   * Code example for video functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:video exec:java
+  * }}}
+  *
+  * @see [[CPVideo]]
+  * @see [[CPVideoSprite]]
+  * @see [[CPVideoSpriteListener]]
   * @note Use [[https://www.ffmpeg.org/]] to convert video into separate JPEG images.
   * @note Use [[https://github.com/cslarsen/jp2a]] or similar to convert individual JPEG into ASCII.
-  * @see [[CPVideo]]      
-  * @see [[CPVideoSprite]]
-  * @see [[CPVideoSpriteListener]]      
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPVideoExample:
     /**
@@ -63,12 +77,9 @@ object CPVideoExample:
         ).trimBg()
         val vidDim = CPVideoClip.getFrameDim
         val ctrlDim = ctrlImg.getDim
-        val dim = CPDim(
-            (vidDim.width + 8).max(ctrlDim.width + 4),
-            vidDim.height + 8
-        )
-        val vidSpr = new CPVideoSprite("spr", CPVideoClip, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val dim = CPDim((vidDim.w + 8).max(ctrlDim.w + 4), vidDim.h + 8)
+        val vidSpr = new CPVideoSprite(vid = CPVideoClip, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         // Create the scene.
         val sc = new CPScene("scene", Option(dim), bgPx,
             vidSpr,
@@ -77,10 +88,10 @@ object CPVideoExample:
                 case KEY_SPACE => vidSpr.toggle()
                 case _ => ()
             ),
-            new CPStaticImageSprite((dim.width - ctrlDim.width) / 2, dim.height - 4, 0, ctrlImg), // Help label.
+            new CPStaticImageSprite((dim.w - ctrlDim.w) / 2, dim.h - 4, 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.
         )
 
         // Initialize the engine.

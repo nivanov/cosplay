@@ -86,8 +86,13 @@ trait CPSceneObjectContext extends CPBaseContext:
     def getCamera: CPCamera
 
     /**
+      * Checks whether the object this context is attached to is visible.
+      */
+    def isVisible: Boolean
+
+    /**
       * Gets current camera frame. Camera frame is always a sub-region of the scene. In most cases, it is
-      * smaller of scene dimension and terminal dimension.
+      * a smaller value between scene dimension and terminal dimension.
       */
     def getCameraFrame: CPRect
 
@@ -95,6 +100,15 @@ trait CPSceneObjectContext extends CPBaseContext:
       * Exits the [[CPEngine.startGame()]] method.
       */
     def exitGame(): Unit
+
+    /**
+      * Schedules given function to run at least `delayMs` milliseconds later.
+      *
+      * @param delayMs Minimum number of milliseconds before given function will run. Note that the actual
+      *         delay can be bigger but never smaller than this parameter.
+      * @param f A function to run later.
+      */
+    def runLater(delayMs: Long, f: CPBaseContext ⇒ Unit): Unit
 
     /**
       * Deletes given scene object after this update cycle. Change will be visible only
@@ -165,6 +179,18 @@ trait CPSceneObjectContext extends CPBaseContext:
       * Gets current frame's keyboard event.
       */
     def getKbEvent: Option[CPKeyboardEvent]
+
+    /**
+      * Checks if the current frame's keyboard event, if any, contains given keyboard key.
+      *
+      * @param key Keyboard key to check.
+      * @see [[getKbEvent]]
+      * @see [[CPKeyboardEvent.key]]
+      */
+    def isKbKey(key: CPKeyboardKey): Boolean =
+        getKbEvent match
+            case Some(k) ⇒ k.key == key
+            case None ⇒ false
 
     /**
       * Tests whether or not current object is a input keyboard focus owner.

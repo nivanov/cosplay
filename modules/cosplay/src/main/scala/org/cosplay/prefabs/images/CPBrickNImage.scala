@@ -19,6 +19,7 @@ package org.cosplay.prefabs.images
 
 import org.cosplay.*
 import CPColor.*
+import CPPixel.*
 import CPArrayImage.*
 
 /*
@@ -45,11 +46,11 @@ object CPBrickNImage extends CPArrayImage(
       |_[___{__
     """),
     (ch, _, _) => ch match
-        case '^' => CPPixel('^', C_DARK_OLIVE_GREEN1, C_GREEN_YELLOW)
-        case '"' => CPPixel('"', C_GREEN1, C_GREEN_YELLOW)
-        case '{' => CPPixel('[', C_SANDY_BROWN, C_DARK_ORANGE3)
-        case '-' => CPPixel('_', C_SANDY_BROWN, C_DARK_ORANGE3)
-        case c => CPPixel(c, C_MAROON, C_DARK_ORANGE3)
+        case '^' => '^'&&(C_DARK_OLIVE_GREEN1, C_GREEN_YELLOW)
+        case '"' => '"'&&(C_GREEN1, C_GREEN_YELLOW)
+        case '{' => '['&&(C_SANDY_BROWN, C_DARK_ORANGE3)
+        case '-' => '_'&&(C_SANDY_BROWN, C_DARK_ORANGE3)
+        case c ⇒ c&&(C_MAROON, C_DARK_ORANGE3)
 )
 
 /**

@@ -53,14 +53,14 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
 /**
   * CosPlay game engine.
   *
-  * Game engine is mostly an internal object and it is only used at the beginning of the game. It provides
+  * Game engine is mostly an internal object, and it is only used at the beginning of the game. It provides
   * variety of utility and miscellaneous methods for games.
   *
   * Most CosPlay games follow this basic game organization:
   * {{{
-  *import org.cosplay.*
+  * import org.cosplay.*
   *
-  *object Game:
+  * object Game:
   *    def main(args: Array[String]): Unit =
   *        // Initialize the engine.
   *        CPEngine.init(
@@ -89,12 +89,29 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   *  - Once you have all scenes constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
   *  - Make sure to call [[CPEngine.dispose()]] method upon exit from [[CPEngine.startGame()]] method.
   *
+  * ### System Properties
+  * CosPlay game engine supports the following system properties that control various aspects of its
+  * operation. Note that these properties must be set before method [[CPEngine.init()]] is called:
+  *
+  * | System Property | Value Type | Description  |
+  * | ----------------| ---------- | ------------ |
+  * | `COSPLAY_EMUTERM_FONT_NAME` | `String` | Applies to the built-in terminal emulator only. Specifies the font name to use. |
+  * | `COSPLAY_EMUTERM_FONT_SIZE` | `Int` | Applies to the built-in terminal emulator only. Specifies the font size to use. |
+  * | `COSPLAY_EMUTERM_CH_WIDTH_OFFSET` | `Int` | Applies to the built-in terminal emulator only. Specifies character width offset. Can be positive or negative. Default is zero. |
+  * | `COSPLAY_EMUTERM_CH_HEIGHT_OFFSET` | `Int` | Applies to the built-in terminal emulator only. Specifies character height offset. Can be positive or negative. Default is zero. |
+  * | `COSPLAY_EMUTERM_ANTIALIAS` | | Applies to the built-in terminal emulator only. If system property is present - the font rendering will use antialiasing. By default, no antialiasing is used. |
+  * | `COSPLAY_FORCE_8BIT_COLOR`| `Boolean` | Forces the automatic conversion from 24-bit color to 8-bit color. Only needed when running in the native terminal that does not support 24-bit color. Default value is `false`. |
+  * | `COSPLAY_TERM_CLASSNAME`| `String` | Fully qualified class name for the custom terminal emulator implementation. Class must implement [[org.cosplay.CPTerminal]] trait. |
+  *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
   *     working with game engine including initialization and game start.
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPEngine:
     private enum State:
         case ENG_INIT, ENG_STARTED, ENG_STOPPED
+
+    private case class LaterRun(tsMs: Long, f: CPBaseContext ⇒ Unit)
 
     private val FPS = 30 // Target FPS.
     private val FRAME_NANOS = 1_000_000_000 / FPS
@@ -119,6 +136,7 @@ object CPEngine:
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
     private var savedEx: Throwable = _
+    private var stats: Option[CPRenderStats] = None
     @volatile private var state = State.ENG_INIT
     @volatile private var playing = true
 
@@ -149,7 +167,7 @@ object CPEngine:
       * Log4J2 wrapper for the log. Mirrors all log output to log4j2 rolling file appended
       * under ${user.home}/.cosplay/log folder.
       *
-      * @param impl
+      * @param impl Log implementation.
       */
     private class Log4jWrapper(val impl: CPLog) extends CPLog :
         private val log4j = LogManager.getLogger(impl.getCategory)
@@ -250,7 +268,7 @@ object CPEngine:
 
         // Initialize JavaFX toolkit for audio.
         try com.sun.javafx.application.PlatformImpl.startup(() => ())
-        catch case e: Exception => E(s"Failed to start JavaFX.", e)
+        catch case e: Exception => E(s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io).", e)
 
         this.gameInfo = gameInfo
 
@@ -328,7 +346,7 @@ object CPEngine:
       * @param dim
       */
     private def updateTitle(dim: CPDim): Unit =
-        term.setTitle(s"CosPlay - ${gameInfo.name} v${gameInfo.semVer}, ${dim.width}x${dim.height}")
+        term.setTitle(s"CosPlay - ${gameInfo.name} v${gameInfo.semVer}, ${dim.w}x${dim.h}")
 
     /**
       *
@@ -372,6 +390,18 @@ object CPEngine:
         if term != null then term.dispose()
         state = State.ENG_STOPPED
         if savedEx != null then savedEx.printStackTrace()
+
+    /**
+      * Shortcut for the following two calls:
+      * {{{
+      *     pauseGame()
+      *     openLog()
+      * }}}
+      * This is a convenient call to programmatically start the debugging session.
+      */
+    def startDebug(): Unit =
+        pauseGame()
+        openLog()
 
     /**
       * Pauses the game.
@@ -471,6 +501,13 @@ object CPEngine:
         engLog.info("Game exited.")
 
     /**
+      * Gets current rendering statistics, if available.
+      *
+      * @see [[CPSceneObjectContext.getRenderStats]]
+      */
+    def getRenderStats: Option[CPRenderStats] = stats
+
+    /**
       * Adds the rendering stats listener.
       *
       * @param f Listener to add.
@@ -518,7 +555,7 @@ object CPEngine:
 
         import CPStyledString.styleStr
 
-        val w = camRect.width.min(canv.dim.width)
+        val w = camRect.w.min(canv.dim.w)
         val fg = C_BLACK
         val bg = C_WHITE
         val sep = styleStr("-----------+-------", bg.darker(0.3), bg)
@@ -583,6 +620,7 @@ object CPEngine:
         var lastTermDim = CPDim.ZERO
         val msgQ = mutable.HashMap.empty[String, mutable.Buffer[AnyRef]]
         val delayedQ = mutable.ArrayBuffer.empty[() => Unit]
+        val laterRuns = mutable.ArrayBuffer.empty[LaterRun]
         val gameCache = CPCache(delayedQ)
         val sceneCache = CPCache(delayedQ)
         val collidedBuf = mutable.ArrayBuffer.empty[CPSceneObject]
@@ -593,7 +631,6 @@ object CPEngine:
         var camY = 0
         var camPanX = 0f
         var camPanY = 0f
-        var stats: Option[CPRenderStats] = None
         var fpsList: List[Int] = Nil
         var fpsCnt = 0
         var fpsSum = 0
@@ -681,7 +718,9 @@ object CPEngine:
                     }
 
                 // Handle pause/resume of the game.
-                if pause then pauseMux.synchronized(waitForWakeup())
+                pauseMux.synchronized {
+                    if pause then waitForWakeup()
+                }
 
                 // Transition the state of the scene, if necessary.
                 lifecycleStart(sc)
@@ -689,13 +728,13 @@ object CPEngine:
                 // Visible scene objects sorted by layer.
                 val objs = sc.objects.values.toSeq.sortBy(_.getZ)
 
-                if objs.isEmpty then E(s"Scene has no objects: ${sc.getId}")
+                if objs.isEmpty then E(s"Scene '${sc.getId}' has no objects.")
 
                 // Transition objects states.
                 objs.foreach(lifecycleStart)
 
-                val termW = termDim.width
-                val termH = termDim.height
+                val termW = termDim.w
+                val termH = termDim.h
                 val redraw = forceRedraw || scFrameCnt == 0 || lastTermDim != termDim
                 forceRedraw = false
                 lastTermDim = termDim
@@ -783,6 +822,21 @@ object CPEngine:
 
                 if camRect == null then camRect = new CPRect(camX, camY, termDim).intersectWith(new CPRect(0, 0, scDim))
 
+                // Handle later runs.
+                val toRun = laterRuns.filter(_.tsMs <= frameMs)
+                if toRun.nonEmpty then
+                    val bc = new CPBaseContext:
+                        override def getLog: CPLog = scLog
+                        override def getGameCache: CPCache = gameCache
+                        override def getSceneCache: CPCache = sceneCache
+                        override def getFrameCount: Long = frameCnt
+                        override def getSceneFrameCount: Long = scFrameCnt
+                        override def getStartGameMs: Long = startMs
+                        override def getStartSceneMs: Long = startScMs
+                        override def getFrameMs: Long = frameMs
+                    toRun.foreach(_.f(bc))
+                    laterRuns.filterInPlace(_.tsMs >= frameMs)
+
                 class CPSceneObjectContextImpl(canv: CPCanvas) extends CPSceneObjectContext :
                     private var myId: String = _
                     private var myObj: CPSceneObject = _
@@ -808,7 +862,7 @@ object CPEngine:
 
                         delayedQ += (() => {
                             if cloDelCur then
-                                scenes.remove(cloId) match
+                                scenes.remove(sc.getId) match
                                     case Some(s) => lifecycleStop(s)
                                     case _ => ()
                             else
@@ -824,6 +878,7 @@ object CPEngine:
                             kbFocusOwner = None
                             scFrameCnt = 0
                             stopFrame = true
+                            laterRuns.clear()
                             startScMs = System.currentTimeMillis()
                             logSceneSwitch(sc)
                         })
@@ -832,6 +887,7 @@ object CPEngine:
                     override def getLog: CPLog = myLog
                     override def getOwner: CPSceneObject = myObj
                     override def getCamera: CPCamera = sc.getCamera
+                    override def isVisible: Boolean = myObj.isVisible
                     override def getCameraFrame: CPRect = camRect
                     override def getCanvas: CPCanvas = canv
                     override def getFrameCount: Long = frameCnt
@@ -842,11 +898,8 @@ object CPEngine:
                     override def getGameCache: CPCache = gameCache
                     override def getSceneCache: CPCache = sceneCache
                     override def getFrameMs: Long = frameMs
-                    override def getKbEvent: Option[CPKeyboardEvent] =
-                        if kbFocusOwner.isEmpty || kbFocusOwner.get == myId then
-                            kbEvt
-                        else
-                            None
+                    override def runLater(delayMs: Long, f: CPBaseContext ⇒ Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
+                    override def getKbEvent: Option[CPKeyboardEvent] = if kbFocusOwner.isEmpty || kbFocusOwner.get == myId then kbEvt else None
                     override def sendMessage(id: String, msgs: AnyRef*): Unit =
                         val cloId = id
                         val cloMsgs = msgs
@@ -896,7 +949,8 @@ object CPEngine:
                                     case Some(s) =>
                                         engLog.info(s"Scene deleted: ${s.getId}")
                                         lifecycleStop(s)
-                                    case _ => ()
+                                    case _ =>
+                                        engLog.warn(s"Ignored an attempt to delete unknown scene: $colId")
                             })
                     override def deleteObject(id: String): Unit =
                         val colId = id
@@ -905,7 +959,8 @@ object CPEngine:
                                 case Some(obj) =>
                                     engLog.info(s"Scene object deleted from '${sc.getId}' scene: ${obj.toExtStr}")
                                     lifecycleStop(obj)
-                                case _ => ()
+                                case _ =>
+                                    engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $colId")
                         })
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
                         if myObj.getCollisionRect.isEmpty then E(s"Current object does not provide collision shape: ${myObj.getId}")
@@ -921,7 +976,7 @@ object CPEngine:
 
                 var visObjCnt = 0
 
-                // Update all objects (including invisible and outside of the frame) in the scene.
+                // Update all objects (including invisible and outside the frame) in the scene.
                 for (obj <- objs if !stopFrame)
                     ctx.setSceneObject(obj)
                     obj.update(ctx)
@@ -949,12 +1004,12 @@ object CPEngine:
                                     if focusRect.containsHor(objRect) then
                                         if cam.isMinPanningX then 0 else camPanX
                                     else
-                                        (objRect.centerX - focusRect.centerX).toFloat
+                                        (objRect.xCenter - focusRect.xCenter).toFloat
                                 camPanY =
                                     if focusRect.containsVer(objRect) then
                                         if cam.isMinPanningY then 0 else camPanY
                                     else
-                                        (objRect.centerY - focusRect.centerY).toFloat
+                                        (objRect.yCenter - focusRect.yCenter).toFloat
                             // If not redrawing and tracking object cannot be found - leave the camera frame as is.
                             case None => ()
 
@@ -979,7 +1034,7 @@ object CPEngine:
                     obj.render(ctx)
                     visObjCnt += 1
 
-                // Shader pass for all objects (including invisible and outside of the frame).
+                // Shader pass for all objects (including invisible and outside the frame).
                 for (obj <- objs if !stopFrame)
                     val shaders = obj.getShaders
                     if shaders.nonEmpty then

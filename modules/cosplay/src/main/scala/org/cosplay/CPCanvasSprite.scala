@@ -37,7 +37,12 @@ import impl.CPUtils
   *
   * Canvas sprite takes dimension of the current [[CPSceneObjectContext.getCameraFrame camera frame]].
   * That allows its [[CPSceneObject.render()]] method, the only one method that needs to be implemented by
-  * the sub-type, to draw on entire visible space of the terminal.
+  * the sub-type, to draw on entire camera frame of the terminal.
+  *
+  * Note that by default this sprite sets its position and dimension equal to the entire camera frame. This may
+  * affect shaders attached to this sprite if they are configured to work with object vs. entire frame since
+  * this sprite will report its size as entire camera frame size. Shaders that work with this sprite should
+  * account for it.
   *
   * ### Sprites
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
@@ -55,10 +60,9 @@ import impl.CPUtils
   *  - [[CPParticleSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of this sprite.
-  * @param shaders Optional set of shaders for this sprite.
+  * @param id Optional ID of this sprite.
   */
-abstract class CPCanvasSprite(id: String, shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+abstract class CPCanvasSprite(id: String = s"canv-spr-${CPRand.guid6}") extends CPSceneObject(id):
     private var rect: CPRect = _
 
     /** @inheritdoc */
@@ -71,5 +75,3 @@ abstract class CPCanvasSprite(id: String, shaders: Seq[CPShader] = Seq.empty) ex
     override def getZ: Int = 0
     /** @inheritdoc */
     override def getDim: CPDim = if rect == null then CPDim.ZERO else rect.dim
-    /** @inheritdoc */
-    override def getShaders: Seq[CPShader] = shaders

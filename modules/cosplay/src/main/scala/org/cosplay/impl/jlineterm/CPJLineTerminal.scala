@@ -18,15 +18,18 @@
 package org.cosplay.impl.jlineterm
 
 import org.apache.commons.lang3.SystemUtils
-import org.cosplay.impl.CPAnsi.*
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.impl.guilog.CPGuiLog
-import org.cosplay.impl.*
+import CPColor.*
+import CPPixel.*
+import impl.CPAnsi.*
+import impl.guilog.CPGuiLog
+import impl.*
 import org.jline.terminal.*
 import org.jline.utils.NonBlockingReader
 
 import java.io.*
+import java.util.logging.LogManager
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /*
@@ -49,12 +52,12 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private var term: Terminal = _
     private var writer: PrintWriter = _
     private var reader: NonBlockingReader = _
-    private val buf = new StringBuilder(10000)
+    private val buf = new mutable.StringBuilder(10000)
     private val bg = gameInfo.termBg
     private var last: CPArray2D[CPPixel] = _ // Copy of the last drawn camera frame.
     private val root = new CPGuiLog("")
     // Background pixel in case terminal window is bigger than camera frame.
-    private val bgPx = CPPixel(' ', CPColor.C_BLACK, bg)
+    private val bgPx = ' '&&(CPColor.C_BLACK, bg)
     @volatile private var curDim: CPDim = _
     private var termDimReader: TermDimensionReader = _
 
@@ -74,20 +77,20 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
 
         /**
           *
-              */
+          */
         private def centerCamRect(): CPRect =
             val camDim = camRect.dim
             var x, y = 0
-            var w = camDim.width
-            var h = camDim.height
-            if termDim.width > camDim.width then
-                x = (termDim.width - camDim.width) / 2
-            else if termDim.width < camDim.width then
-                w = termDim.width
-            if termDim.height > camDim.height then
-                y = (termDim.height - camDim.height) / 2
-            else if termDim.height < camDim.height then
-                h = termDim.height
+            var w = camDim.w
+            var h = camDim.h
+            if termDim.w > camDim.w then
+                x = (termDim.w - camDim.w) / 2
+            else if termDim.w < camDim.w then
+                w = termDim.w
+            if termDim.h > camDim.h then
+                y = (termDim.h - camDim.h) / 2
+            else if termDim.h < camDim.h then
+                h = termDim.h
             CPRect(x, y, w, h)
 
         def getPx(x: Int, y: Int): CPPixel = if termCamRect.contains(x, y) then scr.getPixel(x + xOff, y + yOff).px else bgPx
@@ -114,7 +117,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 catch case _: InterruptedException => ()
 
     override def render(scr: CPScreen, camRect: CPRect, forceRedraw: Boolean): Unit =
-        require(scr.getRect.contains(camRect))
+        require(scr.getRect.contains(camRect), s"scr=${scr.getRect}, cam=$camRect")
 
         val termDim = getDim
         val termScr = new TermScreen(termDim, scr, camRect)
@@ -227,7 +230,6 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         write(RESET_ALL) // Drop any CSI remaining settings.
         write(CUR_REST) // Restore cursor position.
         write(CUR_SHOW) // Show the cursor back.
-        write(CLR_SCR)
         if SystemUtils.IS_OS_WINDOWS then write(WIN_TERM_RESET) // Windows-specific terminal reset.
         term.close() // Close terminal to reset it to original state.
 

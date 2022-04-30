@@ -42,20 +42,20 @@ enum CPLogLevel:
   * Game logging interface.
   *
   * As CosPlay games are terminal-based they require a different approach to logging since CosPlay cannot
-  * use standard terminal output (which will conflict the game rendering). All the log that goes through this
-  * game logging interface always ends up in two places:
+  * use the standard terminal output (it will conflict the game rendering). All the log that goes through this
+  * interface always ends up in two places:
   *  - Built-in GUI-based log viewer that can be opened in any game by pressing `Ctrl-l` at any time.
   *  - In `*.txt` log files under `${USER_HOME}/.cosplay/log/xxx` directory, where `xxx` is the [[CPGameInfo.name name]]
   *    of the game.
   *
   * The instance of this logger is available to any scene object via [[CPSceneObjectContext.getLog]]. You can also
-  * get a root logger at any time outside of the frame update pass via [[CPEngine.rootLog()]] method. Note that
-  * additionally to the standard familiar logging APIs this interface supports log throttling that's very
-  * important in games since most of the game logic gets "touched" up to 30 FPS and log throttling is essential for not
-  * overflowing logging.
+  * get a root logger at any time outside the frame update pass via [[CPEngine.rootLog()]] method. Note that
+  * additionally to the standard familiar logging APIs this interface supports log throttling that's
+  * important in games since most of the game logic gets "touched" up to 30 times a second and log throttling is
+  * essential for not overflowing logging.
   *
-  * Underneath the implementation is using Log4j2 library. You can supply your own `log4j2.xml` file on the
-  * classpath of your game. The default Log4j2 configuration is the following:
+  * Underneath the implementation is using latest [[https://logging.apache.org/log4j/2.x/ Log4j2]] library. You can
+  * supply your own `log4j2.xml` file on the classpath of your game. Here's the default Log4j2 configuration:
   * {{{
   * <Configuration status="INFO" strict="true">
   *     <Appenders>
@@ -160,6 +160,33 @@ trait CPLog:
       * Gets category for this logger.
       */
     def getCategory: String
+
+    /**
+      * Logs rendering performance snapshot, if available from the [[CPEngine.getRenderStats game engine]].
+      *
+      * When debugging a performance issue with the game, it is often useful to periodically log
+      * game engine performance metrics like actual FPS, LOW 1%, etc. to analyze them later in log files in correlation
+      * with other game activity. This is a convenient method to quickly log a snapshot of the current game
+      * engine performance numbers.
+      */
+    def snapshot(): Unit =
+        CPEngine.getRenderStats match
+            case Some(stats) ⇒
+                val tbl = CPAsciiTable("Frm#", "ScFrm#", "FPS", "AvgFPS", "Low1%FPS", "UsrTime", "SysTime", "Obj#", "VisObj#")
+                tbl += (
+                    stats.frameCount,
+                    stats.sceneFrameCount,
+                    stats.fps,
+                    stats.avgFps,
+                    stats.low1PctFps,
+                    s"${stats.userTimeNs / 1_000_000}ms",
+                    s"${stats.sysTimeNs / 1_000_000}ms",
+                    stats.objCount,
+                    stats.visObjCount
+                )
+                tbl.trace(this, Option("Performance snapshot:"))
+
+            case None ⇒ ()
 
     /**
       * Logs object with [[CPLogLevel.TRACE]] level.

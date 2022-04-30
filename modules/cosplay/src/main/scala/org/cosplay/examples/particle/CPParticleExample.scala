@@ -23,7 +23,7 @@ import CPColor.*
 import CPKeyboardKey.*
 import CPStyledString.styleStr
 import CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
@@ -41,10 +41,23 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /**
   * Code example for particle effect functionality.
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:particle exec:java
+  * }}}
   * 
   * @see [[CPParticle]]
   * @see [[CPParticleEmitter]]
   * @see [[CPParticleSprite]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPParticleExample:
     /**
@@ -53,12 +66,12 @@ object CPParticleExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val w = 100
         val h = 40
         val dim = CPDim(w, h)
 
-        val bomb = CPArrayImage(
+        val bomb = new CPArrayImage(
             prepSeq("""
               | )
               | (
@@ -88,6 +101,7 @@ object CPParticleExample:
 
         val boomSnd = CPSound(src = "sounds/examples/boom.wav")
         val COLORS = CS_X11_REDS ++ CS_X11_ORANGES ++ CS_X11_CYANS
+        val MAX_AGE = 15
 
         /**
           *
@@ -97,19 +111,18 @@ object CPParticleExample:
           * @param dy Delta for Y-axis.
           */
         class KaboomParticle(initX: Int, initY: Int, dx: Float, dy: Float) extends CPParticle:
-            // Basically, defines how big the explosion (i.e. the radius of explosion) will look like.
-            private final val MAX_AGE = 15
+            // Defines the radius of explosion in terms of the particle age.
             private var x = initX.toFloat
             private var y = initY.toFloat
             // Linear color gradient, slowly dimming.
             private val cf = CPCurve.colorGradient(CPRand.rand(COLORS), C_GRAY1, MAX_AGE)
-            // Curve for slowing down the speed of particle as it moves away from the center.
+            // X-curve for slowing down the speed of particle as it moves away from the center.
             private val dxf = CPCurve.lagrangePoly(Seq(
                 x -> 1f,
                 x + (dx * MAX_AGE) / 4 -> 0.5f,
                 x + dx * MAX_AGE -> 0.3f
             ))
-            // Curve for slowing down the speed of particle as it moves away from the center.
+            // Y-curve for slowing down the speed of particle as it moves away from the center.
             private val dyf = CPCurve.lagrangePoly(Seq(
                 y -> 1f,
                 y + (dy * MAX_AGE) / 4 -> 0.4f,
@@ -128,13 +141,11 @@ object CPParticleExample:
             override def getPixel: CPPixel = CPRand.randSymbol()&cf()
             override def isAlive: Boolean = age < MAX_AGE
 
-        val bw = bomb.getDim.width
-        val bh = bomb.getDim.height
+        val bw = bomb.getDim.w
+        val bh = bomb.getDim.h
 
         val emitter = new CPParticleEmitter():
-            // Maximum age (frames) of the particle after which it "dies".
-            private final val MAX_AGE = 20
-            // Number of times emitters will emit.
+            // Number of particles this emitter will emit on each update.
             private final val GEN_SIZE = 20
             // Emit from the center of the 'bomb' sprite.
             private final val x = (w - bw) / 2 + bw / 2
@@ -152,9 +163,10 @@ object CPParticleExample:
                     )
                 else
                     Seq.empty
+
         val kaboomSpr = CPParticleSprite("kaboom", Seq(emitter))
 
-        kaboomSpr.setOnStart(Option(_ => boomSnd.playOnce()))
+        kaboomSpr.setOnStart(Option(_ => boomSnd.play()))
         kaboomSpr.setOnEnd(Option(_ => boomSnd.stop(1000)))
 
         val ctrlSpr = new CPOffScreenSprite():
@@ -173,15 +185,15 @@ object CPParticleExample:
             kaboomSpr,
             ctrlSpr,
             new CPStaticImageSprite("bomb", bombX, bombY, 0, bomb),
-            new CPStaticImageSprite((w - ctrlDim.width) / 2, h - 4, 0, ctrlImg), // Help label.
+            new CPStaticImageSprite((w - ctrlDim.w) / 2, h - 4, 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

@@ -22,7 +22,7 @@ import org.cosplay.CPCanvas.ArtLineStyle.ART_SMOOTH
 import org.cosplay.CPColor.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.*
 
@@ -43,8 +43,21 @@ import scala.collection.mutable
 
 /**
   * Code example for camera management.
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:camera exec:java
+  * }}}
+  * 
+  * @note See developer guide at [[https://cosplayengine.com]] 
   */
-//noinspection DuplicatedCode
 object CPCameraExample:
     /**
       * Entry point for JVM runtime.
@@ -52,7 +65,7 @@ object CPCameraExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel(' ', C_BLACK, C_GRAY1)
+        val bgPx = ' '&&(C_BLACK, C_GRAY1)
         val bgW = 200
         val bgH = 40
         val dim = CPDim(bgW, bgH)
@@ -115,13 +128,13 @@ object CPCameraExample:
             override def render(ctx: CPSceneObjectContext): Unit =
                 val camFrame = ctx.getCameraFrame
                 // Produce parallax effect for background sprite.
-                if lastCamFrame != null && lastCamFrame.width == camFrame.width then
+                if lastCamFrame != null && lastCamFrame.w == camFrame.w then
                     xf -= (lastCamFrame.x - camFrame.x).sign * 0.7f
                 lastCamFrame = ctx.getCameraFrame
                 super.render(ctx)
 
         // Paint the brick-like ground.
-        val brickImg = CPArrayImage(
+        val brickImg = new CPArrayImage(
             // 5x3
             prepSeq(
                 """
@@ -131,19 +144,20 @@ object CPCameraExample:
                 """
             ),
             (ch, _, _) => ch match
-                case '^' => CPPixel('^', C_DARK_GREEN, C_GREEN_YELLOW)
-                case '"' => CPPixel('@', C_GRAY3, C_GREEN_YELLOW)
-                case '{' => CPPixel('[', C_SANDY_BROWN, C_DARK_ORANGE3)
-                case '-' => CPPixel('_', C_DARK_ORANGE3, C_DARK_ORANGE3)
-                case c => CPPixel(c, C_MAROON, C_DARK_ORANGE3)
+                case '^' => '^'&&(C_DARK_GREEN, C_GREEN_YELLOW)
+                case '"' => '@'&&(C_GRAY3, C_GREEN_YELLOW)
+                case '{' => '['&&(C_SANDY_BROWN, C_DARK_ORANGE3)
+                case '-' => '_'&&(C_DARK_ORANGE3, C_DARK_ORANGE3)
+                case c => c&&(C_MAROON, C_DARK_ORANGE3)
         )
+        
         val brickCanv = CPCanvas(CPDim(bgW, 3), bgPx)
         for (i <- 0 until bgW / brickImg.getWidth) brickCanv.drawImage(brickImg, i * 5, 0, 2)
         val brickY = bgH - brickImg.getHeight
         val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, 2, brickCanv.capture())
 
         // Paint palm trees.
-        val palmImg = CPArrayImage(
+        val palmImg = new CPArrayImage(
             prepSeq(
                 """
                   |    __ _.--..--._ _
@@ -170,7 +184,7 @@ object CPCameraExample:
         // | Procedural generation of the terrain & background. |
         // +====================================================+
 
-        val ufoImg = CPArrayImage(
+        val ufoImg = new CPArrayImage(
             prepSeq(
                 """
                   |    .-""`""-.
@@ -216,9 +230,11 @@ object CPCameraExample:
         objs ++= palmSeq
 
         // Create the scene.
-        val sc = new CPScene("scene", Option(dim), bgPx, objs):
-            // Setup camera panning for 'ufo' scene object.
-            override val getCamera: CPCamera = CPCamera("ufo", new CPInsets(10, 0))
+        val sc = new CPScene("scene", Option(dim), bgPx, objs)
+        val cam = sc.getCamera
+
+        cam.setFocusTrackId(Option("ufo"))
+        cam.setFocusFrameInsets(new CPInsets(10, 0))
 
         // Initialize the engine.
         CPEngine.init(
@@ -229,7 +245,7 @@ object CPCameraExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     id = "logo",
                     Option(initDim),
                     bgPx,

@@ -17,6 +17,8 @@
 
 package org.cosplay
 
+import org.cosplay.impl.CPUtils
+
 import scala.collection.mutable
 
 /*
@@ -63,20 +65,20 @@ import scala.collection.mutable
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of the sprite.
+  * @param id Optional ID of the sprite.
   * @param emitters Set of particle emitters this sprite will use.
   * @param collidable Whether or not this sprite provides collision shape. Defualt value is `false`.
-  * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @example See [[org.cosplay.examples.particle.CPParticleExample CPParticleExample]] class for the example of
   *     using particle effect.
   */
 class CPParticleSprite(
-    id: String,
+    id: String = s"part-spr-${CPRand.guid6}",
     emitters: Seq[CPParticleEmitter],
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty
 ) extends CPSceneObject(id):
-    require(emitters.nonEmpty)
+    require(emitters.nonEmpty, "Sequence of emitters cannot be empty.")
 
     private var x = 0
     private var y = 0
@@ -106,7 +108,7 @@ class CPParticleSprite(
       * @see [[setOnEnd()]]
       */
     def setOnStart(fun: Option[CPSceneObjectContext => Unit]): Unit =
-        require(fun != null)
+        require(fun != null, "Callback cannot be 'null'.")
         onStartFun = fun
 
     /**
@@ -119,7 +121,7 @@ class CPParticleSprite(
       * @see [[setOnStart()]]
       */
     def setOnEnd(fun: Option[CPSceneObjectContext => Unit]): Unit =
-        require(fun != null)
+        require(fun != null, "Callback cannot be 'null'.")
         onEndFun = fun
 
     /**

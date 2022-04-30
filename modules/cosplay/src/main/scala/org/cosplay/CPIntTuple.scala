@@ -17,6 +17,8 @@
 
 package org.cosplay
 
+import scala.annotation.targetName
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -41,7 +43,6 @@ protected trait CPIntTuple[T](val ints: Int*):
 
     /**
       *
-      * @param ints
       */
     protected def ctor(ints: Seq[Int]): T
 
@@ -83,6 +84,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Other tuple to compare.
       * @note Tuples must have the same arity.
       */
+    @targetName("lessTuple")
     inline def <(x: CPIntTuple[_]): Boolean =
         assert(x.arity == arity)
         ints.zip(x.ints).forall(p => p._1 < p._2)
@@ -92,6 +94,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       *
       * @param x Other tuple to compare.
       */
+    @targetName("lessInt")
     inline def <(x: Int): Boolean = ints.forall(_ < x)
 
     /**
@@ -99,6 +102,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       *
       * @param x Other tuple to compare.
       */
+    @targetName("lessThenOrEqualInt")
     inline def <=(x: Int): Boolean = ints.forall(_ <= x)
 
     /**
@@ -107,6 +111,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Other tuple to compare.
       * @note Tuples must have the same arity.
       */
+    @targetName("greaterInt")
     inline def >(x: Int): Boolean = ints.forall(_ > x)
 
     /**
@@ -115,6 +120,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Other tuple to compare.
       * @note Tuples must have the same arity.
       */
+    @targetName("greaterThenOrEqualInt")
     inline def >=(x: Int): Boolean = ints.forall(_ >= x)
 
     /**
@@ -123,6 +129,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Other tuple to compare.
       * @note Tuples must have the same arity.
       */
+    @targetName("greaterTuple")
     inline def >(x: CPIntTuple[_]): Boolean =
         assert(x.arity == arity)
         ints.zip(x.ints).forall(p => p._1 > p._2)
@@ -133,6 +140,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Other tuple to compare.
       * @note Tuples must have the same arity.
       */
+    @targetName("lessThenOrEqualTuple")
     inline def <=(x: CPIntTuple[_]): Boolean =
         assert(x.arity == arity)
         ints.zip(x.ints).forall(p => p._1 <= p._2)
@@ -143,6 +151,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Other tuple to compare.
       * @note Tuples must have the same arity.
       */
+    @targetName("greaterThenOrEqualTuple")
     inline def >=(x: CPIntTuple[_]): Boolean =
         assert(x.arity == arity)
         ints.zip(x.ints).forall(p => p._1 >= p._2)
@@ -153,6 +162,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Other tuple to multiply with.
       * @note Tuples must have the same arity.
       */
+    @targetName("multiTuple")
     inline def *(x: CPIntTuple[T]): T =
         assert(x.arity == arity)
         ctor(ints.zip(x.ints).map(p => p._1 * p._2))
@@ -163,6 +173,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Other tuple to divide by.
       * @note Tuples must have the same arity.
       */
+    @targetName("divideTuple")
     inline def /(x: CPIntTuple[T]): T =
         assert(x.arity == arity)
         ctor(ints.zip(x.ints).map(p => p._1 / p._2))
@@ -173,6 +184,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Tuple to subtract.
       * @note Tuples must have the same arity.
       */
+    @targetName("minusTuple")
     inline def -(x: CPIntTuple[T]): T =
         assert(x.arity == arity)
         ctor(ints.zip(x.ints).map(p => p._1 - p._2))
@@ -183,6 +195,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Tuple to add.
       * @note Tuples must have the same arity.
       */
+    @targetName("plusTuple")
     inline def +(x: CPIntTuple[_]): T =
         assert(x.arity == arity)
         ctor(ints.zip(x.ints).map(p => p._1 + p._2))
@@ -193,6 +206,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Value to subtract.
       * @return New tuple as a result of subtraction.
       */
+    @targetName("minusInt")
     inline def -(x: Int): T = mapInt(_ - x)
 
     /**
@@ -201,6 +215,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Value to add.
       * @return New tuple as a result of addition.
       */
+    @targetName("plusInt")
     inline def +(x: Int): T = mapInt(_ + x)
 
     /**
@@ -209,6 +224,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Value to multiple by.
       * @return New tuple as a result of multiplication.
       */
+    @targetName("multiInt")
     inline def *(x: Int): T = mapInt(_ * x)
 
     /**
@@ -217,6 +233,7 @@ protected trait CPIntTuple[T](val ints: Int*):
       * @param x Value to divide by.
       * @return New tuple as a result of division.
       */
+    @targetName("divideInt")
     inline def /(x: Int): T = mapInt(_ / x)
 
     override def equals(obj: Any): Boolean = obj match

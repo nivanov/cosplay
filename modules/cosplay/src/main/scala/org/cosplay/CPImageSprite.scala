@@ -17,6 +17,8 @@
 
 package org.cosplay
 
+import org.cosplay.impl.CPUtils
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -36,7 +38,7 @@ package org.cosplay
   * This sprite can be used to render static or moving image, the same image or changing images. For
   * static unchanging images see [[CPStaticImageSprite]] for even simpler API.
   *
-  * ### Dynamic image position
+  * ### Dynamic Image Position
   * If a game is intended to work with [[CPScene adaptive scene sizing]] than all of its scene objects
   * must adapt to changing size of the scene. Image sprite provides simple and convenient way to support
   * this logic. Here's an example of using image sprite to display an image at the center of the screen
@@ -74,13 +76,13 @@ package org.cosplay
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of the sprite.
+  * @param id Optional ID of the sprite.
   * @param x Initial X-coordinate of the sprite.
   * @param y Initial Y-coordinate of the sprite.
   * @param z Z-index at which to render the image.
   * @param img The image to render. It can be changed later.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
-  * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @see [[CPStaticImageSprite]]
   * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
   *     using images.
@@ -88,7 +90,7 @@ package org.cosplay
   *     using images.
   */
 class CPImageSprite(
-    id: String,
+    id: String = s"img-spr-${CPRand.guid6}",
     x: Int,
     y: Int,
     z: Int,
@@ -139,6 +141,22 @@ class CPImageSprite(
     final val initZ: Int = z
 
     /**
+      * Initial image of the sprite.
+      *
+      * @see [[setImage()]]
+      */
+    final val initImg: CPImage = img
+
+    /**
+      * Resets this sprite to its initial XYZ-coordinates and the initial image.
+      */
+    def reset(): Unit =
+        setX(initX)
+        setY(initY)
+        setZ(initZ)
+        setImage(initImg)
+
+    /**
       * Sets current X-coordinate. This coordinate will be returned from [[getX]] method.
       *
       * @param d X-coordinate to set.
@@ -151,6 +169,16 @@ class CPImageSprite(
       * @param d Y-coordinate to set.
       */
     def setY(d: Int): Unit = myY = d
+
+    /**
+      * Sets both current XY-coordinates.
+      *
+      * @param a X-coordinate to set.
+      * @param b Y-coordinate to set.
+      */
+    def setXY(a: Int, b: Int): Unit =
+        setX(a)
+        setY(b)
 
     /**
       * Sets current Z-index. This index will be returned from [[getZ]] method.
@@ -174,7 +202,7 @@ class CPImageSprite(
     /** @inheritdoc */
     override def getCollisionRect: Option[CPRect] = Option.when(collidable)(getRect)
     /** @inheritdoc */
-    override def render(ctx: CPSceneObjectContext): Unit = ctx.getCanvas.drawImage(img, getX, getY, getZ)
+    override def render(ctx: CPSceneObjectContext): Unit = ctx.getCanvas.drawImage(myImg, getX, getY, getZ)
 
 /**
   * Companion object contains utility methods.
@@ -193,7 +221,7 @@ object CPImageSprite:
       * @param z Z-index at which to render the image.
       * @param img The image to render. It can be changed later.
       * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
-      * @param shaders Optional set of shaders for this sprite. Default value is an empty sequence.
+      * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
       * @see [[CPStaticImageSprite]]
       * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
       *     using images.
@@ -201,7 +229,7 @@ object CPImageSprite:
       *     using images.
       */
     def apply(
-        id: String,
+        id: String = s"img-spr-${CPRand.guid6}",
         xf: CPCanvas => Int,
         yf: CPCanvas => Int,
         z: Int,

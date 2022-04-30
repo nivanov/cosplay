@@ -51,16 +51,16 @@ import impl.CPUtils
   * minimum you need to implement all abstract methods and at least one of either
   * [[render()]] or [[update()]] methods.
   *
-  * Here's a basic minimal scene object implementation:
+  * Here's a basic minimal scene object implementation that prints "Hello CosPlay!" text at <code>(0,0)</code>
+  * coordinate in black color:
   * {{{
-  * object HelloSprite extends CPSceneObject:
+  * object HelloSprite extends CPSceneObject("id"):
   *     override def getX: Int = 0
   *     override def getY: Int = 0
   *     override def getZ: Int = 0
-  *     override def getDim: CPDim = CPDim(20, 5)
-  *     override def render(ctx: CPSceneContext): Unit =
+  *     override def getDim: CPDim = CPDim(15, 1)
+  *     override def render(ctx: CPSceneObjectContext): Unit =
   *         ctx.getCanvas.drawString(0, 0, 0, "Hello CosPlay!", CPColor.C_BLACK)
-  *
   * }}}
   *
   * If scene object is [[isVisible invisible]] than only [[update()]] method will be called
@@ -70,16 +70,16 @@ import impl.CPUtils
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   */
-abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id) with CPLifecycle:
+abstract class CPSceneObject(id: String = CPRand.guid6) extends CPGameObject(id) with CPLifecycle:
     private var visible = true
 
     private[cosplay] def toExtStr: String =
-        val pos = s"($getX,$getY)"
+        val xy = s"($getX,$getY)"
         val tags = s"(${getTags.mkString(",")})"
         val collide = getCollisionRect match
             case Some(rect) => rect.toString
             case None => "none"
-        s"[id=$id, tags=$tags, vis=$isVisible, pos=$pos, z=$getZ, dim=$getDim, col=$collide]"
+        s"[id=$id, tags=$tags, vis=$isVisible, xy=$xy, z=$getZ, dim=$getDim, col=$collide]"
 
     /**
       * Checks the visibility flag.
@@ -88,6 +88,10 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
       * on each frame. If object is visible and in camera frame - method [[render()]] will be called
       * as well to render itself. Note that shaders are called regardless of whether the object visible, in camera
       * frame or invisible.
+      *
+      * @see [[show()]]
+      * @see [[hide()]]
+      * @see [[setVisible()]]
       */
     def isVisible: Boolean = visible
 
@@ -95,8 +99,26 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
       * Sets visibility flag. Note that by default all scene objects are visible.
       *
       * @param vis `true` to make this object visible, `false` otherwise.
+      * @see [[show()]]
+      * @see [[hide()]]
       */
     def setVisible(vis: Boolean): Unit = visible = vis
+
+    /**
+      * Shortcut method for showing this object.
+      * Note that by default all scene objects are visible.
+      *
+      * @see [[setVisible()]]
+      */
+    def show(): Unit = visible = true
+
+    /**
+      * Shortcut method for hiding this object.
+      * Note that by default all scene objects are visible.
+      *
+      * @see [[setVisible()]]
+      */
+    def hide(): Unit = visible = false
 
     /**
       * Gets the optional list of [[CPShader shaders]] attached to this scene object. By default, returns
@@ -107,14 +129,14 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
 
     /**
       * Gets current X-coordinate of this object within dimensions of its scene. Note that returned value
-      * is allowed to be outside of scene's dimension (e.g. negative value). In such cases, the clipping of the
+      * is allowed to be outside scene's dimension (e.g. negative value). In such cases, the clipping of the
       * scene rendering will result in showing only portion or none of the object.
       */
     def getX: Int
 
     /**
       * Gets current Y-coordinate of this object within dimensions of its scene. Note that returned value
-      * is allowed to be outside of scene's dimension (e.g. negative value). In such cases, the clipping of the
+      * is allowed to be outside scene's dimension (e.g. negative value). In such cases, the clipping of the
       * scene rendering will result in showing only portion or none of the object.
       */
     def getY: Int
@@ -140,7 +162,7 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
       * @see [[getHeight]]
       * @see [[getDim]]
       */
-    inline def getWidth: Int = getDim.width
+    inline def getWidth: Int = getDim.w
 
     /**
       * Gets current height of this object.
@@ -148,7 +170,7 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
       * @see [[getWidth]]
       * @see [[getDim]]
       */
-    inline def getHeight: Int = getDim.height
+    inline def getHeight: Int = getDim.h
 
     /**
       * Gets rectangular shape of this sprite. It is basically a combination of its top-left

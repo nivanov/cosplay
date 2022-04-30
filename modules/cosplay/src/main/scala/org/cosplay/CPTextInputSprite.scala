@@ -31,16 +31,17 @@ package org.cosplay
 */
 
 import CPKeyboardKey.*
+import org.cosplay.impl.CPUtils
 
 import scala.collection.mutable
 
 /**
   * Scene object tailor-made for accepting text input.
   *
-  * This sprites acts as a classic input field: user can input text using keyboard and cursor keys.
-  * It supports skinning input (i.e. password field) as well as user-defined set of keys for submission and
-  * cancellation. You can also chain multiple text inputs together to create a auto-navigable forms.
-  * **NOTE**: this sprite works only with system font - you can't use FIGLeft fonts with this sprite.
+  * This sprite acts as a classic input field: user can input text using keyboard and cursor keys.
+  * It supports different field and buffer lengths, skinning input (i.e. password field) as well as user-defined
+  * set of keys for submission and cancellation. You can also chain multiple text inputs together to create an
+  * auto-navigable forms. **NOTE**: this sprite works only with system font - you can't use FIGLeft fonts with this sprite.
   *
   * ### Sprites
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
@@ -58,7 +59,7 @@ import scala.collection.mutable
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id ID of this sprite.
+  * @param id Optional ID of this sprite.
   * @param x X-coordinate of the top-left corner.
   * @param y Y-coordinate of the top-left corner.
   * @param z Z-index at which to render this sprite.
@@ -78,7 +79,7 @@ import scala.collection.mutable
   *     using labels and text input.
   */
 class CPTextInputSprite(
-    id: String,
+    id: String = s"input-spr-${CPRand.guid6}",
     x: Int,
     y: Int,
     z: Int,
@@ -91,8 +92,8 @@ class CPTextInputSprite(
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER)
 ) extends CPSceneObject(id):
-    require(maxBuf >= visLen)
-    require(initTxt != null)
+    require(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
+    require(initTxt != null, "Initial text cannot be 'null'.")
 
     private val dim = CPDim(visLen, 1)
     private val buf = mutable.ArrayBuffer.empty[Char]

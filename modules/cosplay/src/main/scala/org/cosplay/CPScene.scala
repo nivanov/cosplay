@@ -40,7 +40,7 @@ import org.cosplay.impl.CPContainer
   * a simple flat structure inside of the scene. Just like with any other [[CPGameObject game objects]], you can use
   * [[CPGameObject.getTags tags]] to organize scenes and scene objects.
   *
-  * ### Creating a scene
+  * ### Creating A Scene
   * Scene has a strong encapsulation contract in relation to its scene objects: you can only add initial scene objects to
   * the scene at the time of scene creation. Once scene is created, its constituent scene objects can only be
   * manipulated via methods in [[CPSceneObjectContext]] class passed to scene objects on each frame update.
@@ -63,7 +63,7 @@ import org.cosplay.impl.CPContainer
   * Note that you can dynamically add and remove scene as well as scene objects via [[CPSceneObjectContext]] instance.
   * See [[CPSceneObjectContext]] API for more details.
   *
-  * ### Scene dimension
+  * ### Scene Dimension
   * CosPlay scene can be *adaptive* or *static* in terms of its dimensions. When scene dimension
   * is set it becomes unchangeable (static) for the lifecycle of the scene and its scene objects can rely on this fact. However,
   * if scene dimension is set as `None`, it will adapt to the terminal dimension on each frame meaning that the scene's
@@ -78,7 +78,7 @@ import org.cosplay.impl.CPContainer
   * @param bgPx Background pixel of the scene. Background pixel is shown when none of the scene objects
   *     has drawn a pixel at that particular coordinate.
   * @see [[CPEngine.startGame()]]
-  * @see [[org.cosplay.prefabs.scenes.CPLogoScene]]
+  * @see [[org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene]]
   */
 open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGameObject(id) with CPLifecycle:
     private val cam = CPCamera()
@@ -92,7 +92,7 @@ open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGame
     protected def addObjects(objs: CPSceneObject*): Unit = objs.foreach(objects.add)
 
     /**
-      * Gets camera panning descriptor associated with this scene. By default, the camera panning
+      * Gets mutable camera panning descriptor associated with this scene. By default, the camera panning
       * is not attached to any scene object. You need to configure the returning camera descriptor
       * if you need camera tracking.
       */

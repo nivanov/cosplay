@@ -42,9 +42,22 @@ import org.cosplay.prefabs.shaders.*
 /**
   * Code example for shaders functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:shader exec:java
+  * }}}
+  *
   * @see [[CPShader]]
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPShaderExample:
     /**
@@ -53,11 +66,11 @@ object CPShaderExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val dim = CPDim(80, 40)
 
         // In-code image creation & "painting".
-        val bulbImg = CPArrayImage(
+        val bulbImg = new CPArrayImage(
             prepSeq("""
               |  ___
               | /   \
@@ -74,10 +87,7 @@ object CPShaderExample:
                 case _ => ch&C_WHITE
         ).trimBg()
 
-        val c1 = C_LIGHT_GREEN
-        val c2 = C_ORANGE1
-
-        val ctrlImg = CPArrayImage(
+        val ctrlImg = new CPArrayImage(
             prepSeq(
                 """
                   |                    UP
@@ -110,13 +120,15 @@ object CPShaderExample:
             override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
                 if on then
                     val canv = ctx.getCanvas
-                    val cx = objRect.centerX
-                    val cy = objRect.centerY
+                    val cx = objRect.xCenter
+                    val cy = objRect.yCenter
                     val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
                     effRect.loop((x, y) => {
                         if canv.isValid(x, y) then
                             // Account for character with/height ratio to make a proper circle...
-                            val dx = (cx - x).abs.toFloat / 1.85
+                            // NOTE: we can't get the font metrics in the native ANSI terminal so
+                            //       we use 1.85 as a general approximation.
+                            val dx = (cx - x).abs.toFloat / 1.85 
                             val dy = (cy - y).abs.toFloat
                             val r = Math.sqrt(dx * dx + dy * dy).toFloat
                             if r <= RADIUS then // Flashlight is a circular effect.
@@ -128,8 +140,8 @@ object CPShaderExample:
 
         val bulbSpr = new CPImageSprite("bulb",
             // Center it on the screen.
-            (dim.width - bulbImg.getWidth) / 2,
-            (dim.height - bulbImg.getHeight) / 2 - 5, 1, bulbImg, false, Seq(FlashLightShader)):
+            (dim.w - bulbImg.w) / 2,
+            (dim.h - bulbImg.h) / 2 - 5, 1, bulbImg, false, Seq(FlashLightShader)):
             private var x = initX.toFloat
             private var y = initY.toFloat
 
@@ -153,11 +165,11 @@ object CPShaderExample:
 
         val sc = new CPScene("scene", Option(dim), bgPx,
             bulbSpr,
-            CPStaticImageSprite((dim.width - ctrlImg.getWidth) / 2, 24, 0, ctrlImg),
+            CPStaticImageSprite((dim.w - ctrlImg.w) / 2, 24, 0, ctrlImg),
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
 
         // Initialize the engine.
@@ -167,7 +179,7 @@ object CPShaderExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

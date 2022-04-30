@@ -47,7 +47,7 @@ object CPTileMapper:
       * @param x X-coordinate of the initial tile.
       * @param y Y-coordinate of the initial tile.
       * @param map An image representing the tile map.
-      * @param tileDim The dimension of the individual tile
+      * @param tileDim The dimension of the individual tile. Note that all tiles will have to be of the same dimension.
       * @param mapping Mapping function that takes a pixel and its coordinates from the tile map and
       *     returns a scene object that should represent that tile.
       */
@@ -62,8 +62,8 @@ object CPTileMapper:
         var b = y
         val buf = mutable.ArrayBuffer.empty[CPSceneObject]
         map.loop((px, mapX, mapY) => {
-            a = x + mapX * tileDim.width
-            b = y + mapY * tileDim.height
+            a = x + mapX * tileDim.w
+            b = y + mapY * tileDim.h
             mapping(CPPosPixel(px, mapX, mapY), a, b) match
                 case Some(obj) => buf += obj
                 case None => ()

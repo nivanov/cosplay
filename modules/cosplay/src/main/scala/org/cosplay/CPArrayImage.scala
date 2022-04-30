@@ -33,7 +33,7 @@ package org.cosplay
 import CPArrayImage.*
 
 /**
-  * Two-dimensional pixel array image.
+  * An image based on two-dimensional pixel array.
   *
   * This is the primary tool for creating in-code images.
   * This class has number of constructors and companion utility methods to aid in creating
@@ -165,8 +165,8 @@ object CPArrayImage:
 
             if arr.nonEmpty then
                 if trim then
-                    while arr.head.trim.isEmpty do arr = arr.tail // Trim leading empty string.
-                    while arr.last.trim.isEmpty do arr = arr.dropRight(1) // Trim trailing empty strings.
+                    if arr.head.trim.isEmpty then arr = arr.tail // Trim leading empty string.
+                    if arr.last.trim.isEmpty then arr = arr.dropRight(1) // Trim trailing empty strings.
                 arr.toSeq
             else
                 Seq.empty

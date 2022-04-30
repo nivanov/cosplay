@@ -49,6 +49,71 @@ object CPColorTests:
         assertTrue(c2 == c3)
 
     /**
+     *
+     */
+    @Test
+    def modificationsTest(): Unit =
+        val c = CPColor(32, 64, 128)
+
+        val c1 = c.bw()
+        val c2 = c.bw2()
+        val c3 = c.awt
+        val c4 = c.bgAnsi
+        val c5 = c.fgAnsi
+        val c6 = c.darker(0.5)
+        val c7 = c.lighter(0.5)
+        val c8 = c.transform(0.2, 0.8, 0.5)
+        val c9 = c.color8Bit
+        val f1 = CPColor.gradientFun(C_WHITE, C_BLACK, 20)
+        val s1 = CPColor.gradientSeq(C_WHITE, C_BLACK, 20)
+
+    /**
+      *
+      */
+    //@Test
+    def genX11ColorSwatches(): Unit = genColorSwatches(CPColor.CS_X11_ALL)
+
+    /**
+      *
+      */
+    //@Test
+    def genXTermColorSwatches(): Unit = genColorSwatches(CPColor.CS_XTERM_ALL)
+
+    /**
+      *
+      */
+    private def genColorSwatches(cs: Seq[CPColor]): Unit =
+        // ^(\s+)final val ([\d\w_]+) = CPColor\((\d{1,3}, \d{1,3}, \d{1,3})\)$
+        // $1final val $2 = new CPColor($3, "$2")
+        /*
+            <tr>
+                <td>
+                    <div class="color-swatch" style="background: rgb(230, 230, 250)"></div>
+                </td>
+                <td>
+                    <code>C_X11_LAVENDER</code>
+                </td>
+                <td>
+                    <b>r</b>:&nbsp;230&nbsp;&nbsp;<b>g</b>:&nbsp;230&nbsp;&nbsp;<b>b</b>:&nbsp;250&nbsp;&nbsp;<code>#11f48e</code>
+                </td>
+            </tr>
+        */
+        for (c ← cs)
+            println(
+                s"""
+                  |<tr>
+                  |    <td>
+                  |        <div class="color-swatch" style="background: rgb(${c.red}, ${c.green}, ${c.blue})"></div>
+                  |    </td>
+                  |    <td>
+                  |        <code>${c.getName}</code>
+                  |    </td>
+                  |    <td>
+                  |        <b>r</b>:&nbsp;${c.red}&nbsp;&nbsp;<b>g</b>:&nbsp;${c.green}&nbsp;&nbsp;<b>b</b>:&nbsp;${c.blue}&nbsp;&nbsp;<code>${c.cssHex}</code>
+                  |    </td>
+                  |</tr>""".stripMargin)
+
+    /**
       *
       */
     @Test
@@ -105,3 +170,12 @@ object CPColorTests:
         val c3 = CPColor(0, 128, 0)
         assertTrue(c1 != c2)
         assertTrue(c1 == c3)
+
+        val c1a = CPColor("0x008000")
+        val c2a = CPColor("#808000")
+        val c1b = CPColor("#008000")
+
+        assert(c1 == c1a)
+        assert(c1 == c1b)
+        assert(c2 == c2a)
+        assert(c1b == c1a)

@@ -71,7 +71,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private final val DFLT_DIM = CPDim(100, 50)
     private var frame: JFrame = _
     private var panel: JPanel = _
-    private val fontName = CPUtils.sysEnv("COSPLAY_EMUTERM_FONT_NAME").getOrElse("Courier New")
+    private val fontName = CPUtils.sysEnv("COSPLAY_EMUTERM_FONT_NAME").getOrElse("Monospaced")
     private val fontSize = Integer.decode(CPUtils.sysEnv("COSPLAY_EMUTERM_FONT_SIZE").getOrElse("14"))
     private var chWOff = Integer.decode(CPUtils.sysEnv("COSPLAY_EMUTERM_CH_WIDTH_OFFSET").getOrElse("0"))
     private val chHOff = Integer.decode(CPUtils.sysEnv("COSPLAY_EMUTERM_CH_HEIGHT_OFFSET").getOrElse("0"))
@@ -139,14 +139,22 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       */
     private def initFontMetrics(): Unit =
         termFont = new Font(fontName, Font.PLAIN, fontSize)
-        // Correct for extra-wide monospace fonts on Mac OS and Linux.
-        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") && (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) then chWOff = -5
         val g = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).createGraphics()
         configFont(g)
         val fm = g.getFontMetrics(termFont)
         descent = fm.getMaxDescent
         chW = fm.getWidths.max + chWOff
         chH = fm.getHeight - fm.getLeading + chHOff
+        val maxW = fm.getWidths.max
+        val maxH = fm.getHeight
+
+        // Fix sometime incorrect font width (on MacOS or Linux).
+        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") then
+            if maxW > maxH / 2 then
+                chWOff = -(maxW - maxH / 2)
+
+        chW = maxW + chWOff
+        chH = maxH - fm.getLeading + chHOff
         g.dispose()
 
     /**
@@ -289,17 +297,23 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 }
                 g2.dispose()
                 if bufImg != null then g.asInstanceOf[Graphics2D].drawImage(bufImg, 0, 0, w, h, null)
+
+        // Fix handing of 'Tab' keypress.
+        val tabKeys = frame.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS)
+        val newTabKeys = new java.util.HashSet(tabKeys)
+        newTabKeys.remove(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0))
+        frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, newTabKeys)
+
         frame.addKeyListener(new KeyAdapter:
             override def keyPressed(e: KeyEvent): Unit =
-                def shift(shiftKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey =
-                    if e.isShiftDown then shiftKey else normKey
-                def ctrl(ctrlKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey =
-                    if e.isControlDown then ctrlKey else normKey
+                def shift(shiftKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey = if e.isShiftDown then shiftKey else normKey
+                def ctrl(ctrlKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey = if e.isControlDown then ctrlKey else normKey
+
                 kbKey = kbMux.synchronized {
                     Option(e.getKeyCode match
                         case VK_ENTER => KEY_ENTER
                         case VK_BACK_SPACE => KEY_BACKSPACE
-                        case VK_TAB => KEY_TAB // Doesn't work on Windows...
+                        case VK_TAB => KEY_TAB
                         case VK_ESCAPE => KEY_ESC
                         case VK_SPACE => KEY_SPACE
 
@@ -392,7 +406,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                         bufImg = null
         )
         panel.setBackground(bg)
-        panel.setPreferredSize(safeDim(curDim.width * chW, curDim.height * chH))
+        panel.setPreferredSize(safeDim(curDim.w * chW, curDim.h * chH))
         panel.setMinimumSize(new Dimension(10 * chW, 10 * chH)) // 10x10 char is minimum dimension.
         frame.setBackground(bg)
         frame.getContentPane.setBackground(bg)
@@ -417,16 +431,17 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         catch case _: Exception => ()
 
         frame.pack()
+        frame.setMinimumSize(new Dimension(80 * chW, 20 * chH))
         frame.setLocationRelativeTo(null) // Center on the screen.
         frame.setVisible(true) // Show.
 
     override def render(scr: CPScreen, camRect: CPRect, forceRedraw: Boolean): Unit =
-        require(scr.getRect.contains(camRect), s"src: ${scr.getRect}, cam: $camRect")
+        require(scr.getRect.contains(camRect), s"Screen: ${scr.getRect} does not contain camera: $camRect")
 
-        val tw = curDim.width
-        val th = curDim.height
-        val cw = camRect.width
-        val ch = camRect.height
+        val tw = curDim.w
+        val th = curDim.h
+        val cw = camRect.w
+        val ch = camRect.h
         val effW = tw.min(cw)
         val effH = th.min(ch)
         val effRect = CPRect(camRect.x, camRect.y, effW, effH)

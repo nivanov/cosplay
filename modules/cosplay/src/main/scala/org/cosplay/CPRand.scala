@@ -17,8 +17,10 @@
 
 package org.cosplay
 
-import java.util.Random
+import scala.util.Random
 import CPColor.*
+import org.apache.commons.lang3.RandomStringUtils
+import java.util.UUID
 
 /*
    _________            ______________
@@ -35,6 +37,8 @@ import CPColor.*
 
 /**
   * Provides convenient functions for random number generation and usage.
+  *
+  * @see [[Random]]
   */
 object CPRand:
     private final val RND = new Random()
@@ -43,6 +47,16 @@ object CPRand:
     private final val LETTERS = s"$LO_LETTERS$UP_LETTERS"
     private final val DIGITS = "1234567890"
     private final val SYMBOLS = "~!@#$%^&*()_+-=[]{}';:\",.<>/?"
+
+    /**
+      * Creates new globally unique 16-bytes type 4 UUID.
+      */
+    def guid: String = UUID.randomUUID().toString.toLowerCase
+
+    /**
+      * Creates new 6-bytes UUID. This UUID is NOT globally unique.
+      */
+    def guid6: String = RandomStringUtils.random(6, true, true).toLowerCase
 
     /**
       * Gets random value from the given sequence. It's equivalent to:
@@ -65,9 +79,9 @@ object CPRand:
         RND.nextInt(to - from) + from
 
     /**
-      * Gets random xterm color from the list of [[CPColor.C_XTERM_ALL]].
+      * Gets random xterm color from the list of [[CPColor.CS_XTERM_ALL]].
       */
-    def randXtermColor(): CPColor = rand(CPColor.C_XTERM_ALL)
+    def randXtermColor(): CPColor = rand(CPColor.CS_XTERM_ALL)
 
     /**
       * Gets random xterm color from the list of [[CPColor.CS_X11_ALL]].
@@ -113,6 +127,34 @@ object CPRand:
       * Geta a random digit.
       */
     def randDigit(): Char = rand(DIGITS)
+
+    /**
+      * Gets random number in given range.
+      * @param a Inclusive start of the range.
+      * @param b Exclusive end of the range.
+      */
+    def between(a: Int, b: Int): Int = RND.between(a, b)
+
+    /**
+      * Gets random number in given range.
+      * @param a Inclusive start of the range.
+      * @param b Exclusive end of the range.
+      */
+    def between(a: Double, b: Double): Double = RND.between(a, b)
+
+    /**
+      * Gets random number in given range.
+      * @param a Inclusive start of the range.
+      * @param b Exclusive end of the range.
+      */
+    def between(a: Long, b: Long): Long = RND.between(a, b)
+
+    /**
+      * Gets random number in given range.
+      * @param a Inclusive start of the range.
+      * @param b Exclusive end of the range.
+      */
+    def between(a: Float, b: Float): Float = RND.between(a, b)
 
     /**
       * Gets a random red color from the list of [[CPColor.CS_X11_REDS]].

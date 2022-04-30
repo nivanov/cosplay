@@ -21,10 +21,11 @@ import org.cosplay.*
 import CPColor.*
 import CPCanvas.ArtLineStyle.*
 import CPArrayImage.*
+import CPPixel.*
 import CPKeyboardKey.*
 import CPStyledString.*
 import CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
@@ -43,7 +44,20 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 /**
   * Code example for canvas drawing functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:canvas exec:java
+  * }}}
+  *
   * @see [[CPCanvas]]
+  * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPCanvasExample:
     /**
@@ -52,7 +66,7 @@ object CPCanvasExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val alienImg = CPArrayImage(
+        val alienImg = new CPArrayImage(
             // 12x9
             prepSeq("""
               |    .  .
@@ -66,7 +80,7 @@ object CPCanvasExample:
             (ch, _, _) => ch&C_LIME
         ).trimBg()
 
-        val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val COLORS = CS_X11_GREENS ++ CS_X11_CYANS ++ CS_X11_REDS ++ CS_X11_BLUES
         val fgf = (_: Char) => CPRand.rand(COLORS)
         val pxs = CPPixel.seq("~!@#$%^&*()[]:;'<>?", fgf, _ => None)
@@ -74,10 +88,8 @@ object CPCanvasExample:
         val dim = CPDim(100, 40)
 
         // Demo sprite that illustrates working with 'canvas'.
-        val drawSpr = new CPCanvasSprite("spr", Seq(new CPFadeInShader(true, 500, bgPx))):
+        val drawSpr = new CPCanvasSprite():
             override def render(ctx: CPSceneObjectContext): Unit =
-                super.render(ctx)
-
                 val canv = ctx.getCanvas
 
                 // Color shortcuts.
@@ -143,7 +155,8 @@ object CPCanvasExample:
         // Create the scene (exit the game on 'q' press).
         val sc = new CPScene("scene", Option(dim), bgPx,
             drawSpr,
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)), // Just shader for the entire screen.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.
         )
 
         // Initialize the engine.
@@ -155,7 +168,7 @@ object CPCanvasExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     Option(dim),
                     bgPx,

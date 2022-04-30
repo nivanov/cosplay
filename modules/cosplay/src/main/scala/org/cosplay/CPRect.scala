@@ -39,6 +39,10 @@ import impl.CPUtils
   * This class is used to define any arbitrary rectangular shape. Note that this class
   * only describes the rectangular shape but does not hold any content.
   *
+  * @param x X-coordinate of the left top corner.
+  * @param y Y-coordinate of the left top corner.
+  * @param width Width of the rectangular.
+  * @param height Height of the rectangular.
   * @see [[CPArray2D]] 2D content holder.
   */
 final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(x, y, width, height):
@@ -70,9 +74,19 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     final val xMax = x + width - 1
 
     /**
+      * Maximum X-coordinate as a float. If width is zero this will equal to `x - 1`.
+      */
+    final lazy val xMaxF = xMax.toFloat
+
+    /**
       * Maximum Y-coordinate. If height is zero this will equal to `y - 1`.
       */
     final val yMax = y + height - 1
+
+    /**
+      * Maximum Y-coordinate as a float. If height is zero this will equal to `y - 1`.
+      */
+    final lazy val yMaxF = yMax.toFloat
 
     /**
       * Minimal X-coordinate. It is equal to `x`.
@@ -80,19 +94,59 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     final val xMin = x
 
     /**
+      * Minimal X-coordinate as a float. It is equal to `x`.
+      */
+    final lazy val xMinF = x.toFloat
+
+    /**
       * Minimal Y-coordinate. It is equal to `y`.
       */
     final val yMin = y
 
     /**
+      * Minimal Y-coordinate as a float. It is equal to `y`.
+      */
+    final lazy val yMinF = y.toFloat
+
+    /**
+      * Width of the rectangular (shortcut API).
+      */
+    final val w = width
+
+    /**
+      * Width of the rectangular (shortcut API) as a float.
+      */
+    final lazy val wF = width.toFloat
+
+    /**
+      * Height of the rectangular (shortcut API).
+      */
+    final val h = height
+
+    /**
+      * Height of the rectangular (shortcut API) as a float.
+      */
+    final lazy val hF = height.toFloat
+
+    /**
       * X-coordinate of the center point.
       */
-    final val centerX = if width == 0 then x else x + (xMax - x) / 2
+    final val xCenter = if width == 0 then x else x + (xMax - x) / 2
+
+    /**
+      * X-coordinate of the center point as a float.
+      */
+    final lazy val xCenterF = xCenter.toFloat
 
     /**
       * Y-coordinate of the center point.
       */
-    final val centerY = if height == 0 then y else y + (yMax - y) / 2
+    final val yCenter = if height == 0 then y else y + (yMax - y) / 2
+
+    /**
+      * Y-coordinate of the center point as a float.
+      */
+    final lazy val yCenterF = yCenter.toFloat
 
     /**
       * Creates rectangle from two tuples.
@@ -120,7 +174,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
       * @param dim Dimension of the rectangle.
       */
     def this(x: Int, y: Int, dim: CPDim) = 
-        this(x, y, dim.width, dim.height)
+        this(x, y, dim.w, dim.h)
 
     /**
       * Creates rectangle with `(0,0)` left top corner and given dimension.
@@ -128,7 +182,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
       * @param dim Rectangle dimension.
       */
     def this(dim: CPDim) = 
-        this(0, 0, dim.width, dim.height)
+        this(0, 0, dim.w, dim.h)
 
     /**
       * Gets random X-coordinate within this rectangle.
@@ -147,10 +201,47 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
 
     /**
       * Calls given XY-coordinate function on each point in this rectangle.
+      * Iteration over the points in this rectangle will be horizontal first. In other words,
+      * given the rectangle with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
       *
       * @param f XY-coordinate function to call.
+      * @see [[loopVert()]]
+      * @see [[loopHor()]]
       */
-    def loop(f: (Int, Int) => Unit): Unit =
+    def loop(f: (Int, Int) => Unit): Unit = loopHor(f)
+
+    /**
+      * Calls given XY-coordinate function on each point in this rectangle.
+      * Iteration over the points in this rectangle will be vertical first. In other words,
+      * given the rectangle with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)
+      * }}}
+      *
+      * @param f XY-coordinate function to call.
+      * @see [[loop()]]
+      * @see [[loopHor()]]
+      */
+    def loopVert(f: (Int, Int) => Unit): Unit =
         if nonEmpty then
             var a = x
             var b = y
@@ -160,6 +251,37 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
                     f(a, b)
                     b += 1
                 a += 1
+
+    /**
+      * Calls given XY-coordinate function on each point in this rectangle.
+      * Iteration over the points in this rectangle will be horizontal first. In other words,
+      * given the rectangle with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
+      *
+      * @param f XY-coordinate function to call.
+      * @see [[loop()]]
+      * @see [[loopVert()]]
+      */
+    def loopHor(f: (Int, Int) => Unit): Unit =
+        if nonEmpty then
+            var a = x
+            var b = y
+            while (b <= yMax)
+                a = x
+                while (a <= xMax)
+                    f(a, b)
+                    a += 1
+                b += 1
 
     /**
       * Tests whether this rectangle has at least one points satisfying given predicate.
@@ -298,7 +420,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
 
     /**
       * Tests whether or not this rectangle overlaps with the given one.
-      * Note that touching rectangles do not intersect as far as this method is concerned.
+      * Note that "touching" rectangles do not intersect as far as this method is concerned.
       *
       * @param rect Rectangle to test.
       */

@@ -48,7 +48,7 @@ object CPSkullImage extends CPArrayImage(
       |     /~"   ~"   .   "~   "~\
       |    Y  ,--._    I    _.--.  Y
       |    | Y     ~-. | ,-~     Y |
-      |    | |        }:{        | |
+      |    | |   x     }:{    x  | |
       |    j l       / | \       ! l
       | .-~  (__,.--" .^. "--.,__)  ~-.
       |(           / / | \ \           )

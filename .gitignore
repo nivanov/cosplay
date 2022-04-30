@@ -44,7 +44,17 @@ hs_err_pid*
 *.iml
 .idea/
 .bsp/
-venv/
 null/
 target
+project
 out
+
+# OS generated files.
+#####################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
