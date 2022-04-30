@@ -35,6 +35,8 @@ package org.cosplay
   * @param openTag
   * @param closeTag
   * @param skin
+  * @see [[CPImage.markupImage()]]
+  * @see [[CPImageMarkup]]
   */
 case class CPImageMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel)
 
@@ -43,5 +45,41 @@ case class CPImageMarkupElement(openTag: String, closeTag: String, skin: Char =>
   * @param fg
   * @param bg
   * @param elements
+  * @see [[CPImage.markupImage()]]
+  * @see [[CPImageMarkupElement]]
   */
-case class CPImageMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPImageMarkupElement])
+case class CPImageMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPImageMarkupElement]):
+    require(elements.exists(x ⇒ x._1.isEmpty || x._2.isEmpty), "Markup element cannot have empty opening or closing tags.")
+    require(!elements.exists(elm ⇒ elements.exists(x ⇒
+        x != elm &&
+        (
+            x.openTag.contains(elm.openTag) ||
+            x.openTag.contains(elm.closeTag) ||
+            x.closeTag.contains(elm.openTag) ||
+            x.closeTag.contains(elm.closeTag) ||
+            elm.openTag.contains(x.closeTag) ||
+            elm.closeTag.contains(x.closeTag) ||
+            elm.openTag.contains(x.openTag) ||
+            elm.closeTag.contains(x.openTag)
+        )
+    )), "Markup elements cannot have intersecting open or close tags.")
+
+    /**
+      *
+      * @param fg
+      * @param bg
+      * @param elms
+      */
+    def this(fg: CPColor, bg: Option[CPColor], elms: List[(String, String, Char ⇒ CPPixel)]) =
+        this(fg, bg, elms.map(elm ⇒ CPImageMarkupElement(elm._1, elm._2, elm._3)))
+
+    /**
+      *
+      * @param fg
+      * @param bg
+      * @param openTag
+      * @param closeTag
+      * @param skin
+      */
+    def this(fg: CPColor, bg: Option[CPColor], openTag: String, closeTag: String, skin: Char ⇒ CPPixel) =
+        this(fg, bg, Seq(CPImageMarkupElement(openTag, closeTag, skin)))

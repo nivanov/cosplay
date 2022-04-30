@@ -589,12 +589,11 @@ object CPImage:
       */
     def markupImage(data: Seq[String], markup: CPImageMarkup): CPImage =
         require(data.nonEmpty, "Markup image data cannot be empty.")
-        require(markup.elements.exists(x ⇒ x._1.isEmpty || x._2.isEmpty), "Markup image cannot have empty opening or closing tags.")
 
         val chArr = CPArray2D(data)
-        val dfltSkin = (ch: Char, x: Int, y: Int) ⇒ CPPixel(ch, markup.fg, markup.bg)
+        val dfltSkin = (ch: Char) ⇒ CPPixel(ch, markup.fg, markup.bg)
         var skin = dfltSkin
-        var skinStack = List.empty[(ch: Char, x: Int, y: Int) ⇒ CPPixel]
+        var skinStack = List.empty[Char ⇒ CPPixel]
         val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
         val buf = ArrayBuffer.empty[Char]
 //        chArr.loopHor((ch, x, y) ⇒ {
