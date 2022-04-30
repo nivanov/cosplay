@@ -585,44 +585,48 @@ object CPImage:
       *
       * @param data
       * @param markup
+      * @param origin
       * @return
       */
-    def markupImage(data: Seq[String], markup: CPImageMarkup): CPImage =
+    def markupImage(data: Seq[String], markup: CPImageMarkup, origin: String = "code"): CPImage =
         require(data.nonEmpty, "Markup image data cannot be empty.")
 
+        case class CharPos(ch: Char, x: Int, y: Int)
         val chArr = CPArray2D(data)
-        val dfltSkin = (ch: Char) ⇒ CPPixel(ch, markup.fg, markup.bg)
-        var skin = dfltSkin
-        var skinStack = List.empty[Char ⇒ CPPixel]
         val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
-        val buf = ArrayBuffer.empty[Char]
-//        chArr.loopHor((ch, x, y) ⇒ {
-//            buf.append(ch)
-//            val bufS = buf.toString()
-//            var found = false
-//            markupSeq.find(x ⇒ x._1 == bufS) match
-//                case Some(m) ⇒
-//                    skin = m._3
-//                    skinStack ::= skin // Pushed the opened skin.
-//                    found = true
-//                case None ⇒ ()
-//
-//            if !found then
-//                markupSeq.find(x ⇒ x._2 == bufS) match
-//                    case Some(m) ⇒
-//                        skinStack = skinStack.tail // Pop the closed skin.
-//                        skin = if skinStack.isEmpty then dfltSkin else skinStack.head
-//                        found = true
-//                    case None ⇒ ()
-//
-//            if found then
-//                buf.clear()
-//            else
-//
-//
-//        })
+        var skin = (ch: Char) ⇒ CPPixel(ch, markup.fg, markup.bg)
+        var skinStack = List(skin)
+        val buf = ArrayBuffer.empty[CharPos]
+        val elms = markup.elements
 
-        new CPImage("code"):
+        def add(n: Int): Unit =
+            for (i <- 0 until n)
+                val cp = buf(i)
+                pxArr.set(cp.x, cp.y, skin(cp.ch))
+
+        chArr.loopHor((ch, x, y) ⇒ {
+            buf.append(CharPos(ch, x, y))
+            val bufS = buf.map(_.ch).toString()
+            elms.find(e => bufS.endsWith(e.openTag)) match
+                case Some(elm) =>
+                    add(buf.length - elm.openTag.length)
+                    skin = elm.skin
+                    skinStack ::= skin // Push onto stack.
+                    buf.clear()
+                case None =>
+                    elms.find(x => bufS.endsWith(x.closeTag)) match
+                        case Some(elm) =>
+                            add(buf.length - elm.closeTag.length)
+                            skinStack = skinStack.tail // Pop from stack.
+                            skin = skinStack.head
+                            buf.clear()
+                        case None => ()
+        })
+        for (cp <- buf) pxArr.set(cp.x, cp.y, skin(cp.ch))
+
+        require(!pxArr.contains(_ == null))
+
+        new CPImage(origin):
             private val dim = pxArr.dim
             override def getDim: CPDim = dim
             override def getPixel(x: Int, y: Int): CPPixel = pxArr.get(x, y)

@@ -35,8 +35,7 @@ import scala.reflect.ClassTag
 */
 
 /**
-  * General, immutable 2D-array. Optionally, has a clear value that is used to [[clear()]] out
-  * array.
+  * Immutable 2D-array. Optionally, has a clear value that is used to [[clear()]] out array.
   *
   * @param width Width of the array. Must be >= 0.
   * @param height Height of the array. Must be >= 0.

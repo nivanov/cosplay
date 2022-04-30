@@ -38,7 +38,13 @@ package org.cosplay
   * @see [[CPImage.markupImage()]]
   * @see [[CPImageMarkup]]
   */
-case class CPImageMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel)
+case class CPImageMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel):
+    /**
+      *
+      * @param openTag
+      * @param skin
+      */
+    def this(openTag: String, skin: Char => CPPixel) = this(openTag, openTag.reverse, skin)
 
 /**
   *
