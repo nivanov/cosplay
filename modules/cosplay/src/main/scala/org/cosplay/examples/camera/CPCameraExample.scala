@@ -134,7 +134,7 @@ object CPCameraExample:
                 super.render(ctx)
 
         // Paint the brick-like ground.
-        val brickImg = CPArrayImage(
+        val brickImg = new CPArrayImage(
             // 5x3
             prepSeq(
                 """
@@ -157,7 +157,7 @@ object CPCameraExample:
         val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, 2, brickCanv.capture())
 
         // Paint palm trees.
-        val palmImg = CPArrayImage(
+        val palmImg = new CPArrayImage(
             prepSeq(
                 """
                   |    __ _.--..--._ _
@@ -184,7 +184,7 @@ object CPCameraExample:
         // | Procedural generation of the terrain & background. |
         // +====================================================+
 
-        val ufoImg = CPArrayImage(
+        val ufoImg = new CPArrayImage(
             prepSeq(
                 """
                   |    .-""`""-.

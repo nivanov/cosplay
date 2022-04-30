@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.prefabs.sprites
+package org.cosplay
 
 import org.cosplay.*
-import prefabs.shaders.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________

@@ -37,7 +37,8 @@ import org.cosplay.prefabs.shaders.*
 */
 
 /**
-  * A scene that displays CosPlay logo with shimmering colors for a few seconds.
+  * A scene that displays CosPlay logo with shimmering colors for a few seconds using fade in and fade out
+  * shaders.
   *
   * @param id ID of the scene.
   * @param dim Optional dimension of the scene. Note that if dimension is `None` then scene will adapt to the
@@ -50,6 +51,8 @@ import org.cosplay.prefabs.shaders.*
   * @param fadeInMs Optional fade in duration in milliseconds. Default value is 2000.
   * @param fadeOutMs Optional fade out duration in milliseconds. Default value is 1000.
   * @param shimmerKeyFrame Optional shimmer shader keyframe. DEfault value is 2.
+  *
+  * @see [[CPFadeShimmerLogoScene]]
   */
 class CPFadeShimmerLogoScene(
     id: String,
@@ -63,7 +66,7 @@ class CPFadeShimmerLogoScene(
     require(colors.nonEmpty, "Color sequence cannot be empty.")
 
     private val initFg = bgPx.bg.getOrElse(bgPx.fg)
-    private val logoImg = CPArrayImage(
+    private val logoImg = new CPArrayImage(
         prepSeq(
             """
               |POWERED BY
@@ -83,11 +86,11 @@ class CPFadeShimmerLogoScene(
 
     // Shaders to use.
     private val shimmerShdr = new CPShimmerShader(false, colors, shimmerKeyFrame, true, skipFn)
-    private val foShdr = new CPFadeOutShader(false, fadeOutMs, bgPx, _.switchScene(nextSc), false)
-    private val fiShdr = new CPFadeInShader(false, fadeInMs, bgPx, _ => foShdr.start(), true)
+    private val outShdr = new CPFadeOutShader(false, fadeOutMs, bgPx, _.switchScene(nextSc), false)
+    private val inShdr = new CPFadeInShader(false, fadeInMs, bgPx, _ => outShdr.start(), true)
 
     // Main logo sprite with 3 shaders.
-    private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, fiShdr, foShdr)):
+    private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, inShdr, outShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             // Center the logo on each frame (ensuring the support for adaptive scenes).
             val canv = ctx.getCanvas

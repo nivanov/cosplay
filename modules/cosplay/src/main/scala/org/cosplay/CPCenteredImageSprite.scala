@@ -17,7 +17,8 @@
 
 package org.cosplay
 
-import impl.CPUtils
+import org.cosplay.*
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -33,26 +34,21 @@ import impl.CPUtils
 */
 
 /**
-  * System 1-character high font.
+  * Image sprite that centers its image on the canvas on each frame update.
   *
-  * @see [[CPFIGLetFont]]
-  * @see [[CPStyledString]]
-  * @example See [[org.cosplay.examples.fonts.CPFontsExample CPFontsExample]] source code for an
-  *     example of font functionality.
+  * @param id Optional ID of the sprite.
+  * @param img The image to render. It can be [[CPImageSprite.setImage() changed later]].
+  * @param z Z-index at which to render the image.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   */
-object CPSystemFont extends CPFont(getClass.getName):
-    /** @inheritdoc */ 
-    override def isSystem: Boolean = true
-    /** @inheritdoc */ 
-    override def getHeight: Int = 1
-    /** @inheritdoc */ 
-    override def getWidth: Int = 1
-    /** @inheritdoc */ 
-    override def getEncoding: String = "UTF-8"
-    /** @inheritdoc */ 
-    override def getBaseline: Int = 1
-    /** @inheritdoc */ 
-    override def render(s: String, fg: CPColor, bg: Option[CPColor]): CPImage = new CPArrayImage(s, fg, bg)
-
-
-
+class CPCenteredImageSprite(
+    id: String = s"center-img-spr-${CPRand.guid6}",
+    img: CPImage,
+    z: Int,
+    shaders: Seq[CPShader] = Seq.empty) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders):
+    override def update(ctx: CPSceneObjectContext): Unit =
+        super.update(ctx)
+        val canv = ctx.getCanvas
+        // Center itself.
+        setX((canv.dim.w - getImage.getWidth) / 2)
+        setY((canv.dim.h - getImage.getHeight) / 2)

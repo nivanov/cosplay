@@ -236,11 +236,11 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def adjustVolume(delta: Float): Unit = setVolume(vol + delta)
 
     /**
-      * Fades in stopped or fades out the playing audio.
+      * Fades in stopped or pauses the playing audio.
       *
-      * @param fadeMs Fade in or fade out duration in milliseconds. Default is zero.
+      * @param fadeInMs Fade in duration in milliseconds. Default is zero.
       */
-    def toggle(fadeMs: Long = 0): Unit = if isPlaying then stop(fadeMs) else play(fadeMs)
+    def toggle(fadeInMs: Long = 0): Unit = if isPlaying then pause() else play(fadeInMs)
 
     /**
       * Stops the playback.

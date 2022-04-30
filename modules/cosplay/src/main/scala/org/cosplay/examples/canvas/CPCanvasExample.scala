@@ -66,7 +66,7 @@ object CPCanvasExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val alienImg = CPArrayImage(
+        val alienImg = new CPArrayImage(
             // 12x9
             prepSeq("""
               |    .  .

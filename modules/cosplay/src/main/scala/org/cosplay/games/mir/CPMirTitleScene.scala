@@ -19,39 +19,54 @@ package org.cosplay.games.mir
 
 import org.cosplay.*
 import CPArrayImage.*
+import CPKeyboardKey.*
 import CPPixel.*
+import prefabs.shaders.*
 
 /**
   *
   */
 object CPMirTitleScene extends CPScene("title", None, BG_PX):
-    private val logoImg = CPArrayImage(
+    private val logoImg = new CPArrayImage(
         prepSeq(
             """
               | ______     ______     ______     ______     ______   ______
               |/\  ___\   /\  ___\   /\  ___\   /\  __ \   /\  == \ /\  ___\
-              |\ \  __\   \ \___  \  \ \ \____  \ \  __ \  \ \  _-/ \ \  __\
+              |\ \  __\   \ \___  \  \ \ \____  \ \  __ \  \ \  _-' \ \  __\
               | \ \_____\  \/\_____\  \ \_____\  \ \_\ \_\  \ \_\    \ \_____\
               |  \/_____/   \/_____/   \/_____/   \/_/\/_/   \/_/     \/_____/
               |
-              |                     ______   ______     ______     __    __
-              |                    /\  ___\ /\  == \   /\  __ \   /\ "-./  \
-              |                    \ \  __\ \ \  __<   \ \ \/\ \  \ \ \-./\ \
-              |                     \ \_\    \ \_\ \_\  \ \_____\  \ \_\ \ \_\
-              |                      \/_/     \/_/ /_/   \/_____/   \/_/  \/_/
+              |            ______   ______     ______     __    __
+              |           /\  ___\ /\  == \   /\  __ \   /\ "-./  \
+              |           \ \  __\ \ \  __<   \ \ \/\ \  \ \ \-./\ \
+              |            \ \_\    \ \_\ \_\  \ \_____\  \ \_\ \ \_\
+              |             \/_/     \/_/ /_/   \/_____/   \/_/  \/_/
               |
-              |                                  __    __     __     ______
-              |                                 /\ "-./  \   /\ \   /\  == \
-              |                                 \ \ \-./\ \  \ \ \  \ \  __<
-              |                                  \ \_\ \ \_\  \ \_\  \ \_\ \_\
-              |                                   \/_/  \/_/   \/_/   \/_/ /_/
+              |                   __    __     __     ______
+              |                  /\ "-./  \   /\ \   /\  == \
+              |                  \ \ \-./\ \  \ \ \  \ \  __<_
+              |                   \ \_\ \ \_\  \ \_\  \ \_\ \_\
+              |                    \/_/  \/_/   \/_/   \/_/ /_/
               |
               |
-              |
-              |Copyright (C) 2022 Rowan Games, Inc
+              |                 Copyright (C) 2022 Rowan Games, Inc.
             """),
         (ch, _, _) => ch&FG
     ).trimBg()
+    private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
+    private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
+
+    // Add scene objects...
+    addObjects(
+        // Main logo.
+        CPCenteredImageSprite(img = logoImg, 0),
+        // Add all screen shaders.
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
+        // Exit on 'Q' press.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        // Transition to the next scene on 'Enter' press.
+        CPKeyboardSprite(KEY_ENTER, _ => fadeOutShdr.start(_.switchScene("play")))
+    )
 
     override def onActivate(): Unit =
         super.onActivate()

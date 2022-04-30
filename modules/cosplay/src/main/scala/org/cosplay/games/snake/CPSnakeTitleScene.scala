@@ -22,7 +22,6 @@ import org.cosplay.*
 import CPColor.*
 import CPArrayImage.*
 import prefabs.shaders.*
-import prefabs.sprites.*
 import CPPixel.*
 import CPKeyboardKey.*
 
@@ -44,7 +43,7 @@ import CPKeyboardKey.*
   */
 object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/snake/intro.wav", 0.5f)
-    private val logoImg = CPArrayImage(
+    private val logoImg = new CPArrayImage(
         prepSeq(
             """
               |      ______     __   __     ______     __  __     ______
@@ -70,7 +69,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
               |[CTRL@Q]  FPS Overlay                          /^|          \ _ _ \*\
               |                                              '  `           \ _ _ \*\
               |                                                              \ _ _ \*\
-              |Copyright (C) 2022 Rowan Games, Inc                            \ _ _ \.'
+              |Copyright (C) 2022 Rowan Games, Inc.                            \ _ _ \.'
               |                                                                | _ _ |
               |                                                                / _ _ /
               |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-.' _ _ '

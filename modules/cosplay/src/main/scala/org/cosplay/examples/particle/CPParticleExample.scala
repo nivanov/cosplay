@@ -71,7 +71,7 @@ object CPParticleExample:
         val h = 40
         val dim = CPDim(w, h)
 
-        val bomb = CPArrayImage(
+        val bomb = new CPArrayImage(
             prepSeq("""
               | )
               | (

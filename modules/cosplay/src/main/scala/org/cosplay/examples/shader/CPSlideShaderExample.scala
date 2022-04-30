@@ -36,7 +36,6 @@ import CPColor.*
 import CPArrayImage.*
 import CPKeyboardKey.*
 import prefabs.scenes.*
-import prefabs.sprites.*
 import prefabs.shaders.*
 import CPSlideDirection.*
 import scala.collection.mutable
@@ -68,7 +67,7 @@ object CPSlideShaderExample:
     private val cols = Seq(C_STEEL_BLUE1, C_LIME, C_ORANGE1)
 
     // In-code image creation & "painting".
-    private val img = CPArrayImage(
+    private val img = new CPArrayImage(
         prepSeq("""
             |******************************************************
             |******************************************************

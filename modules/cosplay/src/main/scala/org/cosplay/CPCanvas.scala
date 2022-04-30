@@ -1327,7 +1327,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
             val px = if isValid(x, y) then f(pane.getPixel(x, y)) else CPPixel.XRAY
             arr.set(x - rect.x, y - rect.y, px)
         )
-        CPArrayImage(arr, "code")
+        new CPArrayImage(arr, "code")
 
     /**
       * Draws given string using [[CPSystemFont system font]].
@@ -1337,7 +1337,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param str String to draw.
       * @param fg Foreground color.
-      * @param bg Optional background color. Default value is `NOne`.
+      * @param bg Optional background color. Default value is `None`.
       */
     def drawString(x: Int, y: Int, z: Int, str: String, fg: CPColor, bg: Option[CPColor] = None): Unit =
         var i = 0

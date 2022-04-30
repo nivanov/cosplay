@@ -20,7 +20,6 @@ package org.cosplay.games.snake
 import org.cosplay.*
 import games.*
 import prefabs.shaders.*
-import prefabs.sprites.*
 import CPSlideDirection.*
 import CPFIGLetFont.*
 import CPArrayImage.*
@@ -56,7 +55,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private val scorePx = ' '&&(C2, C2)
     private val bodyPx = ' '&&(C3, C3)
     private val headPx = ' '&&(C4, C4)
-    private val yamImgs = CPArrayImage(
+    private val yamImgs = new CPArrayImage(
         prepSeq(
             """
               |oO
@@ -74,7 +73,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private val yamAniSeq = Seq(
         CPAnimation.filmStrip("yamAni", 150, imgs = yamImgs)
     )
-    private val youLostImg = CPArrayImage(
+    private val youLostImg = new CPArrayImage(
         prepSeq(
             """
               |**********************************
@@ -95,7 +94,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
-    private val youWonImg = CPArrayImage(
+    private val youWonImg = new CPArrayImage(
         prepSeq(
             """
               |**********************************
