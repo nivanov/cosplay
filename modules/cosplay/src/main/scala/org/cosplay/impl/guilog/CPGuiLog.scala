@@ -911,7 +911,8 @@ object CPGuiLog:
         p.add(mkButton(searchLastAct))
         p.add(mkButton(searchClearAct))
         p.add(new JLabel("Results:"), "gapleft 10")
-        p.add(searchCntLbl, "pushx")
+        p.add(searchCntLbl, "wrap")
+        p.add(new JLabel("<html><span style='font-size: 85%'><b>NOTE:</b> pause log to enable search</span></html>"))
 
         p
 
@@ -927,7 +928,8 @@ object CPGuiLog:
         p.add(new JLabel("Debug:"), "wrap")
         p.add(dbgSimKbChkBox)
         p.add(dbgKbCombo)
-        p.add(mkButton(dbgStepAct))
+        p.add(mkButton(dbgStepAct), "wrap")
+        p.add(new JLabel("<html><span style='font-size: 85%'><b>NOTE:</b> pause game to enable debug</span></html>"))
 
         p
 
