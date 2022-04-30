@@ -70,16 +70,16 @@ import impl.CPUtils
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   */
-abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id) with CPLifecycle:
+abstract class CPSceneObject(id: String = CPRand.guid6) extends CPGameObject(id) with CPLifecycle:
     private var visible = true
 
     private[cosplay] def toExtStr: String =
-        val pos = s"($getX,$getY)"
+        val xy = s"($getX,$getY)"
         val tags = s"(${getTags.mkString(",")})"
         val collide = getCollisionRect match
             case Some(rect) => rect.toString
             case None => "none"
-        s"[id=$id, tags=$tags, vis=$isVisible, pos=$pos, z=$getZ, dim=$getDim, col=$collide]"
+        s"[id=$id, tags=$tags, vis=$isVisible, xy=$xy, z=$getZ, dim=$getDim, col=$collide]"
 
     /**
       * Checks the visibility flag.
@@ -88,6 +88,10 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
       * on each frame. If object is visible and in camera frame - method [[render()]] will be called
       * as well to render itself. Note that shaders are called regardless of whether the object visible, in camera
       * frame or invisible.
+      *
+      * @see [[show()]]
+      * @see [[hide()]]
+      * @see [[setVisible()]]
       */
     def isVisible: Boolean = visible
 
@@ -95,8 +99,26 @@ abstract class CPSceneObject(id: String = CPUtils.guid6) extends CPGameObject(id
       * Sets visibility flag. Note that by default all scene objects are visible.
       *
       * @param vis `true` to make this object visible, `false` otherwise.
+      * @see [[show()]]
+      * @see [[hide()]]
       */
     def setVisible(vis: Boolean): Unit = visible = vis
+
+    /**
+      * Shortcut method for showing this object.
+      * Note that by default all scene objects are visible.
+      *
+      * @see [[setVisible()]]
+      */
+    def show(): Unit = visible = true
+
+    /**
+      * Shortcut method for hiding this object.
+      * Note that by default all scene objects are visible.
+      *
+      * @see [[setVisible()]]
+      */
+    def hide(): Unit = visible = false
 
     /**
       * Gets the optional list of [[CPShader shaders]] attached to this scene object. By default, returns

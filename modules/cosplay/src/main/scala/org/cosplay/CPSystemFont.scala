@@ -52,7 +52,7 @@ object CPSystemFont extends CPFont(getClass.getName):
     /** @inheritdoc */ 
     override def getBaseline: Int = 1
     /** @inheritdoc */ 
-    override def render(s: String, fg: CPColor, bg: Option[CPColor]): CPImage = CPArrayImage(s, fg, bg)
+    override def render(s: String, fg: CPColor, bg: Option[CPColor]): CPImage = new CPArrayImage(s, fg, bg)
 
 
 

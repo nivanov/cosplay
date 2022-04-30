@@ -22,7 +22,7 @@ import org.cosplay.CPCanvas.ArtLineStyle.ART_SMOOTH
 import org.cosplay.CPColor.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.*
 
@@ -43,6 +43,18 @@ import scala.collection.mutable
 
 /**
   * Code example for camera management.
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:camera exec:java
+  * }}}
   * 
   * @note See developer guide at [[https://cosplayengine.com]] 
   */
@@ -122,7 +134,7 @@ object CPCameraExample:
                 super.render(ctx)
 
         // Paint the brick-like ground.
-        val brickImg = CPArrayImage(
+        val brickImg = new CPArrayImage(
             // 5x3
             prepSeq(
                 """
@@ -145,7 +157,7 @@ object CPCameraExample:
         val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, 2, brickCanv.capture())
 
         // Paint palm trees.
-        val palmImg = CPArrayImage(
+        val palmImg = new CPArrayImage(
             prepSeq(
                 """
                   |    __ _.--..--._ _
@@ -172,7 +184,7 @@ object CPCameraExample:
         // | Procedural generation of the terrain & background. |
         // +====================================================+
 
-        val ufoImg = CPArrayImage(
+        val ufoImg = new CPArrayImage(
             prepSeq(
                 """
                   |    .-""`""-.
@@ -221,7 +233,7 @@ object CPCameraExample:
         val sc = new CPScene("scene", Option(dim), bgPx, objs)
         val cam = sc.getCamera
 
-        cam.setFocusTrackId(Some("ufo"))
+        cam.setFocusTrackId(Option("ufo"))
         cam.setFocusFrameInsets(new CPInsets(10, 0))
 
         // Initialize the engine.
@@ -233,7 +245,7 @@ object CPCameraExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     id = "logo",
                     Option(initDim),
                     bgPx,

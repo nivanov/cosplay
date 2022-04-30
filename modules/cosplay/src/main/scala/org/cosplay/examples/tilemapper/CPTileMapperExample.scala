@@ -39,7 +39,19 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /**
   * Code example for tile mapping functionality.
-  * 
+  *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:tilemapper exec:java
+  * }}}
+  *
   * @see [[CPTileMapper]]
   * @note See developer guide at [[https://cosplayengine.com]]
   */
@@ -50,7 +62,7 @@ object CPTileMapperExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val door = CPArrayImage(
+        val door = new CPArrayImage(
             prepSeq(
             """
                 | ___EXIT__
@@ -69,7 +81,7 @@ object CPTileMapperExample:
                 case _ => ch&C_SANDY_BROWN
         ).trimBg()
 
-        val brick = CPArrayImage(
+        val brick = new CPArrayImage(
             prepSeq( // 8x3
             """
                 |^^~^^~^^
@@ -85,7 +97,7 @@ object CPTileMapperExample:
                 case c => c&&(C_MAROON, C_DARK_ORANGE3)
         )
 
-        val alien = CPArrayImage(
+        val alien = new CPArrayImage(
             prepSeq(
             """
                 |                  .-.
@@ -104,7 +116,7 @@ object CPTileMapperExample:
                 case c => c&C_LIME
         ).trimBg()
 
-        val tileMap = CPArrayImage(
+        val tileMap = new CPArrayImage(
             // # - brick
             // X - alien
             // D - door
@@ -136,8 +148,8 @@ object CPTileMapperExample:
         var objs = List[CPSceneObject](
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Exit the game on 'q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+            // Exit the game on 'Q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         )
 
         // Layout tile sprites and add them to the scene.

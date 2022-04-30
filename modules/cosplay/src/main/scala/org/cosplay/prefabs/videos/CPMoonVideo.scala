@@ -4738,7 +4738,7 @@ object CPMoonVideo extends CPVideo("moon_vid", "https://ascii.co.uk/animated-art
         val maxLen = frameStrs.flatten.max.length
         frameStrs.map(strArr =>
             val padded = strArr.map(_.padTo(maxLen, ' ')).toSeq
-            CPArrayImage(padded, (ch, _, _) => {
+            new CPArrayImage(padded, (ch, _, _) => {
                 ch match
                     case ' ' => XRAY
                     case _ => ch&C_WHITE
@@ -4749,7 +4749,7 @@ object CPMoonVideo extends CPVideo("moon_vid", "https://ascii.co.uk/animated-art
 
     override val getFrameCount: Int = frames.size
     override val getFrameDim: CPDim = frames.head.getDim
-    /** @inheritdoc */ override def getFrame(idx: Int): CPImage = frames(idx)
+    override def getFrame(idx: Int): CPImage = frames(idx)
 
 /**
   * Previews image using the built-in video viewer.

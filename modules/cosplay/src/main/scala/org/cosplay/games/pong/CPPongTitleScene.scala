@@ -17,18 +17,14 @@
 
 package org.cosplay.games.pong
 
-import org.cosplay.CPColor.*
 import org.cosplay.*
-import org.cosplay.CPArrayImage.*
-import prefabs.shaders.*
-import org.cosplay.CPFIGLetFont.*
-import org.cosplay.CPCanvas.*
-import org.cosplay.CPDim.*
+import games.*
+import CPColor.*
+import CPArrayImage.*
 import CPPixel.*
 import CPKeyboardKey.*
-import prefabs.images.*
-import prefabs.scenes.*
-import org.cosplay.games.pong.shaders.*
+import prefabs.shaders.*
+import games.pong.shaders.*
 
 /*
    _________            ______________
@@ -43,61 +39,100 @@ import org.cosplay.games.pong.shaders.*
                 ALl rights reserved.
 */
 
+/**
+  * Pong game title scene.
+  */
 object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
-    private val logoImg = FIG_BIG_MONEY_NE.render("Pong", C_WHITE).skin(
-        (px, _, _) => px.char match
-            case '$' => px.withFg(C5)
-            case _ => px.withFg(C4)
-    ).trimBg()
-    private val helpImg = CPArrayImage(
+    private val logoImg = new CPArrayImage(
         prepSeq(
             """
-              |       GET 10 POINTS TO WIN
+              |       /$$$$$$$
+              |      | $$__  $$
+              |      | $$  \ $$ /$$$$$$  /$$$$$$$   /$$$$$$
+              |      | $$$$$$$//$$__  $$| $$__  $$ /$$__  $$
+              |      | $$____/| $$  \ $$| $$  \ $$| $$  \ $$
+              |      | $$     | $$  | $$| $$  | $$| $$  | $$
+              |      | $$     |  $$$$$$/| $$  | $$|  $$$$$$$
+              |      |__/      \______/ |__/  |__/ \____  $$
+              |                                    /$$  \ $$
+              |                                   |  $$$$$$/
+              |                                    \______/
               |
               |
-              |       
-              |           Up      Down
-              |         .----.    .----.
-              |         | W  |    | S  |
-              |         `----'    `----'
-              |           or        or
-              |         .----.    .----.
-              |         | Up |    | Dn |
-              |         `----'    `----'
-              |       
-              |         [ENTER]   Play
-              |         [Q]       Quit Any Time
+              |              GET 10 POINTS TO WIN
+              |              ~~~~~~~~~~~~~~~~~~~~
+              |
+              |    >> BEWARE OF INITIAL KEYBOARD PRESS DELAY <<
+              |   >> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<
               |
               |
+              |                   Up      Down
+              |                 .----.    .----.
+              |                 | W  |    | S  |
+              |                 `----'    `----'
+              |                   or        or
+              |                 .----.    .----.
+              |                 | Up |    | Dn |
+              |                 `----'    `----'
+              |             
+              |                [ENTER]   Play
+              |                [CTRL+A]  Audio On/Off
+              |                [CTRL+L]  Log Console
+              |                [CTRL+Q]  FPS Overlay
+              |                [Q]       Quit
               |
-              |  Copyright (C) 2022 Rowan Games, Inc
+              |
+              |         Copyright (C) 2022 Rowan Games, Inc.
             """),
         (ch, _, y) =>
-            if y == 18 then ch&C3
+            if y == 36 then ch&C3
             else
                 ch match
-                    case c if c.isLetter => c&C4
-                    case '|' | '.' | '`' | '-' | '\'' => ch&C2
+                    case '$' => '$'&C5
+                    case c if c.isLetter || c == '+' || c == '/' || c == '(' || c == ')' => c&C4
+                    case '[' | ']' | '|' | '.' | '`' | '-' | '\'' => ch&C2
+                    case c if y <= 13 => c&C4
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    private val sparkleShdr = CPPongTitleSparkleShader()
-    private val fadeInShdr = CPFadeInShader(true, 1000, BG_PX, onFinish = _ ⇒ sparkleShdr.start())
+    private val sparkleShdr = CPSparkleShader(CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
+    private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
+    private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
 
     // Add scene objects...
     addObjects(
-        CPImageSprite(xf = c => (c.w - logoImg.w) / 2, c => Math.max(0, c.h / 2 - logoImg.h - 1), 0, logoImg),
-        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => Math.max(0, c.h / 2 + 1), 0, helpImg),
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, sparkleShdr)),
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_ENTER, _.switchScene("play"))// Transition to the next scene on 'Enter' press.
+        // Main logo.
+        CPCenteredImageSprite(img = logoImg, 0),
+        // Add all screen shaders.
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, sparkleShdr)),
+        // Exit on 'Q' press.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        // Toggle audio on 'Ctrl+A' press.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
+        // Transition to the next scene on 'Enter' press.
+        CPKeyboardSprite(KEY_ENTER, _ => fadeOutShdr.start(_.switchScene("play")))
     )
+
+    private def startBgAudio(): Unit = introSnd.loop(2000)
+    private def stopBgAudio(): Unit = introSnd.stop(400)
+
+    /**
+      * Toggles audio on and off.
+      */
+    private def toggleAudio(): Unit =
+        if audioOn then
+            stopBgAudio()
+            audioOn = false
+        else
+            startBgAudio()
+            audioOn = true
 
     override def onActivate(): Unit =
         super.onActivate()
-        introSnd.loopAll(2000) // Start background audio.
+        fadeInShdr.start() // Reset the shader.
+        if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
-        introSnd.stop(400) // Stop background audio.
+        stopBgAudio()

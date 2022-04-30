@@ -17,7 +17,6 @@
 
 package org.cosplay.impl
 
-import org.apache.commons.lang3.RandomStringUtils
 import org.cosplay.*
 import CPKeyboardKey.*
 
@@ -165,16 +164,6 @@ object CPUtils:
     def isSysEnvTrue(s: String): Boolean = sysEnv(s) match
         case None => false
         case Some(v) => java.lang.Boolean.valueOf(v) == java.lang.Boolean.TRUE    
-
-    /**
-      *
-      */
-    def guid: String = UUID.randomUUID().toString.toLowerCase
-
-    /**
-      * 
-      */
-    def guid6: String = RandomStringUtils.random(6, true, true).toLowerCase
 
     /**
       *

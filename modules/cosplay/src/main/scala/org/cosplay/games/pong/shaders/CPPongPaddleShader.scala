@@ -18,7 +18,8 @@
 package org.cosplay.games.pong.shaders
 
 import org.cosplay.*
-import org.cosplay.games.pong.*
+import games.*
+import games.pong.*
 
 /*
    _________            ______________
@@ -34,10 +35,9 @@ import org.cosplay.games.pong.*
 */
 
 /**
-  *
-  * @param ch Character to use ('>' or '<').
+  * Paddle return shader.
   */
-class CPPongPaddleShader(ch: Char) extends CPShader:
+class CPPongPaddleShader extends CPShader:
     private final val DUR_MS = 250
 
     private var startMs = 0L
@@ -57,6 +57,7 @@ class CPPongPaddleShader(ch: Char) extends CPShader:
         if go then
             val canv = ctx.getCanvas
             objRect.loop((x, y) => {
-                val zpx = canv.getZPixel(x, y)
-                canv.drawPixel(zpx.px.withChar(ch).withFg(CPColor.C_WHITE).withBg(BG_PX.bg), x, y, zpx.z)
+                if canv.isValid(x, y) then
+                    val zpx = canv.getZPixel(x, y)
+                    canv.drawPixel(zpx.px.withBg(Option(C2)), x, y, zpx.z)
             })

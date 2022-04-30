@@ -42,6 +42,18 @@ import prefabs.shaders.*
 /**
   * Code example for image functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:image_carousel exec:java
+  * }}}
+  *
   * @see [[CPImage]]
   * @see [[CPArrayImage]]
   * @note See developer guide at [[https://cosplayengine.com]]
@@ -89,7 +101,8 @@ object CPImageCarouselExample:
         CPGuitarImage,
         CPSpeckImage
     )
-    private val bgPx = '.'&&(C_GRAY2, C_GRAY1)
+    private val BLUE_BLACK = CPColor("0x00000F")
+    private val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
 
     class CarouselSprite(img: CPImage, viewDim: CPDim) extends CPSceneObject:
         private final val centerY = (viewDim.h - img.h) / 2
@@ -146,7 +159,7 @@ object CPImageCarouselExample:
         val maxImgW = imgs.maxBy(_.getDim.w).getWidth
         val maxImgH = imgs.maxBy(_.getDim.h).getHeight
 
-        val ctrlImg = CPArrayImage(
+        val ctrlImg = new CPArrayImage(
             prepSeq(
                 """
                   |              LEFT            RIGHT
@@ -183,8 +196,7 @@ object CPImageCarouselExample:
                     curSpr.fadeOutToRight()
                     sprIdx = if sprIdx == sprs.size - 1 then 0 else sprIdx + 1
                     sprs(sprIdx).fadeInFromLeft()
-            // Exit the game on 'q' press.
-            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'q' press.
+            case KEY_LO_Q => ctx.exitGame() // Exit the game on 'Q' press.
             case _ => ()
         )
 
@@ -211,7 +223,7 @@ object CPImageCarouselExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

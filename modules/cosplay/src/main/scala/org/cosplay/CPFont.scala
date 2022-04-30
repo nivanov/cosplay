@@ -129,8 +129,8 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @return Image as a rendering of the given string with this font.
       */
     def renderSeq(ss: Seq[String], fg: CPColor, bg: Option[CPColor] = None, align: Int = 0): CPImage =
-        require(ss.nonEmpty)
-        require(align == -1 || align == 0 || align == 1)
+        require(ss.nonEmpty, "Sequence of text lines cannot be empty.")
+        require(align == -1 || align == 0 || align == 1, "Align value must be -1, 1 or 1.")
 
         if ss.sizeIs == 1 then render(ss.head, fg, bg)
         else

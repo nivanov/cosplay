@@ -33,7 +33,7 @@ import scala.collection.mutable
 */
 
 /**
-  * Container for style string rendered using system font.
+  * Builder for a styled string rendered using system font.
   *
   * This utility class provides a builder pattern to built styled (colored) strings that
   * are rendered using a [[CPSystemFont system font]]. Once styled string is built it can be

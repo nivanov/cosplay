@@ -25,7 +25,7 @@ import CPPixel.*
 import CPKeyboardKey.*
 import CPStyledString.*
 import CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
@@ -44,6 +44,18 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 /**
   * Code example for canvas drawing functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:canvas exec:java
+  * }}}
+  *
   * @see [[CPCanvas]]
   * @note See developer guide at [[https://cosplayengine.com]]
   */
@@ -54,7 +66,7 @@ object CPCanvasExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val alienImg = CPArrayImage(
+        val alienImg = new CPArrayImage(
             // 12x9
             prepSeq("""
               |    .  .
@@ -144,7 +156,7 @@ object CPCanvasExample:
         val sc = new CPScene("scene", Option(dim), bgPx,
             drawSpr,
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)), // Just shader for the entire screen.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.
         )
 
         // Initialize the engine.
@@ -156,7 +168,7 @@ object CPCanvasExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     Option(dim),
                     bgPx,

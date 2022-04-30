@@ -33,7 +33,7 @@ package org.cosplay
 import CPArrayImage.*
 
 /**
-  * Two-dimensional pixel array image.
+  * An image based on two-dimensional pixel array.
   *
   * This is the primary tool for creating in-code images.
   * This class has number of constructors and companion utility methods to aid in creating

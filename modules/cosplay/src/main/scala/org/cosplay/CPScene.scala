@@ -78,7 +78,7 @@ import org.cosplay.impl.CPContainer
   * @param bgPx Background pixel of the scene. Background pixel is shown when none of the scene objects
   *     has drawn a pixel at that particular coordinate.
   * @see [[CPEngine.startGame()]]
-  * @see [[org.cosplay.prefabs.scenes.CPLogoScene]]
+  * @see [[org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene]]
   */
 open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGameObject(id) with CPLifecycle:
     private val cam = CPCamera()

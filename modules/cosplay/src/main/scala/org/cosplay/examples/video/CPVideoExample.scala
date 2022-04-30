@@ -40,6 +40,18 @@ import prefabs.shaders.*
 /**
   * Code example for video functionality.
   *
+  * ### Running Example
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run example:
+  * {{{
+  *     $ mvn -f modules/cosplay -P ex:video exec:java
+  * }}}
+  *
   * @see [[CPVideo]]
   * @see [[CPVideoSprite]]
   * @see [[CPVideoSpriteListener]]
@@ -79,7 +91,7 @@ object CPVideoExample:
             new CPStaticImageSprite((dim.w - ctrlDim.w) / 2, dim.h - 4, 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'q' press.
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.
         )
 
         // Initialize the engine.

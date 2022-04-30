@@ -259,7 +259,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             if data.isValid(x2, y2) then data.set(x2, y2, px)
         })
 
-        CPArrayImage(data, origin)
+        new CPArrayImage(data, origin)
 
     /**
       * Converts this image into 2D array of pixels.
@@ -353,7 +353,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Detects all background pixels and replaces them with a given pixel returning new image.
       *
       * A pixel is considered to be a background pixel when:
-      *  - It's [[CPPixel.char characater]] is space (' ').
+      *  - It's [[CPPixel.char character]] is space (' ').
       *  - It's not equal to given `bgPx`.
       *  - It's on the edge of the image or there's a path from it to the edge of the image through background
       *    pixels only.
@@ -378,19 +378,18 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             arr.rect.loop((x, y) =>
                 val px = arr.get(x, y)
                 // Space at the edge of the image is always considered background.
-                if px != bgPx && px.char == ' ' &&
-                    (
-                        x == 0 ||
-                        y == 0 ||
-                        x == xMax ||
-                        y == yMax ||
-                        arr.get(x + 1, y) == bgPx ||
-                        arr.get(x - 1, y) == bgPx ||
-                        arr.get(x, y + 1) == bgPx ||
-                        arr.get(x, y - 1) == bgPx
-                    ) then
-                        arr.set(x, y, bgPx)
-                        ok = true
+                if px != bgPx && px.char == ' ' && (
+                    x == 0 ||
+                    y == 0 ||
+                    x == xMax ||
+                    y == yMax ||
+                    arr.get(x + 1, y) == bgPx ||
+                    arr.get(x - 1, y) == bgPx ||
+                    arr.get(x, y + 1) == bgPx ||
+                    arr.get(x, y - 1) == bgPx) then {
+                    arr.set(x, y, bgPx)
+                    ok = true
+                }
             )
 
         new CPArrayImage(arr, origin)
@@ -417,7 +416,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Attaches given image underneath this image returning a new combined image.
       *
       * @param img Image to attached.
-      * @param bgPx Background pixel to use when combines image has larged width.
+      * @param bgPx Background pixel to use when combined image has large width.
       */
     def stitchBelow(img: CPImage, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val w = getWidth.max(img.getWidth)
@@ -431,7 +430,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Attaches given image to the right of this image returning a new combined image.
       *
       * @param img Image to attached.
-      * @param bgPx Background pixel to use when combines image has larged height.
+      * @param bgPx Background pixel to use when combined image has large height.
       */
     def stitchRight(img: CPImage, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val w = getWidth + img.getWidth
@@ -583,6 +582,52 @@ object CPImage:
     private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
 
     /**
+      *
+      * @param data
+      * @param markup
+      * @return
+      */
+    def markupImage(data: Seq[String], markup: CPImageMarkup): CPImage =
+        require(data.nonEmpty, "Markup image data cannot be empty.")
+
+        val chArr = CPArray2D(data)
+        val dfltSkin = (ch: Char) ⇒ CPPixel(ch, markup.fg, markup.bg)
+        var skin = dfltSkin
+        var skinStack = List.empty[Char ⇒ CPPixel]
+        val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
+        val buf = ArrayBuffer.empty[Char]
+//        chArr.loopHor((ch, x, y) ⇒ {
+//            buf.append(ch)
+//            val bufS = buf.toString()
+//            var found = false
+//            markupSeq.find(x ⇒ x._1 == bufS) match
+//                case Some(m) ⇒
+//                    skin = m._3
+//                    skinStack ::= skin // Pushed the opened skin.
+//                    found = true
+//                case None ⇒ ()
+//
+//            if !found then
+//                markupSeq.find(x ⇒ x._2 == bufS) match
+//                    case Some(m) ⇒
+//                        skinStack = skinStack.tail // Pop the closed skin.
+//                        skin = if skinStack.isEmpty then dfltSkin else skinStack.head
+//                        found = true
+//                    case None ⇒ ()
+//
+//            if found then
+//                buf.clear()
+//            else
+//
+//
+//        })
+
+        new CPImage("code"):
+            private val dim = pxArr.dim
+            override def getDim: CPDim = dim
+            override def getPixel(x: Int, y: Int): CPPixel = pxArr.get(x, y)
+
+    /**
       * Loads image using [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *
       * @param src Local filesystem path, resources file or URL.
@@ -602,7 +647,7 @@ object CPImage:
                     val fg = CPColor(Integer.decode(parts(3)))
                     val bg = CPColor(Integer.decode(parts(4)))
 
-                    CPPosPixel(CPPixel(ch, fg, Some(bg)), x, y)
+                    CPPosPixel(CPPixel(ch, fg, Option(bg)), x, y)
                 catch
                     case e: Exception => E(s"Invalid CSV file format at line $idx: $src", e)
             })
@@ -641,7 +686,7 @@ object CPImage:
                 val bgG = unsigned(bb.get)
                 val bgB= unsigned(bb.get)
                 val fg = CPColor(fgR, fgG, fgB)
-                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Some(CPColor(bgR, bgG, bgB)) // Transparency background.
+                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB)) // Transparency background.
                 val px = if ch == ' ' then CPPixel.XRAY else CPPixel(ch, fg, bg)
                 layer.set(x, y, px)
                 idx += 1
@@ -696,14 +741,14 @@ object CPImage:
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       */
     def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_BG): Unit =
-        require(fps < 1_000)
+        require(fps < 1_000, "FPS must be < 1,000.")
         val frameDim = imgs.head.getDim
         require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
         val dim = CPDim(frameDim.w + 8, frameDim.h + 8)
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview (${frameDim.w}x${frameDim.h})",
-                initDim = Some(dim),
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -711,16 +756,13 @@ object CPImage:
         try
             val ani = CPAnimation.filmStrip("ani", 1_000 / fps, true, false, imgs)
             val spr = CPAnimationSprite("spr", Seq(ani), 4, 4, 0, "ani")
-            CPEngine.rootLog().info(s"Animation preview [" +
-                s"frames=${imgs.size}, " +
-                s"frameDim=$frameDim, " +
-                s"]")
+            CPEngine.rootLog().info(s"Animation preview [frames=${imgs.size}, frameDim=$frameDim]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 spr, // Animation we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()
@@ -738,23 +780,19 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.w}x${imgDim.h})",
-                initDim = Some(dim),
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
         )
         try
-            CPEngine.rootLog().info(s"Image preview [" +
-                s"origin=${img.getOrigin}, " +
-                s"dim=${img.getDim}, " +
-                s"class=${img.getClass.getName}" +
-            s"]")
+            CPEngine.rootLog().info(s"Image preview [origin=${img.getOrigin}, dim=${img.getDim}, class=${img.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'q' press.
+                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()
