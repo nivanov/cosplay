@@ -24,7 +24,7 @@ import CPArrayImage.*
 import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
-import prefabs.sprites.*
+//import prefabs.sprites.*
 import scala.util.*
 import CPColor.*
 
@@ -60,6 +60,8 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
     private var dead = false
 
     private var score = 0
+
+    private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
     private val birdImg = CPArrayImage(
         prepSeq(
@@ -127,6 +129,12 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
 
     private val startSpr = new CPImageSprite("start", 9, 15, 0, startImg)
 
+    private val scoreSpr = new CPImageSprite("score", 10, 0, 1, mkScoreImage(score)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+
+            setX((canv.width / 2) - 3)
+
     private val pipeSpr = new CPCanvasSprite("pipe"):
         private val px = '|'&C_GREEN
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -141,6 +149,9 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
                 else
                     if pipeX <= -pipeWidth then
                         curPipe = false
+                        score += 1
+                        println(score)
+                        scoreSpr.setImage(mkScoreImage(score))
                     else
                         pipeX -= speed
 
@@ -156,7 +167,8 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         birdSpr,
         startSpr,
-        pipeSpr
+        pipeSpr,
+        scoreSpr
     )
 
 
