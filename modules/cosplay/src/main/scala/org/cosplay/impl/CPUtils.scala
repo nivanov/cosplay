@@ -294,6 +294,13 @@ object CPUtils:
         mapStream(in, enc, _.map(p => p).toList)
 
     /**
+      * Checks if given collection has any dups.
+      *
+      * @param col Collection to check.
+      */
+    def hasDups[T](col: Seq[T]): Boolean = col.distinct.sizeCompare(col) != 0
+
+    /**
       *
       * @param in Stream to read from.
       * @param name Name of the stream for error messages.

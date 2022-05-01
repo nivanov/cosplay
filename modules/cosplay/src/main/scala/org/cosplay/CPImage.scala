@@ -594,6 +594,7 @@ object CPImage:
         case class CharPos(ch: Char, x: Int, y: Int)
         val chArr = CPArray2D(data)
         val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
+
         var skin = (ch: Char) ⇒ CPPixel(ch, markup.fg, markup.bg)
         var skinStack = List(skin)
         val buf = ArrayBuffer.empty[CharPos]
@@ -606,7 +607,7 @@ object CPImage:
 
         chArr.loopHor((ch, x, y) ⇒ {
             buf.append(CharPos(ch, x, y))
-            val bufS = buf.map(_.ch).toString()
+            val bufS = buf.map(_.ch).mkString
             elms.find(e => bufS.endsWith(e.openTag)) match
                 case Some(elm) =>
                     add(buf.length - elm.openTag.length)

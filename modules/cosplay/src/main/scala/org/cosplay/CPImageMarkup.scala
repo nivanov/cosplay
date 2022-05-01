@@ -17,6 +17,8 @@
 
 package org.cosplay
 
+import org.cosplay.impl.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -55,7 +57,14 @@ case class CPImageMarkupElement(openTag: String, closeTag: String, skin: Char =>
   * @see [[CPImageMarkupElement]]
   */
 case class CPImageMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPImageMarkupElement]):
-    require(elements.exists(x ⇒ x._1.isEmpty || x._2.isEmpty), "Markup element cannot have empty opening or closing tags.")
+    for (elm <- elements)
+        require(
+            elm.openTag.nonEmpty && elm.closeTag.nonEmpty,
+            s"Markup cannot have empty opening or closing tags: '${elm.openTag}' '${elm.closeTag}'"
+        )
+        require(!elm.openTag.contains(' '), s"Markup opening tag cannot have space: '${elm.openTag}'")
+        require(!elm.closeTag.contains(' '), s"Markup closing tag cannot have space: '${elm.closeTag}'")
+    require(!CPUtils.hasDups(elements.flatMap(e => Seq(e.openTag, e.closeTag))), s"Markup opening and closing tags cannot have dups.")
     require(!elements.exists(elm ⇒ elements.exists(x ⇒
         x != elm &&
         (
@@ -68,7 +77,7 @@ case class CPImageMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPImage
             elm.openTag.contains(x.openTag) ||
             elm.closeTag.contains(x.openTag)
         )
-    )), "Markup elements cannot have intersecting open or close tags.")
+    )), "Markup elements cannot have intersecting opening or closing tags.")
 
     /**
       *
