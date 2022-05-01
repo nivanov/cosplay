@@ -47,43 +47,43 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val logoImg = new CPArrayImage(
         prepSeq(
             """
-              |       /$$$$$$$
-              |      | $$__  $$
-              |      | $$  \ $$ /$$$$$$  /$$$$$$$   /$$$$$$
-              |      | $$$$$$$//$$__  $$| $$__  $$ /$$__  $$
-              |      | $$____/| $$  \ $$| $$  \ $$| $$  \ $$
-              |      | $$     | $$  | $$| $$  | $$| $$  | $$
-              |      | $$     |  $$$$$$/| $$  | $$|  $$$$$$$
-              |      |__/      \______/ |__/  |__/ \____  $$
-              |                                    /$$  \ $$
-              |                                   |  $$$$$$/
-              |                                    \______/
+              |    /$$$$$$$
+              |   | $$__  $$
+              |   | $$  \ $$ /$$$$$$  /$$$$$$$   /$$$$$$
+              |   | $$$$$$$//$$__  $$| $$__  $$ /$$__  $$
+              |   | $$____/| $$  \ $$| $$  \ $$| $$  \ $$
+              |   | $$     | $$  | $$| $$  | $$| $$  | $$
+              |   | $$     |  $$$$$$/| $$  | $$|  $$$$$$$
+              |   |__/      \______/ |__/  |__/ \____  $$
+              |                                 /$$  \ $$
+              |                                |  $$$$$$/
+              |                                 \______/
               |
               |
-              |              GET 10 POINTS TO WIN
-              |              ~~~~~~~~~~~~~~~~~~~~
+              |           GET 10 POINTS TO WIN
+              |           ~~~~~~~~~~~~~~~~~~~~
               |
-              |    >> BEWARE OF INITIAL KEYBOARD PRESS DELAY <<
-              |   >> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<
-              |
-              |
-              |                   Up      Down
-              |                 .----.    .----.
-              |                 | W  |    | S  |
-              |                 `----'    `----'
-              |                   or        or
-              |                 .----.    .----.
-              |                 | Up |    | Dn |
-              |                 `----'    `----'
-              |             
-              |                [ENTER]   Play
-              |                [CTRL+A]  Audio On/Off
-              |                [CTRL+L]  Log Console
-              |                [CTRL+Q]  FPS Overlay
-              |                [Q]       Quit
+              | >> BEWARE OF INITIAL KEYBOARD PRESS DELAY <<
+              |>> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<
               |
               |
-              |         Copyright (C) 2022 Rowan Games, Inc.
+              |                Up      Down
+              |              .----.    .----.
+              |              | W  |    | S  |
+              |              `----'    `----'
+              |                or        or
+              |              .----.    .----.
+              |              | Up |    | Dn |
+              |              `----'    `----'
+              |
+              |             [ENTER]   Play
+              |             [CTRL+A]  Audio On/Off
+              |             [CTRL+L]  Log Console
+              |             [CTRL+Q]  FPS Overlay
+              |             [Q]       Quit
+              |
+              |
+              |      Copyright (C) 2022 Rowan Games, Inc.
             """),
         (ch, _, y) =>
             if y == 36 then ch&C3

@@ -139,9 +139,13 @@ import scala.util.Using
   *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This format
   *    is natively exported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
   *    supported by CosPlay to save an image with. This format supports full color information.
+  *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native format
+  *    used by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and can be loaded
+  *    by the REXPaint.This format supports full color information.
   *
-  *  Use the following method to save the image to the file path:
+  *  Use the following methods to save the image to the file path:
   *   - [[saveRexCsv() saveRexCsv(...)]]
+  *   - [[saveRexXp() saveRexXp(...)]]
   *
   * ### ASCII Art Online
   * There's a vast collection of existing ASCII art imagery online. Here's some of the main resources where
@@ -214,6 +218,8 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
 
     /**
       * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
+      * Note that this is a native format used by REXPaint and images in this format can be
+      * loaded by REXPaint for editing.
       *
       * @param file File instance.
       * @param bg Background color to replace in pixels with no background.
@@ -229,11 +235,10 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         buf.putInt(1) // Only 1 layer.
         buf.putInt(dim.w) // Image width.
         buf.putInt(dim.h) // Image height.
-        val xBg = new CPColor(255, 0, 255)
         loopVert((px, _, _) => {
             buf.putInt(if px.isXray then ' '.toInt else px.char.toInt)
             val fgc = px.fg
-            val bgc = if px.isXray then xBg else px.bg.getOrElse(bg)
+            val bgc = px.bg.getOrElse(bg)
             buf.put(fgc.red.toByte)
             buf.put(fgc.blue.toByte)
             buf.put(fgc.green.toByte)
@@ -822,7 +827,7 @@ object CPImage:
       * recognized:
       *  - `*.csv` will use [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *  - `*.xp` will use [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
-      *  - `*.csv` will use text format.
+      *  - `*.txt` will use text format.
       *
       *
       * @param path Local filesystem file path.
