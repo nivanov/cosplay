@@ -243,7 +243,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         })
         buf.flip()
 
-        Using.resource(new ObjectOutputStream(new FileOutputStream(file))) { _.write(CPUtils.zipBytes(buf.array())) }
+        Using.resource(new DataOutputStream(new FileOutputStream(file))) { _.write(CPUtils.zipBytes(buf.array())) }
 
     /**
       * Splits this image into sequence of `[w,h]` images.
