@@ -109,7 +109,7 @@ final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width,
     infix def >=@(that: CPDim): Boolean = width >= that.width && height >= that.height
 
     /**
-      * Area in square characters for this dimension.
+      * Area in characters for this dimension.
       */
     final val area: Int = width * height
 

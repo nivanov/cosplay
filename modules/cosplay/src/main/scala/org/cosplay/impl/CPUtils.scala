@@ -193,6 +193,27 @@ object CPUtils:
             case e: Exception => E(s"Failed to unzip byte array.", e)
 
     /**
+      *
+      * @param bytes Array of bytes to unzip.
+      */
+    def zipBytes(bytes: Array[Byte]): Array[Byte] =
+        try
+            val gis = new ByteArrayInputStream(bytes)
+            try
+                val bout = new ByteArrayOutputStream()
+                val out = new GZIPOutputStream(bout)
+                val buf = new Array[Byte](1024)
+                while (gis.available() > 0)
+                    val cnt = gis.read(buf, 0, 1024)
+                    if cnt > 0 then out.write(buf, 0, cnt)
+                close(out)
+                bout.toByteArray
+            finally
+                close(gis)
+        catch
+            case e: Exception => E(s"Failed to zip byte array.", e)
+
+    /**
       * Creates gzip file.
       *
       * @param f Original file to archive.
