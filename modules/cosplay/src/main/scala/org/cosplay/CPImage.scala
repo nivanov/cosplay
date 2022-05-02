@@ -240,11 +240,11 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             val fgc = px.fg
             val bgc = px.bg.getOrElse(bg)
             buf.put(fgc.red.toByte)
-            buf.put(fgc.blue.toByte)
             buf.put(fgc.green.toByte)
+            buf.put(fgc.blue.toByte)
             buf.put(bgc.red.toByte)
-            buf.put(bgc.blue.toByte)
             buf.put(bgc.green.toByte)
+            buf.put(bgc.blue.toByte)
         })
         buf.flip()
 

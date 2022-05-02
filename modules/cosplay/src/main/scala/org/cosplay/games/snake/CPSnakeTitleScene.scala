@@ -42,53 +42,8 @@ import CPKeyboardKey.*
   * Snake game title scene.
   */
 object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
-    private val introSnd = CPSound(s"sounds/games/snake/intro.wav", 0.5f)
-    private val logoImg = new CPArrayImage(
-        prepSeq(
-            """
-              |      ______     __   __     ______     __  __     ______
-              |     /\  ___\   /\ "-.\ \   /\  __ \   /\ \/ /    /\  ___\
-              |     \ \___  \  \ \ \-.  \  \ \  __ \  \ \  _"-.  \ \  __\
-              |      \/\_____\  \ \_\\"\_\  \ \_\ \_\  \ \_\ \_\  \ \_____\
-              |       \/_____/   \/_/ \/_/   \/_/\/_/   \/_/\/_/   \/_____/
-              |       
-              |     
-              |>> BEWARE OF INITIAL KEYBOARD PRESS DELAY   <<   ---_,......._-_--.
-              |>> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<  (&\ /      / /& \  \
-              |                                                /  /     .'  -=-'   `.
-              | ____   ____   ____   ____                     /  /    .'             )
-              |||w || ||a || ||s || ||d ||                 __/  /   .'       ,_.)   /
-              |||__|| ||__|| ||__|| ||__||                / o   o        _.-' /  .''
-              ||/__\| |/__\| |/__\| |/__\|                \          _.-'    / .'*|
-              |                                            \______.-'//    .'.' \*|
-              |                                             \|  \ | //   .'.' _ |*|
-              |[ENTER]   Play                                `   \|//  .'.'_ _ _|*|
-              |[Q]       Quit                                 .  .// .'.' | _ _ |*|
-              |[CTRL@A]  Audio On~Off                         \`-|\_/ /   | _ _ |*|
-              |[CTRL@L]  Log Console                           `/'\__/    \ _ _ |*\
-              |[CTRL@Q]  FPS Overlay                          /^|          \ _ _ \*\
-              |                                              '  `           \ _ _ \*\
-              |                                                              \ _ _ \*\
-              |Copyright (C) 2022 Rowan Games, Inc.                            \ _ _ \.'
-              |                                                                | _ _ |
-              |                                                                / _ _ /
-              |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-.' _ _ '
-              | + _ - * - _ * _ - - _ + _ - - _ * _ - + _ - * - _ * _ - - _ * _ _  /
-              |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,.'"
-            """),
-        (ch, x, y) =>
-            if y < 5 || (y == 23 && x <= 35) then ch&C3
-            else
-                ch match
-                    case c if c.isLetter => c&C4
-                    case '~' ⇒ '/'&C4
-                    case '@' ⇒ '+'&C4
-                    case '&' ⇒ '8'&C1 // Eyes.
-                    case '<' | '>' => ch&C2
-                    case '[' | ']' => ch&C5
-                    case _ => ch.toUpper&C1
-    ).trimBg()
-
+    private val introSnd = CPSound("sounds/games/snake/intro.wav", 0.5f)
+    private val logoImg = CPImage.loadRexXp("images/games/snake/snake_logo.xp")
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.LEFT_TO_RIGHT,
         true,

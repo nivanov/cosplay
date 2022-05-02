@@ -96,8 +96,6 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
                     case _ => ch.toUpper&C1
     ).trimBg()
 
-    logoImg.saveRexXp("pong_logo.xp", BG_PX.bg.get)
-
     private val sparkleShdr = CPSparkleShader(CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
     private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
     private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
