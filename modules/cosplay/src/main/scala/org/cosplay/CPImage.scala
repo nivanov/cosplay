@@ -792,11 +792,11 @@ object CPImage:
                 val fgB = unsigned(bb.get)
                 val bgR = unsigned(bb.get)
                 val bgG = unsigned(bb.get)
-                val bgB= unsigned(bb.get)
+                val bgB = unsigned(bb.get)
                 val fg = CPColor(fgR, fgG, fgB)
-                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB)) // Transparency background.
-                val px = if ch == ' ' then CPPixel.XRAY else CPPixel(ch, fg, bg)
-                layer.set(x, y, px)
+                // REXPaint uses RGB(255, 0, 255) as a built-in transparent background.
+                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB))
+                layer.set(x, y, CPPixel(ch, fg, bg))
                 idx += 1
             layers += layer
         val w = layers.head.width
