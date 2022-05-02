@@ -21,7 +21,7 @@ import scala.language.implicitConversions
 /**
   *
   */
-object CPInsetsTests$:
+object CPInsetsTests:
     /**
       *
       */

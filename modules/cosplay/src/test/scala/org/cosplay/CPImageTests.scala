@@ -30,7 +30,7 @@ object CPImageTests:
     def saveLoadTest(): Unit =
         val dim = CPDim(50, 50)
         val canv = CPCanvas(dim, CPPixel('.', C_GRAY3, C_GRAY1))
-        canv.fillRect(1, 1, 49, 49, 0, (x, y) => CPPixel(randSymbol(), randXtermColor(), randXtermColor()))
+        canv.fillRect(1, 1, 49, 49, 0, (_, _) => CPPixel(randSymbol(), randXtermColor(), randXtermColor()))
         val img1 = canv.capture(0, 0, dim)
         val file = CPUtils.homePath("test_img.csv")
         img1.saveRexCsv(file, C_BLACK)

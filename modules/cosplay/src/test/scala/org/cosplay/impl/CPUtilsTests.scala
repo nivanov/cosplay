@@ -38,6 +38,9 @@ import org.junit.jupiter.api.*
   *
   */
 object CPUtilsTests:
+    /**
+      *
+      */
     @Test
     def zipUnzipTest(): Unit =
         val arr = Array[Byte](1, 2, 3, 4, 5, 6)
