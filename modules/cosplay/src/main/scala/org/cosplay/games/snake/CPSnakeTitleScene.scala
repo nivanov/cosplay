@@ -56,7 +56,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         Seq(
             CPStarStreak('.', CS, 0.025, 30, (-.5f, 0f), 0),
             CPStarStreak('.', CS, 0.015, 25, (-1.5f, 0f), 0),
-            CPStarStreak('_', CS, 0.005, 20, (-2.0f, 0f), 0)
+            CPStarStreak('_', CS, 0.005, 50, (-2.0f, 0f), 0)
         ),
         skip = (zpx, _, _) ⇒ zpx.z == 1
     )
