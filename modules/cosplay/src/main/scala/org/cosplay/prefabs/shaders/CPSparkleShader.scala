@@ -35,7 +35,6 @@ import games.*
 import CPColor.*
 
 import scala.collection.mutable
-import scala.util.Random
 
 /**
   * Color sparkle shader.
@@ -63,6 +62,7 @@ import scala.util.Random
   * @see [[CPFlashlightShader]]
   * @see [[CPShimmerShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
+  * @example See [[org.cosplay.games.pong.CPPongGame]] game for example of using this shader.
   */
 class CPSparkleShader(
     colors: Seq[CPColor],
@@ -77,7 +77,7 @@ class CPSparkleShader(
         private val initCol = CPRand.rand(colors)
         private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, steps / 2) ++ CPColor.gradientSeq(initCol, zpx.px.fg, steps / 2)
         private val gradSz = grad.size
-        private var gradIdx = Random.between(0, gradSz)
+        private var gradIdx = CPRand.between(0, gradSz)
 
         def isAlive: Boolean = gradIdx < gradSz
         def draw(canv: CPCanvas): Unit =
@@ -132,9 +132,7 @@ class CPSparkleShader(
         if go then
             // Remove stale sparkles, if any.
             sparkles.filterInPlace(_.isAlive)
-
             val canv = ctx.getCanvas
-
             // Replenish with new sparkles until full.
             val num = (canv.w * canv.h * ratio).round
             val rect = canv.rect

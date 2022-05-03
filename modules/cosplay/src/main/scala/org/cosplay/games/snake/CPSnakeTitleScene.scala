@@ -51,15 +51,24 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         BG_PX,
         onFinish = _ ⇒ eyesShdr.start()
     )
+    private val starStreakShdr = CPStarStreakShader(
+        BG_PX.bg.get,
+        Seq(
+            CPStarStreak('.', CS, 0.025, 30, (-.5f, 0f), 0),
+            CPStarStreak('.', CS, 0.015, 25, (-1.5f, 0f), 0),
+            CPStarStreak('_', CS, 0.005, 20, (-2.0f, 0f), 0)
+        ),
+        skip = (zpx, _, _) ⇒ zpx.z == 1
+    )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
     private val eyesShdr = CPShimmerShader(false, CS, 7, false, (zpx, _, _) ⇒ zpx.px.char != '8')
 
     // Add scene objects...
     addObjects(
         // Main logo.
-        CPCenteredImageSprite(img = logoImg, 0, shaders = Seq(eyesShdr)),
+        CPCenteredImageSprite(img = logoImg, 1, shaders = Seq(eyesShdr)),
         // Off screen sprite since shaders are applied to entire screen.
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, fadeOutShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         // Toggle audio on 'Ctrl+A' press.
@@ -87,9 +96,14 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
 
     override def onActivate(): Unit =
         super.onActivate()
-        fadeInShdr.start() // Reset the shader.
+        // Reset the shaders.
+        fadeInShdr.start()
+        starStreakShdr.start()
         if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
+        // Stop shaders.
+        starStreakShdr.stop()
+        eyesShdr.stop()
         stopBgAudio()

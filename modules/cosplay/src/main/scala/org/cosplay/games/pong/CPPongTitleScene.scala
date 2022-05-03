@@ -85,3 +85,4 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
     override def onDeactivate(): Unit =
         super.onDeactivate()
         stopBgAudio()
+        sparkleShdr.stop()
