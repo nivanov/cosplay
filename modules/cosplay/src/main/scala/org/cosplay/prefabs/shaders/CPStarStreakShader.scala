@@ -36,13 +36,20 @@ import CPPixel.*
 import scala.collection.mutable
 
 /**
+  * An individual streak descriptor used by [[CPStarStreakShader]].
   *
-  * @param ch
-  * @param colors
-  * @param ratio
-  * @param steps
-  * @param z
-  * @param speed
+  * @param ch Character to use to draw stars in this streak.
+  * @param colors Set of initial color for fading from. Colors will be randomly chosen for each star.
+  * @param ratio Percentage of stars visible at the same time. For example, the value of `0.04` means  4%, and
+  *         if the camera frame size is 100x50 characters then 4% ratio will result in 200 stars showing at
+  *         any given time.
+  * @param steps Number of frames that it takes for entire star lifecycle in this streak.
+  * @param z Z-index at which to draw the stars in this streak.
+  * @param speed Tuple defining the X and Y-axis increment on each frame. This tuples defines both the speed
+  *        and the direction stars in this streak will move with.
+  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
+  * @example See [[org.cosplay.games.snake.CPSnakeTitleScene]] game scene for example of using this shader.
+  * @see [[CPStarStreakShader]]
   */
 case class CPStarStreak(
     ch: Char,
@@ -54,13 +61,38 @@ case class CPStarStreak(
 )
 
 /**
+  * Star streak shader.
   *
-  * @param bg
-  * @param streaks
-  * @param autoStart
-  * @param skip
-  * @param durMs
-  * @param onDuration
+  * This shader produces a star streak effect with one or more streaks. Each streak defined by [[CPStarStreak]] class
+  * provides unique configuration for the set of stars: its character to render with, number of stars relative to the size
+  * of the current canvas, colors to use for fading, its lifetime, speed and direction to move and z-index. Each such
+  * set of stars can "streak" differently, e.g. providing parallax effect.
+  *
+  * For example, here's an example of using this shader in the built-in [[org.cosplay.games.snake.CPSnakeGame Snake]] game
+  * for parallax starry skies effect on its title scene:
+  * {{{
+  *  private val starStreakShdr = CPStarStreakShader(
+  *     BG_PX.bg.get,
+  *      Seq(
+  *          CPStarStreak('.', CS, 0.025, 30, (-.5f, 0f), 0),
+  *          CPStarStreak('.', CS, 0.015, 25, (-1.5f, 0f), 0),
+  *          CPStarStreak('_', CS, 0.005, 20, (-2.0f, 0f), 0)
+  *      ),
+  *      skip = (zpx, _, _) ⇒ zpx.z == 1
+  *  )
+  * }}}
+  *
+  * @param bg Background color to fade into.
+  * @param autoStart Whether to start shader right away. Default value is `false`.
+  * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
+  *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
+  *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
+  * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
+  * @param onDuration Optional callback to call when this shader finishes by exceeding the duration
+  *     specified by `durMs` parameter. Default is a no-op.
+  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
+  * @example See [[org.cosplay.games.snake.CPSnakeTitleScene]] game scene for example of using this shader.
+  * @see [[CPStarStreak]]
   */
 class CPStarStreakShader(
     bg: CPColor,
