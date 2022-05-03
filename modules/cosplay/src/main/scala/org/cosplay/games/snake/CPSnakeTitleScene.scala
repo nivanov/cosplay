@@ -52,6 +52,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         onFinish = _ ⇒ eyesShdr.start()
     )
     private val starStreakShdr = CPStarStreakShader(
+        true,
         BG_PX.bg.get,
         Seq(
             CPStarStreak('.', CS, 0.025, 30, (-.5f, 0f), 0),

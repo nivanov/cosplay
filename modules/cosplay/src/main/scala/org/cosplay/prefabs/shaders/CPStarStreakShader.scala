@@ -72,6 +72,7 @@ case class CPStarStreak(
   * for parallax starry skies effect on its title scene:
   * {{{
   *  private val starStreakShdr = CPStarStreakShader(
+  *     true,
   *     BG_PX.bg.get,
   *      Seq(
   *          CPStarStreak('.', CS, 0.025, 30, (-.5f, 0f), 0),
@@ -82,6 +83,7 @@ case class CPStarStreak(
   *  )
   * }}}
   *
+  * @param entireFrame Whether apply to the entire camera frame or just the object this shader is attached to.
   * @param bg Background color to fade into.
   * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
@@ -95,6 +97,7 @@ case class CPStarStreak(
   * @see [[CPStarStreak]]
   */
 class CPStarStreakShader(
+    entireFrame: Boolean,
     bg: CPColor,
     streaks: Seq[CPStarStreak],
     autoStart: Boolean = false,
@@ -164,10 +167,10 @@ class CPStarStreakShader(
             // Remove stale sparkles, if any.
             stars.filterInPlace(_.isAlive)
             val canv = ctx.getCanvas
+            val rect = if entireFrame then ctx.getCameraFrame else objRect
             // Replenish with new sparkles until full.
             for (streak ← streaks)
                 val num = (canv.w * canv.h * streak.ratio).round
-                val rect = canv.rect
                 var cnt = stars.count(_.streak == streak)
                 while cnt < num do
                     var found = false
