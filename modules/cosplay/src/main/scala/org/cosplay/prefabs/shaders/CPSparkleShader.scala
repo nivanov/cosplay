@@ -75,6 +75,8 @@ class CPSparkleShader(
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
+    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    
     case class Sparkle(zpx: CPZPixel, x: Int, y: Int):
         private val initCol = CPRand.rand(colors)
         private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, steps / 2) ++ CPColor.gradientSeq(initCol, zpx.px.fg, steps / 2)

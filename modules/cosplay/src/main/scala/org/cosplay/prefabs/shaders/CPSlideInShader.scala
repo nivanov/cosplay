@@ -155,8 +155,7 @@ object CPSlideInShader:
       * Creates new slide in shader with sigmoid-based color balance function.
       *
       * @param dir Slide direction as defined by [[CPSlideDirection]].
-      * @param entireFrame Whether apply to the entire camera frame or just the object this
-      *     shader is attached to.
+      * @param entireFrame Whether apply to the entire camera frame or just the object this shader is attached to.
       * @param durMs Duration of the effect in milliseconds.
       * @param bgPx Background pixel to fade in from.
       * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.

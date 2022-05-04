@@ -53,7 +53,8 @@ import games.pong.*
 class CPFlashlightShader(
     radius: Int,
     autoPlay: Boolean = false,
-    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false) extends CPShader:
+    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
+) extends CPShader:
     private var on = autoPlay
 
     /**
