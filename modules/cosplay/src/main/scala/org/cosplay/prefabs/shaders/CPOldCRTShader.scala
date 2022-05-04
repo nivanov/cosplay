@@ -36,9 +36,23 @@ import org.cosplay.*
   *
   */
 class CPOldCRTShader(
-    autoStart: Boolean = false
+    autoStart: Boolean = false,
+    lineEffectProb: Float,
+    tearEffectProb: Float
 ) extends CPShader:
     private var go = autoStart
+    private var lineEffOn = false
+    private var tearEffOn = false
+
+    /**
+      *
+      */
+    def lineEffectNow(): Unit = ???
+
+    /**
+      *
+      */
+    def tearEffectNow(): Unit = ???
 
     /**
       * Starts the shader effect.
@@ -63,5 +77,7 @@ class CPOldCRTShader(
     def toggle(): Unit = if go then stop() else start()
 
     /** @inheritdoc */
-    override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit = ???
-
+    override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
+        if go then
+            if !lineEffOn then lineEffOn = CPRand.randFloat() <= lineEffectProb
+            if !tearEffOn then tearEffOn = CPRand.randFloat() <= tearEffectProb
