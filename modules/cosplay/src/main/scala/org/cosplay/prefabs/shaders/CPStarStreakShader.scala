@@ -56,7 +56,7 @@ import scala.collection.mutable
   * @see [[CPShimmerShader]]
   * @see [[CPSparkleShader]]
   * @see [[CPFlashlightShader]]
-  * @see [[CPOffScreenSprite]]         
+  * @see [[CPOffScreenSprite]]
   */
 case class CPStarStreak(
     ch: Char,
