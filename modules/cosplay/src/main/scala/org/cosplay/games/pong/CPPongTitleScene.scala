@@ -45,7 +45,7 @@ import games.pong.shaders.*
 object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
     private val logoImg = CPImage.loadRexXp("images/games/pong/pong_logo.xp").trimBg()
-    private val sparkleShdr = CPSparkleShader(CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
+    private val sparkleShdr = CPSparkleShader(true, CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
     private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
     private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
 

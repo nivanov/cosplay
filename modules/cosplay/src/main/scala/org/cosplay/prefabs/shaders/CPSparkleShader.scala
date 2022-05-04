@@ -44,6 +44,7 @@ import scala.collection.mutable
   * Not that unlike [[CPShimmerShader]] that produces a random color changes, this shader relies on smooth gradual
   * dimming and brightening. Both effects are visually similar but work differently.
   *
+  * @param entireFrame Whether apply to the entire camera frame or just the object this shader is attached to.
   * @param colors Set of color to use for sparking effect. Colors will be randomly chosen for each pixel.
   * @param ratio Percentage of pixels to sparkle at the same time. Default value is `0.04`, i.e. 4%. For example,
   *         if the camera frame size is 100x50 characters then the default 4% ratio will result in 200 pixels
@@ -65,6 +66,7 @@ import scala.collection.mutable
   * @example See [[org.cosplay.games.pong.CPPongTitleScene]] game scene for example of using this shader.
   */
 class CPSparkleShader(
+    entireFrame: Boolean,
     colors: Seq[CPColor],
     ratio: Float = 0.04f,
     steps: Int = 40,
@@ -135,7 +137,7 @@ class CPSparkleShader(
             val canv = ctx.getCanvas
             // Replenish with new sparkles until full.
             val num = (canv.w * canv.h * ratio).round
-            val rect = canv.rect
+            val rect = if entireFrame then ctx.getCameraFrame else objRect
             while sparkles.size < num do
                 var found = false
                 while !found do

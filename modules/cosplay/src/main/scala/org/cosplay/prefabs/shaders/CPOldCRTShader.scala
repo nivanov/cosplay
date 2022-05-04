@@ -30,5 +30,54 @@ package org.cosplay.prefabs.shaders
                ALl rights reserved.
 */
 
-class CPOldCRTShader
+import org.cosplay.*
 
+/**
+  *
+  */
+class CPOldCRTShader(
+    autoStart: Boolean = false,
+    lineEffectProb: Float,
+    tearEffectProb: Float
+) extends CPShader:
+    private var go = autoStart
+    private var lineEffOn = false
+    private var tearEffOn = false
+
+    /**
+      *
+      */
+    def lineEffectNow(): Unit = ???
+
+    /**
+      *
+      */
+    def tearEffectNow(): Unit = ???
+
+    /**
+      * Starts the shader effect.
+      *
+      * @see [[toggle()]]
+      */
+    def start(): Unit = go = true
+
+    /**
+      * Stops the shader effect without waiting for the duration.
+      *
+      * @see [[toggle()]]
+      */
+    def stop(): Unit = go = false
+
+    /**
+      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods..
+      *
+      * @see [[start()]]
+      * @see [[stop()]]
+      */
+    def toggle(): Unit = if go then stop() else start()
+
+    /** @inheritdoc */
+    override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
+        if go then
+            if !lineEffOn then lineEffOn = CPRand.randFloat() <= lineEffectProb
+            if !tearEffOn then tearEffOn = CPRand.randFloat() <= tearEffectProb
