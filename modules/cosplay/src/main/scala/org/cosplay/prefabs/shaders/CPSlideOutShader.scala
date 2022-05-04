@@ -59,10 +59,14 @@ import org.apache.commons.math3.analysis.function.*
   *     then the second one. By default, the the `(a, b) ⇒ a.toFloat / b` function is used that gives gradual color
   *     transition through the frames range. Another popular function to use here is a sigmoid
   *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat` that gives a different visual effect.
-  * @see [[CPOffScreenSprite]]
-  * @see [[CPSlideInShader]]
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPSparkleShader]]
+  * @see [[CPStarStreakShader]]
+  * @see [[CPFlashlightShader]]
+  * @see [[CPOffScreenSprite]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
 class CPSlideOutShader(

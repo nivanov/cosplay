@@ -50,6 +50,13 @@ import scala.collection.mutable
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   * @example See [[org.cosplay.games.snake.CPSnakeTitleScene]] game scene for example of using this shader.
   * @see [[CPStarStreakShader]]
+  * @see [[CPFadeOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPSparkleShader]]
+  * @see [[CPFlashlightShader]]
+  * @see [[CPOffScreenSprite]]         
   */
 case class CPStarStreak(
     ch: Char,
@@ -95,6 +102,13 @@ case class CPStarStreak(
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   * @example See [[org.cosplay.games.snake.CPSnakeTitleScene]] game scene for example of using this shader.
   * @see [[CPStarStreak]]
+  * @see [[CPFadeOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPSparkleShader]]
+  * @see [[CPFlashlightShader]]
+  * @see [[CPOffScreenSprite]]
   */
 class CPStarStreakShader(
     entireFrame: Boolean,
@@ -159,11 +173,12 @@ class CPStarStreakShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go && System.currentTimeMillis() - startMs > durMs then
+        val flag = go && (entireFrame || (ctx.isVisible && inCamera))
+
+        if flag && System.currentTimeMillis() - startMs > durMs then
             stop()
             onDuration(ctx)
-
-        if go then
+        else if flag then
             // Remove stale sparkles, if any.
             stars.filterInPlace(_.isAlive)
             val canv = ctx.getCanvas

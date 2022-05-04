@@ -44,7 +44,10 @@ import org.cosplay.*
   * @param durMs Duration of the fade in effect in milliseconds.
   * @param bgPx Background pixel to fade in from. Background pixel don't participate in shader effect.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
+  * @param keyFrame nth-frame to render the effect. For example, if key frame is `3` than the effect will
+  *     change on each 3rd frame and remain the same on all subsequent frames until next key frame is reached.
   * @param autoStart Whether to start shader right away. Default value is `true`.
+  * @param skipSpaces Whether or not to skip space characters from the shader effect. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
   *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
   *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
@@ -60,6 +63,8 @@ import org.cosplay.*
   * @see [[CPSlideInShader]]
   * @see [[CPSlideOutShader]]
   * @see [[CPShimmerShader]]
+  * @see [[CPSparkleShader]]
+  * @see [[CPStarStreakShader]]
   * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
@@ -69,20 +74,23 @@ class CPRandomFadeInShader(
     durMs: Long,
     bgPx: CPPixel,
     onFinish: CPSceneObjectContext => Unit = _ => (),
+    keyFrame: Int,
     autoStart: Boolean = true,
+    skipSpaces: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) ⇒ Float = (a, b) ⇒ a.toFloat / b
 ) extends CPShader:
     require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
     require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
-    // https://scifi.stackexchange.com/questions/137575/is-there-a-list-of-the-symbols-shown-in-the-matrixthe-symbols-rain-how-many
-    private val chars = "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ:.=*+-¦|_ @#$%^&*()_+<>?"
+    private val chars = "xXzZwWmMkKfFdDsS1234567890{}[]@#$%^&*()_+<>?"
     private var frmCnt = 0
     private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
     private var go = autoStart
+    private var lastRect = CPRect.ZERO
+    private var chArr: Array[Array[Char]] = _
     private var cb: CPSceneObjectContext ⇒ Unit = onFinish
 
     if autoStart then start()
@@ -115,6 +123,10 @@ class CPRandomFadeInShader(
         if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             val canv = ctx.getCanvas
+            val reCalc = chArr == null || lastRect != rect || ctx.getFrameCount % keyFrame == 0
+            if reCalc then
+                lastRect = rect
+                chArr = Array.ofDim[Char](rect.w, rect.h)
             rect.loop((x, y) => {
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
@@ -127,7 +139,11 @@ class CPRandomFadeInShader(
                             case Some(c) => Option(CPColor.mixture(bgBg, c, bal))
                             case None => None
                         var newPx = px.withFg(newFg).withBg(newBg)
-                        if !fin && px.char != ' ' && CPRand.randFloat() > bal then newPx = newPx.withChar(CPRand.rand(chars))
+                        var ch = px.char
+                        if !fin && !(skipSpaces && px.char == ' ') && CPRand.randFloat() > bal then
+                            ch = CPRand.rand(chars)
+                        if reCalc then chArr(x)(y) = ch
+                        newPx = newPx.withChar(chArr(x)(y))
                         canv.drawPixel(newPx, x, y, zpx.z)
             })
             frmCnt += 1

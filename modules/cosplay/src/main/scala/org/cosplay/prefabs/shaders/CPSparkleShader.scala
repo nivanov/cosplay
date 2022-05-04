@@ -129,11 +129,12 @@ class CPSparkleShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go && System.currentTimeMillis() - startMs > durMs then
+        val flag = go && (entireFrame || (ctx.isVisible && inCamera)) 
+        
+        if flag && System.currentTimeMillis() - startMs > durMs then
             stop()
             onDuration(ctx)
-
-        if go then
+        else if flag then
             // Remove stale sparkles, if any.
             sparkles.filterInPlace(_.isAlive)
             val canv = ctx.getCanvas

@@ -140,7 +140,7 @@ object CPImageFormatsExample:
             speckSpr, speckLbl,
             guitarSpr, guitarLbl,
             // Just for the initial scene fade-in effect.
-            new CPOffScreenSprite(new CPRandomFadeInShader(true, 2500, bgPx)),
+            new CPOffScreenSprite(new CPRandomFadeInShader(true, 2500, bgPx, keyFrame = 3)),
             // Exit the game on 'Q' press.
             CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
