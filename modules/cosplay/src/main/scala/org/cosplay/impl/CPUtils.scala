@@ -20,11 +20,12 @@ package org.cosplay.impl
 import org.cosplay.*
 import CPKeyboardKey.*
 
-import java.util.{Random, UUID} // Doing '*' will conflict with Scala List, etc.
+import java.util.{Random, UUID}
 import java.util.zip.*
 import java.net.*
 import java.io.*
 import java.lang.management.*
+import java.net.http.*
 import scala.io.Source
 import scala.sys.SystemProperties
 import scala.util.Using
@@ -382,6 +383,52 @@ object CPUtils:
       */
     def mapResource[T](res: String, enc: String = "UTF-8", mapper: Iterator[String] => T): T =
         mapStream(getStream(res), enc, mapper)
+
+    /**
+      * Records anonymous GA event. Ignores any errors.
+      *
+      * @param gi Game info.
+      */
+    def startPing(gi: CPGameInfo): Unit =
+        val DFLT_GUID = 271828
+        val GA_URL = "https://www.google-analytics.com/mp/collect"
+        try
+            val guid = NetworkInterface.getByInetAddress(InetAddress.getLocalHost) match
+                case null => DFLT_GUID
+                case nif =>
+                    val addr = nif.getHardwareAddress
+                    if addr == null then DFLT_GUID else addr.mkString(",").hashCode
+
+            HttpClient.newHttpClient.send(
+                HttpRequest.newBuilder()
+                    .uri(
+                        URI.create(s"$GA_URL?firebase_app_id=${CPVersion.firebaseAppId}&api_secret=${CPVersion.apiSecret}")
+                    )
+                    .POST(
+                        HttpRequest.BodyPublishers.ofString(
+                            s"""
+                               |app_instance_id=1&
+                               |user_id=$guid&
+                               |
+                               |""".stripMargin
+
+                            s"v=1&" +
+                                s"t=screenview&" +
+                                s"tid=UA-180663034-1&" + // 'nlpcraft.apache.org' web property.
+                                s"cid=$anonym&" + // Hide any user information (anonymous user).
+                                s"aip=&" + // Hide user IP (anonymization).
+                                s"an=nlpcraft&" +
+                                s"av=${NCVersion.getCurrent.version}&" +
+                                s"aid=org.apache.nlpcraft&" +
+                                s"cd=$cd"
+                        )
+                    )
+                    .build(),
+                HttpResponse.BodyHandlers.ofString()
+            )
+        catch
+            case _: Exception => () // Ignore.
+
 
 
 
