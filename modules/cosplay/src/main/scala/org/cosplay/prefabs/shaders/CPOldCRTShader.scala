@@ -34,14 +34,20 @@ import org.cosplay.*
 
 /**
   *
+  * @param autoStart
+  * @param lineEffectProb
+  * @param tearEffectProb
+  * @param tearSnd
   */
 class CPOldCRTShader(
     autoStart: Boolean = false,
     lineEffectProb: Float,
-    tearEffectProb: Float
+    tearEffectProb: Float,
+    tearSnd: Option[CPSound] = None
 ) extends CPShader:
     private val LINE_EFF_SIZE = 5
     private val LINE_EFF_FACTOR = .005f
+    private val TEAR_LINE_NUM = 2
 
     private var go = autoStart
     private var lineEffOn = false
@@ -49,7 +55,15 @@ class CPOldCRTShader(
     private var forceLineEff = false
     private var forceTearEff = false
     private var lineIdx = 0
+    private var snd: Option[CPSound] = tearSnd
 
+    def getTearSound: Option[CPSound] = snd
+
+    /**
+      *
+      * @param snd
+      */
+    def setTearSound(snd: Option[CPSound]): Unit = this.snd = snd
 
     /**
       *
@@ -115,23 +129,19 @@ class CPOldCRTShader(
                     lineIdx += 1
 
             if tearEffOn then
-                val idx = CPRand.between(2, canv.yMax)
-                for (y <- idx to (idx - 3) by -1)
-                    var d = 1
+                val yIdx = CPRand.between(TEAR_LINE_NUM, canv.yMax)
+                var d = 1
+                for (y <- yIdx until (yIdx - TEAR_LINE_NUM) by -1)
                     var x = d
                     while (x <= canv.xMax)
-                        if canv.isValid(x, y) then
+                        if canv.isValid(x, y) && canv.isValid(x - d, y) then
                             val zpx = canv.getZPixel(x, y)
                             val px = zpx.px
-                            canv.drawPixel(if px.isXray then px.withChar(' ') else px, x - d, y, zpx.z)
+                            canv.drawPixel(px, x - d, y, zpx.z)
+                            canv.drawPixel(px.withChar(' '), x, y, zpx.z)
                         x += 1
-                    for (i <- 0 to d)
-                        x = canv.xMax - i
-                        if canv.isValid(x, y) then
-                            val zpx = canv.getZPixel(x, y)
-                            canv.drawPixel(zpx.px.withChar(' '), x, y, zpx.z)
                     d += 1
-
+                if snd.isDefined then snd.get.play()
                 tearEffOn = false
 
 
