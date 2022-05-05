@@ -408,19 +408,8 @@ object CPUtils:
                         HttpRequest.BodyPublishers.ofString(
                             s"""
                                |app_instance_id=1&
-                               |user_id=$guid&
-                               |
+                               |user_id=$guid
                                |""".stripMargin
-
-                            s"v=1&" +
-                                s"t=screenview&" +
-                                s"tid=UA-180663034-1&" + // 'nlpcraft.apache.org' web property.
-                                s"cid=$anonym&" + // Hide any user information (anonymous user).
-                                s"aip=&" + // Hide user IP (anonymization).
-                                s"an=nlpcraft&" +
-                                s"av=${NCVersion.getCurrent.version}&" +
-                                s"aid=org.apache.nlpcraft&" +
-                                s"cd=$cd"
                         )
                     )
                     .build(),
