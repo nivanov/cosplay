@@ -114,5 +114,25 @@ class CPOldCRTShader(
                                 x += 1
                     lineIdx += 1
 
+            if tearEffOn then
+                val idx = CPRand.between(2, canv.yMax)
+                for (y <- idx to (idx - 3) by -1)
+                    var d = 1
+                    var x = d
+                    while (x <= canv.xMax)
+                        if canv.isValid(x, y) then
+                            val zpx = canv.getZPixel(x, y)
+                            val px = zpx.px
+                            canv.drawPixel(if px.isXray then px.withChar(' ') else px, x - d, y, zpx.z)
+                        x += 1
+                    for (i <- 0 to d)
+                        x = canv.xMax - i
+                        if canv.isValid(x, y) then
+                            val zpx = canv.getZPixel(x, y)
+                            canv.drawPixel(zpx.px.withChar(' '), x, y, zpx.z)
+                    d += 1
+
+                tearEffOn = false
+
 
 
