@@ -68,6 +68,7 @@ import org.cosplay.*
   * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
+  * @example See [[org.cosplay.examples.image.CPImageFormatsExample]] example that uses this shader.
   */
 class CPRandomFadeInShader(
     entireFrame: Boolean,

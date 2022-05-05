@@ -40,19 +40,26 @@ class CPOldCRTShader(
     lineEffectProb: Float,
     tearEffectProb: Float
 ) extends CPShader:
+    private val LINE_EFF_SIZE = 5
+    private val LINE_EFF_FACTOR = .005f
+
     private var go = autoStart
     private var lineEffOn = false
     private var tearEffOn = false
+    private var forceLineEff = false
+    private var forceTearEff = false
+    private var lineIdx = 0
+
 
     /**
       *
       */
-    def lineEffectNow(): Unit = ???
+    def lineEffectNow(): Unit = forceLineEff = true
 
     /**
       *
       */
-    def tearEffectNow(): Unit = ???
+    def tearEffectNow(): Unit = forceTearEff = true
 
     /**
       * Starts the shader effect.
@@ -81,3 +88,31 @@ class CPOldCRTShader(
         if go then
             if !lineEffOn then lineEffOn = CPRand.randFloat() <= lineEffectProb
             if !tearEffOn then tearEffOn = CPRand.randFloat() <= tearEffectProb
+
+            if forceLineEff then lineEffOn = true
+            if forceTearEff then tearEffOn = true
+
+            forceLineEff = false
+            forceTearEff = false
+
+            val canv = ctx.getCanvas
+
+            if lineEffOn then
+                if lineIdx > canv.yMax + LINE_EFF_SIZE then
+                    lineEffOn = false
+                    lineIdx = 0
+                else
+                    for (y <- lineIdx until (lineIdx - LINE_EFF_SIZE) by -1)
+                        if canv.isValid(0, y) then
+                            var x = 0
+                            while (x <= canv.xMax)
+                                val zpx = canv.getZPixel(x, y)
+                                var px = zpx.px
+                                px = px.withFg(px.fg.lighter(LINE_EFF_FACTOR * 2f))
+                                if px.bg.isDefined then px = px.withBg(Option(px.bg.get.lighter(LINE_EFF_FACTOR)))
+                                canv.drawPixel(px, x, y, zpx.z)
+                                x += 1
+                    lineIdx += 1
+
+
+

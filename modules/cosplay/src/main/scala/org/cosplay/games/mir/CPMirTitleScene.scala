@@ -55,13 +55,14 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
     ).trimBg()
     private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
     private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
+    private val crtShdr = CPOldCRTShader(true, 1f, 1f)
 
     // Add scene objects...
     addObjects(
         // Main logo.
         CPCenteredImageSprite(img = logoImg, 0),
         // Add all screen shaders.
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, crtShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         // Transition to the next scene on 'Enter' press.
