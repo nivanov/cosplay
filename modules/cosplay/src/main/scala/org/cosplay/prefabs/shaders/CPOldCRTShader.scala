@@ -33,11 +33,27 @@ package org.cosplay.prefabs.shaders
 import org.cosplay.*
 
 /**
+  * Old CRT effect shader.
   *
-  * @param autoStart
-  * @param lineEffectProb
-  * @param tearEffectProb
-  * @param tearSnd
+  * Shader effect consists of the overscan line and tearing effects. You can provide per-frame probability for each
+  * effect or you can manually trigger them. Tearing effect also has optional sound to play when it happens.
+  *
+  * @param autoStart Whether to start shader right away. Default value is `false`.
+  * @param lineEffectProb Probability on each frame to trigger the overscan line effect. Effect shows 3-row scan line
+  *     travelling from top to bottom. Probably of `1.0f` means that this effect will be constant. Probability of `0`
+  *     disables this effect. The actual duration of the overscan line effect depends on the heights of the screen.
+  * @param tearEffectProb Probability on each frame to trigger tearing effect. Unlike overscan effect the tearing effect
+  *         always takes just one frame. Probability of 5% (value `0.05f`) is a good value emulating "partially broken CRT"
+  *         monitor.
+  * @param tearSnd Optional sound to play when tear effect is triggered. Default value is `None`.
+  * @see [[CPFadeOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPFlashlightShader]]
+  * @see [[CPStarStreakShader]]
+  * @see [[CPOffScreenSprite]]
+  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.      
   */
 class CPOldCRTShader(
     autoStart: Boolean = false,
@@ -57,21 +73,25 @@ class CPOldCRTShader(
     private var lineIdx = 0
     private var snd: Option[CPSound] = tearSnd
 
+    /**
+      * Gets the optional tearing effect sound.
+      */
     def getTearSound: Option[CPSound] = snd
 
     /**
+      * Sets optional sound to play when tearing effect is triggered.
       *
-      * @param snd
+      * @param snd Optional tearing effect sound to set.
       */
     def setTearSound(snd: Option[CPSound]): Unit = this.snd = snd
 
     /**
-      *
+      * Triggers overscan line effect now.
       */
     def lineEffectNow(): Unit = forceLineEff = true
 
     /**
-      *
+      * Triggers tearing effect now.
       */
     def tearEffectNow(): Unit = forceTearEff = true
 
