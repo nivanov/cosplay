@@ -27,38 +27,13 @@ import prefabs.shaders.*
   *
   */
 object CPMirTitleScene extends CPScene("title", None, BG_PX):
-    private val logoImg = new CPArrayImage(
-        prepSeq(
-            """
-              | ______     ______     ______     ______     ______   ______
-              |/\  ___\   /\  ___\   /\  ___\   /\  __ \   /\  == \ /\  ___\
-              |\ \  __\   \ \___  \  \ \ \____  \ \  __ \  \ \  _-' \ \  __\
-              | \ \_____\  \/\_____\  \ \_____\  \ \_\ \_\  \ \_\    \ \_____\
-              |  \/_____/   \/_____/   \/_____/   \/_/\/_/   \/_/     \/_____/
-              |
-              |            ______   ______     ______     __    __
-              |           /\  ___\ /\  == \   /\  __ \   /\ "-./  \
-              |           \ \  __\ \ \  __<   \ \ \/\ \  \ \ \-./\ \
-              |            \ \_\    \ \_\ \_\  \ \_____\  \ \_\ \ \_\
-              |             \/_/     \/_/ /_/   \/_____/   \/_/  \/_/
-              |
-              |                   __    __     __     ______
-              |                  /\ "-./  \   /\ \   /\  == \
-              |                  \ \ \-./\ \  \ \ \  \ \  __<_
-              |                   \ \_\ \ \_\  \ \_\  \ \_\ \_\
-              |                    \/_/  \/_/   \/_/   \/_/ /_/
-              |
-              |
-              |                 Copyright (C) 2022 Rowan Games, Inc.
-            """),
-        (ch, _, _) => ch&FG
-    ).trimBg()
+    private val logoImg = CPImage.loadRexXp("images/games/mir/mir_logo.xp").trimBg()
     private val crtTurnOnSnd = CPSound("sounds/games/mir/crt_turn_on.wav")
     private val crtTearSnd = CPSound("sounds/games/mir/crt_tear.wav")
     private val crtKnockSnd = CPSound("sounds/games/mir/crt_knock.wav")
     private val crtNoiseSnd = CPSound("sounds/games/mir/crt_noise.wav")
 
-    private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
+    private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 1000, BG_PX)
     private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
     private val crtShdr = CPOldCRTShader(lineEffectProb = 1f, .05f, tearSnd = Option(crtTearSnd))
     private val colors = Seq(FG)
@@ -66,9 +41,9 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
         true,
         BG,
         Seq(
-            CPStarStreak('.', colors, 0.025, 30, (-.5f, 0f), 0),
-            CPStarStreak('.', colors, 0.015, 25, (-1.5f, 0f), 0),
-            CPStarStreak('_', colors, 0.005, 50, (-2.0f, 0f), 0)
+            CPStarStreak('.', colors, 0.025, 30, (-.3f, 0f), 0),
+            CPStarStreak('.', colors, 0.015, 25, (-.7f, 0f), 0),
+            CPStarStreak('_', colors, 0.005, 50, (-1f, 0f), 0)
         ),
         skip = (zpx, _, _) ⇒ zpx.z == 1
     )
