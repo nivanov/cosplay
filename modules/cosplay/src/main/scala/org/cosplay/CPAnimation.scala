@@ -353,7 +353,7 @@ object CPAnimation:
       * duration, like in a movie, hence the name.
       *
       * @param id Unique ID of the animation.
-      * @param frameMs Duration in milliseconds for all frames.
+      * @param frameMs Individual frame duration in milliseconds (applied to all frames).
       * @param loop Whether or not to loop the animation. If `false` animation will stop after the last key frame is
       *     played out. Default value is `true`.
       * @param bounce If `loop` is `true` this defines how animation will loop once it reaches the last key

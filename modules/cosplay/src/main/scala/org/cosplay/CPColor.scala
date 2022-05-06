@@ -216,7 +216,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     /**
       * Gets a new darker color.
       *
-      * @param factor Mixing factor in `[0,1]` range. 0.9` means 90% darker, 0.1` means 10% darker.
+      * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
       */
     inline def darker(factor: Float): CPColor =
         assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
@@ -242,8 +242,8 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     /**
       * Get a new lighter color.
       *
-      * @param factor Mixing factor in `[0.1]` range. '1.0' means pure white, '0.9' means 90% lighter,
-      *     '0.1' means 10% lighter.
+      * @param factor Mixing factor in `[0.1]` range. `1.0` means pure white, `0.9` means 90% lighter,
+      *     `0.1` means 10% lighter.
       */
     inline def lighter(factor: Float): CPColor =
         assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")

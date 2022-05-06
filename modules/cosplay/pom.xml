@@ -174,6 +174,46 @@
             </build>
         </profile>
         <profile>
+            <id>mir</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.games.mir.CPMirGame</mainClass>
+                            <arguments>
+                                <argument>--add-opens</argument>
+                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>bird</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.games.bird.CPBirdGame</mainClass>
+                            <arguments>
+                                <argument>--add-opens</argument>
+                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>snake</id>
             <build>
                 <plugins>
