@@ -46,7 +46,7 @@ class CPOldCRTShader(
     tearSnd: Option[CPSound] = None
 ) extends CPShader:
     private val LINE_EFF_SIZE = 5
-    private val LINE_EFF_FACTOR = .005f
+    private val LINE_EFF_FACTOR = .01f
     private val TEAR_LINE_NUM = 2
 
     private var go = autoStart

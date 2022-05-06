@@ -53,16 +53,32 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
             """),
         (ch, _, _) => ch&FG
     ).trimBg()
+    private val crtTurnOnSnd = CPSound("sounds/games/mir/crt_turn_on.wav")
+    private val crtTearSnd = CPSound("sounds/games/mir/crt_tear.wav")
+    private val crtKnockSnd = CPSound("sounds/games/mir/crt_knock.wav")
+    private val crtNoiseSnd = CPSound("sounds/games/mir/crt_noise.wav")
+
     private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
     private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
-    private val crtShdr = CPOldCRTShader(true, 1f, 1f)
+    private val crtShdr = CPOldCRTShader(lineEffectProb = 1f, .05f, tearSnd = Option(crtTearSnd))
+    private val colors = Seq(FG)
+    private val starStreakShdr = CPStarStreakShader(
+        true,
+        BG,
+        Seq(
+            CPStarStreak('.', colors, 0.025, 30, (-.5f, 0f), 0),
+            CPStarStreak('.', colors, 0.015, 25, (-1.5f, 0f), 0),
+            CPStarStreak('_', colors, 0.005, 50, (-2.0f, 0f), 0)
+        ),
+        skip = (zpx, _, _) ⇒ zpx.z == 1
+    )
 
     // Add scene objects...
     addObjects(
         // Main logo.
-        CPCenteredImageSprite(img = logoImg, 0),
+        CPCenteredImageSprite(img = logoImg, 1),
         // Add all screen shaders.
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, crtShdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, crtShdr, starStreakShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         // Transition to the next scene on 'Enter' press.
@@ -71,6 +87,13 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
 
     override def onActivate(): Unit =
         super.onActivate()
+        starStreakShdr.start()
+        crtShdr.start()
+        crtTurnOnSnd.play()
+        crtKnockSnd.play()
+        crtNoiseSnd.loop(1000, _ ⇒ crtKnockSnd.play())
 
     override def onDeactivate(): Unit =
         super.onDeactivate()
+        starStreakShdr.stop()
+        crtShdr.stop()
