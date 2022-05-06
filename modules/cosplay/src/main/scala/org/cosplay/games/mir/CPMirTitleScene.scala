@@ -43,7 +43,7 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
 
     private val fadeInShdr = CPSlideInShader.sigmoid(CPSlideDirection.TOP_TO_BOTTOM, true, 3000, bgPx = BG_PX)
     private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.TOP_TO_BOTTOM, true, 500, bgPx = BG_PX)
-    private val crtShdr = new CPOldCRTShader(lineEffectProb = 1f, .01f, tearSnd = Option(crtTearSnd))
+    private val crtShdr = new CPOldCRTShader(lineEffectProb = 1f, .03f, tearSnd = Option(crtTearSnd))
     private val colors = Seq(FG)
     private val starStreakShdr = CPStarStreakShader(
         true,
@@ -67,7 +67,7 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         // Transition to the next scene on 'Enter' press.
-        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.switchScene("play")))
+        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.exitGame()))
     )
 
     override def onActivate(): Unit =
