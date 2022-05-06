@@ -305,6 +305,7 @@ object CPEngine:
         // the log (both log4j and GUI-based logger) with the game information.
         asciiLogo()
         ackGameInfo()
+        CPUtils.startPing(gameInfo)
 
     /**
       *

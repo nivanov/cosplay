@@ -20,7 +20,7 @@ package org.cosplay.impl
 import org.cosplay.*
 import CPKeyboardKey.*
 
-import java.util.{Random, UUID}
+import java.util.{Locale, Random, UUID}
 import java.util.zip.*
 import java.net.*
 import java.io.*
@@ -31,6 +31,7 @@ import scala.sys.SystemProperties
 import scala.util.Using
 import java.nio.file.*
 import scala.collection.mutable.ArrayBuffer
+import org.apache.commons.lang3.*
 
 /*
    _________            ______________
@@ -405,10 +406,30 @@ object CPUtils:
                         URI.create(s"$GA_URL?firebase_app_id=${CPVersion.firebaseAppId}&api_secret=${CPVersion.apiSecret}")
                     )
                     .POST(
+                        // Only anonymous data.
                         HttpRequest.BodyPublishers.ofString(
                             s"""
-                               |app_instance_id=1&
-                               |user_id=$guid
+                               |{
+                               |    app_instance_id: 'cosplay-engine',
+                               |    events: [
+                               |        {
+                               |            name: 'game_started',
+                               |            params: {
+                               |                engine_ver: '${CPVersion.latest.toString}',
+                               |                game_name: '${gi.name}',
+                               |                game_ver: '${gi.semVer}',
+                               |                os_ver: '${SystemUtils.OS_NAME}',
+                               |                java_ver: '${SystemUtils.JAVA_VERSION}',
+                               |                java_rt_name: '${SystemUtils.JAVA_RUNTIME_NAME}',
+                               |                java_rt_ver: '${SystemUtils.JAVA_RUNTIME_VERSION}',
+                               |                os_ver: '${SystemUtils.OS_NAME}',
+                               |                guid: '$guid',
+                               |                tz: '${SystemUtils.USER_TIMEZONE}',
+                               |                locale: '${Locale.getDefault()}'
+                               |            }
+                               |        }
+                               |    ]
+                               |}
                                |""".stripMargin
                         )
                     )
