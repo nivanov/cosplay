@@ -20,7 +20,7 @@ package org.cosplay.impl
 import org.cosplay.*
 import CPKeyboardKey.*
 
-import java.util.{Locale, Random, UUID}
+import java.util.{Locale, Random, TimeZone, UUID}
 import java.util.zip.*
 import java.net.*
 import java.io.*
@@ -34,6 +34,9 @@ import scala.collection.mutable.ArrayBuffer
 import com.mixpanel.mixpanelapi.*
 import org.json.JSONObject
 import org.apache.commons.lang3.*
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /*
    _________            ______________
@@ -57,6 +60,10 @@ object CPUtils:
     private val sysMx = ManagementFactory.getOperatingSystemMXBean
     private val memMx = ManagementFactory.getMemoryMXBean
     private final val HOME_DIR = ".cosplay"
+    // Open, unsecure storage.
+    private val MIXPANEL_TOKEN = "b5149f93d5a7693c42d1fa558896b70f"
+    private val DFLT_MIXPANEL_GUID = "314159265359"
+    private val isTracking = !isSysEnvSet("COSPLAY_DISABLE_MIXPANEL")
 
     /** */
     val NL: String = System.getProperty("line.separator")
@@ -388,21 +395,36 @@ object CPUtils:
         mapStream(getStream(res), enc, mapper)
 
     /**
+      *
+      * @param evtName
+      * @param props
+      */
+    private def sendMixpanelEvent(evtName: String, props: JSONObject): Unit =
+        if isTracking then
+            Future {
+                try
+                    // Anonymous data only.
+                    val guid = NetworkInterface.getByInetAddress(InetAddress.getLocalHost) match
+                        case null => DFLT_MIXPANEL_GUID
+                        case nif =>
+                            val addr = nif.getHardwareAddress
+                            if addr == null then DFLT_MIXPANEL_GUID else addr.mkString(",").hashCode.toString
+                    val msgBldr = new MessageBuilder(MIXPANEL_TOKEN)
+                    val evt = msgBldr.event(guid, evtName, props)
+                    val pckt = new ClientDelivery()
+                    pckt.addMessage(evt)
+                    new MixpanelAPI().deliver(pckt)
+                catch
+                    case _: Exception => () // Ignore.
+            }
+
+    /**
       * Records anonymous GA event. Ignores any errors.
       *
       * @param gi Game info.
       */
     def startPing(gi: CPGameInfo): Unit =
-        // Open, unsecure storage.
-        val MIXPANEL_TOKEN = "b5149f93d5a7693c42d1fa558896b70f"
-        val DFLT_GUID = "314159265359"
-        try
-            // Anonymous data only.
-            val guid = NetworkInterface.getByInetAddress(InetAddress.getLocalHost) match
-                case null => DFLT_GUID
-                case nif =>
-                    val addr = nif.getHardwareAddress
-                    if addr == null then DFLT_GUID else addr.mkString(",").hashCode.toString
+        if isTracking then
             val props = new JSONObject()
             props.put("game-name", gi.name)
             props.put("game-ver", gi.semVer)
@@ -414,15 +436,10 @@ object CPUtils:
             props.put("java-ver", SystemUtils.JAVA_VERSION)
             props.put("java-vendor", SystemUtils.JAVA_VM_VENDOR)
             props.put("java-vm-info", SystemUtils.JAVA_VM_INFO)
-            props.put("tz", SystemUtils.USER_TIMEZONE)
-            val msgBldr = new MessageBuilder(MIXPANEL_TOKEN)
-            val evt = msgBldr.event(guid, "game-start", props)
-            val pckt = new ClientDelivery()
-            pckt.addMessage(evt)
-            new MixpanelAPI().deliver(pckt)
-        catch
-            case e: Exception => e.printStackTrace() // Ignore.
-
+            val tz = java.util.TimeZone.getDefault
+            props.put("tz_zone_id", tz.toZoneId.toString)
+            props.put("tz_name", tz.getDisplayName)
+            sendMixpanelEvent("game-start", props)
 
 
 
