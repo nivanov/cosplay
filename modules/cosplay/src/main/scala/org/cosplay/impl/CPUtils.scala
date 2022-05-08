@@ -31,6 +31,8 @@ import scala.sys.SystemProperties
 import scala.util.Using
 import java.nio.file.*
 import scala.collection.mutable.ArrayBuffer
+import com.mixpanel.mixpanelapi.*
+import org.json.JSONObject
 import org.apache.commons.lang3.*
 
 /*
@@ -391,53 +393,35 @@ object CPUtils:
       * @param gi Game info.
       */
     def startPing(gi: CPGameInfo): Unit =
-        val DFLT_GUID = 271828
-        val GA_URL = "https://www.google-analytics.com/mp/collect"
+        // Open, unsecure storage.
+        val MIXPANEL_TOKEN = "b5149f93d5a7693c42d1fa558896b70f"
+        val DFLT_GUID = "314159265359"
         try
+            // Anonymous data only.
             val guid = NetworkInterface.getByInetAddress(InetAddress.getLocalHost) match
                 case null => DFLT_GUID
                 case nif =>
                     val addr = nif.getHardwareAddress
-                    if addr == null then DFLT_GUID else addr.mkString(",").hashCode
-
-            HttpClient.newHttpClient.send(
-                HttpRequest.newBuilder()
-                    .uri(
-                        URI.create(s"$GA_URL?firebase_app_id=${CPVersion.firebaseAppId}&api_secret=${CPVersion.apiSecret}")
-                    )
-                    .POST(
-                        // Only anonymous data.
-                        HttpRequest.BodyPublishers.ofString(
-                            s"""
-                               |{
-                               |    app_instance_id: 'cosplay-engine',
-                               |    events: [
-                               |        {
-                               |            name: 'game_started',
-                               |            params: {
-                               |                engine_ver: '${CPVersion.latest.toString}',
-                               |                game_name: '${gi.name}',
-                               |                game_ver: '${gi.semVer}',
-                               |                os_ver: '${SystemUtils.OS_NAME}',
-                               |                java_ver: '${SystemUtils.JAVA_VERSION}',
-                               |                java_rt_name: '${SystemUtils.JAVA_RUNTIME_NAME}',
-                               |                java_rt_ver: '${SystemUtils.JAVA_RUNTIME_VERSION}',
-                               |                os_ver: '${SystemUtils.OS_NAME}',
-                               |                guid: '$guid',
-                               |                tz: '${SystemUtils.USER_TIMEZONE}',
-                               |                locale: '${Locale.getDefault()}'
-                               |            }
-                               |        }
-                               |    ]
-                               |}
-                               |""".stripMargin
-                        )
-                    )
-                    .build(),
-                HttpResponse.BodyHandlers.ofString()
-            )
+                    if addr == null then DFLT_GUID else addr.mkString(",").hashCode.toString
+            val props = new JSONObject()
+            props.put("game-name", gi.name)
+            props.put("game-ver", gi.semVer)
+            props.put("game-id", gi.id)
+            props.put("cosplay-ver", CPVersion.latest.semver)
+            props.put("cosplay-date", CPVersion.latest.date.toString)
+            props.put("locale", Locale.getDefault.toString)
+            props.put("os", SystemUtils.OS_NAME)
+            props.put("java-ver", SystemUtils.JAVA_VERSION)
+            props.put("java-vendor", SystemUtils.JAVA_VM_VENDOR)
+            props.put("java-vm-info", SystemUtils.JAVA_VM_INFO)
+            props.put("tz", SystemUtils.USER_TIMEZONE)
+            val msgBldr = new MessageBuilder(MIXPANEL_TOKEN)
+            val evt = msgBldr.event(guid, "game-start", props)
+            val pckt = new ClientDelivery()
+            pckt.addMessage(evt)
+            new MixpanelAPI().deliver(pckt)
         catch
-            case _: Exception => () // Ignore.
+            case e: Exception => e.printStackTrace() // Ignore.
 
 
 

@@ -40,9 +40,6 @@ object CPVersion:
     final val year = Year.now().toString
     final val tagline = "2D ASCII Game Engine for Scala3"
     final val copyright = s"(C) $year Rowan Games, Inc."
-    // Open, non-secure, community-based tracking.
-    final val firebaseAppId = "1:565536102946:web:4626e3cdda0ef96b06487b"
-    final val apiSecret = "zbgtlS7eTwig7XXE4XWdvw"
 
     /**
       *
