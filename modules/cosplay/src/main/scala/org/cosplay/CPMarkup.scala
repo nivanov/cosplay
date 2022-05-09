@@ -37,25 +37,43 @@ import scala.collection.mutable.ArrayBuffer
 */
 
 /**
+  * Markup element.
   *
-  * @param openTag
-  * @param closeTag
-  * @param skin
+  * @param openTag Open tag.
+  * @param closeTag Closing tag.
+  * @param skin Character to pixel converter.
   * @see [[CPMarkup]]
   */
-case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel):
-    /**
-      *
-      * @param openTag
-      * @param skin
-      */
-    def this(openTag: String, skin: Char => CPPixel) = this(openTag, openTag.reverse, skin)
+case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel)
 
 /**
+  * Markup specification that can be used to convert a sequence of characters to the sequence of [[CPPixel pixels]]
+  * based on this specification.
+  *
+  * Each specification has mandatory default foreground and optional background colors. It also has a list
+  * of markup elements (potentially empty) where each element has opening and closing tag and a function
+  * that takes a character and returns [[CPPixel pixel]].
+  *
+  * Here's an example of defining the markup:
+  * {{{
+  * val markup = CPMarkup(
+  *     C_GREEN,
+  *     Option(C_BLACK),
+  *     Seq(
+  *         CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
+  *         CPMarkupElement("{#", "#}", _&&(C_BLUE, C_YELLOW)),
+  *         CPMarkupElement("(?", "?)", _&&(C_BLACK, C_WHITE))
+  *     )
+  * )
+  * }}}
+  * Once defined this markup can be used to convert a string ito sequence of pixels:
+  * {{{
+  *     val pxs = markup.process("text <$ red on white (? black on white ?)$> {# blue on yellow #}")
+  * }}}
   *
   * @param fg Default foreground color.
   * @param bg Default optional background color.
-  * @param elements Markup elements.
+  * @param elements Markup elements. Can be empty.
   * @see [[CPMarkupElement]]
   */
 case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElement]):
@@ -82,29 +100,31 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
     )), "Markup elements cannot have intersecting opening or closing tags.")
 
     /**
+      * Creates new markup spec with given parameters.
       *
-      * @param fg
-      * @param bg
-      * @param elms
+      * @param fg Default foreground color.
+      * @param bg Default optional background color.
+      * @param elms Markup elements as list of tuples. Can be empty.
       */
     def this(fg: CPColor, bg: Option[CPColor], elms: List[(String, String, Char ⇒ CPPixel)]) =
         this(fg, bg, elms.map(elm ⇒ CPMarkupElement(elm._1, elm._2, elm._3)))
 
     /**
+      * Creates new markup spec with a single markup element.
       *
-      * @param fg
-      * @param bg
-      * @param openTag
-      * @param closeTag
-      * @param skin
+      * @param fg Default foreground color.
+      * @param bg Default optional background color.
+      * @param openTag Open tag.
+      * @param closeTag Closing tag.
+      * @param skin Character to pixel converter.
       */
     def this(fg: CPColor, bg: Option[CPColor], openTag: String, closeTag: String, skin: Char ⇒ CPPixel) =
         this(fg, bg, Seq(CPMarkupElement(openTag, closeTag, skin)))
 
     /**
+      * Converts sequence of characters into list of [[CPPixel pixels]] based on this markup.
       *
-      * @param in
-      * @return
+      * @param in Input sequence of characters.
       */
     def process(in: String): List[CPPixel] =
         var skin = (ch: Char) ⇒ ch&?(fg, bg)
@@ -130,11 +150,11 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
                                 buf += skin(ch)
                             start += s.length
                             // Stack pop.
-                            skin = skinStack.head
                             skinStack = skinStack.tail
+                            skin = skinStack.head
                         case None ⇒ ()
             idx += 1
-        for (i ← start to len)
+        for (i ← start until len)
             buf += skin(in.charAt(i))
         buf.toList
 
