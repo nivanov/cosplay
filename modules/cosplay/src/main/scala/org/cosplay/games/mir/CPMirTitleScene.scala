@@ -21,55 +21,62 @@ import org.cosplay.*
 import CPArrayImage.*
 import CPKeyboardKey.*
 import CPPixel.*
+import prefabs.images.ani.*
 import prefabs.shaders.*
 
 /**
   *
   */
 object CPMirTitleScene extends CPScene("title", None, BG_PX):
-    private val logoImg = new CPArrayImage(
-        prepSeq(
-            """
-              | ______     ______     ______     ______     ______   ______
-              |/\  ___\   /\  ___\   /\  ___\   /\  __ \   /\  == \ /\  ___\
-              |\ \  __\   \ \___  \  \ \ \____  \ \  __ \  \ \  _-' \ \  __\
-              | \ \_____\  \/\_____\  \ \_____\  \ \_\ \_\  \ \_\    \ \_____\
-              |  \/_____/   \/_____/   \/_____/   \/_/\/_/   \/_/     \/_____/
-              |
-              |            ______   ______     ______     __    __
-              |           /\  ___\ /\  == \   /\  __ \   /\ "-./  \
-              |           \ \  __\ \ \  __<   \ \ \/\ \  \ \ \-./\ \
-              |            \ \_\    \ \_\ \_\  \ \_____\  \ \_\ \ \_\
-              |             \/_/     \/_/ /_/   \/_____/   \/_/  \/_/
-              |
-              |                   __    __     __     ______
-              |                  /\ "-./  \   /\ \   /\  == \
-              |                  \ \ \-./\ \  \ \ \  \ \  __<_
-              |                   \ \_\ \ \_\  \ \_\  \ \_\ \_\
-              |                    \/_/  \/_/   \/_/   \/_/ /_/
-              |
-              |
-              |                 Copyright (C) 2022 Rowan Games, Inc.
-            """),
-        (ch, _, _) => ch&FG
-    ).trimBg()
-    private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
-    private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
+    private val logoImg = CPImage.loadRexXp("images/games/mir/mir_logo.xp").trimBg()
+
+    private val spinGlobeImgs = CPSpinningGlobeAniImage.trimBg().split(47, 23).map(
+        _.skin((px, _, _) ⇒ px.withDarkerFg(0.85f))
+    )
+    private val spinGlobeAni = CPAnimation.filmStrip("ani", 99, true, false, spinGlobeImgs)
+    private val spinGlobeSpr = CPAnimationSprite("spr", Seq(spinGlobeAni), 4, 1, 1, "ani")
+
+    private val crtTurnOnSnd = CPSound("sounds/games/mir/crt_turn_on.wav")
+    private val crtTearSnd = CPSound("sounds/games/mir/crt_tear.wav")
+    private val crtKnockSnd = CPSound("sounds/games/mir/crt_knock.wav")
+    private val crtNoiseSnd = CPSound("sounds/games/mir/crt_noise.wav")
+
+    private val fadeInShdr = CPSlideInShader.sigmoid(CPSlideDirection.TOP_TO_BOTTOM, true, 3000, bgPx = BG_PX)
+    private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.TOP_TO_BOTTOM, true, 500, bgPx = BG_PX)
+    private val crtShdr = new CPOldCRTShader(lineEffectProb = 1f, .03f, tearSnd = Option(crtTearSnd))
+    private val colors = Seq(FG)
+    private val starStreakShdr = CPStarStreakShader(
+        true,
+        BG,
+        Seq(
+            CPStarStreak('.', colors, 0.025, 30, (-.3f, 0f), 0),
+            CPStarStreak('.', colors, 0.015, 25, (-.7f, 0f), 0),
+            CPStarStreak('_', colors, 0.005, 50, (-1f, 0f), 0)
+        ),
+        skip = (zpx, _, _) ⇒ zpx.z >= 1
+    )
 
     // Add scene objects...
     addObjects(
         // Main logo.
-        CPCenteredImageSprite(img = logoImg, 0),
+        CPCenteredImageSprite(img = logoImg, z = 2),
+        // Spinning globe.
+        spinGlobeSpr,
         // Add all screen shaders.
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, crtShdr, starStreakShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         // Transition to the next scene on 'Enter' press.
-        CPKeyboardSprite(KEY_ENTER, _ => fadeOutShdr.start(_.switchScene("play")))
+        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.exitGame()))
     )
 
     override def onActivate(): Unit =
-        super.onActivate()
+        starStreakShdr.start()
+        crtShdr.start()
+        crtTurnOnSnd.play()
+        crtKnockSnd.play()
+        crtNoiseSnd.loop(1000, _ ⇒ crtKnockSnd.play())
 
     override def onDeactivate(): Unit =
-        super.onDeactivate()
+        starStreakShdr.stop()
+        crtShdr.stop()

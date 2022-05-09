@@ -130,6 +130,7 @@ object CPRand:
 
     /**
       * Gets random number in given range.
+      *
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
@@ -137,6 +138,7 @@ object CPRand:
 
     /**
       * Gets random number in given range.
+      *
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
@@ -144,6 +146,7 @@ object CPRand:
 
     /**
       * Gets random number in given range.
+      *
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
@@ -151,6 +154,7 @@ object CPRand:
 
     /**
       * Gets random number in given range.
+      *
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */

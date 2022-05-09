@@ -305,6 +305,7 @@ object CPEngine:
         // the log (both log4j and GUI-based logger) with the game information.
         asciiLogo()
         ackGameInfo()
+        CPUtils.startPing(gameInfo)
 
     /**
       *
@@ -643,9 +644,9 @@ object CPEngine:
         def lifecycleStart(x: CPLifecycle): Unit =
             x.getState match
                 case LF_INIT =>
-                    x.onStart()
-                    x.onActivate()
-                case LF_INACTIVE | LF_STARTED => x.onActivate()
+                    x.onStartX()
+                    x.onActivateX()
+                case LF_INACTIVE | LF_STARTED => x.onActivateX()
                 case LF_ACTIVE => ()
                 case LF_STOPPED => assert(false)
 
@@ -654,9 +655,9 @@ object CPEngine:
                 x.getState match
                     case LF_INIT => ()
                     case LF_ACTIVE | LF_STARTED =>
-                        x.onDeactivate()
-                        x.onStop()
-                    case LF_INACTIVE => x.onStop()
+                        x.onDeactivateX()
+                        x.onStopX()
+                    case LF_INACTIVE => x.onStopX()
                     case LF_STOPPED => ()
             catch case e: Exception => engLog.error(s"Failed to stop object: $x", e)
 
@@ -866,8 +867,8 @@ object CPEngine:
                                     case Some(s) => lifecycleStop(s)
                                     case _ => ()
                             else
-                                sc.onDeactivate()
-                                sc.objects.values.foreach(_.onDeactivate())
+                                sc.onDeactivateX()
+                                sc.objects.values.foreach(_.onDeactivateX())
                             sc = scenes.grab(cloId)
                             scLog = engLog.getLog(s"scene:${sc.getId}")
                             scr = null

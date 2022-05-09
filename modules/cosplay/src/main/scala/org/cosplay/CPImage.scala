@@ -24,8 +24,8 @@ import impl.CPUtils
 import CPPixel.*
 import org.cosplay.prefabs.images.*
 
-import java.io.{File, PrintStream}
-import java.nio.{ByteBuffer, ByteOrder}
+import java.io.*
+import java.nio.*
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Using
@@ -113,8 +113,8 @@ import scala.util.Using
   * You can load images from the external source like URL or file path in one of the following formats:
   *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native binary format supported by
   *    [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor. This format supports full color information.
-  *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
-  *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
+  *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This format
+  *    is natively exported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
   *    supported by CosPlay to save an image with. This format supports full color information.
   *  - `*.txt` format. Image in this format is a simple *.txt file and it does not provide or store any color
   *     information.
@@ -136,12 +136,16 @@ import scala.util.Using
   *
   * ### Saving Images
   * You can save image to the local file path in the following format:
-  *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
-  *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
+  *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This format
+  *    is natively exported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
   *    supported by CosPlay to save an image with. This format supports full color information.
+  *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native format
+  *    used by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and can be loaded
+  *    by the REXPaint.This format supports full color information.
   *
-  *  Use the following method to save the image to the file path:
-  *   - [[save() save(...)]]
+  *  Use the following methods to save the image to the file path:
+  *   - [[saveRexCsv() saveRexCsv(...)]]
+  *   - [[saveRexXp() saveRexXp(...)]]
   *
   * ### ASCII Art Online
   * There's a vast collection of existing ASCII art imagery online. Here's some of the main resources where
@@ -174,7 +178,7 @@ import scala.util.Using
   */
 abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     override val toString: String = s"Image [dim=$getDim, origin=$origin]"
-    
+
     /** @inheritdoc */
     override val getOrigin: String = origin
 
@@ -182,25 +186,69 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *
       * @param path Local file path.
-      * @param bg Background pixel to replace in pixels with no background.
+      * @param bg Background color to replace in pixels with no background.
       * @see https://www.gridsagegames.com/rexpaint
       */
-    def save(path: String, bg: CPColor): Unit =
-        save(new File(path), bg)
+    def saveRexCsv(path: String, bg: CPColor): Unit =
+        saveRexCsv(new File(path), bg)
+
+    /**
+      * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
+      *
+      * @param path Local file path.
+      * @param bg Background color to replace in pixels with no background.
+      * @see https://www.gridsagegames.com/rexpaint
+      */
+    def saveRexXp(path: String, bg: CPColor): Unit =
+        saveRexXp(new File(path), bg)
 
     /**
       * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *
       * @param file File instance.
-      * @param bg Background pixel to replace in pixels with no background.
+      * @param bg Background color to replace in pixels with no background.
       * @see https://www.gridsagegames.com/rexpaint
       */
-    def save(file: File, bg: CPColor): Unit =
+    def saveRexCsv(file: File, bg: CPColor): Unit =
         Using.resource(new PrintStream(file)) { ps =>
             val dim = getDim
             ps.println(s"CosPlay image [${dim.w}x${dim.h}, origin=$origin, bg=${bg.hex}]")
             loop((px, x, y) => ps.println(s"$x,$y,${px.char.toInt},${px.fg.hex},${px.bg.getOrElse(bg).hex}"))
         }
+
+    /**
+      * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
+      * Note that this is a native format used by REXPaint and images in this format can be
+      * loaded by REXPaint for editing.
+      *
+      * @param file File instance.
+      * @param bg Background color to replace in pixels with no background.
+      * @see https://www.gridsagegames.com/rexpaint
+      */
+    def saveRexXp(file: File, bg: CPColor): Unit =
+        val dim = getDim
+        val byteSize = 10 * dim.area + 4/* Version (-1). */ + 4/* Number of layers. */ + 4/* Width. */ + 4/* Height. */
+        val buf = ByteBuffer.allocate(byteSize)
+        require(buf.hasArray)
+        buf.order(ByteOrder.LITTLE_ENDIAN)
+        buf.putInt(-1) // Version (-1 for REXPaint 1.60)
+        buf.putInt(1) // Only 1 layer.
+        buf.putInt(dim.w) // Image width.
+        buf.putInt(dim.h) // Image height.
+        loopVert((px, _, _) => {
+            buf.putInt(if px.isXray then ' '.toInt else px.char.toInt)
+            val fgc = px.fg
+            val bgc = px.bg.getOrElse(bg)
+            buf.put(fgc.red.toByte)
+            buf.put(fgc.green.toByte)
+            buf.put(fgc.blue.toByte)
+            buf.put(bgc.red.toByte)
+            buf.put(bgc.green.toByte)
+            buf.put(bgc.blue.toByte)
+        })
+        buf.flip()
+
+        Using.resource(new DataOutputStream(new FileOutputStream(file))) { _.write(CPUtils.zipBytes(buf.array())) }
 
     /**
       * Splits this image into sequence of `[w,h]` images.
@@ -329,11 +377,66 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
 
     /**
       * Loops over the pixels in image.
+      * Iteration over the pixels in this image will be horizontal first. In other words,
+      * given the pixels with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
       *
-      * @param f Function to call on each pixel. Note that unlike standard [[foreach()]] funciton, this
+      * @param f Function to call on each pixel. Note that unlike standard [[foreach()]] function, this
       *     function also takes pixel's XY-coordinate.
       */
     def loop(f: (CPPixel, Int, Int) => Unit): Unit = getRect.loop((x, y) => f(getPixel(x, y), x, y))
+
+    /**
+      * Loops over the pixels in image.
+      * Iteration over the pixels in this image will be horizontal first. In other words,
+      * given the pixels with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
+      *
+      * @param f Function to call on each pixel. Note that unlike standard [[foreach()]] function, this
+      *     function also takes pixel's XY-coordinate.
+      */
+    def loopHor(f: (CPPixel, Int, Int) => Unit): Unit = getRect.loopHor((x, y) => f(getPixel(x, y), x, y))
+
+    /**
+      * Loops over the pixels in image.
+      * Iteration over the pixels in this image will be vertical first. In other words,
+      * given the pixels with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)
+      * }}}
+      *
+      * @param f Function to call on each pixel. Note that unlike standard [[foreach()]] function, this
+      *     function also takes pixel's XY-coordinate.
+      */
+    def loopVert(f: (CPPixel, Int, Int) => Unit): Unit = getRect.loopVert((x, y) => f(getPixel(x, y), x, y))
 
     /**
       * Tests if there is a pixel in this image for which given predicate would return `true`.
@@ -585,45 +688,49 @@ object CPImage:
       *
       * @param data
       * @param markup
+      * @param origin
       * @return
       */
-    def markupImage(data: Seq[String], markup: CPImageMarkup): CPImage =
+    def markupImage(data: Seq[String], markup: CPImageMarkup, origin: String = "code"): CPImage =
         require(data.nonEmpty, "Markup image data cannot be empty.")
-        require(markup.elements.exists(x ⇒ x._1.isEmpty || x._2.isEmpty), "Markup image cannot have empty opening or closing tags.")
 
+        case class CharPos(ch: Char, x: Int, y: Int)
         val chArr = CPArray2D(data)
-        val dfltSkin = (ch: Char, x: Int, y: Int) ⇒ CPPixel(ch, markup.fg, markup.bg)
-        var skin = dfltSkin
-        var skinStack = List.empty[(ch: Char, x: Int, y: Int) ⇒ CPPixel]
         val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
-        val buf = ArrayBuffer.empty[Char]
-//        chArr.loopHor((ch, x, y) ⇒ {
-//            buf.append(ch)
-//            val bufS = buf.toString()
-//            var found = false
-//            markupSeq.find(x ⇒ x._1 == bufS) match
-//                case Some(m) ⇒
-//                    skin = m._3
-//                    skinStack ::= skin // Pushed the opened skin.
-//                    found = true
-//                case None ⇒ ()
-//
-//            if !found then
-//                markupSeq.find(x ⇒ x._2 == bufS) match
-//                    case Some(m) ⇒
-//                        skinStack = skinStack.tail // Pop the closed skin.
-//                        skin = if skinStack.isEmpty then dfltSkin else skinStack.head
-//                        found = true
-//                    case None ⇒ ()
-//
-//            if found then
-//                buf.clear()
-//            else
-//
-//
-//        })
 
-        new CPImage("code"):
+        var skin = (ch: Char) ⇒ CPPixel(ch, markup.fg, markup.bg)
+        var skinStack = List(skin)
+        val buf = ArrayBuffer.empty[CharPos]
+        val elms = markup.elements
+
+        def add(n: Int): Unit =
+            for (i <- 0 until n)
+                val cp = buf(i)
+                pxArr.set(cp.x, cp.y, skin(cp.ch))
+
+        chArr.loopHor((ch, x, y) ⇒ {
+            buf.append(CharPos(ch, x, y))
+            val bufS = buf.map(_.ch).mkString
+            elms.find(e => bufS.endsWith(e.openTag)) match
+                case Some(elm) =>
+                    add(buf.length - elm.openTag.length)
+                    skin = elm.skin
+                    skinStack ::= skin // Push onto stack.
+                    buf.clear()
+                case None =>
+                    elms.find(x => bufS.endsWith(x.closeTag)) match
+                        case Some(elm) =>
+                            add(buf.length - elm.closeTag.length)
+                            skinStack = skinStack.tail // Pop from stack.
+                            skin = skinStack.head
+                            buf.clear()
+                        case None => ()
+        })
+        for (cp <- buf) pxArr.set(cp.x, cp.y, skin(cp.ch))
+
+        require(!pxArr.contains(_ == null))
+
+        new CPImage(origin):
             private val dim = pxArr.dim
             override def getDim: CPDim = dim
             override def getPixel(x: Int, y: Int): CPPixel = pxArr.get(x, y)
@@ -666,7 +773,7 @@ object CPImage:
     def loadRexXp(src: String, skin: (CPPixel, Int, Int) => CPPixel = (px, _, _) => px): CPImage =
         val bb = ByteBuffer.wrap(CPUtils.unzipBytes(CPUtils.readAllBytes(src)))
         bb.order(ByteOrder.LITTLE_ENDIAN)
-        bb.getInt // Version (skip).
+        bb.getInt // '-1' in REXPaint 1.60  (skip).
         val layerCnt = bb.getInt
         if layerCnt <= 0 then E(s"Image file is empty: $src")
         val layers = ArrayBuffer.empty[CPArray2D[CPPixel]]
@@ -685,11 +792,11 @@ object CPImage:
                 val fgB = unsigned(bb.get)
                 val bgR = unsigned(bb.get)
                 val bgG = unsigned(bb.get)
-                val bgB= unsigned(bb.get)
+                val bgB = unsigned(bb.get)
                 val fg = CPColor(fgR, fgG, fgB)
-                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB)) // Transparency background.
-                val px = if ch == ' ' then CPPixel.XRAY else CPPixel(ch, fg, bg)
-                layer.set(x, y, px)
+                // REXPaint uses RGB(255, 0, 255) as a built-in transparent background.
+                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB))
+                layer.set(x, y, CPPixel(ch, fg, bg))
                 idx += 1
             layers += layer
         val w = layers.head.width
@@ -720,7 +827,7 @@ object CPImage:
       * recognized:
       *  - `*.csv` will use [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *  - `*.xp` will use [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
-      *  - `*.csv` will use text format.
+      *  - `*.txt` will use text format.
       *
       *
       * @param path Local filesystem file path.

@@ -35,16 +35,8 @@ import CPPixel.*
                ALl rights reserved.
 */
 
-private val palette = CPRand.rand(
-    Seq( //     BG          FG
-         //  ________    ________
-        Seq("0x000300", "0x00AF00"), // Retro green.
-        Seq("0x030300", "0xE6CA05"), // Retro yellow.
-    ).map(_.map(CPColor(_)))
-)
-
-val BG = palette.head
-val FG = palette(1)
+val BG = CPColor("0x000300")
+val FG = CPColor("0x00AF00")
 val BG_PX = ' '&&(BG, BG)
 
 /**

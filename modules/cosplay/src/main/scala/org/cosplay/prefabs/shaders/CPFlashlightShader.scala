@@ -45,15 +45,20 @@ import games.pong.*
   *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
   *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
   * @see [[CPFadeInShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
   * @see [[CPShimmerShader]]
   * @see [[CPFadeOutShader]]
   * @see [[CPOffScreenSprite]]
+  * @see [[CPStarStreakShader]]
+  * @see [[CPOldCRTShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
 class CPFlashlightShader(
     radius: Int,
     autoPlay: Boolean = false,
-    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false) extends CPShader:
+    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
+) extends CPShader:
     private var on = autoPlay
 
     /**

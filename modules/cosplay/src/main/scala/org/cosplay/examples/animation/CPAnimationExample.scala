@@ -225,7 +225,6 @@ object CPAnimationExample:
                     y += dy
 
             override def onStart(): Unit =
-                super.onStart()
                 bgSnd.setVolume(0.2f) // Make background 20% volume.
                 bgSnd.loop(1500) // Auto-play with fade-in.
                 // Example of the per-frame sound synchronization.

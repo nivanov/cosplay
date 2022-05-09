@@ -44,59 +44,8 @@ import games.pong.shaders.*
   */
 object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
-    private val logoImg = new CPArrayImage(
-        prepSeq(
-            """
-              |       /$$$$$$$
-              |      | $$__  $$
-              |      | $$  \ $$ /$$$$$$  /$$$$$$$   /$$$$$$
-              |      | $$$$$$$//$$__  $$| $$__  $$ /$$__  $$
-              |      | $$____/| $$  \ $$| $$  \ $$| $$  \ $$
-              |      | $$     | $$  | $$| $$  | $$| $$  | $$
-              |      | $$     |  $$$$$$/| $$  | $$|  $$$$$$$
-              |      |__/      \______/ |__/  |__/ \____  $$
-              |                                    /$$  \ $$
-              |                                   |  $$$$$$/
-              |                                    \______/
-              |
-              |
-              |              GET 10 POINTS TO WIN
-              |              ~~~~~~~~~~~~~~~~~~~~
-              |
-              |    >> BEWARE OF INITIAL KEYBOARD PRESS DELAY <<
-              |   >> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<
-              |
-              |
-              |                   Up      Down
-              |                 .----.    .----.
-              |                 | W  |    | S  |
-              |                 `----'    `----'
-              |                   or        or
-              |                 .----.    .----.
-              |                 | Up |    | Dn |
-              |                 `----'    `----'
-              |             
-              |                [ENTER]   Play
-              |                [CTRL+A]  Audio On/Off
-              |                [CTRL+L]  Log Console
-              |                [CTRL+Q]  FPS Overlay
-              |                [Q]       Quit
-              |
-              |
-              |         Copyright (C) 2022 Rowan Games, Inc.
-            """),
-        (ch, _, y) =>
-            if y == 36 then ch&C3
-            else
-                ch match
-                    case '$' => '$'&C5
-                    case c if c.isLetter || c == '+' || c == '/' || c == '(' || c == ')' => c&C4
-                    case '[' | ']' | '|' | '.' | '`' | '-' | '\'' => ch&C2
-                    case c if y <= 13 => c&C4
-                    case _ => ch.toUpper&C1
-    ).trimBg()
-
-    private val sparkleShdr = CPSparkleShader(CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
+    private val logoImg = CPImage.loadRexXp("images/games/pong/pong_logo.xp").trimBg()
+    private val sparkleShdr = CPSparkleShader(true, CS, autoStart = true, skip = (zpx, _, _) ⇒ zpx.px != BG_PX)
     private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
     private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
 
@@ -129,10 +78,9 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
             audioOn = true
 
     override def onActivate(): Unit =
-        super.onActivate()
         fadeInShdr.start() // Reset the shader.
         if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
-        super.onDeactivate()
         stopBgAudio()
+        sparkleShdr.stop()

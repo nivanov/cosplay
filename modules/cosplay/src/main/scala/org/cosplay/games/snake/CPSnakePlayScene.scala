@@ -154,7 +154,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         private var speed = INIT_SPEED
 
         override def onActivate(): Unit =
-            super.onActivate()
             // Reset snake sprite on each scene activation.
             snake = Nil
             dx = 0f
@@ -338,12 +337,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             bgSnd.loop(2000)
             audioOn = true
 
-    override def onDeactivate(): Unit =
-        super.onDeactivate()
-        stopAudio()
-
+    override def onDeactivate(): Unit = stopAudio()
     override def onActivate(): Unit =
-        super.onActivate()
         score = 0
         go = true
         dead = false

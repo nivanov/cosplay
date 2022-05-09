@@ -62,6 +62,7 @@ object CPImageCarouselExample:
     // Images for the carousel.
     private val imgs = Seq(
         CPAardvarkImage.trimBg(),
+        CPCubesImage.trimBg(),
         CPAlienImage.trimBg(),
         CPAmigaImage,
         CPAtari2080STImage,

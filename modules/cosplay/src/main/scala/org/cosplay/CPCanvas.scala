@@ -40,7 +40,7 @@ import scala.collection.mutable
 */
 
 /**
-  * 2D rendering pane.
+  * 2D rendering pane. Canvas is synonymous with screen, i.e. it is an object that allows to draw on the screen.
   *
   * For each game frame, the game engine creates a new empty canvas for all scene objects to draw on.
   * This canvas is available to scene objects via [[CPSceneObjectContext.getCanvas]] method. Game engine

@@ -103,39 +103,55 @@ trait CPLifecycle:
       */
     private var state: CPLifecycle.State = LF_INIT
 
+    /** */
+    final private[cosplay] def onActivateX(): Unit =
+        state = LF_ACTIVE
+        onActivate()
+
+    /** */
+    final private[cosplay] def onDeactivateX(): Unit =
+        state = LF_INACTIVE
+        onDeactivate()
+
+    /** */
+    final private[cosplay] def onStartX(): Unit =
+        state = LF_STARTED
+        onStart()
+
+    /** */
+    final private[cosplay] def onStopX(): Unit =
+        state = LF_STOPPED
+        onStop()
+
     /**
       * Gets current lifecycle state.
       */
     final def getState: CPLifecycle.State = state
 
     /**
-      * Callback on lifecycle object activation. Note that subclasses must call this super
-      * method when overriding.
+      * Callback on lifecycle object activation. Default implementation is no-op.
       *
       * @see [[CPLifecycle.State.LF_ACTIVE]]
       */
-    def onActivate(): Unit = state = LF_ACTIVE
+    def onActivate(): Unit = ()
 
     /**
-      * Callback on lifecycle object deactivation. Note that subclasses must call this super
-      * method when overriding.
+      * Callback on lifecycle object deactivation. Default implementation is no-op.
       *
       * @see [[CPLifecycle.State.LF_INACTIVE]]
       */
-    def onDeactivate(): Unit = state = LF_INACTIVE
+    def onDeactivate(): Unit = ()
 
     /**
-      * Callback on lifecycle object start. Note that subclasses must call this super
-      * method when overriding.
+      * Callback on lifecycle object start. Default implementation is no-op.
       *
       * @see [[CPLifecycle.State.LF_STARTED]]
       */
-    def onStart(): Unit = state = LF_STARTED
+    def onStart(): Unit = ()
 
     /**
-      * Callback on lifecycle object stop. Note that subclasses must call this super
-      * method when overriding.
+      * Callback on lifecycle object stop. Default implementation is no-op.
       *
       * @see [[CPLifecycle.State.LF_STOPPED]]
       */
-    def onStop(): Unit = state = LF_STOPPED
+    def onStop(): Unit = ()
