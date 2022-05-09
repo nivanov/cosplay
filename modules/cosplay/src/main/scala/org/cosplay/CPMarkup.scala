@@ -17,7 +17,11 @@
 
 package org.cosplay
 
-import org.cosplay.impl.*
+import org.cosplay
+import org.cosplay.*
+import CPPixel.*
+import impl.*
+import scala.collection.mutable.ArrayBuffer
 
 /*
    _________            ______________
@@ -37,10 +41,9 @@ import org.cosplay.impl.*
   * @param openTag
   * @param closeTag
   * @param skin
-  * @see [[CPImage.markupImage()]]
-  * @see [[CPImageMarkup]]
+  * @see [[CPMarkup]]
   */
-case class CPImageMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel):
+case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel):
     /**
       *
       * @param openTag
@@ -50,13 +53,12 @@ case class CPImageMarkupElement(openTag: String, closeTag: String, skin: Char =>
 
 /**
   *
-  * @param fg
-  * @param bg
-  * @param elements
-  * @see [[CPImage.markupImage()]]
-  * @see [[CPImageMarkupElement]]
+  * @param fg Default foreground color.
+  * @param bg Default optional background color.
+  * @param elements Markup elements.
+  * @see [[CPMarkupElement]]
   */
-case class CPImageMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPImageMarkupElement]):
+case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElement]):
     for (elm <- elements)
         require(
             elm.openTag.nonEmpty && elm.closeTag.nonEmpty,
@@ -86,7 +88,7 @@ case class CPImageMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPImage
       * @param elms
       */
     def this(fg: CPColor, bg: Option[CPColor], elms: List[(String, String, Char ⇒ CPPixel)]) =
-        this(fg, bg, elms.map(elm ⇒ CPImageMarkupElement(elm._1, elm._2, elm._3)))
+        this(fg, bg, elms.map(elm ⇒ CPMarkupElement(elm._1, elm._2, elm._3)))
 
     /**
       *
@@ -97,4 +99,43 @@ case class CPImageMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPImage
       * @param skin
       */
     def this(fg: CPColor, bg: Option[CPColor], openTag: String, closeTag: String, skin: Char ⇒ CPPixel) =
-        this(fg, bg, Seq(CPImageMarkupElement(openTag, closeTag, skin)))
+        this(fg, bg, Seq(CPMarkupElement(openTag, closeTag, skin)))
+
+    /**
+      *
+      * @param in
+      * @return
+      */
+    def process(in: String): List[CPPixel] =
+        var skin = (ch: Char) ⇒ ch&?(fg, bg)
+        var skinStack = List(skin)
+        val buf = ArrayBuffer.empty[CPPixel]
+        val len = in.length
+        var idx = 0
+        var start = 0
+        while (idx < len)
+            val s = in.substring(start, idx + 1)
+            elements.find(elm ⇒ s.endsWith(elm.openTag)) match
+                case Some(elm) ⇒
+                    for (ch <- s.substring(0, s.length - elm.openTag.length))
+                        buf += skin(ch)
+                    start += s.length
+                    // Stack push.
+                    skin = elm.skin
+                    skinStack ::= skin
+                case None ⇒
+                    elements.find(elm ⇒ s.endsWith(elm.closeTag)) match
+                        case Some(elm) ⇒
+                            for (ch <- s.substring(0, s.length - elm.closeTag.length))
+                                buf += skin(ch)
+                            start += s.length
+                            // Stack pop.
+                            skin = skinStack.head
+                            skinStack = skinStack.tail
+                        case None ⇒ ()
+            idx += 1
+        for (i ← start to len)
+            buf += skin(in.charAt(i))
+        buf.toList
+
+

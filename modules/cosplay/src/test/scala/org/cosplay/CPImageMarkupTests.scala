@@ -43,8 +43,8 @@ object CPImageMarkupTests:
       *
       * @param elms
       */
-    private def mkMarkup(elms: List[(String, String)]): CPImageMarkup =
-        new CPImageMarkup(
+    private def mkMarkup(elms: List[(String, String)]): CPMarkup =
+        new CPMarkup(
             C_GREEN,
             Option(C_GRAY1),
             elms.map(elm => (elm._1, elm._2, (ch: Char) => CPPixel(ch, C_WHITE, Option(C_RED))))
