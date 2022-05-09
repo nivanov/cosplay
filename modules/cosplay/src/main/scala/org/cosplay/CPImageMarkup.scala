@@ -64,7 +64,7 @@ case class CPImageMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPImage
         )
         require(!elm.openTag.contains(' '), s"Markup opening tag cannot have space: '${elm.openTag}'")
         require(!elm.closeTag.contains(' '), s"Markup closing tag cannot have space: '${elm.closeTag}'")
-    require(!CPUtils.hasDups(elements.flatMap(e => Seq(e.openTag, e.closeTag))), s"Markup opening and closing tags cannot have dups.")
+    require(!CPUtils.hasDups(elements.flatMap(e => Seq(e.openTag, e.closeTag))), s"Markup opening and closing tags cannot have duplicates.")
     require(!elements.exists(elm ⇒ elements.exists(x ⇒
         x != elm &&
         (

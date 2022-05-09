@@ -71,7 +71,6 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
     )
 
     override def onActivate(): Unit =
-        super.onActivate()
         starStreakShdr.start()
         crtShdr.start()
         crtTurnOnSnd.play()
@@ -79,6 +78,5 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
         crtNoiseSnd.loop(1000, _ ⇒ crtKnockSnd.play())
 
     override def onDeactivate(): Unit =
-        super.onDeactivate()
         starStreakShdr.stop()
         crtShdr.stop()

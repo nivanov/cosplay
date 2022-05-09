@@ -78,11 +78,9 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
             audioOn = true
 
     override def onActivate(): Unit =
-        super.onActivate()
         fadeInShdr.start() // Reset the shader.
         if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
-        super.onDeactivate()
         stopBgAudio()
         sparkleShdr.stop()

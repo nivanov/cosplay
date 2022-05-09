@@ -96,14 +96,12 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
             audioOn = true
 
     override def onActivate(): Unit =
-        super.onActivate()
         // Reset the shaders.
         fadeInShdr.start()
         starStreakShdr.start()
         if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
-        super.onDeactivate()
         // Stop shaders.
         starStreakShdr.stop()
         eyesShdr.stop()
