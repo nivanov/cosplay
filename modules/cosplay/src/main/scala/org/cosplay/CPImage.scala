@@ -369,9 +369,10 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         new CPArrayImage(data, origin)
 
     /**
-      * Trims blank pixels from this image returning a new, trimmed image.
+      * Trims blank rows and columns from this image returning a new, trimmed image.
       *
-      * @param isBlank Function to determine is pixel is blank.
+      * @param isBlank Function to determine if an individual pixel is blank. Row or column is
+      *         blank if all of its pixels satisfy this predicate.
       */
     def trim(isBlank: CPPixel => Boolean): CPImage = new CPArrayImage(toArray2D.trim(isBlank), origin)
 
@@ -456,15 +457,15 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Detects all background pixels and replaces them with a given pixel returning new image.
       *
       * A pixel is considered to be a background pixel when:
-      *  - It's [[CPPixel.char character]] is space (' ').
-      *  - It's not equal to given `bgPx`.
+      *  - It's [[CPPixel.char character]] is space (' ') and it's not equal to given `bgPx`, or
       *  - It's on the edge of the image or there's a path from it to the edge of the image through background
       *    pixels only.
       *
-      *  For example, a fully enclosed area of the image that contains spaces will no be considered a background
+      *  For example, a fully enclosed area of the image that contains spaces will NOT be considered a background
       *  as there's no path to the edge of the image without crossing a non-background image.
       *
       * @param bgPx Pixel to replace the detected background pixels.
+      * @see [[trimBg()]]
       */
     def replaceBg(bgPx: CPPixel): CPImage =
         import CPPixel.*
@@ -489,9 +490,10 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
                     arr.get(x + 1, y) == bgPx ||
                     arr.get(x - 1, y) == bgPx ||
                     arr.get(x, y + 1) == bgPx ||
-                    arr.get(x, y - 1) == bgPx) then
+                    arr.get(x, y - 1) == bgPx) then {
                         arr.set(x, y, bgPx)
                         ok = true
+                    }
             )
 
         new CPArrayImage(arr, origin)
@@ -499,6 +501,8 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     /**
       * Detects all background pixels and replaces them with [[CPPixel.XRAY]] returning a new image.
       * This effectively makes the background transparent.
+      *
+      * @see [[replaceBg()]]
       */
     def trimBg(): CPImage = replaceBg(CPPixel.XRAY)
 

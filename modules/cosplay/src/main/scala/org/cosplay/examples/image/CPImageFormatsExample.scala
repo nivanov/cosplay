@@ -115,7 +115,7 @@ object CPImageFormatsExample:
         ).trimBg()
 
         val markup = CPMarkup(
-            C_HOT_PINK3,
+            C_DEEP_PINK3,
             Option(C_BLACK),
             Seq(
                 CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
@@ -127,7 +127,7 @@ object CPImageFormatsExample:
         val markupImg = CPArrayImage(
             markup.process(
                 """
-                  |Default text (GREEN ON BLACK).
+                  |Default text (PINK ON BLACK).
                   |Some <$ RED ON WHITE $>
                   |Another one (? BLACK ON WHITE ?)
                   |And yet another span of {# BROWN ON YELLOW #}
@@ -135,7 +135,7 @@ object CPImageFormatsExample:
             ),
             bgPx,
             align = -1
-        ).trimBg()
+        )
 
         // Load a simple *.txt image and "paint" it in the code..
         val guitarImg = CPImage.load(

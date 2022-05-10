@@ -147,11 +147,17 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
   */
 object CPArrayImage:
     /**
+      * This is a special constructor that expects given sequence of pixels to represent a one or
+      * multiple lines of text. This method takes given pixels, splits then into individual lines by the
+      * system-specific new line sequence, and aligned those lines based on the [[align]] parameter. In the
+      * end, it creates a new image from those split and aligned lines of text.
       *
-      * @param pxs
-      * @param spacePx
-      * @param align
-      * @return
+      * @param pxs List of pixels to split and align.
+      * @param spacePx A pixel to use to pad for leading and/or trailing spaces.
+      * @param align Alignment of text. The only allowed values are:
+      *  - `-1` - left justified alignment.
+      *  - `0` - centered alignment.
+      *  - `1` - right justified alignment.
       */
     def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 0): CPImage =
         val lines = CPUtils
