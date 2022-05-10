@@ -489,10 +489,9 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
                     arr.get(x + 1, y) == bgPx ||
                     arr.get(x - 1, y) == bgPx ||
                     arr.get(x, y + 1) == bgPx ||
-                    arr.get(x, y - 1) == bgPx) then {
-                    arr.set(x, y, bgPx)
-                    ok = true
-                }
+                    arr.get(x, y - 1) == bgPx) then
+                        arr.set(x, y, bgPx)
+                        ok = true
             )
 
         new CPArrayImage(arr, origin)

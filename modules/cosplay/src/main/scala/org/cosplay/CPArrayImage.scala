@@ -146,15 +146,32 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
   * Companion object contains utility functions.
   */
 object CPArrayImage:
+    /**
+      *
+      * @param pxs
+      * @param spacePx
+      * @param align
+      * @return
+      */
     def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 0): CPImage =
         val lines = CPUtils
             .splitBy(pxs, px ⇒ CPUtils.NL.contains(px.char))
-            .map(CPUtils.trimBy(_, px ⇒ px.char == ' '))
+            .map(CPUtils.trimBy(_, px ⇒ px.char == spacePx.char)) // Ignore colors for space pixel.
             .map(seq ⇒ ArrayBuffer.from(seq))
         val maxSz = lines.maxBy(_.size).size
-//        for (line ← lines if line.size < maxSz)
+        for (line ← lines if line.size < maxSz)
+            val d = maxSz - line.length
+            if align == -1 then // Left align.
+                (0 until d).foreach(_ ⇒ line += spacePx)
+            else if align == 1 then // Right align.
+                (0 until d).foreach(_ ⇒ line.prepend(spacePx))
+            else // Center align.
+                val left = d / 2
+                val right = d - left
+                (0 until left).foreach(_ ⇒ line.prepend(spacePx))
+                (0 until right).foreach(_ ⇒ line += spacePx)
 
-        null
+        new CPArrayImage(CPArray2D(lines.flatMap(_.toSeq), maxSz))
 
     /**
       * Converts margin-based Scala string into sequence of strings.
