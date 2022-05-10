@@ -50,3 +50,29 @@ object CPUtilsTests:
         assertFalse(unzipped sameElements zipped)
         assertTrue(arr sameElements unzipped)
 
+    @Test
+    def trimByTest(): Unit =
+        assertTrue(CPUtils.trimBy("  a b c     ", _ == ' ').mkString == "a b c")
+        assertTrue(CPUtils.trimBy("     ", _ == ' ').mkString == "")
+        assertTrue(CPUtils.trimBy("a b c", _ == ' ').mkString == "a b c")
+        assertTrue(CPUtils.trimBy("a b c  ", _ == ' ').mkString == "a b c")
+        assertTrue(CPUtils.trimBy("  a b c", _ == ' ').mkString == "a b c")
+        assertTrue(CPUtils.trimBy("x  a b c     x", ch ⇒ ch == ' ' || ch == 'x').mkString == "a b c")
+
+    @Test
+    def splitByTest(): Unit =
+        var s = "123"
+        var ss = CPUtils.splitBy(s, ch ⇒ ch == ' ' || ch == 'x')
+        assertTrue(ss.length == 1)
+        assertTrue(ss.head.mkString == "123")
+
+        s = "  123x456    789    a b xx c"
+        ss = CPUtils.splitBy(s, ch ⇒ ch == ' ' || ch == 'x')
+        assertTrue(ss.length == 6)
+        assertTrue(ss.head.mkString == "123")
+        assertTrue(ss(1).mkString == "456")
+        assertTrue(ss(2).mkString == "789")
+        assertTrue(ss(3).mkString == "a")
+        assertTrue(ss(4).mkString == "b")
+        assertTrue(ss(5).mkString == "c")
+

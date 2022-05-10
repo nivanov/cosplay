@@ -645,9 +645,6 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
   * Companion object with utility functions.
   */
 object CPImage:
-    /** */
-    val NL: String = System.getProperty("line.separator")
-
     // First search for '_1' then, if not found, search for '_2'.
     private final val HOR_FLIP_MAP = Seq(
         '{' -> '}',

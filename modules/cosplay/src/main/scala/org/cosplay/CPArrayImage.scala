@@ -31,6 +31,8 @@ package org.cosplay
 */
 
 import CPArrayImage.*
+import impl.CPUtils
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * An image based on two-dimensional pixel array.
@@ -144,6 +146,16 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
   * Companion object contains utility functions.
   */
 object CPArrayImage:
+    def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 0): CPImage =
+        val lines = CPUtils
+            .splitBy(pxs, px ⇒ CPUtils.NL.contains(px.char))
+            .map(CPUtils.trimBy(_, px ⇒ px.char == ' '))
+            .map(seq ⇒ ArrayBuffer.from(seq))
+        val maxSz = lines.maxBy(_.size).size
+//        for (line ← lines if line.size < maxSz)
+
+        null
+
     /**
       * Converts margin-based Scala string into sequence of strings.
       *
@@ -154,7 +166,7 @@ object CPArrayImage:
     def prepSeq(marginCh: Char, s: String, trim: Boolean): Seq[String] =
         if s.isEmpty then Seq.empty
         else
-            var arr = s.stripMargin(marginCh).split(CPImage.NL)
+            var arr = s.stripMargin(marginCh).split(CPUtils.NL)
 
             if arr.nonEmpty then
                 if trim then
