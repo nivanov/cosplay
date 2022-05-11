@@ -58,13 +58,14 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         autoStart = true,
         skip = (zpx, _, _) ⇒ zpx.z == 1
     )
+    private val borderSdr = CPBorderShader(true, 5, -.03f, true)
 
     // Add scene objects...
     addObjects(
         // Main logo.
         CPCenteredImageSprite(img = logoImg, 1),
         // Off screen sprite since shaders are applied to entire screen.
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderSdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
         CPKeyboardSprite(KEY_SPACE, _.switchScene("play"))// Transition to the next scene on 'Enter' press.
     )

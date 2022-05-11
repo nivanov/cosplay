@@ -40,7 +40,7 @@ import games.pong.*
   * effect only for a scene object this shader is attached to (i.e. it does not work for entire screen).
   *
   * @param radius Radius of circular flashlight effect.
-  * @param autoPlay Whether or not to toggle on the shader effect automatically. Default value is `false`.
+  * @param autoStart Whether or not to toggle on the shader effect automatically. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
   *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
   *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
@@ -56,10 +56,10 @@ import games.pong.*
   */
 class CPFlashlightShader(
     radius: Int,
-    autoPlay: Boolean = false,
+    autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
 ) extends CPShader:
-    private var on = autoPlay
+    private var go = autoStart
 
     /**
       * Toggles this shader effect on and off.
@@ -67,30 +67,30 @@ class CPFlashlightShader(
       * @see [[start()]]
       * @see [[stop()]]
       */
-    def toggle(): Unit = on = !on
+    def toggle(): Unit = go = !go
 
     /**
       * Starts the shader effect.
       *
       * @see [[toggle()]]
       */
-    def start(): Unit = on = true
+    def start(): Unit = go = true
 
     /**
       * Stops the shader effect.
       *
       * @see [[toggle()]]
       */
-    def stop(): Unit = on = false
+    def stop(): Unit = go = false
 
     /**
       * Returns `true` if this shader effect is on, `false` otherwise.
       */
-    def isOn: Boolean = on
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if ctx.isVisible then
+        if go && ctx.isVisible then
             val canv = ctx.getCanvas
             val cx = objRect.xCenter
             val cy = objRect.yCenter
