@@ -59,6 +59,11 @@ var audioOn = true // By default, the audio is ON.
   * @see https://cosplayengine.com/devguide/snake_game.html
   */
 object CPSnakeGame:
+    /**
+      * Entry point for JVM runtime.
+      *
+      * @param args Ignored.
+      */
     def main(args: Array[String]): Unit =
         val gameInfo = CPGameInfo(name = "Ascii Snake")
 

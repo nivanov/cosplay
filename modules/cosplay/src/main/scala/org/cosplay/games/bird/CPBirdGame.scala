@@ -21,9 +21,7 @@ import org.cosplay.*
 import games.*
 import CPColor.*
 import CPPixel.*
-import prefabs.scenes.{CPFadeShimmerLogoScene}
-
-val BG_PX = '.'&&(C_GRAY18, C_GRAY1)
+import prefabs.scenes.*
 
 /*
    _________            ______________
@@ -38,10 +36,42 @@ val BG_PX = '.'&&(C_GRAY18, C_GRAY1)
                 ALl rights reserved.
 */
 
+val BLUE_BLACK = CPColor("0x00000F")
+val ORIG_BLUE = CPColor("0x00B2B2")
+val LOGO_BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
+val GAME_BG_PX = ' '&&(ORIG_BLUE, ORIG_BLUE) // Background pixel.
+var audioOn = true // By default, the audio is ON.
+val dim = CPDim(120, 40)
 
+/**
+  * ASCII remake of the classic "Flappy Bird" game developed by Dong Nguyen in 2013.
+  *
+  * ### Running Game
+  * One-time Git clone & build:
+  * {{{
+  *     $ git clone https://github.com/nivanov/cosplay.git
+  *     $ cd cosplay
+  *     $ mvn package
+  * }}}
+  * to run the game:
+  * {{{
+  *     $ mvn -f modules/cosplay -P bird exec:java
+  * }}}
+  *
+  * @see https://cosplayengine.com/devguide/bird_game.html
+  */
 object CPBirdGame:
+    /**
+      * Entry point for JVM runtime.
+      *
+      * @param args Ignored.
+      */
     def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(name = "Ascii Bird")
+        val gameInfo = CPGameInfo(
+            name = "Ascii Bird",
+            initDim = Option(dim),
+            minDim = Option(dim)
+        )
 
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
@@ -49,8 +79,7 @@ object CPBirdGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-//                new CPLogoScene("logo", None, BG_PX, CS, "title"),
-                new CPFadeShimmerLogoScene("logo", None, BG_PX, CS, "title", 200),
+                new CPFadeShimmerLogoScene("logo", None, LOGO_BG_PX, CS, "title"),
                 CPBirdTitleScene,
                 CPBirdGameScene
             )

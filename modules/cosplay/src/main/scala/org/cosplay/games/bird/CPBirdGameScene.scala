@@ -43,7 +43,7 @@ import CPColor.*
 */
 
 
-object CPBirdGameScene extends CPScene("play", None, BG_PX):
+object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var speed = 1f
     private var vel = 0f
     private val jump = 7f
