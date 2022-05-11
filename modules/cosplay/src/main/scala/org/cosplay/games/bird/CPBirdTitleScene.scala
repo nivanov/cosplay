@@ -46,7 +46,7 @@ object CPBirdTitleScene extends CPScene("title", None, BG_PX):
             //case '$' => px.withFg(C5)
             case _ => px.withFg(C_YELLOW)
     ).trimBg()
-    private val helpImg = CPArrayImage(
+    private val helpImg = new CPArrayImage(
         prepSeq(
             """
               |       GET AS FAR AS YOU CAN
