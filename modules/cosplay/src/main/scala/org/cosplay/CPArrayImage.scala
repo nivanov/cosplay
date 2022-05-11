@@ -31,6 +31,8 @@ package org.cosplay
 */
 
 import CPArrayImage.*
+import impl.CPUtils
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * An image based on two-dimensional pixel array.
@@ -38,7 +40,7 @@ import CPArrayImage.*
   * This is the primary tool for creating in-code images.
   * This class has number of constructors and companion utility methods to aid in creating
   * in-code images in variety of ways. Here's a typical example of using this class to create
-  * an in-code image:
+  * an in-code image. Note the use of companion object function [[prepSeq()]]:
   * {{{
   * object CPAlienImage extends CPArrayImage(
   *     prepSeq("""
@@ -54,10 +56,12 @@ import CPArrayImage.*
   * )
   * }}}
   *
-  * @param data Image data.
+  * @param data Image data. Note that given data array should not have `null` values.
   * @param origin The origin of the image like file path or URL.
   */
 class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CPImage(origin):
+    require(!data.contains(_ == null), "Image data cannot have 'null' values.")
+
     /**
       * Creates an image from 2D array of characters.
       *
@@ -65,8 +69,7 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
       * @param skin Skinning function. The function takes a character, its X and Y coordinate and returns
       *     a new pixel.
       */
-    def this(data: CPArray2D[Char], skin: (Char, Int, Int) => CPPixel) =
-        this(data.map((ch, x, y) => skin(ch, x, y)))
+    def this(data: CPArray2D[Char], skin: (Char, Int, Int) => CPPixel) = this(data.map((ch, x, y) => skin(ch, x, y)))
 
     /**
       * Creates an image from the sequence of strings.
@@ -75,8 +78,7 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
       * @param skin Skinning function. The function takes a character, its X and Y coordinate and returns
       *     a new pixel.
       */
-    def this(data: Seq[String], skin: (Char, Int, Int) => CPPixel) =
-        this(CPArray2D(data), skin)
+    def this(data: Seq[String], skin: (Char, Int, Int) => CPPixel) = this(CPArray2D(data), skin)
 
     /**
       * Creates an image from a single string.
@@ -85,16 +87,14 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
       * @param skin Skinning function. The function takes a character, its X and Y coordinate and returns
       *     a new pixel.
       */
-    def this(data: String, skin: (Char, Int, Int) => CPPixel) =
-        this(Seq(data), skin)
+    def this(data: String, skin: (Char, Int, Int) => CPPixel) = this(Seq(data), skin)
 
     /**
       * Creates a single pixel image.
       *
       * @param px Image pixel.
       */
-    def this(px: CPPixel) =
-        this(new CPArray2D[CPPixel](px))
+    def this(px: CPPixel) = this(new CPArray2D[CPPixel](px))
 
     /**
       * Creates an image from give 2D array of characters.
@@ -103,8 +103,7 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
       * @param fg Foreground color of image pixels.
       * @param bg Optional background color for image pixels.
       */
-    def this(chArr: CPArray2D[Char], fg: CPColor, bg: Option[CPColor]) =
-        this(chArr.map(ch => CPPixel(ch, fg, bg, 0)))
+    def this(chArr: CPArray2D[Char], fg: CPColor, bg: Option[CPColor]) = this(chArr.map(ch => CPPixel(ch, fg, bg, 0)))
 
     /**
       * Creates an image from give 2D array of characters without background color.
@@ -112,8 +111,7 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
       * @param chArr Image data.
       * @param fg Foreground color of image pixels.
       */
-    def this(chArr: CPArray2D[Char], fg: CPColor) =
-        this(chArr.map(ch => CPPixel(ch, fg, None, 0)))
+    def this(chArr: CPArray2D[Char], fg: CPColor) = this(chArr.map(ch => CPPixel(ch, fg, None, 0)))
 
     /**
       * Creates an image from give string.
@@ -122,8 +120,7 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
       * @param fg Foreground color of image pixels.
       * @param bg Optional background color for image pixels.
       */
-    def this(data: String, fg: CPColor, bg: Option[CPColor]) =
-        this(CPArray2D(data), fg, bg)
+    def this(data: String, fg: CPColor, bg: Option[CPColor]) = this(CPArray2D(data), fg, bg)
 
     /**
       * Creates an image from give string without background color.
@@ -131,16 +128,14 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
       * @param data Single string image data.
       * @param fg Foreground color of image pixels.
       */
-    def this(data: String, fg: CPColor) =
-        this(CPArray2D(data), fg, None)
+    def this(data: String, fg: CPColor) = this(CPArray2D(data), fg, None)
 
     /**
       * Creates an image from given sequence of pixels.
       *
       * @param pxs Sequence of pixel to create a new image from.
       */
-    def this(pxs: Seq[CPPixel]) =
-        this(CPArray2D(pxs, pxs.size))
+    def this(pxs: Seq[CPPixel]) = this(CPArray2D(pxs, pxs.size))
 
     /** @inheritdoc */ 
     override def getDim: CPDim = data.dim
@@ -152,6 +147,39 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
   */
 object CPArrayImage:
     /**
+      * This is a special constructor that expects given sequence of pixels to represent a one or
+      * multiple lines of text. This method takes given pixels, splits then into individual lines by the
+      * system-specific new line sequence, and aligned those lines based on the [[align]] parameter. In the
+      * end, it creates a new image from those split and aligned lines of text.
+      *
+      * @param pxs List of pixels to split and align.
+      * @param spacePx A pixel to use to pad for leading and/or trailing spaces.
+      * @param align Alignment of text. The only allowed values are:
+      *  - `-1` - left justified alignment.
+      *  - `0` - centered alignment.
+      *  - `1` - right justified alignment.
+      */
+    def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 0): CPImage =
+        val lines = CPUtils
+            .splitBy(pxs, px ⇒ CPUtils.NL.contains(px.char))
+            .map(CPUtils.trimBy(_, px ⇒ px.char == spacePx.char)) // Ignore colors for space pixel.
+            .map(seq ⇒ ArrayBuffer.from(seq))
+        val maxSz = lines.maxBy(_.size).size
+        for (line ← lines if line.size < maxSz)
+            val d = maxSz - line.length
+            if align == -1 then // Left align.
+                (0 until d).foreach(_ ⇒ line += spacePx)
+            else if align == 1 then // Right align.
+                (0 until d).foreach(_ ⇒ line.prepend(spacePx))
+            else // Center align.
+                val left = d / 2
+                val right = d - left
+                (0 until left).foreach(_ ⇒ line.prepend(spacePx))
+                (0 until right).foreach(_ ⇒ line += spacePx)
+
+        new CPArrayImage(CPArray2D(lines.flatMap(_.toSeq), maxSz))
+
+    /**
       * Converts margin-based Scala string into sequence of strings.
       *
       * @param marginCh Margin character.
@@ -161,7 +189,7 @@ object CPArrayImage:
     def prepSeq(marginCh: Char, s: String, trim: Boolean): Seq[String] =
         if s.isEmpty then Seq.empty
         else
-            var arr = s.stripMargin(marginCh).split(CPImage.NL)
+            var arr = s.stripMargin(marginCh).split(CPUtils.NL)
 
             if arr.nonEmpty then
                 if trim then

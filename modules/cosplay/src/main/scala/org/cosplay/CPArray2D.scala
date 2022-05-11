@@ -35,8 +35,7 @@ import scala.reflect.ClassTag
 */
 
 /**
-  * General, immutable 2D-array. Optionally, has a clear value that is used to [[clear()]] out
-  * array.
+  * Immutable 2D-array. Optionally, has a clear value that is used to [[clear()]] out array.
   *
   * @param width Width of the array. Must be >= 0.
   * @param height Height of the array. Must be >= 0.
@@ -198,6 +197,78 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       * @param f Function to call for each element.
       */
     def foreach(f: T => Unit): Unit = rect.loop((x, y) => f(data(x)(y)))
+
+    /**
+      * Checks whether this array contains at least one element satisfying given predicate.
+      *
+      * @param p Predicate to test.
+      */
+    def contains(p: T => Boolean): Boolean =
+        var x = 0
+        var y = 0
+        var found = false
+        while (x <= xMax && !found)
+            y = 0
+            while (y <= yMax && !found)
+                if p(data(x)(y)) then found = true
+                y += 1
+            x += 1
+        found
+
+    /**
+      * Collapses given array into a single value given the initial value and associative binary operation
+      * acting as an accumulator. Folding over the elements in this 2D array will be horizontal first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
+      *
+      * @param z Initial value.
+      * @param op Accumulating binary operation.
+      */
+    def foldHor[Z](z: Z)(op: (Z, T) => Z): Z =
+        var zz = z
+        loopHor((t, _, _) => zz = op(zz, t))
+        zz
+
+    /**
+      * Collapses given array into a single value given the initial value and associative binary operation
+      * acting as an accumulator. Folding over the elements in this 2D array will be vertical first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)
+      * }}}
+      *
+      * @param z Initial value.
+      * @param op Accumulating binary operation.
+      */
+    def foldVert[Z](z: Z)(op: (Z, T) => Z): Z =
+        var zz = z
+        loopVert((t, _, _) => zz = op(zz, t))
+        zz
+
+    /**
+      * Counts how many elements in this array satisfying given predicate.
+      *
+      * @param p Predicate to test.
+      */
+    def count(p: T => Boolean): Int = foldHor(0)((n, t) => if p(t) then n + 1 else n)
 
     /**
       * Calls given function for each array element.
@@ -446,7 +517,7 @@ object CPArray2D:
         val arr = new CPArray2D[CPPixel](w, h)
         pps.foreach(pp => arr.set(pp.x, pp.y, pp.px))
         arr
-
+        
     /**
       * Creates new 2D array from given sequence of [[CPPixel pixels]] and width.
       * Note that clear value is not set.

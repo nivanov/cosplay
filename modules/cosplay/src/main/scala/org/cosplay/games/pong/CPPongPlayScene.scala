@@ -468,13 +468,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         paddleSnd.stop()
         bgSnd.stop()
 
-    override def onDeactivate(): Unit =
-        super.onDeactivate()
-        stopAudio()
-
+    override def onDeactivate(): Unit = stopAudio()
     override def onActivate(): Unit =
-        super.onActivate()
-
         // Start background audio.
         if audioOn then bgSnd.loop(2000)
 

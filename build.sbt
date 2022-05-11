@@ -32,20 +32,21 @@ val cosPlayVer = "0.6.6"
 
 val scalaMajVer = "3"
 val scalaMinVer = "1.2"
-val log4jVer = "2.17.1"
+val log4jVer = "2.17.2"
 val scalaLoggingVer = "3.9.4"
 val scalaParColVer = "1.0.4"
 val commonsLang3Ver = "3.12.0"
 val commonsMath3Ver = "3.6.1"
 val scalaReflectVer = "1.1.4"
 val junitVer = "5.8.2"
-val scalaTestVer = "3.2.11"
+val scalaTestVer = "3.2.12"
 val openjfxVer = "15.0.1"
-val flatlafVer = "1.6.5"
-val ikonliVer = "12.3.0"
+val ikonliVer = "12.3.1"
+val flatlafVer = "2.2"
 val miglayoutVer = "11.0"
 val jlineVer = "3.21.0"
 val jnaVer = "5.10.0"
+val mixPanelVer = "1.4.4"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
 ThisBuild / version := cosPlayVer
@@ -101,6 +102,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "org.jline" % "jline-terminal" % s"$jlineVer",
         libraryDependencies += "net.java.dev.jna" % "jna" % s"$jnaVer",
         libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % s"$scalaParColVer",
+        libraryDependencies += "com.mixpanel" % "mixpanel-java" % s"$mixPanelVer",
 
         // Test scope.
         libraryDependencies += "org.scalatest" %% s"scalatest" % s"$scalaTestVer" % Test,

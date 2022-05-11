@@ -86,10 +86,11 @@ import java.awt.Color
 final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPColor](red, green, blue) with Ordered[CPColor]:
     import CPColor.*
 
-    assert(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
+    require(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
 
     private var name: String = _
-    private val strClr = if name == null then s"[r=$red,g=$green,b=$blue]" else s"[r=$red,g=$green,b=$blue,name=$name]"
+    private val rgbStr = s"[r=$red,g=$green,b=$blue]"
+    private inline def strClr = if name == null then rgbStr else name
 
     /**
       *
@@ -216,7 +217,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     /**
       * Gets a new darker color.
       *
-      * @param factor Mixing factor in `[0,1]` range. 0.9` means 90% darker, 0.1` means 10% darker.
+      * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
       */
     inline def darker(factor: Float): CPColor =
         assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
@@ -242,8 +243,8 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     /**
       * Get a new lighter color.
       *
-      * @param factor Mixing factor in `[0.1]` range. '1.0' means pure white, '0.9' means 90% lighter,
-      *     '0.1' means 10% lighter.
+      * @param factor Mixing factor in `[0.1]` range. `1.0` means pure white, `0.9` means 90% lighter,
+      *     `0.1` means 10% lighter.
       */
     inline def lighter(factor: Float): CPColor =
         assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
@@ -669,22 +670,22 @@ object CPColor:
     /*
      * System colors.
      */
-    final val C_BLACK = CPColor(0,  0,  0)
-    final val C_MAROON  = CPColor(128, 0, 0)
-    final val C_GREEN  = CPColor(0, 128, 0)
-    final val C_OLIVE  = CPColor(128, 128, 0)
-    final val C_NAVY  = CPColor(0, 0, 128)
-    final val C_PURPLE  = CPColor(128, 0, 128)
-    final val C_TEAL  = CPColor(0, 128, 128)
-    final val C_SILVER  = CPColor(192, 192, 192)
-    final val C_GREY  = CPColor(128, 128, 128)
-    final val C_RED  = CPColor(255, 0, 0)
-    final val C_LIME  = CPColor(0, 255, 0)
-    final val C_YELLOW  = CPColor(255, 255, 0)
-    final val C_BLUE  = CPColor(0, 0, 255)
-    final val C_FUCHSIA  = CPColor(255, 0, 255)
-    final val C_AQUA  = CPColor(0, 255, 255)
-    final val C_WHITE  = CPColor(255, 255, 255)
+    final val C_BLACK = new CPColor(0,  0,  0, "C_BLACK")
+    final val C_MAROON  = new CPColor(128, 0, 0, "C_MAROON")
+    final val C_GREEN = new CPColor(0, 128, 0, "C_GREEN")
+    final val C_OLIVE = new CPColor(128, 128, 0, "C_OLIVE")
+    final val C_NAVY = new CPColor(0, 0, 128, "C_NAVY")
+    final val C_PURPLE = new CPColor(128, 0, 128, "C_PURPLE")
+    final val C_TEAL = new CPColor(0, 128, 128, "C_TEAL")
+    final val C_SILVER = new CPColor(192, 192, 192, "C_SILVER")
+    final val C_GREY = new CPColor(128, 128, 128, "C_GREY")
+    final val C_RED = new CPColor(255, 0, 0, "C_RED")
+    final val C_LIME = new CPColor(0, 255, 0, "C_LIME")
+    final val C_YELLOW = new CPColor(255, 255, 0, "C_YELLOW")
+    final val C_BLUE = new CPColor(0, 0, 255, "C_BLUE")
+    final val C_FUCHSIA = new CPColor(255, 0, 255, "C_FUCHSIA")
+    final val C_AQUA = new CPColor(0, 255, 255, "C_AQUA")
+    final val C_WHITE = new CPColor(255, 255, 255, "C_WHITE")
 
     /*
      * xterm colors.

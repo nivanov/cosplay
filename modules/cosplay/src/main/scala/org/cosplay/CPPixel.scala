@@ -137,6 +137,44 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
     inline def withFg(x: CPColor): CPPixel = if fg != x then CPPixel(char, x, bg, tag) else this
 
     /**
+      * Gets a copy of this pixel with lighter foreground.
+      *
+      * @param factor Mixing factor in `[0.1]` range. `1.0` means pure white, `0.9` means 90% lighter,
+      *     `0.1` means 10% lighter.
+      * @see [[CPColor.lighter()]]
+      */
+    inline def withLighterFg(factor: Float): CPPixel = CPPixel(char, fg.lighter(factor), bg, tag)
+
+    /**
+      * Gets a copy of this pixel with darker foreground.
+      *
+      * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
+      * @see [[CPColor.darker()]]
+      */
+    inline def withDarkerFg(factor: Float): CPPixel = CPPixel(char, fg.darker(factor), bg, tag)
+
+    /**
+      * Gets a copy of this pixel with lighter background.
+      *
+      * @param factor Mixing factor in `[0.1]` range. `1.0` means pure white, `0.9` means 90% lighter,
+      *     `0.1` means 10% lighter.
+      * @see [[CPColor.lighter()]]
+      */
+    inline def withLighterBg(factor: Float): CPPixel = bg match
+        case Some(c) ⇒ CPPixel(char, fg, Option(c.lighter(factor)), tag)
+        case None ⇒ this
+
+    /**
+      * Gets a copy of this pixel with darker background.
+      *
+      * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
+      * @see [[CPColor.darker()]]
+      */
+    inline def withDarkerBg(factor: Float): CPPixel = bg match
+        case Some(c) ⇒ CPPixel(char, fg, Option(c.darker(factor)), tag)
+        case None ⇒ this
+
+    /**
       * Gets a copy of this pixel with a new tag.
       *
       * @param t New tag.

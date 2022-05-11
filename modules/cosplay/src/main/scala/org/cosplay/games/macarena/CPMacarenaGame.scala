@@ -99,7 +99,6 @@ object CPMacarenaGame:
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             new CPOffScreenSprite:
                 override def onStart(): Unit =
-                    super.onStart()
                     music.loop(1500) // Auto-play with fade-in.
         )
 

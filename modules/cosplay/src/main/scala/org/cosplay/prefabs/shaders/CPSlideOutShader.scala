@@ -59,10 +59,15 @@ import org.apache.commons.math3.analysis.function.*
   *     then the second one. By default, the the `(a, b) ⇒ a.toFloat / b` function is used that gives gradual color
   *     transition through the frames range. Another popular function to use here is a sigmoid
   *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat` that gives a different visual effect.
-  * @see [[CPOffScreenSprite]]
-  * @see [[CPSlideInShader]]
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPSparkleShader]]
+  * @see [[CPStarStreakShader]]
+  * @see [[CPOldCRTShader]]
+  * @see [[CPFlashlightShader]]
+  * @see [[CPOffScreenSprite]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
 class CPSlideOutShader(
@@ -153,8 +158,7 @@ object CPSlideOutShader:
       * Creates new slide out shader with sigmoid-based color balance function.
       *
       * @param dir Slide direction as defined by [[CPSlideDirection]].
-      * @param entireFrame Whether apply to the entire camera frame or just the object this
-      *     shader is attached to.
+      * @param entireFrame Whether apply to the entire camera frame or just the object this shader is attached to.
       * @param durMs Duration of the effect in milliseconds.
       * @param bgPx Background pixel to fade in from.
       * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
