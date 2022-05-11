@@ -37,7 +37,14 @@ import prefabs.scenes.*
 */
 
 val BLUE_BLACK = CPColor("0x00000F")
-val ORIG_BLUE = CPColor("0x006666")
+val ORIG_BLUE = CPColor("0x003040")
+val C1 = CPColor("0xFF8000") // Orange.
+val C2 = CPColor("0x33FF33") // Green (bright).
+val C3 = CPColor("0x008C46") // Green (dark).
+val C4 = CPColor("0xBFAB8F") // Light brown.
+val C5 = CPColor("0x66B2FF") // Light blue.
+val C6 = CPColor("0x66FFB2") // Light olive.
+
 val LOGO_BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
 val GAME_BG_PX = ' '&&(ORIG_BLUE, ORIG_BLUE) // Background pixel.
 var audioOn = true // By default, the audio is ON.
