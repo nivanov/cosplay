@@ -40,6 +40,7 @@ import prefabs.shaders.*
 import shaders.*
 
 object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
+    private val bgSnd = CPSound("sounds/games/bird/bg.wav")
     private val logoImg = CPImage.loadRexXp("images/games/bird/bird_logo.xp").trimBg()
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -68,13 +69,32 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         CPCenteredImageSprite(img = logoImg, 1, shaders = Seq(blinkShdr)),
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderSdr)),
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_SPACE, _.switchScene("play"))// Transition to the next scene on 'Enter' press.
+        // Exit on 'Q' press.
+        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+        // Toggle audio on 'Ctrl+A' press.
+        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
+        // Transition to the next scene on 'Space' press.
+        CPKeyboardSprite(KEY_SPACE, _.switchScene("play"))
     )
 
+    private def startBgAudio(): Unit = bgSnd.loop(2000)
+    private def stopBgAudio(): Unit = bgSnd.stop(400)
+
+    /**
+      * Toggles audio on and off.
+      */
+    private def toggleAudio(): Unit =
+        if audioOn then
+            stopBgAudio()
+            audioOn = false
+        else
+            startBgAudio()
+            audioOn = true
+
     override def onActivate(): Unit =
-        super.onActivate()
+        if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
-        super.onDeactivate()
+        stopBgAudio()
+
 
