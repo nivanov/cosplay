@@ -37,6 +37,7 @@ import CPPixel.*
 import org.cosplay.CPArrayImage.*
 import prefabs.scenes.*
 import prefabs.shaders.*
+import shaders.*
 
 object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     private val logoImg = CPImage.loadRexXp("images/games/bird/bird_logo.xp").trimBg()
@@ -59,11 +60,12 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         skip = (zpx, _, _) ⇒ zpx.z == 1
     )
     private val borderSdr = CPBorderShader(true, 5, -.03f, true)
+    private val blinkShdr = CPBirdBlinkShader()
 
     // Add scene objects...
     addObjects(
         // Main logo.
-        CPCenteredImageSprite(img = logoImg, 1),
+        CPCenteredImageSprite(img = logoImg, 1, shaders = Seq(blinkShdr)),
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderSdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.

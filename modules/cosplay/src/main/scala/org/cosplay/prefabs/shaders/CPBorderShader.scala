@@ -90,6 +90,6 @@ class CPBorderShader(
                 for (x <- (rect.xMin + d) to (rect.xMax - d))
                     updatePx(x, rect.yMin + d, mix)
                     updatePx(x, rect.yMax - d, mix)
-                for (y <- (rect.yMin + d) to (rect.yMax - d))
+                for (y <- (rect.yMin + d + 1) until (rect.yMax - d))
                     updatePx(rect.xMin + d, y, mix)
                     updatePx(rect.xMax - d, y, mix)
