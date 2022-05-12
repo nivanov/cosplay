@@ -68,12 +68,14 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
               | //
               |------
               | //
-              |( ^)>
+              |( -)>
               | \\
               |------
             """
         ).filter(!_.endsWith("------")),
-        (ch, _, _) => ch&C5
+        (ch, _, _) => ch match
+            case '^' | '-' => ch&C_WHITE
+            case _ => ch&C4
     ).split(5, 3)
 
     private val startImg = new CPArrayImage(
@@ -86,7 +88,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         (ch, _, _) => ch&C_GREEN
     ).trimBg()
 
-    private val birdSpr = new CPAnimationSprite("bird", anis = Seq(CPAnimation.filmStrip("ani", 150, imgs = birdImgs)), 15, 15, 0, "ani", false):
+    private val birdAnis = Seq(CPAnimation.filmStrip("ani", 250, imgs = birdImgs))
+    private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, 15, 15, 0, "ani", false):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
