@@ -35,46 +35,41 @@ import CPColor.*
 import CPKeyboardKey.*
 import CPPixel.*
 import org.cosplay.CPArrayImage.*
-import org.cosplay.CPFIGLetFont.*
-import prefabs.images.ani.*
 import prefabs.scenes.*
 import prefabs.shaders.*
+import shaders.*
 
-object CPBirdTitleScene extends CPScene("title", None, BG_PX):
-    private val logoImg = FIG_BELL.render("Ascii Bird", C_WHITE).skin(
-        (px, _, _) => px.char match
-            //case '$' => px.withFg(C5)
-            case _ => px.withFg(C_YELLOW)
-    ).trimBg()
-    private val helpImg = CPArrayImage(
-        prepSeq(
-            """
-              |       GET AS FAR AS YOU CAN
-              |      ~~~~~~~~~~~~~~~~~~~~~~~
-              |
-              |         [SPACE] - JUMP
-              |
-              |         [ENTER] - Play
-              |         [Q]   -   Quit
-              |
-              |
-              |
-              |Copyright (C) 2022 Rowan Games, Inc
-            """),
-        (ch, _, y) =>
-            if y >= 21 then ch&C_YELLOW
-            else
-                ch match
-                    case _ => ch&C_GREEN
-    ).trimBg()
+object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
+    private val logoImg = CPImage.loadRexXp("images/games/bird/bird_logo.xp").trimBg()
+    private val fadeInShdr = CPSlideInShader.sigmoid(
+        CPSlideDirection.CENTRIFUGAL,
+        true,
+        3000,
+        GAME_BG_PX
+    )
+    private val CS = Seq(C1, C2, C3, C4, C5)
+    private val starStreakShdr = CPStarStreakShader(
+        true,
+        GAME_BG_PX.bg.get,
+        Seq(
+            CPStarStreak('.', CS, 0.025, 30, (0f, .2f), 0),
+            CPStarStreak(':', CS, 0.015, 25, (0f, .4f), 0),
+            CPStarStreak('|', CS, 0.005, 50, (0f, .8f), 0)
+        ),
+        autoStart = true,
+        skip = (zpx, _, _) ⇒ zpx.z == 1
+    )
+    private val borderSdr = CPBorderShader(true, 5, -.03f, true)
+    private val blinkShdr = CPBirdBlinkShader()
 
     // Add scene objects...
     addObjects(
-        CPImageSprite(xf = c => (c.w - logoImg.w) / 2, c => Math.max(0, c.h / 2 - logoImg.h - 1), 0, logoImg),
-        CPImageSprite(xf = c => (c.w - helpImg.w) / 2, c => Math.max(0, c.h / 2 + 1), 0, helpImg),
-
+        // Main logo.
+        CPCenteredImageSprite(img = logoImg, 1, shaders = Seq(blinkShdr)),
+        // Off screen sprite since shaders are applied to entire screen.
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderSdr)),
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_ENTER, _.switchScene("play"))// Transition to the next scene on 'Enter' press.
+        CPKeyboardSprite(KEY_SPACE, _.switchScene("play"))// Transition to the next scene on 'Enter' press.
     )
 
     override def onActivate(): Unit =

@@ -43,7 +43,7 @@ import CPColor.*
 */
 
 
-object CPBirdGameScene extends CPScene("play", None, BG_PX):
+object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var speed = 1f
     private var vel = 0f
     private val jump = 7f
@@ -63,7 +63,7 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
 
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
-    private val birdImg = CPArrayImage(
+    private val birdImg = new CPArrayImage(
         prepSeq(
             """
               | \\
@@ -74,7 +74,7 @@ object CPBirdGameScene extends CPScene("play", None, BG_PX):
         (ch, _, _) => ch&C_YELLOW
     ).trimBg()
 
-    private val startImg = CPArrayImage(
+    private val startImg = new CPArrayImage(
         prepSeq(
             """
               |---->

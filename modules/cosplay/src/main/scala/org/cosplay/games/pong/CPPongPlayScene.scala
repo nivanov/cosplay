@@ -302,7 +302,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false,
-        Seq(CPPongBallBoostShader, new CPFlashlightShader(radius = 6))):
+        Seq(CPPongBallBoostShader, new CPFlashlightShader(radius = 6, autoStart = true))):
         private var x, y = INIT_VAL
         private var boosted = false
 

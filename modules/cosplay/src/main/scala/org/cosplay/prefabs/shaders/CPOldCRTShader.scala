@@ -86,7 +86,7 @@ class CPOldCRTShader(
     def setTearSound(snd: Option[CPSound]): Unit = this.snd = snd
 
     /**
-      * Triggers overscan line effect now.
+      * Triggers over-scan line effect now.
       */
     def lineEffectNow(): Unit = forceLineEff = true
 
@@ -116,6 +116,11 @@ class CPOldCRTShader(
       * @see [[stop()]]
       */
     def toggle(): Unit = if go then stop() else start()
+
+    /**
+      * Tests whether or not shader is currently active.
+      */
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
