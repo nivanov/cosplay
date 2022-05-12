@@ -32,23 +32,71 @@ package org.cosplay
 
 import org.cosplay.*
 import CPColor.*
+import CPPixel.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 /**
   *
   */
-object CPImageMarkupTests:
+object CPMarkupTests:
     /**
       *
       * @param elms
       */
-    private def mkMarkup(elms: List[(String, String)]): CPImageMarkup =
-        new CPImageMarkup(
+    private def mkMarkup(elms: List[(String, String)]): CPMarkup =
+        new CPMarkup(
             C_GREEN,
             Option(C_GRAY1),
             elms.map(elm => (elm._1, elm._2, (ch: Char) => CPPixel(ch, C_WHITE, Option(C_RED))))
         )
+
+    @Test
+    def checkMarkupProcess(): Unit =
+        val markup = CPMarkup(
+            C_GREEN,
+            Option(C_BLACK),
+            Seq(
+                CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
+                CPMarkupElement("{#", "#}", _&&(C_BLUE, C_YELLOW)),
+                CPMarkupElement("(?", "?)", _&&(C_BLACK, C_WHITE))
+            )
+        )
+
+        def check(in: String, res: Seq[CPPixel]): Unit =
+            val pxs = markup.process(in)
+            if pxs != res then
+                println(s"Invalid for: $in")
+                pxs.foreach(println)
+                assertTrue(false)
+            else
+                assertTrue(true)
+
+        check("a<$b$>", Seq(
+            'a'&&(C_GREEN, C_BLACK),
+            'b'&&(C_RED, C_WHITE)
+        ))
+        check("a<$b{#c#}$>{#d#}", Seq(
+            'a'&&(C_GREEN, C_BLACK),
+            'b'&&(C_RED, C_WHITE),
+            'c'&&(C_BLUE, C_YELLOW),
+            'd'&&(C_BLUE, C_YELLOW)
+        ))
+        check("a<$b{#c#}$>{#d#}e", Seq(
+            'a'&&(C_GREEN, C_BLACK),
+            'b'&&(C_RED, C_WHITE),
+            'c'&&(C_BLUE, C_YELLOW),
+            'd'&&(C_BLUE, C_YELLOW),
+            'e'&&(C_GREEN, C_BLACK),
+        ))
+        check("a<$b{#c(?x?)#}$>{#d#}e", Seq(
+            'a'&&(C_GREEN, C_BLACK),
+            'b'&&(C_RED, C_WHITE),
+            'c'&&(C_BLUE, C_YELLOW),
+            'x'&&(C_BLACK, C_WHITE),
+            'd'&&(C_BLUE, C_YELLOW),
+            'e'&&(C_GREEN, C_BLACK),
+        ))
 
     @Test
     def checksTest(): Unit =

@@ -31,6 +31,8 @@ package org.cosplay
 */
 
 import CPArrayImage.*
+import impl.CPUtils
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * An image based on two-dimensional pixel array.
@@ -145,6 +147,39 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
   */
 object CPArrayImage:
     /**
+      * This is a special constructor that expects given sequence of pixels to represent a one or
+      * multiple lines of text. This method takes given pixels, splits then into individual lines by the
+      * system-specific new line sequence, and aligned those lines based on the [[align]] parameter. In the
+      * end, it creates a new image from those split and aligned lines of text.
+      *
+      * @param pxs List of pixels to split and align.
+      * @param spacePx A pixel to use to pad for leading and/or trailing spaces.
+      * @param align Alignment of text. The only allowed values are:
+      *  - `-1` - left justified alignment.
+      *  - `0` - centered alignment.
+      *  - `1` - right justified alignment.
+      */
+    def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 0): CPImage =
+        val lines = CPUtils
+            .splitBy(pxs, px ⇒ CPUtils.NL.contains(px.char))
+            .map(CPUtils.trimBy(_, px ⇒ px.char == spacePx.char)) // Ignore colors for space pixel.
+            .map(seq ⇒ ArrayBuffer.from(seq))
+        val maxSz = lines.maxBy(_.size).size
+        for (line ← lines if line.size < maxSz)
+            val d = maxSz - line.length
+            if align == -1 then // Left align.
+                (0 until d).foreach(_ ⇒ line += spacePx)
+            else if align == 1 then // Right align.
+                (0 until d).foreach(_ ⇒ line.prepend(spacePx))
+            else // Center align.
+                val left = d / 2
+                val right = d - left
+                (0 until left).foreach(_ ⇒ line.prepend(spacePx))
+                (0 until right).foreach(_ ⇒ line += spacePx)
+
+        new CPArrayImage(CPArray2D(lines.flatMap(_.toSeq), maxSz))
+
+    /**
       * Converts margin-based Scala string into sequence of strings.
       *
       * @param marginCh Margin character.
@@ -154,7 +189,7 @@ object CPArrayImage:
     def prepSeq(marginCh: Char, s: String, trim: Boolean): Seq[String] =
         if s.isEmpty then Seq.empty
         else
-            var arr = s.stripMargin(marginCh).split(CPImage.NL)
+            var arr = s.stripMargin(marginCh).split(CPUtils.NL)
 
             if arr.nonEmpty then
                 if trim then

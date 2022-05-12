@@ -64,6 +64,10 @@ object CPImageFormatsExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
+        val c1 = C_STEEL_BLUE1 // Color shortcut.
+        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
+        val dim = CPDim(100, 42)
+
         // In-code image creation & "painting".
         val alienImg = new CPArrayImage(
             prepSeq("""
@@ -108,6 +112,29 @@ object CPImageFormatsExample:
             "prefab/images/speck.xp",
             // Manually make background transparent as an example instead of calling 'trimBg()'.
             (px, _, _) => px.withBg(None)
+        ).trimBg()
+
+        val markup = CPMarkup(
+            C_DEEP_PINK3,
+            Option(C_BLACK),
+            Seq(
+                CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
+                CPMarkupElement("{#", "#}", _&&(C_X11_BROWN, C_YELLOW)),
+                CPMarkupElement("(?", "?)", _&&(C_BLACK, C_WHITE))
+            )
+        )
+
+        val markupImg = CPArrayImage(
+            markup.process(
+                """
+                  |Default text (PINK ON BLACK).
+                  |Some <$ RED ON WHITE $>
+                  |Another one (? BLACK ON WHITE ?)
+                  |And yet another span of {# BROWN ON YELLOW #}
+                  |""".stripMargin
+            ),
+            bgPx,
+            align = -1
         )
 
         // Load a simple *.txt image and "paint" it in the code..
@@ -122,10 +149,6 @@ object CPImageFormatsExample:
                 case _ => px
         )
 
-        val c1 = C_STEEL_BLUE1 // Color shortcut.
-        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
-        val dim = CPDim(100, 32)
-
         val alienSpr = CPStaticImageSprite(2, 2, 0, alienImg)
         val alienLbl = CPLabelSprite(18, 28, 0, "In-code image", c1)
 
@@ -135,10 +158,14 @@ object CPImageFormatsExample:
         val guitarSpr = CPStaticImageSprite(50, 20, 0, guitarImg)
         val guitarLbl = CPLabelSprite(70, 29, 0, "*.txt image", c1)
 
+        val markupSpr = CPStaticImageSprite(15, 32, 0, markupImg)
+        val markupLbl = CPLabelSprite(25, 37, 0, "Markup image", c1)
+
         val sc = new CPScene("scene", Option(dim), bgPx,
             alienSpr, alienLbl,
             speckSpr, speckLbl,
             guitarSpr, guitarLbl,
+            markupSpr, markupLbl,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPRandomFadeInShader(true, 2500, bgPx, keyFrame = 3)),
             // Exit the game on 'Q' press.

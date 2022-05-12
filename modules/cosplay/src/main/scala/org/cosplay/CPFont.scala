@@ -91,8 +91,8 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @param s Multiline text to render as an image. Must be non-empty.
       * @param fg Foreground color to use.
       * @param bg Optional background color to use. Default value is `None`.
-      * @param align Alignment of text. The only allowed values:
-      *  - `-1` - right justified alignment.
+      * @param align Alignment of text. The only allowed values are:
+      *  - `-1` - left justified alignment.
       *  - `0` - centered alignment.
       *  - `1` - right justified alignment.
       *
@@ -119,8 +119,8 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @param ss Sequence of text lines to render as an image. Must be non-empty.
       * @param fg Foreground color to use.
       * @param bg Optional background color to use. Default value is `None`.
-      * @param align Alignment of text. The only allowed values:
-      *  - `-1` - right justified alignment.
+      * @param align Alignment of text. The only allowed values are:
+      *  - `-1` - left justified alignment.
       *  - `0` - centered alignment.
       *  - `1` - right justified alignment.
       *

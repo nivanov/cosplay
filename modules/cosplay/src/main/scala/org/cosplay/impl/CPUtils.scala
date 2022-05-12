@@ -132,15 +132,34 @@ object CPUtils:
         (free.toFloat / total * 100).round
 
     /**
-      * Removes only 1st found element `t`, if any.
+      * Splits given collection by specified separator predicate.
       *
-      * @param list List to remove the element in.
-      * @param t Element (only 1st one found, if any) to remove from the list.
-      * @return Result list with removed element, if any.
+      * @param col Collection to split.
+      * @param sep Separator predicate.
       */
-    def remove1st[T](list: List[T], t: T): List[T] =
-        val (left, right) = list.span(_ != t)
-        left ::: right.drop(1)
+    def splitBy[T](col: Seq[T], sep: T ⇒ Boolean): Seq[Seq[T]] =
+        val bufs = new ArrayBuffer[ArrayBuffer[T]]()
+
+        var idx = 0
+        for (t ← col)
+            if sep(t) then
+                bufs += ArrayBuffer.empty[T]
+                idx += 1
+            else
+                if idx < bufs.size then bufs(idx) += t else bufs += ArrayBuffer(t)
+
+        bufs.filter(_.nonEmpty).map(_.toSeq).toSeq
+
+    /**
+      * Trims leading and trailing elements satisfying given predicate.
+      *
+      * @param col Collection to trim.
+      * @param trim Trimming predicate.
+      */
+    def trimBy[T](col: Seq[T], trim: T ⇒ Boolean): Seq[T] =
+        col.indexWhere(!trim(_)) match
+            case -1 ⇒ Seq.empty[T]
+            case a ⇒ col.slice(a, col.lastIndexWhere(!trim(_)) + 1)
 
     /**
       * Gets system property, or environment variable (in that order), or `None` if none exists.

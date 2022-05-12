@@ -517,7 +517,7 @@ object CPArray2D:
         val arr = new CPArray2D[CPPixel](w, h)
         pps.foreach(pp => arr.set(pp.x, pp.y, pp.px))
         arr
-
+        
     /**
       * Creates new 2D array from given sequence of [[CPPixel pixels]] and width.
       * Note that clear value is not set.

@@ -369,9 +369,10 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         new CPArrayImage(data, origin)
 
     /**
-      * Trims blank pixels from this image returning a new, trimmed image.
+      * Trims blank rows and columns from this image returning a new, trimmed image.
       *
-      * @param isBlank Function to determine is pixel is blank.
+      * @param isBlank Function to determine if an individual pixel is blank. Row or column is
+      *         blank if all of its pixels satisfy this predicate.
       */
     def trim(isBlank: CPPixel => Boolean): CPImage = new CPArrayImage(toArray2D.trim(isBlank), origin)
 
@@ -456,15 +457,15 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Detects all background pixels and replaces them with a given pixel returning new image.
       *
       * A pixel is considered to be a background pixel when:
-      *  - It's [[CPPixel.char character]] is space (' ').
-      *  - It's not equal to given `bgPx`.
+      *  - It's [[CPPixel.char character]] is space (' ') and it's not equal to given `bgPx`, or
       *  - It's on the edge of the image or there's a path from it to the edge of the image through background
       *    pixels only.
       *
-      *  For example, a fully enclosed area of the image that contains spaces will no be considered a background
+      *  For example, a fully enclosed area of the image that contains spaces will NOT be considered a background
       *  as there's no path to the edge of the image without crossing a non-background image.
       *
       * @param bgPx Pixel to replace the detected background pixels.
+      * @see [[trimBg()]]
       */
     def replaceBg(bgPx: CPPixel): CPImage =
         import CPPixel.*
@@ -490,9 +491,9 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
                     arr.get(x - 1, y) == bgPx ||
                     arr.get(x, y + 1) == bgPx ||
                     arr.get(x, y - 1) == bgPx) then {
-                    arr.set(x, y, bgPx)
-                    ok = true
-                }
+                        arr.set(x, y, bgPx)
+                        ok = true
+                    }
             )
 
         new CPArrayImage(arr, origin)
@@ -500,6 +501,8 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     /**
       * Detects all background pixels and replaces them with [[CPPixel.XRAY]] returning a new image.
       * This effectively makes the background transparent.
+      *
+      * @see [[replaceBg()]]
       */
     def trimBg(): CPImage = replaceBg(CPPixel.XRAY)
 
@@ -645,9 +648,6 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
   * Companion object with utility functions.
   */
 object CPImage:
-    /** */
-    val NL: String = System.getProperty("line.separator")
-
     // First search for '_1' then, if not found, search for '_2'.
     private final val HOR_FLIP_MAP = Seq(
         '{' -> '}',
@@ -683,57 +683,6 @@ object CPImage:
     )
 
     private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
-
-    /**
-      *
-      * @param data
-      * @param markup
-      * @param origin
-      * @return
-      */
-    def markupImage(data: Seq[String], markup: CPImageMarkup, origin: String = "code"): CPImage =
-        require(data.nonEmpty, "Markup image data cannot be empty.")
-
-        case class CharPos(ch: Char, x: Int, y: Int)
-        val chArr = CPArray2D(data)
-        val pxArr = new CPArray2D[CPPixel](chArr.width, chArr.height)
-
-        var skin = (ch: Char) ⇒ CPPixel(ch, markup.fg, markup.bg)
-        var skinStack = List(skin)
-        val buf = ArrayBuffer.empty[CharPos]
-        val elms = markup.elements
-
-        def add(n: Int): Unit =
-            for (i <- 0 until n)
-                val cp = buf(i)
-                pxArr.set(cp.x, cp.y, skin(cp.ch))
-
-        chArr.loopHor((ch, x, y) ⇒ {
-            buf.append(CharPos(ch, x, y))
-            val bufS = buf.map(_.ch).mkString
-            elms.find(e => bufS.endsWith(e.openTag)) match
-                case Some(elm) =>
-                    add(buf.length - elm.openTag.length)
-                    skin = elm.skin
-                    skinStack ::= skin // Push onto stack.
-                    buf.clear()
-                case None =>
-                    elms.find(x => bufS.endsWith(x.closeTag)) match
-                        case Some(elm) =>
-                            add(buf.length - elm.closeTag.length)
-                            skinStack = skinStack.tail // Pop from stack.
-                            skin = skinStack.head
-                            buf.clear()
-                        case None => ()
-        })
-        for (cp <- buf) pxArr.set(cp.x, cp.y, skin(cp.ch))
-
-        require(!pxArr.contains(_ == null))
-
-        new CPImage(origin):
-            private val dim = pxArr.dim
-            override def getDim: CPDim = dim
-            override def getPixel(x: Int, y: Int): CPPixel = pxArr.get(x, y)
 
     /**
       * Loads image using [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
