@@ -48,31 +48,33 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var vel = 0f
     private val jump = 7f
     private val gravity = 0.3f
-    private var change = 0.4f
-
+    private var delta = 0.4f
     private var start = false
     private val pipeGap = 15f
     private var pipeX = 0f
     private var curPipe = false
     private var pipeCut = 0f
     private var pipeWidth = 5f
-
     private var dead = false
-
     private var score = 0
 
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
-    private val birdImg = new CPArrayImage(
+    private val birdImgs = new CPArrayImage(
         prepSeq(
             """
               | \\
               |( ^)>
               | //
+              |------
+              | //
+              |( ^)>
+              | \\
+              |------
             """
-        ),
-        (ch, _, _) => ch&C_YELLOW
-    ).trimBg()
+        ).filter(!_.endsWith("------")),
+        (ch, _, _) => ch&C5
+    ).split(5, 3)
 
     private val startImg = new CPArrayImage(
         prepSeq(
@@ -84,7 +86,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         (ch, _, _) => ch&C_GREEN
     ).trimBg()
 
-    private val birdSpr = new CPImageSprite("bird", 15, 15, 0, birdImg):
+    private val birdSpr = new CPAnimationSprite("bird", anis = Seq(CPAnimation.filmStrip("ani", 150, imgs = birdImgs)), 15, 15, 0, "ani", false):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
@@ -96,7 +98,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                             if !dead then
                                 vel = 0
                                 vel -= jump
-                                change = 0.6f
+                                delta = 0.6f
 
                                 if !start then start = true
 
@@ -104,7 +106,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 case None => ()
 
             if start then
-                vel += change
+                vel += delta
                 startSpr.setVisible(false)
 
             if start then
@@ -113,13 +115,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     vel += 1
                 else if vel > 0 then
                     setY(getY + (gravity * vel).toInt)
-                    change += 0.001f
+                    delta += 0.001f
 
             if (getY <= pipeCut.toInt - pipeGap.toInt) || (getY + getHeight) >= pipeCut.toInt && start then
                 if ((getX + getWidth) >= pipeX.toInt) && getX <= pipeX.toInt + (pipeWidth - 1) then
                     println("Died :(")
                     dead = true
-                    change = 0.4
+                    delta = 0.4
                     vel = 0
                     speed = 0f
                     setX(pipeX.toInt - (pipeWidth + 2).toInt)
