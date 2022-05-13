@@ -49,12 +49,16 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private val jump = 7f
     private val gravity = 0.3f
     private var delta = 0.4f
-    private var start = false
+
+    private var start = true
+
     private val pipeGap = 15f
     private var pipeX = 0f
     private var curPipe = false
     private var pipeCut = 0f
     private var pipeWidth = 5f
+    private var pipeCheck = false
+
     private var dead = false
     private var score = 0
 
@@ -78,18 +82,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             case _ => ch&C4
     ).split(5, 3)
 
-    private val startImg = new CPArrayImage(
-        prepSeq(
-            """
-              |---->
-              |Jump!
-            """
-        ),
-        (ch, _, _) => ch&C_GREEN
-    ).trimBg()
-
     private val birdAnis = Seq(CPAnimation.filmStrip("ani", 250, imgs = birdImgs))
-    private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, 15, 15, 0, "ani", false):
+    private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, 15, 5, 0, "ani", false):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
@@ -110,7 +104,6 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
             if start then
                 vel += delta
-                startSpr.setVisible(false)
 
             if start then
                 if vel <= 0 then
@@ -132,8 +125,6 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             if dead && getY >= canv.height then
                 start = false
 
-    private val startSpr = new CPImageSprite("start", 9, 15, 0, startImg)
-
     private val scoreSpr = new CPImageSprite("score", 10, 0, 1, mkScoreImage(score)):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
@@ -149,16 +140,20 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             if start then
                 if !curPipe then
                     curPipe = true
+                    pipeCheck = false
                     pipeX = canv.xMax.toFloat
                     pipeCut = CPRand.between(12f, canv.yMax - 2f)
                 else
                     if pipeX <= -pipeWidth then
                         curPipe = false
+                    else
+                        pipeX -= speed
+
+                    if pipeX <= birdSpr.getX - pipeWidth  && !pipeCheck then
                         score += 1
                         println(score)
                         scoreSpr.setImage(mkScoreImage(score))
-                    else
-                        pipeX -= speed
+                        pipeCheck = true
 
                 canv.drawLine(pipeX.toInt, pipeCut.toInt, pipeX.toInt, canv.dim.h, 0, px)
                 canv.drawLine(pipeX.toInt, pipeCut.toInt - pipeGap.toInt, pipeX.toInt, 0, 0, px)
@@ -171,7 +166,6 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         birdSpr,
-        startSpr,
         pipeSpr,
         scoreSpr
     )
