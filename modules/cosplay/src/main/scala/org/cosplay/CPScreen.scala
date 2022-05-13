@@ -86,7 +86,7 @@ final class CPScreen(dim: CPDim, bgPixel: CPPixel) extends CPZPixelPane:
     /**
       * Creates new canvas that can be used to draw on this screen.
       */
-    def canvas(): CPCanvas = new CPCanvas(this, rect)
+    def newCanvas(): CPCanvas = new CPCanvas(this, rect)
 
     /**
       * Creates new canvas that can be used to draw on this screen with given
@@ -94,7 +94,7 @@ final class CPScreen(dim: CPDim, bgPixel: CPPixel) extends CPZPixelPane:
       *
       * @param clip Clipping region.
       */
-    def canvas(clip: CPRect): CPCanvas = new CPCanvas(this, clip)
+    def newCanvas(clip: CPRect): CPCanvas = new CPCanvas(this, clip)
 
     override def equals(obj: Any): Boolean = obj match
         case other: CPScreen => buf == other.buf
