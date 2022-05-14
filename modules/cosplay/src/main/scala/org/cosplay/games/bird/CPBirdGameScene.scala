@@ -62,6 +62,16 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var dead = false
     private var score = 0
 
+    private val buildingList = null
+
+    private val roofPx = '_'&C_SANDY_BROWN
+    private val wallPx = '|'&C_SANDY_BROWN
+
+    private val posX = 10
+    private val width = 5
+    private val height = 5
+    private var startPos = 5
+
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
     private val birdImgs = new CPArrayImage(
@@ -161,6 +171,31 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 for x <- 0 until pipeWidth.toInt - 1 do
                     canv.drawLine(pipeX.toInt + x, pipeCut.toInt, pipeX.toInt + x, canv.dim.h, 0, px)
                     canv.drawLine(pipeX.toInt + x, pipeCut.toInt - pipeGap.toInt, pipeX.toInt + x, 0, 0, px)
+
+//    def building(width:Int, height:Int, posX:Int, startPos:Int) : Unit =
+//        val building = new CPCanvasSprite("building":
+//            override def update(ctx: CPSceneObjectContext): Unit =
+//                super.update(ctx)
+//                val canv = ctx.getCanvas
+//
+//                //Roof
+//                canv.drawLine(posX, startPos + height, posX + width, startPos + height, 0, roofPx)
+//
+//                //Walls
+//                canv.drawLine(posX, startPos, posX, startPos + height, 0, wallPx)
+//                canv.drawLine(posX + width, startPos, posX + width, startPos + height, 0, wallPx)
+
+    private val building = new CPCanvasSprite("building"):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            val canv = ctx.getCanvas
+    
+            //Roof
+            canv.drawLine(posX, startPos + height, posX + width, startPos + height, 0, roofPx)
+    
+            //Walls
+            canv.drawLine(posX, startPos, posX, startPos + height, 0, wallPx)
+            canv.drawLine(posX + width, startPos, posX + width, startPos + height, 0, wallPx)
 
     addObjects(
         // Handle 'Q' press globally for this scene.
