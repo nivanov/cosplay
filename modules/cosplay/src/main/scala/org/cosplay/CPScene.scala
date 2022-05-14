@@ -76,11 +76,13 @@ import org.cosplay.impl.CPContainer
   *     rendered can change its size from frame to frame. In such case, make sure that all scene objects take this into
   *     account in their rendering routines.
   * @param bgPx Background pixel of the scene. Background pixel is shown when none of the scene objects
-  *     has drawn a pixel at that particular coordinate.
+  *     has drawn a pixel at that particular coordinate. Background pixel must have background color defined.
   * @see [[CPEngine.startGame()]]
   * @see [[org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene]]
   */
 open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGameObject(id) with CPLifecycle:
+    require(bgPx.bg.nonEmpty, "Background pixel must have its background color defined.")
+
     private val cam = CPCamera()
     private[cosplay] val objects = CPContainer[CPSceneObject]()
 
@@ -96,17 +98,23 @@ open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGame
       * is not attached to any scene object. You need to configure the returning camera descriptor
       * if you need camera tracking.
       */
-    def getCamera: CPCamera = cam
+    inline def getCamera: CPCamera = cam
 
     /**
       * Gets this scene dimension.
       */
-    def getDim: Option[CPDim] = dim
+    inline def getDim: Option[CPDim] = dim
 
     /**
-      * Gets background pixel of this scene.
+      * Gets background pixel of this scene. Note that background pixel always has its
+      * background color defined.
       */
-    def getBgPixel: CPPixel = bgPx
+    inline def getBgPixel: CPPixel = bgPx
+
+    /**
+      * Background color of the background pixel.
+      */
+    inline def getBgColor: CPColor = bgPx.bg.get
 
     /**
       * Creates new scene with given parameters.

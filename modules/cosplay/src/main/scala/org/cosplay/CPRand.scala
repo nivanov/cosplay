@@ -134,7 +134,7 @@ object CPRand:
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
-    def between(a: Int, b: Int): Int = RND.between(a, b)
+    def between(a: Int, b: Int): Int = if a < b then RND.between(a, b) else RND.between(b, a)
 
     /**
       * Gets random number in given range.
@@ -142,7 +142,7 @@ object CPRand:
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
-    def between(a: Double, b: Double): Double = RND.between(a, b)
+    def between(a: Double, b: Double): Double = if a < b then RND.between(a, b) else RND.between(b, a)
 
     /**
       * Gets random number in given range.
@@ -150,7 +150,7 @@ object CPRand:
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
-    def between(a: Long, b: Long): Long = RND.between(a, b)
+    def between(a: Long, b: Long): Long = if a < b then RND.between(a, b) else RND.between(b, a)
 
     /**
       * Gets random number in given range.
@@ -158,7 +158,7 @@ object CPRand:
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
-    def between(a: Float, b: Float): Float = RND.between(a, b)
+    def between(a: Float, b: Float): Float = if a < b then RND.between(a, b) else RND.between(b, a)
 
     /**
       * Gets a random red color from the list of [[CPColor.CS_X11_REDS]].

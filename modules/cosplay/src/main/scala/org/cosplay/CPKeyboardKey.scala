@@ -54,16 +54,25 @@ object CPKeyboardKey:
 /**
   * Enumeration of all supported keyboard keys.
   *
-  * The following key strokes will be automatically re-mapped:
-  *  - `Ctrl+h` will be mapped to [[CPKeyboardKey.KEY_BACKSPACE]].
-  *  - `Ctrl+i` will be mapped to [[CPKeyboardKey.KEY_TAB]].
-  *  - `Ctrl+m` will be mapped to [[CPKeyboardKey.KEY_ENTER]].
+  * ### Remapped Keys
+  * The following keystrokes are automatically re-mapped:
+  *  - `Ctrl+h` is mapped to [[CPKeyboardKey.KEY_BACKSPACE]].
+  *  - `Ctrl+i` is mapped to [[CPKeyboardKey.KEY_TAB]].
+  *  - `Ctrl+m` is mapped to [[CPKeyboardKey.KEY_ENTER]].
   *
-  * NOTE: `Ctrl+h`, `Ctrl+i` and `Ctrl+m` will not be detected as-is and you should use their conversions
+  * NOTE: `Ctrl+h`, `Ctrl+i` and `Ctrl+m` will not be detected as-is, and you should use their conversions
   * instead. Note that even-though this enumeration provides constants for `Ctrl+h`, `Ctrl+i` and `Ctrl+m` they
   * will never be returned to the scene objects since they would always be automatically remapped.
   * This is the limitation of the ANSI terminals, i.e. `Ctrl+m` generated the same ANSI code as `Enter`
   * key press.
+  *
+  * ### Reserved Keys
+  * There are three reserved key strokes that are used by the game engine itself and therefore NOT available
+  * to the game. These keystrokes are intercepted before frame update and not propagated to the scene object
+  * context:
+  *  - 'Ctrl+Q' - toggles in-game FPS overlay
+  *  - 'Ctrl+L' - opens GUI-based loc viewer & debugger
+  *  - 'F12' - saves current frame screenshot as *.xp image to the current working folder.
   *
   * @see [[CPKeyboardEvent.key]]
   */

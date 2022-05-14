@@ -33,6 +33,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.mixpanel</groupId>
             <artifactId>mixpanel-java</artifactId>
         </dependency>

@@ -51,7 +51,7 @@ object CPScreenTests:
         val scr1 = CPScreen(CPDim(500, 100), bg)
         val scr2 = CPScreen(CPDim(500, 100), bg)
 
-        scr1.canvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
+        scr1.newCanvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
         scr1.copyTo(scr2, scr1.getRect)
 
         assertEquals(scr1, scr2)
@@ -66,7 +66,7 @@ object CPScreenTests:
         val scr1 = CPScreen(dim, bgPx)
         val scr2 = CPScreen(dim, bgPx)
 
-        scr1.canvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
+        scr1.newCanvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
 
         val num = 10
         val start = System.currentTimeMillis()

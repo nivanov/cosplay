@@ -103,6 +103,14 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   * | `COSPLAY_FORCE_8BIT_COLOR`| `Boolean` | Forces the automatic conversion from 24-bit color to 8-bit color. Only needed when running in the native terminal that does not support 24-bit color. Default value is `false`. |
   * | `COSPLAY_TERM_CLASSNAME`| `String` | Fully qualified class name for the custom terminal emulator implementation. Class must implement [[org.cosplay.CPTerminal]] trait. |
   *
+  * ### Reserved Keyboard Keys
+  * There are three reserved key strokes that are used by the game engine itself and therefore NOT available
+  * to the game. These keystrokes are intercepted before frame update and not propagated to the scene object
+  * context:
+  *  - 'Ctrl+Q' - toggles in-game FPS overlay
+  *  - 'Ctrl+L' - opens GUI-based loc viewer & debugger
+  *  - 'F12' - saves current frame screenshot as *.xp image to the current working folder.
+  *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
   *     working with game engine including initialization and game start.
   * @note See developer guide at [[https://cosplayengine.com]]
@@ -639,7 +647,6 @@ object CPEngine:
         var low1FpsCnt = 0
         var scLog = engLog.getLog(s"${startScene.getId}")
         var forceStatsUpdate = false
-        var forceRedraw = false
 
         def lifecycleStart(x: CPLifecycle): Unit =
             x.getState match
@@ -736,8 +743,7 @@ object CPEngine:
 
                 val termW = termDim.w
                 val termH = termDim.h
-                val redraw = forceRedraw || scFrameCnt == 0 || lastTermDim != termDim
-                forceRedraw = false
+                val redraw = scFrameCnt == 0 || lastTermDim != termDim
                 lastTermDim = termDim
 
                 if redraw then // Update terminal window title.
@@ -927,18 +933,18 @@ object CPEngine:
                     override def releaseMyFocus(): Unit = releaseFocus(myId)
                     override def addObject(obj: CPSceneObject): Unit =
                         val cloObj = obj
-                        delayedQ += (() =>
+                        delayedQ += (() => {
                             sc.objects.add(cloObj)
                             engLog.info(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
-                        )
+                        })
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
                     override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
                     override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit = 
-                        delayedQ += (() =>
+                        delayedQ += (() => {
                             engLog.info(s"Scene added: ${newSc.getId}")
                             scenes.add(newSc)
-                        )
+                        })
                         if switchTo then doSwitchScene(newSc.getId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
@@ -973,7 +979,7 @@ object CPEngine:
                     override def collisions(rect: CPRect, zs: Int*): Seq[CPSceneObject] =
                         collide(r => r.overlaps(rect), zs: _*)
 
-                val ctx = new CPSceneObjectContextImpl(scr.canvas())
+                val ctx = new CPSceneObjectContextImpl(scr.newCanvas())
 
                 var visObjCnt = 0
 
@@ -1052,6 +1058,18 @@ object CPEngine:
                 // Clear delayed operations.
                 delayedQ.clear()
 
+                // Built-in support for 'Ctrl+Q', 'Ctrl+L' and 'F12'.
+                if kbEvt.isDefined then
+                    if kbEvt.get.key == KEY_CTRL_Q then
+                        isShowFps = !isShowFps
+                    else if kbEvt.get.key == KEY_F12 then
+                        val path = s"cosplay-screenshot-${CPRand.guid6}.xp"
+                        ctx.getCanvas.capture().saveRexXp(path, sc.getBgColor)
+                        engLog.info(s"Screenshot saved: $path")
+                    else if kbEvt.get.key == KEY_CTRL_L then
+                        engLog.info(CPUtils.PING_MSG)
+                end if
+
                 // Rendering...
                 if !stopFrame then
                     // Update FPS screen overlay, if necessary.
@@ -1085,13 +1103,6 @@ object CPEngine:
                 else if fpsCnt <= FPS_LIST_SIZE then
                     low1FpsList = fpsList.sorted.take(FPS_1PCT_LIST_SIZE)
                     low1FpsCnt = low1FpsList.length
-
-                // Built-in support for Ctrl-q and Ctrl-l.
-                if kbEvt.isDefined then
-                    if kbEvt.get.key == KEY_CTRL_Q then isShowFps = !isShowFps
-                    else if kbEvt.get.key == KEY_CTRL_R then forceRedraw = true
-                    else if kbEvt.get.key == KEY_CTRL_L then engLog.info(CPUtils.PING_MSG)
-                end if
 
                 if scFrameCnt == 0 || frameCnt % 3 == 0 || forceStatsUpdate then // Reduce flicker.
                     forceStatsUpdate = false

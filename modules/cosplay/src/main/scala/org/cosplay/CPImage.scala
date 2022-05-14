@@ -222,7 +222,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * loaded by REXPaint for editing.
       *
       * @param file File instance.
-      * @param bg Background color to replace in pixels with no background.
+      * @param bg Background color to set in pixels that have no background defined.
       * @see https://www.gridsagegames.com/rexpaint
       */
     def saveRexXp(file: File, bg: CPColor): Unit =
