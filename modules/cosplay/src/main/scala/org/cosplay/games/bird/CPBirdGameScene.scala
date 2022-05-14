@@ -137,14 +137,12 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private val scoreSpr = new CPImageSprite("score", 10, 0, 1, mkScoreImage(score)):
         override def update(ctx: CPSceneObjectContext): Unit =
-            val canv = ctx.getCanvas
-
-            setX((canv.width / 2) - 3)
+            setX((ctx.getCanvas.width / 2) - 3)
 
     private val pipeSpr = new CPCanvasSprite("pipe"):
         private val px = '|'&C_GREEN
-        override def update(ctx: CPSceneObjectContext): Unit =
-            super.update(ctx)
+        override def render(ctx: CPSceneObjectContext): Unit =
+            super.render(ctx)
             val canv = ctx.getCanvas
 
             if start then
@@ -185,15 +183,15 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 //                canv.drawLine(posX, startPos, posX, startPos + height, 0, wallPx)
 //                canv.drawLine(posX + width, startPos, posX + width, startPos + height, 0, wallPx)
 
-    private val building = new CPCanvasSprite("building"):
-        override def update(ctx: CPSceneObjectContext): Unit =
-            super.update(ctx)
+    private val buildingSpr = new CPCanvasSprite("building"):
+        override def render(ctx: CPSceneObjectContext): Unit =
+            super.render(ctx)
             val canv = ctx.getCanvas
     
-            //Roof
+            // Roof.
             canv.drawLine(posX, startPos + height, posX + width, startPos + height, 0, roofPx)
     
-            //Walls
+            // Walls.
             canv.drawLine(posX, startPos, posX, startPos + height, 0, wallPx)
             canv.drawLine(posX + width, startPos, posX + width, startPos + height, 0, wallPx)
 
@@ -202,7 +200,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         birdSpr,
         pipeSpr,
-        scoreSpr
+        scoreSpr,
+        buildingSpr
     )
 
 
