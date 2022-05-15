@@ -38,7 +38,6 @@ import org.cosplay.games.mir.dms.apps.*
   *
   * @param name
   * @param owner
-  * @param size
   * @param app
   */
 class CPMirAppFile(

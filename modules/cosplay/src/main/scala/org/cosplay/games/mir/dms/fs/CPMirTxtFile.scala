@@ -30,20 +30,5 @@ package org.cosplay.games.mir.dms.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.dms.fs.*
-import CPMirFileType.*
-
-/**
-  *
-  * @param root
-  */
-@SerialVersionUID(1_0_0L)
-class CPMirFileSystem(private val root: CPMirFile) extends Serializable:
-    require(root.getType == FT_DIR)
-    
-    /**
-      *
-      * @return
-      */
-    inline def getRoot: CPMirFile = root
+class CPMirTxtFile
 
