@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms
+package org.cosplay.games.mir.dms.fs
 
 /*
    _________            ______________
@@ -30,5 +30,6 @@ package org.cosplay.games.mir.dms
                ALl rights reserved.
 */
 
-class CPMirFileSystem
+@SerialVersionUID(1_0_0L)
+class CPMirFileSystem extends Serializable
 

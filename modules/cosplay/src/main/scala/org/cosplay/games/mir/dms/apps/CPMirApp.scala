@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms
+package org.cosplay.games.mir.dms.apps
 
 /*
    _________            ______________
@@ -33,19 +33,17 @@ package org.cosplay.games.mir.dms
 /**
   *
   */
-enum CPMirFileType:
-    /** */
-    case FT_DIRECTORY
+abstract class CPMirApp:
+    /**
+      *
+      * @param ctx
+      * @return
+      */
+    def appMain(ctx: CPMirAppContext): Int
 
-    /** */
-    case FT_APP
-
-    /** */
-    case FT_TEXT
-
-    /** */
-    case FT_BINARY
-
-    /** */
-    case FT_DEVICE
+    /**
+      *
+      * @return
+      */
+    def getSizeOnDisk: Long
 

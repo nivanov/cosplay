@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms
+package org.cosplay.games.mir.dms.fs
 
 /*
    _________            ______________
@@ -33,74 +33,20 @@ package org.cosplay.games.mir.dms
 /**
   *
   */
-abstract class CPMirFile:
-    private var name: String = _
-    private var createTs: Long = 0
-    private var updateTs: Long = 0
+@SerialVersionUID(1_0_0L)
+enum CPMirFileType extends Serializable:
+    /** */
+    case FT_DIR
 
-    /**
-      *
-      * @return
-      */
-    def getName: String
+    /** */
+    case FT_APP
 
-    /**
-      *
-      * @param name
-      */
-    def setName(name: String): Unit
+    /** */
+    case FT_TXT
 
-    /**
-      *
-      * @return
-      */
-    def getCreateTimestamp: Long = createTs
+    /** */
+    case FT_BIN
 
-    /**
-      *
-      * @return
-      */
-    def getUpdateTimestamp: Long = updateTs
-
-    /**
-      *
-      * @param createTs
-      */
-    def setCreateTimestamp(createTs: Long): Unit = this.createTs = createTs
-
-    /**
-      *
-      * @param updateTs
-      */
-    def setUpdateTimestamp(updateTs: Long): Unit = this.updateTs = updateTs
-
-    /**
-      *
-      * @return
-      */
-    def getOwner: String
-
-    /**
-      *
-      * @return
-      */
-    def getSize: Long
-
-    /**
-      *
-      * @return
-      */
-    def canOtherRead: Boolean
-
-    /**
-      *
-      * @return
-      */
-    def canOtherWrite: Boolean
-
-    /**
-      *
-      * @return
-      */
-    def getType: CPMirFileType
+    /** */
+    case FT_DEV
 
