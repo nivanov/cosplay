@@ -24,9 +24,11 @@ import CPArrayImage.*
 import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
-//import prefabs.sprites.*
+
 import scala.util.*
 import CPColor.*
+
+import scala.collection.mutable
 
 /*
    _________            ______________
@@ -42,7 +44,9 @@ import CPColor.*
 
 */
 
-
+/**
+ *
+ */
 object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var speed = 1f
     private var vel = 0f
@@ -62,15 +66,22 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var dead = false
     private var score = 0
 
-    private val buildingList = null
+    //private val buildingList = mutable.ArrayBuffer.empty[CPCanvasSprite]
 
     private val roofPx = '_'&C_SANDY_BROWN
     private val wallPx = '|'&C_SANDY_BROWN
+    private val windowPX = ':'&C_AQUA
 
-    private val posX = 10
-    private val width = 5
-    private val height = 5
-    private var startPos = 5
+    private val minWidth = 3
+    private val maxWidth = 10
+    private val minHeight = 3
+    private val maxHeight = 15
+    private val minDepth = -1
+    private val maxDepth = 1
+
+    private var buildingAmount = 0
+
+    private val buildingSpeed = 1
 
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
@@ -135,6 +146,16 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             if dead && getY >= canv.height then
                 start = false
 
+            // Building test.
+
+            if ctx.getObjectsForTags("building").length < (canv.width / 6).toInt then
+                println("Done")
+                var x = 0
+                for x <- 0 to (canv.width / 6).toInt do
+                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * 11, canv.height, Random.between(minDepth, maxDepth).toInt))
+                    buildingAmount += 1
+                    //buildingX(buildingAmount) = ctx.getObjectsForTags("building")(buildingAmount).getX
+
     private val scoreSpr = new CPImageSprite("score", 10, 0, 1, mkScoreImage(score)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.width / 2) - 3)
@@ -170,38 +191,48 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     canv.drawLine(pipeX.toInt + x, pipeCut.toInt, pipeX.toInt + x, canv.dim.h, 0, px)
                     canv.drawLine(pipeX.toInt + x, pipeCut.toInt - pipeGap.toInt, pipeX.toInt + x, 0, 0, px)
 
-//    def building(width:Int, height:Int, posX:Int, startPos:Int) : Unit =
-//        val building = new CPCanvasSprite("building":
-//            override def update(ctx: CPSceneObjectContext): Unit =
-//                super.update(ctx)
-//                val canv = ctx.getCanvas
-//
-//                //Roof
-//                canv.drawLine(posX, startPos + height, posX + width, startPos + height, 0, roofPx)
-//
-//                //Walls
-//                canv.drawLine(posX, startPos, posX, startPos + height, 0, wallPx)
-//                canv.drawLine(posX + width, startPos, posX + width, startPos + height, 0, wallPx)
+    /**
+     * Creates a new building sprite.
+     *
+     * @param width
+     * @param height
+     * @param posX
+     * @param startPosY
+     * @param depth
+     * @return
+     */
+    private def newBuildingSpr(width:Int, height:Int, posX:Int, startPosY:Int, depth:Int) : CPSceneObject =
+        new CPCanvasSprite("building" + buildingAmount):
+            private val tags = Set("building")
 
-    private val buildingSpr = new CPCanvasSprite("building"):
-        override def render(ctx: CPSceneObjectContext): Unit =
-            super.render(ctx)
-            val canv = ctx.getCanvas
-    
-            // Roof.
-            canv.drawLine(posX, startPos + height, posX + width, startPos + height, 0, roofPx)
-    
-            // Walls.
-            canv.drawLine(posX, startPos, posX, startPos + height, 0, wallPx)
-            canv.drawLine(posX + width, startPos, posX + width, startPos + height, 0, wallPx)
+            private val newPosX = getX + buildingSpeed
+
+            override def getTags: Set[String] = tags
+            override def update(ctx: CPSceneObjectContext): Unit =
+                super.update(ctx)
+                val canv = ctx.getCanvas
+                // Roof.
+                canv.drawLine(posX, startPosY - height - 1, posX + width, startPosY - height - 1, depth, roofPx)
+
+                // Walls.
+                canv.drawLine(posX, startPosY - height, posX, startPosY, depth, wallPx)
+                canv.drawLine(posX + width, startPosY - height, posX + width, startPosY, depth, wallPx)
+
+                // Windows.
+                for (index <- 0 to height) do
+                    canv.drawLine(posX + 1, startPosY + index - height, posX + width - 1, startPosY + index - height, depth, windowPX)
+
+                if getX >= canv.width + width + 2 then
+                    buildingAmount -= 1
+                    ctx.deleteObject(getId)
+
 
     addObjects(
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         birdSpr,
         pipeSpr,
-        scoreSpr,
-        buildingSpr
+        scoreSpr
     )
 
 
