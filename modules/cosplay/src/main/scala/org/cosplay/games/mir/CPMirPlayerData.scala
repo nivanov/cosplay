@@ -59,7 +59,7 @@ case class CPMirPlayerData(
   *
   */
 object CPMirPlayerData:
-    /* https://en.wikipedia.org/wiki/List_of_astronauts_by_name */
+    /* https://en.wikipedia.org/wiki/List_of_astronauts_by_name*/
 
     private val usFN = Seq(
         "Liam", "Noah", "Oliver", "Elijah", "James", "Bill", "Benjamin", "Lucas", "Henry", "Theo", "Alan",
@@ -68,21 +68,15 @@ object CPMirPlayerData:
     ).distinct
     private val ruFN = Seq(
         "Sergey", "Vladimir", "Anton", "Alex", "Aleksey", "Yuri", "Stanislav", "Oleg", "Ivan", "Anatoli",
-        "Geogri", "Valentin", "Valery", "Vladislav", "Nikita", "Lev", "Konstantin", "Viktor", "Evgeniy", "Petr"
+        "Geogri", "Valentin", "Valery", "Konstantin", "Viktor", "Evgeniy", "Petr"
     ).distinct
     private val usLN = Seq(
         "Acaba", "Acton", "Adams", "Adamson", "Akers", "Aldrin", "Allen", "Alsbury", "Altman", "Anders",
-        "Anderson", "Antonelli", "Amstrong", "Arnold", "Ashby",
-
-        "Bagian", "Baker", "Barrat", "Barron",
-        "Barry", "Bartoe", "Bassett", "Baudry", "Bean", "Behnken", "Binnie", "Blaha", "Bloomfield",
-        "Bluford", "Bobko", "Boe", "Bolden", "Bondar", "Borman", "Bowen", "Bradly", "Brand", "Brandenstein",
-        "Bresnik", "Bridges", "Brown", "Buchii", "Backey", "Bull", "Burbank", "Bursch"
+        "Anderson", "Antonelli", "Amstrong", "Arnold", "Ashby"
     ).distinct
     private val ruLN = Seq(
         "Afanasyev", "Aimbetov", "Aksyonov", "Aleksandrov", "Artemyev", "Artsebarsky", "Artyukhin",
-        "Atkov", "Aubakirov", "Avdeyev", "Balandin", "Baturin", "Bella", "Belyaev", "Beregovoy",
-        "Berezovoy", "Bondarenko", "Borishenko", "Budarin", "Bykovsky"
+        "Atkov", "Aubakirov", "Avdeyev"
     ).distinct
 
     private val names = Map[Locale, (Seq[String], Seq[String])](
@@ -99,6 +93,6 @@ object CPMirPlayerData:
         names.get(loc) match
             case Some((fn, ln)) => CPMirPlayerData(CPRand.rand(fn), CPRand.rand(ln), loc)
             case None =>
-                // Default to US.
+                // Default to 
                 val (fn, ln) = names(Locale.US)
                 CPMirPlayerData(CPRand.rand(fn), CPRand.rand(ln), Locale.US)
