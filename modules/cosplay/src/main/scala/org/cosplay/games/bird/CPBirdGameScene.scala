@@ -66,11 +66,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var dead = false
     private var score = 0
 
-    //private val buildingList = mutable.ArrayBuffer.empty[CPCanvasSprite]
-
-    private val roofPx = '_'&C_SANDY_BROWN
-    private val wallPx = '|'&C_SANDY_BROWN
-    private val windowPX = ':'&C_AQUA
+    private val darkerWhiteBg = C_WHITE.darker(0.1)
+    private val roofPx = ' '&&(C_BLACK.lighter(0.1), darkerWhiteBg)
+    private val wallPx = ' '&&(C_BLACK.lighter(0.1), darkerWhiteBg)
+    private val winPx = '.'&&(C_BLACK, C_WHITE)
 
     private val minWidth = 3
     private val maxWidth = 10
@@ -205,27 +204,21 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private def newBuildingSpr(width:Int, height:Int, posX:Int, startPosY:Int, depth:Int) : CPSceneObject =
         new CPCanvasSprite("building" + buildingAmount):
             private var newPosX = posX
-
             private val tags = Set("building")
 
             override def getTags: Set[String] = tags
             override def update(ctx: CPSceneObjectContext): Unit =
-
-                newPosX -= buildingSpeed
-
                 super.update(ctx)
+                newPosX -= buildingSpeed
                 val canv = ctx.getCanvas
                 // Roof.
                 canv.drawLine(newPosX, startPosY - height - 1, newPosX + width, startPosY - height - 1, depth, roofPx)
-
                 // Walls.
                 canv.drawLine(newPosX, startPosY - height, newPosX, startPosY, depth, wallPx)
                 canv.drawLine(newPosX + width, startPosY - height, newPosX + width, startPosY, depth, wallPx)
-
                 // Windows.
                 for (index <- 0 to height) do
-                    canv.drawLine(newPosX + 1, startPosY + index - height, newPosX + width - 1, startPosY + index - height, depth, windowPX)
-
+                    canv.drawLine(newPosX + 1, startPosY + index - height, newPosX + width - 1, startPosY + index - height, depth, winPx)
                 if getX <= 0 - width - 2 then
                     buildingAmount -= 1
                     ctx.deleteObject(getId)
