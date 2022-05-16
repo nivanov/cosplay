@@ -148,9 +148,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
             // Building test.
 
+            println(ctx.getObjectsForTags("building").length)
+
             if ctx.getObjectsForTags("building").length < (canv.width / 6).toInt then
                 println("Done")
-                var x = 0
                 for x <- 0 to (canv.width / 6).toInt do
                     ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * 11, canv.height, Random.between(minDepth, maxDepth).toInt))
                     buildingAmount += 1
@@ -203,26 +204,29 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
      */
     private def newBuildingSpr(width:Int, height:Int, posX:Int, startPosY:Int, depth:Int) : CPSceneObject =
         new CPCanvasSprite("building" + buildingAmount):
-            private val tags = Set("building")
+            private var newPosX = posX
 
-            private val newPosX = getX + buildingSpeed
+            private val tags = Set("building")
 
             override def getTags: Set[String] = tags
             override def update(ctx: CPSceneObjectContext): Unit =
+
+                newPosX -= buildingSpeed
+
                 super.update(ctx)
                 val canv = ctx.getCanvas
                 // Roof.
-                canv.drawLine(posX, startPosY - height - 1, posX + width, startPosY - height - 1, depth, roofPx)
+                canv.drawLine(newPosX, startPosY - height - 1, newPosX + width, startPosY - height - 1, depth, roofPx)
 
                 // Walls.
-                canv.drawLine(posX, startPosY - height, posX, startPosY, depth, wallPx)
-                canv.drawLine(posX + width, startPosY - height, posX + width, startPosY, depth, wallPx)
+                canv.drawLine(newPosX, startPosY - height, newPosX, startPosY, depth, wallPx)
+                canv.drawLine(newPosX + width, startPosY - height, newPosX + width, startPosY, depth, wallPx)
 
                 // Windows.
                 for (index <- 0 to height) do
-                    canv.drawLine(posX + 1, startPosY + index - height, posX + width - 1, startPosY + index - height, depth, windowPX)
+                    canv.drawLine(newPosX + 1, startPosY + index - height, newPosX + width - 1, startPosY + index - height, depth, windowPX)
 
-                if getX >= canv.width + width + 2 then
+                if getX <= 0 - width - 2 then
                     buildingAmount -= 1
                     ctx.deleteObject(getId)
 
