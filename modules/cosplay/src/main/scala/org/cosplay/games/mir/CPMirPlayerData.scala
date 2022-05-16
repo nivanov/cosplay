@@ -40,59 +40,65 @@ import java.util.Locale
   */
 case class CPMirPlayerData(
     firstName: String,
-    lastName: String,
-    locale: Locale
+    lastName: String
 ):
     val dobDay: Int = CPRand.between(1, 28 + 1)
     val dobMonth: Int = CPRand.between(1, 12 + 1)
     val dobYear: Int = CPRand.between(1997 - 35, 1997 - 55 + 1)
-    val voiceSubFolder: String = "us"
     val nameCamelCase: String = s"${CaseUtils.toCamelCase(s"$firstName", true, ' ')} ${CaseUtils.toCamelCase(s"$lastName", true, ' ')}"
     val nameUpperCase: String = s"$firstName $lastName".toUpperCase
     val nameLowerCase: String = s"$firstName $lastName".toLowerCase
     val username: String = s"${firstName}_$lastName".toLowerCase
     val age: Int = 1997 - dobYear
 
-    def debugString = s"$nameCamelCase, age $age, @$username, dob: $dobMonth/$dobDay/$dobYear, locale: $locale"
+    def debugString = s"$nameCamelCase, age $age, @$username, dob: $dobMonth/$dobDay/$dobYear"
 
 /**
   *
   */
 object CPMirPlayerData:
-    /* https://en.wikipedia.org/wiki/List_of_astronauts_by_name*/
+    /* https://en.wikipedia.org/wiki/List_of_astronauts_by_name */
 
-    private val usFN = Seq(
-        "Liam", "Noah", "Oliver", "Elijah", "James", "Bill", "Benjamin", "Lucas", "Henry", "Theo", "Alan",
-        "Michel", "Mark", "Abe", "Jacob", "Dan", "Jayden", "Mason", "Matt", "Ethan", "Andrew", "Alex",
-        "Chris", "Tyler", "David", "John", "Rob", "Rick"
+    private val firstNames = Seq(
+        "Liam",         "Noah",         "Oliver",       "James",        "Bill",         "Lucas",
+        "Henry",        "Theo",         "Alan",         "Michel",       "Mark",         "Abe",
+        "Jacob",        "Dan",          "Jayden",       "Mason",        "Matt",         "Ethan",
+        "Andrew",       "Alex",         "Chris",        "Tyler",        "David",        "John",
+        "Rob",          "Rick",         "Ivan",         "Leo",          "Valery",       "Viktor",
+        "Vlad",         "Sergey",       "Lee",          "Boe",          "Gabriel",      "Samuel",
+        "Elias",        "Matis",        "Max",          "Jonas",        "Noah",         "Felix",
+        "Oskar",        "Emil",         "Henry",        "Denis",        "Kurt",         "Paul",
+        "Otto",         "Frank",        "Sebastian",    "Hermann",      "Dieter",       "Mateo",
+        "Santiago",     "Anders",       "Bjorn",        "Jens",         "Asger",        "Dustin",
+        "Erik",         "Fiske",        "Garth",        "Gunnar",       "Ingvar",       "Ivar",
+        "Sven",         "Torvald",      "Oliver"
     ).distinct
-    private val ruFN = Seq(
-        "Sergey", "Vladimir", "Anton", "Alex", "Aleksey", "Yuri", "Stanislav", "Oleg", "Ivan", "Anatoli",
-        "Geogri", "Valentin", "Valery", "Konstantin", "Viktor", "Evgeniy", "Petr"
+    private val lastNames = Seq(
+        "Acaba",        "Acton",        "Adams",        "Adamson",      "Akers",        "Aldrin",
+        "Allen",        "Altman",       "Anders",       "Anderson",     "Amstrong",     "Arnold",
+        "Ashby",        "Baker",        "Banker",       "Barron",       "Barry",        "Bassett",
+        "Bartoe",       "Bolden",       "Bowen",        "Bowmen",       "Brady",        "Brown",
+        "Bresnik",      "Bridges",      "Burbank",      "Cabana",       "Cameron",      "Carey",
+        "Carr",         "Casper",       "Cassidy",      "Cernan",       "Chelli",       "Chapman",
+        "Clark",        "Collins",      "Coleman",      "Cooper",       "Conrad",       "Dana",
+        "Davis",        "Duffy",        "Duke",         "Dunbar",       "Dutton",       "Dyson",
+        "Edwards",      "Engle",        "Evans",        "Fabian",       "Faris",        "Favier",
+        "Finley",       "Fisher",       "Freeman",      "Gardner",      "Gibson",       "Glenn",
+        "Goodwin",      "Glover",       "Gordon",       "Hammond",      "Hart",         "Hennen",
+        "Hoffman",      "Hurley",       "Hughes",       "Irwin",        "Johnson",      "Jones",
+        "Kelly",        "Kopra",        "Kulin",        "Lawrence",     "Leslie",       "Lind",
+        "Lindsey",      "Lockhart",     "Lu",           "Mackay",       "Magnus",       "Mann",
+        "Meade",        "Melnik",       "Mitchell",     "Morin",        "Mullane",      "Musgrave",
+        "Nelson",       "Newman",       "Nowak",        "Nyberg",       "Parker",       "Payton",
+        "Peterson",     "Polansky",     "Remek",        "Robinson",     "Resnik",       "Rogers",
+        "Runco",        "Satcher",      "Scott",        "Shane",        "Smith",        "Shriver",
+        "Stewart",      "Swanson",      "Tanner",       "Thomas",       "Taylor",       "Thorton",
+        "Voss",         "Walker",       "Weber",        "Wolf",         "Webster",      "Woodward",
+        "Young",        "Zamka"
     ).distinct
-    private val usLN = Seq(
-        "Acaba", "Acton", "Adams", "Adamson", "Akers", "Aldrin", "Allen", "Alsbury", "Altman", "Anders",
-        "Anderson", "Antonelli", "Amstrong", "Arnold", "Ashby"
-    ).distinct
-    private val ruLN = Seq(
-        "Afanasyev", "Aimbetov", "Aksyonov", "Aleksandrov", "Artemyev", "Artsebarsky", "Artyukhin",
-        "Atkov", "Aubakirov", "Avdeyev"
-    ).distinct
-
-    private val names = Map[Locale, (Seq[String], Seq[String])](
-        Locale.US -> (usFN, usLN),
-        new Locale("ru", "RU") -> (ruFN, ruLN)
-    )
 
     /**
       *
       * @return
       */
-    def genNewPlayer: CPMirPlayerData =
-        val loc = Locale.getDefault
-        names.get(loc) match
-            case Some((fn, ln)) => CPMirPlayerData(CPRand.rand(fn), CPRand.rand(ln), loc)
-            case None =>
-                // Default to 
-                val (fn, ln) = names(Locale.US)
-                CPMirPlayerData(CPRand.rand(fn), CPRand.rand(ln), Locale.US)
+    def newPlayer: CPMirPlayerData = CPMirPlayerData(CPRand.rand(firstNames), CPRand.rand(lastNames))
