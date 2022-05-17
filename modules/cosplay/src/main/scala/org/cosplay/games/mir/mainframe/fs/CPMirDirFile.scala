@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms.fs
+package org.cosplay.games.mir.mainframe.fs
 
 /*
    _________            ______________
@@ -30,7 +30,7 @@ package org.cosplay.games.mir.dms.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.dms.fs.*
+import org.cosplay.games.mir.mainframe.fs.*
 import CPMirFileType.*
 
 /**

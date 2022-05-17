@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms.fs
+package org.cosplay.games.mir.mainframe.fs
 
 /*
    _________            ______________
@@ -30,5 +30,27 @@ package org.cosplay.games.mir.dms.fs
                ALl rights reserved.
 */
 
-class CPMirTxtFile
+import org.cosplay.games.mir.mainframe.fs.*
+import CPMirFileType.*
+import org.cosplay.games.mir.mainframe.apps.*
+
+/**
+  *
+  * @param name
+  * @param owner
+  * @param app
+  */
+class CPMirAppFile(
+    name: String,
+    owner: String,
+    parent: Option[CPMirFile],
+    app: CPMirApp
+) extends CPMirFile(FT_APP, name, owner, parent):
+    setSize(app.getSizeOnDisk)
+
+    /**
+      *
+      * @return
+      */
+    def getApp: CPMirApp = app
 

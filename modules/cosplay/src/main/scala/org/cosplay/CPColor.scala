@@ -83,7 +83,9 @@ import java.awt.Color
   * @param green Green RGB component.
   * @param blue Blue RGB component.
   */
-final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPColor](red, green, blue) with Ordered[CPColor]:
+final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPColor](red, green, blue)
+    with Ordered[CPColor]
+    with Serializable:
     import CPColor.*
 
     require(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")

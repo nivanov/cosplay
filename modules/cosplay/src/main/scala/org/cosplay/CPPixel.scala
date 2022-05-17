@@ -98,7 +98,7 @@ import scala.annotation.targetName
   * @see [[CPPosPixel]]
   * @see [[CPZPixel]]
   */
-final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, tag: Int):
+final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, tag: Int) extends Serializable:
     private var shadow: CPPixel = _
 
     override def toString: String = s"Pixel ['$char', fg=$fg, bg=$bg, tag=$tag]"

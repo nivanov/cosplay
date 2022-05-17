@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms.fs
+package org.cosplay.games.mir.mainframe
+
+import org.cosplay.games.mir.CPMirConsole
 
 /*
    _________            ______________
@@ -30,18 +32,16 @@ package org.cosplay.games.mir.dms.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.dms.fs.*
-import CPMirFileType.*
-
 /**
-  * 
-  * @param name
-  * @param owner
-  * @param parent
+  *
   */
-class CPMirBinFile(
-    name: String,
-    owner: String,
-    parent: Option[CPMirFile]
-) extends CPMirFile(FT_BIN, name, owner, parent)
+object CPMirMainframe:
+    /**
+      *
+      */
+    def boot(con: CPMirConsole): Unit = ???
 
+    /**
+      *
+      */
+    def shutdown(): Unit = ???

@@ -35,7 +35,7 @@ import scala.annotation.targetName
 /**
   * Mixin trait for supporting multi-int tuples.
   */
-protected trait CPIntTuple[T](val ints: Int*):
+protected trait CPIntTuple[T](val ints: Int*) extends Serializable:
     /**
       * Arity of this tuple.
       */

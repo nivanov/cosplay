@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms.apps
+package org.cosplay.games.mir.mainframe.apps
 
 /*
    _________            ______________
@@ -31,7 +31,7 @@ package org.cosplay.games.mir.dms.apps
 */
 
 import org.cosplay.games.mir.*
-import org.cosplay.games.mir.dms.fs.*
+import org.cosplay.games.mir.mainframe.fs.*
 
 /**
   *

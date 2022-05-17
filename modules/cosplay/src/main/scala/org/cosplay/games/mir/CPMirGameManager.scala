@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms.apps
+package org.cosplay.games.mir
 
 /*
    _________            ______________
@@ -30,20 +30,45 @@ package org.cosplay.games.mir.dms.apps
                ALl rights reserved.
 */
 
+import org.cosplay.*
+import games.mir.mainframe.*
+import games.mir.mainframe.fs.*
+
+case class CPMirState(
+    fs: CPMirFileSystem,
+    player: CPMirPlayerData,
+    crew: List[CPMirPlayerData],
+    props: Map[String, Any],
+    bf: CPColor,
+    fg: CPColor,
+    startTs: Long,
+    elapsedMs: Long
+)
+
 /**
   *
   */
-abstract class CPMirApp:
-    /**
-      *
-      * @param ctx
-      * @return
-      */
-    def appMain(ctx: CPMirAppContext): Int
+class CPMirGameManager:
+    // Load, if any, saved game.
+    load()
+
+    private def load(): Unit = ???
 
     /**
       *
       * @return
       */
-    def getSizeOnDisk: Long
+    def isContinue: Boolean = ???
+
+    /**
+      *
+      * @return
+      */
+    def isFailedToLoad: Boolean = ???
+
+    /**
+      *
+      */
+    def snapshot(): Unit = ???
+
 

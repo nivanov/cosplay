@@ -44,7 +44,7 @@ import scala.collection.mutable.ArrayBuffer
   * @param skin Character to pixel converter.
   * @see [[CPMarkup]]
   */
-case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel)
+case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPixel) extends Serializable
 
 /**
   * Markup specification that can be used to convert a sequence of characters to the sequence of [[CPPixel pixels]]
@@ -76,7 +76,7 @@ case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPi
   * @param elements Markup elements. Can be empty.
   * @see [[CPMarkupElement]]
   */
-case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElement]):
+case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElement]) extends Serializable:
     for (elm <- elements)
         require(
             elm.openTag.nonEmpty && elm.closeTag.nonEmpty,

@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms
-
-import org.cosplay.games.mir.CPMirConsole
+package org.cosplay.games.mir.mainframe.fs
 
 /*
    _________            ______________
@@ -32,16 +30,5 @@ import org.cosplay.games.mir.CPMirConsole
                ALl rights reserved.
 */
 
-/**
-  *
-  */
-object CPMirMainComputer:
-    /**
-      *
-      */
-    def boot(con: CPMirConsole): Unit = ???
+class CPMirTxtFile
 
-    /**
-      *
-      */
-    def shutdown(): Unit = ???
