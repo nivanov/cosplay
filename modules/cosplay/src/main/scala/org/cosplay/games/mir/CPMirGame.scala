@@ -35,6 +35,8 @@ import CPPixel.*
                ALl rights reserved.
 */
 
+val EVENT_YEAR = 1997
+
 val BG = CPColor("0x000300")
 val FG = CPColor("0x00AF00")
 val BG_PX = ' '&&(BG, BG)

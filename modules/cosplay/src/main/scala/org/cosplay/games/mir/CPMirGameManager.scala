@@ -34,10 +34,21 @@ import org.cosplay.*
 import games.mir.mainframe.*
 import games.mir.mainframe.fs.*
 
+/**
+  *
+  * @param fs
+  * @param player
+  * @param crew
+  * @param props
+  * @param bf
+  * @param fg
+  * @param startTs
+  * @param elapsedMs
+  */
 case class CPMirState(
     fs: CPMirFileSystem,
-    player: CPMirPlayerData,
-    crew: List[CPMirPlayerData],
+    player: CPMirPlayer,
+    crew: List[CPMirPlayer],
     props: Map[String, Any],
     bf: CPColor,
     fg: CPColor,
