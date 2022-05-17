@@ -111,10 +111,15 @@ case class CPMirPlayer(
     val wifeCamelCase: String = s"${CaseUtils.toCamelCase(s"$wifeFirstName", true, ' ')} ${CaseUtils.toCamelCase(s"$wifeLastName", true, ' ')}"
     val wifeUpperCase: String = s"$wifeFirstName $wifeLastName".toUpperCase
     val wifeLowerCase: String = s"$wifeFirstName $wifeLastName".toLowerCase
-    val username: String = s"${firstName}_$lastName".toLowerCase
+    val username: String = s"${firstName.head}$lastName".toLowerCase
     val favBands: Seq[String] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(rockBands)
     val favGames: Seq[CPMirFavGame] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(nesGames)
     val age: Int = EVENT_YEAR - dobYear
+    val passwords: Seq[String] = {
+        val nums = List(EVENT_YEAR, dobYear) ++ children.map(_.age) ++ children.map(_.dobYear)
+        val words = List(firstName, wifeFirstName, homeTown, birthTown, username) ++ favBands ++ favGames.map(_.character) ++ children.map(_.name)
+        for (w ← words.distinct; n ← nums.distinct) yield s"${w.toLowerCase}$n"
+    }
 
     def debugString: String =
         s"""
@@ -124,6 +129,7 @@ case class CPMirPlayer(
            |${children.size} children: ${children.map(_.debugString).mkString(", ")}
            |Fav bands: ${favBands.mkString(", ")}
            |Fav games: ${favGames.map(_.debugString).mkString(", ")}
+           |Passwords: ${passwords.mkString(", ")}
            |""".stripMargin
 
 /**

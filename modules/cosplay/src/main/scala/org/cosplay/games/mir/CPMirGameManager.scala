@@ -42,8 +42,7 @@ import games.mir.mainframe.fs.*
   * @param props
   * @param bf
   * @param fg
-  * @param startTs
-  * @param elapsedMs
+  * @param elapsedSec
   */
 case class CPMirState(
     fs: CPMirFileSystem,
@@ -52,30 +51,53 @@ case class CPMirState(
     props: Map[String, Any],
     bf: CPColor,
     fg: CPColor,
-    startTs: Long,
-    elapsedMs: Long
+    elapsedSec: Long
 )
 
 /**
   *
   */
 class CPMirGameManager:
-    // Load, if any, saved game.
-    load()
-
-    private def load(): Unit = ???
+    private var loaded = false
+    private var loadFailed = false
+    private val state =
+        try
+            loadLatest() match
+                case Some(v) ⇒
+                    loaded = true
+                    v
+                case None ⇒
+                    loaded = false
+                    reset()
+        catch
+            case e: Exception ⇒
+                loadFailed = true
+                loaded = false
+                reset()
 
     /**
       *
       * @return
       */
-    def isContinue: Boolean = ???
+    private def reset(): CPMirState = ???
 
     /**
       *
       * @return
       */
-    def isFailedToLoad: Boolean = ???
+    private def loadLatest(): Option[CPMirState] = ???
+
+    /**
+      *
+      * @return
+      */
+    def isLoaded: Boolean = loaded
+
+    /**
+      *
+      * @return
+      */
+    def isLoadFailed: Boolean = loadFailed
 
     /**
       *
