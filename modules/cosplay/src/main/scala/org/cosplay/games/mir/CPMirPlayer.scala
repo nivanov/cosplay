@@ -19,6 +19,7 @@ package org.cosplay.games.mir
 
 import org.apache.commons.text.*
 import org.cosplay.*
+import org.cosplay.games.mir.CPMirPlayer.*
 
 import java.util.Locale
 import scala.collection.mutable.ArrayBuffer
@@ -67,6 +68,17 @@ case class CPMirPlayerChild(
 
 /**
   *
+  * @param character
+  * @param game
+  */
+case class CPMirFavGame(
+    character: String,
+    game: String
+) extends Serializable:
+    def debugString: String = s"$character from $game"
+
+/**
+  *
   * @param firstName
   * @param lastName
   * @param birthCountry
@@ -100,6 +112,8 @@ case class CPMirPlayer(
     val wifeUpperCase: String = s"$wifeFirstName $wifeLastName".toUpperCase
     val wifeLowerCase: String = s"$wifeFirstName $wifeLastName".toLowerCase
     val username: String = s"${firstName}_$lastName".toLowerCase
+    val favBands: Seq[String] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(rockBands)
+    val favGames: Seq[CPMirFavGame] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(nesGames)
     val age: Int = EVENT_YEAR - dobYear
 
     def debugString: String =
@@ -108,12 +122,77 @@ case class CPMirPlayer(
            |age $age, dob: $dobMonth/$dobDay/$dobYear in $birthTown, $birthCountry
            |married to $wifeCamelCase
            |${children.size} children: ${children.map(_.debugString).mkString(", ")}
+           |Fav bands: ${favBands.mkString(", ")}
+           |Fav games: ${favGames.map(_.debugString).mkString(", ")}
            |""".stripMargin
 
 /**
   *
   */
 object CPMirPlayer:
+    private val nesGames: Seq[CPMirFavGame] = Seq[(String, String)](
+        ("Mario", "Super Mario"),
+        ("Mario", "Super Mario 3"),
+        ("Luigi", "Super Mario 3"),
+        ("Yoshi", "Super Mario 3"),
+        ("Pitch", "Super Mario 3"),
+        ("Daisy", "Super Mario 3"),
+        ("Bowser", "Super Mario 3"),
+        ("Koopa", "Super Mario 3"),
+        ("Kirby", "Kirby"),
+        ("Bandicoot", "Crash Bandicoot"),
+        ("Scorpion", "Mortal Kombat"),
+        ("Lara", "Tomb Raider"),
+        ("Pikachu", "Pokemon"),
+        ("Ash", "Pokemon"),
+        ("Jessy", "Pokemon"),
+        ("James", "Pokemon"),
+        ("Bulbasaur", "Pokemon"),
+        ("Charmander", "Pokemon"),
+        ("Squirtle", "Pokemon"),
+        ("Caterpie", "Pokemon"),
+        ("Pidgey", "Pokemon"),
+        ("Rattata", "Pokemon"),
+        ("Spearow", "Pokemon"),
+        ("Nidorina", "Pokemon"),
+        ("Jigglypuff", "Pokemon"),
+        ("Zubat", "Pokemon"),
+        ("Sonic", "Sonic the Hedgehog"),
+        ("Spyro", "Spyro The Dragon"),
+        ("Link", "The Legend of Zelda"),
+        ("Zelda", "The Legend of Zelda"),
+        ("Ganon", "The Legend of Zelda"),
+        ("Majora", "The Legend of Zelda"),
+        ("Deku", "The Legend of Zelda")
+    ).map(t ⇒ CPMirFavGame(t._1, t._2))
+
+    private val rockBands = Seq(
+        "Nirvana",      "Soundgarden",      "Radiohead",        "Pantera ",         "Metallica",
+        "Oasis",        "U2",               "Queen",            "Weezer",           "Slayer",
+        "Korn",         "Pavement",         "Anthrax",          "Blur",             "Pixies",
+        "Bush",         "Garbage",          "Megadeth",         "Pulp",             "Aerosmith",
+        "Live",         "Tool",             "Silverchair",      "Emperor",          "Creed",
+        "Incubus",      "Testament",        "Helmet",           "Sublime",          "Primus",
+        "Extreme",      "Scorpions",        "Sepultura",        "Candlebox",        "Meshuggah",
+        "Mudhoney",     "Death",            "Firehouse",        "Ministry",         "Semisonic",
+        "Motorhead",    "Opeth",            "Warrant",          "Everclear",        "Portishead",
+        "Deftones",     "Cake",             "Filter",           "KMFDM",            "Tonic",
+        "Hole",         "Carcass",          "Godsmack",         "Queensryche",      "Dokken",
+        "Unleashed",    "Sebadoh",          "Fastball",         "Poison",           "Superchunk",
+        "Dismember",    "Ammonia",          "Steelheart",       "Danzig",           "Rush",
+        "Slaughter",    "Rancid",           "Suffocation",      "BoDeans",          "Wilco",
+        "Failure",      "Thunder",          "Obituary",         "Belly",            "Winger",
+        "Amorphis",     "Overkill",         "Dio",              "Cinderella",       "Entombed",
+        "Kiss",         "Whitesnake",       "Exodus",           "Manowar",          "Cracker",
+        "Len",          "Stryper",          "Grave",            "Kix",              "Pariah",
+        "Kreator",      "Destruction",      "Heloween",         "Sponge",           "Eels",
+        "Superdrag",    "Therion",          "Behemoth",         "L7",               "Incantation",
+        "Gun",          "Trixter",          "Ratt",             "Rammstein",        "BulletBoys",
+        "Divinyls",     "Suede",            "Voivod",           "Heart",            "Vixen",
+        "Vader",        "Forbidden",        "Lit",              "Tankard",          "Muse",
+        "Deicide",      "Annihilator",      "Travis",
+    ).distinct
+    
     private val towns = Seq(
         ("USA", "Baltimore"),
         ("USA", "Boston"),
