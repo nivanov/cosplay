@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.mainframe
-
-import org.cosplay.games.mir.CPMirConsole
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -32,16 +30,21 @@ import org.cosplay.games.mir.CPMirConsole
                ALl rights reserved.
 */
 
+import org.cosplay.games.mir.os.CPMirFile
+import org.cosplay.games.mir.os.fs.*
+import CPMirFileType.*
+
 /**
   *
+  * @param root
   */
-object CPMirMainframe:
+@SerialVersionUID(1_0_0L)
+class CPMirFileSystem(private val root: CPMirFile) extends Serializable:
+    require(root.getType == FT_DIR)
+    
     /**
       *
+      * @return
       */
-    def boot(con: CPMirConsole): Unit = ???
+    inline def getRoot: CPMirFile = root
 
-    /**
-      *
-      */
-    def shutdown(): Unit = ???

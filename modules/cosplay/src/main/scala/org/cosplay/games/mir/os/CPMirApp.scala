@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.mainframe.fs
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -33,20 +33,17 @@ package org.cosplay.games.mir.mainframe.fs
 /**
   *
   */
-@SerialVersionUID(1_0_0L)
-enum CPMirFileType extends Serializable:
-    /** */
-    case FT_DIR
+abstract class CPMirApp:
+    /**
+      *
+      * @param ctx
+      * @return
+      */
+    def appMain(ctx: CPMirAppContext): Int
 
-    /** */
-    case FT_APP
-
-    /** */
-    case FT_TXT
-
-    /** */
-    case FT_BIN
-
-    /** */
-    case FT_DEV
+    /**
+      *
+      * @return
+      */
+    def getSizeOnDisk: Long
 

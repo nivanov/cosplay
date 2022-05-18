@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.mainframe.apps
+package org.cosplay.games.mir.os
+
+import org.cosplay.games.mir.CPMirConsole
 
 /*
    _________            ______________
@@ -33,17 +35,13 @@ package org.cosplay.games.mir.mainframe.apps
 /**
   *
   */
-abstract class CPMirApp:
+object CPMirOs:
     /**
       *
-      * @param ctx
-      * @return
       */
-    def appMain(ctx: CPMirAppContext): Int
+    def boot(con: CPMirConsole): Unit = ???
 
     /**
       *
-      * @return
       */
-    def getSizeOnDisk: Long
-
+    def shutdown(): Unit = ???

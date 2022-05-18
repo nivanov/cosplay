@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.mainframe.fs
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -30,20 +30,23 @@ package org.cosplay.games.mir.mainframe.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.mainframe.fs.*
-import CPMirFileType.*
-
 /**
   *
-  * @param root
   */
 @SerialVersionUID(1_0_0L)
-class CPMirFileSystem(private val root: CPMirFile) extends Serializable:
-    require(root.getType == FT_DIR)
-    
-    /**
-      *
-      * @return
-      */
-    inline def getRoot: CPMirFile = root
+enum CPMirFileType extends Serializable:
+    /** */
+    case FT_DIR
+
+    /** */
+    case FT_APP
+
+    /** */
+    case FT_TXT
+
+    /** */
+    case FT_BIN
+
+    /** */
+    case FT_DEV
 

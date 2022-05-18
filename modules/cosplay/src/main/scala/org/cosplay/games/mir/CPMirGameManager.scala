@@ -31,8 +31,8 @@ package org.cosplay.games.mir
 */
 
 import org.cosplay.*
-import games.mir.mainframe.*
-import games.mir.mainframe.fs.*
+import games.mir.os.*
+import games.mir.os.fs.*
 
 /**
   *

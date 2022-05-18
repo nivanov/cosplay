@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.mainframe.fs
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -30,7 +30,7 @@ package org.cosplay.games.mir.mainframe.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.mainframe.fs.CPMirFileType.*
+import CPMirFileType.*
 
 /**
   *
@@ -43,7 +43,7 @@ import org.cosplay.games.mir.mainframe.fs.CPMirFileType.*
 abstract class CPMirFile(
     typ: CPMirFileType,
     private var name: String,
-    private var owner: String,
+    private var owner: CPMirUser,
     private var parent: Option[CPMirFile]
 ) extends Serializable:
     require(parent.isEmpty || parent.get.getType == FT_DIR)
@@ -106,13 +106,13 @@ abstract class CPMirFile(
       *
       * @return
       */
-    def getOwner: String = owner
+    def getOwner: CPMirUser = owner
 
     /**
       *
       * @param owner
       */
-    def setOwner(owner: String): Unit = this.owner = owner
+    def setOwner(owner: CPMirUser): Unit = this.owner = owner
 
     /**
       *
