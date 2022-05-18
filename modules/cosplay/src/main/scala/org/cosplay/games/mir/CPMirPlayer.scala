@@ -114,6 +114,7 @@ case class CPMirPlayer(
     wifeLastName: String,
     children: Seq[CPMirPlayerChild]
 ) extends Serializable:
+    private val sport = CPRand.rand(sports)
     val dobDay: Int = CPRand.between(1, 28 + 1)
     val dobMonth: Int = CPRand.between(1, 12 + 1)
     val dobYear: Int = CPRand.between(EVENT_YEAR - 35, EVENT_YEAR - 55 + 1)
@@ -127,10 +128,17 @@ case class CPMirPlayer(
     val favBands: Seq[String] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(rockBands)
     val favGames: Seq[CPMirFavGame] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(nesGames)
     val favColor: String = CPRand.rand(colors)
+    val favSport: String = sport.name
+    val favSportTeam: String = CPRand.rand(sport.teams)
     val age: Int = EVENT_YEAR - dobYear
     val passwords: Seq[String] = {
-        val nums = List(EVENT_YEAR, dobYear) ++ children.map(_.age) ++ children.map(_.dobYear)
-        val words = List(firstName, wifeFirstName, homeTown, birthTown, username) ++ favBands ++ favGames.map(_.character) ++ children.map(_.name)
+        val nums = List(EVENT_YEAR, dobYear)
+            ++ children.map(_.age)
+            ++ children.map(_.dobYear)
+        val words = List(favColor, favSport, favSportTeam, firstName, wifeFirstName, homeTown, birthTown, username)
+            ++ favBands
+            ++ favGames.map(_.character)
+            ++ children.map(_.name)
         for (w ← words.distinct; n ← nums.distinct) yield s"${w.toLowerCase}$n"
     }
 
@@ -141,8 +149,10 @@ case class CPMirPlayer(
            |married to $wifeCamelCase
            |${children.size} children: ${children.map(_.debugString).mkString(", ")}
            |Fav bands: ${favBands.mkString(", ")}
-           |Fav games: ${favGames.map(_.debugString).mkString(", ")}
+           |Fav game character: ${favGames.map(_.debugString).mkString(", ")}
            |Fav color: $favColor
+           |Fav sport: $favSport
+           |Fav sport team: $favSportTeam
            |Passwords: ${passwords.mkString(", ")}
            |""".stripMargin
 
@@ -159,7 +169,7 @@ object CPMirPlayer:
             "Pistons",      "Raptors",      "Rockets",      "Spurs",            "Suns",
             "Thunder",      "Timberwolves", "Blazers",      "Warriors",         "Wizards"
         ).distinct),
-        CPMirTeamSport("football", Seq(
+        CPMirTeamSport("Football", Seq(
             "49ers",        "Bears",        "Bengals",      "Bills",            "Broncos",
             "Browns",       "Buccaneers",   "Cardinals",    "Chargers",         "Chiefs",
             "Colts",        "Commanders",   "Cowboys",      "Dolphins",         "Eagles",
@@ -168,7 +178,7 @@ object CPMirPlayer:
             "Ravens",       "Saints",       "Seahawks",     "Steelers",         "Texans",
             "Titans",       "Vikings"
         ).distinct),
-        CPMirTeamSport("baseball", Seq(
+        CPMirTeamSport("Baseball", Seq(
             "Braves",       "Marlins",      "Mets",         "Phillies",         "Nationals",
             "Cubs",         "Reds",         "Brewers",      "Pirates",          "Cardinals",
             "Diamondbacks", "Rockies",      "Dodgers",      "Padres",           "Giants",
@@ -176,7 +186,7 @@ object CPMirPlayer:
             "WhiteSox",     "Indians",      "Tigers",       "Royals",           "Twins",
             "Astros",       "Angels",       "Athletics",    "Mariners",         "Rangers"
         ).distinct),
-        CPMirTeamSport("hockey", Seq(
+        CPMirTeamSport("Hockey", Seq(
             "Ducks",        "Coyotes",      "Bruins",       "Sabres",           "Flames",
             "Hurricanes",   "Blackhawks",   "Avalanche",    "BlueJackets",      "Stars",
             "RedWings ",    "Oilers",       "Panthers",     "Kings ",           "Wild",
@@ -185,7 +195,7 @@ object CPMirPlayer:
             "Blues ",       "Lightning",    "MapleLeafs",   "Canucks",          "GoldenKnights",
             "Capitals",     "Jets"
         ).distinct),
-        CPMirTeamSport("soccer", Seq(
+        CPMirTeamSport("Soccer", Seq(
             "Liverpool",    "Manchester",   "RealMadrid",   "Bayern",           "Inter",
             "Ajax",         "Chelsea",      "Barcelona",    "Milan",            "PSG",
             "Napoli",       "Porto",        "Atlético",     "Tottenham",        "Arsenal",
