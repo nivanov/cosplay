@@ -15,12 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
-
-import org.cosplay.*
-import prefabs.scenes.*
-import CPColor.*
-import CPPixel.*
+package org.cosplay.games.mir.mainframe.fs
 
 /*
    _________            ______________
@@ -35,44 +30,5 @@ import CPPixel.*
                ALl rights reserved.
 */
 
-val EVENT_YEAR = 1997
+class CPMirTxtFile
 
-val BG = CPColor("0x000300")
-val FG = CPColor("0x00AF00")
-val BG_PX = ' '&&(BG, BG)
-
-/**
-  *
-  */
-object CPMirGame:
-    /**
-      * Entry point for JVM runtime.
-      *
-      * @param args Ignored.
-      */
-    def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(
-            name = "Escape From Mir",
-            semVer = "0.0.1",
-            termBg = BG
-        )
-
-        // Initialize the engine.
-        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
-
-        // Start the game & wait for exit.
-        try
-            CPEngine.startGame(
-                new CPFadeShimmerLogoScene(
-                    "logo",
-                    None,
-                    BG_PX,
-                    Seq(FG),
-                    "title",
-                    fadeInMs = 3000
-                ),
-                CPMirTitleScene
-            )
-        finally CPEngine.dispose()
-
-        sys.exit(0)

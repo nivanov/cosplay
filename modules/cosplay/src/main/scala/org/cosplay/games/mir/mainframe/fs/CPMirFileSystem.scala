@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms
+package org.cosplay.games.mir.mainframe.fs
 
 /*
    _________            ______________
@@ -30,77 +30,20 @@ package org.cosplay.games.mir.dms
                ALl rights reserved.
 */
 
+import org.cosplay.games.mir.mainframe.fs.*
+import CPMirFileType.*
+
 /**
   *
+  * @param root
   */
-abstract class CPMirFile:
-    private var name: String = _
-    private var createTs: Long = 0
-    private var updateTs: Long = 0
-
+@SerialVersionUID(1_0_0L)
+class CPMirFileSystem(private val root: CPMirFile) extends Serializable:
+    require(root.getType == FT_DIR)
+    
     /**
       *
       * @return
       */
-    def getName: String
-
-    /**
-      *
-      * @param name
-      */
-    def setName(name: String): Unit
-
-    /**
-      *
-      * @return
-      */
-    def getCreateTimestamp: Long = createTs
-
-    /**
-      *
-      * @return
-      */
-    def getUpdateTimestamp: Long = updateTs
-
-    /**
-      *
-      * @param createTs
-      */
-    def setCreateTimestamp(createTs: Long): Unit = this.createTs = createTs
-
-    /**
-      *
-      * @param updateTs
-      */
-    def setUpdateTimestamp(updateTs: Long): Unit = this.updateTs = updateTs
-
-    /**
-      *
-      * @return
-      */
-    def getOwner: String
-
-    /**
-      *
-      * @return
-      */
-    def getSize: Long
-
-    /**
-      *
-      * @return
-      */
-    def canOtherRead: Boolean
-
-    /**
-      *
-      * @return
-      */
-    def canOtherWrite: Boolean
-
-    /**
-      *
-      * @return
-      */
-    def getType: CPMirFileType
+    inline def getRoot: CPMirFile = root
 

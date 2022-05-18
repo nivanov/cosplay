@@ -79,6 +79,26 @@ object CPRand:
         RND.nextInt(to - from) + from
 
     /**
+      * Gets random integer in the given range.
+      *
+      * @param from Inclusive range from value.
+      * @param to Inclusive range to value.
+      */
+    def randIntExcl(from: Int, to: Int): Int =
+        assert(from < to)
+        RND.nextInt(to - from) + from
+
+    /**
+      * Gets random integer in the given range.
+      *
+      * @param from Inclusive range from value.
+      * @param to Inclusive range to value.
+      */
+    def randIntIncl(from: Int, to: Int): Int =
+        assert(from < to)
+        RND.nextInt(to - from + 1) + from
+
+    /**
       * Gets random xterm color from the list of [[CPColor.CS_XTERM_ALL]].
       */
     def randXtermColor(): CPColor = rand(CPColor.CS_XTERM_ALL)

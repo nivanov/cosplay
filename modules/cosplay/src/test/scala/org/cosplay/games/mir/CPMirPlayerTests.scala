@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test
 /**
   *
   */
-class CPMirPlayerDataTests:
+class CPMirPlayerTests:
     @Test
     def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(CPMirPlayerData.genNewPlayer.debugString))
+        (0 to 100).foreach(_ => println(CPMirPlayer.newPlayer.debugString))

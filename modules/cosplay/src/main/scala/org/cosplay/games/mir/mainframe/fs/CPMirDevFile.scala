@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms
+package org.cosplay.games.mir.mainframe.fs
 
 /*
    _________            ______________
@@ -30,22 +30,18 @@ package org.cosplay.games.mir.dms
                ALl rights reserved.
 */
 
+import org.cosplay.games.mir.mainframe.fs.*
+import CPMirFileType.*
+
 /**
-  *
+  * 
+  * @param name
+  * @param owner
+  * @param parent
   */
-enum CPMirFileType:
-    /** */
-    case FT_DIRECTORY
-
-    /** */
-    case FT_APP
-
-    /** */
-    case FT_TEXT
-
-    /** */
-    case FT_BINARY
-
-    /** */
-    case FT_DEVICE
+class CPMirDevFile(
+    name: String,
+    owner: String,
+    parent: Option[CPMirFile]
+) extends CPMirFile(FT_DEV, name, owner, parent)
 

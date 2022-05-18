@@ -38,7 +38,7 @@ package org.cosplay
   * @see [[CPPosPixel]]
   * @see [[CPZPixelPane]]
   */
-final case class CPZPixel(px: CPPixel, z: Int):
+final case class CPZPixel(px: CPPixel, z: Int) extends Serializable:
     /** Shortcut for pixel's [[CPPixel.char character]]. */
     val char: Char = px.char
 

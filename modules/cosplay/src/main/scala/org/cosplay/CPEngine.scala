@@ -264,14 +264,14 @@ object CPEngine:
         gameInfo
 
     /**
-      * Initialized the game engine.
+      * Initializes the game engine.
       *
       * @param gameInfo Game information.
       * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
       *     value will be result of this expression: {{{System.console() == null}}}
       */
     def init(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Unit =
-        if state == State.ENG_STARTED then E("Engine is already started.")
+        if state == State.ENG_STARTED then E("Engine is already initialized.")
         if state == State.ENG_STOPPED then E("Engine is stopped and cannot be restarted.")
 
         // Initialize JavaFX toolkit for audio.
@@ -364,7 +364,8 @@ object CPEngine:
         if state != State.ENG_STARTED then E(s"Engine is not started.")
 
     /**
-      * Gets root log for the game engine.
+      * Gets root log for the game engine. Engine must be started before this call otherwise exception is
+      * thrown.
       */
     def rootLog(): CPLog =
         checkState()
@@ -373,6 +374,7 @@ object CPEngine:
     /**
       * Shows or hides the built-in FPS overlay in the right top corner. Can
       * also be turned on or off by pressing `Ctrl-q` in the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param show Show/hide flag.
       */
@@ -383,12 +385,14 @@ object CPEngine:
     /**
       * Opens GUI-based log window by bringing it upfront.
       * Can also be open by pressing `Ctrl-l` in the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def openLog(): Unit =
         rootLog().info(CPUtils.PING_MSG)
 
     /**
       * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def dispose(): Unit =
         checkState()
@@ -407,6 +411,7 @@ object CPEngine:
       *     openLog()
       * }}}
       * This is a convenient call to programmatically start the debugging session.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def startDebug(): Unit =
         pauseGame()
@@ -414,6 +419,7 @@ object CPEngine:
 
     /**
       * Pauses the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def pauseGame(): Unit =
         checkState()
@@ -425,6 +431,7 @@ object CPEngine:
 
     /**
       * Tests whether or not the game is paused.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def isGamePaused: Boolean =
         checkState()
@@ -432,6 +439,7 @@ object CPEngine:
 
     /**
       * Debug steps through the game on frame at a time. Note that the game must be paused.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param kbKey Optional keyboard key event to emulate for this debug step.
       *     If provided, the real keyboard event, if any, will be ignored.
@@ -448,6 +456,7 @@ object CPEngine:
 
     /**
       * Resumes the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def resumeGame(): Unit =
         checkState()
@@ -460,6 +469,7 @@ object CPEngine:
 
     /**
       * Starts the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param startSceneId ID of the scene to start with.
       * @param scs Set of scene comprising the game. Note that scenes can be dynamically
@@ -473,6 +483,7 @@ object CPEngine:
 
     /**
       * Starts the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param startSceneId ID of the scene to start with.
       * @param scs Set of scene comprising the game. Note that scenes can be dynamically
@@ -482,6 +493,7 @@ object CPEngine:
 
     /**
       * Starts the game. Games start with the first scene in the list.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
       *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
@@ -490,6 +502,7 @@ object CPEngine:
 
     /**
       * Starts the game. Games start with the first scene in the list.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
       *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
@@ -498,6 +511,7 @@ object CPEngine:
 
     /**
       * Exits the game. Calling this method will exit the [[startGame()]] method.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def exitGame(): Unit =
         checkState()

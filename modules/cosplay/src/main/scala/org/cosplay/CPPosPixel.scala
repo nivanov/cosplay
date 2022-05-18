@@ -38,7 +38,7 @@ package org.cosplay
   * @param y Pixel Y-coordinate.
   * @see [[CPZPixel]]
   */
-final case class CPPosPixel(px: CPPixel, x: Int, y: Int) extends Ordered[CPPosPixel] :
+final case class CPPosPixel(px: CPPixel, x: Int, y: Int) extends Ordered[CPPosPixel], Serializable:
     override def compare(that: CPPosPixel): Int =
         if x < that.x then -1
         else if x > that.x then 1

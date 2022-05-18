@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.dms
-
-import org.cosplay.games.mir.CPMirConsole
+package org.cosplay.games.mir
 
 /*
    _________            ______________
@@ -32,16 +30,78 @@ import org.cosplay.games.mir.CPMirConsole
                ALl rights reserved.
 */
 
+import org.cosplay.*
+import games.mir.mainframe.*
+import games.mir.mainframe.fs.*
+
+/**
+  *
+  * @param fs
+  * @param player
+  * @param crew
+  * @param props
+  * @param bf
+  * @param fg
+  * @param elapsedSec
+  */
+case class CPMirState(
+    fs: CPMirFileSystem,
+    player: CPMirPlayer,
+    crew: List[CPMirPlayer],
+    props: Map[String, Any],
+    bf: CPColor,
+    fg: CPColor,
+    elapsedSec: Long
+)
+
 /**
   *
   */
-object CPMirMainComputer:
+class CPMirGameManager:
+    private var loaded = false
+    private var loadFailed = false
+    private val state =
+        try
+            loadLatest() match
+                case Some(v) ⇒
+                    loaded = true
+                    v
+                case None ⇒
+                    loaded = false
+                    reset()
+        catch
+            case e: Exception ⇒
+                loadFailed = true
+                loaded = false
+                reset()
+
     /**
       *
+      * @return
       */
-    def boot(con: CPMirConsole): Unit = ???
+    private def reset(): CPMirState = ???
+
+    /**
+      *
+      * @return
+      */
+    private def loadLatest(): Option[CPMirState] = ???
+
+    /**
+      *
+      * @return
+      */
+    def isLoaded: Boolean = loaded
+
+    /**
+      *
+      * @return
+      */
+    def isLoadFailed: Boolean = loadFailed
 
     /**
       *
       */
-    def shutdown(): Unit = ???
+    def snapshot(): Unit = ???
+
+
