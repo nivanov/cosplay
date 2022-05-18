@@ -71,11 +71,23 @@ case class CPMirPlayerChild(
   * @param character
   * @param game
   */
-case class CPMirFavGame(
-    character: String,
-    game: String
-) extends Serializable:
+case class CPMirFavGame(character: String, game: String) extends Serializable:
     def debugString: String = s"$character from $game"
+
+/**
+  *
+  * @param title
+  * @param author
+  */
+case class CPMirFavBook(title: String, author: String) extends Serializable:
+    def debugString: String = s"$title by $author"
+
+/**
+  *
+  * @param name
+  * @param teams
+  */
+case class CPMirTeamSport(name: String, teams: Seq[String]) extends Serializable
 
 /**
   *
@@ -114,6 +126,7 @@ case class CPMirPlayer(
     val username: String = s"${firstName.head}$lastName".toLowerCase
     val favBands: Seq[String] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(rockBands)
     val favGames: Seq[CPMirFavGame] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(nesGames)
+    val favColor: String = CPRand.rand(colors)
     val age: Int = EVENT_YEAR - dobYear
     val passwords: Seq[String] = {
         val nums = List(EVENT_YEAR, dobYear) ++ children.map(_.age) ++ children.map(_.dobYear)
@@ -129,6 +142,7 @@ case class CPMirPlayer(
            |${children.size} children: ${children.map(_.debugString).mkString(", ")}
            |Fav bands: ${favBands.mkString(", ")}
            |Fav games: ${favGames.map(_.debugString).mkString(", ")}
+           |Fav color: $favColor
            |Passwords: ${passwords.mkString(", ")}
            |""".stripMargin
 
@@ -136,6 +150,57 @@ case class CPMirPlayer(
   *
   */
 object CPMirPlayer:
+    private val sports: Seq[CPMirTeamSport] = Seq(
+        CPMirTeamSport("Basketball", Seq(
+            "76ers",        "Bucks",        "Bulls",        "Cavaliers",        "Celtics",
+            "Clippers",     "Grizzlies",    "Hawks",        "Heat",             "Hornets",
+            "Jazz",         "Kings",        "Knicks",       "Lakers",           "Magic",
+            "Mavericks",    "Nets",         "Nuggets",      "Pacers",           "Pelicans",
+            "Pistons",      "Raptors",      "Rockets",      "Spurs",            "Suns",
+            "Thunder",      "Timberwolves", "Blazers",      "Warriors",         "Wizards"
+        ).distinct),
+        CPMirTeamSport("football", Seq(
+            "49ers",        "Bears",        "Bengals",      "Bills",            "Broncos",
+            "Browns",       "Buccaneers",   "Cardinals",    "Chargers",         "Chiefs",
+            "Colts",        "Commanders",   "Cowboys",      "Dolphins",         "Eagles",
+            "Falcons",      "Giants",       "Jaguars",      "Jets",             "Lions",
+            "Packers",      "Panthers",     "Patriots",     "Raiders",          "Rams",
+            "Ravens",       "Saints",       "Seahawks",     "Steelers",         "Texans",
+            "Titans",       "Vikings"
+        ).distinct),
+        CPMirTeamSport("baseball", Seq(
+            "Braves",       "Marlins",      "Mets",         "Phillies",         "Nationals",
+            "Cubs",         "Reds",         "Brewers",      "Pirates",          "Cardinals",
+            "Diamondbacks", "Rockies",      "Dodgers",      "Padres",           "Giants",
+            "Orioles",      "RedSox",       "Yankees",      "Rays",             "Jays ",
+            "WhiteSox",     "Indians",      "Tigers",       "Royals",           "Twins",
+            "Astros",       "Angels",       "Athletics",    "Mariners",         "Rangers"
+        ).distinct),
+        CPMirTeamSport("hockey", Seq(
+            "Ducks",        "Coyotes",      "Bruins",       "Sabres",           "Flames",
+            "Hurricanes",   "Blackhawks",   "Avalanche",    "BlueJackets",      "Stars",
+            "RedWings ",    "Oilers",       "Panthers",     "Kings ",           "Wild",
+            "Canadiens",    "Predators",    "Devils",       "Islanders",        "Rangers",
+            "Senators",     "Flyers",       "Penguins",     "Sharks",           "Kraken",
+            "Blues ",       "Lightning",    "MapleLeafs",   "Canucks",          "GoldenKnights",
+            "Capitals",     "Jets"
+        ).distinct),
+        CPMirTeamSport("soccer", Seq(
+            "Liverpool",    "Manchester",   "RealMadrid",   "Bayern",           "Inter",
+            "Ajax",         "Chelsea",      "Barcelona",    "Milan",            "PSG",
+            "Napoli",       "Porto",        "Atlético",     "Tottenham",        "Arsenal",
+            "Juventus",     "Benfica",      "Bayer",        "Sporting",         "Leipzig",
+            "Villarreal",   "Borussia",     "Sevilla",      "Rangers",          "Lazio",
+            "Eindhoven",    "Monaco",       "Manchester",   "Roma",
+            "Atalanta",     "Slavia",       "Flora",        "Shakhtar",         "Feyenoord",
+            "WestHam",      "Athletic",     "Olympiakos",   "Celtic",           "Lyon",
+            "Rennes",       "Eintracht",    "Freiburg",     "CrystalPalace",    "Zenit",
+            "Sheriff"
+        ).distinct)
+    )
+    private val colors = Seq(
+        "yellow", "amber", "orange", "vermilion", "red", "magenta", "purple", "violet", "blue", "teal", "green", "chartreuse"
+    )
     private val nesGames: Seq[CPMirFavGame] = Seq[(String, String)](
         ("Mario", "Super Mario"),
         ("Mario", "Super Mario 3"),

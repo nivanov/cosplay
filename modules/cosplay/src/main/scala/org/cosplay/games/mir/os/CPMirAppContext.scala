@@ -37,10 +37,12 @@ import org.cosplay.games.mir.CPMirConsole
   * @param args
   * @param con
   * @param fs
+  * @param user
   */
 case class CPMirAppContext(
     args: Seq[String],
     con: CPMirConsole,
-    fs: CPMirFileSystem
+    fs: CPMirFileSystem,
+    user: CPMirUser
 )
 

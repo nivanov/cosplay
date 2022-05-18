@@ -35,6 +35,14 @@ import org.cosplay.games.mir.CPMirPlayer
 /**
   *
   * @param player
+  * @param isRoot
+  * @param username
+  * @param password
   */
-case class CPMirUser(player: CPMirPlayer)
+case class CPMirUser(
+    player: Option[CPMirPlayer],
+    isRoot: Boolean,
+    username: String,
+    password: String
+) extends Serializable
 

@@ -41,6 +41,7 @@ import CPMirFileType.*
 @SerialVersionUID(1_0_0L)
 class CPMirFileSystem(private val root: CPMirFile) extends Serializable:
     require(root.getType == FT_DIR)
+    require(root.getOwner.isRoot)
     
     /**
       *
