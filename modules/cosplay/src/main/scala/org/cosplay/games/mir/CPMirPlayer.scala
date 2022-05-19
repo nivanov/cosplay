@@ -244,7 +244,7 @@ object CPMirPlayer:
         ("Zubat", "Pokemon"),
         ("Sonic", "Sonic the Hedgehog"),
         ("Chaos", "Sonic the Hedgehog"),
-        ("Tails", "Sonic the Hedgehog")
+        ("Tails", "Sonic the Hedgehog"),
         ("Spyro", "Spyro The Dragon"),
         ("Link", "The Legend of Zelda"),
         ("Zelda", "The Legend of Zelda"),

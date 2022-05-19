@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
-
-import org.cosplay.games.mir.CPMirConsole
+package org.cosplay.games.mir.scenes
 
 /*
    _________            ______________
@@ -32,41 +30,5 @@ import org.cosplay.games.mir.CPMirConsole
                ALl rights reserved.
 */
 
-/**
-  *
-  * @param fs
-  * @param users
-  */
-@SerialVersionUID(1_0_0L)
-class CPMirOs(fs: CPMirFileSystem, users: Seq[CPMirUser]) extends Serializable:
-    require(users.exists(_.isRoot))
+class CPMirMainScene
 
-    private val rootUsr = users.find(_.isRoot).get
-
-    /**
-      *
-      * @return
-      */
-    inline def getFs: CPMirFileSystem = fs
-
-    /**
-      *
-      * @return
-      */
-    inline def getRootUser: CPMirUser = rootUsr
-
-    /**
-      *
-      * @return
-      */
-    inline def getAllUsers: Seq[CPMirUser] = users
-
-    /**
-      *
-      */
-    def boot(con: CPMirConsole): Unit = ???
-
-    /**
-      *
-      */
-    def shutdown(): Unit = ???

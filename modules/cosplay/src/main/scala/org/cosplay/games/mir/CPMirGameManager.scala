@@ -36,7 +36,7 @@ import games.mir.os.fs.*
 
 /**
   *
-  * @param fs
+  * @param os
   * @param player
   * @param crew
   * @param props
@@ -47,10 +47,10 @@ import games.mir.os.fs.*
   */
 @SerialVersionUID(1_0_0L)
 case class CPMirState(
-    fs: CPMirFileSystem,
+    os: CPMirOs,
     player: CPMirPlayer,
     crew: List[CPMirPlayer],
-    props: Map[String, Any],
+    props: Map[String, AnyRef],
     bf: CPColor,
     fg: CPColor,
     crtEffect: Boolean,
@@ -71,18 +71,18 @@ class CPMirGameManager:
                     v
                 case None ⇒
                     loaded = false
-                    reset()
+                    init()
         catch
             case e: Exception ⇒
                 loadFailed = true
                 loaded = false
-                reset()
+                init()
 
     /**
       *
       * @return
       */
-    private def reset(): CPMirState = ???
+    private def init(): CPMirState = ???
 
     /**
       *
@@ -94,13 +94,13 @@ class CPMirGameManager:
       *
       * @return
       */
-    def isLoaded: Boolean = loaded
+    def isLatestLoaded: Boolean = loaded
 
     /**
       *
       * @return
       */
-    def isLoadFailed: Boolean = loadFailed
+    def isLatestLoadFailed: Boolean = loadFailed
 
     /**
       *

@@ -15,19 +15,31 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.scenes
 
 import org.cosplay.*
-import CPArrayImage.*
+import games.mir.*
 import CPKeyboardKey.*
-import CPPixel.*
-import prefabs.images.ani.*
+import prefabs.images.ani.CPSpinningGlobeAniImage
 import prefabs.shaders.*
+
+/*
+   _________            ______________
+   __  ____/_______________  __ \__  /_____ _____  __
+   _  /    _  __ \_  ___/_  /_/ /_  /_  __ `/_  / / /
+   / /___  / /_/ /(__  )_  ____/_  / / /_/ /_  /_/ /
+   \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
+                                            /____/
+
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
+*/
 
 /**
   *
   */
-object CPMirTitleScene extends CPScene("title", None, BG_PX):
+object CPMirTitleScene extends CPScene("title", None, BG_PX) :
     private val logoImg = CPImage.loadRexXp("images/games/mir/mir_logo.xp").trimBg()
 
     private val spinGlobeImgs = CPSpinningGlobeAniImage.trimBg().split(47, 23).map(
@@ -65,8 +77,6 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
         spinGlobeSpr,
         // Add all screen shaders.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, crtShdr, starStreakShdr)),
-        // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         // Transition to the next scene on 'Enter' press.
         CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.exitGame()))
     )
