@@ -36,6 +36,7 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
     private val spinGlobeAni = CPAnimation.filmStrip("ani", 99, true, false, spinGlobeImgs)
     private val spinGlobeSpr = CPAnimationSprite("spr", Seq(spinGlobeAni), 4, 1, 1, "ani")
 
+    private val bgSnd = CPSound("sounds/games/mir/bg2.wav", 0.7f)
     private val crtTurnOnSnd = CPSound("sounds/games/mir/crt_turn_on.wav")
     private val crtTearSnd = CPSound("sounds/games/mir/crt_tear.wav")
     private val crtKnockSnd = CPSound("sounds/games/mir/crt_knock.wav")
@@ -75,8 +76,10 @@ object CPMirTitleScene extends CPScene("title", None, BG_PX):
         crtShdr.start()
         crtTurnOnSnd.play()
         crtKnockSnd.play()
+        bgSnd.loop(2000)
         crtNoiseSnd.loop(1000, _ ⇒ crtKnockSnd.play())
 
     override def onDeactivate(): Unit =
         starStreakShdr.stop()
         crtShdr.stop()
+        bgSnd.stop(500)
