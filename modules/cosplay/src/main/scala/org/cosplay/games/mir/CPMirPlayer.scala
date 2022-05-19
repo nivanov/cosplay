@@ -55,6 +55,7 @@ enum CPMirPLayerRole:
   * @param name
   * @param isMale
   */
+@SerialVersionUID(1_0_0L)
 case class CPMirPlayerChild(
     name: String,
     isMale: Boolean
@@ -71,6 +72,7 @@ case class CPMirPlayerChild(
   * @param character
   * @param game
   */
+@SerialVersionUID(1_0_0L)
 case class CPMirFavGame(character: String, game: String) extends Serializable:
     def debugString: String = s"$character from $game"
 
@@ -79,6 +81,7 @@ case class CPMirFavGame(character: String, game: String) extends Serializable:
   * @param title
   * @param author
   */
+@SerialVersionUID(1_0_0L)
 case class CPMirFavBook(title: String, author: String) extends Serializable:
     def debugString: String = s"$title by $author"
 
@@ -87,7 +90,7 @@ case class CPMirFavBook(title: String, author: String) extends Serializable:
   * @param name
   * @param teams
   */
-case class CPMirTeamSport(name: String, teams: Seq[String]) extends Serializable
+case class CPMirTeamSport(name: String, teams: Seq[String])
 
 /**
   *
@@ -102,6 +105,7 @@ case class CPMirTeamSport(name: String, teams: Seq[String]) extends Serializable
   * @param wifeLastName
   * @param children
   */
+@SerialVersionUID(1_0_0L)
 case class CPMirPlayer(
     firstName: String,
     lastName: String,
@@ -239,12 +243,18 @@ object CPMirPlayer:
         ("Jigglypuff", "Pokemon"),
         ("Zubat", "Pokemon"),
         ("Sonic", "Sonic the Hedgehog"),
+        ("Chaos", "Sonic the Hedgehog"),
+        ("Tails", "Sonic the Hedgehog")
         ("Spyro", "Spyro The Dragon"),
         ("Link", "The Legend of Zelda"),
         ("Zelda", "The Legend of Zelda"),
         ("Ganon", "The Legend of Zelda"),
         ("Majora", "The Legend of Zelda"),
-        ("Deku", "The Legend of Zelda")
+        ("Deku", "The Legend of Zelda"),
+        ("Rayman", "Rayman"),
+        ("Mega", "Mega Man"),
+        ("Samus", "Metroid Prime"),
+        ("Diddy", "Donkey Kong")
     ).map(t ⇒ CPMirFavGame(t._1, t._2))
 
     private val rockBands = Seq(

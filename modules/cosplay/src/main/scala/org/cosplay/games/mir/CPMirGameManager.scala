@@ -42,8 +42,10 @@ import games.mir.os.fs.*
   * @param props
   * @param bf
   * @param fg
+  * @param crtEffect
   * @param elapsedSec
   */
+@SerialVersionUID(1_0_0L)
 case class CPMirState(
     fs: CPMirFileSystem,
     player: CPMirPlayer,
@@ -51,8 +53,9 @@ case class CPMirState(
     props: Map[String, Any],
     bf: CPColor,
     fg: CPColor,
+    crtEffect: Boolean,
     elapsedSec: Long
-)
+) extends Serializable
 
 /**
   *
