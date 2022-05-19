@@ -37,9 +37,11 @@ import org.cosplay.games.mir.scenes.CPMirTitleScene
 */
 
 val EVENT_YEAR = 1997
+val NPC_CNT = 2
 
-val BG = CPColor("0x000300")
-val FG = CPColor("0x00AF00")
+val gameMgr = CPMirGameManager()
+val BG = gameMgr.getBg
+val FG = gameMgr.getFg
 val BG_PX = ' '&&(BG, BG)
 
 /**

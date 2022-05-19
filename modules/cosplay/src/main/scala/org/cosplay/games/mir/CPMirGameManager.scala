@@ -34,13 +34,15 @@ import org.cosplay.*
 import games.mir.os.*
 import games.mir.os.fs.*
 
+import scala.collection.mutable
+
 /**
   *
   * @param os
   * @param player
   * @param crew
   * @param props
-  * @param bf
+  * @param bg
   * @param fg
   * @param crtEffect
   * @param elapsedSec
@@ -49,23 +51,36 @@ import games.mir.os.fs.*
 case class CPMirState(
     os: CPMirOs,
     player: CPMirPlayer,
-    crew: List[CPMirPlayer],
-    props: Map[String, AnyRef],
-    bf: CPColor,
-    fg: CPColor,
-    crtEffect: Boolean,
-    elapsedSec: Long
+    crew: Seq[CPMirPlayer],
+    props: mutable.Map[String, AnyRef],
+    var bg: CPColor,
+    var fg: CPColor,
+    var crtEffect: Boolean,
+    var elapsedSec: Long
 ) extends Serializable
 
 /**
   *
   */
+object CPMirGameManager:
+    private final val DFLT_BG = CPColor("0x000300")
+    private final val DFLT_FG = CPColor("0x00AF00")
+
+import CPMirGameManager.*
+
+/**
+  *
+  */
 class CPMirGameManager:
+    // Player protagonist.
+    private val player = CPMirPlayer.newPlayer
+    private var os: CPMirOs = _
+
     private var loaded = false
     private var loadFailed = false
     private val state =
         try
-            loadLatest() match
+            loadLatestState() match
                 case Some(v) ⇒
                     loaded = true
                     v
@@ -82,29 +97,81 @@ class CPMirGameManager:
       *
       * @return
       */
-    private def init(): CPMirState = ???
+    private def init(): CPMirState =
+        // Crew.
+        val crew = mutable.ArrayBuffer(player)
+        for (i ← 0 until NPC_CNT)
+            var found = false
+            while !found do
+                val crewman = CPMirPlayer.newPlayer
+                if !crew.exists(p ⇒ p.username == player.username || p.lastName == player.lastName) then
+                    found = true
+                    crew += crewman
+
+        // Users.
+        // NOTE: root password is not guessable in the game - but can be obtained.
+        val rootUsr = CPMirUser(None, true, "root", CPRand.guid6)
+        val usrs = mutable.ArrayBuffer(rootUsr)
+        crew.foreach(p ⇒ usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
+
+        // File system.
+        val rootDir = CPMirDirFile("", rootUsr, None)
+        val fs = CPMirFileSystem(rootDir)
+
+        // OS.
+        os = CPMirOs(fs, usrs.toSeq)
+
+        CPMirState(
+            os = os,
+            player = player,
+            crew = crew.toSeq,
+            props = mutable.HashMap.empty,
+            bg = DFLT_BG,
+            fg = DFLT_FG,
+            crtEffect = true,
+            elapsedSec = 0L
+        )
+
+    /** */
+    inline def getBg: CPColor = state.bg
+    /** */
+    inline def getFg: CPColor = state.fg
+    /**  */
+    inline def isCrtEffect: Boolean = state.crtEffect
 
     /**
       *
       * @return
       */
-    private def loadLatest(): Option[CPMirState] = ???
+    private def loadLatestState(): Option[CPMirState] = None // TODO
 
     /**
       *
       * @return
       */
-    def isLatestLoaded: Boolean = loaded
+    def isLatestStateLoaded: Boolean = loaded
 
     /**
       *
       * @return
       */
-    def isLatestLoadFailed: Boolean = loadFailed
+    def isLatestStateLoadFailed: Boolean = loadFailed
+
+    /**
+      *
+      * @return
+      */
+    inline def getOs: CPMirOs = os
+
+    /**
+      *
+      * @return
+      */
+    inline def getPlayer: CPMirPlayer = player
 
     /**
       *
       */
-    def snapshot(): Unit = ???
+    def saveSnapshot(): Unit = ???
 
 
