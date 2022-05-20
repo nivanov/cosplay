@@ -37,9 +37,9 @@ import prefabs.shaders.*
 /**
   *
   * @param id ID of the scene.
-  * @param bgSndPath
+  * @param bgSndFile Background audio file name.
   */
-abstract class CPMirStarStreakSceneBase(id: String, bgSndPath: String) extends CPMirCrtSceneBase(id, bgSndPath):
+abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends CPMirCrtSceneBase(id, bgSndFile):
     private val colors = Seq(FG)
 
     protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
@@ -52,4 +52,15 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndPath: String) extends C
         ),
         skip = (zpx, _, _) ⇒ zpx.z >= 1
     )
+    
+    override def onActivate(): Unit =
+        super.onActivate()
+        starStreakShdr.start()
+        if stateMgr.state.crtEffect then crtShdr.start()
+
+    override def onDeactivate(): Unit =
+        super.onDeactivate()
+        starStreakShdr.stop()
+        if stateMgr.state.crtEffect then crtShdr.stop()
+
 

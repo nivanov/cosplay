@@ -33,5 +33,9 @@ import org.cosplay.games.mir.*
                ALl rights reserved.
 */
 
-object CPMirCreditsScene extends CPScene("credits", None, BG_PX)
+object CPMirCreditsScene  extends CPMirStarStreakSceneBase("credits", "bg1.wav"):
+    addObjects(
+        // Add full-screen shaders - order is important.
+        new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
+    )
 

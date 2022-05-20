@@ -33,5 +33,13 @@ import org.cosplay.games.mir.*
                ALl rights reserved.
 */
 
-object CPMirTutorialScene extends CPScene("tutorial", None, BG_PX)
+/**
+  *
+  */
+object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"):
+    addObjects(
+        // Add full-screen shaders - order is important.
+        new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
+    )
+
 

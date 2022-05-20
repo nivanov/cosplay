@@ -37,14 +37,15 @@ import prefabs.shaders.*
 /**
   *
   * @param id ID of the scene.
-  * @param bgSndPath Full path for the background audio.
+  * @param bgSndFile Background audio file name.
   */
-abstract class CPMirCrtSceneBase(id: String, bgSndPath: String) extends CPScene(id, None, BG_PX):
-    private val bgSnd = CPSound(bgSndPath, 0.3f)
-    private val turnOnSnd = CPSound("sounds/games/mir/crt_turn_on.wav")
-    private val tearSnd = CPSound("sounds/games/mir/crt_tear.wav")
-    private val knockSnd = CPSound("sounds/games/mir/crt_knock.wav")
-    private val noiseSnd = CPSound("sounds/games/mir/crt_noise.wav")
+abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(id, None, BG_PX):
+
+    private val bgSnd = CPSound(s"$SND_HOME/$bgSndFile", 0.3f)
+    private val turnOnSnd = CPSound(s"$SND_HOME/crt_turn_on.wav")
+    private val tearSnd = CPSound(s"$SND_HOME/crt_tear.wav")
+    private val knockSnd = CPSound(s"$SND_HOME/crt_knock.wav")
+    private val noiseSnd = CPSound(s"$SND_HOME/crt_noise.wav")
 
     // Should be controlled by the subclass.
     protected val fadeInShdr: CPSlideInShader = CPSlideInShader.sigmoid(CPSlideDirection.TOP_TO_BOTTOM, true, 3000, bgPx = BG_PX)

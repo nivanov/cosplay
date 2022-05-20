@@ -39,7 +39,7 @@ import prefabs.shaders.*
 /**
   *
   */
-object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "sounds/games/mir/bg2.wav"):
+object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "bg2.wav"):
     private val logoImg = CPImage.loadRexXp("images/games/mir/mir_logo.xp").trimBg()
     private val spinGlobeImgs = CPSpinningGlobeAniImage.trimBg().split(47, 23).map(
         _.skin((px, _, _) ⇒ px.withDarkerFg(0.85f))
@@ -47,24 +47,13 @@ object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "sounds/games/m
     private val spinGlobeAni = CPAnimation.filmStrip("ani", 99, true, false, spinGlobeImgs)
     private val spinGlobeSpr = CPAnimationSprite("spr", Seq(spinGlobeAni), 4, 1, 1, "ani")
 
-    // Add scene objects...
     addObjects(
         // Main logo.
         CPCenteredImageSprite(img = logoImg, z = 2),
         // Spinning globe.
         spinGlobeSpr,
-        // Add all screen shaders.
+        // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr)),
         // Transition to the next scene on 'Enter' press.
-        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.exitGame()))
+        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.switchScene("menu")))
     )
-
-    override def onActivate(): Unit =
-        super.onActivate()
-        starStreakShdr.start()
-        crtShdr.start()
-
-    override def onDeactivate(): Unit =
-        super.onDeactivate()
-        starStreakShdr.stop()
-        crtShdr.stop()

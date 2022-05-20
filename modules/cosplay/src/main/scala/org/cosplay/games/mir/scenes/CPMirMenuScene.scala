@@ -33,12 +33,11 @@ import org.cosplay.games.mir.*
                ALl rights reserved.
 */
 
-object CPMirMenuScene extends CPScene("menu", None, BG_PX):
-    private val bgSnd = CPSound("sounds/games/mir/bg1.wav", 0.7f)
-
-    override def onActivate(): Unit =
-        bgSnd.loop(2000)
-
-    override def onDeactivate(): Unit =
-        bgSnd.stop(500)
-
+/**
+  * 
+  */
+object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
+    addObjects(
+        // Add full-screen shaders - order is important.
+        new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
+    )
