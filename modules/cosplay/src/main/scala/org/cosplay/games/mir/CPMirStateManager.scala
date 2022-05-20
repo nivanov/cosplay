@@ -49,6 +49,7 @@ import scala.collection.mutable
   */
 @SerialVersionUID(1_0_0L)
 case class CPMirState(
+    gameId: String = CPRand.guid6,
     os: CPMirOs,
     player: CPMirPlayer,
     crew: Seq[CPMirPlayer],

@@ -34,7 +34,13 @@ import games.mir.*
 */
 
 /**
-  * 
+  * [C] - Continue
+  * [N] - New Game
+  * [S] - Save Game
+  * [L] - Load Game
+  * [O] - Options
+  * [T] - Tutorial
+  * [Q] - Quit
   */
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
     addObjects(
