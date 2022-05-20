@@ -17,6 +17,9 @@
 
 package org.cosplay.games.mir.scenes
 
+import org.cosplay.*
+import org.cosplay.games.mir.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -30,5 +33,12 @@ package org.cosplay.games.mir.scenes
                ALl rights reserved.
 */
 
-class CPMirMenuScene
+object CPMirMenuScene extends CPScene("menu", None, BG_PX):
+    private val bgSnd = CPSound("sounds/games/mir/bg1.wav", 0.7f)
+
+    override def onActivate(): Unit =
+        bgSnd.loop(2000)
+
+    override def onDeactivate(): Unit =
+        bgSnd.stop(500)
 

@@ -17,9 +17,6 @@
 
 package org.cosplay.games.mir.scenes
 
-import org.cosplay.*
-import org.cosplay.games.mir.*
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -33,5 +30,26 @@ import org.cosplay.games.mir.*
                ALl rights reserved.
 */
 
-object CPMirSettingsScene extends CPScene("settings", None, BG_PX)
+import org.cosplay.*
+import games.mir.*
+import prefabs.shaders.*
+
+/**
+  *
+  * @param id ID of the scene.
+  * @param bgSndPath
+  */
+abstract class CPMirStarStreakSceneBase(id: String, bgSndPath: String) extends CPMirCrtSceneBase(id, bgSndPath):
+    private val colors = Seq(FG)
+
+    protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
+        true,
+        BG,
+        Seq(
+            CPStarStreak('.', colors, 0.025, 30, (-.3f, 0f), 0),
+            CPStarStreak('.', colors, 0.015, 25, (-.7f, 0f), 0),
+            CPStarStreak('_', colors, 0.005, 50, (-1f, 0f), 0)
+        ),
+        skip = (zpx, _, _) ⇒ zpx.z >= 1
+    )
 

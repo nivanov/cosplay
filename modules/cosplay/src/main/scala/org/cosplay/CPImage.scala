@@ -682,7 +682,27 @@ object CPImage:
         'z' -> 's'
     )
 
-    private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
+    private final val DFLT_PREVIEW_BG = CPPixel('.', C_GRAY2, C_GRAY1)
+
+    /**
+      * Creates new image by stacking given images vertically, starting with the 1st image,
+      * then stitching the 2nd image underneath the 1st, etc.
+      *
+      * @param imgs Non-empty set of images to stitch vertically.
+      */
+    def vertImage(imgs: CPImage*): CPImage =
+        require(imgs.nonEmpty)
+        imgs.tail.foldLeft(imgs.head)((acc, img) ⇒ acc.stitchBelow(img))
+
+    /**
+      * Creates new image by stacking given images horizontally, starting with the 1st image,
+      * then stitching the 2nd image to the right of the 1st, etc.
+      *
+      * @param imgs Non-empty set of images to stitch horizontally.
+      */
+    def horImage(imgs: CPImage*): CPImage =
+        require(imgs.nonEmpty)
+        imgs.tail.foldLeft(imgs.head)((acc, img) ⇒ acc.stitchRight(img))
 
     /**
       * Loads image using [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
@@ -797,7 +817,7 @@ object CPImage:
       * @param emuTerm Whether or not to use terminal emulation. Default value is `true`.
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       */
-    def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_BG): Unit =
+    def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_PREVIEW_BG): Unit =
         require(fps < 1_000, "FPS must be < 1,000.")
         val frameDim = imgs.head.getDim
         require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
@@ -831,7 +851,7 @@ object CPImage:
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       * @param emuTerm Whether or not to use terminal emulation. Default value is `true`.
       */
-    def previewImage(img: CPImage, bg: CPPixel = DFLT_BG, emuTerm: Boolean = true): Unit =
+    def previewImage(img: CPImage, bg: CPPixel = DFLT_PREVIEW_BG, emuTerm: Boolean = true): Unit =
         val imgDim = img.getDim
         val dim = imgDim + 8
         CPEngine.init(

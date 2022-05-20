@@ -18,7 +18,8 @@
 package org.cosplay.games.mir.scenes
 
 import org.cosplay.*
-import org.cosplay.games.mir.*
+import games.mir.*
+import prefabs.shaders.*
 
 /*
    _________            ______________
@@ -33,5 +34,32 @@ import org.cosplay.games.mir.*
                ALl rights reserved.
 */
 
-object CPMirSettingsScene extends CPScene("settings", None, BG_PX)
+/**
+  *
+  * @param id ID of the scene.
+  * @param bgSndPath Full path for the background audio.
+  */
+abstract class CPMirCrtSceneBase(id: String, bgSndPath: String) extends CPScene(id, None, BG_PX):
+    private val bgSnd = CPSound(bgSndPath, 0.3f)
+    private val turnOnSnd = CPSound("sounds/games/mir/crt_turn_on.wav")
+    private val tearSnd = CPSound("sounds/games/mir/crt_tear.wav")
+    private val knockSnd = CPSound("sounds/games/mir/crt_knock.wav")
+    private val noiseSnd = CPSound("sounds/games/mir/crt_noise.wav")
+
+    // Should be controlled by the subclass.
+    protected val fadeInShdr: CPSlideInShader = CPSlideInShader.sigmoid(CPSlideDirection.TOP_TO_BOTTOM, true, 3000, bgPx = BG_PX)
+    protected val fadeOutShdr: CPFadeOutShader = CPFadeOutShader(true, 500, bgPx = BG_PX)
+    protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(lineEffectProb = 1f, .03f, tearSnd = Option(tearSnd))
+
+    // Make sure to call 'super(...)'.
+    override def onActivate(): Unit =
+        turnOnSnd.play()
+        knockSnd.play()
+        bgSnd.loop(2000)
+        noiseSnd.loop(1000, _ ⇒ knockSnd.play())
+
+    // Make sure to call 'super(...)'.
+    override def onDeactivate(): Unit =
+        bgSnd.stop(500)
+
 

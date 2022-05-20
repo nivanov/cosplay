@@ -39,9 +39,9 @@ import org.cosplay.games.mir.scenes.CPMirTitleScene
 val EVENT_YEAR = 1997
 val NPC_CNT = 2
 
-val gameMgr = CPMirGameManager()
-val BG = gameMgr.getBg
-val FG = gameMgr.getFg
+val stateMgr = CPMirStateManager()
+val BG = stateMgr.state.bg
+val FG = stateMgr.state.fg
 val BG_PX = ' '&&(BG, BG)
 
 /**

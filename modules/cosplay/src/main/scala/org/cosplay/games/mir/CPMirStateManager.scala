@@ -62,23 +62,24 @@ case class CPMirState(
 /**
   *
   */
-object CPMirGameManager:
+object CPMirStateManager:
     private final val DFLT_BG = CPColor("0x000300")
     private final val DFLT_FG = CPColor("0x00AF00")
 
-import CPMirGameManager.*
+import CPMirStateManager.*
 
 /**
   *
   */
-class CPMirGameManager:
+class CPMirStateManager:
     // Player protagonist.
     private val player = CPMirPlayer.newPlayer
     private var os: CPMirOs = _
 
     private var loaded = false
     private var loadFailed = false
-    private val state =
+
+    val state: CPMirState =
         try
             loadLatestState() match
                 case Some(v) ⇒
@@ -99,12 +100,12 @@ class CPMirGameManager:
       */
     private def init(): CPMirState =
         // Crew.
-        val crew = mutable.ArrayBuffer(player)
+        val crew = mutable.ArrayBuffer(player) // Crew always includes the player.
         for (i ← 0 until NPC_CNT)
             var found = false
             while !found do
                 val crewman = CPMirPlayer.newPlayer
-                if !crew.exists(p ⇒ p.username == player.username || p.lastName == player.lastName) then
+                if !crew.exists(p ⇒ p != player && (p.username == player.username || p.lastName == player.lastName)) then
                     found = true
                     crew += crewman
 
@@ -132,13 +133,6 @@ class CPMirGameManager:
             elapsedSec = 0L
         )
 
-    /** */
-    inline def getBg: CPColor = state.bg
-    /** */
-    inline def getFg: CPColor = state.fg
-    /**  */
-    inline def isCrtEffect: Boolean = state.crtEffect
-
     /**
       *
       * @return
@@ -156,18 +150,6 @@ class CPMirGameManager:
       * @return
       */
     def isLatestStateLoadFailed: Boolean = loadFailed
-
-    /**
-      *
-      * @return
-      */
-    inline def getOs: CPMirOs = os
-
-    /**
-      *
-      * @return
-      */
-    inline def getPlayer: CPMirPlayer = player
 
     /**
       *

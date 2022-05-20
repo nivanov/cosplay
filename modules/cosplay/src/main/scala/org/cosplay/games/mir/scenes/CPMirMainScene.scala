@@ -17,6 +17,9 @@
 
 package org.cosplay.games.mir.scenes
 
+import org.cosplay.*
+import org.cosplay.games.mir.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -30,5 +33,5 @@ package org.cosplay.games.mir.scenes
                ALl rights reserved.
 */
 
-class CPMirMainScene
+object CPMirMainScene extends CPScene("main", None, BG_PX)
 
