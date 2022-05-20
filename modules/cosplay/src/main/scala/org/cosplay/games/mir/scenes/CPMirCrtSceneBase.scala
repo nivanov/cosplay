@@ -40,7 +40,6 @@ import prefabs.shaders.*
   * @param bgSndFile Background audio file name.
   */
 abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(id, None, BG_PX):
-
     private val bgSnd = CPSound(s"$SND_HOME/$bgSndFile", 0.3f)
     private val turnOnSnd = CPSound(s"$SND_HOME/crt_turn_on.wav")
     private val tearSnd = CPSound(s"$SND_HOME/crt_tear.wav")
@@ -54,6 +53,7 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
 
     // Make sure to call 'super(...)'.
     override def onActivate(): Unit =
+        // Handles only audio.
         turnOnSnd.play()
         knockSnd.play()
         bgSnd.loop(2000)
@@ -61,6 +61,8 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
 
     // Make sure to call 'super(...)'.
     override def onDeactivate(): Unit =
+        // Handles only audio.
         bgSnd.stop(500)
+        noiseSnd.stop()
 
 

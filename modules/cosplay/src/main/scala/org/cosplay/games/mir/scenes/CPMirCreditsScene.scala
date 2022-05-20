@@ -18,7 +18,7 @@
 package org.cosplay.games.mir.scenes
 
 import org.cosplay.*
-import org.cosplay.games.mir.*
+import games.mir.*
 
 /*
    _________            ______________

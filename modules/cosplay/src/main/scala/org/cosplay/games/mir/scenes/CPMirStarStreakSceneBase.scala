@@ -52,12 +52,14 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
         ),
         skip = (zpx, _, _) ⇒ zpx.z >= 1
     )
-    
+
+    // Make sure to call 'super(...)'.
     override def onActivate(): Unit =
         super.onActivate()
         starStreakShdr.start()
         if stateMgr.state.crtEffect then crtShdr.start()
 
+    // Make sure to call 'super(...)'.
     override def onDeactivate(): Unit =
         super.onDeactivate()
         starStreakShdr.stop()
