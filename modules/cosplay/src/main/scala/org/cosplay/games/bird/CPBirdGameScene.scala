@@ -74,12 +74,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private val minWidth = 3
     private val maxWidth = 10
     private val minHeight = 3
-    private val maxHeight = 15
-    private val minDepth = -4
-    private val maxDepth = 0
+    private val maxHeight = 12
+    private val minDepth = -5
+    private val maxDepth = -1
 
     private var buildingAmount = 0
     private var buildingTotal = 0
+    private val buildingGap = 8
 
     private val buildingSpeed = 0.6f
 
@@ -148,7 +149,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             // Building spawner.
             if ctx.getObjectsForTags("building").length < (canv.width / 6).toInt then
                 for x <- 0 to (canv.width / 6).toInt do
-                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * 11, canv.height, Random.between(minDepth, maxDepth).toInt))
+                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * 8, canv.height, Random.between(minDepth, maxDepth).toInt))
                     buildingAmount += 1
                     buildingTotal += 1
 
@@ -157,7 +158,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             setX((ctx.getCanvas.width / 2) - 3)
 
     private val pipeSpr = new CPCanvasSprite("pipe"):
-        private val px = '|'&C_GREEN
+        private val px = '|'&&(C_GREEN,C_GREEN)
         override def render(ctx: CPSceneObjectContext): Unit =
             super.render(ctx)
             val canv = ctx.getCanvas
@@ -219,13 +220,34 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     buildingAmount -= 1
                     ctx.deleteObject(getId)
 
+    private val grass = new CPCanvasSprite("grass"):
+        private val grassPx = '/'&&(C_DARK_GREEN,C_GREEN)
+        private val dirtPx = '.'&&(C_SANDY_BROWN, C_X11_BROWN)
+
+        private val dirtHeight = 1
+        override def render(ctx: CPSceneObjectContext): Unit =
+            super.render(ctx)
+            val canv = ctx.getCanvas
+
+            // Creating grass.
+            val grassHeight = canv.height - 2
+
+            for (index <- grassHeight to canv.height) do
+                canv.drawLine(0, index, canv.width, index, -1, grassPx)
+
+            // Creating dirt.
+            val dirtHeight = canv.height - 1
+
+            for (index <- dirtHeight to canv.height) do
+                canv.drawLine(0, index, canv.width, index, -1, dirtPx)
 
     addObjects(
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         birdSpr,
         pipeSpr,
-        scoreSpr
+        scoreSpr,
+        grass
     )
 
 
