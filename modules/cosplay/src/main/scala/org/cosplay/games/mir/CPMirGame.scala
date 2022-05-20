@@ -19,6 +19,7 @@ package org.cosplay.games.mir
 
 import org.cosplay.*
 import prefabs.scenes.*
+import games.mir.scenes.*
 import CPColor.*
 import CPPixel.*
 
@@ -36,10 +37,13 @@ import CPPixel.*
 */
 
 val EVENT_YEAR = 1997
+val NPC_CNT = 2
 
-val BG = CPColor("0x000300")
-val FG = CPColor("0x00AF00")
+val stateMgr = CPMirStateManager()
+val BG = stateMgr.state.bg
+val FG = stateMgr.state.fg
 val BG_PX = ' '&&(BG, BG)
+val SND_HOME = "sounds/games/mir"
 
 /**
   *
@@ -63,15 +67,12 @@ object CPMirGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPFadeShimmerLogoScene(
-                    "logo",
-                    None,
-                    BG_PX,
-                    Seq(FG),
-                    "title",
-                    fadeInMs = 3000
-                ),
-                CPMirTitleScene
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
+                CPMirTitleScene,
+                CPMirMenuScene,
+                CPMirSettingsScene,
+                CPMirTutorialScene,
+                CPMirCreditsScene,
             )
         finally CPEngine.dispose()
 
