@@ -19,6 +19,7 @@ package org.cosplay.games.mir.scenes
 
 import org.cosplay.*
 import CPPixel.*
+import CPColor.*
 import CPArrayImage.*
 import games.mir.*
 import prefabs.sprites.*
@@ -41,29 +42,31 @@ import prefabs.shaders.*
   * Main menu scene.
   */
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
-    private val img = CPArrayImage(
-        dlgMarkup.process(
+    private val img = new CPArrayImage(
+        prepSeq(
             """
-              |Game Menu
-              |_________
-              |
-              |[C] - Continue
-              |
-              |[N] - New Game
-              |[S] - Save Game
-              |[L] - Load Game
-              |
-              |[O] - Options
-              |[T] - Tutorial
-              |[Q] - Quit
-              |""".stripMargin
+              |   ____________________
+              |,-'                    `-.
+              ||    G a m e  M e n u    |
+              ||________________________|
+              ||                        |
+              ||     [C] - Continue     |
+              ||                        |
+              ||     [N] - New Game     |
+              ||     [S] - Save Game    |
+              ||     [L] - Load Game    |
+              ||                        |
+              ||     [O] - Options      |
+              ||     [T] - Tutorial     |
+              ||     [Q] - Quit         |
+              |'-.____________________,-'
+              """
         ),
-        REV_BG_PX,
-        align = -1
-    ).resizeByInsets(CPInsets(4, 10, 4, 10), REV_BG_PX)
+        (ch, _, _) => ch&&(FG, BG)
+    ).trimBg()
 
     addObjects(
-        new CPCenteredImageSprite(img = img, 1, Seq(CPBorderShader(false, 3, true, -.05f, true))),
+        new CPCenteredImageSprite(img = img, z = 1),
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
     )
