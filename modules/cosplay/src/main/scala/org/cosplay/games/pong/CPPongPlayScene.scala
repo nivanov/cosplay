@@ -29,6 +29,7 @@ import pong.shaders.*
 import CPSlideDirection.*
 import org.apache.commons.lang3.SystemUtils
 import org.cosplay.prefabs.particles.confetti.CPConfettiEmitter
+import org.cosplay.prefabs.sprites.CPCenteredImageSprite
 
 /*
    _________            ______________

@@ -43,7 +43,16 @@ val stateMgr = CPMirStateManager()
 val BG = stateMgr.state.bg
 val FG = stateMgr.state.fg
 val BG_PX = ' '&&(BG, BG)
+val REV_BG_PX = ' '&&(BG, FG)
 val SND_HOME = "sounds/games/mir"
+val dlgMarkup = CPMarkup(
+    BG,
+    Option(FG),
+    Seq(
+        CPMarkupElement("%1", "1%", _&&(BG.lighter(0.3f), FG)),
+        CPMarkupElement("%2", "2%", _&&(BG, FG.darker(0.5f)))
+    )
+)
 
 /**
   *
@@ -67,7 +76,7 @@ object CPMirGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"menu", fadeInMs = 3000),
                 CPMirTitleScene,
                 CPMirMenuScene,
                 CPMirSettingsScene,

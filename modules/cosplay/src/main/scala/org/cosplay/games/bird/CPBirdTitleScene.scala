@@ -37,6 +37,7 @@ import CPPixel.*
 import org.cosplay.CPArrayImage.*
 import prefabs.scenes.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 import shaders.*
 
 object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
@@ -60,7 +61,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         autoStart = true,
         skip = (zpx, _, _) ⇒ zpx.z == 1
     )
-    private val borderSdr = CPBorderShader(true, 5, -.03f, true)
+    private val borderSdr = CPBorderShader(true, 5, true, -.03f, true)
     private val blinkShdr = CPBirdBlinkShader()
 
     // Add scene objects...

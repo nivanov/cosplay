@@ -148,7 +148,7 @@ object CPUtils:
             else
                 if idx < bufs.size then bufs(idx) += t else bufs += ArrayBuffer(t)
 
-        bufs.filter(_.nonEmpty).map(_.toSeq).toSeq
+        bufs.map(_.toSeq).toSeq
 
     /**
       * Trims leading and trailing elements satisfying given predicate.

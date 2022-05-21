@@ -163,7 +163,7 @@ class CPOldCRTShader(
                             val zpx = canv.getZPixel(x, y)
                             val px = zpx.px
                             canv.drawPixel(px, x - d, y, zpx.z)
-                            canv.drawPixel(px.withChar(' '), x, y, zpx.z)
+                            canv.drawPixel(px.withChar('x').withLighterFg(.5f), x, y, zpx.z)
                         x += 1
                     d += 1
                 if snd.isDefined then snd.get.play()

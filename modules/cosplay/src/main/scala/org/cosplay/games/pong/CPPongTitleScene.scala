@@ -24,6 +24,7 @@ import CPArrayImage.*
 import CPPixel.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 import games.pong.shaders.*
 
 /*

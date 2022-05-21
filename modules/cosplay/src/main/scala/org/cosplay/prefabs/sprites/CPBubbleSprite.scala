@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay
+package org.cosplay.prefabs.sprites
 
 import org.cosplay.*
 import org.cosplay.prefabs.shaders.*

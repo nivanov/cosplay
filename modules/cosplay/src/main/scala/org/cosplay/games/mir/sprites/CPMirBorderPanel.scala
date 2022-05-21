@@ -15,14 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes
-
-import org.cosplay.*
-import games.mir.*
-import CPKeyboardKey.*
-import prefabs.images.ani.CPSpinningGlobeAniImage
-import prefabs.shaders.*
-import prefabs.sprites.*
+package org.cosplay.games.mir.sprites
 
 /*
    _________            ______________
@@ -37,24 +30,9 @@ import prefabs.sprites.*
                ALl rights reserved.
 */
 
-/**
-  *
-  */
-object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "bg2.wav"):
-    private val logoImg = CPImage.loadRexXp("images/games/mir/mir_logo.xp").trimBg()
-    private val spinGlobeImgs = CPSpinningGlobeAniImage.trimBg().split(47, 23).map(
-        _.skin((px, _, _) ⇒ px.withDarkerFg(0.85f))
-    )
-    private val spinGlobeAni = CPAnimation.filmStrip("ani", 99, true, false, spinGlobeImgs)
-    private val spinGlobeSpr = CPAnimationSprite("spr", Seq(spinGlobeAni), 4, 1, 1, "ani")
+import org.cosplay.*
 
-    addObjects(
-        // Main logo.
-        CPCenteredImageSprite(img = logoImg, z = 2),
-        // Spinning globe.
-        spinGlobeSpr,
-        // Add full-screen shaders - order is important.
-        new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr)),
-        // Transition to the next scene on 'Enter' press.
-        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.switchScene("menu")))
-    )
+class CPMirBorderPanel(bgPx: CPPixel, insets: CPInsets, img: CPImage,
+    z: Int,
+    shaders: Seq[CPShader] = Seq.empty)
+

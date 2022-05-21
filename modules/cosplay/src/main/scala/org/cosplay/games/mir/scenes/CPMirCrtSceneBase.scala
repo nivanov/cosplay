@@ -49,7 +49,7 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
     // Should be controlled by the subclass.
     protected val fadeInShdr: CPSlideInShader = CPSlideInShader.sigmoid(CPSlideDirection.TOP_TO_BOTTOM, true, 3000, bgPx = BG_PX)
     protected val fadeOutShdr: CPFadeOutShader = CPFadeOutShader(true, 500, bgPx = BG_PX)
-    protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(lineEffectProb = 1f, .03f, tearSnd = Option(tearSnd))
+    protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(lineEffectProb = 1f, 1f/*.03f*/, tearSnd = Option(tearSnd))
 
     // Make sure to call 'super(...)'.
     override def onActivate(): Unit =

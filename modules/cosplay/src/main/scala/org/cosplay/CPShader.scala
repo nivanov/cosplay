@@ -105,6 +105,14 @@ package org.cosplay
   * technique for such cases is to have only one off-screen sprite that attaches all full-screen shaders so that
   * their order can be easily defined and controlled.
   *
+  * ### Order Of Processing
+  * Note that shader pass consists of two phases:
+  * - On the 1st phase shaders for all visible scene objects are processed
+  * - On the 2nd phase shaders for all invisible scene objects are processed.
+  * This allows to minimize the interference between object shaders and full-screen shaders that are typically
+  * attached to the off-screen sprite that is invisible. In other words, full-screen shaders will be execute 
+  * after all object shaders in a given scene.
+  *
   * @see [[org.cosplay.prefabs.shaders.CPFadeInShader]]
   * @see [[org.cosplay.prefabs.shaders.CPFadeOutShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.

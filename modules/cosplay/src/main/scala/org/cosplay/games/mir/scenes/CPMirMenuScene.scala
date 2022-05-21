@@ -19,6 +19,8 @@ package org.cosplay.games.mir.scenes
 
 import org.cosplay.*
 import games.mir.*
+import prefabs.sprites.*
+import prefabs.shaders.*
 
 /*
    _________            ______________
@@ -43,7 +45,29 @@ import games.mir.*
   * [Q] - Quit
   */
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
+    private val img = CPArrayImage(
+        dlgMarkup.process(
+            """
+              |Game Menu
+              |_________
+              |
+              |[C] - Continue
+              |
+              |[N] - New Game
+              |[S] - Save Game
+              |[L] - Load Game
+              |
+              |[O] - Options
+              |[T] - Tutorial
+              |[Q] - Quit
+              |""".stripMargin
+        ),
+        REV_BG_PX,
+        align = -1
+    ).cropByInsets(CPInsets(4, 10, 4, 10), REV_BG_PX)
+
     addObjects(
+        new CPCenteredImageSprite(img = img, 1, Seq(CPBorderShader(false, 4, true, -.05f, true))),
         // Add full-screen shaders - order is important.
-        new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
+        new CPOffScreenSprite(shaders = Seq(/*starStreakShdr, */crtShdr, fadeInShdr, fadeOutShdr))
     )
