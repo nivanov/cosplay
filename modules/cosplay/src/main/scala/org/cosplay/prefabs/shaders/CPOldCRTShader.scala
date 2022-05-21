@@ -62,7 +62,7 @@ class CPOldCRTShader(
     tearSnd: Option[CPSound] = None
 ) extends CPShader:
     private val LINE_EFF_SIZE = 5
-    private val LINE_EFF_FACTOR = .02f
+    private val LINE_EFF_FACTOR = .03f
     private val TEAR_LINE_NUM = 2
 
     private var go = autoStart
@@ -162,8 +162,9 @@ class CPOldCRTShader(
                         if canv.isValid(x, y) && canv.isValid(x - d, y) then
                             val zpx = canv.getZPixel(x, y)
                             val px = zpx.px
-                            canv.drawPixel(px, x - d, y, zpx.z)
-                            canv.drawPixel(px.withChar('x').withLighterFg(.5f), x, y, zpx.z)
+                            // NOTE: we override Z-index to make sure effects happens regardless of the existing Z-index.
+                            canv.drawPixel(px, x - d, y, Int.MaxValue)
+                            canv.drawPixel(px.withChar(' '), x, y, Int.MaxValue)
                         x += 1
                     d += 1
                 if snd.isDefined then snd.get.play()

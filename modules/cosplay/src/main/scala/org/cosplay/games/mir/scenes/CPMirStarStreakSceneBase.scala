@@ -57,12 +57,10 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
     override def onActivate(): Unit =
         super.onActivate()
         starStreakShdr.start()
-        if stateMgr.state.crtEffect then crtShdr.start()
 
     // Make sure to call 'super(...)'.
     override def onDeactivate(): Unit =
         super.onDeactivate()
         starStreakShdr.stop()
-        if stateMgr.state.crtEffect then crtShdr.stop()
 
 
