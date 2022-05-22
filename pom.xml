@@ -125,7 +125,7 @@
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
         <exec.maven.ver>3.0.0</exec.maven.ver>
         <jna.ver>5.11.0</jna.ver>
-        <mixpanel.ver>1.4.4</mixpanel.ver>
+        <mixpanel.ver>1.5.0</mixpanel.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
 
