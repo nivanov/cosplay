@@ -43,7 +43,6 @@ val stateMgr = CPMirStateManager()
 val BG = stateMgr.state.bg
 val FG = stateMgr.state.fg
 val BG_PX = ' '&&(BG, BG)
-val REV_BG_PX = ' '&&(BG, FG)
 val SND_HOME = "sounds/games/mir"
 val dlgMarkup = CPMarkup(
     BG,

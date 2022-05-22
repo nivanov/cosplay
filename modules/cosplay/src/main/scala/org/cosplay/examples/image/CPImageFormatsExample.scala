@@ -96,7 +96,6 @@ object CPImageFormatsExample:
                 |     .         +   .  .  ...:: ..| `--.:|
                 |.      . . .   .  .  . ... :..:.."(  ..)"
                 | .   .       .      :  .   .: ::/  .  .::\
-                |
             """),
             (ch, _, _) => ch match
                 // Static skinning.
