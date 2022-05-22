@@ -36,7 +36,7 @@ import games.mir.*
 /**
   * 
   */
-object CPMirSettingsScene extends CPMirStarStreakSceneBase("settings", "bg1.wav"):
+object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
     addObjects(
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))

@@ -79,7 +79,7 @@ object CPMirGame:
                 new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
                 CPMirTitleScene,
                 CPMirMenuScene,
-                CPMirSettingsScene,
+                CPMirOptionsScene,
                 CPMirTutorialScene,
                 CPMirCreditsScene,
             )

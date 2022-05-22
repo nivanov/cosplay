@@ -21,6 +21,7 @@ import org.cosplay.*
 import CPPixel.*
 import CPColor.*
 import CPArrayImage.*
+import CPKeyboardKey.*
 import games.mir.*
 import prefabs.sprites.*
 import prefabs.shaders.*
@@ -47,18 +48,20 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
             """
               |   ____________________
               |,-'                    `-.
-              ||    G a m e  M e n u    |
-              ||________________________|
-              ||                        |
-              ||     [C] - Continue     |
-              ||                        |
-              ||     [N] - New Game     |
-              ||     [S] - Save Game    |
-              ||     [L] - Load Game    |
-              ||                        |
-              ||     [O] - Options      |
-              ||     [T] - Tutorial     |
-              ||     [Q] - Quit         |
+              ||    G a m e  M e n u    |.
+              ||________________________|.
+              ||                        |.
+              ||                        |.
+              ||     [C] - Continue     |.
+              ||                        |.
+              ||     [N] - New Game     |.
+              ||     [S] - Save Game    |.
+              ||     [L] - Load Game    |.
+              ||                        |.
+              ||     [O] - Options      |.
+              ||     [T] - Tutorial     |.
+              ||     [Q] - Quit         |.
+              ||                        |.
               |'-.____________________,-'
               """
         ),
@@ -67,6 +70,12 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
 
     addObjects(
         new CPCenteredImageSprite(img = img, z = 1),
+        new CPKeyboardSprite((ctx, key) ⇒ key match
+            case KEY_LO_Q ⇒ ctx.exitGame()
+            case KEY_LO_T ⇒ fadeOutShdr.start(_.switchScene("tutorial"))
+            case KEY_LO_O ⇒ fadeOutShdr.start(_.switchScene("options"))
+            case _ ⇒ ()
+        ),
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
     )
