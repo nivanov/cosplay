@@ -15,7 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes
+package org.cosplay.games.mir.scenes.images
+
+import org.cosplay.*
+import games.mir.*
+import CPPixel.*
+import CPArrayImage.*
 
 /*
    _________            ______________
@@ -30,37 +35,24 @@ package org.cosplay.games.mir.scenes
                ALl rights reserved.
 */
 
-import org.cosplay.*
-import games.mir.*
-import prefabs.shaders.*
-
-/**
-  *
-  * @param id ID of the scene.
-  * @param bgSndFile Background audio file name.
-  */
-abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends CPMirCrtSceneBase(id, bgSndFile):
-    private val colors = Seq(FG)
-
-    protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
-        true,
-        BG,
-        Seq(
-            CPStarStreak('.', colors, 0.025, 30, (-.3f, 0f), 0),
-            CPStarStreak('.', colors, 0.015, 25, (-.7f, 0f), 0),
-            CPStarStreak('_', colors, 0.005, 50, (-1f, 0f), 0)
-        ),
-        skip = (zpx, _, _) ⇒ zpx.z >= 1
-    )
-
-    // Make sure to call 'super(...)'.
-    override def onActivate(): Unit =
-        super.onActivate()
-        starStreakShdr.start()
-
-    // Make sure to call 'super(...)'.
-    override def onDeactivate(): Unit =
-        super.onDeactivate()
-        starStreakShdr.stop()
+object CPMirSatellite1Image extends CPArrayImage(
+    prepSeq("""
+        |                }--O--{                
+        |                  [^]                  
+        |                 /ooo\                 
+        | ______________:/o   o\:______________ 
+        ||=|=|=|=|=|=|:A|":|||:"|A:|=|=|=|=|=|=|
+        |^''''''''''''''!::{o}::!''''''''''''''^
+        |                \     /                
+        |                 \.../                 
+        |      ____       '---'       ____      
+        |     |\/\/|=======|*|=======|\/\/|     
+        |     :----'       /-\       '----:     
+        |                 /ooo\                 
+        |                #|ooo|#                
+        |                 \___/                 
+    """),
+    (ch, _, _) => ch&FG
+)
 
 

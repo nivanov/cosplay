@@ -147,9 +147,9 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
   */
 object CPArrayImage:
     /**
-      * This is a special constructor that expects given sequence of pixels to represent a one or
-      * multiple lines of text. This method takes given pixels, splits then into individual lines by the
-      * system-specific new line sequence, and aligned those lines based on the [[align]] parameter. In the
+      * This is a special constructor that expects given sequence of pixels to represent one or
+      * multiple lines of text. This method takes given pixels, splits them into individual lines by the
+      * system-specific new line separator, and then aligns those lines based on the [[align]] parameter. In the
       * end, it creates a new image from those split and aligned lines of text.
       *
       * @param pxs List of pixels to split and align.

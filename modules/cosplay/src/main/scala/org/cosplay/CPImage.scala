@@ -281,20 +281,20 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       *
       * @param newDim Dimension to crop  by.
       * @param bgPx Background pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
-      * @see [[cropByInsets()]]
+      * @see [[resizeByInsets()]]
       */
-    def cropByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
+    def resizeByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
-        cropByInsets(new CPInsets((newDim.w - dim.w) / 2, (newDim.h - dim.h) / 2))
+        resizeByInsets(new CPInsets((newDim.w - dim.w) / 2, (newDim.h - dim.h) / 2))
 
     /**
       * Crops this image using given insets. Insets can be positive or negative.
       *
       * @param insets Insets to crop by.
       * @param bgPx Background pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
-      * @see [[cropByDim()]]
+      * @see [[resizeByDim()]]
       */
-    def cropByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
+    def resizeByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
         val w = dim.w + insets.horOffset
         val h = dim.h + insets.verOffset

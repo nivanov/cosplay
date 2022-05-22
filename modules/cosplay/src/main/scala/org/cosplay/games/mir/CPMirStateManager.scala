@@ -49,6 +49,7 @@ import scala.collection.mutable
   */
 @SerialVersionUID(1_0_0L)
 case class CPMirState(
+    gameId: String = CPRand.guid6,
     os: CPMirOs,
     player: CPMirPlayer,
     crew: Seq[CPMirPlayer],
@@ -63,7 +64,7 @@ case class CPMirState(
   *
   */
 object CPMirStateManager:
-    private final val DFLT_BG = CPColor("0x000300")
+    private final val DFLT_BG = CPColor("0x010101")
     private final val DFLT_FG = CPColor("0x00AF00")
 
 import CPMirStateManager.*

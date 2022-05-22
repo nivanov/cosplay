@@ -36,10 +36,17 @@ import CPZPixel.*
 
 /**
   *
+  * @param entireFrame
+  * @param width
+  * @param compensateWidth
+  * @param colorMixPerStep
+  * @param autoStart
+  * @param skip
   */
 class CPBorderShader(
     entireFrame: Boolean,
     width: Int,
+    compensateWidth: Boolean = true,
     colorMixPerStep: Float,
     autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
@@ -78,18 +85,36 @@ class CPBorderShader(
         if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             val canv = ctx.getCanvas
+
             def updatePx(x: Int, y: Int, colorMix: Float): Unit =
-                def mixColor(c: CPColor): CPColor = if colorMix < 0 then c.darker(colorMix.abs) else c.lighter(colorMix)
+                val mix = if colorMix < -1f then -1f else if colorMix > 1f then 1f else colorMix
+                def mixColor(c: CPColor): CPColor = if mix < 0 then c.darker(mix.abs) else c.lighter(mix)
                 val zpx = canv.getZPixel(x, y)
                 val px = zpx.px
                 if px.bg.nonEmpty then
                     canv.drawPixel(px.withBg(Option(mixColor(px.bg.get))), x, y, zpx.z)
 
-            for (d <- 0 until width)
-                val mix = (width - d) * colorMixPerStep
-                for (x <- (rect.xMin + d) to (rect.xMax - d))
-                    updatePx(x, rect.yMin + d, mix)
-                    updatePx(x, rect.yMax - d, mix)
-                for (y <- (rect.yMin + d + 1) until (rect.yMax - d))
-                    updatePx(rect.xMin + d, y, mix)
-                    updatePx(rect.xMax - d, y, mix)
+            if !compensateWidth then
+                for (d <- 0 until width)
+                    val mix = (width - d) * colorMixPerStep
+                    for (x <- (rect.xMin + d) to (rect.xMax - d))
+                        updatePx(x, rect.yMin + d, mix)
+                        updatePx(x, rect.yMax - d, mix)
+                    for (y <- (rect.yMin + d + 1) until (rect.yMax - d))
+                        updatePx(rect.xMin + d, y, mix)
+                        updatePx(rect.xMax - d, y, mix)
+            else
+                for (d <- 0 until width)
+                    val mix = (width - d) * colorMixPerStep
+                    for (x <- (rect.xMin + d * 2) to (rect.xMax - d * 2))
+                        updatePx(x, rect.yMin + d, mix)
+                        updatePx(x, rect.yMax - d, mix)
+                var d = 0
+                for (k <- 0 until width)
+                    val mix = (width - k) * colorMixPerStep
+                    for (y <- (rect.yMin + k + 1) until (rect.yMax - k))
+                        updatePx(rect.xMin + d, y, mix)
+                        updatePx(rect.xMin + d + 1, y, mix)
+                        updatePx(rect.xMax - d - 1, y, mix)
+                        updatePx(rect.xMax - d, y, mix)
+                    d += 2

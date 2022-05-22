@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes
+package org.cosplay.games.mir.scenes.images
 
 import org.cosplay.*
 import games.mir.*
+import CPPixel.*
+import CPArrayImage.*
 
 /*
    _________            ______________
@@ -34,12 +36,26 @@ import games.mir.*
 */
 
 /**
-  * 
+  *
   */
-object CPMirSettingsScene extends CPMirStarStreakSceneBase("settings", "bg1.wav"):
-    addObjects(
-        // Add full-screen shaders - order is important.
-        new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
-    )
+object CPMirSpaceshipImage extends CPArrayImage(
+    prepSeq("""
+        |                     `. ___
+        |                    __,' __`.                _..----....____
+        |        __...--.'``;.   ,.   ;``--..__     .'    ,-._    _.-'
+        |  _..-''-------'   `'   `'   `'     O ``-''._   (,;') _,'
+        |,'________________                          \`-._`-','
+        | `._              ```````````------...___   '-.._'-:
+        |    ```--.._      ,.                     ````--...__\-.
+        |            `.--. `-`                       ____    |  |`
+        |              `. `.                       ,'`````.  ;  ;`
+        |                `._`.        __________   `.      \'__/`
+        |                   `-:._____/______/___/____`.     \  `
+        |                               |       `._    `.    \
+        |                               `._________`-.   `.   `.___
+        |                                                  `------'`
+    """),
+    (ch, _, _) => ch&FG
+)
 
 

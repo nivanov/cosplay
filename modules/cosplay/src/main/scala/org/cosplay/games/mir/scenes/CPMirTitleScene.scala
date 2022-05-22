@@ -20,8 +20,10 @@ package org.cosplay.games.mir.scenes
 import org.cosplay.*
 import games.mir.*
 import CPKeyboardKey.*
-import prefabs.images.ani.CPSpinningGlobeAniImage
+import scenes.images.*
+import prefabs.images.ani.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 
 /*
    _________            ______________
@@ -46,6 +48,36 @@ object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "bg2.wav"):
     )
     private val spinGlobeAni = CPAnimation.filmStrip("ani", 99, true, false, spinGlobeImgs)
     private val spinGlobeSpr = CPAnimationSprite("spr", Seq(spinGlobeAni), 4, 1, 1, "ani")
+    private val ghostCtrlSpr = new CPOffScreenSprite:
+        private val imgs = Seq(
+            CPMirAstronautImage,
+            CPMirSatellite1Image,
+            CPMirSatellite2Image,
+            CPMirRocket2Image,
+            CPMirCapsuleImage
+        ).map(_.trimBg())
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            if ctx.getSceneFrameCount > 100 then
+                ctx.getObject("ghost") match
+                    case None ⇒
+                        val canv = ctx.getCanvas
+                        val img = CPRand.rand(imgs)
+                        val (dy, y) = if CPRand.randFloat() < .5f then (-.3f, canv.yMax + 1) else (.3f, -img.h - 1)
+                        val dx = .3f * (if dy < 0 && CPRand.randFloat() < .5f then -1 else 1)
+                        ctx.addObject(new CPBubbleSprite(
+                            "ghost",
+                            img = img,
+                            initX = (canv.w - img.w) / 2,
+                            initY = y,
+                            z = 1,
+                            dxf = _ ⇒ dx,
+                            dyf = _ ⇒ dy,
+                            bgPx = BG_PX,
+                            durMs = 3500,
+                            autoDelete = true
+                        ))
+                    case Some(_) ⇒ ()
 
     addObjects(
         // Main logo.
@@ -55,5 +87,7 @@ object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "bg2.wav"):
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr)),
         // Transition to the next scene on 'Enter' press.
-        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.switchScene("menu")))
+        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.switchScene("menu"))),
+        // Control sprite for ghost images.
+        ghostCtrlSpr
     )

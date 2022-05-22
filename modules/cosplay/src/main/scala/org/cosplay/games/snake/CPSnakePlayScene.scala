@@ -26,6 +26,7 @@ import CPArrayImage.*
 import CPPixel.*
 import CPColor.*
 import CPKeyboardKey.*
+import org.cosplay.prefabs.sprites.{CPBubbleSprite, CPCenteredImageSprite}
 import prefabs.particles.confetti.*
 
 /*

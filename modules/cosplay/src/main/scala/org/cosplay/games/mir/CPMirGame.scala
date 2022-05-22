@@ -44,6 +44,14 @@ val BG = stateMgr.state.bg
 val FG = stateMgr.state.fg
 val BG_PX = ' '&&(BG, BG)
 val SND_HOME = "sounds/games/mir"
+val dlgMarkup = CPMarkup(
+    BG,
+    Option(FG),
+    Seq(
+        CPMarkupElement("%1", "1%", _&&(BG.lighter(0.3f), FG)),
+        CPMarkupElement("%2", "2%", _&&(BG, FG.darker(0.5f)))
+    )
+)
 
 /**
   *
@@ -70,7 +78,7 @@ object CPMirGame:
                 new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
                 CPMirTitleScene,
                 CPMirMenuScene,
-                CPMirSettingsScene,
+                CPMirOptionsScene,
                 CPMirTutorialScene,
                 CPMirCreditsScene,
             )

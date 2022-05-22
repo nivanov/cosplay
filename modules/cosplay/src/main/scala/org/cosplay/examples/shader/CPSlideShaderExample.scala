@@ -38,6 +38,8 @@ import CPKeyboardKey.*
 import prefabs.scenes.*
 import prefabs.shaders.*
 import CPSlideDirection.*
+import org.cosplay.prefabs.sprites.CPCenteredImageSprite
+
 import scala.collection.mutable
 
 /**

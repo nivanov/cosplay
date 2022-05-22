@@ -20,6 +20,7 @@ package org.cosplay.games.mir.scenes
 import org.cosplay.*
 import games.mir.*
 import prefabs.shaders.*
+import CPSlideDirection.*
 
 /*
    _________            ______________
@@ -47,8 +48,19 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
     private val noiseSnd = CPSound(s"$SND_HOME/crt_noise.wav")
 
     // Should be controlled by the subclass.
-    protected val fadeInShdr: CPSlideInShader = CPSlideInShader.sigmoid(CPSlideDirection.TOP_TO_BOTTOM, true, 3000, bgPx = BG_PX)
-    protected val fadeOutShdr: CPFadeOutShader = CPFadeOutShader(true, 500, bgPx = BG_PX)
+    protected val fadeInShdr: CPSlideInShader = CPSlideInShader.sigmoid(
+        CENTRIFUGAL,
+        true,
+        2500,
+        bgPx = BG_PX,
+        onFinish = _ ⇒ if stateMgr.state.crtEffect then crtShdr.start()
+    )
+    protected val fadeOutShdr: CPFadeOutShader = CPFadeOutShader(
+        true,
+        500,
+        bgPx = BG_PX,
+        onFinish = _ ⇒ if stateMgr.state.crtEffect then crtShdr.stop()
+    )
     protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(lineEffectProb = 1f, .03f, tearSnd = Option(tearSnd))
 
     // Make sure to call 'super(...)'.

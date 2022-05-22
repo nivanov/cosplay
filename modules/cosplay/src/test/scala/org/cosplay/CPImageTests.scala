@@ -51,17 +51,17 @@ object CPImageTests:
     @Test
     def resizeTest(): Unit =
         val img = CPSystemFont.render("test image", C_WHITE)
-        val szImg = img.cropByDim(CPDim(img.getWidth + 10, img.getHeight))
+        val szImg = img.resizeByDim(CPDim(img.getWidth + 10, img.getHeight))
         val szDim = szImg.getDim
         assertTrue(szDim.w == img.getDim.w + 10)
         assertTrue(szDim.h == img.getDim.h)
 
-        val szImg2 = img.cropByInsets(CPInsets(1, 2, 1, 5))
+        val szImg2 = img.resizeByInsets(CPInsets(1, 2, 1, 5))
         val szDim2 = szImg2.getDim
         assertTrue(szDim2.w == img.getDim.w + 2 + 5)
         assertTrue(szDim2.h == img.getDim.h + 1 + 1)
 
-        val szImg3 = img.cropByInsets(CPInsets(-1, 2, 1, -5))
+        val szImg3 = img.resizeByInsets(CPInsets(-1, 2, 1, -5))
         val szDim3 = szImg3.getDim
         assertTrue(szDim3.w == img.getDim.w + 2 - 5)
         assertTrue(szDim3.h == img.getDim.h - 1 + 1)

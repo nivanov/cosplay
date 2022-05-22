@@ -1056,14 +1056,16 @@ object CPEngine:
                     visObjCnt += 1
 
                 // Shader pass for all objects (including invisible and outside the frame).
-                for (obj <- objs if !stopFrame)
-                    val shaders = obj.getShaders
-                    if shaders.nonEmpty then
-                        val objRect = obj.getRect
-                        val inCamera = camRect.overlaps(objRect)
-                        for (shdr <- shaders if !stopFrame)
-                            ctx.setSceneObject(obj)
-                            shdr.render(ctx, objRect, inCamera)
+                // First, process shaders for all visible objects, then for all invisible objects.
+                for (set ← Seq(objs.filter(_.isVisible), objs.filter(!_.isVisible)) if !stopFrame)
+                    for (obj <- set if !stopFrame)
+                        val shaders = obj.getShaders
+                        if shaders.nonEmpty then
+                            val objRect = obj.getRect
+                            val inCamera = camRect.overlaps(objRect)
+                            for (shdr <- shaders if !stopFrame)
+                                ctx.setSceneObject(obj)
+                                shdr.render(ctx, objRect, inCamera)
 
                 val startSysNs = System.nanoTime()
 

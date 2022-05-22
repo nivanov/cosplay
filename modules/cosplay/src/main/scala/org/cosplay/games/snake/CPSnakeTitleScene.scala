@@ -22,6 +22,7 @@ import org.cosplay.*
 import CPColor.*
 import CPArrayImage.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 import CPPixel.*
 import CPKeyboardKey.*
 
