@@ -91,6 +91,8 @@ private object Astronaut2Image extends CPArrayImage(
   */
 class CPMirGhostSprite(avoidTopLeft: Boolean) extends CPOffScreenSprite:
     private final val CYCLE_MS = CPEngine.fps * 10
+    private val flyBySnd = CPSound(s"$SND_HOME/fly_by.wav", .3f)
+    private val sosSnd = CPSound(s"$SND_HOME/sos.wav", .1f)
     private val imgs = Seq(
         Astronaut1Image, Astronaut1Image.horFlip(),
         Astronaut2Image, Astronaut2Image.horFlip()
@@ -98,7 +100,8 @@ class CPMirGhostSprite(avoidTopLeft: Boolean) extends CPOffScreenSprite:
     override def update(ctx: CPSceneObjectContext): Unit =
         super.update(ctx)
         val frmCnt = ctx.getSceneFrameCount
-        if frmCnt > 0 && frmCnt % CYCLE_MS == 0 && ctx.getObject("ghost").isEmpty then
+        val exists = ctx.getObject("ghost").nonEmpty
+        if frmCnt > 0 && frmCnt % CYCLE_MS == 0 && !exists then
             val canv = ctx.getCanvas
             val img = CPRand.rand(imgs)
             val (dy, y) = if CPRand.coinFlip() then (-.3f, canv.yMax + 1) else (.3f, -img.h - 1)
@@ -116,3 +119,5 @@ class CPMirGhostSprite(avoidTopLeft: Boolean) extends CPOffScreenSprite:
                 durMs = 3500,
                 autoDelete = true
             ))
+            flyBySnd.play(1000)
+            sosSnd.play(1000)
