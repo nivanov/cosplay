@@ -202,7 +202,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     val (hx, hy) = snake.head
                     x = hx.toFloat
                     y = hy.toFloat
-                    if CPRand.randFloat() < .5f then
+                    if CPRand.coinFlip() then
                         dx = speed
                         dy = 0
                     else

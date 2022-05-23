@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes.images
+package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import games.mir.*
-import CPPixel.*
+import CPColor.*
 import CPArrayImage.*
+import CPPixel.*
 
 /*
    _________            ______________
@@ -36,36 +36,32 @@ import CPArrayImage.*
 */
 
 /**
-  *
-  */
-object CPMirCapsuleImage extends CPArrayImage(
-    prepSeq('#',
-        """
-        #       _..-.._
-        #    .'  _   _  `.
-        #   /_) (_) (_) (_\
-        #  /               \
-        #  |'''''''''''''''|
-        # /                 \
-        #|                   |
-        #|-------------------|
-        #|                   |
-        #|                   |
-        #|'''''''''''''''''''|
-        #|             .--.  |
-        #|            //  \\=|
-        #|            ||- || |
-        #|            \\__//=|
-        #|             '--'  |
-        #|...................|
-        #|___________________|
-        #|___________________|
-        #|___________________|
-        #|___________________|
-        #  /_______________\
-        #""".stripMargin('#'),
-        true),
-    (ch, _, _) => ch&FG
+ * https://www.asciiart.eu
+ */
+object CPMoon1Image extends CPArrayImage(
+    prepSeq("""
+     |         ___---___
+     |      .--         --.
+     |    ./   ()      .-. \.
+     |   /   o    .   (   )  \
+     |  / .            '-'    \
+     | | ()    .  O         .  |
+     ||                         |
+     ||    o           ()       |
+     ||       .--.          O   |
+     | | .   |    |            |
+     |  \    `.__.'    o   .  /
+     |   \                   /
+     |    `\  o    ()      /'
+     |      `--___   ___--'
+     |            ---
+    """),
+    (ch, _, _) => ch&C_GREY
 )
 
-
+/**
+ * Previews image using the built-in image viewer.
+ */
+@main def reviewMoonImage(): Unit =
+    CPImage.previewImage(CPMoon1Image.trimBg())
+    sys.exit(0)

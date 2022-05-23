@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes.images
+package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import games.mir.*
-import CPPixel.*
+import CPColor.*
 import CPArrayImage.*
+import CPPixel.*
 
 /*
    _________            ______________
@@ -36,28 +36,41 @@ import CPArrayImage.*
 */
 
 /**
-  *
+  * https://www.asciiart.eu/
   */
-object CPMirAstronautImage extends CPArrayImage(
-    prepSeq("""
-        |        _..._
-        |      .'     '.      _
-        |     /    .-""-\   _/ \
-        |   .-|   /:.   |  |   |
-        |   |  \  |:.   /.-'-./
-        |   | .-'-;:__.'    =/
-        |   .'=  *=|MIR  _.='
-        |  /   _.  |    ;
-        | ;-.-'|    \   |
-        |/   | \    _\  _\
-        |\__/'._;.  ==' ==\
-        |         \    \   |
-        |         /    /   /
-        |         /-._/-._/
-        |         \   `\  \
-        |          `-._/._/
-        """),
-    (ch, _, _) => ch&FG
+object CPCapsuleImage extends CPArrayImage(
+    prepSeq('#',
+        """
+          #       _..-.._
+          #    .'  _   _  `.
+          #   /_) (_) (_) (_\
+          #  /               \
+          #  |'''''''''''''''|
+          # /                 \
+          #|                   |
+          #|-------------------|
+          #|                   |
+          #|                   |
+          #|'''''''''''''''''''|
+          #|             .--.  |
+          #|            //  \\=|
+          #|            ||- || |
+          #|            \\__//=|
+          #|             '--'  |
+          #|...................|
+          #|___________________|
+          #|___________________|
+          #|___________________|
+          #|___________________|
+          #  /_______________\
+          #""".stripMargin('#'),
+        true),
+    (ch, _, _) => ch & C_GREEN
 )
 
-
+/**
+  * Previews image using the built-in image viewer.
+  */
+@main def previewCapsuleImage(): Unit =
+    CPImage.previewImage(CPCapsuleImage.trimBg())
+    sys.exit(0)

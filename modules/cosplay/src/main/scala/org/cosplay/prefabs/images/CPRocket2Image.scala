@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes.images
+package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import games.mir.*
-import CPPixel.*
+import CPColor.*
 import CPArrayImage.*
+import CPPixel.*
+
 
 /*
    _________            ______________
@@ -36,38 +37,39 @@ import CPArrayImage.*
 */
 
 /**
-  *
+  * https://www.asciiart.eu/
   */
-object CPMirTelescopeImage extends CPArrayImage(
-    prepSeq("""
-        |             ______
-        |          ,'"       "-._
-        |        ,'              "-._ _._
-        |        ;              __,-'/   |
-        |       ;|           ,-' _,'"'._,.
-        |       |:            _,'      |\ `.
-        |       : \       _,-'         | \  `.
-        |        \ \   ,-'             |  \   \
-        |         \ '.         .-.     |       \
-        |          \  \         "      |        :
-        |           `. `.              |        |
-        |             `. "-._          |        ;
-        |             / |`._ `-._      L       /
-        |            /  | \ `._   "-.___    _,'
-        |           /   |  \_.-"-.___   \"\"\""
-        |           \   :            /\"\"\"
-        |            `._\_       __.'_
-        |       __,--''_ ' "--'''' \_  `-._
-        | __,--'     .' /_  |   __. `-._   `-._
-        |<            `.  `-.-''  __,-'     _,-'
-        | `.            `.   _,-'"      _,-'
-        |   `.            ''"lka    _,-'
-        |     `.                _,-'
-        |       `.          _,-'
-        |         `.   __,'"
-        |           `'"
+object CPRocket2Image extends CPArrayImage(
+    prepSeq(
+        """
+          |           /\
+          |          /  \
+          |         /^^^^\
+          |         |----|
+          |         /    \
+          |        (|(||)|)
+          |         |^^^^|
+          |         /----\
+          |        /      \
+          |       /        \
+          |    O-[{[[||||]]}]-O
+          |      /|        |\
+          |     / |        | \
+          |    /  |        |  \
+          |   / -[{[[||||]]}]- \
+          |  /####|        |####\
+          | / I ^ /(::::::)\ ^ I \
+          |^--____{|!....!|}____--^
+          |       /--------\
+          |      /_|######|_\
+          |        ^^^^^^^^
     """),
-    (ch, _, _) => ch&FG
+    (ch, _, _) => ch&C_GREEN
 )
 
-
+/**
+  * Previews image using the built-in image viewer.
+  */
+@main def previewRocket2Image(): Unit =
+    CPImage.previewImage(CPRocket2Image.trimBg())
+    sys.exit(0)

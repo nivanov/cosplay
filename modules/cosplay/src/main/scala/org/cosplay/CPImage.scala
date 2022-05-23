@@ -142,10 +142,12 @@ import scala.util.Using
   *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native format
   *    used by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and can be loaded
   *    by the REXPaint.This format supports full color information.
+  *  - `*.txt` Text format. This format does not retain color inforation.
   *
   *  Use the following methods to save the image to the file path:
   *   - [[saveRexCsv() saveRexCsv(...)]]
   *   - [[saveRexXp() saveRexXp(...)]]
+  *   - [[saveTxt() saveTxt(...)]]
   *
   * ### ASCII Art Online
   * There's a vast collection of existing ASCII art imagery online. Here's some of the main resources where
@@ -215,6 +217,33 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             ps.println(s"CosPlay image [${dim.w}x${dim.h}, origin=$origin, bg=${bg.hex}]")
             loop((px, x, y) => ps.println(s"$x,$y,${px.char.toInt},${px.fg.hex},${px.bg.getOrElse(bg).hex}"))
         }
+
+    /**
+      * Saves this image in `*.txt` format. Note that this format does not retain the color information.
+      *
+      * @param file File instance.
+      */
+    def saveTxt(file: File): Unit =
+        Using.resource(new PrintStream(file)) { ps =>
+            val dim = getDim
+            var x = 0
+            var y = 0
+            while (y < dim.h)
+                x = 0
+                while (x < dim.w)
+                    val px = getPixel(x, y)
+                    ps.print(px.char)
+                    x += 1
+                ps.println()
+                y += 1
+        }
+
+    /**
+      * Saves this image in `*.txt` format. Note that this format does not retain the color information.
+      *
+      * @param path Local file path.
+      */
+    def saveTxt(path: String): Unit = saveTxt(new File(path))
 
     /**
       * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
@@ -669,6 +698,7 @@ object CPImage:
         '-' -> '-', // Don't replace.
         '_' -> '-',
         '`' -> '.',
+        '.' -> '.',
         '"' -> ',',
         ',' -> '\'',
         '\'' -> ',',

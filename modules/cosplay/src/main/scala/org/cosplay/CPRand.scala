@@ -124,6 +124,11 @@ object CPRand:
     def randFloat(): Float = RND.nextFloat()
 
     /**
+      * Random boolean value.
+      */
+    def coinFlip(): Boolean = RND.nextFloat() < .5f
+
+    /**
       * Gets a random uppercase or lowercase letter.
       */
     def randLetter(): Char = rand(LETTERS)
