@@ -25,7 +25,6 @@ import CPKeyboardKey.*
 import games.mir.*
 import sprites.*
 import prefabs.sprites.*
-import prefabs.shaders.*
 
 /*
    _________            ______________
