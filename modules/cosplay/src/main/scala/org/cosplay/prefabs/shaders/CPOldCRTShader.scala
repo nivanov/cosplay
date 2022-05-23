@@ -61,6 +61,9 @@ class CPOldCRTShader(
     tearEffectProb: Float,
     tearSnd: Option[CPSound] = None
 ) extends CPShader:
+    require(lineEffectProb >= 0f && lineEffectProb <= 1f, "Line effect probability must be in [0,1] range.")
+    require(tearEffectProb >= 0f && tearEffectProb <= 1f, "Tear effect probability must be in [0,1] range.")
+
     private val LINE_EFF_SIZE = 5
     private val LINE_EFF_FACTOR = .02f
     private val TEAR_LINE_NUM = 2

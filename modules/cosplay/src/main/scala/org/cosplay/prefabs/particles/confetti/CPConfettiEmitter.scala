@@ -55,6 +55,8 @@ class CPConfettiEmitter(
     bgFg: CPColor,
     chf: Int ⇒ Char,
     z: Int) extends CPParticleEmitter():
+    require(colors.nonEmpty, "Colors cannot be empty.")
+
     // Number of particles this emitter will emit on each update.
     private final val GEN_SIZE = 10
     private val MAX_AGE = 15
