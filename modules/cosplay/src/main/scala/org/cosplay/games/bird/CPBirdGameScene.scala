@@ -84,6 +84,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private val buildingSpeed = 0.6f
 
+    private var bgW = 0
+    private var bgH = 0
+
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
     private val birdImgs = new CPArrayImage(
@@ -109,6 +112,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
+            bgW = canv.width
+            bgH = canv.height
 
             ctx.getKbEvent match
                 case Some(evt) =>
@@ -220,26 +225,27 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     buildingAmount -= 1
                     ctx.deleteObject(getId)
 
-    private val grass = new CPCanvasSprite("grass"):
-        private val grassPx = '/'&&(C_DARK_GREEN,C_GREEN)
-        private val dirtPx = '.'&&(C_SANDY_BROWN, C_X11_BROWN)
+    private val brickImg = new CPArrayImage(
+        // 5x3
+        prepSeq(
+            """
+              |^^"^^
+              |___[_
+              |_[___
+            """
+        ),
+        (ch, _, _) => ch match
+            case '^' => '^'&&(C_DARK_GREEN, C_GREEN_YELLOW)
+            case '"' => '@'&&(C_GRAY3, C_GREEN_YELLOW)
+            case '{' => '['&&(C_SANDY_BROWN, C_DARK_ORANGE3)
+            case '-' => '_'&&(C_DARK_ORANGE3, C_DARK_ORANGE3)
+            case c => c&&(C_MAROON, C_DARK_ORANGE3)
+    )
 
-        private val dirtHeight = 1
-        override def render(ctx: CPSceneObjectContext): Unit =
-            super.render(ctx)
-            val canv = ctx.getCanvas
-
-            // Creating grass.
-            val grassHeight = canv.height - 2
-
-            for (index <- grassHeight to canv.height) do
-                canv.drawLine(0, index, canv.width, index, -1, grassPx)
-
-            // Creating dirt.
-            val dirtHeight = canv.height - 1
-
-            for (index <- dirtHeight to canv.height) do
-                canv.drawLine(0, index, canv.width, index, -1, dirtPx)
+    val brickCanv = CPCanvas(CPDim(bgW, 3), GAME_BG_PX)
+    for (i <- 0 until bgW / brickImg.getWidth) brickCanv.drawImage(brickImg, i * 5, 0, -1)
+    val brickY = 15/*bgH - brickImg.getHeight*/
+    val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, -1, brickCanv.capture())
 
     addObjects(
         // Handle 'Q' press globally for this scene.
@@ -247,7 +253,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         birdSpr,
         pipeSpr,
         scoreSpr,
-        grass
+        brickSpr
     )
 
 
