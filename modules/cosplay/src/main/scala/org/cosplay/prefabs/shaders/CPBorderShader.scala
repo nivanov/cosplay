@@ -18,8 +18,9 @@
 package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
-import CPColor.*
-import CPZPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPZPixel.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________
@@ -55,7 +56,6 @@ import CPZPixel.*
   * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
   * @see [[CPStarStreakShader]]
-  * @see [[CPOldCRTShader]]
   * @see [[CPFadeInShader]]
   * @example See [[org.cosplay.games.bird.CPBirdGame CPBirdGame]] class for the example of using this shader.
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.

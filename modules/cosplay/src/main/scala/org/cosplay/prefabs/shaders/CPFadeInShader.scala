@@ -63,7 +63,6 @@ import org.cosplay.*
   * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
   * @see [[CPStarStreakShader]]
-  * @see [[CPOldCRTShader]]     
   * @see [[CPBorderShader]]     
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.      
   */

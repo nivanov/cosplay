@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.prefabs.shaders
+package org.cosplay.games.mir.scenes.shaders
 
 /*
    _________            ______________

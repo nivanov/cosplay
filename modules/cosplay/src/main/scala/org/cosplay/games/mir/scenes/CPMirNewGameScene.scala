@@ -19,8 +19,8 @@ package org.cosplay.games.mir.scenes
 
 import org.cosplay.*
 import games.mir.*
-import sprites.*
 import prefabs.sprites.*
+import sprites.*
 import CPArrayImage.*
 import CPPixel.*
 
@@ -44,32 +44,32 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
     private val img = new CPArrayImage(
         prepSeq(
             """
-              |   _____________________________________________________________________
-              |,-'                                                                     `-.
-              ||               B a s e d  o n  r e a l  e v e n t s . . .                 |.
-              ||__________________________________________________________________________|.
-              ||                                                                          |.
-              || The year is 1997. It’s been 11 years since the launch of the Russian's   |.
-              || Mir space station - the world’s first permanent human habitat in orbit   |.
-              || above the planet Earth. Over the decade the Mir station has been         |.
-              || assembled from 7 separate modules and is now manned by an international  |.
-              || crew of 3 astronauts.                                                    |.
-              ||                                                                          |.
-              || On the morning of June 24 the unmanned resupply vessel Progress-34 that  |.
-              || arrived just a few months earlier crashed into Mir space station during  |.
-              || routine training re-docking procedure causing critical station damage.   |.
-              || Status of the remaining crew is unknown, air is leaking, structural and  |.
-              || orbit control damage alarm is on, the power supply subsystem is offline. |.
-              ||                                                                          |.
-              || You name is Oswald Keenu (@okeenu), mission specialist. You regain       |.
-              || consciousness in the air locked “Core Module” of the station. Through    |.
-              || the zero-gravity mayhem of the crash you see a working computer terminal |.
-              || that’s... rebooting.                                                     |.
-              ||                                                                          |.
-              || You must escape from Mir to survive.                                     |.
-              ||                                                                          |.
-              |'-._______________________________________________________________________,-'
-              """
+              |   ________________________________________________________________________
+              |,-'                                                                        `-.
+              ||  Based on real events...                                                   |.
+              ||____________________________________________________________________________|.
+              ||                                                                            |.
+              ||  The year is 1997. It’s been 11 years since the launch of the Russian's    |.
+              ||  Mir space station - the world’s first permanent human habitat in orbit    |.
+              ||  above the planet Earth. Over the decade the Mir station has been          |.
+              ||  assembled from 7 separate modules and is now manned by an international   |.
+              ||  crew of 3 astronauts.                                                     |.
+              ||                                                                            |.
+              ||  On the morning of June 24 the unmanned resupply vessel Progress-34 that   |.
+              ||  arrived just a few months earlier crashed into Mir space station during   |.
+              ||  routine training re-docking procedure causing critical station damage.    |.
+              ||  Status of the remaining crew is unknown, air is leaking, structural and   |.
+              ||  orbit control damage alarm is on, the power supply subsystem is offline.  |.
+              ||                                                                            |.
+              ||  You name is Oswald Keenu (@okeenu), mission specialist. You regain        |.
+              ||  consciousness in the air locked “Core Module” of the station. Through     |.
+              ||  the zero-gravity mayhem of the crash you see a working computer terminal  |.
+              ||  that’s... rebooting.                                                      |.
+              ||                                                                            |.
+              ||  You must escape from Mir to survive.                                      |.
+              ||                                                                            |.
+              |'-.________________________________________________________________________.-'
+            """
         ),
         (ch, _, _) => ch&&(FG, BG)
     ).trimBg()

@@ -63,7 +63,7 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
               ||     [T] - Tutorial     |.
               ||     [Q] - Quit         |.
               ||                        |.
-              |'-.____________________,-'
+              |'-.____________________.-'
               """
         ),
         (ch, _, _) => ch&&(FG, BG)

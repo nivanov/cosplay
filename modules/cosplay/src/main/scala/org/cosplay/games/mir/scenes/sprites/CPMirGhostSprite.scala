@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.sprites
+package org.cosplay.games.mir.scenes.sprites
 
 import org.cosplay.*
 import prefabs.sprites.*

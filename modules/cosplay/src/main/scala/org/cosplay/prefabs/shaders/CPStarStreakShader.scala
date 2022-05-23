@@ -111,7 +111,6 @@ case class CPStarStreak(
   * @see [[CPSparkleShader]]
   * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
-  * @see [[CPOldCRTShader]]
   */
 class CPStarStreakShader(
     entireFrame: Boolean,

@@ -21,6 +21,7 @@ import org.cosplay.*
 import games.mir.*
 import prefabs.shaders.*
 import CPSlideDirection.*
+import scenes.shaders.*
 
 /*
    _________            ______________
