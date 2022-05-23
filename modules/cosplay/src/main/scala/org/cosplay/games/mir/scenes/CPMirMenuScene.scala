@@ -44,6 +44,7 @@ import prefabs.shaders.*
   * Main menu scene.
   */
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
+    private val snd = CPSound(s"$SND_HOME/crt_turn_on.wav")
     private val img = new CPArrayImage(
         prepSeq(
             """
@@ -69,14 +70,21 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
         (ch, _, _) => ch&&(FG, BG)
     ).trimBg()
 
+    /**
+      *
+      * @param scId
+      */
+    private def nextScene(scId: String): Unit = snd.play(0, _ ⇒ fadeOutShdr.start(_.switchScene(scId)))
+
     addObjects(
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),
         new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_LO_Q ⇒ ctx.exitGame()
-            case KEY_LO_T ⇒ fadeOutShdr.start(_.switchScene("tutorial"))
-            case KEY_LO_O ⇒ fadeOutShdr.start(_.switchScene("options"))
+            case KEY_LO_Q ⇒ snd.play(0, _ ⇒ fadeOutShdr.start(_.exitGame()))
+            case KEY_LO_T ⇒ nextScene("tutorial")
+            case KEY_LO_O ⇒ nextScene("options")
+            case KEY_LO_N ⇒ nextScene("new_game")
             case _ ⇒ ()
         ),
         // Add full-screen shaders - order is important.
