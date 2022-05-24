@@ -180,7 +180,7 @@ object CPArrayImage:
         require(align == -1 || align == 0 || align == 1 || align == 2, "'align' parameter can only be one of '-1', '0', '1', or '2'.")
 
         val lines = CPUtils
-            .splitBy(pxs, px ⇒ CPUtils.NL.contains(px.char))
+            .splitBy(pxs.filter(_.char != '\r'), px ⇒ px.char == '\n')
             .map(seq ⇒ if align == 2 then seq else CPUtils.trimBy(seq, px ⇒ px.char == spacePx.char))
             .map(seq ⇒ ArrayBuffer.from(seq))
         val maxSz = lines.maxBy(_.size).size
