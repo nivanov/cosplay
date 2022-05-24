@@ -43,6 +43,7 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
     private val txtPxs = markup.process(
         s"""
            |  <%Tutorial%>
+           |  --------
            |
            |  1. <~Overview~>
            |  <%Escape From Mir%> is a real time strategy game based on in-depth space
@@ -70,7 +71,7 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
            |  mundane - there is always a way to automate it. Snoop around - the clues can be
            |  in unusual places. Remember that when in game the time flows in real time.
            |
-           |  Above all - you must escape Mir to survive!
+           |  Above all - you must escape from Mir to survive!
            |
            |
            |

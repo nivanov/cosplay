@@ -46,6 +46,7 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
     private val menuPxs = markup.process(
         s"""
            | <~Menu~>
+           | ----
            |
            | <%[C]%> - Continue
            | <%[N]%> - New Game
