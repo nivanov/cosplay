@@ -40,7 +40,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   *
   */
-enum CPMirPLayerRole:
+enum CPMirPlayerRole:
     /** Chief flight engineer. */
     case ROLE_ENGINEER
 
@@ -49,6 +49,8 @@ enum CPMirPLayerRole:
 
     /** Chief mission pilot. */
     case ROLE_PILOT
+
+import CPMirPlayerRole.*
 
 /**
   *
@@ -113,7 +115,7 @@ case class CPMirPlayer(
     birthTown: String,
     homeCountry: String,
     homeTown: String,
-    role: CPMirPLayerRole,
+    role: CPMirPlayerRole,
     wifeFirstName: String,
     wifeLastName: String,
     children: Seq[CPMirPlayerChild]
@@ -145,6 +147,10 @@ case class CPMirPlayer(
             ++ children.map(_.name)
         for (w ← words.distinct; n ← nums.distinct) yield s"${w.toLowerCase}$n"
     }
+    val roleLowerCase: String = role match
+        case ROLE_PILOT ⇒ "mission pilot"
+        case ROLE_ENGINEER ⇒ "mission engineer"
+        case ROLE_SPECIALIST ⇒ "mission specialist"
 
     def debugString: String =
         s"""
@@ -283,7 +289,7 @@ object CPMirPlayer:
         "Vader",        "Forbidden",        "Lit",              "Tankard",          "Muse",
         "Deicide",      "Annihilator",      "Travis",
     ).distinct
-    
+
     private val towns = Seq(
         ("USA", "Baltimore"),
         ("USA", "Boston"),
@@ -428,7 +434,7 @@ object CPMirPlayer:
             birth._2,
             home._1,
             home._2,
-            CPRand.rand(CPMirPLayerRole.values.toSeq),
+            CPRand.rand(CPMirPlayerRole.values.toSeq),
             CPRand.rand(girlNames),
             CPRand.rand(familyNames),
             kids.toSeq

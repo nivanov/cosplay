@@ -44,6 +44,7 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
     private val player = stateMgr.state.player
     private val name = player.nameCamelCase
     private val username = player.username
+    private val role = player.roleLowerCase
     private val txtPxs = markup.process(
         s"""
           |  <~Based on real events...~>
@@ -60,7 +61,7 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
           |  Status of the remaining crew is unknown, air is leaking, structural and
           |  orbit control damage alarm is on, the power supply subsystem is offline.
           |
-          |  You name is <%$name%> (@<%$username%>), mission specialist. You regain
+          |  You name is <%$name%> (@<%$username%>), $role. You regain
           |  consciousness in the air locked “Core Module” of the station. Through
           |  the zero-gravity mayhem of the crash you see a working computer terminal
           |  that is... rebooting.
@@ -70,7 +71,7 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
           |
           |
           |
-          |                             <%[Space]%>  Continue
+          |                            <%[Space]%>  Continue
           |
         """.stripMargin
     )

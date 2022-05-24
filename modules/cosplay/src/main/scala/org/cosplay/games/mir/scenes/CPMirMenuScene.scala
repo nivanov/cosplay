@@ -63,12 +63,6 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
     )
     private val img = CPArrayImage(menuPxs, BG_PX).trimBg()
 
-    /**
-      *
-      * @param f Context closure to call.
-      */
-    private def next(f: CPSceneObjectContext ⇒ Unit): Unit = clickSnd.play(0, _ ⇒ fadeOutShdr.start(f))
-
     addObjects(
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
