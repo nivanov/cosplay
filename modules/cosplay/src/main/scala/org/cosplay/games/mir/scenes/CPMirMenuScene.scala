@@ -43,47 +43,41 @@ import prefabs.sprites.*
   * Main menu scene.
   */
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
-    private val clickSnd = CPSound(s"$SND_HOME/click.wav")
-    private val img = new CPArrayImage(
-        prepSeq(
-            """
-              |   ____________________
-              |,-'                    `-.
-              ||    G a m e  M e n u    |.
-              ||________________________|.
-              ||                        |.
-              ||                        |.
-              ||     [C] - Continue     |.
-              ||                        |.
-              ||     [N] - New Game     |.
-              ||     [S] - Save Game    |.
-              ||     [L] - Load Game    |.
-              ||                        |.
-              ||     [O] - Options      |.
-              ||     [T] - Tutorial     |.
-              ||     [Q] - Quit         |.
-              ||                        |.
-              |'-.____________________.-'
-              """
-        ),
-        (ch, _, _) => ch&&(FG, BG)
-    ).trimBg()
+    private val menuPxs = markup.process(
+        s"""
+           | <~Menu~>
+           |
+           | <%[C]%> - Continue
+           | <%[N]%> - New Game
+           |
+           | <%[S]%> - Save Game
+           | <%[L]%> - Load Game
+           |
+           | <%[O]%> - Options
+           | <%[T]%> - Tutorial
+           | <%[Q]%> - Quit
+           |
+           |
+           | <~Open menu in-game by pressing~> <%[F10]%>
+        """.stripMargin
+    )
+    private val img = CPArrayImage(menuPxs, BG_PX).trimBg()
 
     /**
       *
-      * @param scId
+      * @param f Context closure to call.
       */
-    private def nextScene(scId: String): Unit = clickSnd.play(0, _ ⇒ fadeOutShdr.start(_.switchScene(scId)))
+    private def next(f: CPSceneObjectContext ⇒ Unit): Unit = clickSnd.play(0, _ ⇒ fadeOutShdr.start(f))
 
     addObjects(
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),
         new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_LO_Q ⇒ clickSnd.play(0, _ ⇒ fadeOutShdr.start(_.exitGame()))
-            case KEY_LO_T ⇒ nextScene("tutorial")
-            case KEY_LO_O ⇒ nextScene("options")
-            case KEY_LO_N ⇒ nextScene("new_game")
+            case KEY_LO_Q ⇒ next(_.exitGame())
+            case KEY_LO_T ⇒ next(_.switchScene("tutorial"))
+            case KEY_LO_O ⇒ next(_.switchScene("options"))
+            case KEY_LO_N ⇒ next(_.switchScene("new_game"))
             case _ ⇒ ()
         ),
         // Add full-screen shaders - order is important.

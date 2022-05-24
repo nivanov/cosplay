@@ -74,7 +74,7 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
           |
         """.stripMargin
     )
-    private val img = CPArrayImage(txtPxs, BG_PX, -1).trimBg()
+    private val img = CPArrayImage(txtPxs, BG_PX).trimBg()
 
     addObjects(
         // Sprite for ghost images.

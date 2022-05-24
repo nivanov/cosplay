@@ -42,6 +42,7 @@ import prefabs.shaders.*
 abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends CPMirCrtSceneBase(id, bgSndFile):
     private val colors = Seq(FG)
 
+    protected val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
     protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
         true,
         BG,

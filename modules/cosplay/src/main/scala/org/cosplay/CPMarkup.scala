@@ -56,15 +56,15 @@ case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPi
   *
   * Here's an example of defining the markup:
   * {{{
-  * val markup = CPMarkup(
-  *     C_GREEN,
-  *     Option(C_BLACK),
-  *     Seq(
-  *         CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
-  *         CPMarkupElement("{#", "#}", _&&(C_BLUE, C_YELLOW)),
-  *         CPMarkupElement("(?", "?)", _&&(C_BLACK, C_WHITE))
+  *     val markup = CPMarkup(
+  *         C_GREEN,
+  *         Option(C_BLACK),
+  *         Seq(
+  *             CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
+  *             CPMarkupElement("{#", "#}", _&&(C_BLUE, C_YELLOW)),
+  *             CPMarkupElement("(?", "?)", _&&(C_BLACK, C_WHITE))
+  *         )
   *     )
-  * )
   * }}}
   * Once defined this markup can be used to convert a string ito sequence of pixels and then create an
   * image:
