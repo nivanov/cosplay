@@ -43,7 +43,7 @@ import prefabs.sprites.*
   * Main menu scene.
   */
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
-    private val snd = CPSound(s"$SND_HOME/crt_turn_on.wav")
+    private val clickSnd = CPSound(s"$SND_HOME/click.wav")
     private val img = new CPArrayImage(
         prepSeq(
             """
@@ -73,14 +73,14 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
       *
       * @param scId
       */
-    private def nextScene(scId: String): Unit = snd.play(0, _ ⇒ fadeOutShdr.start(_.switchScene(scId)))
+    private def nextScene(scId: String): Unit = clickSnd.play(0, _ ⇒ fadeOutShdr.start(_.switchScene(scId)))
 
     addObjects(
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),
         new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_LO_Q ⇒ snd.play(0, _ ⇒ fadeOutShdr.start(_.exitGame()))
+            case KEY_LO_Q ⇒ clickSnd.play(0, _ ⇒ fadeOutShdr.start(_.exitGame()))
             case KEY_LO_T ⇒ nextScene("tutorial")
             case KEY_LO_O ⇒ nextScene("options")
             case KEY_LO_N ⇒ nextScene("new_game")

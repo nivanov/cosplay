@@ -136,7 +136,7 @@ case class CPMirPlayer(
     val favSportTeam: String = CPRand.rand(sport.teams)
     val age: Int = EVENT_YEAR - dobYear
     val passwords: Seq[String] = {
-        val nums = List(EVENT_YEAR, dobYear)
+        val nums = List(EVENT_YEAR, "Progress", "June", "Mir", dobYear)
             ++ children.map(_.age)
             ++ children.map(_.dobYear)
         val words = List(favColor, favSport, favSportTeam, firstName, wifeFirstName, homeTown, birthTown, username)

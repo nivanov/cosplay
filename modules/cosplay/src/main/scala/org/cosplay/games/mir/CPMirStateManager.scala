@@ -33,11 +33,13 @@ package org.cosplay.games.mir
 import org.cosplay.*
 import games.mir.os.*
 import games.mir.os.fs.*
+import org.apache.commons.lang3.SystemUtils
 
 import scala.collection.mutable
 
 /**
   *
+  * @param gameId
   * @param os
   * @param player
   * @param crew
@@ -45,6 +47,9 @@ import scala.collection.mutable
   * @param bg
   * @param fg
   * @param crtEffect
+  * @param crtOverscanProb
+  * @param crtOverscanFactor
+  * @param crtTearProb
   * @param elapsedSec
   */
 @SerialVersionUID(1_0_0L)
@@ -57,6 +62,9 @@ case class CPMirState(
     var bg: CPColor,
     var fg: CPColor,
     var crtEffect: Boolean,
+    var crtOverscanProb: Float,
+    var crtOverscanFactor: Float,
+    var crtTearProb: Float,
     var elapsedSec: Long
 ) extends Serializable
 
@@ -131,6 +139,9 @@ class CPMirStateManager:
             bg = DFLT_BG,
             fg = DFLT_FG,
             crtEffect = true,
+            crtOverscanProb = .02f,
+            crtOverscanFactor = if SystemUtils.IS_OS_MAC then .025f else .02f,
+            crtTearProb = .03f,
             elapsedSec = 0L
         )
 

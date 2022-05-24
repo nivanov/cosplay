@@ -148,18 +148,18 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
 object CPArrayImage:
     /**
       * This is a special constructor that expects given sequence of pixels to represent one or
-      * multiple lines of text. This method takes given pixels, splits them into individual lines by the
+      * multiple lines of simple text. This method takes given pixels, splits them into individual lines by the
       * system-specific new line separator, and then aligns those lines based on the [[align]] parameter. In the
       * end, it creates a new image from those split and aligned lines of text.
       *
       * @param pxs List of pixels to split and align.
       * @param spacePx A pixel to use to pad for leading and/or trailing spaces.
-      * @param align Alignment of text. The only allowed values are:
-      *  - `-1` - left justified alignment.
-      *  - `0` - centered alignment.
-      *  - `1` - right justified alignment.
+      * @param align Alignment of text. The only allowed values are (with `-1` being the default value):
+      *  - `-1` - left justified alignment, i.e. add necessary spaces to the end of the line..
+      *  - `0` - centered alignment, i.e. add necessary spaces to both end and the beginning of the line.
+      *  - `1` - right justified alignment, i.e. add necessary spaces at the beginning of the line.
       */
-    def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 0): CPImage =
+    def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = -1): CPImage =
         val lines = CPUtils
             .splitBy(pxs, px ⇒ CPUtils.NL.contains(px.char))
             .map(CPUtils.trimBy(_, px ⇒ px.char == spacePx.char)) // Ignore colors for space pixel.

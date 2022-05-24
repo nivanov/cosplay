@@ -38,18 +38,19 @@ import CPPixel.*
 
 val EVENT_YEAR = 1997
 val NPC_CNT = 2
-
 val stateMgr = CPMirStateManager()
 val BG = stateMgr.state.bg
 val FG = stateMgr.state.fg
+val FG_LITE = FG.lighter(.4f)
+val FG_DARK = FG.darker(.4f)
 val BG_PX = ' '&&(BG, BG)
 val SND_HOME = "sounds/games/mir"
-val dlgMarkup = CPMarkup(
-    BG,
-    Option(FG),
+val markup = CPMarkup(
+    FG,
+    Option(BG),
     Seq(
-        CPMarkupElement("%1", "1%", _&&(BG.lighter(0.3f), FG)),
-        CPMarkupElement("%2", "2%", _&&(BG, FG.darker(0.5f)))
+        CPMarkupElement("<%", "%>", _&&(FG_LITE, BG)),
+        CPMarkupElement("<~", "~>", _&&(FG_DARK, BG))
     )
 )
 

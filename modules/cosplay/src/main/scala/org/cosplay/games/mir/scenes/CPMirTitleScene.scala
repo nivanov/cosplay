@@ -42,6 +42,7 @@ import prefabs.sprites.*
   *
   */
 object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "bg2.wav"):
+    private val clickSnd = CPSound(s"$SND_HOME/click.wav")
     private val logoImg = CPImage.loadRexXp("images/games/mir/mir_logo.xp").trimBg()
     private val spinGlobeImgs = CPSpinningGlobeAniImage.trimBg().split(47, 23).map(
         _.skin((px, _, _) ⇒ px.withDarkerFg(0.85f))
@@ -57,7 +58,7 @@ object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "bg2.wav"):
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr)),
         // Transition to the next scene on 'Enter' press.
-        CPKeyboardSprite(KEY_SPACE, _ => fadeOutShdr.start(_.switchScene("menu"))),
+        CPKeyboardSprite(KEY_SPACE, _ => clickSnd.play(0, _ ⇒ fadeOutShdr.start(_.switchScene("menu")))),
         // Sprite for ghost images.
         new CPMirGhostSprite(true)
     )
