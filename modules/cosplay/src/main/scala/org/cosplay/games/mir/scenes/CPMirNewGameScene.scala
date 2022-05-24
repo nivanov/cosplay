@@ -23,6 +23,7 @@ import prefabs.sprites.*
 import sprites.*
 import CPArrayImage.*
 import CPPixel.*
+import CPKeyboardKey.*
 
 /*
    _________            ______________
@@ -78,6 +79,10 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
     private val img = CPArrayImage(txtPxs, BG_PX).trimBg()
 
     addObjects(
+        new CPKeyboardSprite((ctx, key) ⇒ key match
+            case KEY_SPACE ⇒ next(_.switchScene("tutorial", false, ("next_scene", "main")))
+            case _ ⇒ ()
+        ),
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),

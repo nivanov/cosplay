@@ -69,7 +69,7 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
         new CPCenteredImageSprite(img = img, z = 2),
         new CPKeyboardSprite((ctx, key) ⇒ key match
             case KEY_LO_Q ⇒ next(_.exitGame())
-            case KEY_LO_T ⇒ next(_.switchScene("tutorial"))
+            case KEY_LO_T ⇒ next(_.switchScene("tutorial", false, ("next_scene", "menu")))
             case KEY_LO_O ⇒ next(_.switchScene("options"))
             case KEY_LO_N ⇒ next(_.switchScene("new_game"))
             case _ ⇒ ()

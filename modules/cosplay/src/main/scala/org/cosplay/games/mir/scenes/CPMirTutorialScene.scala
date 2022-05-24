@@ -75,7 +75,7 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
            |
            |
            |
-           |                            <%[Space]%>  Back To Menu
+           |                            <%[Space]%>  Continue
            |
         """.stripMargin
     )
@@ -86,7 +86,7 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
         new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),
         new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_SPACE ⇒ next(_.switchScene("menu"))
+            case KEY_SPACE ⇒ next(ctx ⇒ ctx.switchScene(ctx.getGameCache("next_scene")))
             case _ ⇒ ()
         ),
         // Add full-screen shaders - order is important.

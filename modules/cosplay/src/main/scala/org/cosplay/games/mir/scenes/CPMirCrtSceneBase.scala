@@ -72,6 +72,9 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
 
     // Make sure to call 'super(...)'.
     override def onActivate(): Unit =
+        // Start fade in.
+        fadeInShdr.start()
+
         // Handles only audio.
         turnOnSnd.play()
         knockSnd.play()
