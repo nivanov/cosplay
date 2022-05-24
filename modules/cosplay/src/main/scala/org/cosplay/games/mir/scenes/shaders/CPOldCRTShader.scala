@@ -42,7 +42,7 @@ import org.cosplay.*
   * @param overscanEffProb Probability on each frame to trigger the overscan line effect. Effect shows 3-row scan line
   *     travelling from top to bottom. Probably of `1.0f` means that this effect will be constant. Probability of `0`
   *     disables this effect. The actual duration of the overscan line effect depends on the heights of the screen.
-  * @param overscanFactor
+  * @param overscanFactor Line highlighting factor.
   * @param tearEffProb Probability on each frame to trigger tearing effect. Unlike overscan effect the tearing effect
   *         always takes just one frame. Probability of 5% (value `0.05f`) is a good value emulating "partially broken CRT"
   *         monitor.
@@ -138,6 +138,7 @@ class CPOldCRTShader(
                 lineIdx = lineY.round
                 if lineIdx > canv.yMax + LINE_EFF_SIZE then
                     overscanEffOn = false
+                    lineY = 0
                     lineIdx = 0
                 else
                     for (y <- lineIdx until (lineIdx - LINE_EFF_SIZE) by -1)
@@ -150,7 +151,7 @@ class CPOldCRTShader(
                                 if px.bg.isDefined then px = px.withBg(Option(px.bg.get.lighter(overscanFactor)))
                                 canv.drawPixel(px, x, y, zpx.z)
                                 x += 1
-                    lineY += 0.5f
+                    lineY += 0.7f
 
             if tearEffOn then
                 val yIdx = CPRand.between(TEAR_LINE_NUM, canv.yMax)

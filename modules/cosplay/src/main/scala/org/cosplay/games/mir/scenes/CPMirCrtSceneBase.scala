@@ -63,10 +63,10 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         onFinish = _ ⇒ if stateMgr.state.crtEffect then crtShdr.stop()
     )
     protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(
-        false,
-        stateMgr.state.crtOverscanProb,
-        stateMgr.state.crtOverscanFactor,
-        stateMgr.state.crtTearProb,
+        autoStart = false,
+        overscanEffProb = stateMgr.state.crtOverscanProb,
+        overscanFactor = stateMgr.state.crtOverscanFactor,
+        tearEffProb = stateMgr.state.crtTearProb,
         tearSnd = Option(tearSnd)
     )
 

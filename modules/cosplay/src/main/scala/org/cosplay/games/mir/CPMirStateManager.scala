@@ -139,8 +139,8 @@ class CPMirStateManager:
             bg = DFLT_BG,
             fg = DFLT_FG,
             crtEffect = true,
-            crtOverscanProb = .02f,
-            crtOverscanFactor = if SystemUtils.IS_OS_MAC then .025f else .02f,
+            crtOverscanProb = .01f,
+            crtOverscanFactor = if SystemUtils.IS_OS_MAC then .025f else .01f,
             crtTearProb = .03f,
             elapsedSec = 0L
         )
