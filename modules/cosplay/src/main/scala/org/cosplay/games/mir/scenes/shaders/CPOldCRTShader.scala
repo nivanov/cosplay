@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.prefabs.shaders
+package org.cosplay.games.mir.scenes.shaders
 
 /*
    _________            ______________
@@ -39,37 +39,35 @@ import org.cosplay.*
   * effect or you can manually trigger them. Tearing effect also has optional sound to play when it happens.
   *
   * @param autoStart Whether to start shader right away. Default value is `false`.
-  * @param lineEffectProb Probability on each frame to trigger the overscan line effect. Effect shows 3-row scan line
+  * @param overscanEffProb Probability on each frame to trigger the overscan line effect. Effect shows 3-row scan line
   *     travelling from top to bottom. Probably of `1.0f` means that this effect will be constant. Probability of `0`
   *     disables this effect. The actual duration of the overscan line effect depends on the heights of the screen.
-  * @param tearEffectProb Probability on each frame to trigger tearing effect. Unlike overscan effect the tearing effect
+  * @param overscanFactor Line highlighting factor.
+  * @param tearEffProb Probability on each frame to trigger tearing effect. Unlike overscan effect the tearing effect
   *         always takes just one frame. Probability of 5% (value `0.05f`) is a good value emulating "partially broken CRT"
   *         monitor.
   * @param tearSnd Optional sound to play when tear effect is triggered. Default value is `None`.
-  * @see [[CPFadeOutShader]]
-  * @see [[CPSlideInShader]]
-  * @see [[CPSlideOutShader]]
-  * @see [[CPShimmerShader]]
-  * @see [[CPFlashlightShader]]
-  * @see [[CPStarStreakShader]]
-  * @see [[CPOffScreenSprite]]
-  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.      
   */
 class CPOldCRTShader(
     autoStart: Boolean = false,
-    lineEffectProb: Float,
-    tearEffectProb: Float,
+    overscanEffProb: Float,
+    overscanFactor: Float,
+    tearEffProb: Float,
     tearSnd: Option[CPSound] = None
 ) extends CPShader:
+    require(overscanEffProb >= 0f && overscanEffProb <= 1f, "Overscan effect probability must be in [0,1] range.")
+    require(overscanFactor >= 0f && overscanFactor <= 1f, "Overscan factor must be in [0,1] range.")
+    require(tearEffProb >= 0f && tearEffProb <= 1f, "Tear effect probability must be in [0,1] range.")
+
     private val LINE_EFF_SIZE = 5
-    private val LINE_EFF_FACTOR = .02f
     private val TEAR_LINE_NUM = 2
 
     private var go = autoStart
-    private var lineEffOn = false
+    private var overscanEffOn = false
     private var tearEffOn = false
     private var forceLineEff = false
     private var forceTearEff = false
+    private var lineY = 0f
     private var lineIdx = 0
     private var snd: Option[CPSound] = tearSnd
 
@@ -125,10 +123,10 @@ class CPOldCRTShader(
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go then
-            if !lineEffOn then lineEffOn = CPRand.randFloat() <= lineEffectProb
-            if !tearEffOn then tearEffOn = CPRand.randFloat() <= tearEffectProb
+            if !overscanEffOn then overscanEffOn = CPRand.randFloat() <= overscanEffProb
+            if !tearEffOn then tearEffOn = CPRand.randFloat() <= tearEffProb
 
-            if forceLineEff then lineEffOn = true
+            if forceLineEff then overscanEffOn = true
             if forceTearEff then tearEffOn = true
 
             forceLineEff = false
@@ -136,9 +134,11 @@ class CPOldCRTShader(
 
             val canv = ctx.getCanvas
 
-            if lineEffOn then
+            if overscanEffOn then
+                lineIdx = lineY.round
                 if lineIdx > canv.yMax + LINE_EFF_SIZE then
-                    lineEffOn = false
+                    overscanEffOn = false
+                    lineY = 0
                     lineIdx = 0
                 else
                     for (y <- lineIdx until (lineIdx - LINE_EFF_SIZE) by -1)
@@ -147,11 +147,11 @@ class CPOldCRTShader(
                             while (x <= canv.xMax)
                                 val zpx = canv.getZPixel(x, y)
                                 var px = zpx.px
-                                px = px.withFg(px.fg.lighter(LINE_EFF_FACTOR * 2f))
-                                if px.bg.isDefined then px = px.withBg(Option(px.bg.get.lighter(LINE_EFF_FACTOR)))
+                                px = px.withFg(px.fg.lighter(overscanFactor * 2f))
+                                if px.bg.isDefined then px = px.withBg(Option(px.bg.get.lighter(overscanFactor)))
                                 canv.drawPixel(px, x, y, zpx.z)
                                 x += 1
-                    lineIdx += 1
+                    lineY += 0.7f
 
             if tearEffOn then
                 val yIdx = CPRand.between(TEAR_LINE_NUM, canv.yMax)

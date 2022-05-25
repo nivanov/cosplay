@@ -61,7 +61,6 @@ import scala.collection.mutable
   * @see [[CPFlashlightShader]]
   * @see [[CPSparkleShader]]
   * @see [[CPStarStreakShader]]
-  * @see [[CPOldCRTShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
 class CPShimmerShader(

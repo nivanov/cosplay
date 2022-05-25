@@ -56,6 +56,8 @@ class CPConfettiParticle(
     bgFg: CPColor,
     chf: Int ⇒ Char,
     z: Int) extends CPParticle:
+    require(colors.nonEmpty, "Colors cannot be empty.")
+
     // Defines the radius of explosion in terms of the particle age.
     private var x = initX.toFloat
     private var y = initY.toFloat

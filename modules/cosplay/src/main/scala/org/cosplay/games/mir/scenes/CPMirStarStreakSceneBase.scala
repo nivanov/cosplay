@@ -41,6 +41,7 @@ import prefabs.shaders.*
   */
 abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends CPMirCrtSceneBase(id, bgSndFile):
     private val colors = Seq(FG)
+    private val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
 
     protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
         true,
@@ -52,6 +53,12 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
         ),
         skip = (zpx, _, _) ⇒ zpx.z >= 1
     )
+
+    /**
+      *
+      * @param f Context closure to call.
+      */
+    protected def next(f: CPSceneObjectContext ⇒ Unit): Unit = clickSnd.play(0, _ ⇒ fadeOutShdr.start(f))
 
     // Make sure to call 'super(...)'.
     override def onActivate(): Unit =

@@ -65,7 +65,6 @@ import scala.collection.mutable
   * @see [[CPFlashlightShader]]
   * @see [[CPShimmerShader]]
   * @see [[CPStarStreakShader]]
-  * @see [[CPOldCRTShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   * @example See [[org.cosplay.games.pong.CPPongTitleScene]] game scene for example of using this shader.
   */
@@ -80,7 +79,9 @@ class CPSparkleShader(
     onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
     require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    
+    require(ratio >= 0f && ratio <= 1f, "Ratio must be in [0,1] range.")
+    require(colors.nonEmpty, "Colors cannot be empty.")
+
     case class Sparkle(zpx: CPZPixel, x: Int, y: Int):
         private val initCol = CPRand.rand(colors)
         private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, steps / 2) ++ CPColor.gradientSeq(initCol, zpx.px.fg, steps / 2)

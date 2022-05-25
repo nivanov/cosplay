@@ -169,6 +169,19 @@ trait CPSceneObjectContext extends CPBaseContext:
     def switchScene(id: String, delCur: Boolean = false): Unit
 
     /**
+      * Switches to the given scene as well as settings game cache parameters before the switch. Note that
+      * switch will happen only after the current frame update cycle completes.
+      *
+      * @param id ID of the scene to switch to.
+      * @param delCur Whether or not to remove the current scene.
+      * @param cacheProps Game cache parameters to set before switching the scene.
+      */
+    def switchScene(id: String, delCur: Boolean, cacheProps: (String, AnyRef)*): Unit =
+        val cache = getGameCache
+        cacheProps.foreach(t ⇒ cache.put(t._1, t._2))
+        switchScene(id, delCur)
+
+    /**
       * Deletes given scene. Note that you can't delete current scene.
       *
       * @param id ID of the scene to delete. Cannot be the current scene.

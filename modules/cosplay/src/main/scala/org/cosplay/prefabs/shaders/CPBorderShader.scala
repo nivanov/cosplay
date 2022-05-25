@@ -18,8 +18,9 @@
 package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
-import CPColor.*
-import CPZPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPZPixel.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________
@@ -35,22 +36,38 @@ import CPZPixel.*
 */
 
 /**
+  * Border shade shader.
   *
-  * @param entireFrame
-  * @param width
-  * @param compensateWidth
-  * @param colorMixPerStep
-  * @param autoStart
-  * @param skip
+  * This shader creates a gradually shaded border by dimming the background color of the pixels
+  * closer to the border of the frame or object.
+  *
+  * @param entireFrame Whether apply to the entire camera frame or just the object this
+  *     shader is attached to.
+  * @param width How many lines (vertical and horizontal) the shaded border width will be.
+  * @param compensateWidth Whether or not to compensate for non-square form of the character "pixel".
+  *         If `true` then for each horizontal line there will be 2 vertical lines giving the visual
+  *         effect of the both horizontal and vertical border lines having the same width.
+  * @param colorMixPerStep Float value in `[0,1]` range indicating the color change per each step in the border.
+  * @param autoStart Whether to start shader right away. Default value is `false`.
+  * @see [[CPFadeOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPFlashlightShader]]
+  * @see [[CPOffScreenSprite]]
+  * @see [[CPStarStreakShader]]
+  * @see [[CPFadeInShader]]
+  * @example See [[org.cosplay.games.bird.CPBirdGame CPBirdGame]] class for the example of using this shader.
+  * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
 class CPBorderShader(
     entireFrame: Boolean,
     width: Int,
     compensateWidth: Boolean = true,
     colorMixPerStep: Float,
-    autoStart: Boolean = false,
-    skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
+    autoStart: Boolean = false
 ) extends CPShader:
+    require(colorMixPerStep >= 0f && colorMixPerStep <= 1f, "Color mix per step must be in [0,1] range.")
     private var go = autoStart
 
     /**
@@ -68,7 +85,7 @@ class CPBorderShader(
     def stop(): Unit = go = false
 
     /**
-      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods..
+      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods.
       *
       * @see [[start()]]
       * @see [[stop()]]

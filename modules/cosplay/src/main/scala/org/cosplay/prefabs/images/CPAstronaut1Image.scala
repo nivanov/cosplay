@@ -21,7 +21,7 @@ import CPPixel.*
 /**
  * https://www.asciiart.eu
  */
-object CPAstronautImage extends CPArrayImage(
+object CPAstronaut1Image extends CPArrayImage(
     prepSeq(
         """
           |        _..._
@@ -47,6 +47,6 @@ object CPAstronautImage extends CPArrayImage(
 /**
  * Previews image using the built-in image viewer.
  */
-@main def previewAstronautImage(): Unit =
-    CPImage.previewImage(CPAstronautImage.trimBg())
+@main def previewAstronaut1Image(): Unit =
+    CPImage.previewImage(CPAstronaut1Image.trimBg())
     sys.exit(0)

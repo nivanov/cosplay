@@ -65,7 +65,9 @@ case class CPStarStreak(
     steps: Int,
     speed: (Float, Float),
     z: Int
-)
+):
+    require(ratio >= 0f && ratio <= 1f, "Ratio must be in [0,1] range.")
+    require(colors.nonEmpty, "Colors cannot be empty.")
 
 /**
   * Star streak shader.
@@ -109,7 +111,6 @@ case class CPStarStreak(
   * @see [[CPSparkleShader]]
   * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
-  * @see [[CPOldCRTShader]]
   */
 class CPStarStreakShader(
     entireFrame: Boolean,
@@ -120,6 +121,8 @@ class CPStarStreakShader(
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => ()
 ) extends CPShader:
+    require(streaks.nonEmpty, "Streaks cannot be empty.")
+
     case class Star(streak: CPStarStreak, initX: Int, initY: Int):
         private var x = initX.toFloat
         private var y = initY.toFloat

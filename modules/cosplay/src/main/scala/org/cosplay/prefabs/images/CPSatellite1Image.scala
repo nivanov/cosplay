@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes.images
+package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import games.mir.*
-import CPPixel.*
+import CPColor.*
 import CPArrayImage.*
+import CPPixel.*
+
 
 /*
    _________            ______________
@@ -36,42 +37,32 @@ import CPArrayImage.*
 */
 
 /**
-  *
+  * https://www.asciiart.eu/
   */
-object CPMirRocket1Image extends CPArrayImage(
-    prepSeq("""
-        |       !
-        |       !
-        |       ^
-        |      / \
-        |     /___\
-        |    |=   =|
-        |    |     |
-        |    |     |
-        |    |     |
-        |    |     |
-        |    |     |
-        |    |     |
-        |    |     |
-        |    |     |
-        |    |     |
-        |   /|##!##|\
-        |  / |##!##| \
-        | /  |##!##|  \
-        ||  / ^ | ^ \  |
-        || /  ( | )  \ |
-        ||/   ( | )   \|
-        |    ((   ))
-        |   ((  :  ))
-        |   ((  :  ))
-        |    ((   ))
-        |     (( ))
-        |      ( )
-        |       .
-        |       .
-        |       .
+object CPSatellite1Image extends CPArrayImage(
+    prepSeq(
+        """
+          |                }--O--{                
+          |                  [^]                  
+          |                 /ooo\                 
+          | ______________:/o   o\:______________ 
+          ||=|=|=|=|=|=|:A|":|||:"|A:|=|=|=|=|=|=|
+          |^''''''''''''''!::{o}::!''''''''''''''^
+          |                \     /                
+          |                 \.../                 
+          |      ____       '---'       ____      
+          |     |\/\/|=======|*|=======|\/\/|     
+          |     :----'       /-\       '----:     
+          |                 /ooo\                 
+          |                #|ooo|#                
+          |                 \___/                 
     """),
-    (ch, _, _) => ch&FG
+    (ch, _, _) => ch&C_GREEN
 )
 
-
+/**
+  * Previews image using the built-in image viewer.
+  */
+@main def previewSatellite1Image(): Unit =
+    CPImage.previewImage(CPSatellite1Image.trimBg())
+    sys.exit(0)

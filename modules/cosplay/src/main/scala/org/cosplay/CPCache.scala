@@ -61,7 +61,7 @@ final class CPCache(delayedQ: mutable.ArrayBuffer[() => Unit]):
       * @return An option value containing the value associated with `key` in this cache,
       *     or `None` if none exists.
       */
-    def get(key: String): Option[AnyRef] = map.get(key)
+    def get[T](key: String): Option[T] = map.get(key).asInstanceOf[Option[T]]
 
     /**
       * Adds a new key/value pair to this cache.
@@ -105,7 +105,7 @@ final class CPCache(delayedQ: mutable.ArrayBuffer[() => Unit]):
       * @param key The key.
       * @throws NoSuchElementException Thrown if there is no mapping for given `key`.
       */
-    def apply(key: String): AnyRef = map(key)
+    def apply[T](key: String): T = map(key).asInstanceOf[T]
 
     /**
       * Removes all mappings from this cache.

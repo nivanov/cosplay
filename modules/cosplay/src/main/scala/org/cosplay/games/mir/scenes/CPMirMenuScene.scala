@@ -23,9 +23,8 @@ import CPColor.*
 import CPArrayImage.*
 import CPKeyboardKey.*
 import games.mir.*
-import scenes.images.*
+import sprites.*
 import prefabs.sprites.*
-import prefabs.shaders.*
 
 /*
    _________            ______________
@@ -44,68 +43,36 @@ import prefabs.shaders.*
   * Main menu scene.
   */
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
-    private val img = new CPArrayImage(
-        prepSeq(
-            """
-              |   ____________________
-              |,-'                    `-.
-              ||    G a m e  M e n u    |.
-              ||________________________|.
-              ||                        |.
-              ||                        |.
-              ||     [C] - Continue     |.
-              ||                        |.
-              ||     [N] - New Game     |.
-              ||     [S] - Save Game    |.
-              ||     [L] - Load Game    |.
-              ||                        |.
-              ||     [O] - Options      |.
-              ||     [T] - Tutorial     |.
-              ||     [Q] - Quit         |.
-              ||                        |.
-              |'-.____________________,-'
-              """
-        ),
-        (ch, _, _) => ch&&(FG, BG)
-    ).trimBg()
-    private val ghostCtrlSpr = new CPOffScreenSprite:
-        private val imgs = Seq(
-            CPMirAstronautImage,
-            CPMirSatellite1Image,
-            CPMirSatellite2Image,
-            CPMirRocket2Image,
-            CPMirCapsuleImage
-        ).map(_.trimBg())
-        override def update(ctx: CPSceneObjectContext): Unit =
-            super.update(ctx)
-            if ctx.getSceneFrameCount > 100 then
-                ctx.getObject("ghost") match
-                    case None ⇒
-                        val canv = ctx.getCanvas
-                        val img = CPRand.rand(imgs)
-                        val (dy, y) = if CPRand.randFloat() < .5f then (-.3f, canv.yMax + 1) else (.3f, -img.h - 1)
-                        val dx = .3f * (if CPRand.randFloat() < .5f then -1 else 1)
-                        ctx.addObject(new CPBubbleSprite(
-                            "ghost",
-                            img = img,
-                            initX = (canv.w - img.w) / 2,
-                            initY = y,
-                            z = 1,
-                            dxf = _ ⇒ dx,
-                            dyf = _ ⇒ dy,
-                            bgPx = BG_PX,
-                            durMs = 3500,
-                            autoDelete = true
-                        ))
-                    case Some(_) ⇒ ()
+    private val menuPxs = markup.process(
+        s"""
+           | <~Menu~>
+           | ----
+           |
+           | <%[C]%> - Continue
+           | <%[N]%> - New Game
+           |
+           | <%[S]%> - Save Game
+           | <%[L]%> - Load Game
+           |
+           | <%[O]%> - Options
+           | <%[T]%> - Tutorial
+           | <%[Q]%> - Quit
+           |
+           |
+           | <~Open menu in-game by pressing~> <%[F10]%>
+        """.stripMargin
+    )
+    private val img = CPArrayImage(menuPxs, BG_PX).trimBg()
 
     addObjects(
-        ghostCtrlSpr,
+        // Sprite for ghost images.
+        new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),
         new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_LO_Q ⇒ ctx.exitGame()
-            case KEY_LO_T ⇒ fadeOutShdr.start(_.switchScene("tutorial"))
-            case KEY_LO_O ⇒ fadeOutShdr.start(_.switchScene("options"))
+            case KEY_LO_Q ⇒ next(_.exitGame())
+            case KEY_LO_T ⇒ next(_.switchScene("tutorial", false, ("next_scene", "menu")))
+            case KEY_LO_O ⇒ next(_.switchScene("options"))
+            case KEY_LO_N ⇒ next(_.switchScene("new_game"))
             case _ ⇒ ()
         ),
         // Add full-screen shaders - order is important.

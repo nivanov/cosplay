@@ -128,11 +128,13 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * When playback reaches the end the player will rewind back to the beginning and stops.
       *
       * @param fadeInMs Fade in duration in milliseconds. Default is zero.
+      * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       */
-    def play(fadeInMs: Long = 0): Unit =
+    def play(fadeInMs: Long = 0, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
         player.setOnEndOfMedia(() => {
             seek(0) // Force rewind.
             player.stop()
+            endFun(this)
         })
         if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
 

@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes.images
+package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import games.mir.*
-import CPPixel.*
+import CPColor.*
 import CPArrayImage.*
+import CPPixel.*
+
 
 /*
    _________            ______________
@@ -36,33 +37,37 @@ import CPArrayImage.*
 */
 
 /**
-  * 
+  * https://www.asciiart.eu/
   */
-object CPMirSaturnImage extends CPArrayImage(
-    prepSeq("""
-        |                                             ___
-        |                                          ,o88888
-        |                                       ,o8888888'
-        |                 ,:o:o:oooo.        ,8O88Pd8888"
-        |             ,.::.::o:ooooOoOoO. ,oO8O8Pd888'"
-        |           ,.:.::o:ooOoOoOO8O8OOo.8OOPd8O8O"
-        |          , ..:.::o:ooOoOOOO8OOOOo.FdO8O8"
-        |         , ..:.::o:ooOoOO8O888O8O,COCOO"
-        |        , . ..:.::o:ooOoOOOO8OOOOCOCO"
-        |         . ..:.::o:ooOoOoOO8O8OCCCC"o
-        |            . ..:.::o:ooooOoCoCCC"o:o
-        |            . ..:.::o:o:,cooooCo"oo:o:
-        |         `   . . ..:.:cocoooo"'o:o:::'
-        |         .`   . ..::ccccoc"'o:o:o:::'
-        |        :.:.    ,c:cccc"':.:.:.:.:.'
-        |      ..:.:"'`::::c:"'..:.:.:.:.:.'
-        |    ...:.'.:.::::"'    . . . . .'
-        |   .. . ....:."' `   .  . . ''
-        | . . . ...."'
-        | .. . ."'
-        |.
+object CPSatellite3Image extends CPArrayImage(
+    prepSeq(
+        """
+          |==================-+-+-+-+-+-+-+-+-+-+==================
+          |   ++++++\ /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\//++++++
+          |          \_______ .  .  .  .  .  .  ._______/
+          |                 \_______ oooo _______/
+          |                    |    \||||/    |
+          |                    |    [++++]    |
+          |                   }:{    |><|    }:{
+          |                        (((II)))
+          |                          /::\
+          |                          \::/
+          |                           ||
+          |                      (((((oo)))))
+          |                           !!
+          |                           YY
+          |                           /\
+          |                          /><\
+          |               !----------|UU|----------!
+          |               |__________\  /__________|
+          |                           ++
     """),
-    (ch, _, _) => ch&FG
+    (ch, _, _) => ch&C_GREEN
 )
 
-
+/**
+  * Previews image using the built-in image viewer.
+  */
+@main def previewSatellite3Image(): Unit =
+    CPImage.previewImage(CPSatellite3Image.trimBg())
+    sys.exit(0)

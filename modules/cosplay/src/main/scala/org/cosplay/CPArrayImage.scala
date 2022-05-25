@@ -150,24 +150,43 @@ object CPArrayImage:
       * This is a special constructor that expects given sequence of pixels to represent one or
       * multiple lines of text. This method takes given pixels, splits them into individual lines by the
       * system-specific new line separator, and then aligns those lines based on the [[align]] parameter. In the
-      * end, it creates a new image from those split and aligned lines of text.
+      * end, it creates a new image from those split and optionally aligned lines of text.
+      *
+      * This constructor conveniently supports [[CPMarkup]] functionality. Here's an example of defining
+      * [[CPMarkup]] and using this constructor to create an image:
+      * {{{
+      *     val markup = CPMarkup(
+      *         C_GREEN,
+      *         Option(C_BLACK),
+      *         Seq(
+      *             CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
+      *             CPMarkupElement("{#", "#}", _&&(C_BLUE, C_YELLOW)),
+      *             CPMarkupElement("(?", "?)", _&&(C_BLACK, C_WHITE))
+      *         )
+      *     )
+      *     val pxs = markup.process("text <$ red on white (? black on white ?)$> {# blue on yellow #}")
+      *     val img = CPArrayImage(pxs, bgPx, align = -1) // Left-aligned image.
+      * }}}
       *
       * @param pxs List of pixels to split and align.
       * @param spacePx A pixel to use to pad for leading and/or trailing spaces.
-      * @param align Alignment of text. The only allowed values are:
-      *  - `-1` - left justified alignment.
-      *  - `0` - centered alignment.
-      *  - `1` - right justified alignment.
+      * @param align Alignment of text. The only allowed values are (with `2` being the default value):
+      *  - `-1` - left justified alignment, i.e. add necessary spaces to the end of the line..
+      *  - `0` - centered alignment, i.e. add necessary spaces to both end and the beginning of the line.
+      *  - `1` - right justified alignment, i.e. add necessary spaces at the beginning of the line.
+      *  - `2` - no alignment, the text is taken as is. Necessary spaces added to the end of the each line.
       */
-    def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 0): CPImage =
+    def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 2): CPImage =
+        require(align == -1 || align == 0 || align == 1 || align == 2, "'align' parameter can only be one of '-1', '0', '1', or '2'.")
+
         val lines = CPUtils
-            .splitBy(pxs, px ⇒ CPUtils.NL.contains(px.char))
-            .map(CPUtils.trimBy(_, px ⇒ px.char == spacePx.char)) // Ignore colors for space pixel.
+            .splitBy(pxs.filter(_.char != '\r'), px ⇒ px.char == '\n')
+            .map(seq ⇒ if align == 2 then seq else CPUtils.trimBy(seq, px ⇒ px.char == spacePx.char))
             .map(seq ⇒ ArrayBuffer.from(seq))
         val maxSz = lines.maxBy(_.size).size
         for (line ← lines if line.size < maxSz)
             val d = maxSz - line.length
-            if align == -1 then // Left align.
+            if align == -1 || align == 2then // Left align.
                 (0 until d).foreach(_ ⇒ line += spacePx)
             else if align == 1 then // Right align.
                 (0 until d).foreach(_ ⇒ line.prepend(spacePx))

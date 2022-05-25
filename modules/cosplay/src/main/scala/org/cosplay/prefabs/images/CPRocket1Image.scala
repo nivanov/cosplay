@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes.images
+package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import games.mir.*
-import CPPixel.*
+import CPColor.*
 import CPArrayImage.*
+import CPPixel.*
+
 
 /*
    _________            ______________
@@ -36,26 +37,48 @@ import CPArrayImage.*
 */
 
 /**
-  *
+  * https://www.asciiart.eu/
   */
-object CPMirSpaceshipImage extends CPArrayImage(
-    prepSeq("""
-        |                     `. ___
-        |                    __,' __`.                _..----....____
-        |        __...--.'``;.   ,.   ;``--..__     .'    ,-._    _.-'
-        |  _..-''-------'   `'   `'   `'     O ``-''._   (,;') _,'
-        |,'________________                          \`-._`-','
-        | `._              ```````````------...___   '-.._'-:
-        |    ```--.._      ,.                     ````--...__\-.
-        |            `.--. `-`                       ____    |  |`
-        |              `. `.                       ,'`````.  ;  ;`
-        |                `._`.        __________   `.      \'__/`
-        |                   `-:._____/______/___/____`.     \  `
-        |                               |       `._    `.    \
-        |                               `._________`-.   `.   `.___
-        |                                                  `------'`
+object CPRocket1Image extends CPArrayImage(
+    prepSeq(
+        """
+          |       !
+          |       !
+          |       ^
+          |      / \
+          |     /___\
+          |    |=   =|
+          |    |     |
+          |    |     |
+          |    |     |
+          |    |     |
+          |    |     |
+          |    |     |
+          |    |     |
+          |    |     |
+          |    |     |
+          |   /|##!##|\
+          |  / |##!##| \
+          | /  |##!##|  \
+          ||  / ^ | ^ \  |
+          || /  ( | )  \ |
+          ||/   ( | )   \|
+          |    ((   ))
+          |   ((  :  ))
+          |   ((  :  ))
+          |    ((   ))
+          |     (( ))
+          |      ( )
+          |       .
+          |       .
+          |       .
     """),
-    (ch, _, _) => ch&FG
+    (ch, _, _) => ch&C_GREEN
 )
 
-
+/**
+  * Previews image using the built-in image viewer.
+  */
+@main def previewRocket1Image(): Unit =
+    CPImage.previewImage(CPRocket1Image.trimBg())
+    sys.exit(0)

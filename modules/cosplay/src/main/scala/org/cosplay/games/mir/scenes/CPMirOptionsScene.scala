@@ -37,6 +37,27 @@ import games.mir.*
   * 
   */
 object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
+    private def refreshImage(): CPImage =
+        val state = stateMgr.state
+        val crtEff = if state.crtEffect then "X" else " "
+        val txtPxs = markup.process(
+            s"""
+               |  <%Options%>
+               |  -------
+               |
+               |  Above all - you must escape from Mir to survive!
+               |
+               |
+               |
+               |
+               |                            <%[Space]%>  Back To Menu
+               |
+            """.stripMargin
+        )
+        null
+
+    private var img = refreshImage()
+
     addObjects(
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))

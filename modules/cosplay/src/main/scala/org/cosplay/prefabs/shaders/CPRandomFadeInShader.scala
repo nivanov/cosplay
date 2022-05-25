@@ -65,7 +65,6 @@ import org.cosplay.*
   * @see [[CPShimmerShader]]
   * @see [[CPSparkleShader]]
   * @see [[CPStarStreakShader]]
-  * @see [[CPOldCRTShader]]
   * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.

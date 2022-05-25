@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.scenes.images
+package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import games.mir.*
-import CPPixel.*
+import CPColor.*
 import CPArrayImage.*
+import CPPixel.*
+
 
 /*
    _________            ______________
@@ -35,24 +36,33 @@ import CPArrayImage.*
                ALl rights reserved.
 */
 
-object CPMirSatellite1Image extends CPArrayImage(
-    prepSeq("""
-        |                }--O--{                
-        |                  [^]                  
-        |                 /ooo\                 
-        | ______________:/o   o\:______________ 
-        ||=|=|=|=|=|=|:A|":|||:"|A:|=|=|=|=|=|=|
-        |^''''''''''''''!::{o}::!''''''''''''''^
-        |                \     /                
-        |                 \.../                 
-        |      ____       '---'       ____      
-        |     |\/\/|=======|*|=======|\/\/|     
-        |     :----'       /-\       '----:     
-        |                 /ooo\                 
-        |                #|ooo|#                
-        |                 \___/                 
+/**
+  * https://www.asciiart.eu/
+  */
+object CPSatellite2Image extends CPArrayImage(
+    prepSeq(
+        """
+          |         ooo
+          |        / : \
+          |       / o0o \
+          | _____"~~~~~~~"_____
+          | \+###|U * * U|###+/
+          |  \...!(.>..<)!.../
+          |   ^^^^o|   |o^^^^
+          |+=====}:^^^^^:{=====+#
+          |.____  .|!!!|.  ____.
+          ||#####:/" " "\:#####|
+          ||#####=|  O  |=#####|
+          ||#####>\_____/<#####|
+          | ^^^^^   | |   ^^^^^
+          |         o o
     """),
-    (ch, _, _) => ch&FG
+    (ch, _, _) => ch&C_GREEN
 )
 
-
+/**
+  * Previews image using the built-in image viewer.
+  */
+@main def previewSatellite2Image(): Unit =
+    CPImage.previewImage(CPSatellite2Image.trimBg())
+    sys.exit(0)

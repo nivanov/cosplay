@@ -21,6 +21,7 @@ import org.cosplay.*
 import games.mir.*
 import prefabs.shaders.*
 import CPSlideDirection.*
+import scenes.shaders.*
 
 /*
    _________            ______________
@@ -49,7 +50,7 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
 
     // Should be controlled by the subclass.
     protected val fadeInShdr: CPSlideInShader = CPSlideInShader.sigmoid(
-        CENTRIFUGAL,
+        TOP_TO_BOTTOM,
         true,
         2500,
         bgPx = BG_PX,
@@ -61,10 +62,19 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         bgPx = BG_PX,
         onFinish = _ ⇒ if stateMgr.state.crtEffect then crtShdr.stop()
     )
-    protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(lineEffectProb = 1f, .03f, tearSnd = Option(tearSnd))
+    protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(
+        autoStart = false,
+        overscanEffProb = stateMgr.state.crtOverscanProb,
+        overscanFactor = stateMgr.state.crtOverscanFactor,
+        tearEffProb = stateMgr.state.crtTearProb,
+        tearSnd = Option(tearSnd)
+    )
 
     // Make sure to call 'super(...)'.
     override def onActivate(): Unit =
+        // Start fade in.
+        fadeInShdr.start()
+
         // Handles only audio.
         turnOnSnd.play()
         knockSnd.play()

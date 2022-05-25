@@ -33,11 +33,13 @@ package org.cosplay.games.mir
 import org.cosplay.*
 import games.mir.os.*
 import games.mir.os.fs.*
+import org.apache.commons.lang3.SystemUtils
 
 import scala.collection.mutable
 
 /**
   *
+  * @param gameId
   * @param os
   * @param player
   * @param crew
@@ -45,6 +47,9 @@ import scala.collection.mutable
   * @param bg
   * @param fg
   * @param crtEffect
+  * @param crtOverscanProb
+  * @param crtOverscanFactor
+  * @param crtTearProb
   * @param elapsedSec
   */
 @SerialVersionUID(1_0_0L)
@@ -53,10 +58,13 @@ case class CPMirState(
     os: CPMirOs,
     player: CPMirPlayer,
     crew: Seq[CPMirPlayer],
-    props: mutable.Map[String, AnyRef],
+    var logoImg: String,
     var bg: CPColor,
     var fg: CPColor,
     var crtEffect: Boolean,
+    var crtOverscanProb: Float,
+    var crtOverscanFactor: Float,
+    var crtTearProb: Float,
     var elapsedSec: Long
 ) extends Serializable
 
@@ -64,8 +72,20 @@ case class CPMirState(
   *
   */
 object CPMirStateManager:
-    private final val DFLT_BG = CPColor("0x010101")
-    private final val DFLT_FG = CPColor("0x00AF00")
+    private final val FG_GREEN = CPColor("0x00AF00")
+    private final val BG_GREEN = CPColor("0x010101")
+    private final val FG_YELLOW = CPColor("0xE6C906")
+    private final val BG_YELLOW = CPColor("0x010101")
+    private final val FG_WHITE = CPColor("0x999999")
+    private final val BG_WHITE = CPColor("0x010101")
+
+    private final val LOGO_GREEN = "mir_logo_green.xp"
+    private final val LOGO_YELLOW = "mir_logo_yellow.xp"
+    private final val LOGO_WHITE = "mir_logo_white.xp"
+
+    private final val DFLT_BG = BG_WHITE
+    private final val DFLT_FG = FG_WHITE
+    private final val DFLT_LOGO_IMAGE = LOGO_GREEN
 
 import CPMirStateManager.*
 
@@ -127,10 +147,13 @@ class CPMirStateManager:
             os = os,
             player = player,
             crew = crew.toSeq,
-            props = mutable.HashMap.empty,
             bg = DFLT_BG,
             fg = DFLT_FG,
+            logoImg = DFLT_LOGO_IMAGE,
             crtEffect = true,
+            crtOverscanProb = .005f,
+            crtOverscanFactor = if SystemUtils.IS_OS_MAC then .03f else .01f,
+            crtTearProb = .03f,
             elapsedSec = 0L
         )
 

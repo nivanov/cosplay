@@ -64,7 +64,6 @@ import org.apache.commons.math3.analysis.function.*
   * @see [[CPShimmerShader]]
   * @see [[CPSparkleShader]]
   * @see [[CPStarStreakShader]]
-  * @see [[CPOldCRTShader]]
   * @see [[CPFlashlightShader]]
   * @see [[CPOffScreenSprite]]
   * @see [[CPSlideInShader#sigmoid]]
