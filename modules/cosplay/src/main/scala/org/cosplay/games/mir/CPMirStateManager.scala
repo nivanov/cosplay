@@ -43,7 +43,6 @@ import scala.collection.mutable
   * @param os
   * @param player
   * @param crew
-  * @param props
   * @param bg
   * @param fg
   * @param crtEffect
@@ -83,8 +82,8 @@ object CPMirStateManager:
     private final val LOGO_YELLOW = "mir_logo_yellow.xp"
     private final val LOGO_WHITE = "mir_logo_white.xp"
 
-    private final val DFLT_BG = BG_WHITE
-    private final val DFLT_FG = FG_WHITE
+    private final val DFLT_BG = BG_GREEN
+    private final val DFLT_FG = FG_GREEN
     private final val DFLT_LOGO_IMAGE = LOGO_GREEN
 
 import CPMirStateManager.*
