@@ -61,7 +61,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         autoStart = true,
         skip = (zpx, _, _) ⇒ zpx.z == 1
     )
-    private val borderSdr = CPBorderShader(true, 5, true, -.03f, true)
+    private val borderShdr = CPBorderShader(true, 5, true, -.03f, true)
     private val blinkShdr = CPBirdBlinkShader()
 
     // Add scene objects...
@@ -69,7 +69,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         // Main logo.
         CPCenteredImageSprite(img = logoImg, 1, shaders = Seq(blinkShdr)),
         // Off screen sprite since shaders are applied to entire screen.
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderSdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         // Toggle audio on 'Ctrl+A' press.

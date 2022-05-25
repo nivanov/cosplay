@@ -73,19 +73,23 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private val minWidth = 3
     private val maxWidth = 10
-    private val minHeight = 3
-    private val maxHeight = 12
+    private val minHeight = 6
+    private val maxHeight = 13
     private val minDepth = -5
     private val maxDepth = -1
 
     private var buildingAmount = 0
     private var buildingTotal = 0
-    private val buildingGap = 8
+    private val buildingGap = 5
 
     private val buildingSpeed = 0.6f
 
     private var bgW = 0
     private var bgH = 0
+
+    private var grassAmount = 0
+    private var grassTotal = 0
+    private val grassSpeed = 0.8f
 
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
@@ -106,6 +110,23 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             case '^' | '-' => ch&C_WHITE
             case _ => ch&C4
     ).split(5, 3)
+
+    private val brickImg = new CPArrayImage(
+        // 5x3
+        prepSeq(
+            """
+              |^^"^^
+              |___[_
+              |_[___
+            """
+        ),
+        (ch, _, _) => ch match
+            case '^' => '^'&&(C_DARK_GREEN, C_GREEN_YELLOW)
+            case '"' => '@'&&(C_GRAY3, C_GREEN_YELLOW)
+            case '{' => '['&&(C_SANDY_BROWN, C_DARK_ORANGE3)
+            case '-' => '_'&&(C_DARK_ORANGE3, C_DARK_ORANGE3)
+            case c => c&&(C_MAROON, C_DARK_ORANGE3)
+    )
 
     private val birdAnis = Seq(CPAnimation.filmStrip("ani", 250, imgs = birdImgs))
     private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, 15, 5, 0, "ani", false):
@@ -152,11 +173,18 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 start = false
 
             // Building spawner.
-            if ctx.getObjectsForTags("building").length < (canv.width / 6).toInt then
-                for x <- 0 to (canv.width / 6).toInt do
-                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * 8, canv.height, Random.between(minDepth, maxDepth).toInt))
+            if ctx.getObjectsForTags("building").length < (canv.width / buildingGap).toInt then
+                for x <- 0 to (canv.width / buildingGap).toInt do
+                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * buildingGap, Random.between(minDepth, maxDepth).toInt))
                     buildingAmount += 1
                     buildingTotal += 1
+
+            // Grass spawner.
+            if grassAmount < (canv.width / brickImg.getWidth - 1).toInt + 5 then
+                for x <- 0 to (canv.width / brickImg.getWidth - 1).toInt + 5 do
+                    ctx.addObject(newGrassSpr(grassAmount * brickImg.getWidth - 1, canv.height - brickImg.getHeight))
+                    grassAmount += 1
+                    grassTotal += 1
 
     private val scoreSpr = new CPImageSprite("score", 10, 0, 1, mkScoreImage(score)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -202,10 +230,11 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
      * @param depth
      * @return
      */
-    private def newBuildingSpr(width:Int, height:Int, posX:Int, startPosY:Int, depth:Int) : CPSceneObject =
+    private def newBuildingSpr(width:Int, height:Int, posX:Int, depth:Int) : CPSceneObject =
         new CPCanvasSprite("building" + buildingTotal):
             private var newPosX = posX.toFloat
             private val tags = Set("building")
+            private var startPosY = 0
             println(depth)
 
             override def getTags: Set[String] = tags
@@ -225,35 +254,33 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     buildingAmount -= 1
                     ctx.deleteObject(getId)
 
-    private val brickImg = new CPArrayImage(
-        // 5x3
-        prepSeq(
-            """
-              |^^"^^
-              |___[_
-              |_[___
-            """
-        ),
-        (ch, _, _) => ch match
-            case '^' => '^'&&(C_DARK_GREEN, C_GREEN_YELLOW)
-            case '"' => '@'&&(C_GRAY3, C_GREEN_YELLOW)
-            case '{' => '['&&(C_SANDY_BROWN, C_DARK_ORANGE3)
-            case '-' => '_'&&(C_DARK_ORANGE3, C_DARK_ORANGE3)
-            case c => c&&(C_MAROON, C_DARK_ORANGE3)
-    )
+                startPosY = canv.height
 
-    val brickCanv = CPCanvas(CPDim(bgW, 3), GAME_BG_PX)
-    for (i <- 0 until bgW / brickImg.getWidth) brickCanv.drawImage(brickImg, i * 5, 0, -1)
-    val brickY = 15/*bgH - brickImg.getHeight*/
-    val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, -1, brickCanv.capture())
+    private def newGrassSpr(posX:Int, posY:Int) : CPSceneObject =
+        new CPImageSprite("grass" + grassTotal, posX, posY, -1, brickImg):
+            private var newPosX = posX.toFloat
+            private val tag = Set("grass")
+
+            override def getTags: Set[String] = tag
+            override def update(ctx: CPSceneObjectContext): Unit =
+                super.update(ctx)
+                newPosX -= grassSpeed
+                val canv = ctx.getCanvas
+
+                setX(newPosX.toInt)
+
+                if getX <= -brickImg.getWidth then
+                    ctx.deleteObject(getId)
+                    grassAmount -= 1
+
+                setY(canv.height - brickImg.getHeight)
 
     addObjects(
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
         birdSpr,
         pipeSpr,
-        scoreSpr,
-        brickSpr
+        scoreSpr
     )
 
 
