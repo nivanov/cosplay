@@ -82,9 +82,9 @@ object CPMirStateManager:
     private final val LOGO_YELLOW = "mir_logo_yellow.xp"
     private final val LOGO_WHITE = "mir_logo_white.xp"
 
-    private final val DFLT_BG = BG_YELLOW
-    private final val DFLT_FG = FG_YELLOW
-    private final val DFLT_LOGO_IMAGE = LOGO_YELLOW
+    private final val DFLT_BG = BG_WHITE
+    private final val DFLT_FG = FG_WHITE
+    private final val DFLT_LOGO_IMAGE = LOGO_WHITE
 
 import CPMirStateManager.*
 
