@@ -43,7 +43,6 @@ import scala.collection.mutable
   * @param os
   * @param player
   * @param crew
-  * @param props
   * @param bg
   * @param fg
   * @param crtEffect
@@ -62,6 +61,7 @@ case class CPMirState(
     var bg: CPColor,
     var fg: CPColor,
     var crtEffect: Boolean,
+    var crtNoise: Boolean,
     var crtOverscanProb: Float,
     var crtOverscanFactor: Float,
     var crtTearProb: Float,
@@ -83,8 +83,8 @@ object CPMirStateManager:
     private final val LOGO_YELLOW = "mir_logo_yellow.xp"
     private final val LOGO_WHITE = "mir_logo_white.xp"
 
-    private final val DFLT_BG = BG_WHITE
-    private final val DFLT_FG = FG_WHITE
+    private final val DFLT_BG = BG_GREEN
+    private final val DFLT_FG = FG_GREEN
     private final val DFLT_LOGO_IMAGE = LOGO_GREEN
 
 import CPMirStateManager.*
@@ -151,6 +151,7 @@ class CPMirStateManager:
             fg = DFLT_FG,
             logoImg = DFLT_LOGO_IMAGE,
             crtEffect = true,
+            crtNoise = true,
             crtOverscanProb = .005f,
             crtOverscanFactor = if SystemUtils.IS_OS_MAC then .03f else .01f,
             crtTearProb = .03f,
@@ -167,17 +168,17 @@ class CPMirStateManager:
       *
       * @return
       */
-    def isLatestStateLoaded: Boolean = loaded
+    def wasLatestStateLoaded: Boolean = loaded
 
     /**
       *
       * @return
       */
-    def isLatestStateLoadFailed: Boolean = loadFailed
+    def wasLatestStateLoadFailed: Boolean = loadFailed
 
     /**
       *
       */
-    def saveSnapshot(): Unit = ???
+    def save(): Unit = () // TODO
 
 

@@ -46,7 +46,7 @@ object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "bg2.wav"):
     private val clickSnd = CPSound(s"$SND_HOME/click.wav")
     private val logoImg = CPImage.loadRexXp(s"images/games/mir/${state.logoImg}").trimBg()
     private val spinGlobeImgs = CPSpinningGlobeAniImage.trimBg().split(47, 23).map(
-        _.skin((px, _, _) ⇒ px.withDarkerFg(0.85f))
+        _.skin((px, _, _) ⇒ px.withFg(FG).withDarkerFg(0.85f))
     )
     private val spinGlobeAni = CPAnimation.filmStrip("ani", 99, true, false, spinGlobeImgs)
     private val spinGlobeSpr = CPAnimationSprite("spr", Seq(spinGlobeAni), 4, 1, 1, "ani")
