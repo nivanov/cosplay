@@ -41,7 +41,7 @@ import prefabs.shaders.*
   */
 abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends CPMirCrtSceneBase(id, bgSndFile):
     private val colors = Seq(FG)
-    private val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
+    private  val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
 
     protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
         true,
@@ -55,10 +55,21 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
     )
 
     /**
+      * Plays click sound then starts the fade out shader with given on-finish closure.
       *
       * @param f Context closure to call.
       */
-    protected def next(f: CPSceneObjectContext ⇒ Unit): Unit = clickSnd.play(0, _ ⇒ fadeOutShdr.start(f))
+    protected def clickThenFade(f: CPSceneObjectContext ⇒ Unit): Unit =
+        clickSnd.play(0, _ ⇒ fadeOutShdr.start(f))
+
+    /**
+      * Plays click sound and (asynchronously) calls given closure.
+      *
+      * @param f Closure to call.
+      */
+    protected def clickNext(f: () ⇒ Unit): Unit =
+        clickSnd.play()
+        f()
 
     // Make sure to call 'super(...)'.
     override def onActivate(): Unit =

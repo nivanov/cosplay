@@ -19,6 +19,10 @@ package org.cosplay.games.mir.scenes
 
 import org.cosplay.*
 import games.mir.*
+import CPKeyboardKey.*
+import scenes.*
+import scenes.sprites.*
+import prefabs.sprites.*
 
 /*
    _________            ______________
@@ -37,28 +41,48 @@ import games.mir.*
   * 
   */
 object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
-    private def refreshImage(): CPImage =
+    private def mkImage(): CPImage =
         val state = stateMgr.state
         val crtEff = if state.crtEffect then "X" else " "
         val txtPxs = markup.process(
             s"""
-               |  <%Options%>
-               |  -------
-               |
-               |  Above all - you must escape from Mir to survive!
-               |
+               | <%Options%>
+               | -------
+               | [C] - Retro CRT Effect [$crtEff]
                |
                |
                |
-               |                            <%[Space]%>  Back To Menu
+               |
+               | <%NOTE:%> changes will take an effect after restart
+               |
+               |
+               |
+               |             <%[Space]%>  Back To Menu
                |
             """.stripMargin
         )
-        null
+        CPArrayImage(txtPxs, BG_PX).trimBg()
 
-    private var img = refreshImage()
+    private val imgSpr = new CPCenteredImageSprite(img = mkImage(), z = 2)
+
+    /**
+      *
+      */
+    private def update(): Unit =
+        stateMgr.save()
+        clickNext(() ⇒ imgSpr.setImage(mkImage()))
 
     addObjects(
+        new CPKeyboardSprite((ctx, key) ⇒ key match
+            case KEY_LO_C ⇒
+                stateMgr.state.crtEffect = !stateMgr.state.crtEffect
+                update()
+            case KEY_SPACE ⇒ clickThenFade(_.switchScene("menu"))
+            case _ ⇒ ()
+        ),
+        // Sprite for ghost images.
+        new CPMirGhostSprite(false),
+        imgSpr,
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
     )

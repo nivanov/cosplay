@@ -69,10 +69,10 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
         new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),
         new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_LO_Q ⇒ next(_.exitGame())
-            case KEY_LO_T ⇒ next(_.switchScene("tutorial", false, ("next_scene", "menu")))
-            case KEY_LO_O ⇒ next(_.switchScene("options"))
-            case KEY_LO_N ⇒ next(_.switchScene("new_game"))
+            case KEY_LO_Q ⇒ clickThenFade(_.exitGame())
+            case KEY_LO_T ⇒ clickThenFade(_.switchScene("tutorial", false, ("next_scene", "menu")))
+            case KEY_LO_O ⇒ clickThenFade(_.switchScene("options"))
+            case KEY_LO_N ⇒ clickThenFade(_.switchScene("new_game"))
             case _ ⇒ ()
         ),
         // Add full-screen shaders - order is important.

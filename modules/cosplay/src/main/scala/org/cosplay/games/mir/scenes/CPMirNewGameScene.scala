@@ -81,7 +81,7 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
 
     addObjects(
         new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_SPACE ⇒ next(_.switchScene("tutorial", false, ("next_scene", "main")))
+            case KEY_SPACE ⇒ clickThenFade(_.switchScene("tutorial", false, ("next_scene", "main")))
             case _ ⇒ ()
         ),
         // Sprite for ghost images.
