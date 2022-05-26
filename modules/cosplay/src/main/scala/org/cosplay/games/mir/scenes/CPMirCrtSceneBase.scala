@@ -54,13 +54,13 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         true,
         4500,
         bgPx = BG_PX,
-        onFinish = _ ⇒ if stateMgr.state.crtEffect then crtShdr.start()
+        onFinish = _ ⇒ if stateMgr.state.crtVisual then crtShdr.start()
     )
     protected val fadeOutShdr: CPFadeOutShader = CPFadeOutShader(
         true,
         500,
         bgPx = BG_PX,
-        onFinish = _ ⇒ if stateMgr.state.crtEffect then crtShdr.stop()
+        onFinish = _ ⇒ if stateMgr.state.crtVisual then crtShdr.stop()
     )
     protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(
         autoStart = false,

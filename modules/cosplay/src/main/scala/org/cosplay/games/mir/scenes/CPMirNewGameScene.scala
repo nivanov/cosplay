@@ -73,7 +73,7 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
           |
           |
           |
-          |                            <%[Space]%>  Continue
+          |  <%[Space]%>  Continue
           |
         """.stripMargin
     )

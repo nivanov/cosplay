@@ -76,7 +76,7 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
            |
            |
            |
-           |                            <%[Space]%>  Continue
+           |  <%[Space]%>  Continue
            |
         """.stripMargin
     )
