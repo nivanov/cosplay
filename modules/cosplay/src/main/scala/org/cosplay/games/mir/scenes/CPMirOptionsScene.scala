@@ -23,6 +23,7 @@ import CPKeyboardKey.*
 import scenes.*
 import scenes.sprites.*
 import prefabs.sprites.*
+import CPMirStateManager.*
 
 /*
    _________            ______________
@@ -53,13 +54,13 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
                | <%Options%>
                | -------
                | <%[V]%> - Visual CRT Effect [<~$crtVisual~>]
-               | <%[A]%> - Audio CRT Effect [<~$crtAudio~>]
+               | <%[A]%> - Audio CRT Effect  [<~$crtAudio~>]
                | <%[C]%> - CRT Color:
                |           Green   [<~$colGreen~>]
                |           Yellow  [<~$colYellow~>]
                |           White   [<~$colWhite~>]
                |
-               | <%NOTE:%> color changes require restart
+               | (color changes require restart)
                |
                |
                |
@@ -80,17 +81,22 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
         clickNext(() ⇒ imgSpr.setImage(mkImage()))
 
     addObjects(
-        new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_LO_V ⇒
-                stateMgr.state.crtVisual = !stateMgr.state.crtVisual
-                update()
-            case KEY_LO_A ⇒
-                stateMgr.state.crtAudio = !stateMgr.state.crtAudio
-                update()
-            case KEY_LO_C ⇒
-                update()
-            case KEY_SPACE ⇒ clickThenFade(_.switchScene("menu"))
-            case _ ⇒ ()
+        new CPKeyboardSprite((ctx, key) ⇒
+            val state: CPMirState = stateMgr.state
+            key match
+                case KEY_LO_V ⇒
+                    state.crtVisual = !state.crtVisual
+                    update()
+                case KEY_LO_A ⇒
+                    state.crtAudio = !state.crtAudio
+                    update()
+                case KEY_LO_C ⇒
+                    if state.fg == FG_GREEN then state.fg = FG_YELLOW
+                    else if state.fg == FG_YELLOW then state.fg = FG_WHITE
+                    else state.fg = FG_GREEN
+                    update()
+                case KEY_SPACE ⇒ clickThenFade(_.switchScene("menu"))
+                case _ ⇒ ()
         ),
         // Sprite for ghost images.
         new CPMirGhostSprite(false),

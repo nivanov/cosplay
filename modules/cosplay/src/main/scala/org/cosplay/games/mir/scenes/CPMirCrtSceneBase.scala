@@ -67,7 +67,7 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         overscanEffProb = stateMgr.state.crtOverscanProb,
         overscanFactor = stateMgr.state.crtOverscanFactor,
         tearEffProb = stateMgr.state.crtTearProb,
-        tearSnd = Option(tearSnd)
+        tearSnd = if stateMgr.state.crtAudio then Option(tearSnd) else None
     )
 
     // Make sure to call 'super(...)'.
@@ -75,11 +75,14 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         // Start fade in.
         fadeInShdr.start()
 
-        // Handles only audio.
         turnOnSnd.play()
-        knockSnd.play()
         bgSnd.loop(2000)
-        noiseSnd.loop(1000, _ ⇒ knockSnd.play())
+        if stateMgr.state.crtAudio then
+            crtShdr.setTearSound(Option(tearSnd))
+            knockSnd.play()
+            noiseSnd.loop(1000, _ ⇒ knockSnd.play())
+        else
+            crtShdr.setTearSound(None)
 
     // Make sure to call 'super(...)'.
     override def onDeactivate(): Unit =
