@@ -53,6 +53,7 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
             s"""
                | <%Options%>
                | -------
+               | 
                | <%[V]%> - Visual CRT Effect [<~$crtVisual~>]
                | <%[A]%> - Audio CRT Effect  [<~$crtAudio~>]
                | <%[C]%> - CRT Color:

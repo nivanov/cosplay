@@ -76,7 +76,7 @@ object CPMirGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"options", fadeInMs = 3000),
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
                 CPMirTitleScene,
                 CPMirNewGameScene,
                 CPMirMenuScene,

@@ -88,6 +88,8 @@ object CPMirStateManager:
     final val DFLT_FG = FG_GREEN
     final val DFLT_LOGO_IMAGE = LOGO_GREEN
 
+    private final val DIR = "mir/saved"
+
 import CPMirStateManager.*
 
 /**
@@ -98,8 +100,8 @@ class CPMirStateManager:
     private val player = CPMirPlayer.newPlayer
     private var os: CPMirOs = _
 
-    private var loaded = false
-    private var loadFailed = false
+    private var stateFound = false
+    private var stateLoadFailed = false
 
     val state: CPMirState =
         try
