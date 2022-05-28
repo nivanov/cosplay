@@ -76,7 +76,7 @@ import org.cosplay.impl.CPUtils
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
-  * @param id Optional ID of the sprite.
+  * @param id Optional ID of the sprite. By default, a random ID will be used.
   * @param x Initial X-coordinate of the sprite.
   * @param y Initial Y-coordinate of the sprite.
   * @param z Z-index at which to render the image.
