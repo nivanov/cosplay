@@ -84,12 +84,18 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private val buildingSpeed = 0.6f
 
+    private var buildingMove = false
+    private var buildingOffset = 0f
+
     private var bgW = 0
     private var bgH = 0
 
     private var grassAmount = 0
     private var grassTotal = 0
     private val grassSpeed = 0.8f
+
+    private var grassMove = false
+    private var grassOffset = 0f
 
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
@@ -179,12 +185,24 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     buildingAmount += 1
                     buildingTotal += 1
 
+            buildingMove = false
+            buildingOffset += buildingSpeed
+            if buildingOffset >= 1 then
+                buildingOffset -= 1
+                buildingMove = true
+
             // Grass spawner.
             if grassAmount < (canv.width / brickImg.getWidth - 1).toInt + 5 then
                 for x <- 0 to (canv.width / brickImg.getWidth - 1).toInt + 5 do
                     ctx.addObject(newGrassSpr(grassAmount * brickImg.getWidth - 1, canv.height - brickImg.getHeight))
                     grassAmount += 1
                     grassTotal += 1
+
+            grassMove = false
+            grassOffset += grassSpeed
+            if grassOffset >= 1 then
+                grassOffset -= 1
+                grassMove = true
 
     private val scoreSpr = new CPImageSprite("score", 10, 0, 1, mkScoreImage(score)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -240,7 +258,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             override def getTags: Set[String] = tags
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                newPosX -= buildingSpeed
+                if buildingMove then newPosX -= 1
+
                 val canv = ctx.getCanvas
                 // Roof.
                 canv.drawLine(newPosX.toInt, startPosY - height - 1, newPosX.toInt + width, startPosY - height - 1, depth, roofPx)
@@ -264,7 +283,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             override def getTags: Set[String] = tag
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                newPosX -= grassSpeed
+
+                if grassMove then newPosX -= 1
+
                 val canv = ctx.getCanvas
 
                 setX(newPosX.toInt)
