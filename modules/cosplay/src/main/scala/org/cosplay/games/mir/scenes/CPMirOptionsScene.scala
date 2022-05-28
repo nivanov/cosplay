@@ -23,6 +23,7 @@ import CPKeyboardKey.*
 import scenes.*
 import scenes.sprites.*
 import prefabs.sprites.*
+import CPMirStateManager.*
 
 /*
    _________            ______________
@@ -43,21 +44,28 @@ import prefabs.sprites.*
 object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
     private def mkImage(): CPImage =
         val state = stateMgr.state
-        val crtEff = if state.crtEffect then "X" else " "
+        val crtVisual = if state.crtVisual then "X" else " "
+        val crtAudio = if state.crtAudio then "X" else " "
+        val colGreen = if state.fg == CPMirStateManager.FG_GREEN then "X" else " "
+        val colYellow = if state.fg == CPMirStateManager.FG_YELLOW then "X" else " "
+        val colWhite = if state.fg == CPMirStateManager.FG_WHITE then "X" else " "
         val txtPxs = markup.process(
             s"""
                | <%Options%>
                | -------
-               | [C] - Retro CRT Effect [$crtEff]
+               | <%[V]%> - Visual CRT Effect [<~$crtVisual~>]
+               | <%[A]%> - Audio CRT Effect  [<~$crtAudio~>]
+               | <%[C]%> - CRT Color:
+               |           Green   [<~$colGreen~>]
+               |           Yellow  [<~$colYellow~>]
+               |           White   [<~$colWhite~>]
+               |
+               | (color changes require restart)
                |
                |
                |
                |
-               | <%NOTE:%> changes will take an effect after restart
-               |
-               |
-               |
-               |             <%[Space]%>  Back To Menu
+               | <%[Space]%>  Back To Menu
                |
             """.stripMargin
         )
@@ -73,12 +81,22 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
         clickNext(() ⇒ imgSpr.setImage(mkImage()))
 
     addObjects(
-        new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_LO_C ⇒
-                stateMgr.state.crtEffect = !stateMgr.state.crtEffect
-                update()
-            case KEY_SPACE ⇒ clickThenFade(_.switchScene("menu"))
-            case _ ⇒ ()
+        new CPKeyboardSprite((ctx, key) ⇒
+            val state: CPMirState = stateMgr.state
+            key match
+                case KEY_LO_V ⇒
+                    state.crtVisual = !state.crtVisual
+                    update()
+                case KEY_LO_A ⇒
+                    state.crtAudio = !state.crtAudio
+                    update()
+                case KEY_LO_C ⇒
+                    if state.fg == FG_GREEN then state.fg = FG_YELLOW
+                    else if state.fg == FG_YELLOW then state.fg = FG_WHITE
+                    else state.fg = FG_GREEN
+                    update()
+                case KEY_SPACE ⇒ clickThenFade(_.switchScene("menu"))
+                case _ ⇒ ()
         ),
         // Sprite for ghost images.
         new CPMirGhostSprite(false),

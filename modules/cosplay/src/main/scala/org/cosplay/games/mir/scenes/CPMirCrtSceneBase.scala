@@ -54,20 +54,20 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         true,
         4500,
         bgPx = BG_PX,
-        onFinish = _ ⇒ if stateMgr.state.crtEffect then crtShdr.start()
+        onFinish = _ ⇒ if stateMgr.state.crtVisual then crtShdr.start()
     )
     protected val fadeOutShdr: CPFadeOutShader = CPFadeOutShader(
         true,
         500,
         bgPx = BG_PX,
-        onFinish = _ ⇒ if stateMgr.state.crtEffect then crtShdr.stop()
+        onFinish = _ ⇒ if stateMgr.state.crtVisual then crtShdr.stop()
     )
     protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(
         autoStart = false,
         overscanEffProb = stateMgr.state.crtOverscanProb,
         overscanFactor = stateMgr.state.crtOverscanFactor,
         tearEffProb = stateMgr.state.crtTearProb,
-        tearSnd = Option(tearSnd)
+        tearSnd = if stateMgr.state.crtAudio then Option(tearSnd) else None
     )
 
     // Make sure to call 'super(...)'.
@@ -75,11 +75,14 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         // Start fade in.
         fadeInShdr.start()
 
-        // Handles only audio.
         turnOnSnd.play()
-        knockSnd.play()
         bgSnd.loop(2000)
-        noiseSnd.loop(1000, _ ⇒ knockSnd.play())
+        if stateMgr.state.crtAudio then
+            crtShdr.setTearSound(Option(tearSnd))
+            knockSnd.play()
+            noiseSnd.loop(1000, _ ⇒ knockSnd.play())
+        else
+            crtShdr.setTearSound(None)
 
     // Make sure to call 'super(...)'.
     override def onDeactivate(): Unit =

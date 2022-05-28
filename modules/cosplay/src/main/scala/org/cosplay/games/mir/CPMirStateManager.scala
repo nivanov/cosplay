@@ -45,7 +45,8 @@ import scala.collection.mutable
   * @param crew
   * @param bg
   * @param fg
-  * @param crtEffect
+  * @param crtVisual
+  * @param crtAudio
   * @param crtOverscanProb
   * @param crtOverscanFactor
   * @param crtTearProb
@@ -60,8 +61,8 @@ case class CPMirState(
     var logoImg: String,
     var bg: CPColor,
     var fg: CPColor,
-    var crtEffect: Boolean,
-    var crtNoise: Boolean,
+    var crtVisual: Boolean,
+    var crtAudio: Boolean,
     var crtOverscanProb: Float,
     var crtOverscanFactor: Float,
     var crtTearProb: Float,
@@ -72,20 +73,20 @@ case class CPMirState(
   *
   */
 object CPMirStateManager:
-    private final val FG_GREEN = CPColor("0x00AF00")
-    private final val BG_GREEN = CPColor("0x010101")
-    private final val FG_YELLOW = CPColor("0xE6C906")
-    private final val BG_YELLOW = CPColor("0x010101")
-    private final val FG_WHITE = CPColor("0x999999")
-    private final val BG_WHITE = CPColor("0x010101")
+    final val FG_GREEN = CPColor("0x00AF00")
+    final val BG_GREEN = CPColor("0x010101")
+    final val FG_YELLOW = CPColor("0xE6C906")
+    final val BG_YELLOW = CPColor("0x010101")
+    final val FG_WHITE = CPColor("0x999999")
+    final val BG_WHITE = CPColor("0x010101")
 
-    private final val LOGO_GREEN = "mir_logo_green.xp"
-    private final val LOGO_YELLOW = "mir_logo_yellow.xp"
-    private final val LOGO_WHITE = "mir_logo_white.xp"
+    final val LOGO_GREEN = "mir_logo_green.xp"
+    final val LOGO_YELLOW = "mir_logo_yellow.xp"
+    final val LOGO_WHITE = "mir_logo_white.xp"
 
-    private final val DFLT_BG = BG_GREEN
-    private final val DFLT_FG = FG_GREEN
-    private final val DFLT_LOGO_IMAGE = LOGO_GREEN
+    final val DFLT_BG = BG_GREEN
+    final val DFLT_FG = FG_GREEN
+    final val DFLT_LOGO_IMAGE = LOGO_GREEN
 
 import CPMirStateManager.*
 
@@ -150,8 +151,8 @@ class CPMirStateManager:
             bg = DFLT_BG,
             fg = DFLT_FG,
             logoImg = DFLT_LOGO_IMAGE,
-            crtEffect = true,
-            crtNoise = true,
+            crtVisual = true,
+            crtAudio = true,
             crtOverscanProb = .005f,
             crtOverscanFactor = if SystemUtils.IS_OS_MAC then .03f else .01f,
             crtTearProb = .03f,
