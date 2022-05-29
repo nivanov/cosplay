@@ -31,11 +31,15 @@ package org.cosplay.games.mir
 */
 
 import org.cosplay.*
+import impl.*
 import games.mir.os.*
 import games.mir.os.fs.*
 import org.apache.commons.lang3.SystemUtils
 
+import java.io.{FileOutputStream, IOException, ObjectOutputStream}
 import scala.collection.mutable
+import scala.io.Source
+import scala.util.Using
 
 /**
   *
@@ -50,7 +54,7 @@ import scala.collection.mutable
   * @param crtOverscanProb
   * @param crtOverscanFactor
   * @param crtTearProb
-  * @param elapsedSec
+  * @param timeMs
   */
 @SerialVersionUID(1_0_0L)
 case class CPMirState(
@@ -66,7 +70,7 @@ case class CPMirState(
     var crtOverscanProb: Float,
     var crtOverscanFactor: Float,
     var crtTearProb: Float,
-    var elapsedSec: Long
+    var timeMs: Long
 ) extends Serializable
 
 /**
@@ -88,6 +92,8 @@ object CPMirStateManager:
     final val DFLT_FG = FG_GREEN
     final val DFLT_LOGO_IMAGE = LOGO_GREEN
 
+    private final val DIR = "mir/saved"
+
 import CPMirStateManager.*
 
 /**
@@ -98,23 +104,23 @@ class CPMirStateManager:
     private val player = CPMirPlayer.newPlayer
     private var os: CPMirOs = _
 
-    private var loaded = false
-    private var loadFailed = false
+    private var stateFound = false
+    private var stateLoadFailed = false
 
-    val state: CPMirState =
-        try
-            loadLatestState() match
-                case Some(v) ⇒
-                    loaded = true
-                    v
-                case None ⇒
-                    loaded = false
-                    init()
-        catch
-            case e: Exception ⇒
-                loadFailed = true
-                loaded = false
-                init()
+    val state: CPMirState = init()
+//        try
+//            loadLatestState() match
+//                case Some(v) ⇒
+//                    loaded = true
+//                    v
+//                case None ⇒
+//                    loaded = false
+//                    init()
+//        catch
+//            case e: Exception ⇒
+//                loadFailed = true
+//                loaded = false
+//                init()
 
     /**
       *
@@ -156,30 +162,22 @@ class CPMirStateManager:
             crtOverscanProb = .005f,
             crtOverscanFactor = if SystemUtils.IS_OS_MAC then .03f else .01f,
             crtTearProb = .03f,
-            elapsedSec = 0L
+            timeMs = 0L
         )
 
     /**
       *
       * @return
       */
-    private def loadLatestState(): Option[CPMirState] = None // TODO
+    private def loadLatest(): Option[CPMirState] = None // TODO
 
     /**
       *
-      * @return
+      * @throws Exception Thrown in case of any errors.
       */
-    def wasLatestStateLoaded: Boolean = loaded
+    def save(): Unit =
+        val fileName = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
+        Using.resource(new ObjectOutputStream(new FileOutputStream(fileName))) { _.writeObject(state)
 
-    /**
-      *
-      * @return
-      */
-    def wasLatestStateLoadFailed: Boolean = loadFailed
-
-    /**
-      *
-      */
-    def save(): Unit = () // TODO
 
 
