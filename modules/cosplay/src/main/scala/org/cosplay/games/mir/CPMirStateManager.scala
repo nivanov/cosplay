@@ -36,7 +36,7 @@ import games.mir.os.*
 import games.mir.os.fs.*
 import org.apache.commons.lang3.SystemUtils
 
-import java.io.{FileOutputStream, IOException, ObjectOutputStream}
+import java.io.*
 import scala.collection.mutable
 import scala.io.Source
 import scala.util.Using
@@ -176,8 +176,8 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
-        val fileName = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
-        Using.resource(new ObjectOutputStream(new FileOutputStream(fileName))) { _.writeObject(state)
+        val path = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
+        Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
 
 
 

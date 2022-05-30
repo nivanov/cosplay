@@ -81,7 +81,11 @@ object CPUtils:
       *
       * @param path
       */
-    def homeFile(path: String): File = new File(System.getProperty("user.home"), s"$HOME_DIR/$path")
+    def homeFile(path: String): File =
+        val file = new File(SystemUtils.getUserHome, s"$HOME_DIR/$path")
+        val parent = file.getParentFile
+        if !parent.exists() && !parent.mkdirs() then throw E(s"Failed to create folder: ${parent.getAbsolutePath}")
+        file
 
     /**
       *

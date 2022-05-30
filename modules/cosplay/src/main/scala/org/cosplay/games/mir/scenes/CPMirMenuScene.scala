@@ -45,8 +45,8 @@ import prefabs.sprites.*
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
     private val menuPxs = markup.process(
         s"""
-           | <~Menu~>
-           | ----
+           | <@ Menu @>
+           | ------
            |
            | <%[C]%> - Continue
            | <%[N]%> - New Game
@@ -62,7 +62,7 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
            | <~Open menu in-game by pressing~> <%[F10]%>
         """.stripMargin
     )
-    private val img = CPArrayImage(menuPxs, BG_PX).trimBg()
+    private val img = CPArrayImage(menuPxs, BG_PX).trimBg(_ == BG_PX)
 
     addObjects(
         // Sprite for ghost images.

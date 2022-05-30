@@ -51,8 +51,8 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
         val colWhite = if state.fg == CPMirStateManager.FG_WHITE then "X" else " "
         val txtPxs = markup.process(
             s"""
-               | <%Options%>
-               | -------
+               | <@ Options @>
+               | ---------
                | 
                | <%[V]%> - Visual CRT Effect [<~$crtVisual~>]
                | <%[A]%> - Audio CRT Effect  [<~$crtAudio~>]
@@ -66,11 +66,12 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
                |
                |
                |
-               | <%[Space]%>  Back To Menu
+               | <%[Space]%>  Accept Changes
+               | <%[Z]%>      Discard Changes
                |
             """.stripMargin
         )
-        CPArrayImage(txtPxs, BG_PX).trimBg()
+        CPArrayImage(txtPxs, BG_PX).trimBg(_ == BG_PX)
 
     private val imgSpr = new CPCenteredImageSprite(img = mkImage(), z = 2)
 

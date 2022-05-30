@@ -49,8 +49,9 @@ val markup = CPMarkup(
     FG,
     Option(BG),
     Seq(
-        CPMarkupElement("<%", "%>", _&&(FG_LITE, BG)),
-        CPMarkupElement("<~", "~>", _&&(FG_DARK, BG))
+        CPMarkupElement("<%", "%>", _&&(FG_LITE, BG)), // Light.
+        CPMarkupElement("<~", "~>", _&&(FG_DARK, BG)), // Dark.
+        CPMarkupElement("<@", "@>", _&&(BG, FG)) // Reverse.
     )
 )
 
@@ -80,6 +81,7 @@ object CPMirGame:
                 CPMirTitleScene,
                 CPMirNewGameScene,
                 CPMirMenuScene,
+                CPMirMainScene,
                 CPMirOptionsScene,
                 CPMirTutorialScene,
                 CPMirCreditsScene,
