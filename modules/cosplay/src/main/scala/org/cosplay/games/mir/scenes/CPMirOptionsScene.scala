@@ -73,7 +73,7 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
                |
                |
                |
-               | <%[Space]%>  Accept Changes
+               | <%[SPACE]%>  Accept Changes
                | <%[X]%>      Discard Changes
             """.stripMargin
         )
@@ -111,7 +111,7 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
                     clickThenFade(ctx ⇒ Try(stateMgr.save()) match
                         case Success(_) ⇒ ctx.switchScene("menu")
                         case Failure(e) ⇒ showError(
-                            s"Failed to save game state due to: <%${e.getMessage}%>",
+                            s"Failed to save game options due to: <%${e.getMessage}%>",
                             () ⇒ imgSpr.hide(),
                             () ⇒ imgSpr.show()
                         )

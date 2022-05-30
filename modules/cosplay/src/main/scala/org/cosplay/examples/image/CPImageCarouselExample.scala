@@ -168,7 +168,7 @@ object CPImageCarouselExample:
                   |          | <= || A  |    | D  || => |
                   |          `----'`----'    `----'`----'
                   |
-                  |[Q] Quit   [Ctrl+Q] FPS Overlay   [Ctrl+L] Open Log
+                  |[Q] Quit   [CTRL+Q] FPS Overlay   [CTRL+L] Open Log
                 """),
             (ch, _, _) => ch match
                 case c if c.isLetter => c&C_STEEL_BLUE1

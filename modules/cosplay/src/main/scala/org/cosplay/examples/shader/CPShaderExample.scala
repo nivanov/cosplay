@@ -102,9 +102,9 @@ object CPShaderExample:
                   |               `----'`----'
                   |
                   |            [Q]      Quit
-                  |            [Ctrl+Q] FPS Overlay
-                  |            [Ctrl+L] Open Log
-                  |            [Space]  Toggle Light
+                  |            [CTRL+Q] FPS Overlay
+                  |            [CTRL+L] Open Log
+                  |            [SPACE]  Toggle Light
                 """),
             (ch, _, _) => ch match
                 case c if c.isLetter => c&C_STEEL_BLUE1

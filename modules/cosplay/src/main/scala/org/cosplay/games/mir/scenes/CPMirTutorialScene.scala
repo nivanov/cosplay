@@ -48,7 +48,7 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
            |  1. <~Overview~>
            |  -----------
            |  <%Escape From Mir%> is a real time strategy game based on in-depth space
-           |  station Mir simulation that requires discovery, puzzle solving and knowledge
+           |  station Mir simulation that requires discovery, problem solving and knowledge
            |  of the basic physics principles, engineering and computer science. Yes... this
            |  is the game where you code programs, crawl the file system, hack the OS and
            |  even solve equations to find your way out of the calamity of the orbital crash.
@@ -63,8 +63,8 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
            |  Throughout the game you can also use the following keyboard shortcuts:
            |  <%[F10]%>    - Open Game Menu
            |  <%[F12]%>    - Take *.xp Screenshot
-           |  <%[Ctrl-Q]%> - Toggle FPS Overlay
-           |  <%[Ctrl-L]%> - Open Dev Mode
+           |  <%[CTRL-Q]%> - Toggle FPS Overlay
+           |  <%[CTRL-L]%> - Open Dev Mode
            |
            |  Every 60 seconds games performs auto-save that you can load later from the
            |  main menu. You can also save the current game state manually from the same
@@ -83,7 +83,7 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
            |
            |
            |
-           |  <%[Space]%>  Continue
+           |  <%[SPACE]%>  Continue
            |
         """.stripMargin
     )

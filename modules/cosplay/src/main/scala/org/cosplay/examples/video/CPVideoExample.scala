@@ -69,11 +69,11 @@ object CPVideoExample:
         val c1 = C_LIGHT_GREEN
         val c2 = C_ORANGE1
         val ctrlImg = new CPArrayImage(
-            styleStr("[Space]", c1) ++ styleStr(" Play|Pause    ", c2) ++
+            styleStr("[SPACE]", c1) ++ styleStr(" Play|Pause    ", c2) ++
             styleStr("[R]", c1) ++ styleStr(" Rewind    ", c2) ++
             styleStr("[Q]", c1) ++ styleStr(" Quit    ", c2) ++
-            styleStr("[Ctrl-L]", c1) ++ styleStr(" Log    ", c2) ++
-            styleStr("[Ctrl-Q]", c1) ++ styleStr(" FPS Overlay", c2)
+            styleStr("[CTRL-L]", c1) ++ styleStr(" Log    ", c2) ++
+            styleStr("[CTRL-Q]", c1) ++ styleStr(" FPS Overlay", c2)
         ).trimBg()
         val vidDim = CPVideoClip.getFrameDim
         val ctrlDim = ctrlImg.getDim

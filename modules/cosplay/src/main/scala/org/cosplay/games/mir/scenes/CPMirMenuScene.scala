@@ -25,6 +25,7 @@ import CPKeyboardKey.*
 import games.mir.*
 import sprites.*
 import prefabs.sprites.*
+import scala.util.*
 
 /*
    _________            ______________
@@ -49,8 +50,8 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
            | ------
            |
            | <%[C]%> - Continue
-           | <%[N]%> - New Game
            |
+           | <%[N]%> - New Game
            | <%[S]%> - Save Game
            | <%[L]%> - Load Game
            |
@@ -62,17 +63,31 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
            | <~Open menu in-game by pressing~> <%[F10]%>
         """.stripMargin
     )
-    private val img = CPArrayImage(menuPxs, BG_PX).trimBg(_ == BG_PX)
+    private val menuSpr = new CPCenteredImageSprite(img = CPArrayImage(menuPxs, BG_PX).trimBg(_ == BG_PX), z = 2)
 
     addObjects(
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
-        new CPCenteredImageSprite(img = img, z = 2),
-        new CPKeyboardSprite((ctx, key) ⇒ key match
+        menuSpr,
+        new CPKeyboardSprite((_, key) ⇒ key match
             case KEY_LO_Q ⇒ clickThenFade(_.exitGame())
             case KEY_LO_T ⇒ clickThenFade(_.switchScene("tutorial", false, ("next_scene", "menu")))
             case KEY_LO_O ⇒ clickThenFade(_.switchScene("options"))
             case KEY_LO_N ⇒ clickThenFade(_.switchScene("new_game"))
+            case KEY_LO_S ⇒ clickThenFade(_ => {
+                Try(stateMgr.save()) match
+                    case Success(_) => showConfirm(
+                        s"Current game state has been successfully saved.",
+                        () => menuSpr.hide(),
+                        () => menuSpr.show(),
+                        "Save"
+                    )
+                    case Failure(e) => showError(
+                        s"Failed to save game due to: <%${e.getMessage}%>",
+                        () => menuSpr.hide(),
+                        () => menuSpr.show()
+                    )
+            })
             case _ ⇒ ()
         ),
         // Add full-screen shaders - order is important.

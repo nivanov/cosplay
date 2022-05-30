@@ -45,7 +45,7 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
     private val colors = Seq(FG)
     private val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
     private val errSnd: CPSound = CPSound(s"$SND_HOME/error.wav")
-    private val confirmSnd: CPSound = CPSound(s"$SND_HOME/confirm.wav")
+    private val confirmSnd: CPSound = CPSound(s"$SND_HOME/confirm.wav", .5f)
 
     protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
         true,
@@ -80,19 +80,21 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
       * @param errMsg Error message (including markup).
       * @param onAct Call on [[CPSceneObject.onActivate()]] callback.
       * @param onDeact Call on [[CPSceneObject.onDeactivate()]] callback.
+      * @param title Optional dialog title.
       */
-    protected def showError(errMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit): Unit =
+    protected def showError(errMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit, title: String = "Error"): Unit =
+        val dash = "-" * (2 + title.length)
         val errPxs = markup.process(
             s"""
-               | <@ Error @>
-               | -------
+               | <@ $title @>
+               | $dash
                |
                | $errMsg
                | Please try again.
                |
                |
                |
-               | <%[Space]%>  Continue
+               | <%[SPACE]%>  Continue
             """.stripMargin
         )
         errSnd.play()
@@ -114,18 +116,20 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
       * @param confirmMsg Confirmation message (including markup).
       * @param onAct Call on [[CPSceneObject.onActivate()]] callback.
       * @param onDeact Call on [[CPSceneObject.onDeactivate()]] callback.
+      * @param title Optional dialog title.
       */
-    protected def showConfirm(confirmMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit): Unit =
+    protected def showConfirm(confirmMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit, title: String = "Confirmation"): Unit =
+        val dash = "-" * (2 + title.length)
         val errPxs = markup.process(
             s"""
-               | <@ Confirmation @>
-               | --------------
+               | <@ $title @>
+               | $dash
                |
                | $confirmMsg
                |
                |
                |
-               | <%[Space]%>  Continue
+               | <%[SPACE]%>  Continue
             """.stripMargin
         )
         confirmSnd.play()

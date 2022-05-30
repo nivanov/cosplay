@@ -87,10 +87,10 @@ object CPParticleExample:
         val c2 = C_ORANGE1
 
         val ctrlImg = new CPArrayImage(
-            styleStr("[Space]", c1) ++ styleStr(" Kaboom!    ", c2) ++
+            styleStr("[SPACE]", c1) ++ styleStr(" Kaboom!    ", c2) ++
             styleStr("[Q]", c1) ++ styleStr(" Quit    ", c2) ++
-            styleStr("[Ctrl-L]", c1) ++ styleStr(" Log    ", c2) ++
-            styleStr("[Ctrl-Q]", c1) ++ styleStr(" FPS Overlay", c2)
+            styleStr("[CTRL-L]", c1) ++ styleStr(" Log    ", c2) ++
+            styleStr("[CTRL-Q]", c1) ++ styleStr(" FPS Overlay", c2)
         ).trimBg()
 
         // Initialize the engine.

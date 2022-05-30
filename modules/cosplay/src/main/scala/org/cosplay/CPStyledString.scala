@@ -45,11 +45,11 @@ import scala.collection.mutable
   * import CPStyledString.styleStr
   * 
   * val lblImg = new CPArrayImage(
-  *     styleStr("[Space]", C_WHITE) ++ styleStr("Play|Pause ", C_GREEN) ++
+  *     styleStr("[SPACE]", C_WHITE) ++ styleStr("Play|Pause ", C_GREEN) ++
   *     styleStr("[R]", C_WHITE) ++ styleStr("Rewind ", C_GREEN) ++
   *     styleStr("[Q]", C_WHITE) ++ styleStr("Quit ", C_GREEN) ++
-  *     styleStr("[Ctrl-L]", C_WHITE) ++ styleStr("Log ", C_GREEN) ++
-  *     styleStr("[Ctrl-Q]", C_WHITE) ++ styleStr("FPS Overlay", C_GREEN)
+  *     styleStr("[CTRL-L]", C_WHITE) ++ styleStr("Log ", C_GREEN) ++
+  *     styleStr("[CTRL-Q]", C_WHITE) ++ styleStr("FPS Overlay", C_GREEN)
   * ).trimBg()
   * }}}
   *
