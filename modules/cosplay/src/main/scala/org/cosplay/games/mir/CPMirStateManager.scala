@@ -177,7 +177,7 @@ class CPMirStateManager:
       */
     def save(): Unit =
         val fileName = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
-        Using.resource(new ObjectOutputStream(new FileOutputStream(fileName))) { _.writeObject(state)
+        Using.resource(new ObjectOutputStream(new FileOutputStream(fileName))) { _.writeObject(state) }
 
 
 
