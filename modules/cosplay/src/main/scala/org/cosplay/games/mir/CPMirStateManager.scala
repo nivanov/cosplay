@@ -88,9 +88,9 @@ object CPMirStateManager:
     final val LOGO_YELLOW = "mir_logo_yellow.xp"
     final val LOGO_WHITE = "mir_logo_white.xp"
 
-    final val DFLT_BG = BG_GREEN
-    final val DFLT_FG = FG_GREEN
-    final val DFLT_LOGO_IMAGE = LOGO_GREEN
+    final val DFLT_BG = BG_YELLOW
+    final val DFLT_FG = FG_YELLOW
+    final val DFLT_LOGO_IMAGE = LOGO_YELLOW
 
     private final val DIR = "mir/saved"
 
@@ -172,6 +172,7 @@ class CPMirStateManager:
     private def loadLatest(): Option[CPMirState] = None // TODO
 
     /**
+      * Saves current state. Throws exception in case of any errors.
       *
       * @throws Exception Thrown in case of any errors.
       */

@@ -24,6 +24,7 @@ import scenes.*
 import scenes.sprites.*
 import prefabs.sprites.*
 import CPMirStateManager.*
+import scala.util.*
 
 /*
    _________            ______________
@@ -42,13 +43,19 @@ import CPMirStateManager.*
   * 
   */
 object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
+    private var savedCrtVisual: Boolean = _
+    private var savedCrtAudio: Boolean = _
+    private var savedFg: CPColor = _
+    private var savedBg: CPColor = _
+    private val UNSEL = 'V'
+
     private def mkImage(): CPImage =
         val state = stateMgr.state
-        val crtVisual = if state.crtVisual then "X" else " "
-        val crtAudio = if state.crtAudio then "X" else " "
-        val colGreen = if state.fg == CPMirStateManager.FG_GREEN then "X" else " "
-        val colYellow = if state.fg == CPMirStateManager.FG_YELLOW then "X" else " "
-        val colWhite = if state.fg == CPMirStateManager.FG_WHITE then "X" else " "
+        val crtVisual = if state.crtVisual then UNSEL else " "
+        val crtAudio = if state.crtAudio then UNSEL else " "
+        val colGreen = if state.fg == CPMirStateManager.FG_GREEN then UNSEL else " "
+        val colYellow = if state.fg == CPMirStateManager.FG_YELLOW then UNSEL else " "
+        val colWhite = if state.fg == CPMirStateManager.FG_WHITE then UNSEL else " "
         val txtPxs = markup.process(
             s"""
                | <@ Options @>
@@ -67,8 +74,7 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
                |
                |
                | <%[Space]%>  Accept Changes
-               | <%[Z]%>      Discard Changes
-               |
+               | <%[X]%>      Discard Changes
             """.stripMargin
         )
         CPArrayImage(txtPxs, BG_PX).trimBg(_ == BG_PX)
@@ -78,13 +84,11 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
     /**
       *
       */
-    private def update(): Unit =
-        stateMgr.save()
-        clickNext(() ⇒ imgSpr.setImage(mkImage()))
+    private def update(): Unit = click(() ⇒ imgSpr.setImage(mkImage()))
 
     addObjects(
-        new CPKeyboardSprite((ctx, key) ⇒
-            val state: CPMirState = stateMgr.state
+        new CPKeyboardSprite((ctx, key) ⇒ {
+            val state = stateMgr.state
             key match
                 case KEY_LO_V ⇒
                     state.crtVisual = !state.crtVisual
@@ -97,14 +101,37 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
                     else if state.fg == FG_YELLOW then state.fg = FG_WHITE
                     else state.fg = FG_GREEN
                     update()
-                case KEY_SPACE ⇒ clickThenFade(_.switchScene("menu"))
+                case KEY_LO_X ⇒
+                    state.crtVisual = savedCrtVisual
+                    state.crtAudio = savedCrtAudio
+                    state.fg = savedFg
+                    state.bg = savedBg
+                    clickThenFade(_.switchScene("menu"))
+                case KEY_SPACE ⇒
+                    clickThenFade(ctx ⇒ Try(stateMgr.save()) match
+                        case Success(_) ⇒ ctx.switchScene("menu")
+                        case Failure(e) ⇒ showError(
+                            s"Failed to save game state due to: <%${e.getMessage}%>",
+                            () ⇒ imgSpr.hide(),
+                            () ⇒ imgSpr.show()
+                        )
+                    )
                 case _ ⇒ ()
-        ),
+        }),
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         imgSpr,
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
     )
+
+    override def onActivate(): Unit =
+        super.onActivate()
+        val state = stateMgr.state
+        savedCrtVisual = state.crtVisual
+        savedCrtAudio = state.crtAudio
+        savedFg = state.fg
+        savedBg = state.bg
+        imgSpr.setImage(mkImage())
 
 

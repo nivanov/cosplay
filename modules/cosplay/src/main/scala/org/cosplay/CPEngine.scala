@@ -939,7 +939,6 @@ object CPEngine:
                             scLog.trace(s"Input focus is currently held by '${kbFocusOwner.get}', switching to '$id'.")
                         val cloId = id
                         delayedQ += (() => kbFocusOwner = Option(cloId))
-                    override def acquireMyFocus(): Unit = acquireFocus(myId)
                     override def getFocusOwner: Option[String] = kbFocusOwner
                     override def releaseFocus(id: String): Unit =
                         if kbFocusOwner.isDefined && kbFocusOwner.get == id then
@@ -964,24 +963,25 @@ object CPEngine:
                     override def deleteScene(id: String): Unit =
                         if sc.getId == id then E(s"Cannot remove current scene: ${sc.getId}")
                         else
-                            val colId = id
+                            val cloId = id
                             delayedQ += (() => {
-                                scenes.remove(colId) match
+                                scenes.remove(cloId) match
                                     case Some(s) =>
                                         engLog.info(s"Scene deleted: ${s.getId}")
                                         lifecycleStop(s)
                                     case _ =>
-                                        engLog.warn(s"Ignored an attempt to delete unknown scene: $colId")
+                                        engLog.warn(s"Ignored an attempt to delete unknown scene: $cloId")
                             })
                     override def deleteObject(id: String): Unit =
-                        val colId = id
+                        val cloId = id
                         delayedQ += (() => {
-                            sc.objects.remove(colId) match
+                            sc.objects.remove(cloId) match
                                 case Some(obj) =>
+                                    if kbFocusOwner.isDefined && kbFocusOwner.get == cloId then kbFocusOwner = None
                                     engLog.info(s"Scene object deleted from '${sc.getId}' scene: ${obj.toExtStr}")
                                     lifecycleStop(obj)
                                 case _ =>
-                                    engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $colId")
+                                    engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $cloId")
                         })
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
                         if myObj.getCollisionRect.isEmpty then E(s"Current object does not provide collision shape: ${myObj.getId}")

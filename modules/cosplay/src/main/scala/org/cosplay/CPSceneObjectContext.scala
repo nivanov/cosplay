@@ -112,11 +112,19 @@ trait CPSceneObjectContext extends CPBaseContext:
 
     /**
       * Deletes given scene object after this update cycle. Change will be visible only
-      * on the next frame update.
+      * on the next frame update. Note that focus owner will be released if held by the deleted
+      * object.
       *
       * @param id ID of the scene object to delete after this update cycle.
       */
     def deleteObject(id: String): Unit
+
+    /**
+      * Deletes current scene object after this update cycle. Change will be visible only
+      * on the next frame update. Note that focus owner will be released if held by the this
+      * object.
+      */
+    def deleteMyself(): Unit = deleteObject(getId)
 
     /**
       * Adds given scene object to the scene after this update cycle. Change will be visible only
@@ -227,7 +235,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       * @see [[releaseFocus()]]
       * @see [[releaseMyFocus()]]
       */
-    def acquireMyFocus(): Unit
+    def acquireMyFocus(): Unit = acquireFocus(getId)
 
     /**
       * Gets the current owner of input keyboard focus.

@@ -31,8 +31,10 @@ package org.cosplay.games.mir.scenes
 */
 
 import org.cosplay.*
+import CPKeyboardKey.*
 import games.mir.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 
 /**
   *
@@ -42,6 +44,7 @@ import prefabs.shaders.*
 abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends CPMirCrtSceneBase(id, bgSndFile):
     private val colors = Seq(FG)
     private  val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
+    private  val errSnd: CPSound = CPSound(s"$SND_HOME/error.wav")
 
     protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
         true,
@@ -67,9 +70,43 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
       *
       * @param f Closure to call.
       */
-    protected def clickNext(f: () ⇒ Unit): Unit =
+    protected def click(f: () ⇒ Unit): Unit =
         clickSnd.play()
         f()
+
+    /**
+      *
+      * @param errMsg Error message (including markup).
+      * @param onAct Call on [[CPSceneObject.onActivate()]] callback.
+      * @param onDeact Call on [[CPSceneObject.onDeactivate()]] callback.
+      */
+    protected def showError(errMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit): Unit =
+        val errPxs = markup.process(
+            s"""
+               | <@ Error @>
+               | -------
+               |
+               | $errMsg
+               | Please try again.
+               |
+               |
+               |
+               | <%[Space]%>  Continue
+            """.stripMargin
+        )
+        errSnd.play()
+        addObjects(new CPCenteredImageSprite(img = CPArrayImage(errPxs, BG_PX).trimBg(_ == BG_PX), z = 2):
+            override def onActivate(): Unit = onAct()
+            override def onDeactivate(): Unit = onDeact()
+            override def update(ctx: CPSceneObjectContext): Unit =
+                super.update(ctx)
+                ctx.acquireMyFocus()
+                ctx.getKbEvent match
+                    case Some(evt) ⇒ evt.key match
+                        case KEY_SPACE ⇒ click(() ⇒ ctx.deleteMyself())
+                        case _ ⇒ ()
+                    case None ⇒ ()
+        )
 
     // Make sure to call 'super(...)'.
     override def onActivate(): Unit =
