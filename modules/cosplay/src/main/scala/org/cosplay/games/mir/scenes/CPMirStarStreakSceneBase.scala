@@ -43,8 +43,9 @@ import prefabs.sprites.*
   */
 abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends CPMirCrtSceneBase(id, bgSndFile):
     private val colors = Seq(FG)
-    private  val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
-    private  val errSnd: CPSound = CPSound(s"$SND_HOME/error.wav")
+    private val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
+    private val errSnd: CPSound = CPSound(s"$SND_HOME/error.wav")
+    private val confirmSnd: CPSound = CPSound(s"$SND_HOME/confirm.wav")
 
     protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
         true,
@@ -100,7 +101,40 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
             override def onDeactivate(): Unit = onDeact()
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                ctx.acquireMyFocus()
+                ctx.acquireMyFocus() // Ensure that only this dialog gets keyboard focus.
+                ctx.getKbEvent match
+                    case Some(evt) ⇒ evt.key match
+                        case KEY_SPACE ⇒ click(() ⇒ ctx.deleteMyself())
+                        case _ ⇒ ()
+                    case None ⇒ ()
+        )
+
+    /**
+      *
+      * @param confirmMsg Confirmation message (including markup).
+      * @param onAct Call on [[CPSceneObject.onActivate()]] callback.
+      * @param onDeact Call on [[CPSceneObject.onDeactivate()]] callback.
+      */
+    protected def showConfirm(confirmMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit): Unit =
+        val errPxs = markup.process(
+            s"""
+               | <@ Confirmation @>
+               | --------------
+               |
+               | $confirmMsg
+               |
+               |
+               |
+               | <%[Space]%>  Continue
+            """.stripMargin
+        )
+        confirmSnd.play()
+        addObjects(new CPCenteredImageSprite(img = CPArrayImage(errPxs, BG_PX).trimBg(_ == BG_PX), z = 2):
+            override def onActivate(): Unit = onAct()
+            override def onDeactivate(): Unit = onDeact()
+            override def update(ctx: CPSceneObjectContext): Unit =
+                super.update(ctx)
+                ctx.acquireMyFocus() // Ensure that only this dialog gets keyboard focus.
                 ctx.getKbEvent match
                     case Some(evt) ⇒ evt.key match
                         case KEY_SPACE ⇒ click(() ⇒ ctx.deleteMyself())
