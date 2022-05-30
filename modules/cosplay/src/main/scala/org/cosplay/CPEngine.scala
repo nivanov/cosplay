@@ -140,7 +140,7 @@ object CPEngine:
     private var kbKey: CPKeyboardKey = _
     private final val kbMux = AnyRef
     private final val pauseMux = AnyRef
-    private var engLog: Log4jWrapper = _
+    private var engLog: CPLog = _
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
     private var savedEx: Throwable = _
@@ -174,10 +174,10 @@ object CPEngine:
     /**
       * Log4J2 wrapper for the log. Mirrors all log output to log4j2 rolling file appended
       * under ${user.home}/.cosplay/log folder.
-      *
+      *   
       * @param impl Log implementation.
       */
-    private class Log4jWrapper(val impl: CPLog) extends CPLog :
+    private class Log4jWrapper(impl: CPLog) extends CPLog:
         private val log4j = LogManager.getLogger(impl.getCategory)
 
         def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit =
@@ -191,15 +191,27 @@ object CPEngine:
                         case CPLogLevel.ERROR => log4j.error(obj, ex)
                         case CPLogLevel.FATAL => log4j.fatal(obj, ex)
                 impl.log(nthFrame, lvl, obj, ex)
-
         def getLog(category: String): CPLog = new Log4jWrapper(impl.getLog(category))
-
         def getCategory: String = impl.getCategory
 
     /**
       *
+      * @param cat Log category.
       */
-    private class NativeKbReader extends Thread :
+    private class BufferedLog(cat: String) extends CPLog:
+        case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception)
+        private val buf = mutable.ArrayBuffer.empty[BufferedLogEntry]
+
+        def getLog(category: String): CPLog = new BufferedLog(s"$cat/$category")
+        def getCategory: String = cat
+        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit = buf += BufferedLogEntry(nthFrame, lvl, obj, ex)
+
+        def getBuffer: Seq[BufferedLogEntry] = buf.toSeq
+
+    /**
+      *
+      */
+    private class NativeKbReader extends Thread:
         private final val EOF = -1
         private final val TIMEOUT = -2
         private final val ESC = 27
@@ -1129,8 +1141,8 @@ object CPEngine:
 
                     stats = Option(CPRenderStats(frameCnt, scFrameCnt, fps, avgFps, avgLow1Fps, usrNs, sysNs, objs.length, visObjCnt, kbEvt))
 
-                    // Update GUI log if it is used.
-                    if engLog.impl.isInstanceOf[CPGuiLog] then CPGuiLog.updateStats(stats.get)
+                    // Update GUI log.
+                    CPGuiLog.updateStats(stats.get)
 
                 // Notify stats listeners, if any.
                 stats match

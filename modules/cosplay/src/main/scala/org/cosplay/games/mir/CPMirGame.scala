@@ -79,6 +79,7 @@ object CPMirGame:
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
                 CPMirTitleScene,
+                CPMirLoadScene,
                 CPMirNewGameScene,
                 CPMirMenuScene,
                 CPMirMainScene,

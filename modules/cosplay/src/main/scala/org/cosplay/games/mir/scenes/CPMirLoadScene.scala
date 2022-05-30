@@ -41,26 +41,23 @@ import scala.util.*
 */
 
 /**
-  * Main menu scene.
+  * Load game scene.
   */
-object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
+object CPMirLoadScene extends CPMirStarStreakSceneBase("load", "bg1.wav"):
     private val menuPxs = markup.process(
         s"""
-           | <@ Menu @>
-           | ------
+           | <@ Load Game @>
+           | -----------
            |
-           | <%[C]%> - Continue
+           | <%[C]%> - Load Latest (Continue)
            |
-           | <%[N]%> - New Game
-           | <%[S]%> - Save Game
-           | <%[L]%> - Load Game
-           |
-           | <%[O]%> - Options
-           | <%[T]%> - Tutorial
-           | <%[Q]%> - Quit
+           | <%[1]%> - Load 1min Ago
+           | <%[2]%> - Load 5min Ago
+           | <%[3]%> - Load 15min Ago
+           | <%[4]%> - Load 30min Ago
            |
            |
-           | <~Open menu in-game by pressing~> <%[F10]%>
+           | <%[SPACE]%>  Back To Menu
         """.stripMargin
     )
     private val menuSpr = new CPCenteredImageSprite(img = CPArrayImage(menuPxs, BG_PX).trimBg(_ == BG_PX), z = 2)
@@ -73,7 +70,6 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
             case KEY_LO_Q ⇒ clickThenFade(_.exitGame())
             case KEY_LO_T ⇒ clickThenFade(_.switchScene("tutorial", false, ("next_scene", "menu")))
             case KEY_LO_O ⇒ clickThenFade(_.switchScene("options"))
-            case KEY_LO_L ⇒ clickThenFade(_.switchScene("load"))
             case KEY_LO_N ⇒ clickThenFade(_.switchScene("new_game"))
             case KEY_LO_S ⇒ clickThenFade(_ => {
                 Try(stateMgr.save()) match
