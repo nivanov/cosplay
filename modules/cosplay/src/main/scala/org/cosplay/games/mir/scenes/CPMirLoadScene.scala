@@ -51,10 +51,12 @@ object CPMirLoadScene extends CPMirStarStreakSceneBase("load", "bg1.wav"):
            |
            | <%[C]%> - Load Latest (Continue)
            |
-           | <%[1]%> - Load 1min Ago
-           | <%[2]%> - Load 5min Ago
-           | <%[3]%> - Load 15min Ago
-           | <%[4]%> - Load 30min Ago
+           | <%[1]%> - Load 01m Ago
+           | <%[2]%> - Load 05m Ago
+           | <%[3]%> - Load 15m Ago
+           | <%[4]%> - Load 30m Ago
+           |
+           | (you can repeatedly load previous state to go beyond 30 minutes)
            |
            |
            | <%[SPACE]%>  Back To Menu
@@ -67,24 +69,7 @@ object CPMirLoadScene extends CPMirStarStreakSceneBase("load", "bg1.wav"):
         new CPMirGhostSprite(false),
         menuSpr,
         new CPKeyboardSprite((_, key) ⇒ key match
-            case KEY_LO_Q ⇒ clickThenFade(_.exitGame())
-            case KEY_LO_T ⇒ clickThenFade(_.switchScene("tutorial", false, ("next_scene", "menu")))
-            case KEY_LO_O ⇒ clickThenFade(_.switchScene("options"))
-            case KEY_LO_N ⇒ clickThenFade(_.switchScene("new_game"))
-            case KEY_LO_S ⇒ clickThenFade(_ => {
-                Try(stateMgr.save()) match
-                    case Success(_) => showConfirm(
-                        s"Current game state has been successfully saved.",
-                        () => menuSpr.hide(),
-                        () => menuSpr.show(),
-                        "Save"
-                    )
-                    case Failure(e) => showError(
-                        s"Failed to save game due to: <%${e.getMessage}%>",
-                        () => menuSpr.hide(),
-                        () => menuSpr.show()
-                    )
-            })
+            case KEY_SPACE ⇒ clickThenFade(_.switchScene("menu"))
             case _ ⇒ ()
         ),
         // Add full-screen shaders - order is important.

@@ -78,13 +78,13 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
             case KEY_LO_S ⇒ clickThenFade(_ => {
                 Try(stateMgr.save()) match
                     case Success(_) => showConfirm(
-                        s"Current game state has been successfully saved.",
+                        s"Current game progress has been successfully saved.",
                         () => menuSpr.hide(),
                         () => menuSpr.show(),
                         "Save"
                     )
                     case Failure(e) => showError(
-                        s"Failed to save game due to: <%${e.getMessage}%>",
+                        s"Failed to save game progress due to: <%${e.getMessage}%>",
                         () => menuSpr.hide(),
                         () => menuSpr.show()
                     )
