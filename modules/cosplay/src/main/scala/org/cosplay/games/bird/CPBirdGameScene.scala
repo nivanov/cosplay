@@ -179,17 +179,17 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 start = false
 
             // Building spawner.
-//            if ctx.getObjectsForTags("building").length < (canv.width / buildingGap).toInt then
-//                for x <- 0 to (canv.width / buildingGap).toInt do
-//                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * buildingGap, Random.between(minDepth, maxDepth).toInt))
-//                    buildingAmount += 1
-//                    buildingTotal += 1
-//
-//            buildingMove = false
-//            buildingOffset += buildingSpeed
-//            if buildingOffset >= 1 then
-//                buildingOffset -= 1
-//                buildingMove = true
+            if ctx.getObjectsForTags("building").length < (canv.width / buildingGap).toInt then
+                for x <- 0 to (canv.width / buildingGap).toInt do
+                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * buildingGap, Random.between(minDepth, maxDepth).toInt))
+                    buildingAmount += 1
+                    buildingTotal += 1
+
+            buildingMove = false
+            buildingOffset += buildingSpeed
+            if buildingOffset >= 1 then
+                buildingOffset -= 1
+                buildingMove = true
 
             // Grass spawner.
             if grassAmount < (canv.width / brickImg.getWidth - 1).toInt + 5 then
