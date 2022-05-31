@@ -177,19 +177,23 @@ object CPEngine:
       *
       * @param impl Log implementation.
       */
-    private class Log4jWrapper(impl: CPLog) extends CPLog:
+    private class Log4jMirrorLog(impl: CPLog) extends CPLog:
         private val log4j = LogManager.getLogger(impl.getCategory)
 
         init()
 
         private def init(): Unit =
-            BufferedLog.getBuffer.foreach(ent => log(
-                ent.nthFrame,
-                ent.lvl,
-                ent.obj,
-                ent.cat,
-                ent.ex
-            ))
+            val buf = BufferedLog.buf
+            if buf.nonEmpty then
+                buf.foreach(ent => log(
+                    ent.nthFrame,
+                    ent.lvl,
+                    ent.obj,
+                    ent.cat,
+                    ent.ex
+                ))
+                buf.clear()
+
 
         def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit =
             if frameCnt % nthFrame == 0 then
@@ -202,7 +206,7 @@ object CPEngine:
                         case CPLogLevel.ERROR => log4j.error(obj, ex)
                         case CPLogLevel.FATAL => log4j.fatal(obj, ex)
                 impl.log(nthFrame, lvl, obj, cat, ex)
-        def getLog(category: String): CPLog = new Log4jWrapper(impl.getLog(category))
+        def getLog(category: String): CPLog = new Log4jMirrorLog(impl.getLog(category))
         def getCategory: String = impl.getCategory
 
     /**
@@ -210,9 +214,7 @@ object CPEngine:
       */
     object BufferedLog:
         case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception)
-        private val buf = mutable.ArrayBuffer.empty[BufferedLogEntry]
-
-        def getBuffer: Seq[BufferedLogEntry] = buf.toSeq
+        val buf: mutable.ArrayBuffer[BufferedLogEntry] = mutable.ArrayBuffer.empty[BufferedLogEntry]
 
     import BufferedLog.*
 
@@ -323,8 +325,6 @@ object CPEngine:
         try term = Class.forName(termClsName).getDeclaredConstructor(classOf[CPGameInfo]).newInstance(gameInfo).asInstanceOf[CPTerminal]
         catch case e: Exception => E(s"Failed to create the terminal for class: $termClsName", e)
 
-        engLog = new Log4jWrapper(term.getRootLog.getLog("cosplay"))
-
         // Set terminal window title.
         updateTitle(term.getDim)
 
@@ -334,6 +334,8 @@ object CPEngine:
             kbReader.start()
 
         state = State.ENG_STARTED
+
+        engLog = new Log4jMirrorLog(term.getRootLog.getLog("cosplay"))
 
         // For some reasons, GUI-based log (some Swing activity) is **required** to avoid
         // strange behavior of the native terminal in shaders. Specifically, fade-in
