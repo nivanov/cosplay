@@ -58,7 +58,7 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, sparkleShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        // Toggle audio on 'Ctrl+A' press.
+        // Toggle audio on 'CTRL+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Transition to the next scene on 'Enter' press.
         CPKeyboardSprite(KEY_ENTER, _ => fadeOutShdr.start(_.switchScene("play")))

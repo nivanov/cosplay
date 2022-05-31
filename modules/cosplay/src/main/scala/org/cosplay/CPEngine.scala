@@ -107,8 +107,8 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   * There are three reserved key strokes that are used by the game engine itself and therefore NOT available
   * to the game. These keystrokes are intercepted before frame update and not propagated to the scene object
   * context:
-  *  - 'Ctrl+Q' - toggles in-game FPS overlay
-  *  - 'Ctrl+L' - opens GUI-based loc viewer & debugger
+  *  - 'CTRL+Q' - toggles in-game FPS overlay
+  *  - 'CTRL+L' - opens GUI-based loc viewer & debugger
   *  - 'F12' - saves current frame screenshot as *.xp image to the current working folder.
   *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
@@ -140,7 +140,7 @@ object CPEngine:
     private var kbKey: CPKeyboardKey = _
     private final val kbMux = AnyRef
     private final val pauseMux = AnyRef
-    private var engLog: CPLog = BufferedLog("")
+    private var engLog: CPLog = BufferedLog("").getLog("root")
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
     private var savedEx: Throwable = _
@@ -1105,7 +1105,7 @@ object CPEngine:
                 // Clear delayed operations.
                 delayedQ.clear()
 
-                // Built-in support for 'Ctrl+Q', 'Ctrl+L' and 'F12'.
+                // Built-in support for 'CTRL+Q', 'CTRL+L' and 'F12'.
                 if kbEvt.isDefined then
                     if kbEvt.get.key == KEY_CTRL_Q then
                         isShowFps = !isShowFps
