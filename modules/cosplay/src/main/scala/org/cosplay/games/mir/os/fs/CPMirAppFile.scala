@@ -45,7 +45,7 @@ class CPMirAppFile(
     name: String,
     owner: CPMirUser,
     parent: Option[CPMirFile],
-    app: CPMirApp
+    app: CPMirProgram
 ) extends CPMirFile(FT_APP, name, owner, parent):
     setSize(app.getSizeOnDisk)
 
@@ -53,5 +53,5 @@ class CPMirAppFile(
       *
       * @return
       */
-    def getApp: CPMirApp = app
+    def getApp: CPMirProgram = app
 

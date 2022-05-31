@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os
 
+import org.cosplay.games.mir.CPMirConsole
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -32,18 +34,19 @@ package org.cosplay.games.mir.os
 
 /**
   *
+  * @param args
+  * @param con
+  * @param fs
+  * @param workDir
+  * @param env
+  * @param user
   */
-abstract class CPMirApp:
-    /**
-      *
-      * @param ctx
-      * @return
-      */
-    def appMain(ctx: CPMirAppContext): Int
-
-    /**
-      *
-      * @return
-      */
-    def getSizeOnDisk: Long
+case class CPMirProgramContext(
+    args: Seq[String],
+    con: CPMirConsole,
+    fs: CPMirFileSystem,
+    workDir: CPMirFile,
+    env: Map[String, String],
+    user: CPMirUser
+)
 
