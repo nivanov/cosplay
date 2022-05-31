@@ -140,7 +140,7 @@ object CPEngine:
     private var kbKey: CPKeyboardKey = _
     private final val kbMux = AnyRef
     private final val pauseMux = AnyRef
-    private var engLog: CPLog = _
+    private var engLog: CPLog = BufferedLog("")
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
     private var savedEx: Throwable = _
@@ -174,13 +174,24 @@ object CPEngine:
     /**
       * Log4J2 wrapper for the log. Mirrors all log output to log4j2 rolling file appended
       * under ${user.home}/.cosplay/log folder.
-      *   
+      *
       * @param impl Log implementation.
       */
     private class Log4jWrapper(impl: CPLog) extends CPLog:
         private val log4j = LogManager.getLogger(impl.getCategory)
 
-        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit =
+        init()
+
+        private def init(): Unit =
+            BufferedLog.getBuffer.foreach(ent => log(
+                ent.nthFrame,
+                ent.lvl,
+                ent.obj,
+                ent.cat,
+                ent.ex
+            ))
+
+        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit =
             if frameCnt % nthFrame == 0 then
                 if obj.toString != CPUtils.PING_MSG then
                     lvl match
@@ -190,23 +201,29 @@ object CPEngine:
                         case CPLogLevel.WARN => log4j.warn(obj, ex)
                         case CPLogLevel.ERROR => log4j.error(obj, ex)
                         case CPLogLevel.FATAL => log4j.fatal(obj, ex)
-                impl.log(nthFrame, lvl, obj, ex)
+                impl.log(nthFrame, lvl, obj, cat, ex)
         def getLog(category: String): CPLog = new Log4jWrapper(impl.getLog(category))
         def getCategory: String = impl.getCategory
+
+    /**
+      *
+      */
+    object BufferedLog:
+        case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception)
+        private val buf = mutable.ArrayBuffer.empty[BufferedLogEntry]
+
+        def getBuffer: Seq[BufferedLogEntry] = buf.toSeq
+
+    import BufferedLog.*
 
     /**
       *
       * @param cat Log category.
       */
     private class BufferedLog(cat: String) extends CPLog:
-        case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception)
-        private val buf = mutable.ArrayBuffer.empty[BufferedLogEntry]
-
         def getLog(category: String): CPLog = new BufferedLog(s"$cat/$category")
         def getCategory: String = cat
-        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit = buf += BufferedLogEntry(nthFrame, lvl, obj, ex)
-
-        def getBuffer: Seq[BufferedLogEntry] = buf.toSeq
+        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit = buf += BufferedLogEntry(nthFrame, lvl, obj, cat, ex)
 
     /**
       *
@@ -376,12 +393,12 @@ object CPEngine:
         if state != State.ENG_STARTED then E(s"Engine is not started.")
 
     /**
-      * Gets root log for the game engine. Engine must be started before this call otherwise exception is
-      * thrown.
+      * Gets root log for the game engine.
+      *
+      * NOTE: unlike most other methods in the game engine, you can use this method before engine is initialized.
+      * In such case the log entries will be buffered until the engine is initialized.
       */
-    def rootLog(): CPLog =
-        checkState()
-        engLog
+    def rootLog(): CPLog = engLog
 
     /**
       * Shows or hides the built-in FPS overlay in the right top corner. Can

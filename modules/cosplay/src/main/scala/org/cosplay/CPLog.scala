@@ -139,7 +139,7 @@ trait CPLog:
     def isEnabled(lvl: CPLogLevel): Boolean = flags(lvl)
 
     /**
-      * Logs given message with throttling.
+      * Logs given message with throttling. This method will use this log's category.
       *
       * @param nthFrame Throttle value. Throttle value `N` simply means that actual logging will only
       *     happen for each `Nth` frame. Logging for all other frames will be ignored.
@@ -147,7 +147,19 @@ trait CPLog:
       * @param obj Object to log.
       * @param ex Optional exception to log. Default value is `null`.
       */
-    def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit
+    def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit = log(nthFrame, lvl, obj, getCategory, ex)
+
+    /**
+      * Logs given message with throttling and explicit category.
+      *
+      * @param nthFrame Throttle value. Throttle value `N` simply means that actual logging will only
+      *     happen for each `Nth` frame. Logging for all other frames will be ignored.
+      * @param lvl Log level.
+      * @param obj Object to log.
+      * @param cat Explicit log category.
+      * @param ex Exception to log. Can be `null`.
+      */
+    def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit
 
     /**
       * Gets a new logger for given category. New logger will inherit log levels and throttle value.

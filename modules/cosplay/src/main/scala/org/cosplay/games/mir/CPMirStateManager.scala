@@ -150,6 +150,8 @@ class CPMirStateManager:
         // OS.
         os = CPMirOs(fs, usrs.toSeq)
 
+        CPEngine.rootLog().info(s"New game state is initialized.")
+
         CPMirState(
             os = os,
             player = player,
@@ -177,9 +179,9 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
-//        throw new Exception("I/O error (no space).")
         val path = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
         Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
+        CPEngine.rootLog().info(s"Game saved: $path")
 
 
 
