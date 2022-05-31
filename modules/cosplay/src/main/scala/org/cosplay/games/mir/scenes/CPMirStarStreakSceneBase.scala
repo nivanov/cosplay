@@ -31,8 +31,10 @@ package org.cosplay.games.mir.scenes
 */
 
 import org.cosplay.*
+import CPKeyboardKey.*
 import games.mir.*
 import prefabs.shaders.*
+import prefabs.sprites.*
 
 /**
   *
@@ -41,7 +43,9 @@ import prefabs.shaders.*
   */
 abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends CPMirCrtSceneBase(id, bgSndFile):
     private val colors = Seq(FG)
-    private  val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
+    private val clickSnd: CPSound = CPSound(s"$SND_HOME/click.wav")
+    private val errSnd: CPSound = CPSound(s"$SND_HOME/error.wav")
+    private val confirmSnd: CPSound = CPSound(s"$SND_HOME/confirm.wav", .5f)
 
     protected val starStreakShdr: CPStarStreakShader = CPStarStreakShader(
         true,
@@ -67,9 +71,80 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
       *
       * @param f Closure to call.
       */
-    protected def clickNext(f: () ⇒ Unit): Unit =
+    protected def click(f: () ⇒ Unit): Unit =
         clickSnd.play()
         f()
+
+    /**
+      *
+      * @param errMsg Error message (including markup).
+      * @param onAct Call on [[CPSceneObject.onActivate()]] callback.
+      * @param onDeact Call on [[CPSceneObject.onDeactivate()]] callback.
+      * @param title Optional dialog title.
+      */
+    protected def showError(errMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit, title: String = "Error"): Unit =
+        val dash = "-" * (2 + title.length)
+        val errPxs = markup.process(
+            s"""
+               | <@ $title @>
+               | $dash
+               |
+               | $errMsg
+               | Please try again.
+               |
+               |
+               |
+               | <%[SPACE]%>  Continue
+            """.stripMargin
+        )
+        errSnd.play()
+        addObjects(new CPCenteredImageSprite(img = CPArrayImage(errPxs, BG_PX).trimBg(_ == BG_PX), z = 2):
+            override def onActivate(): Unit = onAct()
+            override def onDeactivate(): Unit = onDeact()
+            override def update(ctx: CPSceneObjectContext): Unit =
+                super.update(ctx)
+                ctx.acquireMyFocus() // Ensure that only this dialog gets keyboard focus.
+                ctx.getKbEvent match
+                    case Some(evt) ⇒ evt.key match
+                        case KEY_SPACE ⇒ click(() ⇒ ctx.deleteMyself())
+                        case _ ⇒ ()
+                    case None ⇒ ()
+        )
+
+    /**
+      *
+      * @param confirmMsg Confirmation message (including markup).
+      * @param onAct Call on [[CPSceneObject.onActivate()]] callback.
+      * @param onDeact Call on [[CPSceneObject.onDeactivate()]] callback.
+      * @param title Optional dialog title.
+      */
+    protected def showConfirm(confirmMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit, title: String = "Confirmation"): Unit =
+        val dash = "-" * (2 + title.length)
+        val errPxs = markup.process(
+            s"""
+               | <@ $title @>
+               | $dash
+               |
+               | $confirmMsg
+               |
+               |
+               |
+               | <%[SPACE]%>  Continue
+            """.stripMargin
+        )
+        confirmSnd.play()
+        addObjects(new CPCenteredImageSprite(img = CPArrayImage(errPxs, BG_PX).trimBg(_ == BG_PX), z = 2):
+            override def onActivate(): Unit = onAct()
+            override def onDeactivate(): Unit = onDeact()
+            override def update(ctx: CPSceneObjectContext): Unit =
+                super.update(ctx)
+                ctx.acquireMyFocus() // Ensure that only this dialog gets keyboard focus.
+                ctx.getKbEvent match
+                    case Some(evt) ⇒ evt.key match
+                        case KEY_SPACE ⇒ click(() ⇒ ctx.deleteMyself())
+                        case _ ⇒ ()
+                    case None ⇒ ()
+        )
 
     // Make sure to call 'super(...)'.
     override def onActivate(): Unit =

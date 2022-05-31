@@ -48,8 +48,10 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
     private val role = player.roleLowerCase
     private val txtPxs = markup.process(
         s"""
-          |  <%Based On Real Events%>
-          |  --------------------
+          |  <@ Escape From Mir @>
+          |  -----------------
+          |
+          |  Based on real events (*)
           |
           |  The year is <%1997%>. It’s been 11 years since the launch of the Russian's
           |  <%Mir%> space station - the world’s first permanent human habitat in orbit
@@ -63,21 +65,22 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
           |  Status of the remaining crew is unknown, air is leaking, structural and
           |  orbit control damage alarm is on, the power supply subsystem is offline.
           |
-          |  You name is <%$name%> (@<%$username%>), $role. You regain
-          |  consciousness in the air locked “Core Module” of the station. Through
+          |  Your name is <%$name%> (@<%$username%>), $role. You regain
+          |  consciousness in the air locked "Core Module" of the station. Through
           |  the zero-gravity mayhem of the crash you see a working computer terminal
           |  that is... rebooting.
           |
           |  <~You must escape from Mir to survive.~>
           |
+          |  * - https://en.wikipedia.org/wiki/Mir
           |
           |
           |
-          |  <%[Space]%>  Continue
+          |  <%[SPACE]%>  Continue
           |
         """.stripMargin
     )
-    private val img = CPArrayImage(txtPxs, BG_PX).trimBg()
+    private val img = CPArrayImage(txtPxs, BG_PX).trimBg(_ == BG_PX)
 
     addObjects(
         new CPKeyboardSprite((ctx, key) ⇒ key match

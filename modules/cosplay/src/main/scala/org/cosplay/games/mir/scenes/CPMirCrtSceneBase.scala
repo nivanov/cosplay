@@ -52,7 +52,7 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
     protected val fadeInShdr: CPSlideInShader = CPSlideInShader.sigmoid(
         TOP_TO_BOTTOM,
         true,
-        4500,
+        3500,
         bgPx = BG_PX,
         onFinish = _ ⇒ if stateMgr.state.crtVisual then crtShdr.start()
     )

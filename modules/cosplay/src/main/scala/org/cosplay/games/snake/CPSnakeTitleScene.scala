@@ -73,7 +73,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, fadeOutShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        // Toggle audio on 'Ctrl+A' press.
+        // Toggle audio on 'CTRL+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Transition to the next scene on 'Enter' press fixing the dimension.
         CPKeyboardSprite(KEY_ENTER, ctx ⇒

@@ -79,7 +79,7 @@ class CPFadeShimmerLogoScene(
               |                                         /____/
             """),
         (ch, _, _) => ch&initFg
-    ).replaceBg(bgPx)
+    ).replaceBg(_.char == ' ', bgPx)
 
     // Skip background & space pixels from shaders' effect.
     val skipFn: (CPZPixel, Int, Int) => Boolean = (zpx: CPZPixel, _, _) => zpx.px.char == ' ' || zpx.px == bgPx

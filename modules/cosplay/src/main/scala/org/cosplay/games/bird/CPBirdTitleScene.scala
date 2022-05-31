@@ -72,7 +72,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        // Toggle audio on 'Ctrl+A' press.
+        // Toggle audio on 'CTRL+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Transition to the next scene on 'Space' press.
         CPKeyboardSprite(KEY_SPACE, _.switchScene("play"))

@@ -91,7 +91,6 @@ private object Astronaut2Image extends CPArrayImage(
   */
 class CPMirGhostSprite(avoidTopLeft: Boolean) extends CPOffScreenSprite:
     private final val CYCLE_MS = CPEngine.fps * 10
-    private val flyBySnd = CPSound(s"$SND_HOME/fly_by2.wav", .3f)
     private val sosSnd = CPSound(s"$SND_HOME/sos.wav", .2f)
     private val imgs = Seq(
         Astronaut1Image, Astronaut1Image.horFlip(),
@@ -119,5 +118,4 @@ class CPMirGhostSprite(avoidTopLeft: Boolean) extends CPOffScreenSprite:
                 durMs = 3500,
                 autoDelete = true
             ))
-            flyBySnd.play(1000)
             sosSnd.play(1000)

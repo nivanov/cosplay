@@ -36,7 +36,7 @@ import games.mir.os.*
 import games.mir.os.fs.*
 import org.apache.commons.lang3.SystemUtils
 
-import java.io.{FileOutputStream, IOException, ObjectOutputStream}
+import java.io.*
 import scala.collection.mutable
 import scala.io.Source
 import scala.util.Using
@@ -88,9 +88,9 @@ object CPMirStateManager:
     final val LOGO_YELLOW = "mir_logo_yellow.xp"
     final val LOGO_WHITE = "mir_logo_white.xp"
 
-    final val DFLT_BG = BG_GREEN
-    final val DFLT_FG = FG_GREEN
-    final val DFLT_LOGO_IMAGE = LOGO_GREEN
+    final val DFLT_BG = BG_YELLOW
+    final val DFLT_FG = FG_YELLOW
+    final val DFLT_LOGO_IMAGE = LOGO_YELLOW
 
     private final val DIR = "mir/saved"
 
@@ -150,6 +150,8 @@ class CPMirStateManager:
         // OS.
         os = CPMirOs(fs, usrs.toSeq)
 
+        CPEngine.rootLog().info(s"New game state is initialized.")
+
         CPMirState(
             os = os,
             player = player,
@@ -172,12 +174,15 @@ class CPMirStateManager:
     private def loadLatest(): Option[CPMirState] = None // TODO
 
     /**
+      * Saves current state. Throws exception in case of any errors.
       *
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
-        val fileName = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
-        Using.resource(new ObjectOutputStream(new FileOutputStream(fileName))) { _.writeObject(state) }
+        val path = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
+        Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
+        CPEngine.rootLog().info(s"Game saved: $path")
+
 
 
 

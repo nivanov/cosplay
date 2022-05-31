@@ -439,7 +439,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     addObjects(
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        // Toggle audio on 'Ctrl+A' press.
+        // Toggle audio on 'CTRL+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Score sprites.
         plyScoreSpr,

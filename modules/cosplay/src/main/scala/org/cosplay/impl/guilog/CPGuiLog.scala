@@ -73,7 +73,7 @@ class CPGuiLog(cat: String) extends CPLog:
         log.inheritFrom(this)
         log
     override def getCategory: String = cat
-    override def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit =
+    override def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit =
         if isEnabled(lvl) then
             CPGuiLog.addLog(nthFrame, lvl, cat, obj, ex)
 

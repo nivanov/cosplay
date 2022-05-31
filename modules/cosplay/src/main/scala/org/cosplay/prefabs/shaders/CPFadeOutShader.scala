@@ -81,8 +81,6 @@ class CPFadeOutShader(
     private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
-    private val crossOverBrightness = if bgPx.char == ' ' then bgBg.brightness else bgFg.brightness
-    private var crossedOver = false
     private var go = autoStart
     private var cb: CPSceneObjectContext ⇒ Unit = onFinish
 
@@ -97,7 +95,6 @@ class CPFadeOutShader(
     def start(onFinishOverride: CPSceneObjectContext ⇒ Unit = cb): Unit =
         cb = onFinishOverride
         frmCnt = 0
-        crossedOver = false
         go = true
 
     /**
@@ -123,17 +120,12 @@ class CPFadeOutShader(
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
                         val bal = balance(frmCnt, maxFrmCnt)
+                        require(bal >= 0f && bal <= 1f, "Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg match
                             case Some(c) => Option(CPColor.mixture(c, bgBg, bal))
                             case None => None
-                        var newPx = px.withFg(newFg).withBg(newBg)
-                        val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
-                        if newPx.char != ' ' then
-                            if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
-                        else if !crossedOver then
-                            newPx = newPx.withChar(bgPx.char)
-                        canv.drawPixel(newPx, x, y, zpx.z)
+                        canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then

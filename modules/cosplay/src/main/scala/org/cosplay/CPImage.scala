@@ -486,17 +486,18 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Detects all background pixels and replaces them with a given pixel returning new image.
       *
       * A pixel is considered to be a background pixel when:
-      *  - It's [[CPPixel.char character]] is space (' ') and it's not equal to given `bgPx`, or
-      *  - It's on the edge of the image or there's a path from it to the edge of the image through background
-      *    pixels only.
+      *  - It's satisfies given predicate
+      *  - It's not equal to given replacement pixel
+      *  - There's a path from it to the edge of the image through background pixels only
       *
-      *  For example, a fully enclosed area of the image that contains spaces will NOT be considered a background
-      *  as there's no path to the edge of the image without crossing a non-background image.
+      * For example, a fully enclosed area of the image containing background pixels will NOT be considered a background
+      * as there's no path to the edge of the image without crossing a non-background pixels.
       *
-      * @param bgPx Pixel to replace the detected background pixels.
+      * @param isBgPx Predicate determining if given pixel is a background pixel.
+      * @param replacePx Pixel to replace the detected background pixels.
       * @see [[trimBg()]]
       */
-    def replaceBg(bgPx: CPPixel): CPImage =
+    def replaceBg(isBgPx: CPPixel => Boolean, replacePx: CPPixel): CPImage =
         import CPPixel.*
 
         val rect = getRect
@@ -511,16 +512,16 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             arr.rect.loop((x, y) =>
                 val px = arr.get(x, y)
                 // Space at the edge of the image is always considered background.
-                if px != bgPx && px.char == ' ' && (
+                if px != replacePx && isBgPx(px) && (
                     x == 0 ||
                     y == 0 ||
                     x == xMax ||
                     y == yMax ||
-                    arr.get(x + 1, y) == bgPx ||
-                    arr.get(x - 1, y) == bgPx ||
-                    arr.get(x, y + 1) == bgPx ||
-                    arr.get(x, y - 1) == bgPx) then {
-                        arr.set(x, y, bgPx)
+                    arr.get(x + 1, y) == replacePx ||
+                    arr.get(x - 1, y) == replacePx ||
+                    arr.get(x, y + 1) == replacePx ||
+                    arr.get(x, y - 1) == replacePx) then {
+                        arr.set(x, y, replacePx)
                         ok = true
                     }
             )
@@ -528,12 +529,32 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         new CPArrayImage(arr, origin)
 
     /**
-      * Detects all background pixels and replaces them with [[CPPixel.XRAY]] returning a new image.
-      * This effectively makes the background transparent.
+      * A shortcut method that considers all pixels with ' ' (space) character as background pixels
+      * and replaces them  with [[CPPixel.XRAY]] returning a new image. This effectively makes the background
+      * transparent.
+      *
+      * This is equivalent to:
+      * {{{
+      *     replaceBg(_.char == ' ', CPPixel.XRAY)
+      * }}}
       *
       * @see [[replaceBg()]]
       */
-    def trimBg(): CPImage = replaceBg(CPPixel.XRAY)
+    def trimBg(): CPImage = replaceBg(_.char == ' ', CPPixel.XRAY)
+
+    /**
+      * A shortcut method that detects background pixels and replaces them  with [[CPPixel.XRAY]] returning a
+      * new image. This effectively makes the background transparent.
+      *
+      * This is equivalent to:
+      * {{{
+      *     replaceBg(isBgPx, CPPixel.XRAY)
+      * }}}
+      *
+      * @param isBgPx Predicate determining if given pixel is a background pixel.
+      * @see [[replaceBg()]]
+      */
+    def trimBg(isBgPx: CPPixel => Boolean): CPImage = replaceBg(isBgPx, CPPixel.XRAY)
 
     /**
       * Makes a deep snapshot copy of the current image.
