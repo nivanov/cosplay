@@ -30,20 +30,16 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-/**
-  *
-  */
-abstract class CPMirApp:
+class CPMirRuntime:
     /**
       *
-      * @param ctx
       * @return
       */
-    def appMain(ctx: CPMirAppContext): Int
+    def getPid: Long = ???
 
     /**
       *
       * @return
       */
-    def getSizeOnDisk: Long
+    def getParentPid: Long = ???
 

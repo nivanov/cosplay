@@ -39,11 +39,19 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   *
   * @param name
   * @param owner
-  * @param parent
+  * @param prg
   */
-class CPMirDirFile(
+class CPMirProgramFile(
     name: String,
     owner: CPMirUser,
-    parent: Option[CPMirFile]
-) extends CPMirFile(FT_DIR, name, owner, parent)
+    parent: Option[CPMirFile],
+    prg: CPMirProgram
+) extends CPMirFile(FT_EXE, name, owner, parent):
+    setSize(prg.getSizeOnDisk)
+
+    /**
+      *
+      * @return
+      */
+    def getProgram: CPMirProgram = prg
 

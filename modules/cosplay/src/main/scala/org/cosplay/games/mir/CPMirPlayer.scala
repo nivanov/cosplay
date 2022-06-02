@@ -108,7 +108,7 @@ case class CPMirTeamSport(name: String, teams: Seq[String])
   * @param children
   */
 @SerialVersionUID(1_0_0L)
-case class CPMirPlayer(
+case class  CPMirPlayer(
     firstName: String,
     lastName: String,
     birthCountry: String,

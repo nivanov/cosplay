@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -30,101 +30,20 @@ package org.cosplay.games.mir
                ALl rights reserved.
 */
 
-import org.cosplay.*
-
 /**
   *
   */
-class CPMirConsole:
+abstract class CPMirProgram:
     /**
       *
+      * @param ctx
+      * @return
       */
-    def println(): Unit = print("\n")
-
-    /**
-      *
-      * @param x
-      */
-    def println(x: Any): Unit = print(s"$x\n")
-
-    /**
-      *
-      * @param x
-      */
-    def print(x: Any): Unit = ???
-
-    /**
-      *
-      * @param text
-      * @param args
-      */
-    def printf(text: String, args: Any*): Unit = ???
-
-    /**
-      *
-      */
-    def clearLeft(): Unit = ???
-
-    /**
-      *
-      */
-    def clearRight(): Unit = ???
-
-    /**
-      *
-      */
-    def clearLine(): Unit = ???
-
-    /**
-      *
-      */
-    def clear(): Unit = ???
-
-    /**
-      *
-      * @param f
-      */
-    def setCursorVisible(f: Boolean): Unit = ???
+    def mainEntry(ctx: CPMirProgramContext): Int
 
     /**
       *
       * @return
       */
-    def isCursorVisible: Boolean = ???
+    def getSizeOnDisk: Long
 
-    /**
-      *
-      * @param x
-      * @param y
-      */
-    def positionCursor(x: Int, y: Int): Unit = ???
-
-    /**
-      *
-      * @param c
-      */
-    def setBg(c: CPColor): Unit = ???
-
-    /**
-      *
-      * @return
-      */
-    def getBg: CPColor = ???
-
-    /**
-      *
-      * @param c
-      */
-    def setFg(c: CPColor): Unit = ???
-
-    /**
-      *
-      * @return
-      */
-    def getFg: CPColor = ???
-
-    /**
-      * 
-      * @return
-      */
-    def getSize: CPDim = ???

@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
-
-import org.cosplay.games.mir.CPMirConsole
+package org.cosplay.games.mir.os.fs
 
 /*
    _________            ______________
@@ -32,17 +30,20 @@ import org.cosplay.games.mir.CPMirConsole
                ALl rights reserved.
 */
 
+import org.cosplay.games.mir.*
+import os.fs.*
+import os.*
+import org.cosplay.games.mir.os.CPMirFileType.*
+
 /**
-  *
-  * @param args
-  * @param con
-  * @param fs
-  * @param user
+  * 
+  * @param name
+  * @param owner
+  * @param parent
   */
-case class CPMirAppContext(
-    args: Seq[String],
-    con: CPMirConsole,
-    fs: CPMirFileSystem,
-    user: CPMirUser
-)
+class CPMirDeviceFile(
+    name: String,
+    owner: CPMirUser,
+    parent: Option[CPMirFile]
+) extends CPMirFile(FT_DEV, name, owner, parent)
 

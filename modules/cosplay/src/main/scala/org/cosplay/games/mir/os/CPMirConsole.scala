@@ -30,20 +30,101 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import org.cosplay.*
+
 /**
   *
   */
-@SerialVersionUID(1_0_0L)
-enum CPMirFileType extends Serializable:
-    /** */
-    case FT_DIR
+class CPMirConsole:
+    /**
+      *
+      */
+    def println(): Unit = print("\n")
 
-    /** */
-    case FT_EXE
+    /**
+      *
+      * @param x
+      */
+    def println(x: Any): Unit = print(s"$x\n")
 
-    /** */
-    case FT_REG
+    /**
+      *
+      * @param x
+      */
+    def print(x: Any): Unit = ???
 
-    /** */
-    case FT_DEV
+    /**
+      *
+      * @param text
+      * @param args
+      */
+    def printf(text: String, args: Any*): Unit = ???
 
+    /**
+      *
+      */
+    def clearLeft(): Unit = ???
+
+    /**
+      *
+      */
+    def clearRight(): Unit = ???
+
+    /**
+      *
+      */
+    def clearLine(): Unit = ???
+
+    /**
+      *
+      */
+    def clear(): Unit = ???
+
+    /**
+      *
+      * @param f
+      */
+    def setCursorVisible(f: Boolean): Unit = ???
+
+    /**
+      *
+      * @return
+      */
+    def isCursorVisible: Boolean = ???
+
+    /**
+      *
+      * @param x
+      * @param y
+      */
+    def positionCursor(x: Int, y: Int): Unit = ???
+
+    /**
+      *
+      * @param c
+      */
+    def setBg(c: CPColor): Unit = ???
+
+    /**
+      *
+      * @return
+      */
+    def getBg: CPColor = ???
+
+    /**
+      *
+      * @param c
+      */
+    def setFg(c: CPColor): Unit = ???
+
+    /**
+      *
+      * @return
+      */
+    def getFg: CPColor = ???
+
+    /**
+      * 
+      * @return
+      */
+    def getSize: CPDim = ???

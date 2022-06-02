@@ -36,6 +36,6 @@ import os.*
 /**
   *
   */
-class CPMirLsApp extends CPMirApp:
-    override def appMain(ctx: CPMirAppContext): Int = ???
+class CPMirLsApp extends CPMirProgram:
+    override def mainEntry(ctx: CPMirProgramContext): Int = ???
     override def getSizeOnDisk: Long = ???
