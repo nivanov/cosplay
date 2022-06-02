@@ -88,8 +88,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var bgW = 0
     private var bgH = 0
 
-    private var grassAmount = 0
-    private var grassTotal = 0
+    private var grassCnt = 0
     private val grassSpeed = 0.35f // Working value: 0.2f
 
     private var first = true
@@ -176,20 +175,20 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 start = false
 
             // Building spawner.
-            if ctx.getObjectsForTags("building").length < (canv.width / buildingGap).toInt && first then
-                for x <- 0 to (canv.width / buildingGap).toInt do
-                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * buildingGap, Random.between(minDepth, maxDepth).toInt))
-                    buildingAmount += 1
-                    buildingTotal += 1
-
-            estMove -= buildingSpeed
+//            if ctx.getObjectsForTags("building").length < (canv.width / buildingGap).toInt && first then
+//                for x <- 0 to (canv.width / buildingGap).toInt do
+//                    ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * buildingGap, Random.between(minDepth, maxDepth).toInt))
+//                    buildingAmount += 1
+//                    buildingTotal += 1
+//
+//            estMove -= buildingSpeed
 
             // Grass spawner.
-            if grassAmount < (canv.width / brickImg.getWidth - 1).toInt + 5 then
-                for x <- 0 to (canv.width / brickImg.getWidth - 1).toInt + 5 do
-                    ctx.addObject(newGrassSpr(grassAmount * brickImg.getWidth - 1, canv.height - brickImg.getHeight))
-                    grassAmount += 1
-                    grassTotal += 1
+            val expCnt = canv.width / brickImg.w + brickImg.w // Number of bricks to fill at least entire screen.
+            if grassCnt < expCnt then
+                for x <- grassCnt to expCnt do
+                    ctx.addObject(newGrassSprite(grassCnt * brickImg.getWidth, canv.height - brickImg.getHeight))
+                    grassCnt += 1
 
             first = false
 
@@ -267,26 +266,22 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
                 startPosY = canv.height
 
-    private def newGrassSpr(posX:Int, posY:Int) : CPSceneObject =
-        new CPImageSprite("grass" + grassTotal, posX, posY, -1, brickImg):
-            private var newPosX = posX.toFloat
+    private def newGrassSprite(posX: Int, posY: Int) : CPSceneObject =
+        new CPImageSprite(x = posX, y = posY, z = -1, img = brickImg):
+            private var x = posX.toFloat
             private val tag = Set("grass")
 
             override def getTags: Set[String] = tag
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
 
-                newPosX -= grassSpeed
+                x -= grassSpeed
+                setX(x.toInt)
+                if getX <= -brickImg.w then
+                    ctx.deleteMyself()
+                    grassCnt -= 1 // TODO: remove it
 
-                val canv = ctx.getCanvas
-
-                setX(newPosX.toInt)
-
-                if getX <= -brickImg.getWidth then
-                    ctx.deleteObject(getId)
-                    grassAmount -= 1
-
-                setY(canv.height - brickImg.getHeight)
+                setY(ctx.getCanvas.height - brickImg.h)
 
     addObjects(
         // Handle 'Q' press globally for this scene.
