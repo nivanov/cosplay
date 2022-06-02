@@ -188,9 +188,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             if grassCnt < expCnt then
                 for x <- grassCnt to expCnt do
                     ctx.addObject(newGrassSprite(grassCnt * brickImg.getWidth, canv.height - brickImg.getHeight))
-                    grassCnt += 1
 
             first = false
+            grassCnt = ctx.getObjectsForTags("grass").length
 
     private val scoreSpr = new CPImageSprite("score", 10, 0, 1, mkScoreImage(score)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -271,6 +271,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             private var x = posX.toFloat
             private val tag = Set("grass")
 
+            println(grassCnt)
+
             override def getTags: Set[String] = tag
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
@@ -279,7 +281,6 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 setX(x.toInt)
                 if getX <= -brickImg.w then
                     ctx.deleteMyself()
-                    grassCnt -= 1 // TODO: remove it
 
                 setY(ctx.getCanvas.height - brickImg.h)
 
