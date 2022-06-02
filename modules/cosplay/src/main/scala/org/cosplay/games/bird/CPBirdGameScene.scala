@@ -80,12 +80,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private var buildingAmount = 0
     private var buildingTotal = 0
-    private val buildingGap = 5
+    private val buildingGap = 2
 
-    private val buildingSpeed = 0.6f
-
-    private var buildingMove = false
-    private var buildingOffset = 0f
+    private val buildingSpeed = 0.2f
+    private var estMove = 0f
 
     private var bgW = 0
     private var bgH = 0
@@ -94,8 +92,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var grassTotal = 0
     private val grassSpeed = 0.35f // Working value: 0.2f
 
-    private var grassMove = false
-    private var grassOffset = 0f
+    private var first = true
 
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
@@ -179,17 +176,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 start = false
 
             // Building spawner.
-            if ctx.getObjectsForTags("building").length < (canv.width / buildingGap).toInt then
+            if ctx.getObjectsForTags("building").length < (canv.width / buildingGap).toInt && first then
                 for x <- 0 to (canv.width / buildingGap).toInt do
                     ctx.addObject(newBuildingSpr(Random.between(minWidth, maxWidth).toInt, Random.between(minHeight, maxHeight).toInt, buildingAmount * buildingGap, Random.between(minDepth, maxDepth).toInt))
                     buildingAmount += 1
                     buildingTotal += 1
 
-            buildingMove = false
-            buildingOffset += buildingSpeed
-            if buildingOffset >= 1 then
-                buildingOffset -= 1
-                buildingMove = true
+            estMove -= buildingSpeed
 
             // Grass spawner.
             if grassAmount < (canv.width / brickImg.getWidth - 1).toInt + 5 then
@@ -198,11 +191,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     grassAmount += 1
                     grassTotal += 1
 
-            grassMove = false
-            grassOffset += grassSpeed
-            if grassOffset >= 1 then
-                grassOffset -= 1
-                grassMove = true
+            first = false
 
     private val scoreSpr = new CPImageSprite("score", 10, 0, 1, mkScoreImage(score)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -253,12 +242,14 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             private var newPosX = posX.toFloat
             private val tags = Set("building")
             private var startPosY = 0
-            println(depth)
+            private var totalMove = 0f
 
             override def getTags: Set[String] = tags
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                if buildingMove then newPosX -= 1
+                newPosX -= buildingSpeed
+                if totalMove != estMove then totalMove -= buildingSpeed
+                println(getId + " " + totalMove + " " + estMove)
 
                 val canv = ctx.getCanvas
                 // Roof.
@@ -270,8 +261,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 for (index <- 0 to height) do
                     canv.drawLine(newPosX.toInt + 1, startPosY + index - height, newPosX.toInt + width - 1, startPosY + index - height, depth, winPx)
                 if newPosX  <= 0 - width - 2 then
-                    buildingAmount -= 1
-                    ctx.deleteObject(getId)
+                    //buildingAmount -= 1
+                    //ctx.deleteObject(getId)
+                    newPosX = canv.width
 
                 startPosY = canv.height
 
@@ -284,7 +276,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
 
-                if grassMove then newPosX -= 1
+                newPosX -= grassSpeed
 
                 val canv = ctx.getCanvas
 
