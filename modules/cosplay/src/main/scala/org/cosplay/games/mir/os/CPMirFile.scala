@@ -38,21 +38,23 @@ import CPMirFileType.*
   * @param name
   * @param owner
   * @param parent
+  * @param otherRead
+  * @param otherWrite
   */
 @SerialVersionUID(1_0_0L)
 abstract class CPMirFile(
     typ: CPMirFileType,
     private var name: String,
     private var owner: CPMirUser,
-    private var parent: Option[CPMirFile]
+    private var parent: Option[CPMirFile],
+    private var otherRead: Boolean = false,
+    private var otherWrite: Boolean = false
 ) extends Serializable:
     require(parent.isEmpty || parent.get.getType == FT_DIR)
 
-    private var createTs = System.currentTimeMillis()
-    private var updateTs = System.currentTimeMillis()
+    private var createTs = CPMirClock.now()
+    private var updateTs = CPMirClock.now()
     private var size = 0L
-    private var otherRead = false
-    private var otherWrite = false
 
     /**
       *
@@ -89,6 +91,11 @@ abstract class CPMirFile(
       * @return
       */
     def getUpdateTimestamp: Long = updateTs
+
+    /**
+      *
+      */
+    def touch(): Unit = updateTs = CPMirClock.now()
 
     /**
       *

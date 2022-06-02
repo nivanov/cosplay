@@ -17,8 +17,6 @@
 
 package org.cosplay.games.mir.os
 
-import org.cosplay.games.mir.CPMirConsole
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -36,6 +34,7 @@ import org.cosplay.games.mir.CPMirConsole
   *
   * @param args
   * @param con
+  * @param rt
   * @param fs
   * @param workDir
   * @param env
@@ -44,6 +43,7 @@ import org.cosplay.games.mir.CPMirConsole
 case class CPMirProgramContext(
     args: Seq[String],
     con: CPMirConsole,
+    rt: CPMirRuntime,
     fs: CPMirFileSystem,
     workDir: CPMirFile,
     env: Map[String, String],

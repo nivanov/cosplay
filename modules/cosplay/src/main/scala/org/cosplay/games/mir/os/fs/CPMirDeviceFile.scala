@@ -36,22 +36,14 @@ import os.*
 import org.cosplay.games.mir.os.CPMirFileType.*
 
 /**
-  *
+  * 
   * @param name
   * @param owner
-  * @param app
+  * @param parent
   */
-class CPMirAppFile(
+class CPMirDeviceFile(
     name: String,
     owner: CPMirUser,
-    parent: Option[CPMirFile],
-    app: CPMirProgram
-) extends CPMirFile(FT_APP, name, owner, parent):
-    setSize(app.getSizeOnDisk)
-
-    /**
-      *
-      * @return
-      */
-    def getApp: CPMirProgram = app
+    parent: Option[CPMirFile]
+) extends CPMirFile(FT_DEV, name, owner, parent)
 

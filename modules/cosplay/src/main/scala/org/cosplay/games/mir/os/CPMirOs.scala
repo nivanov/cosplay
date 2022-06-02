@@ -17,8 +17,6 @@
 
 package org.cosplay.games.mir.os
 
-import org.cosplay.games.mir.CPMirConsole
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __

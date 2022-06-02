@@ -36,14 +36,14 @@ import os.*
 import org.cosplay.games.mir.os.CPMirFileType.*
 
 /**
-  * 
+  *
   * @param name
   * @param owner
   * @param parent
   */
-class CPMirBinFile(
+class CPMirDirectoryFile(
     name: String,
     owner: CPMirUser,
     parent: Option[CPMirFile]
-) extends CPMirFile(FT_BIN, name, owner, parent)
+) extends CPMirFile(FT_DIR, name, owner, parent)
 

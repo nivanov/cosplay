@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.fs
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -30,20 +30,16 @@ package org.cosplay.games.mir.os.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import os.fs.*
-import os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
+class CPMirRuntime:
+    /**
+      *
+      * @return
+      */
+    def getPid: Long = ???
 
-/**
-  *
-  * @param name
-  * @param owner
-  * @param parent
-  */
-class CPMirDirFile(
-    name: String,
-    owner: CPMirUser,
-    parent: Option[CPMirFile]
-) extends CPMirFile(FT_DIR, name, owner, parent)
+    /**
+      *
+      * @return
+      */
+    def getParentPid: Long = ???
 

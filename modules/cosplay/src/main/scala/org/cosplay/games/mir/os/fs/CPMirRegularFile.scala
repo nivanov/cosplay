@@ -41,9 +41,9 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   * @param owner
   * @param parent
   */
-class CPMirTxtFile(
+class CPMirRegularFile(
     name: String,
     owner: CPMirUser,
     parent: Option[CPMirFile]
-) extends CPMirFile(FT_DIR, name, owner, parent)
+) extends CPMirFile(FT_REG, name, owner, parent)
 

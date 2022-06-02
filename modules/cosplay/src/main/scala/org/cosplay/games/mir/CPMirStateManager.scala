@@ -144,7 +144,7 @@ class CPMirStateManager:
         crew.foreach(p ⇒ usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
 
         // File system.
-        val rootDir = CPMirDirFile("", rootUsr, None)
+        val rootDir = CPMirDirectoryFile("", rootUsr, None)
         val fs = CPMirFileSystem(rootDir)
 
         // OS.
