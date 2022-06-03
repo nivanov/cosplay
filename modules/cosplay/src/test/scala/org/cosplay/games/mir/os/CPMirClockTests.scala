@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os
+
+import org.junit.jupiter.api.*
+import java.text.*
+import java.util.*
 
 /*
    _________            ______________
@@ -25,18 +29,29 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
-
-import org.junit.jupiter.api.*
-import Assertions.*
 
 /**
   *
   */
-object CPMirPlayerTests:
+object CPMirClockTests:
     @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(CPMirPlayer.newPlayer.debugString))
+    def nowTest(): Unit =
+        CPMirClock.setElapsedTime(0)
+        val t1 = CPMirClock.now()
+        val t2 = System.currentTimeMillis()
+        println(s"Elapsed years since crash: ${(t2 - t1) / 365 / 24 / 60 / 60 / 1000}")
+
+    @Test
+    def sysAndCrewTimeTest(): Unit =
+        CPMirClock.setElapsedTime(0)
+        val fmt = SimpleDateFormat("yyyy MMMM dd HH:mm z")
+        (0 until 10).foreach {
+            _ ⇒ println(s"System timestamp: ${fmt.format(new Date(CPMirClock.randSysTime()))}")
+        }
+        (0 until 10).foreach {
+            _ ⇒ println(s"Crew timestamp: ${fmt.format(new Date(CPMirClock.randCrewTime()))}")
+        }
