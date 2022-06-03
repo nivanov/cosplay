@@ -30,10 +30,33 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import java.text.*
+
+/**
+  *
+  */
 object CPMirClock:
+    private final val CRASH_TIME = SimpleDateFormat("yyyy MM dd HH:mm z")
+        .parse("1997 June 25 09:18 UTC")
+        .getTime
+
+    private var elapsedMs = 0L
+    private var time = 0L
+
+    /**
+      *
+      * @param time
+      */
+    def setElapsedTime(time: Long): Unit = this.time = CRASH_TIME + time
+
+    /**
+      *
+      * @param deltaMs
+      */
+    def addTime(deltaMs: Long): Unit = time += deltaMs
+
     /**
       * Gets current station time in milliseconds.
-      * @return
       */
-    def now(): Long = ???
+    inline def now(): Long = time
 

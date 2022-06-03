@@ -59,6 +59,12 @@ abstract class CPMirFile(
 
     final val guid = CPRand.guid
 
+    override def hashCode(): Int = guid.hashCode()
+    override def equals(obj: Any): Boolean =
+        obj match
+            case f: CPMirFile ⇒ f.guid == guid
+            case _ ⇒ false
+
     /**
       *
       * @return

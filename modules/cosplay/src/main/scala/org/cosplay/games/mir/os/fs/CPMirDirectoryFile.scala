@@ -30,10 +30,25 @@ package org.cosplay.games.mir.os.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
+import org.cosplay.*
+import games.mir.*
 import os.fs.*
 import os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
+import CPMirFileType.*
+import scala.collection.mutable
+
+/**
+  *
+  */
+object CPMirDirectoryFile:
+    /**
+      * Creates file system root directory.
+      *
+      * @param owner Root user.
+      */
+    def mkRoot(owner: CPMirUser): CPMirDirectoryFile =
+        require(owner.isRoot)
+        CPMirDirectoryFile("", owner, None)
 
 /**
   *
@@ -46,6 +61,44 @@ class CPMirDirectoryFile(
     owner: CPMirUser,
     parent: Option[CPMirFile]
 ) extends CPMirFile(FT_DIR, name, owner, parent):
+    private val children = mutable.ArrayBuffer.empty[CPMirFile]
+
+    /**
+      *
+      * @return
+      */
+    def isRoot: Boolean = parent.isEmpty
+
+    /**
+      *
+      * @param file
+      */
+    @throws[CPException]
+    def addFile(file: CPMirFile): Unit =
+        if children.exists(_.getName == file.getName) then
+            throw E(s"This directory already has a file with name: ${file.getName}")
+        file match
+            case d: CPMirDirectoryFile ⇒ require(!d.isRoot)
+            case _ ⇒ ()
+        children += file
+
+    /**
+      *
+      * @param file
+      */
+    def removeFile(file: CPMirFile): Boolean =
+        children.indexOf(file) match
+            case -1 ⇒ false
+            case idx ⇒
+                children.remove(idx)
+                true
+
+    /**
+      *
+      * @param p File predicate.
+      */
+    def list(p: CPMirFile ⇒ Boolean): Seq[CPMirFile] = children.filter(p).toSeq
+
     /**
       *
       * @param path Relative or fully qualified path.
