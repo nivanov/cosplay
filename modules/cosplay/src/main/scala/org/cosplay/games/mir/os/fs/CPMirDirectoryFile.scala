@@ -45,5 +45,18 @@ class CPMirDirectoryFile(
     name: String,
     owner: CPMirUser,
     parent: Option[CPMirFile]
-) extends CPMirFile(FT_DIR, name, owner, parent)
+) extends CPMirFile(FT_DIR, name, owner, parent):
+    /**
+      *
+      * @param path Relative or fully qualified path.
+      * @return
+      */
+    def file(path: String): Option[CPMirFile] = ???
+
+    /**
+      *
+      * @param path Relative or fully qualified path.
+      * @return
+      */
+    def exist(path: String): Boolean = file(path).isDefined
 

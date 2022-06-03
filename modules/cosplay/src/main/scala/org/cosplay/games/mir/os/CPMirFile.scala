@@ -30,6 +30,7 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import org.cosplay.*
 import CPMirFileType.*
 
 /**
@@ -55,6 +56,8 @@ abstract class CPMirFile(
     private var createTs = CPMirClock.now()
     private var updateTs = CPMirClock.now()
     private var size = 0L
+
+    final val guid = CPRand.guid
 
     /**
       *
