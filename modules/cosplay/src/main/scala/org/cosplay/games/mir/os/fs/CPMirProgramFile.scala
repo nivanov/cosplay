@@ -33,7 +33,7 @@ package org.cosplay.games.mir.os.fs
 import org.cosplay.games.mir.*
 import os.fs.*
 import os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
+import CPMirFileType.*
 
 /**
   *
@@ -44,10 +44,19 @@ import org.cosplay.games.mir.os.CPMirFileType.*
 class CPMirProgramFile(
     name: String,
     owner: CPMirUser,
-    parent: Option[CPMirFile],
+    parent: Option[CPMirDirectoryFile],
     prg: CPMirProgram
 ) extends CPMirFile(FT_EXE, name, owner, parent):
     setSize(prg.getSizeOnDisk)
+
+    /**
+      *
+      * @param name
+      * @param owner
+      * @param parent
+      * @param prg
+      */
+    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile, prg: CPMirProgram) = this(name, owner, Some(parent), prg)
 
     /**
       *

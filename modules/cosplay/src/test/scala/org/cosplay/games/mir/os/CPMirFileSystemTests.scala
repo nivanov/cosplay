@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.fs
+package org.cosplay.games.mir.os
+
+import org.junit.jupiter.api.Test
+import org.cosplay.games.mir.os.fs.*
 
 /*
    _________            ______________
@@ -30,27 +33,35 @@ package org.cosplay.games.mir.os.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import os.fs.*
-import os.*
-import CPMirFileType.*
-
 /**
   *
-  * @param name
-  * @param owner
-  * @param parent
   */
-class CPMirRegularFile(
-    name: String,
-    owner: CPMirUser,
-    parent: Option[CPMirDirectoryFile]
-) extends CPMirFile(FT_REG, name, owner, parent):
-    /**
-      *
-      * @param name
-      * @param owner
-      * @param parent
-      */
-    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile) = this(name, owner, Some(parent))
+object CPMirFileSystemTests:
+    private def initFs(): CPMirFileSystem =
+        val rootUsr = CPMirUser.mkRoot()
+        val rootDir = CPMirDirectoryFile.mkRoot(rootUsr)
+
+        def addRegFile(name: String, dir: CPMirDirectoryFile): Unit = dir.addFile(new CPMirRegularFile(name, rootUsr, dir))
+
+        val fs = new CPMirFileSystem(rootDir)
+
+        addRegFile("info.txt", rootDir)
+        addRegFile("image.png", rootDir)
+        addRegFile("script.mash", rootDir)
+
+        val binDir = new CPMirDirectoryFile("bin", rootUsr, rootDir)
+
+        rootDir.addFile(binDir)
+
+        addRegFile("bin_info.txt", binDir)
+        addRegFile("bin_image.png", binDir)
+        addRegFile("bin_script.mash", binDir)
+
+        fs
+
+    @Test
+    def pathTest(): Unit =
+        val fs = initFs()
+
+
 

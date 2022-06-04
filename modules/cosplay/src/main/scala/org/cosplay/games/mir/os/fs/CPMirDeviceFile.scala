@@ -33,7 +33,7 @@ package org.cosplay.games.mir.os.fs
 import org.cosplay.games.mir.*
 import os.fs.*
 import os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
+import CPMirFileType.*
 
 /**
   * 
@@ -44,6 +44,13 @@ import org.cosplay.games.mir.os.CPMirFileType.*
 class CPMirDeviceFile(
     name: String,
     owner: CPMirUser,
-    parent: Option[CPMirFile]
-) extends CPMirFile(FT_DEV, name, owner, parent)
+    parent: Option[CPMirDirectoryFile]
+) extends CPMirFile(FT_DEV, name, owner, parent):
+    /**
+      *
+      * @param name
+      * @param owner
+      * @param parent
+      */
+    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile) = this(name, owner, Some(parent))
 

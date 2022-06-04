@@ -32,6 +32,7 @@ package org.cosplay.games.mir.os
 
 import org.cosplay.*
 import CPMirFileType.*
+import fs.*
 
 /**
   *
@@ -47,12 +48,10 @@ abstract class CPMirFile(
     typ: CPMirFileType,
     private var name: String,
     private var owner: CPMirUser,
-    private var parent: Option[CPMirFile],
+    private var parent: Option[CPMirDirectoryFile],
     private var otherRead: Boolean = false,
     private var otherWrite: Boolean = false
 ) extends Serializable:
-    require(parent.isEmpty || parent.get.getType == FT_DIR)
-
     private var createTs = CPMirClock.now()
     private var updateTs = CPMirClock.now()
     private var size = 0L
@@ -69,13 +68,13 @@ abstract class CPMirFile(
       *
       * @return
       */
-    def getParent: Option[CPMirFile] = parent
+    def getParent: Option[CPMirDirectoryFile] = parent
 
     /**
       *
       * @param parent
       */
-    def setParent(parent: Option[CPMirFile]): Unit = this.parent = parent
+    def setParent(parent: Option[CPMirDirectoryFile]): Unit = this.parent = parent
 
     /**
       *
