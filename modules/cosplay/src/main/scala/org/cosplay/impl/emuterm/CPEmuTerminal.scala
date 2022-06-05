@@ -143,15 +143,12 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         configFont(g)
         val fm = g.getFontMetrics(termFont)
         descent = fm.getMaxDescent
-        chW = fm.getWidths.max + chWOff
-        chH = fm.getHeight - fm.getLeading + chHOff
         val maxW = fm.getWidths.max
         val maxH = fm.getHeight
 
         // Fix sometime incorrect font width (on MacOS or Linux).
-        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") then
-            if maxW > maxH / 2 then
-                chWOff = -(maxW - maxH / 2)
+        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") && maxW > maxH / 2 then
+            chWOff = -(maxW - maxH / 2)
 
         chW = maxW + chWOff
         chH = maxH - fm.getLeading + chHOff
