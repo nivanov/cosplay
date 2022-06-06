@@ -30,7 +30,6 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.os.fs.*
 import CPMirFileType.*
 
 /**

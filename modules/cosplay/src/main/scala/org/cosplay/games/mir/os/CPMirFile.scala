@@ -32,7 +32,8 @@ package org.cosplay.games.mir.os
 
 import org.cosplay.*
 import CPMirFileType.*
-import fs.*
+import CPMirFileSystem.*
+import scala.collection.mutable
 
 /**
   *
@@ -55,7 +56,9 @@ abstract class CPMirFile(
     private var createTs = CPMirClock.now()
     private var updateTs = CPMirClock.now()
     private var size = 0L
+    private var absPath = mkAbsolutePath()
 
+    /** Unix 'inode' of the file. Only one storage device in MirX. */
     final val guid = CPRand.guid
 
     override def hashCode(): Int = guid.hashCode()
@@ -72,9 +75,33 @@ abstract class CPMirFile(
 
     /**
       *
+      * @return
+      */
+    def getAbsolutePath: String = absPath
+
+    /**
+      *
+      * @return
+      */
+    private def mkAbsolutePath(): String =
+        val buf = mutable.ArrayBuffer.empty[String]
+        var f: Option[CPMirFile] = Some(this)
+        while f.isDefined do
+            val v = f.get
+            val p = v.getParent
+            if p.isDefined then
+                buf += v.getName
+                buf += PATH_SEP
+            f = p
+        buf.toSeq.reverse.mkString
+
+    /**
+      *
       * @param parent
       */
-    def setParent(parent: Option[CPMirDirectoryFile]): Unit = this.parent = parent
+    def setParent(parent: Option[CPMirDirectoryFile]): Unit =
+        this.parent = parent
+        absPath = mkAbsolutePath()
 
     /**
       *
@@ -86,7 +113,9 @@ abstract class CPMirFile(
       *
       * @param name
       */
-    def setName(name: String): Unit = this.name = name
+    def setName(name: String): Unit =
+        this.name = name
+        absPath = mkAbsolutePath()
 
     /**
       *
@@ -170,4 +199,6 @@ abstract class CPMirFile(
       * @return
       */
     def getType: CPMirFileType = typ
+
+    override def toString: String = absPath
 

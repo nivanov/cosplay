@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.fs
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -31,10 +31,9 @@ package org.cosplay.games.mir.os.fs
 */
 
 import org.cosplay.*
-import games.mir.*
-import os.fs.*
-import os.*
-import CPMirFileType.*
+import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.*
+import org.cosplay.games.mir.os.CPMirFileType.*
 import scala.collection.mutable
 
 /**
@@ -50,7 +49,7 @@ object CPMirDirectoryFile:
         require(owner.isRoot)
         CPMirDirectoryFile("", owner, None)
 
-import CPMirFileSystem.*
+import org.cosplay.games.mir.os.CPMirFileSystem.*
 
 /**
   *
@@ -62,7 +61,7 @@ class CPMirDirectoryFile(
     name: String,
     owner: CPMirUser,
     parent: Option[CPMirDirectoryFile]
-) extends CPMirFile(FT_DIR, name, owner, parent):
+) extends CPMirFile(FT_DIR, name, owner, parent) with Iterable[CPMirFile]:
     private val children = mutable.ArrayBuffer.empty[CPMirFile]
 
     /**
@@ -83,6 +82,21 @@ class CPMirDirectoryFile(
             var p = this
             while p.getParent.isDefined do p = p.getParent.get
             p
+
+    override def iterator: Iterator[CPMirFile] = children.iterator
+
+    /**
+      * Depth-first scan.
+      *
+      * @param f Callback for each scanned file that was accepted by the filter.
+      * @param p Optional file filter.
+      */
+    def scan(f: CPMirFile ⇒ Unit, p: CPMirFile ⇒ Boolean = _ ⇒ true): Unit =
+        for (child ← children)
+            if p(child) then f(child)
+            child match
+                case d: CPMirDirectoryFile ⇒ d.scan(f, p)
+                case _ ⇒ ()
 
     /**
       *
@@ -131,30 +145,41 @@ class CPMirDirectoryFile(
     /**
       *
       * @param path Relative or fully qualified path.
-      * @return
       */
     def file(path: String): Option[CPMirFile] =
         val p = path.strip()
-        var f: CPMirDirectoryFile = if p.startsWith(PATH_SEP) then root else this
-        val parts = p.split(PATH_SEP)
+        var f: CPMirFile = if p.startsWith(PATH_SEP) then root else this
+        val parts = p.split(PATH_SEP).filter(_.nonEmpty)
         val n = parts.length
         var i = 0
         var failed = false
         while i < n && !failed do
             val part = parts(i)
             part match
-                case "." ⇒ ()
-                case ".." ⇒ if !f.isRoot then f = f.getParent.get
-                case name: String ⇒
-                    children.find(_.getName == name) match
-                        case Some(x) ⇒ x match
-                            case d: CPMirDirectoryFile ⇒ f = d
-                            case _ ⇒ failed = true
-                        case None ⇒ failed = true
+                case "." ⇒ () // Ignore any '.'.
+                case ".." ⇒ f match
+                    // Ignore spurious '..'.
+                    case d: CPMirDirectoryFile ⇒ if !d.isRoot then f = d.getParent.get
+                    case _ ⇒ failed = true
+                case name: String ⇒ f match
+                    case d: CPMirDirectoryFile ⇒
+                        d.children.find(_.getName == name) match
+                            case Some(x) ⇒ f = x
+                            case None ⇒ failed = true
+                    // Non-directory can only be the last element.
+                    case x ⇒ if i == n - 1 && x.getName == name then f = x else failed = true
             i += 1
         if failed then None else Some(f)
 
-
+    /**
+      *
+      * @param path Relative or fully qualified path.
+      */
+    def dir(path: String): Option[CPMirDirectoryFile] = file(path) match
+        case Some(f) ⇒ f match
+            case d: CPMirDirectoryFile ⇒ Some(d)
+            case _ ⇒ None
+        case None ⇒ None
 
     /**
       *

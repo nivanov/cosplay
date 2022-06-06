@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.fs
+package org.cosplay.games.mir.os.progs
 
 /*
    _________            ______________
@@ -31,26 +31,11 @@ package org.cosplay.games.mir.os.fs
 */
 
 import org.cosplay.games.mir.*
-import os.fs.*
 import os.*
-import CPMirFileType.*
 
 /**
-  * 
-  * @param name
-  * @param owner
-  * @param parent
+  *
   */
-class CPMirDeviceFile(
-    name: String,
-    owner: CPMirUser,
-    parent: Option[CPMirDirectoryFile]
-) extends CPMirFile(FT_DEV, name, owner, parent):
-    /**
-      *
-      * @param name
-      * @param owner
-      * @param parent
-      */
-    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile) = this(name, owner, Some(parent))
-
+class CPMirLsProgram extends CPMirProgram:
+    override def mainEntry(ctx: CPMirProgramContext): Int = ???
+    override def getSizeOnDisk: Long = ???

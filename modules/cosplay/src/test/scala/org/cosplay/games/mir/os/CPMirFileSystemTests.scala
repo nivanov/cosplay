@@ -18,7 +18,6 @@
 package org.cosplay.games.mir.os
 
 import org.junit.jupiter.api.Test
-import org.cosplay.games.mir.os.fs.*
 
 /*
    _________            ______________
@@ -62,8 +61,29 @@ object CPMirFileSystemTests:
     @Test
     def pathTest(): Unit =
         val fs = initFs()
+        val root = fs.root
+        val bin = root.dir("/bin").get
 
-        // TODO
+        def assertRootPath(p1: String, p2: String): Unit = assertPath(root, p1, p2)
+        def assertPath(cp: CPMirDirectoryFile, p1: String, p2: String): Unit = assert(cp.file(p1).get.getAbsolutePath == p2)
+
+        root.scan(f ⇒ println(f.getAbsolutePath))
+        assertRootPath("/info.txt", "/info.txt")
+        assertRootPath("info.txt", "/info.txt")
+        assertRootPath("./info.txt", "/info.txt")
+        assertRootPath("./.././info.txt", "/info.txt")
+        assertRootPath("../info.txt", "/info.txt")
+        assertRootPath("../../info.txt", "/info.txt")
+        assertRootPath("/bin/bin_info.txt", "/bin/bin_info.txt")
+        assertRootPath("/bin/./bin_info.txt", "/bin/bin_info.txt")
+        assertRootPath("/bin/././bin_info.txt", "/bin/bin_info.txt")
+        assertRootPath("/bin/../bin/bin_info.txt", "/bin/bin_info.txt")
+        assertRootPath("../bin/../bin/bin_info.txt", "/bin/bin_info.txt")
+
+        assertPath(bin, "bin_info.txt", "/bin/bin_info.txt")
+        assertPath(bin, "./../bin/bin_info.txt", "/bin/bin_info.txt")
+        assertPath(bin, "./bin_info.txt", "/bin/bin_info.txt")
+
 
 
 
