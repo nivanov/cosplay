@@ -30,8 +30,6 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.os.CPMirFile
-import org.cosplay.games.mir.os.fs.*
 import CPMirFileType.*
 
 /**
@@ -39,8 +37,28 @@ import CPMirFileType.*
   * @param root
   */
 @SerialVersionUID(1_0_0L)
-class CPMirFileSystem(val root: CPMirFile) extends Serializable:
-    require(root.getType == FT_DIR)
+class CPMirFileSystem(val root: CPMirDirectoryFile) extends Serializable:
     require(root.getOwner.isRoot)
     require(root.getName.isBlank)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      * @return
+      */
+    def file(path: String): Option[CPMirFile] = root.file(path)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      * @return
+      */
+    def exist(path: String): Boolean = root.file(path).isDefined
+
+/**
+  *
+  */
+object CPMirFileSystem:
+    final val PATH_SEP = "/"
+    final val PATH_SEP_CHAR = '/'
 

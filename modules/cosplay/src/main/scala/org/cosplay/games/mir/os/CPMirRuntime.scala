@@ -32,14 +32,12 @@ package org.cosplay.games.mir.os
 
 class CPMirRuntime:
     /**
-      *
-      * @return
+      * Unix 'PID'.
       */
     def getPid: Long = ???
 
     /**
-      *
-      * @return
+      * Unix 'PPID'.
       */
     def getParentPid: Long = ???
 

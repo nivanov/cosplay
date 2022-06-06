@@ -59,7 +59,7 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
           |  assembled from 7 separate modules and is now manned by an international
           |  crew of 3 astronauts.
           |
-          |  On the morning of <%June 24%> the unmanned resupply vessel <%Progress%>-34 that
+          |  On the morning of <%June 25%> the unmanned resupply vessel <%Progress%>-34 that
           |  arrived just a few months earlier crashed into Mir space station during
           |  routine training re-docking procedure causing critical station damage.
           |  Status of the remaining crew is unknown, air is leaking, structural and

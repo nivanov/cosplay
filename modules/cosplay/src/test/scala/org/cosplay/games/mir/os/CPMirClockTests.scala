@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.fs
+package org.cosplay.games.mir.os
+
+import org.junit.jupiter.api.*
+import java.text.*
+import java.util.*
 
 /*
    _________            ______________
@@ -30,20 +34,24 @@ package org.cosplay.games.mir.os.fs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import os.fs.*
-import os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
-
 /**
-  * 
-  * @param name
-  * @param owner
-  * @param parent
+  *
   */
-class CPMirDeviceFile(
-    name: String,
-    owner: CPMirUser,
-    parent: Option[CPMirFile]
-) extends CPMirFile(FT_DEV, name, owner, parent)
+object CPMirClockTests:
+    @Test
+    def nowTest(): Unit =
+        CPMirClock.setElapsedTime(0)
+        val t1 = CPMirClock.now()
+        val t2 = System.currentTimeMillis()
+        println(s"Elapsed years since crash: ${(t2 - t1) / 365 / 24 / 60 / 60 / 1000}")
 
+    @Test
+    def sysAndCrewTimeTest(): Unit =
+        CPMirClock.setElapsedTime(0)
+        val fmt = SimpleDateFormat("yyyy MMMM dd HH:mm z")
+        (0 until 10).foreach {
+            _ ⇒ println(s"System timestamp: ${fmt.format(new Date(CPMirClock.randSysTime()))}")
+        }
+        (0 until 10).foreach {
+            _ ⇒ println(s"Crew timestamp: ${fmt.format(new Date(CPMirClock.randCrewTime()))}")
+        }

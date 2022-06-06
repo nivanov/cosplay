@@ -30,13 +30,13 @@ package org.cosplay.games.mir
                 ALl rights reserved.
 */
 
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
+import Assertions.*
 
 /**
   *
   */
-class CPMirPlayerTests:
+object CPMirPlayerTests:
     @Test
     def newPlayerGenTest(): Unit =
         (0 to 100).foreach(_ => println(CPMirPlayer.newPlayer.debugString))

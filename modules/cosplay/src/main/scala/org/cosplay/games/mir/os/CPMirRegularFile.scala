@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.fs
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -31,8 +31,7 @@ package org.cosplay.games.mir.os.fs
 */
 
 import org.cosplay.games.mir.*
-import os.fs.*
-import os.*
+import org.cosplay.games.mir.os.*
 import org.cosplay.games.mir.os.CPMirFileType.*
 
 /**
@@ -41,9 +40,16 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   * @param owner
   * @param parent
   */
-class CPMirDirectoryFile(
+class CPMirRegularFile(
     name: String,
     owner: CPMirUser,
-    parent: Option[CPMirFile]
-) extends CPMirFile(FT_DIR, name, owner, parent)
+    parent: Option[CPMirDirectoryFile]
+) extends CPMirFile(FT_REG, name, owner, parent):
+    /**
+      *
+      * @param name
+      * @param owner
+      * @param parent
+      */
+    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile) = this(name, owner, Some(parent))
 

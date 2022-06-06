@@ -30,10 +30,48 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import java.text.*
+import org.cosplay.*
+
+/**
+  *
+  */
 object CPMirClock:
+    private final val FMT = SimpleDateFormat("yyyy MMMM dd HH:mm z")
+    private final val CRASH_TIME = FMT.parse("1997 June 25 09:18 UTC").getTime
+    private final val OS_BUILD_TIME = FMT.parse("1990 Jan 1 00:01 UTC").getTime
+    private final val OS_CREW_ARRIVE_TIME = FMT.parse("1995 Jan 1 00:01 UTC").getTime
+    private final val YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000L
+
+    private var elapsedMs = 0L
+    private var time = 0L
+
+    /**
+      *
+      * @param time
+      */
+    def setElapsedTime(time: Long): Unit = this.time = CRASH_TIME + time
+
+    /**
+      *
+      * @param deltaMs
+      */
+    def addTime(deltaMs: Long): Unit = time += deltaMs
+
     /**
       * Gets current station time in milliseconds.
+      */
+    inline def now(): Long = time
+
+    /**
+      *
       * @return
       */
-    def now(): Long = ???
+    def randSysTime(): Long = OS_BUILD_TIME + CPRand.randLong(0L, YEAR_IN_MS)
+
+    /**
+      *
+      * @return
+      */
+    def randCrewTime(): Long = OS_CREW_ARRIVE_TIME + CPRand.randLong(0L, 2 * YEAR_IN_MS)
 

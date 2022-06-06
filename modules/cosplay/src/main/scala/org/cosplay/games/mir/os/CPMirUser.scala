@@ -17,7 +17,8 @@
 
 package org.cosplay.games.mir.os
 
-import org.cosplay.games.mir.CPMirPlayer
+import org.cosplay.*
+import games.mir.*
 
 /*
    _________            ______________
@@ -31,6 +32,16 @@ import org.cosplay.games.mir.CPMirPlayer
             (C) 2021 Rowan Games, Inc.
                ALl rights reserved.
 */
+
+/**
+  *
+  */
+object CPMirUser:
+    /**
+      *
+      * @return
+      */
+    def mkRoot(): CPMirUser = CPMirUser(None, true, "root", CPRand.guid6)
 
 /**
   *

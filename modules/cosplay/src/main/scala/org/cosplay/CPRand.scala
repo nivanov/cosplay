@@ -89,6 +89,26 @@ object CPRand:
         RND.nextInt(to - from) + from
 
     /**
+      * Gets random long in the given range.
+      *
+      * @param from Inclusive range from value.
+      * @param to Inclusive range to value.
+      */
+    def randLong(from: Long, to: Long): Long =
+        assert(from < to)
+        RND.nextLong(to - from) + from
+
+    /**
+      * Gets random long in the given range.
+      *
+      * @param from Inclusive range from value.
+      * @param to Inclusive range to value.
+      */
+    def randLongExcl(from: Long, to: Long): Long =
+        assert(from < to)
+        RND.nextLong(to - from) + from
+
+    /**
       * Gets random integer in the given range.
       *
       * @param from Inclusive range from value.

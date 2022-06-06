@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.apps
+package org.cosplay.games.mir.os.progs
 
 /*
    _________            ______________
@@ -36,6 +36,6 @@ import os.*
 /**
   *
   */
-class CPMirLsApp extends CPMirProgram:
+class CPMirLsProgram extends CPMirProgram:
     override def mainEntry(ctx: CPMirProgramContext): Int = ???
     override def getSizeOnDisk: Long = ???
