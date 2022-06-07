@@ -45,7 +45,7 @@ case class CPMirProgramContext(
     con: CPMirConsole,
     rt: CPMirRuntime,
     fs: CPMirFileSystem,
-    workDir: CPMirFile,
+    workDir: CPMirDirectoryFile,
     env: Map[String, String],
     user: CPMirUser
 )

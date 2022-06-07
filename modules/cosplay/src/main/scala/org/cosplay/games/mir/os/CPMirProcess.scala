@@ -30,24 +30,39 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-class CPMirRuntime:
+trait CPMirProcess:
     /**
-      * Unix 'PID'.
+      *
       */
-    def getPid: Long = ???
-
-    /**
-      * Unix 'PPID'.
-      */
-    def getParentPid: Long = ???
+    def getOwner: CPMirUser
 
     /**
       *
       */
-    def list: Seq[CPMirProcess] = ???
+    def getPid: Long
 
     /**
       *
       */
-    def kill(pid: Long): Unit = ???
+    def getParentPid: Long
+
+    /**
+      *
+      */
+    def getProgramFile: CPMirProgramFile
+
+    /**
+      *
+      */
+    def getWorkingDirectory: CPMirDirectoryFile
+
+    /**
+      *
+      */
+    def getMainArguments: Seq[String]
+
+    /**
+      *
+      */
+    def getStartTime: Long
 
