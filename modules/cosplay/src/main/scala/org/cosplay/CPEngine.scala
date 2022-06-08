@@ -386,6 +386,7 @@ object CPEngine:
       * @param dim
       */
     private def updateTitle(dim: CPDim): Unit =
+        assert(dim != null, "Dimension is null.")
         term.setTitle(s"CosPlay - ${gameInfo.name} v${gameInfo.semVer}, ${dim.w}x${dim.h}")
 
     /**

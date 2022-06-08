@@ -30,7 +30,7 @@ import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.swing.FontIcon
 
 import java.awt.*
-import java.awt.Frame.MAXIMIZED_HORIZ
+import java.awt.Frame.*
 import java.awt.RenderingHints.*
 import java.awt.event.*
 import java.awt.event.KeyEvent.*
