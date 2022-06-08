@@ -24,8 +24,6 @@ import CPArrayImage.*
 import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
-
-import scala.util.*
 import CPColor.*
 
 import scala.collection.mutable
@@ -60,36 +58,24 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private var score = 0
 
-    private val wallPx = ' '&&(C_BLACK, C_WHITE)
-    private val winPx = '.'&&(C_BLACK, C_WHITE)
+    private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7)
+    private final val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
+    private final val BUILD_WIN_PX = '.'&&(C_WHITE, C_GRAY6)
+    private final val BUILD_MIN_W = 4
+    private final val BUILD_MAX_W = 10
+    private final val BUILD_MIN_H = 6
+    private final val BUILD_MAX_H = 13
+    private final val PIPE_GAP = 15f
+    private final val PIPE_WIDTH = 5f
+    private final val BUILD_GAP_MAX = 2
 
-    private val minWidth = 3
-    private val maxWidth = 10
-    private val minHeight = 6
-    private val maxHeight = 13
-    private val minDepth = -5
-    private val maxDepth = -1
-
-    private val PIPE_GAP = 15f
-    private val PIPE_WIDTH = 5f
     private var pipeX = 0f
     private var curPipe = false
     private var pipeCut = 0f
     private var pipeCheck = false
 
-    private val buildingGap = 2
-
-    private val buildingSpeed = 7
-
-//    private var bgW = 0
-//    private var bgH = 0
-
+    private val buildSpeed = 7
     private val grassSpeed = 3
-
-
-
-    //-----------------------------------------
-
 
     private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
 
@@ -168,14 +154,14 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 start = false
 
             // Building spawner.
-            val buildExpCnt = canv.width * 2 / buildingGap
+            val buildExpCnt = canv.width * 2 / BUILD_GAP_MAX
             val buildActCnt = ctx.getObjectsForTags("building").length
             if buildActCnt < buildExpCnt then
                 for x <- buildActCnt to buildExpCnt do
-                    ctx.addObject(newBuildingSpr(
-                        Random.between(minWidth, maxWidth),
-                        Random.between(minHeight, maxHeight),
-                        x * maxWidth + buildingGap)
+                    ctx.addObject(newBuildingSprite(
+                        CPRand.between(BUILD_MIN_W, BUILD_MAX_W),
+                        CPRand.between(BUILD_MIN_H, BUILD_MAX_H),
+                        x * BUILD_MAX_W + CPRand.between(0, BUILD_GAP_MAX))
                     )
 
             // Grass spawner.
@@ -190,7 +176,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             setX((ctx.getCanvas.width / 2) - 3)
 
     private val pipeSpr = new CPCanvasSprite("pipe"):
-        private val px = '|'&&(C_GREEN,C_GREEN)
+        private val FG = CPColor("0xE617BC")
+        private val BG = CPColor("0x8E0CF2")
+        private val px = 'X'&&(FG, BG)
         override def render(ctx: CPSceneObjectContext): Unit =
             super.render(ctx)
             val canv = ctx.getCanvas
@@ -202,25 +190,27 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     pipeCut = CPRand.between(12f, canv.yMax - 2f)
                 else
                     if pipeX <= -PIPE_WIDTH then curPipe = false else pipeX -= speed
-                    if pipeX <= birdSpr.getX - PIPE_WIDTH  && !pipeCheck then
+                    if pipeX <= birdSpr.getX - PIPE_WIDTH && !pipeCheck then
                         score += 1
                         scoreSpr.setImage(mkScoreImage(score))
                         pipeCheck = true
 
-                val xi = pipeX.toInt
-                val ci = pipeCut.toInt
-                val gi = PIPE_GAP.toInt
+                val x = pipeX.toInt
+                val c = pipeCut.toInt
+                val g = PIPE_GAP.toInt
 
-                canv.drawLine(xi, ci, xi, canv.dim.h, 0, px)
-                canv.drawLine(xi, ci - gi, xi, 0, 0, px)
-                for x <- 0 until PIPE_WIDTH.toInt - 1 do
-                    canv.drawLine(xi + x, ci, xi + x, canv.dim.h, 0, px)
-                    canv.drawLine(xi + x, ci - gi, xi + x, 0, 0, px)
+                for a <- 0 until PIPE_WIDTH.toInt - 1 do
+                    val px2 = px.withBg(Option(px.bg.get.lighter(a.toFloat / 10f)))
+                    canv.drawLine(x + a, c, x + a, canv.dim.h, 0, px2)
+                    canv.drawLine(x + a, c - g, x + a, 0, 0, px2)
 
-    private def newBuildingSpr(width: Int, height: Int, posX: Int) : CPSceneObject =
+    private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite():
             private var x = posX
             private val tags = Set("building")
+            private val col = CPRand.rand(BUILD_COLORS)
+            private val wallPx = BUILD_WALL_PX.withBg(Option(col))
+            private val winPx = BUILD_WIN_PX.withBg(Option(col))
 
             override def getTags: Set[String] = tags
             override def update(ctx: CPSceneObjectContext): Unit =
@@ -237,17 +227,11 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 for (index <- 0 to height) do
                     canv.drawLine(x + 1, y + index, x + width - 1, y + index, -1, winPx)
 
-                if ctx.getFrameCount % buildingSpeed == 0 then
+                if ctx.getFrameCount % buildSpeed == 0 then
                     x -= 1
                     if x <= -width then
                         ctx.deleteMyself()
 
-    /**
-      *
-      * @param posX
-      * @param posY
-      * @return
-      */
     private def newGrassSprite(posX: Int, posY: Int) : CPSceneObject =
         new CPImageSprite(x = posX, y = posY, z = -1, img = brickImg):
             override def getTags: Set[String] = Set("grass")
