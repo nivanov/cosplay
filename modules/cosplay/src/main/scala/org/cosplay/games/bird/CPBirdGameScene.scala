@@ -46,6 +46,12 @@ import scala.collection.mutable
  *
  */
 object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
+    private val bgSnd = CPSound("sounds/games/bird/bg.wav")
+    private val passSnd = CPSound("sounds/games/bird/pass_pipe.wav")
+    private val hitSnd = CPSound("sounds/games/bird/hit_pipe.wav", .3f)
+    private val fallSnd = CPSound("sounds/games/bird/fall.wav", .7f)
+    private val youLostSnd = CPSound("sounds/games/bird/you_lost.wav")
+
     // Bird metrics.
     private var speed = 1f
     private var vel = 0f
@@ -145,6 +151,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     getX + getWidth >= pipeX.toInt &&
                     getX <= pipeX.toInt + PIPE_WIDTH - 1 then
                         dead = true
+                        if audioOn then hitSnd.play(0, _ ⇒ fallSnd.play())
                         delta = 0.4
                         vel = 0
                         speed = 0f
@@ -194,6 +201,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                         score += 1
                         scoreSpr.setImage(mkScoreImage(score))
                         pipeCheck = true
+                        if audioOn then passSnd.play()
 
                 val x = pipeX.toInt
                 val c = pipeCut.toInt
@@ -250,5 +258,22 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         pipeSpr,
         scoreSpr
     )
+
+    private def startBgAudio(): Unit = bgSnd.loop(2000)
+    private def stopBgAudio(): Unit = bgSnd.stop(400)
+
+    /**
+      * Toggles audio on and off.
+      */
+    private def toggleAudio(): Unit =
+        if audioOn then
+            stopBgAudio()
+            audioOn = false
+        else
+            startBgAudio()
+            audioOn = true
+
+    override def onDeactivate(): Unit = stopBgAudio()
+
 
 
