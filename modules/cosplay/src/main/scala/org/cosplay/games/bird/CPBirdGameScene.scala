@@ -181,7 +181,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 setY(canv.height - 5)
 
             // Building spawner.
-            val buildExpCnt = canv.width / BUILD_MAX_W
+            val buildExpCnt = canv.width / BUILD_MAX_W // Number of buildings to fill at least entire screen.
             val buildActCnt = ctx.getObjectsForTags("building").length
             if buildActCnt < buildExpCnt then
                 for x <- buildActCnt to buildExpCnt do
