@@ -18,7 +18,6 @@
 package org.cosplay.games.bird
 
 import org.cosplay.*
-import games.*
 import CPPixel.*
 import CPArrayImage.*
 import CPFIGLetFont.*
@@ -65,9 +64,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var score = 0
 
     private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 20))
-    private final val PIPE_FG = CPColor("0xE617BC")
-    private final val PIPE_BG = CPColor("0x8E0CF2")
-    private final val PIPE_PX = '<'&&(PIPE_FG, PIPE_BG)
+    private final val PIPE_BG = CPColor("0x4C338F")
+    private final val PIPE_PX = '|'&&(PIPE_BG, PIPE_BG)
     private final val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
     private final val BUILD_WIN_PX = '.'&&(C_WHITE, C_GRAY6)
     private final val BUILD_MIN_W = 4
@@ -105,8 +103,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         autoStart = true,
         skip = (zpx, _, _) ⇒ zpx.z == 1
     )
+    private val borderShdr = CPBorderShader(true, 5, true, -.03f, true)
 
-    private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C4).trimBg()
+    private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C1).trimBg()
 
     private val birdImgs = new CPArrayImage(
         prepSeq(
@@ -122,7 +121,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             """
         ).filter(!_.endsWith("------")),
         (ch, _, _) => ch match
-            case '^' | '-' => ch&C_WHITE
+            case '^' | '-' => ch&C1
             case _ => ch&C4
     ).split(5, 3)
 
@@ -143,7 +142,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             case c => c&&(C_MAROON, C_DARK_ORANGE3)
     )
 
-    private val birdAnis = Seq(CPAnimation.filmStrip("ani", 250, imgs = birdImgs))
+    private val birdAnis = Seq(CPAnimation.filmStrip("ani", 100, imgs = birdImgs))
     private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, 15, 5, 0, "ani", false):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -224,7 +223,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             val g = PIPE_GAP.toInt
 
             for a <- 0 until PIPE_WIDTH.toInt - 1 do
-                val px2 = PIPE_PX.withBg(Option(PIPE_PX.bg.get.lighter(a.toFloat / 10f)))
+                val bg = PIPE_PX.bg.get.lighter(a.toFloat / 20f)
+                val fg = bg.darker(.3f)
+                val px2 = PIPE_PX.withFg(fg).withBg(Option(bg))
                 canv.drawLine(x + a, c, x + a, canv.dim.h, 1, px2)
                 canv.drawLine(x + a, c - g, x + a, 0, 1, px2)
 
@@ -281,7 +282,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         // Toggle audio on 'CTRL+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Off screen sprite since shaders are applied to entire screen.
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, borderShdr, starStreakShdr)),
         birdSpr,
         pipeSpr,
         scoreSpr

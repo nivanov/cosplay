@@ -18,7 +18,6 @@
 package org.cosplay.games.bird
 
 import org.cosplay.*
-import games.*
 import CPColor.*
 import CPPixel.*
 import prefabs.scenes.*
@@ -44,6 +43,7 @@ val C3 = CPColor("0x008C46") // Green (dark).
 val C4 = CPColor("0xFFFFFF") // White.
 val C5 = CPColor("0x66B2FF") // Light blue.
 val C6 = CPColor("0x66FFB2") // Light olive.
+val CS = Seq(C1, C2, C3, C4, C5, C6)
 
 val LOGO_BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
 val GAME_BG_PX = ' '&&(ORIG_BLUE, ORIG_BLUE) // Background pixel.
