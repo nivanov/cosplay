@@ -64,7 +64,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private var score = 0
 
-    private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7)
+    private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 20))
     private final val PIPE_FG = CPColor("0xE617BC")
     private final val PIPE_BG = CPColor("0x8E0CF2")
     private final val PIPE_PX = '<'&&(PIPE_FG, PIPE_BG)
@@ -181,7 +181,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 setY(canv.height - 5)
 
             // Building spawner.
-            val buildExpCnt = canv.width * 2
+            val buildExpCnt = canv.width / BUILD_MAX_W
             val buildActCnt = ctx.getObjectsForTags("building").length
             if buildActCnt < buildExpCnt then
                 for x <- buildActCnt to buildExpCnt do

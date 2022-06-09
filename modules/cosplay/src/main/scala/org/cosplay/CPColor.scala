@@ -82,28 +82,17 @@ import java.awt.Color
   * @param red Red RGB component.
   * @param green Green RGB component.
   * @param blue Blue RGB component.
+  * @param name Optional color name. Can be `null` or empty string. For built-in color this is color's constant name in this class.
   */
-final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPColor](red, green, blue)
+final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) extends CPIntTuple[CPColor](red, green, blue)
     with Ordered[CPColor]
     with Serializable:
     import CPColor.*
 
     require(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
 
-    private var name: String = _
     private val rgbStr = s"[r=$red,g=$green,b=$blue]"
     private inline def strClr = if name == null then rgbStr else name
-
-    /**
-      *
-      * @param red Red RGB component.
-      * @param green Green RGB component.
-      * @param blue Blue RGB component.
-      * @param name Optional color name. Can be `null` or empty string. For built-in color this is color's constant name in this class.
-      */
-    def this(red: Int, green: Int, blue: Int, name: String) =
-        this(red, green, blue)
-        this.name = name
 
     override def compare(that: CPColor): Int = rgb.compareTo(that.rgb)
     override protected def ctor(rgb: Seq[Int]): CPColor =
@@ -195,7 +184,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     final val awt = if force8Bit then new Color(XTERM_COLORS(xterm)) else new Color(red, green, blue)
 
     /**
-      * Gets a new color by multiplying RGB values by given `factor`.
+      * Creates a new color by multiplying RGB values by given `factor`.
       *
       * @param factor Factor to multiply each RGB value by.
       */
@@ -204,7 +193,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         mapInt(d => (d * factor).round)
 
     /**
-      * Gets a new color by multiplying RGB values by given channel-specific `factor`s.
+      * Creates a new color by multiplying RGB values by given channel-specific [0,1] `factor`s.
       *
       * @param factorR Factor to multiply each red-channel value by.
       * @param factorG Factor to multiply each green-channel value by.
@@ -217,7 +206,28 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         CPColor((red * factorR).round, (green * factorG).round, (blue * factorB).round)
 
     /**
-      * Gets a new darker color.
+      * Creates new color with given red channel value.
+      *
+      * @param newRed Value for red channel.
+      */
+    def setRed(newRed: Int): CPColor = CPColor(newRed, green, blue)
+
+    /**
+      * Creates new color with given green channel value.
+      *
+      * @param newGreen Value for green channel.
+      */
+    def setGreen(newGreen: Int): CPColor = CPColor(red, newGreen, blue)
+
+    /**
+      * Creates new color with given blue channel value.
+      *
+      * @param newBlue Value for blue channel.
+      */
+    def setBlue(newBlue: Int): CPColor = CPColor(red, green, newBlue)
+
+    /**
+      * Creates a new darker color.
       *
       * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
       */
@@ -227,7 +237,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         mapInt(d => (d * inv).round)
 
     /**
-      * Gets a new black-and-white version of this color. It is using basic
+      * Creates a new black-and-white version of this color. It is using basic
       * averaging method.
       */
     inline def bw(): CPColor =
@@ -235,7 +245,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         CPColor(avg, avg, avg)
 
     /**
-      * Gets a new black-and-white version of this color. It is method that is weighted for lighter
+      * Creates a new black-and-white version of this color. It is method that is weighted for lighter
       * greens and darker blues.
       */
     inline def bw2(): CPColor =
@@ -243,7 +253,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         CPColor(avg, avg, avg)
 
     /**
-      * Get a new lighter color.
+      * Creates a new lighter color.
       *
       * @param factor Mixing factor in `[0.1]` range. `1.0` means pure white, `0.9` means 90% lighter,
       *     `0.1` means 10% lighter.
