@@ -59,7 +59,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private val gravity = 0.2f
     private var delta = 0.4f
 
-    private var start = true
+    private var playing = true
     private var dead = false
 
     private var score = 0
@@ -156,11 +156,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                             vel = 0
                             vel -= jump
                             delta = 0.6f
-                            if !start then start = true
                         case _ => ()
                 case None => ()
 
-            if start then
+            if playing then
                 vel += delta
 
                 if vel <= 0 then
@@ -172,16 +171,14 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
                 if (getY <= pipeCut.toInt - PIPE_GAP.toInt || (getY + getHeight) >= pipeCut.toInt) &&
                     getX + getWidth >= pipeX.toInt &&
-                    getX <= pipeX.toInt + PIPE_WIDTH - 1 then
-                        dead = true
-                        if audioOn then hitSnd.play(0, _ ⇒ fallSnd.play())
-                        delta = 0.4
-                        vel = 0
-                        speed = 0f
-                        setX(pipeX.toInt - (PIPE_WIDTH + 2).toInt)
+                    getX <= pipeX.toInt + PIPE_WIDTH - 1 then kill(0, true)
+
+                if getY <= 0 then kill(5, false)
+                else if getY >= canv.height then kill(0, false)
 
             if dead && getY >= canv.height - 5 then
-                start = false
+                playing = false
+                setY(canv.height - 5)
 
             // Building spawner.
             val buildExpCnt = canv.width * 2
@@ -195,7 +192,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     )
 
             // Grass spawner.
-            val grassExpCnt = canv.width / brickImg.w + brickImg.w // Number of bricks to fill at least entire screen.
+            val grassExpCnt = canv.width / brickImg.w + 1 // Number of bricks to fill at least entire screen.
             val grassActCnt = ctx.getObjectsForTags("grass").length
             if grassActCnt < grassExpCnt then
                 for x <- grassActCnt to grassExpCnt do
@@ -209,28 +206,27 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         override def render(ctx: CPSceneObjectContext): Unit =
             super.render(ctx)
             val canv = ctx.getCanvas
-            if start then
-                if !curPipe then
-                    curPipe = true
-                    pipeCheck = false
-                    pipeX = canv.xMax.toFloat
-                    pipeCut = CPRand.between(12f, canv.yMax - 2f)
-                else
-                    if pipeX <= -PIPE_WIDTH then curPipe = false else pipeX -= speed
-                    if pipeX <= birdSpr.getX - PIPE_WIDTH && !pipeCheck then
-                        score += 1
-                        scoreSpr.setImage(mkScoreImage(score))
-                        pipeCheck = true
-                        if audioOn then passSnd.play()
+            if !curPipe then
+                curPipe = true
+                pipeCheck = false
+                pipeX = canv.xMax.toFloat
+                pipeCut = CPRand.between(12f, canv.yMax - 2f)
+            else
+                if pipeX <= -PIPE_WIDTH && !dead then curPipe = false else pipeX -= speed
+                if pipeX <= birdSpr.getX - PIPE_WIDTH && !pipeCheck then
+                    score += 1
+                    scoreSpr.setImage(mkScoreImage(score))
+                    pipeCheck = true
+                    if audioOn then passSnd.play()
 
-                val x = pipeX.toInt
-                val c = pipeCut.toInt
-                val g = PIPE_GAP.toInt
+            val x = pipeX.toInt
+            val c = pipeCut.toInt
+            val g = PIPE_GAP.toInt
 
-                for a <- 0 until PIPE_WIDTH.toInt - 1 do
-                    val px2 = PIPE_PX.withBg(Option(PIPE_PX.bg.get.lighter(a.toFloat / 10f)))
-                    canv.drawLine(x + a, c, x + a, canv.dim.h, 1, px2)
-                    canv.drawLine(x + a, c - g, x + a, 0, 1, px2)
+            for a <- 0 until PIPE_WIDTH.toInt - 1 do
+                val px2 = PIPE_PX.withBg(Option(PIPE_PX.bg.get.lighter(a.toFloat / 10f)))
+                canv.drawLine(x + a, c, x + a, canv.dim.h, 1, px2)
+                canv.drawLine(x + a, c - g, x + a, 0, 1, px2)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite():
@@ -255,7 +251,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 for (index <- 0 to height) do
                     canv.drawLine(x + 1, y + index, x + width - 1, y + index, 1, winPx)
 
-                if ctx.getFrameCount % buildSpeed == 0 then
+                if ctx.getFrameCount % buildSpeed == 0 && !dead then
                     x -= 1
                     if x <= -width then
                         ctx.deleteMyself()
@@ -265,11 +261,19 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             override def getTags: Set[String] = Set("grass")
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                if ctx.getFrameCount % grassSpeed == 0 then
+                if ctx.getFrameCount % grassSpeed == 0 && !dead then
                     setX(getX - 1)
                     if getX <= -brickImg.w then
                         ctx.deleteMyself()
                 setY(ctx.getCanvas.height - brickImg.h)
+
+    private def kill(velChange: Float, pipe: Boolean) : Unit =
+        dead = true
+        if audioOn then hitSnd.play(0, _ ⇒ fallSnd.play())
+        delta = 0.4
+        vel = velChange
+        speed = 0f
+        if pipe then birdSpr.setX(pipeX.toInt - (PIPE_WIDTH + 2).toInt)
 
     addObjects(
         // Handle 'Q' press globally for this scene.
