@@ -253,7 +253,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
                 // Windows.
                 for (index <- 0 to height) do
-                    canv.drawLine(x + 1, y + index, x + width - 1, y + index, 1, winPx)
+                    canv.drawLine(x + 1, y + index, x + width - 1, y + index,  1, winPx)
 
                 if ctx.getFrameCount % buildSpeed == 0 then
                     x -= 1
