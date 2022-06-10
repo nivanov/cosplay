@@ -140,6 +140,28 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             case c => c&&(C_MAROON, C_DARK_ORANGE3)
     )
 
+    private val youLostImg = new CPArrayImage(
+        prepSeq(
+            """
+              |**********************************
+              |**                              **
+              |**    YOU LOST :-(              **
+              |**    ------------              **
+              |**                              **
+              |**    [SPACE]   Continue        **
+              |**    [Q]       Quit            **
+              |**    [CTRL+A]  Audio On/OFF    **
+              |**    [CTRL+Q]  FPD Overlay     **
+              |**    [CTRL+L]  Log Console     **
+              |**                              **
+              |**********************************
+            """),
+        (ch, _, _) => ch match
+            case '*' ⇒ ' '&&(C2, C2)
+            case c if c.isLetter || c == '/' => c&&(C4, GAME_BG_PX.bg.get)
+            case _ => ch&&(C3, GAME_BG_PX.bg.get)
+    )
+
     private val birdAnis = Seq(CPAnimation.filmStrip("ani", 100, imgs = birdImgs))
     private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, 15, 5, 0, "ani", false):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -202,9 +224,20 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             if pipeActCnt < pipeExpCnt then
                 for x <- pipeActCnt to pipeExpCnt do
                     ctx.addObject(newPipeSprite(5, canv.w + pipeSpacing * (x - 1)))
+
     private val scoreSpr = new CPImageSprite("score", 0, 0, 1, mkScoreImage(score)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.width / 2) - 3)
+
+    private val loseSpr = new CPImageSprite("lose", 0, 0, 15, youLostImg):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+
+            setX((canv.w / 2) - (youLostImg.w) / 2)
+            setY((canv.h / 2) - (youLostImg.h) / 2)
+
+            if(!dead) then setVisible(false)
+            else setVisible(true)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite():
@@ -259,6 +292,12 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     newPipeX = 30f
                     newPipeCut = 0f
 
+                    score += 1
+                    scoreSpr.setImage(mkScoreImage(score))
+
+                    if audioOn then passSnd.play(0)
+                    println(score)
+
                 if !finished && pipeX >= birdSpr.getX && pipeX < newPipeX then
                     newPipeX = pipeX
                     newPipeCut = c
@@ -297,7 +336,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, borderShdr, starStreakShdr)),
         birdSpr,
-        scoreSpr
+        scoreSpr,
+        loseSpr
     )
 
     private def startBgAudio(): Unit = bgSnd.loop(2000)
