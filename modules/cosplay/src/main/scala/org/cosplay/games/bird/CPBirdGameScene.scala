@@ -188,9 +188,16 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     setY(getY + (gravity * vel).toInt)
                     delta += 0.001f
 
-                if ((getY + getHeight) >= closestPipeCut.toInt) &&
+                // Bottom pipe.
+                if ((getY + getHeight) >= closestPipeCut) &&
                     getX + getWidth >= closestPipeX && // Touching pipe.
                     getX <= closestPipeX + PIPE_WIDTH - 1 then kill(0, true)
+
+                //Top pipe.
+                if (getY <= closestPipeCut - PIPE_GAP_HEIGHT) &&
+                    getX + getWidth >= closestPipeX && // Touching pipe.
+                    getX <= closestPipeX + PIPE_WIDTH - 1 then kill(0, true)
+
 
                 if getY <= 0 then kill(5, false)
                 else if getY >= canv.height then kill(0, false)
@@ -230,6 +237,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             setX((ctx.getCanvas.width / 2) - 3)
 
     private val loseSpr = new CPImageSprite("lose", 0, 0, 15, youLostImg):
+        var vis = false
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
@@ -237,7 +245,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             setY((canv.h / 2) - (youLostImg.h) / 2)
 
             if(!dead) then setVisible(false)
-            else setVisible(true)
+            else if !vis then
+                setVisible(true)
+                vis = true
+                if audioOn then youLostSnd.play(0)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite():
@@ -289,6 +300,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     score += 1
                     scoreSpr.setImage(mkScoreImage())
                     if audioOn then passSnd.play(0)
+
+                if !finished && pipeX <= closestPipeX then
+                    closestPipeX = pipeX
+                    closestPipeCut = gapStartY
 
                 for a <- 0 until width - 1 do
                     val bg = PIPE_PX.bg.get.lighter(a.toFloat / 20f)
