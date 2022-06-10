@@ -40,21 +40,6 @@ import scala.collection.mutable
 import scala.io.Source
 import scala.util.Using
 
-/**
-  *
-  * @param gameId
-  * @param os
-  * @param player
-  * @param crew
-  * @param bg
-  * @param fg
-  * @param crtVisual
-  * @param crtAudio
-  * @param crtOverscanProb
-  * @param crtOverscanFactor
-  * @param crtTearProb
-  * @param timeMs
-  */
 @SerialVersionUID(1_0_0L)
 case class CPMirState(
     gameId: String = CPRand.guid6,
@@ -69,7 +54,12 @@ case class CPMirState(
     var crtOverscanProb: Float,
     var crtOverscanFactor: Float,
     var crtTearProb: Float,
-    var timeMs: Long
+    var timeMs: Long,
+    val badgeMirXAdmin: CPMirPlayerBadge,
+    val badgeMashDev: CPMirPlayerBadge,
+    val badgeCommSpec: CPMirPlayerBadge,
+    val badgeLifeSupportSpec: CPMirPlayerBadge,
+    val badgeOrbitalSpec: CPMirPlayerBadge
 ) extends Serializable
 
 /**
@@ -163,7 +153,12 @@ class CPMirStateManager:
             crtOverscanProb = .005f,
             crtOverscanFactor = if SystemUtils.IS_OS_MAC then .03f else .01f,
             crtTearProb = .03f,
-            timeMs = 0L
+            timeMs = 0L,
+            badgeMirXAdmin = CPMirPlayerBadge("MirX Administrator"),
+            badgeMashDev = CPMirPlayerBadge("Mash Developer"),
+            badgeCommSpec = CPMirPlayerBadge("Communication Specialist"),
+            badgeLifeSupportSpec = CPMirPlayerBadge("Life Support Specialist"),
+            badgeOrbitalSpec = CPMirPlayerBadge("Orbital Control Specialist")
         )
 
     /**
