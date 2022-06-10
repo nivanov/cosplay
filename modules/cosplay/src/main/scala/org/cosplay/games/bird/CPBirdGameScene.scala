@@ -61,7 +61,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var playing = true
     private var dead = false
 
-    private var score = 0
+    var score = 0
 
     private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 20))
     private final val PIPE_BG = CPColor("0x4C338F")
@@ -77,7 +77,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private final val BUILD_GAP_MAX = 4
     private final val BUILD_GAP_MIN = -4
 
-    private var newPipeX = 30f
+    private var closestPipeX = 30
     private var newPipeCut = 0f
 
     private val buildSpeed = 7
@@ -103,7 +103,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     )
     private val borderShdr = CPBorderShader(true, 5, true, -.03f, true)
 
-    private def mkScoreImage(score: Int): CPImage = FIG_BIG.render(score.toString, C1).trimBg()
+    private def mkScoreImage(): CPImage = FIG_BIG.render(score.toString, C1).trimBg()
 
     private val birdImgs = new CPArrayImage(
         prepSeq(
@@ -167,8 +167,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     delta += 0.001f
 
                 if (getY <= newPipeCut.toInt - PIPE_GAP.toInt || (getY + getHeight) >= newPipeCut.toInt) &&
-                    getX + getWidth >= newPipeX.toInt &&
-                    getX <= newPipeX.toInt + PIPE_WIDTH - 1 then kill(0, true)
+                    getX + getWidth >= closestPipeX &&
+                    getX <= closestPipeX + PIPE_WIDTH - 1 then kill(0, true)
 
                 if getY <= 0 then kill(5, false)
                 else if getY >= canv.height then kill(0, false)
@@ -202,7 +202,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             if pipeActCnt < pipeExpCnt then
                 for x <- pipeActCnt to pipeExpCnt do
                     ctx.addObject(newPipeSprite(5, canv.w + pipeSpacing * (x - 1)))
-    private val scoreSpr = new CPImageSprite("score", 0, 0, 1, mkScoreImage(score)):
+
+    private val scoreSpr = new CPImageSprite("score", 0, 0, 1, mkScoreImage()):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.width / 2) - 3)
 
@@ -236,9 +237,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private def newPipeSprite(width: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite():
-            var pipeX = posX
-            var finished = false
-            var c = -100f
+            private var pipeX = posX
+            private var finished = false
+            private var c = -100f
 
             override def getTags: Set[String] = Set("pipe")
             override def render(ctx: CPSceneObjectContext): Unit =
@@ -256,11 +257,11 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
                 if !finished && pipeX <= birdSpr.getX then
                     finished = true
-                    newPipeX = 30f
+                    closestPipeX = 30
                     newPipeCut = 0f
 
-                if !finished && pipeX >= birdSpr.getX && pipeX < newPipeX then
-                    newPipeX = pipeX
+                if !finished && pipeX >= birdSpr.getX && pipeX < closestPipeX then
+                    closestPipeX = pipeX
                     newPipeCut = c
 
                 for a <- 0 until width - 1 do
@@ -287,7 +288,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         delta = 0.4
         vel = velChange
         speed = 0f
-        if pipe then birdSpr.setX(newPipeX.toInt - (PIPE_WIDTH + 2).toInt)
+        if pipe then birdSpr.setX(closestPipeX - (PIPE_WIDTH + 2).toInt)
 
     addObjects(
         // Exit on 'Q' press.
