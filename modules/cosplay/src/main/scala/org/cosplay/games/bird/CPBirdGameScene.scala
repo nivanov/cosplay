@@ -278,9 +278,6 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 super.render(ctx)
                 val canv = ctx.getCanvas
 
-//                val x = pipeX
-//                val g = PIPE_GAP.toInt
-
                 if gapStartY == -1 then gapStartY = CPRand.between(12, canv.yMax - 2)
                 if !dead then pipeX -= 1
                 if pipeX + width <= 0 then ctx.deleteMyself()
