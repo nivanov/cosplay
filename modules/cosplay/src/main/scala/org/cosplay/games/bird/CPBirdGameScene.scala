@@ -149,7 +149,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
               |**    YOU LOST :-(              **
               |**    ------------              **
               |**                              **
-              |**    [SPACE]   Continue        **
+              |**    [SPACE]   Restart         **
               |**    [Q]       Quit            **
               |**    [CTRL+A]  Audio On/OFF    **
               |**    [CTRL+Q]  FPD Overlay     **
@@ -193,13 +193,24 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 // Bottom pipe.
                 if ((getY + getHeight) >= closestPipeCut) &&
                     getX + getWidth >= closestPipeX && // Touching pipe.
-                    getX <= closestPipeX + PIPE_WIDTH - 1 then kill(0, true)
+                    getX <= closestPipeX + PIPE_WIDTH - 1 then
+                    kill(0, true)
+                    println("Bottom Pipe")
+                    println("Curr Pos X " + closestPipeX)
                 // Top pipe.
                 else if (getY <= closestPipeCut - PIPE_GAP_HEIGHT) &&
                     getX + getWidth >= closestPipeX && // Touching pipe.
-                    getX <= closestPipeX + PIPE_WIDTH - 1 then kill(0, true)
-                else if getY <= 0 then kill(5, false)
-                else if getY >= canv.height then kill(0, false)
+                    getX <= closestPipeX + PIPE_WIDTH - 1 then
+                    kill(0, true)
+                    println("Hit Top Pipe")
+                    println("Curr Pos X " + closestPipeX)
+                else if getY <= 0 then
+                    kill(5, false)
+                    println("Hit Floor")
+
+                else if getY >= canv.height then
+                    kill(0, false)
+                    println("Hit Ground")
 
                 // Building spawner.
                 val buildExpCnt = canv.width / BUILD_MAX_W // Number of buildings to fill at least entire screen.
@@ -233,7 +244,21 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private val lostShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000, GAME_BG_PX)
     private val lostBorderShdr = CPBorderShader(false, 3, true, -.03f, true)
-    private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 1, Seq(lostShdr, lostBorderShdr))
+    private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 1, Seq(lostShdr, lostBorderShdr)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            if dead then
+                val canv = ctx.getCanvas
+
+                setX((canv.w / 2) - getWidth / 2)
+                setY((canv.h / 2) - getHeight / 2)
+
+                ctx.getKbEvent match
+                    case Some(evt) =>
+                        evt.key match
+                            case KEY_SPACE =>
+                                restart(ctx)
+                            case _ => ()
+                    case None => ()
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite():
@@ -268,6 +293,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             private var pipeX = posX
             private var finished = false
             private var gapStartY = -1
+
+            println("Pos " + posX)
 
             override def getTags: Set[String] = Set("pipe")
             override def render(ctx: CPSceneObjectContext): Unit =
@@ -322,6 +349,42 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         vel = velChange
         speed = 0f
         if pipe then birdSpr.setX(closestPipeX - PIPE_WIDTH + 2)
+
+    private def restart(ctx : CPSceneObjectContext) : Unit =
+        // Delete all buildings.
+        delTag("building", ctx)
+
+        // Delete all grass.
+        delTag("grass", ctx)
+
+        // Delete all pipes.
+        delTag("pipe", ctx)
+
+        // Reset variables.
+        closestPipeX = 30
+        closestPipeCut = 0
+
+        speed = 1f
+        vel = 0f
+        delta = 0.4f
+
+        score = 0
+
+        loseSpr.hide()
+
+        // Reset bird.
+        birdSpr.setX(15)
+        birdSpr.setY(10)
+        birdSpr.show()
+
+        dead = false
+
+    private def delTag(tag : String, ctx : CPSceneObjectContext) : Unit =
+        val cnt = ctx.countObjectsForTags(tag)
+        val amount = ctx.getObjectsForTags(tag)
+
+        for b <- 0 until cnt do
+            ctx.deleteObject(amount(b).getId)
 
     loseSpr.hide() // Hide initially.
 
