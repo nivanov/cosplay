@@ -78,7 +78,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private final val BUILD_GAP_MIN = -4
 
     private var closestPipeX = 30
-    private var closestPipeCut = 0f
+    private var closestPipeCut = 0
 
     private val buildSpeed = 7
     private val grassSpeed = 3
@@ -157,7 +157,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
               |**********************************
             """),
         (ch, _, _) => ch match
-            case '*' ⇒ ' '&&(C2, C2)
+            case '*' ⇒ ' '&&(C3, C3)
             case c if c.isLetter || c == '/' => c&&(C4, GAME_BG_PX.bg.get)
             case _ => ch&&(C3, GAME_BG_PX.bg.get)
     )
@@ -237,18 +237,21 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             setX((ctx.getCanvas.width / 2) - 3)
 
     private val loseSpr = new CPImageSprite("lose", 0, 0, 15, youLostImg):
-        var vis = false
+        private var vis = false
+
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
-            setX((canv.w / 2) - (youLostImg.w) / 2)
-            setY((canv.h / 2) - (youLostImg.h) / 2)
+            setX((canv.w / 2) - youLostImg.w / 2)
+            setY((canv.h / 2) - youLostImg.h / 2)
 
-            if(!dead) then setVisible(false)
+            if !dead then setVisible(false)
             else if !vis then
                 setVisible(true)
                 vis = true
-                if audioOn then youLostSnd.play(0)
+                if audioOn then 
+                    bgSnd.stop()
+                    youLostSnd.play(200)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite():
@@ -296,10 +299,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 if !finished && pipeX <= birdSpr.getX then
                     finished = true
                     closestPipeX = 30
-                    closestPipeCut = 0f
+                    closestPipeCut = 0
                     score += 1
                     scoreSpr.setImage(mkScoreImage())
-                    if audioOn then passSnd.play(0)
+                    if audioOn then passSnd.play()
 
                 if !finished && pipeX <= closestPipeX then
                     closestPipeX = pipeX
@@ -326,11 +329,11 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private def kill(velChange: Float, pipe: Boolean) : Unit =
         dead = true
-        if audioOn then hitSnd.play(0, _ ⇒ fallSnd.play())
+        if audioOn then hitSnd.play(200, _ ⇒ fallSnd.play())
         delta = 0.4
         vel = velChange
         speed = 0f
-        if pipe then birdSpr.setX(closestPipeX - (PIPE_WIDTH + 2).toInt)
+        if pipe then birdSpr.setX(closestPipeX - PIPE_WIDTH + 2)
 
     addObjects(
         // Exit on 'Q' press.

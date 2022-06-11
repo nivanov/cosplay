@@ -888,7 +888,7 @@ object CPEngine:
                         override def getStartSceneMs: Long = startScMs
                         override def getFrameMs: Long = frameMs
                     toRun.foreach(_.f(bc))
-                    laterRuns.filterInPlace(_.tsMs >= frameMs)
+                    laterRuns.filterInPlace(_.tsMs > frameMs)
 
                 class CPSceneObjectContextImpl(canv: CPCanvas) extends CPSceneObjectContext :
                     private var myId: String = _
