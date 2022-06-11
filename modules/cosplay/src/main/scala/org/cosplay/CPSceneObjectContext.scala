@@ -102,13 +102,15 @@ trait CPSceneObjectContext extends CPBaseContext:
     def exitGame(): Unit
 
     /**
-      * Schedules given function to run at least `delayMs` milliseconds later.
+      * Schedules given function to run at least `delayMs` milliseconds later. Given function
+      * will only run of its timers elapses during the current scene. In other words, at scene switch
+      * all currently pending functions will be discarded.
       *
-      * @param delayMs Minimum number of milliseconds before given function will run. Note that the actual
-      *         delay can be bigger but never smaller than this parameter.
-      * @param f A function to run later.
+      * @param delayMs Minimum number of milliseconds before given function will run in the current scene.
+      *         Note that the actual delay can be bigger but never smaller than this parameter.
+      * @param f A function to run later in the current scene.
       */
-    def runLater(delayMs: Long, f: CPBaseContext ⇒ Unit): Unit
+    def runLater(delayMs: Long, f: CPSceneObjectContext ⇒ Unit): Unit
 
     /**
       * Deletes given scene object after this update cycle. Change will be visible only
@@ -157,6 +159,14 @@ trait CPSceneObjectContext extends CPBaseContext:
       * @param tags One or more tags to filter by.
       */
     def getObjectsForTags(tags: String*): Seq[CPSceneObject]
+
+    /**
+      * Gets number of scene objects with given tags. All tags must be present in the scene object
+      * to be returned as part of the result sequence.
+      *
+      * @param tags One or more tags to filter by.
+      */
+    def countObjectsForTags(tags: String*): Int
 
     /**
       * Adds new scene. Change will be visible only on the next frame update.

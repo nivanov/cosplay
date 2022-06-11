@@ -93,5 +93,5 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
             audioOn = true
 
     override def onActivate(): Unit = if audioOn then startBgAudio()
-
+    override def onDeactivate(): Unit = stopBgAudio()
 

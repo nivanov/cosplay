@@ -100,6 +100,13 @@ class CPContainer[T <: CPGameObject]:
 
     /**
       *
+      * @param tags
+      */
+    def countForTags(tags: String*): Int =
+        map.values.count(obj => tags.exists(tag => obj.getTags.contains(tag)))
+
+    /**
+      *
       * @param id
       */
     def grab(id: String): T = map.getOrElse(id, E(s"Unknown game object ID: $id"))

@@ -119,7 +119,7 @@ object CPEngine:
     private enum State:
         case ENG_INIT, ENG_STARTED, ENG_STOPPED
 
-    private case class LaterRun(tsMs: Long, f: CPBaseContext ⇒ Unit)
+    private case class LaterRun(tsMs: Long, f: CPSceneObjectContext ⇒ Unit)
 
     private val FPS = 30 // Target FPS.
     private val FRAME_NANOS = 1_000_000_000 / FPS
@@ -875,21 +875,6 @@ object CPEngine:
 
                 if camRect == null then camRect = new CPRect(camX, camY, termDim).intersectWith(new CPRect(0, 0, scDim))
 
-                // Handle later runs.
-                val toRun = laterRuns.filter(_.tsMs <= frameMs)
-                if toRun.nonEmpty then
-                    val bc = new CPBaseContext:
-                        override def getLog: CPLog = scLog
-                        override def getGameCache: CPCache = gameCache
-                        override def getSceneCache: CPCache = sceneCache
-                        override def getFrameCount: Long = frameCnt
-                        override def getSceneFrameCount: Long = scFrameCnt
-                        override def getStartGameMs: Long = startMs
-                        override def getStartSceneMs: Long = startScMs
-                        override def getFrameMs: Long = frameMs
-                    toRun.foreach(_.f(bc))
-                    laterRuns.filterInPlace(_.tsMs > frameMs)
-
                 class CPSceneObjectContextImpl(canv: CPCanvas) extends CPSceneObjectContext :
                     private var myId: String = _
                     private var myObj: CPSceneObject = _
@@ -951,15 +936,15 @@ object CPEngine:
                     override def getGameCache: CPCache = gameCache
                     override def getSceneCache: CPCache = sceneCache
                     override def getFrameMs: Long = frameMs
-                    override def runLater(delayMs: Long, f: CPBaseContext ⇒ Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
+                    override def runLater(delayMs: Long, f: CPSceneObjectContext ⇒ Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
                     override def getKbEvent: Option[CPKeyboardEvent] = if kbFocusOwner.isEmpty || kbFocusOwner.get == myId then kbEvt else None
                     override def sendMessage(id: String, msgs: AnyRef*): Unit =
                         val cloId = id
                         val cloMsgs = msgs
                         delayedQ += (() => postQ(cloId, cloMsgs))
                     override def receiveMessage(): Seq[AnyRef] = msgQ.get(myId) match
-                        case Some(buf) =>
-                            val pckt = Seq.empty ++ buf // Copy.
+                        case Some(b) =>
+                            val pckt = Seq.empty ++ b // Copy.
                             msgQ.remove(myId)
                             pckt
                         case None => Seq.empty
@@ -985,6 +970,7 @@ object CPEngine:
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
                     override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
+                    override def countObjectsForTags(tags: String*): Int = sc.objects.countForTags(tags: _*)
                     override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit = 
                         delayedQ += (() => {
                             engLog.info(s"Scene added: ${newSc.getId}")
@@ -1026,6 +1012,12 @@ object CPEngine:
                         collide(r => r.overlaps(rect), zs: _*)
 
                 val ctx = new CPSceneObjectContextImpl(scr.newCanvas())
+
+                // Handle later runs.
+                val toRun = laterRuns.filter(_.tsMs <= frameMs)
+                if toRun.nonEmpty then
+                    toRun.foreach(_.f(ctx))
+                    laterRuns.filterInPlace(_.tsMs > frameMs)
 
                 var visObjCnt = 0
 
