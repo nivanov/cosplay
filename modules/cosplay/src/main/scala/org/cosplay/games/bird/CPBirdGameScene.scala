@@ -149,7 +149,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
               |**    YOU LOST :-(              **
               |**    ------------              **
               |**                              **
-              |**    [SPACE]   Restart         **
+              |**    [ENTER]   Restart         **
               |**    [Q]       Quit            **
               |**    [CTRL+A]  Audio On/OFF    **
               |**    [CTRL+Q]  FPD Overlay     **
@@ -207,7 +207,6 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 else if getY <= 0 then
                     kill(5, false)
                     println("Hit Floor")
-
                 else if getY >= canv.height then
                     kill(0, false)
                     println("Hit Ground")
@@ -255,7 +254,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 ctx.getKbEvent match
                     case Some(evt) =>
                         evt.key match
-                            case KEY_SPACE => restart(ctx)
+                            case KEY_ENTER => restart(ctx)
                             case _ => ()
                     case None => ()
 
@@ -337,6 +336,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             stopBgAudio()
             hitSnd.play(200, _ ⇒ fallSnd.play(0, _ => {
                 loseSpr.show()
+                lostShdr.start()
                 birdSpr.hide()
                 youLostSnd.play()
             }))
