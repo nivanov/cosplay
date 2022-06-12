@@ -77,7 +77,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private final val BUILD_GAP_MAX = 4
     private final val BUILD_GAP_MIN = -4
 
-    private var closestPipeX = 30
+    private var closestPipeX = 60
     private var closestPipeCut = 0
 
     private val buildSpeed = 7
@@ -236,7 +236,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 val pipeActCnt = ctx.countObjectsForTags("pipe")
                 if pipeActCnt < pipeExpCnt then
                     for x <- pipeActCnt to pipeExpCnt do
-                        ctx.addObject(newPipeSprite(5, canv.w + pipeSpacing * (x - 1)))
+                        ctx.addObject(newPipeSprite(5, canv.w + pipeSpacing * x))
 
     private val scoreSpr = new CPImageSprite("score", 0, 0, 1, mkScoreImage()):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -284,16 +284,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
                 if ctx.getFrameCount % buildSpeed == 0 && !dead then
                     x -= 1
-                    if x <= -width then
-                        ctx.deleteMyself()
+                    if x <= -width then ctx.deleteMyself()
 
     private def newPipeSprite(width: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite():
             private var pipeX = posX
             private var finished = false
             private var gapStartY = -1
-
-            println("Pos " + posX)
 
             override def getTags: Set[String] = Set("pipe")
             override def render(ctx: CPSceneObjectContext): Unit =
@@ -306,7 +303,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
                 if !finished && pipeX <= birdSpr.getX then
                     finished = true
-                    closestPipeX = 30
+                    closestPipeX = 60
                     closestPipeCut = 0
                     score += 1
                     scoreSpr.setImage(mkScoreImage())
@@ -331,8 +328,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 super.update(ctx)
                 if ctx.getFrameCount % grassSpeed == 0 && !dead then
                     setX(getX - 1)
-                    if getX <= -brickImg.w then
-                        ctx.deleteMyself()
+                    if getX <= -brickImg.w then ctx.deleteMyself()
                 setY(ctx.getCanvas.height - brickImg.h)
 
     private def kill(velChange: Float, pipe: Boolean) : Unit =
@@ -350,13 +346,15 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         if pipe then birdSpr.setX(closestPipeX - PIPE_WIDTH + 2)
 
     private def restart(ctx : CPSceneObjectContext) : Unit =
+        if audioOn then youLostSnd.stop(250)
+
         // Delete all buildings, grass, and pipes.
-        delTag("building", ctx)
-        delTag("grass", ctx)
-        delTag("pipe", ctx)
+        deleteForTag("building", ctx)
+        deleteForTag("grass", ctx)
+        deleteForTag("pipe", ctx)
 
         // Reset variables.
-        closestPipeX = 30
+        closestPipeX = 60
         closestPipeCut = 0
         speed = 1f
         vel = 0f
@@ -366,15 +364,14 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         loseSpr.hide()
 
         // Reset bird.
-        birdSpr.setX(15)
-        birdSpr.setY(10)
+        birdSpr.setXY(15, 10)
         birdSpr.show()
 
         startBgAudio()
 
-        dead = false
+        ctx.runNextFrame(_ ⇒ dead = false)
 
-    private def delTag(tag : String, ctx : CPSceneObjectContext) : Unit =
+    private def deleteForTag(tag: String, ctx: CPSceneObjectContext): Unit =
         for obj <- ctx.getObjectsForTags(tag) do
             ctx.deleteObject(obj.getId)
 

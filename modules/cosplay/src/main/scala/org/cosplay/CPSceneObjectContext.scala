@@ -113,6 +113,15 @@ trait CPSceneObjectContext extends CPBaseContext:
     def runLater(delayMs: Long, f: CPSceneObjectContext ⇒ Unit): Unit
 
     /**
+      * Schedules given function to run at the next frame update. Given function
+      * will only run if the next frame belongs to the same scene. In other words, at scene switch
+      * all currently pending functions will be discarded.
+      *
+      * @param f A function to run in the next frame update of the current scene.
+      */
+    def runNextFrame(f: CPSceneObjectContext ⇒ Unit): Unit
+
+    /**
       * Deletes given scene object after this update cycle. Change will be visible only
       * on the next frame update. Note that focus owner will be released if held by the deleted
       * object.

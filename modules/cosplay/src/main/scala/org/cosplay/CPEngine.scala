@@ -676,6 +676,7 @@ object CPEngine:
         val msgQ = mutable.HashMap.empty[String, mutable.Buffer[AnyRef]]
         val delayedQ = mutable.ArrayBuffer.empty[() => Unit]
         val laterRuns = mutable.ArrayBuffer.empty[LaterRun]
+        val nextFrameRuns = mutable.ArrayBuffer.empty[CPSceneObjectContext ⇒ Unit]
         val gameCache = CPCache(delayedQ)
         val sceneCache = CPCache(delayedQ)
         val collidedBuf = mutable.ArrayBuffer.empty[CPSceneObject]
@@ -917,6 +918,7 @@ object CPEngine:
                             scFrameCnt = 0
                             stopFrame = true
                             laterRuns.clear()
+                            nextFrameRuns.clear()
                             startScMs = System.currentTimeMillis()
                             logSceneSwitch(sc)
                         })
@@ -937,6 +939,7 @@ object CPEngine:
                     override def getSceneCache: CPCache = sceneCache
                     override def getFrameMs: Long = frameMs
                     override def runLater(delayMs: Long, f: CPSceneObjectContext ⇒ Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
+                    override def runNextFrame(f: CPSceneObjectContext ⇒ Unit): Unit = nextFrameRuns += f
                     override def getKbEvent: Option[CPKeyboardEvent] = if kbFocusOwner.isEmpty || kbFocusOwner.get == myId then kbEvt else None
                     override def sendMessage(id: String, msgs: AnyRef*): Unit =
                         val cloId = id
@@ -1019,7 +1022,9 @@ object CPEngine:
                     toRun.foreach(_.f(ctx))
                     laterRuns.filterInPlace(_.tsMs > frameMs)
 
-                var visObjCnt = 0
+                // Handle next frame runs.
+                nextFrameRuns.foreach(_(ctx))
+                nextFrameRuns.clear()
 
                 // Update all objects (including invisible and outside the frame) in the scene.
                 for (obj <- objs if !stopFrame)
@@ -1072,6 +1077,8 @@ object CPEngine:
 
                 // NOTE: Create camera frame after the objects were updated BUT before object are drawn.
                 camRect = adjustCameraFrame(scr.getRect, camX, camY, termW, termH)
+
+                var visObjCnt = 0
 
                 // Repaint visible and in-frame objects only.
                 for (obj <- objs if !stopFrame && obj.isVisible && camRect.overlaps(obj.getRect))
