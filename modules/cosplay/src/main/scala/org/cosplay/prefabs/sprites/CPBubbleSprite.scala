@@ -49,6 +49,7 @@ import org.cosplay.prefabs.shaders.*
   * @param onFinish Optional callback to call when the effect is finished. Default is a np-op.
   * @param autoDelete Optional flag on whether or not to auto-delete the sprite from its scene
   *     when the effect is finished. Default value is `true`.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
 class CPBubbleSprite(
     id: String = s"bubble-img-spr-${CPRand.guid6}",
@@ -61,7 +62,9 @@ class CPBubbleSprite(
     bgPx: CPPixel,
     durMs: Long,
     onFinish: CPSceneObjectContext => Unit = _ => (),
-    autoDelete: Boolean = true) extends CPImageSprite(id, initX, initY, z, img):
+    autoDelete: Boolean = true,
+    tags: String*
+) extends CPImageSprite(id, initX, initY, z, img, tags = tags: _*):
     private val shdrs = Seq(
         CPFadeOutShader(
             false,

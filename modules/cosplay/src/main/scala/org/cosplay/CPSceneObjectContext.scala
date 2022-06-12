@@ -103,8 +103,9 @@ trait CPSceneObjectContext extends CPBaseContext:
 
     /**
       * Schedules given function to run at least `delayMs` milliseconds later. Given function
-      * will only run of its timers elapses during the current scene. In other words, at scene switch
-      * all currently pending functions will be discarded.
+      * will only run if its timer elapses during the current scene. In other words, at scene switch
+      * all currently pending functions will be discarded. Note that given function will run at the minimum
+      * the next frame and never in the current frame (even if `delayMs` is set to 1ms, for example).
       *
       * @param delayMs Minimum number of milliseconds before given function will run in the current scene.
       *         Note that the actual delay can be bigger but never smaller than this parameter.
@@ -113,7 +114,8 @@ trait CPSceneObjectContext extends CPBaseContext:
     def runLater(delayMs: Long, f: CPSceneObjectContext ⇒ Unit): Unit
 
     /**
-      * Schedules given function to run at the next frame update. Given function
+      * Schedules given function to run at the next frame update. More specifically,
+      * this function will run before any of the scene objects updates on the next frame. Given function
       * will only run if the next frame belongs to the same scene. In other words, at scene switch
       * all currently pending functions will be discarded.
       *
@@ -168,6 +170,15 @@ trait CPSceneObjectContext extends CPBaseContext:
       * @param tags One or more tags to filter by.
       */
     def getObjectsForTags(tags: String*): Seq[CPSceneObject]
+
+    /**
+      * Deletes scene objects with given tags. All tags must be present in the scene object
+      * to be deleted. Change will be visible only on the next frame update. Note that focus owner
+      * will be released if held by the deleted object.
+      *
+      * @param tags One or more tags to filter by.
+      */
+    def deleteObjectsForTags(tags: String*): Unit = getObjectsForTags(tags: _*).foreach(obj ⇒ deleteObject(obj.getId))
 
     /**
       * Gets number of scene objects with given tags. All tags must be present in the scene object

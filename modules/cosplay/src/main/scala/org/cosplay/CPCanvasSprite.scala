@@ -61,8 +61,12 @@ import impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param id Optional ID of this sprite.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
-abstract class CPCanvasSprite(id: String = s"canv-spr-${CPRand.guid6}") extends CPSceneObject(id):
+abstract class CPCanvasSprite(
+    id: String = s"canv-spr-${CPRand.guid6}",
+    tags: String*
+) extends CPSceneObject(id, tags.toSet):
     private var rect: CPRect = _
 
     /** @inheritdoc */

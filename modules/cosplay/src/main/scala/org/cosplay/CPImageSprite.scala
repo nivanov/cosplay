@@ -83,6 +83,7 @@ import org.cosplay.impl.CPUtils
   * @param img The image to render. It can be changed later.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPStaticImageSprite]]
   * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
   *     using images.
@@ -96,7 +97,8 @@ class CPImageSprite(
     z: Int,
     img: CPImage,
     collidable: Boolean = false,
-    shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: String*) extends CPSceneObject(id, tags.toSet):
     private var myImg = img
     private var myDim = img.getDim
     private var myX = x

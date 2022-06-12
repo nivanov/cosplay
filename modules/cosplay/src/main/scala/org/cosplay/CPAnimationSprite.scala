@@ -65,6 +65,7 @@ import scala.collection.mutable
   * @param initAniId ID of the initial animation to play. This animation starts to play immediately.
   * @param collidable Whether or not this sprite is collidable.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty list.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPParticleSprite]]
   * @see [[CPShader]]
   * @see [[CPAnimation]]
@@ -79,7 +80,8 @@ class CPAnimationSprite(
     z: Int,
     initAniId: String,
     collidable: Boolean = false,
-    shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: String*) extends CPSceneObject(id, tags.toSet):
     require(anis.nonEmpty, "Sequence of animation cannot be empty.")
 
     private var myX = x

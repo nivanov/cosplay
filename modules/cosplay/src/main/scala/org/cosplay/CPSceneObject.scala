@@ -76,8 +76,9 @@ import impl.CPUtils
   * after all object shaders in a given scene.
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
-abstract class CPSceneObject(id: String = CPRand.guid6) extends CPGameObject(id) with CPLifecycle:
+abstract class CPSceneObject(id: String = CPRand.guid6, tags: Set[String] = Set.empty) extends CPGameObject(id, tags) with CPLifecycle:
     private var visible = true
 
     private[cosplay] def toExtStr: String =

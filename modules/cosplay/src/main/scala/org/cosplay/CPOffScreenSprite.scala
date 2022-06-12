@@ -63,8 +63,13 @@ import impl.CPUtils
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   * @param shaders Optional sequence of shaders for this sprite.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
-class CPOffScreenSprite(id: String = s"off-scr-spr-${CPRand.guid6}", shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+class CPOffScreenSprite(
+    id: String = s"off-scr-spr-${CPRand.guid6}",
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: String*
+) extends CPSceneObject(id, tags.toSet):
     setVisible(false)
 
     /**

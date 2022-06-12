@@ -95,20 +95,20 @@ class CPSlideOutShader(
     /**
       * Resets this shaders to its initial state starting its effect on the next frame.
       *
-      * @param onFinishOverride Optional override for the callback to call when shader effect is finished.
+      * @param onFinish Optional override for the callback to call when shader effect is finished.
       *         If not provided, the default value is the callback supplied at the creation of this shader.
       */
-    def start(onFinishOverride: CPSceneObjectContext ⇒ Unit = cb): Unit =
-        cb = onFinishOverride
+    def start(onFinish: CPSceneObjectContext ⇒ Unit = cb): Unit =
+        cb = onFinish
         frmCnt = 0
         go = true
 
     /**
       * Set the callback to call when shader effect is finished.
       *
-      * @param onFinishOverride Override for the callback to call when shader effect is finished.
+      * @param onFinish Override for the callback to call when shader effect is finished.
       */
-    def setOnFinish(onFinishOverride: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinishOverride        
+    def setOnFinish(onFinish: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinish
 
     /**
       * Tests whether this shader is in progress.

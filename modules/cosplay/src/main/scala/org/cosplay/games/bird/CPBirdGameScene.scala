@@ -259,14 +259,12 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     case None => ()
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
-        new CPCanvasSprite():
+        new CPCanvasSprite(tags = "building"):
             private var x = posX
-            private val tags = Set("building")
             private val col = CPRand.rand(BUILD_COLORS)
             private val wallPx = BUILD_WALL_PX.withBg(Option(col))
             private val winPx = BUILD_WIN_PX.withBg(Option(col))
 
-            override def getTags: Set[String] = tags
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
 
@@ -286,12 +284,12 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     if x <= -width then ctx.deleteMyself()
 
     private def newPipeSprite(width: Int, posX: Int) : CPSceneObject =
-        new CPCanvasSprite():
+        new CPCanvasSprite(tags = "pipe"):
             private var pipeX = posX
             private var finished = false
             private var gapStartY = -1
+            private val col = CPRand.randX11Color()
 
-            override def getTags: Set[String] = Set("pipe")
             override def render(ctx: CPSceneObjectContext): Unit =
                 super.render(ctx)
                 val canv = ctx.getCanvas
@@ -313,7 +311,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     closestPipeCut = gapStartY
 
                 for a <- 0 until width - 1 do
-                    val bg = PIPE_PX.bg.get.lighter(a.toFloat / 30f)
+                    val bg = col.lighter(a.toFloat / 20f)
                     val fg = bg.darker(.3f)
                     val px2 = PIPE_PX.withFg(fg).withBg(Option(bg))
                     val x = pipeX + a
@@ -321,8 +319,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     canv.drawLine(x, gapStartY - PIPE_GAP_HEIGHT, x, 0, 1, px2)
 
     private def newGrassSprite(posX: Int, posY: Int) : CPSceneObject =
-        new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg):
-            override def getTags: Set[String] = Set("grass")
+        new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = "grass"):
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
                 if ctx.getFrameCount % grassSpeed == 0 && !dead then
@@ -349,9 +346,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         if audioOn then youLostSnd.stop(250)
 
         // Delete all buildings, grass, and pipes.
-        deleteForTag("building", ctx)
-        deleteForTag("grass", ctx)
-        deleteForTag("pipe", ctx)
+        ctx.deleteObjectsForTags("building")
+        ctx.deleteObjectsForTags("grass")
+        ctx.deleteObjectsForTags("pipe")
 
         // Reset variables.
         closestPipeX = 60
@@ -370,6 +367,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
         startBgAudio()
 
+        // Make sure NOT to change dead/live state in the middle of frame update.
         ctx.runNextFrame(_ ⇒ dead = false)
 
     private def deleteForTag(tag: String, ctx: CPSceneObjectContext): Unit =
