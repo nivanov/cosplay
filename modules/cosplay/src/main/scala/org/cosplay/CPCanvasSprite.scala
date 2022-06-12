@@ -61,14 +61,18 @@ import impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param id Optional ID of this sprite.
+  * @param shaders Optional list of [[CPShader shaders]] attached to this canvas sprite.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
 abstract class CPCanvasSprite(
     id: String = s"canv-spr-${CPRand.guid6}",
+    shaders: Seq[CPShader] = Seq.empty,
     tags: String*
 ) extends CPSceneObject(id, tags.toSet):
     private var rect: CPRect = _
 
+    /** @inheritdoc */
+    override def getShaders: Seq[CPShader] = shaders
     /** @inheritdoc */
     override def update(ctx: CPSceneObjectContext): Unit = rect = ctx.getCameraFrame
     /** @inheritdoc */

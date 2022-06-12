@@ -67,7 +67,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private final val PIPE_BG = CPColor("0x4C338F")
     private final val PIPE_PX = '|'&&(PIPE_BG, PIPE_BG)
     private final val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
-    private final val BUILD_WIN_PX = '.'&&(C_WHITE, C_GRAY6)
+    private final val BUILD_WIN_PX = CPPixel('.', C_WHITE, C_GRAY6, tag = 1) // Use tag '1' in shades.
     private final val BUILD_MIN_W = 4
     private final val BUILD_MAX_W = 10
     private final val BUILD_MIN_H = 6
@@ -146,11 +146,12 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             """
               |**********************************
               |**                              **
-              |**    YOU LOST :-(              **
-              |**    ------------              **
+              |**    TRY AGAIN :-)             **
+              |**    -------------             **
               |**                              **
               |**    [ENTER]   Restart         **
               |**    [Q]       Quit            **
+              |**                              **
               |**    [CTRL+A]  Audio On/OFF    **
               |**    [CTRL+Q]  FPD Overlay     **
               |**    [CTRL+L]  Log Console     **
@@ -258,8 +259,21 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                             case _ => ()
                     case None => ()
 
+    private val winSparkleShdr = new CPShader:
+        override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
+            if ctx.isVisible && inCamera then
+                val canv = ctx.getCanvas
+                objRect.loop((x, y) => {
+                    if canv.isValid(x, y) then
+                        val zpx = canv.getZPixel(x, y)
+                        val px = zpx.px
+                        if px.tag == 1 && CPRand.randFloat() < .05f then
+                            val newPx = px.withFg(CPRand.randX11Color())
+                            canv.drawPixel(newPx, x, y, zpx.z)
+                })
+
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
-        new CPCanvasSprite(tags = "building"):
+        new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = "building"):
             private var x = posX
             private val col = CPRand.rand(BUILD_COLORS)
             private val wallPx = BUILD_WALL_PX.withBg(Option(col))
@@ -288,7 +302,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             private var pipeX = posX
             private var finished = false
             private var gapStartY = -1
-            private val col = CPRand.randX11Color()
+            private val col = CPRand.randX11Color().darker(0.5f)
 
             override def render(ctx: CPSceneObjectContext): Unit =
                 super.render(ctx)
