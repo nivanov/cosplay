@@ -255,8 +255,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 ctx.getKbEvent match
                     case Some(evt) =>
                         evt.key match
-                            case KEY_SPACE =>
-                                restart(ctx)
+                            case KEY_SPACE => restart(ctx)
                             case _ => ()
                     case None => ()
 
@@ -351,23 +350,17 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         if pipe then birdSpr.setX(closestPipeX - PIPE_WIDTH + 2)
 
     private def restart(ctx : CPSceneObjectContext) : Unit =
-        // Delete all buildings.
+        // Delete all buildings, grass, and pipes.
         delTag("building", ctx)
-
-        // Delete all grass.
         delTag("grass", ctx)
-
-        // Delete all pipes.
         delTag("pipe", ctx)
 
         // Reset variables.
         closestPipeX = 30
         closestPipeCut = 0
-
         speed = 1f
         vel = 0f
         delta = 0.4f
-
         score = 0
 
         loseSpr.hide()
@@ -377,14 +370,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         birdSpr.setY(10)
         birdSpr.show()
 
+        startBgAudio()
+
         dead = false
 
     private def delTag(tag : String, ctx : CPSceneObjectContext) : Unit =
-        val cnt = ctx.countObjectsForTags(tag)
-        val amount = ctx.getObjectsForTags(tag)
-
-        for b <- 0 until cnt do
-            ctx.deleteObject(amount(b).getId)
+        for obj <- ctx.getObjectsForTags(tag) do
+            ctx.deleteObject(obj.getId)
 
     loseSpr.hide() // Hide initially.
 
