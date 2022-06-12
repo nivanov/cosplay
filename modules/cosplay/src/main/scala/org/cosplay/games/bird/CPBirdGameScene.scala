@@ -362,6 +362,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         score = 0
 
         loseSpr.hide()
+        fadeInShdr.start()
 
         // Reset bird.
         birdSpr.setXY(15, 10)
