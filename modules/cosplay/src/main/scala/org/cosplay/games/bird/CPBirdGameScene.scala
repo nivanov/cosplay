@@ -213,7 +213,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     println("Hit Ground")
 
                 // Building spawner.
-                val buildExpCnt = canv.width / BUILD_MAX_W // Number of buildings to fill at least entire screen.
+                val buildExpCnt = (canv.width / BUILD_MAX_W) + BUILD_MAX_W // Number of buildings to fill at least entire screen.
                 val buildActCnt = ctx.countObjectsForTags("building")
                 if buildActCnt < buildExpCnt then
                     for x <- buildActCnt to buildExpCnt do
@@ -380,12 +380,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         ctx.deleteObjectsForTags("pipe")
 
         // Reset variables.
-        closestPipeX = 60
-        closestPipeCut = 0
+        ctx.runNextFrame(_ ⇒ closestPipeX = 60)
+        ctx.runNextFrame(_ ⇒ closestPipeCut = 0)
         speed = 1f
         vel = 0f
         delta = 0.4f
         score = 0
+        scoreSpr.setImage(mkScoreImage())
 
         loseSpr.hide()
         fadeInShdr.start()
