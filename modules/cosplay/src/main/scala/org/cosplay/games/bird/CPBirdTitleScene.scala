@@ -79,7 +79,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     )
 
     private def startBgAudio(): Unit = bgSnd.loop(2000)
-    private def stopBgAudio(): Unit = bgSnd.stop(400)
+    private def stopBgAudio(): Unit = bgSnd.stop(1000)
 
     /**
       * Toggles audio on and off.
@@ -93,5 +93,5 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
             audioOn = true
 
     override def onActivate(): Unit = if audioOn then startBgAudio()
-    override def onDeactivate(): Unit = stopBgAudio()
+    override def onDeactivate(): Unit = if audioOn then stopBgAudio()
 

@@ -127,7 +127,8 @@ trait CPShader extends CPAsset:
       *
       * @param ctx Scene object context for this shader pass. Note that scene object context is associated with the
       *     scene object this shader is attached to.
-      * @param objRect Current rectangular shape of the scene object this shader is attached to.
+      * @param objRect Current rectangular shape of the scene object this shader is attached to in the canvas
+      *     coordinate system.
       * @param inCamera Whether or not the scene object is in camera frame. Note that this callback is called
       *     regardless of whether or not the scene object is visible or in camera frame.
       */

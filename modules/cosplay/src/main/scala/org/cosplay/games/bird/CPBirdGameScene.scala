@@ -51,7 +51,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private val passSnd = CPSound("sounds/games/bird/pass_pipe.wav")
     private val hitSnd = CPSound("sounds/games/bird/hit_pipe.wav", .3f)
     private val fallSnd = CPSound("sounds/games/bird/fall.wav", .7f)
-    private val youLostSnd = CPSound("sounds/games/bird/you_lost.wav")
+    private val youLostSnd = CPSound("sounds/games/bird/you_lost.wav", .5f)
 
     // Bird metrics.
     private var speed = 1f
@@ -61,13 +61,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private var delta = 0.4f
     private var dead = false
 
-    var score = 0
+    private var score = 0
 
     private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 20))
     private final val PIPE_BG = CPColor("0x4C338F")
     private final val PIPE_PX = '|'&&(PIPE_BG, PIPE_BG)
     private final val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
-    private final val BUILD_WIN_PX = CPPixel('.', C_WHITE, C_GRAY6, tag = 1) // Use tag '1' in shades.
+    private final val BUILD_WIN_PX = CPPixel('.', C_X11_ANTIQUE_WHITE, C_GRAY6, tag = 1) // Use tag '1' in shader.
     private final val BUILD_MIN_W = 4
     private final val BUILD_MAX_W = 10
     private final val BUILD_MIN_H = 6
@@ -94,9 +94,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         true,
         GAME_BG_PX.bg.get,
         Seq(
-            CPStarStreak('.', CS, 0.025, 30, (0f, .2f), 0),
-            CPStarStreak(':', CS, 0.015, 25, (0f, .4f), 0),
-            CPStarStreak('|', CS, 0.005, 50, (0f, .8f), 0)
+            CPStarStreak('.', CS, 0.025, 30, (-.3f, .2f), 0),
+            CPStarStreak(':', CS, 0.015, 25, (-.3f, .4f), 0),
+            CPStarStreak('|', CS, 0.005, 50, (-.3f, .8f), 0)
         ),
         autoStart = true,
         skip = (zpx, _, _) ⇒ zpx.z == 1
@@ -160,8 +160,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             """),
         (ch, _, _) => ch match
             case '*' ⇒ ' '&&(C, C)
-            case c if c.isLetter || c == '/' => c&&(C4, GAME_BG_PX.bg.get)
-            case _ => ch&&(C3, GAME_BG_PX.bg.get)
+            case c if c.isLetter || c == '/' => c&&(C4, BLUE_BLACK)
+            case _ => ch&&(C3, BLUE_BLACK)
     )
 
     private val birdAnis = Seq(CPAnimation.filmStrip("ani", 100, imgs = birdImgs))
@@ -244,7 +244,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private val lostShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000, GAME_BG_PX)
     private val lostBorderShdr = CPBorderShader(false, 3, true, -.03f, true)
-    private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 1, Seq(lostShdr, lostBorderShdr)):
+    private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 3, Seq(lostShdr, lostBorderShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             if dead then
                 val canv = ctx.getCanvas
@@ -259,18 +259,33 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                             case _ => ()
                     case None => ()
 
+    private case class Sparkle(x: Int, y: Int, fg: CPColor, bg: CPColor)
+    private val winSparkleColors = Seq(C_DARK_GREEN, C_DARK_ORANGE, C_DARK_GOLDEN_ROD, C_BLUE, C_RED)
     private val winSparkleShdr = new CPShader:
+        private val map = mutable.HashMap.empty[String, mutable.HashSet[Sparkle]]
+
         override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
             if ctx.isVisible && inCamera then
                 val canv = ctx.getCanvas
-                objRect.loop((x, y) => {
-                    if canv.isValid(x, y) then
-                        val zpx = canv.getZPixel(x, y)
-                        val px = zpx.px
-                        if px.tag == 1 && CPRand.randFloat() < .05f then
-                            val newPx = px.withFg(CPRand.randX11Color())
-                            canv.drawPixel(newPx, x, y, zpx.z)
-                })
+                val objId = ctx.getId
+
+                if ctx.getFrameCount % buildSpeed == 0 then map.clear()
+
+                val set = map.get(objId) match
+                    case Some(s) => s
+                    case None => mutable.HashSet.empty
+
+                if set.isEmpty then
+                    objRect.loop((x, y) => {
+                        if canv.isValid(x, y) then
+                            val zpx = canv.getZPixel(x, y)
+                            val px = zpx.px
+                            if px.tag == 1 && CPRand.randFloat() < .02f then
+                                set += Sparkle(x, y, CPRand.rand(winSparkleColors), px.bg.get)
+                    })
+                    map += objId -> set
+
+                for (s <- set) canv.drawPixel('.'&&(s.fg, s.bg), s.x, s.y, 1)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = "building"):
@@ -291,7 +306,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
                 // Windows.
                 for (index <- 0 to height) do
-                    canv.drawLine(x + 1, y + index, x + width - 1, y + index,  1, winPx)
+                    canv.drawLine(x + 1, y + index, x + width - 1, y + index, 1, winPx)
 
                 if ctx.getFrameCount % buildSpeed == 0 && !dead then
                     x -= 1
@@ -329,8 +344,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     val fg = bg.darker(.3f)
                     val px2 = PIPE_PX.withFg(fg).withBg(Option(bg))
                     val x = pipeX + a
-                    canv.drawLine(x, gapStartY, x, canv.dim.h, 1, px2)
-                    canv.drawLine(x, gapStartY - PIPE_GAP_HEIGHT, x, 0, 1, px2)
+                    canv.drawLine(x, gapStartY, x, canv.dim.h, 2, px2)
+                    canv.drawLine(x, gapStartY - PIPE_GAP_HEIGHT, x, 0, 2, px2)
 
     private def newGrassSprite(posX: Int, posY: Int) : CPSceneObject =
         new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = "grass"):
@@ -379,14 +394,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         birdSpr.setXY(15, 10)
         birdSpr.show()
 
-        startBgAudio()
+        if audioOn then startBgAudio()
 
         // Make sure NOT to change dead/live state in the middle of frame update.
         ctx.runNextFrame(_ ⇒ dead = false)
-
-    private def deleteForTag(tag: String, ctx: CPSceneObjectContext): Unit =
-        for obj <- ctx.getObjectsForTags(tag) do
-            ctx.deleteObject(obj.getId)
 
     loseSpr.hide() // Hide initially.
 
@@ -403,7 +414,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     )
 
     private def startBgAudio(): Unit = bgSnd.loop(2000)
-    private def stopBgAudio(): Unit = bgSnd.stop(400)
+    private def stopBgAudio(): Unit = bgSnd.stop(1000)
 
     /**
       * Toggles audio on and off.
@@ -416,7 +427,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             startBgAudio()
             audioOn = true
 
-    override def onDeactivate(): Unit = stopBgAudio()
+    override def onDeactivate(): Unit = if audioOn then stopBgAudio()
+    override def onActivate(): Unit = if audioOn then startBgAudio()
 
 
 
