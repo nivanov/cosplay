@@ -22,10 +22,11 @@ import CPPixel.*
 import CPArrayImage.*
 import CPFIGLetFont.*
 import CPKeyboardKey.*
-import prefabs.shaders.*
-import CPSlideDirection.*
 import CPColor.*
-import org.cosplay.prefabs.sprites.CPCenteredImageSprite
+import prefabs.shaders.*
+import prefabs.particles.confetti.*
+import prefabs.sprites.*
+import CPSlideDirection.*
 
 import scala.collection.mutable
 
@@ -164,53 +165,61 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             case _ => ch&&(C3, BLUE_BLACK)
     )
 
+    private val scoreEmitter = new CPConfettiEmitter(
+        () ⇒ scoreSpr.getRect.centerX,
+        () ⇒ scoreSpr.getRect.centerY,
+        10,
+        15,
+        CS,
+        GAME_BG_PX.fg,
+        _ ⇒ CPRand.rand("oO0Xx"),
+        0
+    )
+    private val scorePartSpr = CPParticleSprite(emitters = Seq(scoreEmitter))
+
     private val birdAnis = Seq(CPAnimation.filmStrip("ani", 100, imgs = birdImgs))
     private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, 15, 5, 10, "ani", false):
+        private var cnt = 0L
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
+
+            cnt += 1
 
             if !dead then
                 val canv = ctx.getCanvas
 
-                ctx.getKbEvent match
-                    case Some(evt) =>
-                        evt.key match
-                            case KEY_LO_W | KEY_UP | KEY_SPACE =>
-                                vel = 0
-                                vel -= jump
-                                delta = 0.6f
-                            case _ => ()
-                    case None => ()
+                if cnt > CPEngine.fps then // Give it a second...
+                    ctx.getKbEvent match
+                        case Some(evt) =>
+                            evt.key match
+                                case KEY_LO_W | KEY_UP | KEY_SPACE =>
+                                    vel = 0
+                                    vel -= jump
+                                    delta = 0.6f
+                                case _ => ()
+                        case None => ()
 
-                vel += delta
+                    vel += delta
 
-                if vel <= 0 then
-                    setY(getY - 1)
-                    vel += 1
-                else if vel > 0 then
-                    setY(getY + (gravity * vel).toInt)
-                    delta += 0.001f
+                    if vel <= 0 then
+                        setY(getY - 1)
+                        vel += 1
+                    else if vel > 0 then
+                        setY(getY + (gravity * vel).toInt)
+                        delta += 0.001f
 
                 // Bottom pipe.
                 if ((getY + getHeight) >= closestPipeCut) &&
                     getX + getWidth >= closestPipeX && // Touching pipe.
                     getX <= closestPipeX + PIPE_WIDTH - 1 then
                     kill(0, true)
-                    println("Bottom Pipe")
-                    println("Curr Pos X " + closestPipeX)
                 // Top pipe.
                 else if (getY <= closestPipeCut - PIPE_GAP_HEIGHT) &&
                     getX + getWidth >= closestPipeX && // Touching pipe.
                     getX <= closestPipeX + PIPE_WIDTH - 1 then
                     kill(0, true)
-                    println("Hit Top Pipe")
-                    println("Curr Pos X " + closestPipeX)
-                else if getY <= 0 then
-                    kill(5, false)
-                    println("Hit Floor")
-                else if getY >= canv.height then
-                    kill(0, false)
-                    println("Hit Ground")
+                else if getY <= 0 then kill(5, false)
+                else if getY >= canv.height then kill(0, false)
 
                 // Building spawner.
                 val buildExpCnt = (canv.width / BUILD_MAX_W) + BUILD_MAX_W // Number of buildings to fill at least entire screen.
@@ -333,6 +342,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     closestPipeCut = 0
                     score += 1
                     scoreSpr.setImage(mkScoreImage())
+                    scorePartSpr.resume(true)
                     if audioOn then passSnd.play()
 
                 if !finished && pipeX <= closestPipeX then
@@ -411,7 +421,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, borderShdr, starStreakShdr)),
         birdSpr,
         scoreSpr,
-        loseSpr
+        loseSpr,
+        scorePartSpr
     )
 
     private def startBgAudio(): Unit = bgSnd.loop(2000)

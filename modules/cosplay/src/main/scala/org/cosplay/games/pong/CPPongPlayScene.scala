@@ -202,7 +202,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val plyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
     private val npcScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
     private val plyScoreEmitter = new CPConfettiEmitter(
-        () ⇒ plyScoreSpr.getRect.xCenter,
+        () ⇒ plyScoreSpr.getRect.centerX,
         () ⇒ plyScoreSpr.getRect.h / 2,
         15,
         15,
@@ -212,7 +212,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         1
     )
     private val npcScoreEmitter = new CPConfettiEmitter(
-        () ⇒ npcScoreSpr.getRect.xCenter,
+        () ⇒ npcScoreSpr.getRect.centerX,
         () ⇒ npcScoreSpr.getRect.h / 2,
         15,
         15,

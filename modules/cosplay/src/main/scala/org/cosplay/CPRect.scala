@@ -131,22 +131,22 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * X-coordinate of the center point.
       */
-    final val xCenter = if width == 0 then x else x + (xMax - x) / 2
+    final val centerX = if width == 0 then x else x + (xMax - x) / 2
 
     /**
       * X-coordinate of the center point as a float.
       */
-    final lazy val xCenterF = xCenter.toFloat
+    final lazy val centerXF = centerX.toFloat
 
     /**
       * Y-coordinate of the center point.
       */
-    final val yCenter = if height == 0 then y else y + (yMax - y) / 2
+    final val centerY = if height == 0 then y else y + (yMax - y) / 2
 
     /**
       * Y-coordinate of the center point as a float.
       */
-    final lazy val yCenterF = yCenter.toFloat
+    final lazy val centerYF = centerY.toFloat
 
     /**
       * Creates rectangle from two tuples.

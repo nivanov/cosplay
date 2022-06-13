@@ -1054,12 +1054,12 @@ object CPEngine:
                                     if focusRect.containsHor(objRect) then
                                         if cam.isMinPanningX then 0 else camPanX
                                     else
-                                        (objRect.xCenter - focusRect.xCenter).toFloat
+                                        (objRect.centerX - focusRect.centerX).toFloat
                                 camPanY =
                                     if focusRect.containsVer(objRect) then
                                         if cam.isMinPanningY then 0 else camPanY
                                     else
-                                        (objRect.yCenter - focusRect.yCenter).toFloat
+                                        (objRect.centerY - focusRect.centerY).toFloat
                             // If not redrawing and tracking object cannot be found - leave the camera frame as is.
                             case None => ()
 

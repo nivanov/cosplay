@@ -91,8 +91,8 @@ class CPFlashlightShader(
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go && ctx.isVisible then
             val canv = ctx.getCanvas
-            val cx = objRect.xCenter
-            val cy = objRect.yCenter
+            val cx = objRect.centerX
+            val cy = objRect.centerY
             val effRect = CPRect(cx - radius * 2, cy - radius, radius * 4, radius * 2)
             effRect.loop((x, y) => {
                 if canv.isValid(x, y) then
