@@ -185,25 +185,34 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
 
     /**
       * Creates a new color by multiplying RGB values by given `factor`.
+      * Note that result value must be valid RGB value.
       *
       * @param factor Factor to multiply each RGB value by.
       */
-    def transform(factor: Float): CPColor =
-        assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
+    def transformRGB(factor: Float): CPColor =
         mapInt(d => (d * factor).round)
 
     /**
-      * Creates a new color by multiplying RGB values by given channel-specific [0,1] `factor`s.
+      * Creates a new color by multiplying RGB values by given channel-specific `factor`s.
+      * Note that result value must be valid RGB value.
       *
       * @param factorR Factor to multiply each red-channel value by.
       * @param factorG Factor to multiply each green-channel value by.
       * @param factorB Factor to multiply each blue-channel value by.
       */
-    def transform(factorR: Float, factorG: Float, factorB: Float): CPColor =
-        assert(factorR >= 0 && factorR <= 1, "Red channel factor must be >= 0 && <= 1")
-        assert(factorG >= 0 && factorG <= 1, "Green channel factor must be >= 0 && <= 1")
-        assert(factorB >= 0 && factorB <= 1, "Blue channel factor must be >= 0 && <= 1")
+    def transformRGB(factorR: Float, factorG: Float, factorB: Float): CPColor =
         CPColor((red * factorR).round, (green * factorG).round, (blue * factorB).round)
+
+    /**
+      * Creates a new color by multiplying HSB values by given channel-specific `factor`s.
+      * Note that result value must be valid HSB value.
+      *
+      * @param factorH Factor to multiply each hue value by.
+      * @param factorS Factor to multiply each saturation value by.
+      * @param factorB Factor to multiply each brightness value by.
+      */
+    def transformHSB(factorH: Float, factorS: Float, factorB: Float): CPColor =
+        CPColor.fromHSB(hue * factorH, saturation * factorS, brightness * factorB)
 
     /**
       * Creates new color with given red channel value.
@@ -554,6 +563,18 @@ object CPColor:
         val b = rgb & 0x0ff
 
         CPColor(r,g, b)
+
+    /**
+      * Creates new color with given hue, saturation and brightness values. Each value must be in [0, 1] range.
+      *
+      * @param hue Hue value in [0,1] range.
+      * @param saturation Saturation value in [0,1] range.
+      * @param brightness Brightness value in [0,1] range.
+      * @return
+      */
+    def fromHSB(hue: Float, saturation: Float, brightness: Float): CPColor =
+        val rgb = Color.HSBtoRGB(hue, saturation, brightness)
+        new CPColor(rgb >> 16 & 0xff, rgb >> 8 & 0xFF, rgb & 0xFF)
 
     /**
       *

@@ -64,7 +64,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private var score = 0
 
-    private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 20))
+    private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 35))
     private final val PIPE_BG = CPColor("0x4C338F")
     private final val PIPE_PX = '|'&&(PIPE_BG, PIPE_BG)
     private final val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
@@ -170,7 +170,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         () ⇒ scoreSpr.getRect.centerY,
         10,
         15,
-        CS,
+        CS.map(c => c.transformHSB(1f, 1.2f, 1f)),
         GAME_BG_PX.fg,
         _ ⇒ CPRand.rand("oO0Xx"),
         0
