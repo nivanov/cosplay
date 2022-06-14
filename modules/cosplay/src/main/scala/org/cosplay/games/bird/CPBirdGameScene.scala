@@ -440,7 +440,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     )
 
     private def startBgAudio(): Unit = bgSnd.loop(2000)
-    private def stopBgAudio(): Unit = bgSnd.stop(1000)
+    private def stopBgAudio(): Unit = bgSnd.stop(500)
 
     /**
       * Toggles audio on and off.
