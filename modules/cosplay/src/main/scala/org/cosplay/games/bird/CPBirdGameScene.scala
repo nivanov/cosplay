@@ -248,7 +248,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                         ctx.addObject(newPipeSprite(5, canv.w + pipeSpacing * x))
 
                 // Game difficulty.
-                if score == 5 then
+                if score == 0 then
+                    PIPE_WIDTH = 5
+                    PIPE_GAP_HEIGHT = 15
+                else if score == 5 then
                     PIPE_WIDTH = 6
                     PIPE_GAP_HEIGHT = 13
                 else if score == 10 then
