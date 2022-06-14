@@ -73,8 +73,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private final val BUILD_MAX_W = 10
     private final val BUILD_MIN_H = 6
     private final val BUILD_MAX_H = 13
-    private final val PIPE_WIDTH = 5
-    private final val PIPE_GAP_HEIGHT = 15
+    private final var PIPE_WIDTH = 5
+    private final var PIPE_GAP_HEIGHT = 15
     private final val BUILD_GAP_MAX = 4
     private final val BUILD_GAP_MIN = -4
 
@@ -247,6 +247,17 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     for x <- pipeActCnt to pipeExpCnt do
                         ctx.addObject(newPipeSprite(5, canv.w + pipeSpacing * x))
 
+                // Game difficulty.
+                if score == 5 then
+                    PIPE_WIDTH = 6
+                    PIPE_GAP_HEIGHT = 13
+                else if score == 10 then
+                    PIPE_WIDTH = 10
+                    PIPE_GAP_HEIGHT = 10
+                else if score == 15 then
+                    PIPE_WIDTH = 13
+                    PIPE_GAP_HEIGHT = 7
+
     private val scoreSpr = new CPImageSprite("score", 0, 0, 1, mkScoreImage()):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.width / 2) - 3)
@@ -255,7 +266,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private val lostBorderShdr = CPBorderShader(false, 3, true, -.03f, true)
     private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 3, Seq(lostShdr, lostBorderShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
-            if dead then
+            if dead && isVisible then
                 val canv = ctx.getCanvas
 
                 setX((canv.w / 2) - getWidth / 2)
