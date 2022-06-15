@@ -75,10 +75,9 @@ lazy val cosplay = (project in file("modules/cosplay"))
             "-project-footer", "(C) 2021 Rowan Games, Inc.",
             "-project-version", cosPlayVer,
             "-siteroot", ".",
-            "-skip-by-id:org.cosplay.impl",
-            "-skip-by-id:org.cosplay.impl.emuterm",
-            "-skip-by-id:org.cosplay.impl.jlineterm",
-            "-skip-by-id:org.cosplay.impl.guilog",
+            "-skip-by-regex:org.cosplay.impl",
+            "-skip-by-regex:org.cosplay.examples",
+            "-skip-by-regex:org.cosplay.games",
             "-doc-root-content", "scaladoc/docroot.md",
             "-source-links:github://nivanov/cosplay/master",
             "-social-links:github::https://github.com/nivanov/cosplay"
