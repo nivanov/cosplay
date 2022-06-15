@@ -44,26 +44,46 @@ import scala.util.*
   * Main menu scene.
   */
 object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
-    private val menuPxs = markup.process(
-        s"""
-           | <@ Menu @>
-           | ------
-           |
-           | <%[C]%> - Continue
-           |
-           | <%[N]%> - New Game
-           | <%[S]%> - Save Game
-           | <%[L]%> - Load Game
-           |
-           | <%[O]%> - Options
-           | <%[T]%> - Tutorial
-           | <%[Q]%> - Quit
-           |
-           |
-           | <~Open menu in-game by pressing~> <%[F10]%>
-        """.stripMargin
-    )
-    private val menuSpr = new CPCenteredImageSprite(img = CPArrayImage(menuPxs, BG_PX).trimBg(_ == BG_PX), z = 2)
+    private def mkMenuImage(): CPImage =
+        val badgeMirXAdmin = if stateMgr.state.badgeMirXAdmin.isEarned then "(X)" else "( )"
+        val badgeMashDev = if stateMgr.state.badgeMashDev.isEarned then "(X)" else "( )"
+        val badgeCommSpec = if stateMgr.state.badgeCommSpec.isEarned then "(X)" else "( )"
+        val badgeLifeSupportSpec = if stateMgr.state.badgeLifeSupportSpec.isEarned then "(X)" else "( )"
+        val badgeOrbitalSpec = if stateMgr.state.badgeOrbitalSpec.isEarned then "(X)" else "( )"
+
+        val pxs = markup.process(
+            s"""
+               | <@ Menu @>
+               | ------
+               |
+               | <%[C]%> - Continue
+               |
+               | <%[N]%> - New Game
+               | <%[S]%> - Save Game
+               | <%[L]%> - Load Game
+               |
+               | <%[O]%> - Options
+               | <%[T]%> - Tutorial
+               | <%[Q]%> - Quit
+               |
+               |
+               | <~Open menu in-game by pressing~> <%[F10]%>
+               |
+               |
+               |
+               | <@ Badges @>
+               | --------
+               | <%$badgeMirXAdmin%> ${stateMgr.state.badgeMirXAdmin.name}
+               | <%$badgeMashDev%> ${stateMgr.state.badgeMashDev.name}
+               | <%$badgeCommSpec%> ${stateMgr.state.badgeCommSpec.name}
+               | <%$badgeLifeSupportSpec%> ${stateMgr.state.badgeLifeSupportSpec.name}
+               | <%$badgeOrbitalSpec%> ${stateMgr.state.badgeOrbitalSpec.name}
+               |
+            """.stripMargin
+        )
+        CPArrayImage(pxs, BG_PX).trimBg(_ == BG_PX)
+
+    private val menuSpr = new CPCenteredImageSprite(img = mkMenuImage(), z = 2)
 
     addObjects(
         // Sprite for ghost images.
@@ -94,3 +114,7 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
     )
+
+    override def onActivate(): Unit =
+        super.onActivate()
+        menuSpr.setImage(mkMenuImage())

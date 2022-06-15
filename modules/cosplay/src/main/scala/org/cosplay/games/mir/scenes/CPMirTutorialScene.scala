@@ -93,7 +93,7 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),
-        new CPKeyboardSprite((ctx, key) ⇒ key match
+        new CPKeyboardSprite((_, key) ⇒ key match
             case KEY_SPACE ⇒ clickThenFade(ctx ⇒ ctx.switchScene(ctx.getGameCache("next_scene")))
             case _ ⇒ ()
         ),

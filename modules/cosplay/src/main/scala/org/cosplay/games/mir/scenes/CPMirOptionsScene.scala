@@ -47,7 +47,7 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
     private var savedCrtAudio: Boolean = _
     private var savedFg: CPColor = _
     private var savedBg: CPColor = _
-    private val UNSEL = 'V'
+    private val UNSEL = '+'
 
     private def mkImage(): CPImage =
         val state = stateMgr.state
