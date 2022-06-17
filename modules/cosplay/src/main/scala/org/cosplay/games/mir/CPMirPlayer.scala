@@ -409,7 +409,6 @@ object CPMirPlayer:
 
     /**
       *
-      * @return
       */
     private def newChild(): CPMirPlayerChild =
         val isBoy = CPRand.randFloat() > 0.5f
@@ -420,7 +419,6 @@ object CPMirPlayer:
 
     /**
       *
-      * @return
       */
     def newPlayer: CPMirPlayer =
         val birth = CPRand.rand(towns)

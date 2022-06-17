@@ -84,7 +84,6 @@ object CPSlideDirection:
       * @param dir
       * @param dim
       * @param maxFrmCnt
-      * @return
       */
     def mkMatrix(dir: CPSlideDirection, dim: CPDim, maxFrmCnt: Int): Array[Array[Int]] =
         val w = dim.w

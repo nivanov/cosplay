@@ -159,7 +159,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
      * @param ikon
      * @param fg
      * @param size
-     * @return
      */
     private def mkIcon(ikon: Ikon, fg: CPColor, size: Int): Icon =
         FontIcon.of(
@@ -171,7 +170,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     /**
      *
      * @param ikon
-     * @return
      */
     private def mkIcon(ikon: Ikon): Icon =
         mkIcon(

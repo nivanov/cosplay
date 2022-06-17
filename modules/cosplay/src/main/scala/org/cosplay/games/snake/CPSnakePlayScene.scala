@@ -171,7 +171,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         /**
           *
           * @param c Current canvas.
-          * @return
           */
         private def isDead(c: CPCanvas): Boolean =
             val (hx, hy) = snake.head

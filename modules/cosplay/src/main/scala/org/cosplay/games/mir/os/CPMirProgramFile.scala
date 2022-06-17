@@ -59,7 +59,6 @@ class CPMirProgramFile(
 
     /**
       *
-      * @return
       */
     def getProgram: CPMirProgram = prg
 

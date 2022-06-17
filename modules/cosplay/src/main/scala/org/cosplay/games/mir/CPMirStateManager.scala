@@ -113,7 +113,6 @@ class CPMirStateManager:
 
     /**
       *
-      * @return
       */
     private def init(): CPMirState =
         // Crew.
@@ -163,7 +162,6 @@ class CPMirStateManager:
 
     /**
       *
-      * @return
       */
     private def loadLatest(): Option[CPMirState] = None // TODO
 

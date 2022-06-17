@@ -44,19 +44,16 @@ class CPMirOs(fs: CPMirFileSystem, users: Seq[CPMirUser]) extends Serializable:
 
     /**
       *
-      * @return
       */
     inline def getFs: CPMirFileSystem = fs
 
     /**
       *
-      * @return
       */
     inline def getRootUser: CPMirUser = rootUsr
 
     /**
       *
-      * @return
       */
     inline def getAllUsers: Seq[CPMirUser] = users
 

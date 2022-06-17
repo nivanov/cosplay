@@ -37,13 +37,11 @@ abstract class CPMirProgram:
     /**
       *
       * @param ctx
-      * @return
       */
     def mainEntry(ctx: CPMirProgramContext): Int
 
     /**
       *
-      * @return
       */
     def getSizeOnDisk: Long
 

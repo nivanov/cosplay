@@ -44,14 +44,12 @@ class CPMirFileSystem(val root: CPMirDirectoryFile) extends Serializable:
     /**
       *
       * @param path Relative to root or fully qualified path.
-      * @return
       */
     def file(path: String): Option[CPMirFile] = root.file(path)
 
     /**
       *
       * @param path Relative to root or fully qualified path.
-      * @return
       */
     def exist(path: String): Boolean = root.file(path).isDefined
 

@@ -39,7 +39,6 @@ import games.mir.*
 object CPMirUser:
     /**
       *
-      * @return
       */
     def mkRoot(): CPMirUser = CPMirUser(None, true, "root", CPRand.guid6)
 

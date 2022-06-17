@@ -127,7 +127,6 @@ class CPMirDirectoryFile(
     /**
       *
       * @param name
-      * @return
       */
     def removeFile(name: String): Boolean =
         children.indexWhere(_.getName == name) match
@@ -184,7 +183,6 @@ class CPMirDirectoryFile(
     /**
       *
       * @param path Relative or fully qualified path.
-      * @return
       */
     def exist(path: String): Boolean = file(path).isDefined
 

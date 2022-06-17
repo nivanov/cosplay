@@ -31,11 +31,21 @@ package org.cosplay.games.mir.os
 */
 
 import org.cosplay.*
+import games.mir.*
 
 /**
   *
   */
-class CPMirConsole:
+trait CPMirConsole:
+    private var fg = FG
+    private var bg = BG
+    private final val DFLT_Z = 0
+
+    /**
+      *
+      */
+    def getSize: CPDim
+
     /**
       *
       */
@@ -51,80 +61,104 @@ class CPMirConsole:
       *
       * @param x
       */
-    def print(x: Any): Unit = ???
+    def print(x: Any): Unit
 
     /**
       *
       * @param text
       * @param args
       */
-    def printf(text: String, args: Any*): Unit = ???
+    def printf(text: String, args: Any*): Unit = print(text.format(args))
 
     /**
       *
       */
-    def clearLeft(): Unit = ???
+    def clearLeft(): Unit
 
     /**
       *
       */
-    def clearRight(): Unit = ???
+    def clearRight(): Unit
 
     /**
       *
       */
-    def clearLine(): Unit = ???
+    def clearRow(): Unit
 
     /**
       *
       */
-    def clear(): Unit = ???
+    def clearColumn(): Unit
+
+    /**
+      *
+      */
+    def clear(): Unit
 
     /**
       *
       * @param f
       */
-    def setCursorVisible(f: Boolean): Unit = ???
+    def setCursorVisible(f: Boolean): Unit
 
     /**
       *
-      * @return
       */
-    def isCursorVisible: Boolean = ???
+    def isCursorVisible: Boolean
 
     /**
       *
       * @param x
       * @param y
       */
-    def positionCursor(x: Int, y: Int): Unit = ???
+    def moveCursor(x: Int, y: Int): Unit
 
     /**
       *
-      * @param c
       */
-    def setBg(c: CPColor): Unit = ???
-
-    /**
-      *
-      * @return
-      */
-    def getBg: CPColor = ???
-
-    /**
-      *
-      * @param c
-      */
-    def setFg(c: CPColor): Unit = ???
-
-    /**
-      *
-      * @return
-      */
-    def getFg: CPColor = ???
+    def getCursorX: Int
 
     /**
       * 
-      * @return
       */
-    def getSize: CPDim = ???
+    def getCursorY: Int
+
+    /**
+      *
+      * @param x
+      * @param y
+      * @param ch
+      */
+    def putChar(x: Int, y: Int, ch: Char): Unit = putChar(x, y, DFLT_Z, ch, getFg, getBg)
+
+    /**
+      *
+      * @param x
+      * @param y
+      * @param ch
+      * @param fg
+      * @param bg
+      */
+    def putChar(x: Int, y: Int, z: Int, ch: Char, fg: CPColor, bg: CPColor): Unit
+
+    /**
+      *
+      * @param c
+      */
+    inline def setBg(c: CPColor): Unit = bg = c
+
+    /**
+      *
+      */
+    inline def getBg: CPColor = bg
+
+    /**
+      *
+      * @param c
+      */
+    inline def setFg(c: CPColor): Unit = fg = c
+
+    /**
+      *
+      */
+    inline def getFg: CPColor = fg

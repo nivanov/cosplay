@@ -570,7 +570,6 @@ object CPColor:
       * @param hue Hue value in [0,1] range.
       * @param saturation Saturation value in [0,1] range.
       * @param brightness Brightness value in [0,1] range.
-      * @return
       */
     def fromHSB(hue: Float, saturation: Float, brightness: Float): CPColor =
         val rgb = Color.HSBtoRGB(hue, saturation, brightness)

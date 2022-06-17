@@ -69,19 +69,16 @@ abstract class CPMirFile(
 
     /**
       *
-      * @return
       */
     def getParent: Option[CPMirDirectoryFile] = parent
 
     /**
       *
-      * @return
       */
     def getAbsolutePath: String = absPath
 
     /**
       *
-      * @return
       */
     private def mkAbsolutePath(): String =
         val buf = mutable.ArrayBuffer.empty[String]
@@ -105,7 +102,6 @@ abstract class CPMirFile(
 
     /**
       *
-      * @return
       */
     def getName: String = name
 
@@ -119,13 +115,11 @@ abstract class CPMirFile(
 
     /**
       *
-      * @return
       */
     def getCreateTimestamp: Long = createTs
 
     /**
       *
-      * @return
       */
     def getUpdateTimestamp: Long = updateTs
 
@@ -148,7 +142,6 @@ abstract class CPMirFile(
 
     /**
       *
-      * @return
       */
     def getOwner: CPMirUser = owner
 
@@ -160,7 +153,6 @@ abstract class CPMirFile(
 
     /**
       *
-      * @return
       */
     def getSize: Long = size
 
@@ -172,7 +164,6 @@ abstract class CPMirFile(
 
     /**
       *
-      * @return
       */
     def canOtherRead: Boolean = otherRead
 
@@ -190,13 +181,11 @@ abstract class CPMirFile(
 
     /**
       *
-      * @return
       */
     def canOtherWrite: Boolean = otherWrite
 
     /**
       *
-      * @return
       */
     def getType: CPMirFileType = typ
 
