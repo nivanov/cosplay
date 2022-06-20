@@ -39,7 +39,6 @@ import games.mir.*
 trait CPMirConsole:
     private var fg = FG
     private var bg = BG
-    private final val DFLT_Z = 0
 
     /**
       *
@@ -69,6 +68,16 @@ trait CPMirConsole:
       * @param args
       */
     def printf(text: String, args: Any*): Unit = print(text.format(args))
+
+    /**
+      *
+      */
+    def clearBelow(): Unit
+
+    /**
+      *
+      */
+    def clearAbove(): Unit
 
     /**
       *
@@ -124,14 +133,17 @@ trait CPMirConsole:
     def getCursorY: Int
 
     /**
+      * Puts char at given coordinate without moving the cursor. Uses default Z-index and
+      * currently set foreground and background colors.
       *
       * @param x
       * @param y
       * @param ch
       */
-    def putChar(x: Int, y: Int, ch: Char): Unit = putChar(x, y, DFLT_Z, ch, getFg, getBg)
+    def putChar(x: Int, y: Int, ch: Char): Unit = putChar(x, y, 0, ch, getFg, getBg)
 
     /**
+      * Puts char at given coordinate without moving the cursor.
       *
       * @param x
       * @param y
