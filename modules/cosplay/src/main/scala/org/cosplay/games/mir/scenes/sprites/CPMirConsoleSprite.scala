@@ -47,12 +47,16 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private final val H = 100
     private final val LAST_X = W - 1
     private final val LAST_Y = H - 1
+    private final val mux = Object()
+    private final val CUR_PX = ' '&&(FG, FG)
+    private final val CUR_BLINK_FRM_NUM = 15
     private val pane = Array.ofDim[ZChar](H, W)
     private var curX = 0
     private var curY = 0
-    private var curVis = true
+    private var curVis = true // Visible vs. not-visible.
+    private var curBlink = true // Blinking (showed) vs. non-blinking (hidden).
     private var dim = CPDim(W, H)
-    private final val mux = Object()
+    private var canvY = 0
 
     clear()
 
@@ -69,16 +73,19 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     inline override def isCursorVisible: Boolean = curVis
     inline override def setCursorVisible(f: Boolean): Unit = curVis = f
     override def moveCursor(x: Int, y: Int): Unit =
-        if isPositionValid(x, y) then mux.synchronized {
+        val y2 = y + canvY
+        if isPositionValid(x, y2) then mux.synchronized {
             curX = x
-            curY = y
+            curY = y2
         }
     override def getSize: CPDim = dim
     inline override def getCursorX: Int = curX
-    inline override def getCursorY: Int = curY
+    inline override def getCursorY: Int = curY - canvY
     override def putChar(x: Int, y: Int, z: Int, ch: Char, fg: CPColor, bg: CPColor): Unit =
-        if isPositionValid(x, y) then mux.synchronized {
-            pane(y)(x) = ZChar(ch, fg, bg, z)
+        val y2 = y + canvY
+        if isPositionValid(x, y2) then mux.synchronized {
+            val zch = pane(y2)(x)
+            if zch.z <= z then pane(y2)(x) = ZChar(ch, fg, bg, z)
         }
 
     override def render(ctx: CPSceneObjectContext): Unit =
@@ -87,7 +94,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         mux.synchronized {
             dim = canv.dim
 
-            val startY = if curY < canv.h then 0 else curY - canv.h + 1
+            canvY = if curY < canv.h then 0 else curY - canv.h + 1
             val w = canv.w.min(W)
             val h = canv.h
 
@@ -95,12 +102,13 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             while y < h do
                 var x = 0
                 while x < w do
-                    val zch = pane(y + startY)(x)
+                    val zch = pane(y + canvY)(x)
                     canv.drawPixel(zch.px, x, y, zch.z)
                     x += 1
                 y += 1
 
-            // TODO: cursor blinking
+            if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curBlink = !curBlink
+            if curBlink && curVis then canv.drawPixel(CUR_PX, curX, curY - canvY, Int.MaxValue)
         }
 
     private def advanceCursor(): Unit =
@@ -119,7 +127,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
                 putChar(getCursorX, getCursorY, ch)
                 advanceCursor()
             x.toString.foreach(ch ⇒ ch match
-                case '\r' ⇒ curX = 0
+                case '\r' ⇒ curX = 0 // For Win-compatibility just in case.
                 case '\n' ⇒
                     curX = LAST_X
                     advanceCursor()

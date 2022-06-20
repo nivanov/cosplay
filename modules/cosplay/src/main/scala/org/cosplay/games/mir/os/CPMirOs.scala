@@ -118,7 +118,7 @@ class CPMirOs(fs: CPMirFileSystem, users: Seq[CPMirUser]) extends Serializable:
             while true do
                 for s ← dummy do
                     con.println(s)
-                    Thread.sleep(CPRand.between(10, 100))
+                    Thread.sleep(CPRand.between(500, 1000))
         }
 
     /**
