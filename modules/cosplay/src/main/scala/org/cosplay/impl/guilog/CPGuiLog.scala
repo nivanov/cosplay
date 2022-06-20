@@ -83,14 +83,14 @@ class CPGuiLog(cat: String) extends CPLog:
 object CPGuiLog:
     initLaF()
 
-    private val KB = 1024
-    private val MB = KB * 1024
-    private val GB = MB * 1024
-    private val TB = GB * 1024
+    private final val KB = 1024
+    private final val MB = KB * 1024
+    private final val GB = MB * 1024
+    private final val TB = GB * 1024
 
-    private val MAX_DOC_SIZE = 50_000
-    private val LOG_FONT_SIZE = 14
-    private val MIN_LOG_SEARCH_TERM_LEN = 3
+    private final val MAX_DOC_SIZE = 50_000
+    private final val LOG_FONT_SIZE = 14
+    private final val MIN_LOG_SEARCH_TERM_LEN = 3
     private var frame: JFrame = _
     private var frameCnt = 1L
     private var logPaused = false
@@ -628,7 +628,7 @@ object CPGuiLog:
                     off = docTxt.indexOf(term, off + termLen)
                 if logSearchOffs.nonEmpty then
                     val attrs = new SimpleAttributeSet()
-                    for (off <- logSearchOffs)
+                    for off <- logSearchOffs do
                         if off == activeLogSearchOff then
                             StyleConstants.setBackground(attrs, C_ORANGE_RED1.awt)
                         else

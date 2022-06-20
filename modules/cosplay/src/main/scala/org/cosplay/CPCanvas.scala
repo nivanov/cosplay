@@ -359,14 +359,14 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
                 // Fill in the gaps.
                 val gaps = mutable.ArrayBuffer.empty[CPInt2]
                 var last: CPInt2 = null
-                for (p <- buf)
+                for p <- buf do
                     if last != null then
                         val dx = last.x - p.x
                         val dy = last.y - p.y
                         if dx.abs > 1 || dy.abs > 1 then
                             var x = last.x
                             var y = last.y
-                            for (i <- 1 until dx.abs.max(dy.abs))
+                            for i <- 1 until dx.abs.max(dy.abs) do
                                 if x != p.x then x = last.x - i * dx.sign
                                 if y != p.y then y = last.y - i * dy.sign
                                 gaps += CPInt2(x, y)
@@ -613,10 +613,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
                 pxs(0) = pxs(0).withChar('.')
             else if by <= ay then // Going up.
                 val lastIdx = sz - 1
-                for (i <- 0 until lastIdx) pxs(i) = newPosPx(pxs(i), pxs(i + 1))
+                for i <- 0 until lastIdx do pxs(i) = newPosPx(pxs(i), pxs(i + 1))
                 pxs(lastIdx) = pxs(lastIdx).withChar(pxs(lastIdx - 1).char) // Repeat the previous to last point.
             else // by > ay // Going down.
-                for (i <- 1 until sz) pxs(i) = newPosPx(pxs(i), pxs(i - 1))
+                for i <- 1 until sz do pxs(i) = newPosPx(pxs(i), pxs(i - 1))
                 pxs(0) = pxs(0).withChar(pxs(1).char) // Repeat the second point.
 
             if style == ART_SMOOTH && sz >= 3 then
@@ -626,7 +626,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
                 // Smooth out:
                 //   __/ -> ,-'
                 //   \__ -> `-.
-                for (i <- 0 until sz - 3)
+                for i <- 0 until sz - 3 do
                     val px1 = pxs(i)
                     val px2 = pxs(i + 1)
                     val px3 = pxs(i + 2)
@@ -1123,7 +1123,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawArtPolyline(pts: Seq[(Int, Int)], z: Int, pxf: CPPosPixel => CPPixel, style: ArtLineStyle = ART_BLOCK): Unit =
         require(pts.length >= 2, "Polyline must have at 2 or more points.")
 
-        for (i <- 0 until pts.length - 1)
+        for i <- 0 until pts.length - 1 do
             val pt1 = pts(i)
             val pt2 = pts(i + 1)
             drawArtLine(pt1._1, pt1._2, pt2._1, pt2._2, z, pxf, style)

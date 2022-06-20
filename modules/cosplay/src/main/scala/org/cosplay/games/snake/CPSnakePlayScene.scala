@@ -197,7 +197,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     // Initialize the snake.
                     val cx = canv.xCenter / 2
                     val cy = canv.yCenter
-                    for (i ← 0 to 5) snake +:= cx + i -> cy
+                    for i ← 0 to 5 do snake +:= cx + i -> cy
                     val (hx, hy) = snake.head
                     x = hx.toFloat
                     y = hy.toFloat

@@ -468,7 +468,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
         if nonEmpty && this.rect.contains(rect) then
             val arr = new CPArray2D[T](rect.dim)
             var arrX = 0
-            for (x <- rect.xMin to rect.xMax)
+            for x <- rect.xMin to rect.xMax do
                 Array.copy(data(x), rect.yMin, arr.data(arrX), 0, rect.height)
                 arrX += 1
             arr
@@ -483,7 +483,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       */
     def copyTo(other: CPArray2D[T], frame: CPRect = rect): Unit =
         if nonEmpty && other.nonEmpty && rect.contains(frame) then
-            for (x <- frame.xMin to frame.xMax)
+            for x <- frame.xMin to frame.xMax do
                 Array.copy(data(x), frame.yMin, other.data(x), frame.yMin, frame.height)
 
     /**

@@ -131,8 +131,8 @@ case class CPMirPlayer(
     val wifeUpperCase: String = s"$wifeFirstName $wifeLastName".toUpperCase
     val wifeLowerCase: String = s"$wifeFirstName $wifeLastName".toLowerCase
     val username: String = s"${firstName.head}$lastName".toLowerCase
-    val favBands: Seq[String] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(rockBands)
-    val favGames: Seq[CPMirFavGame] = for (i <- 0 to CPRand.randInt(1, 3)) yield CPRand.rand(nesGames)
+    val favBands: Seq[String] = for i <- 0 to CPRand.randInt(1, 3) yield CPRand.rand(rockBands)
+    val favGames: Seq[CPMirFavGame] = for i <- 0 to CPRand.randInt(1, 3) yield CPRand.rand(nesGames)
     val favColor: String = CPRand.rand(colors)
     val favSport: String = sport.name
     val favSportTeam: String = CPRand.rand(sport.teams)
@@ -145,7 +145,7 @@ case class CPMirPlayer(
             ++ favBands
             ++ favGames.map(_.character)
             ++ children.map(_.name)
-        for (w ← words.distinct; n ← nums.distinct) yield s"${w.toLowerCase}$n"
+        for w ← words.distinct; n ← nums.distinct yield s"${w.toLowerCase}$n"
     }
     val roleLowerCase: String = role match
         case ROLE_PILOT ⇒ "mission pilot"
@@ -424,7 +424,7 @@ object CPMirPlayer:
         val birth = CPRand.rand(towns)
         val home = CPRand.rand(towns)
         val kids = ArrayBuffer.empty[CPMirPlayerChild]
-        for (i ← 0 until CPRand.randInt(1, 4)) kids += newChild()
+        for i ← 0 until CPRand.randInt(1, 4) do kids += newChild()
         CPMirPlayer(
             CPRand.rand(boyNames),
             CPRand.rand(familyNames),

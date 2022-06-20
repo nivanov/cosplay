@@ -308,7 +308,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     })
                     map += objId -> set
 
-                for (s <- set) canv.drawPixel('.'&&(s.fg, s.bg), s.x, s.y, 1)
+                for s <- set do canv.drawPixel('.'&&(s.fg, s.bg), s.x, s.y, 1)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = "building"):
@@ -328,8 +328,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 canv.drawLine(x + width, y, x + width, canv.height, 1, wallPx)
 
                 // Windows.
-                for (index <- 0 to height) do
-                    canv.drawLine(x + 1, y + index, x + width - 1, y + index, 1, winPx)
+                for index <- 0 to height do canv.drawLine(x + 1, y + index, x + width - 1, y + index, 1, winPx)
 
                 if ctx.getFrameCount % buildSpeed == 0 && !dead then
                     x -= 1

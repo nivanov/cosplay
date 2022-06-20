@@ -797,7 +797,7 @@ object CPImage:
         val layerCnt = bb.getInt
         if layerCnt <= 0 then E(s"Image file is empty: $src")
         val layers = ArrayBuffer.empty[CPArray2D[CPPixel]]
-        for (_ <- 0 until layerCnt)
+        for _ <- 0 until layerCnt do
             val w = bb.getInt
             val h = bb.getInt
             val layer = new CPArray2D[CPPixel](w, h, CPPixel.XRAY)
@@ -822,8 +822,7 @@ object CPImage:
         val w = layers.head.width
         val h = layers.head.height
         val data = new CPArray2D[CPPixel](w, h, CPPixel.XRAY)
-        for (layer <- layers)
-            layer.map((px, x, y) => if !px.isXray then data.set(x, y, px))
+        for layer <- layers do layer.map((px, x, y) => if !px.isXray then data.set(x, y, px))
         new CPArrayImage(data.map(skin))
 
     /**

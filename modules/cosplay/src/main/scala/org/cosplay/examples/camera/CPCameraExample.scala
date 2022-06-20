@@ -152,7 +152,7 @@ object CPCameraExample:
         )
         
         val brickCanv = CPCanvas(CPDim(bgW, 3), bgPx)
-        for (i <- 0 until bgW / brickImg.getWidth) brickCanv.drawImage(brickImg, i * 5, 0, 2)
+        for i <- 0 until bgW / brickImg.getWidth do brickCanv.drawImage(brickImg, i * 5, 0, 2)
         val brickY = bgH - brickImg.getHeight
         val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, 2, brickCanv.capture())
 
@@ -177,7 +177,7 @@ object CPCameraExample:
                 case c => c&C_GREEN1
         ).trimBg()
         val palmY = bgH - brickImg.getHeight - palmImg.getHeight
-        val palmSeq = for (i <- 0 until 6) yield
+        val palmSeq = for i <- 0 until 6 yield
             new CPStaticImageSprite(s"palm$i", CPRand.randInt(10, bgW - 10), palmY, 3, palmImg)
 
         // +===================>--END--<========================+

@@ -75,7 +75,7 @@ class CPAsciiTable:
             val cs = new Style
 
             if sty.nonEmpty then
-                for (e <- sty.split(','))
+                for e <- sty.split(',') do
                     val a = e.split(":")
                     require(a.length == 2, s"Invalid cell style: ${e.trim}")
                     val a0 = a(0).trim
@@ -332,7 +332,7 @@ class CPAsciiTable:
             if breakUpByWords then
                 breakUpByNearestSpace(st.maxWidth, strLines)
             else
-                (for (str <- strLines) yield str.grouped(st.maxWidth)).flatten
+                (for str <- strLines yield str.grouped(st.maxWidth)).flatten
         )
 
 
@@ -419,7 +419,7 @@ class CPAsciiTable:
         if isHdr then colsNum = hdr.size
 
         // Calc number of columns and make sure all rows are even.
-        for (r <- rows)
+        for r <- rows do
             if colsNum == -1 then colsNum = r.size
             else if colsNum != r.size then assert(assertion = false, "Table with uneven rows.")
 
@@ -433,23 +433,22 @@ class CPAsciiTable:
         var hdrH = 0
 
         // Initialize column widths with header row (if any).
-        for (i <- hdr.indices)
+        for i <- hdr.indices do
             val c = hdr(i)
             colWidths(i) = c.width
             hdrH = math.max(hdrH, c.height)
 
         // Calculate row heights and column widths.
-        for (i <- rows.indices; j <- 0 until colsNum)
+        for i <- rows.indices; j <- 0 until colsNum do
             val c = rows(i)(j)
             rowHeights(i) = math.max(rowHeights(i), c.height)
             colWidths(j) = math.max(colWidths(j), c.width)
 
         // Table width without the border.
         val tableW = colWidths.sum + colsNum - 1
-        val tbl = new StringBuilder
+        val tbl = new mutable.StringBuilder()
         // Top margin.
-        for (_ <- 0 until margin.top)
-            tbl ++= " \n"
+        for _ <- 0 until margin.top do tbl ++= " \n"
 
         /**
           *
@@ -462,11 +461,11 @@ class CPAsciiTable:
         // Print header, if any.
         if isHdr then
             tbl ++= mkAsciiLine(HDR_CRS, HDR_HOR)
-            for (i <- 0 until hdrH)
+            for i <- 0 until hdrH do
                 // Left margin and '|'.
                 tbl ++= s"${space(margin.left)}$HDR_VER"
 
-                for (j <- hdr.indices)
+                for j <- hdr.indices do
                     val c = hdr(j)
                     if i >= 0 && i < c.height then
                         tbl ++= aligned(c.lines(i), colWidths(j), c.style)
@@ -489,20 +488,19 @@ class CPAsciiTable:
             val addHorLine = (i: Int) => {
                 // Left margin and '+'
                 tbl ++= s"${space(margin.left)}$ROW_CRS"
-                for (k <- rows(i).indices)
-                    tbl ++= s"${dash(ROW_HOR, colWidths(k))}$ROW_CRS"
+                for k <- rows(i).indices do tbl ++= s"${dash(ROW_HOR, colWidths(k))}$ROW_CRS"
                 // Right margin.
                 tbl ++= s"${space(margin.right)}\n"
             }
 
-            for (i <- rows.indices)
+            for i <- rows.indices do
                 val row = rows(i)
                 val rowH = rowHeights(i)
-                for (j <- 0 until rowH)
+                for j <- 0 until rowH do
                     // Left margin and '|'
                     tbl ++= s"${space(margin.left)}$ROW_VER"
 
-                    for (k <- row.indices)
+                    for k <- row.indices do
                         val c = row(k)
                         val w = colWidths(k)
                         if j < c.height then
@@ -521,8 +519,7 @@ class CPAsciiTable:
             tbl ++= tblWidthLine
 
         // Bottom margin.
-        for (_ <- 1 to margin.bottom)
-            tbl ++= s" \n"
+        for _ <- 1 to margin.bottom do tbl ++= s" \n"
         val res = tbl.toString
         res.substring(0, res.length - 1)
 

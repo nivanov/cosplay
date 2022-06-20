@@ -67,7 +67,7 @@ class CPConfettiEmitter(
         if !isPaused && age < MAX_AGE then
             age += 1
             // Emit particles in 360 degree semi-circle.
-            for (_ <- 0 to GEN_SIZE) yield
+            for _ <- 0 to GEN_SIZE yield
                 CPConfettiParticle(
                     xf(),
                     yf(),

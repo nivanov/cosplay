@@ -239,8 +239,7 @@ object CPEngine:
         @volatile var st0p = false
 
         // Prep keyboard map.
-        for (key <- CPKeyboardKey.values)
-            key.rawCodes.foreach(s => mapping += s.map(_.toInt) -> key)
+        for key <- CPKeyboardKey.values do key.rawCodes.foreach(s => mapping += s.map(_.toInt) -> key)
 
         private def read(timeout: Long): Int = term.nativeKbRead(timeout)
 
@@ -883,7 +882,7 @@ object CPEngine:
 
                     private def collide(f: CPRect => Boolean, zs: Int*): Seq[CPSceneObject] =
                         collidedBuf.clear()
-                        for (obj <- objs)
+                        for obj <- objs do
                             if obj.isVisible && (zs.isEmpty || zs.contains(obj.getZ)) then
                                 obj.getCollisionRect match
                                     case Some(clsRect) if f(clsRect) => collidedBuf += obj
@@ -1027,7 +1026,7 @@ object CPEngine:
                 nextFrameRuns.clear()
 
                 // Update all objects (including invisible and outside the frame) in the scene.
-                for (obj <- objs if !stopFrame)
+                for obj <- objs if !stopFrame do
                     ctx.setSceneObject(obj)
                     obj.update(ctx)
 
@@ -1081,27 +1080,27 @@ object CPEngine:
                 var visObjCnt = 0
 
                 // Repaint visible and in-frame objects only.
-                for (obj <- objs if !stopFrame && obj.isVisible && camRect.overlaps(obj.getRect))
+                for obj <- objs if !stopFrame && obj.isVisible && camRect.overlaps(obj.getRect) do
                     ctx.setSceneObject(obj)
                     obj.render(ctx)
                     visObjCnt += 1
 
                 // Shader pass for all objects (including invisible and outside the frame).
                 // First, process shaders for all visible objects, then for all invisible objects.
-                for (set ← Seq(objs.filter(_.isVisible), objs.filter(!_.isVisible)) if !stopFrame)
-                    for (obj <- set if !stopFrame)
+                for set ← Seq(objs.filter(_.isVisible), objs.filter(!_.isVisible)) if !stopFrame do
+                    for obj <- set if !stopFrame do
                         val shaders = obj.getShaders
                         if shaders.nonEmpty then
                             val objRect = obj.getRect
                             val inCamera = camRect.overlaps(objRect)
-                            for (shdr <- shaders if !stopFrame)
+                            for shdr <- shaders if !stopFrame do
                                 ctx.setSceneObject(obj)
                                 shdr.render(ctx, objRect, inCamera)
 
                 val startSysNs = System.nanoTime()
 
                 // Perform all delayed operations for the next frame.
-                for (f <- delayedQ if !stopFrame) f()
+                for f <- delayedQ if !stopFrame do f()
                 // Clear delayed operations.
                 delayedQ.clear()
 
@@ -1184,7 +1183,7 @@ object CPEngine:
             engLog.info("Game stopped.")
 
             // Stop all the scenes and their scene objects.
-            for (sc <- scenes.values)
+            for sc <- scenes.values do
                 // Stop scene object first.
                 sc.objects.values.foreach(lifecycleStop)
                 // Stop the scene itself.

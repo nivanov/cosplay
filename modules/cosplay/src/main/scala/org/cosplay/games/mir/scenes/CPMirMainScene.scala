@@ -19,6 +19,8 @@ package org.cosplay.games.mir.scenes
 
 import org.cosplay.*
 import games.mir.*
+import os.*
+import sprites.*
 
 /*
    _________            ______________
@@ -33,5 +35,19 @@ import games.mir.*
                ALl rights reserved.
 */
 
-object CPMirMainScene extends CPScene("main", None, BG_PX)
+object CPMirMainScene extends CPMirCrtSceneBase("main", "bg5.wav"):
+    private val conSpr = CPMirConsoleSprite()
+
+    addObjects(
+        conSpr,
+        // Add full-screen shaders - order is important.
+        new CPOffScreenSprite(shaders = Seq(crtShdr, fadeInShdr, fadeOutShdr))
+    )
+
+    override def onStart(): Unit =
+        super.onStart()
+        stateMgr.state.os.boot(conSpr)
+
+
+
 

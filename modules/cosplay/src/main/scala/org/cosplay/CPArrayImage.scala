@@ -184,7 +184,7 @@ object CPArrayImage:
             .map(seq ⇒ if align == 2 then seq else CPUtils.trimBy(seq, px ⇒ px.char == spacePx.char))
             .map(seq ⇒ ArrayBuffer.from(seq))
         val maxSz = lines.maxBy(_.size).size
-        for (line ← lines if line.size < maxSz)
+        for line ← lines if line.size < maxSz do
             val d = maxSz - line.length
             if align == -1 || align == 2then // Left align.
                 (0 until d).foreach(_ ⇒ line += spacePx)

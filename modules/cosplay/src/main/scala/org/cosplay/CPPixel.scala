@@ -291,7 +291,7 @@ object CPPixel:
       */
     def seq(first: Char, last: Char, fg: CPColor, bg: Option[CPColor]): Seq[CPPixel] =
         if first > last then E(s"'first' char ('$first') must < 'last' char ('$last').")
-        for (ch <- first to last) yield CPPixel(ch, fg, bg, 0)
+        for ch <- first to last yield CPPixel(ch, fg, bg, 0)
 
     /**
       * Makes a sequence of pixel from the range of characters. Range must be sequential.
@@ -304,7 +304,7 @@ object CPPixel:
       */
     def seq(first: Char, last: Char, fgf: Char => CPColor, bgf: Char => Option[CPColor]): Seq[CPPixel] =
         if first > last then E(s"'first' char ('$first') must < 'last' char ('$last').")
-        for (ch <- first to last) yield CPPixel(ch, fgf(ch), bgf(ch), 0)
+        for ch <- first to last yield CPPixel(ch, fgf(ch), bgf(ch), 0)
 
     /**
       * Makes a sequence of pixel from given string.
@@ -315,7 +315,7 @@ object CPPixel:
       * @note Pixel tag will be set to zero.
       */
     def seq(chars: String, fg: CPColor, bg: Option[CPColor]): Seq[CPPixel] =
-        for (ch <- chars) yield CPPixel(ch, fg, bg, 0)
+        for ch <- chars yield CPPixel(ch, fg, bg, 0)
 
     /**
       * Makes a sequence of pixel from given string.
@@ -326,7 +326,7 @@ object CPPixel:
       * @note Pixel tag will be set to zero.
       */
     def seq(chars: String, fgf: Char => CPColor, bgf: Char => Option[CPColor]): Seq[CPPixel] =
-        for (ch <- chars) yield CPPixel(ch, fgf(ch), bgf(ch), 0)
+        for ch <- chars yield CPPixel(ch, fgf(ch), bgf(ch), 0)
 
     given Conversion[(Char, CPColor), CPPixel] = t => CPPixel(t._1, t._2)
 

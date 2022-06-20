@@ -141,7 +141,7 @@ class CPOldCRTShader(
                     lineY = 0
                     lineIdx = 0
                 else
-                    for (y <- lineIdx until (lineIdx - LINE_EFF_SIZE) by -1)
+                    for y <- lineIdx until (lineIdx - LINE_EFF_SIZE) by -1 do
                         if canv.isValid(0, y) then
                             var x = 0
                             while (x <= canv.xMax)
@@ -156,7 +156,7 @@ class CPOldCRTShader(
             if tearEffOn then
                 val yIdx = CPRand.between(TEAR_LINE_NUM, canv.yMax)
                 var d = 1
-                for (y <- yIdx until (yIdx - TEAR_LINE_NUM) by -1)
+                for y <- yIdx until (yIdx - TEAR_LINE_NUM) by -1 do
                     var x = d
                     while (x <= canv.xMax)
                         if canv.isValid(x, y) && canv.isValid(x - d, y) then

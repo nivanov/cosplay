@@ -157,7 +157,7 @@ object CPParticleExample:
                 if !isPaused && age < MAX_AGE then
                     age += 1
                     // Emit particles in 360 degree semi-circle.
-                    for (_ <- 0 to GEN_SIZE) yield KaboomParticle(x, y,
+                    for _ <- 0 to GEN_SIZE yield KaboomParticle(x, y,
                         (CPRand.randFloat() - 0.5f) * 3.5f,
                         (CPRand.randFloat() - 0.5f) * 2f,
                     )

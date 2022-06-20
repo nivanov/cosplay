@@ -70,8 +70,7 @@ object CPScreenTests:
 
         val num = 10
         val start = System.currentTimeMillis()
-        for (_ <- 0 until num)
-            scr1.copyTo(scr2, scr1.getRect)
+        for _ <- 0 until num do scr1.copyTo(scr2, scr1.getRect)
 
         val dur = System.currentTimeMillis() - start
 
@@ -86,8 +85,7 @@ object CPScreenTests:
         val bgPx = CPPixel('.', C_PINK1, C_LIGHT_PINK1)
         val scr = CPScreen(dim, bgPx)
 
-        for (x <- 0 until scr.getDim.w; y <- 0 until scr.getDim.h)
-            assert(scr.getPixel(x, y).px == bgPx)
+        for x <- 0 until scr.getDim.w; y <- 0 until scr.getDim.h do assert(scr.getPixel(x, y).px == bgPx)
 
     /**
       *
@@ -100,9 +98,7 @@ object CPScreenTests:
 
         val num = 10
         val start = System.currentTimeMillis()
-        for (_ <- 0 until num)
-            scr.clear()
-
+        for _ <- 0 until num do scr.clear()
         val dur = System.currentTimeMillis() - start
 
         println(s"Performance of one $dim screen clears is ${dur / num}ms.")

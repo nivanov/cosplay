@@ -80,7 +80,7 @@ case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPi
   * @see [[CPArrayImage.apply()]] method for creating an image from the list of pixel representing text.
   */
 case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElement]) extends Serializable:
-    for (elm <- elements)
+    for elm <- elements do
         require(
             elm.openTag.nonEmpty && elm.closeTag.nonEmpty,
             s"Markup cannot have empty opening or closing tags: '${elm.openTag}' '${elm.closeTag}'"
@@ -143,8 +143,7 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
             val s = in.substring(start, idx + 1)
             elements.find(elm ⇒ s.endsWith(elm.openTag)) match
                 case Some(elm) ⇒
-                    for (ch <- s.substring(0, s.length - elm.openTag.length))
-                        buf += skin(ch)
+                    for ch <- s.substring(0, s.length - elm.openTag.length) do buf += skin(ch)
                     start += s.length
                     // Stack push.
                     skin = elm.skin
@@ -152,16 +151,14 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
                 case None ⇒
                     elements.find(elm ⇒ s.endsWith(elm.closeTag)) match
                         case Some(elm) ⇒
-                            for (ch <- s.substring(0, s.length - elm.closeTag.length))
-                                buf += skin(ch)
+                            for ch <- s.substring(0, s.length - elm.closeTag.length) do buf += skin(ch)
                             start += s.length
                             // Stack pop.
                             skinStack = skinStack.tail
                             skin = skinStack.head
                         case None ⇒ ()
             idx += 1
-        for (i ← start until len)
-            buf += skin(in.charAt(i))
+        for i ← start until len do buf += skin(in.charAt(i))
         buf.toList
 
 

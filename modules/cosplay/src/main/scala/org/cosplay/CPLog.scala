@@ -94,7 +94,7 @@ trait CPLog:
       * @param log
       */
     protected def inheritFrom(log: CPLog): Unit =
-        for (lvl <- CPLogLevel.values) if log.isEnabled(lvl) then enable(lvl) else disable(lvl)
+        for lvl <- CPLogLevel.values do if log.isEnabled(lvl) then enable(lvl) else disable(lvl)
         throttle = log.throttle
 
     /**

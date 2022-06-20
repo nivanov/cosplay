@@ -262,13 +262,13 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
 
         if figFullWidth then
             var chX = 0
-            for (ch <- s)
+            for ch <- s do
                 val figCh = getFIGChar(ch)
                 figCh.loop((x, y) => data.set(chX + x, y, CPPixel(figCh.get(x, y), fg, bg)))
                 chX += figCh.width
         else if figKerning || figUniSmush then
             var chX = 0
-            for (ch <- s)
+            for ch <- s do
                 val figCh = getFIGChar(ch)
                 chX = if chX == 0 then 0 else if figKerning then kerningPos(chX, figCh) else smushingPos(chX, figCh)
                 figCh.loop((x, y) => {
@@ -279,7 +279,7 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
                 chX += figCh.width
         else if figCtrlSmush then
             var chX = 0
-            for (ch <- s)
+            for ch <- s do
                 val figCh = getFIGChar(ch)
                 // Controlled smushing.
                 chX = if chX == 0 then 0 else smushingPos(chX, figCh)
@@ -435,7 +435,7 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
         val chLines = mutable.Buffer.empty[String]
         val endIdx = startIdx + figHeight - 1
 
-        for (idx <- startIdx to endIdx)
+        for idx <- startIdx to endIdx do
             val chLine = lines(idx)
             if chLine.endsWith(s"$eol$eol") then chLines += chLine.dropRight(2)
             else if chLine.endsWith(s"$eol") then chLines += chLine.dropRight(1)
@@ -478,11 +478,11 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
 
         var lineIdx = figComLines + 1
         // Scan required printable ASCII character set (32 -> 126).
-        for (asciiCode <- 32 to 126)
+        for asciiCode <- 32 to 126 do
             chars(asciiCode) = parseFIGLet(lines, lineIdx)
             lineIdx += figHeight
-        // Scan additional required Deutsch FIGcharacters.
-        for (asciiCode <- Seq(196, 214, 220, 228, 246, 252, 223))
+        // Scan additional required Deutsch FIG characters.
+        for asciiCode <- Seq(196, 214, 220, 228, 246, 252, 223) do
             chars(asciiCode) = parseFIGLet(lines, lineIdx)
             lineIdx += figHeight
         // NOTE: code tagged FIGCharacters are ignored.

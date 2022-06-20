@@ -102,7 +102,7 @@ class CPStyledString:
       */
     def str(obj: Any): CPStyledString =
         if fg == null then E(s"Foreground color must be specified first.")
-        for (ch <- obj.toString) buf += CPPixel(ch, fg, bg)
+        for ch <- obj.toString do buf += CPPixel(ch, fg, bg)
         this
 
     /**

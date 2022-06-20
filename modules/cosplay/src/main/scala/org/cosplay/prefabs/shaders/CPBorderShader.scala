@@ -112,24 +112,24 @@ class CPBorderShader(
                     canv.drawPixel(px.withBg(Option(mixColor(px.bg.get))), x, y, zpx.z)
 
             if !compensateWidth then
-                for (d <- 0 until width)
+                for d <- 0 until width do
                     val mix = (width - d) * colorMixPerStep
-                    for (x <- (rect.xMin + d) to (rect.xMax - d))
+                    for x <- (rect.xMin + d) to (rect.xMax - d) do
                         updatePx(x, rect.yMin + d, mix)
                         updatePx(x, rect.yMax - d, mix)
-                    for (y <- (rect.yMin + d + 1) until (rect.yMax - d))
+                    for y <- (rect.yMin + d + 1) until (rect.yMax - d) do
                         updatePx(rect.xMin + d, y, mix)
                         updatePx(rect.xMax - d, y, mix)
             else
-                for (d <- 0 until width)
+                for d <- 0 until width do
                     val mix = (width - d) * colorMixPerStep
-                    for (x <- (rect.xMin + d * 2) to (rect.xMax - d * 2))
+                    for x <- (rect.xMin + d * 2) to (rect.xMax - d * 2) do
                         updatePx(x, rect.yMin + d, mix)
                         updatePx(x, rect.yMax - d, mix)
                 var d = 0
-                for (k <- 0 until width)
+                for k <- 0 until width do
                     val mix = (width - k) * colorMixPerStep
-                    for (y <- (rect.yMin + k + 1) until (rect.yMax - k))
+                    for y <- (rect.yMin + k + 1) until (rect.yMax - k) do
                         updatePx(rect.xMin + d, y, mix)
                         updatePx(rect.xMin + d + 1, y, mix)
                         updatePx(rect.xMax - d - 1, y, mix)

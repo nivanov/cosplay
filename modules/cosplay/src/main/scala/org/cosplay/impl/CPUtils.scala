@@ -145,7 +145,7 @@ object CPUtils:
         val bufs = new ArrayBuffer[ArrayBuffer[T]]()
 
         var idx = 0
-        for (t ← col)
+        for t ← col do
             if sep(t) then
                 bufs += ArrayBuffer.empty[T]
                 idx += 1

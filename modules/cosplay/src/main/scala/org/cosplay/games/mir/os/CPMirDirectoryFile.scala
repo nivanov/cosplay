@@ -92,7 +92,7 @@ class CPMirDirectoryFile(
       * @param p Optional file filter.
       */
     def scan(f: CPMirFile ⇒ Unit, p: CPMirFile ⇒ Boolean = _ ⇒ true): Unit =
-        for (child ← children)
+        for child ← children do
             if p(child) then f(child)
             child match
                 case d: CPMirDirectoryFile ⇒ d.scan(f, p)

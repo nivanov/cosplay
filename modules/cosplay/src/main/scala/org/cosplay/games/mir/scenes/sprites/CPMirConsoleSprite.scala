@@ -43,7 +43,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         lazy val px: CPPixel = ch&&(fg, bg)
 
     private final val SPACE = ZChar(' ', FG, BG, Int.MinValue)
-    private final val W = 200
+    private final val W = 300
     private final val H = 100
     private final val LAST_X = W - 1
     private final val LAST_Y = H - 1
@@ -91,14 +91,14 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             val w = canv.w.min(W)
             val h = canv.h
 
-            var x = 0
-            while x < w do
-                var y = startY
-                while y < h do
-                    val zch = pane(y)(x)
+            var y = 0
+            while y < h do
+                var x = 0
+                while x < w do
+                    val zch = pane(y + startY)(x)
                     canv.drawPixel(zch.px, x, y, zch.z)
-                    y += 1
-                x += 1
+                    x += 1
+                y += 1
 
             // TODO: cursor blinking
         }
@@ -109,11 +109,21 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             curX = 0
             curY += 1
         else
-            for y ← 1 until H do pane(y - 1) = pane(y)
+            for y ← 1 until H do Array.copy(pane(y), 0, pane(y - 1), 0, W)
             for x ← 0 until W do pane(LAST_Y)(x) = SPACE
             curX = 0
 
-    override def print(x: Any): Unit = x.toString.foreach(ch ⇒ {
-        putChar(getCursorX, getCursorY, ch)
-        advanceCursor()
-    })
+    override def print(x: Any): Unit =
+        mux.synchronized {
+            def put(ch: Char): Unit =
+                putChar(getCursorX, getCursorY, ch)
+                advanceCursor()
+            x.toString.foreach(ch ⇒ ch match
+                case '\r' ⇒ curX = 0
+                case '\n' ⇒
+                    curX = LAST_X
+                    advanceCursor()
+                case '\t' ⇒ (0 until 8).foreach(_ ⇒ put(' '))
+                case _ ⇒ put(ch)
+            )
+        }

@@ -188,7 +188,7 @@ class CPStarStreakShader(
             val canv = ctx.getCanvas
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             // Replenish with new sparkles until full.
-            for (streak ← streaks)
+            for streak ← streaks do
                 val num = (canv.w * canv.h * streak.ratio).round
                 var cnt = stars.count(_.streak == streak)
                 while cnt < num do

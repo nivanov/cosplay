@@ -275,7 +275,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 fillRect(g2, bg, 0, 0, w, h)
                 renderMux.synchronized {
                     if pxs.nonEmpty then
-                        for (px <- pxs)
+                        for px <- pxs do
                             val glyph = glyphCache.get(px.px) match
                                 case Some(img) => img
                                 case None =>

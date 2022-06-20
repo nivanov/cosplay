@@ -117,7 +117,7 @@ class CPMirStateManager:
     private def init(): CPMirState =
         // Crew.
         val crew = mutable.ArrayBuffer(player) // Crew always includes the player.
-        for (i ← 0 until NPC_CNT)
+        for i ← 0 until NPC_CNT do
             var found = false
             while !found do
                 val crewman = CPMirPlayer.newPlayer
