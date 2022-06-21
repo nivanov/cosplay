@@ -22,6 +22,8 @@ import CPPixel.*
 import games.mir.*
 import os.*
 
+import java.util.concurrent.CountDownLatch
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -58,6 +60,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private var dim = CPDim(W, H)
     private var canvY = 0
     private var rlMode = false
+    private var rlLatch: CountDownLatch = _
 
     clear()
 
@@ -90,7 +93,9 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         }
 
     override def readLine(repCh: Option[Char], maxLen: Int): String =
+        require(!rlMode)
         rlMode = true
+
         ""
 
     override def render(ctx: CPSceneObjectContext): Unit =
