@@ -41,20 +41,24 @@ trait CPMirConsole:
     private var bg = BG
 
     /**
+      * Reads the line form the console at the current cursor position. This call will be blocked
+      * until 'Enter' key is pressed.
       *
+      * @param repCh Optional character to replace entered characters (e.g. when entering password).
+      * @param maxLen Optional max length of the input.
+      */
+    def readLine(repCh: Option[Char] = None, maxLen: Int = Int.MaxValue): String
+
+    /**
+      * Gets the current size of the console window in characters.
       */
     def getSize: CPDim
 
     /**
       *
-      */
-    def println(): Unit = print("\n")
-
-    /**
-      *
       * @param x
       */
-    def println(x: Any): Unit = print(s"$x\n")
+    def println(x: Any = ""): Unit = print(s"$x\n")
 
     /**
       *

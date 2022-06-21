@@ -57,6 +57,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private var curBlink = true // Blinking (showed) vs. non-blinking (hidden).
     private var dim = CPDim(W, H)
     private var canvY = 0
+    private var rlMode = false
 
     clear()
 
@@ -88,6 +89,10 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             if zch.z <= z then pane(y2)(x) = ZChar(ch, fg, bg, z)
         }
 
+    override def readLine(repCh: Option[Char], maxLen: Int): String =
+        rlMode = true
+        ""
+
     override def render(ctx: CPSceneObjectContext): Unit =
         val canv = ctx.getCanvas
 
@@ -112,6 +117,8 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         }
 
     private def advanceCursor(): Unit =
+        require(Thread.holdsLock(mux))
+
         if curX < LAST_X then curX += 1
         else if curY < LAST_Y then
             curX = 0
