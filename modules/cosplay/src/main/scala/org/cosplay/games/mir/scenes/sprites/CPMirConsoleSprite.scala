@@ -23,6 +23,7 @@ import games.mir.*
 import os.*
 
 import java.util.concurrent.CountDownLatch
+import scala.util.*
 
 /*
    _________            ______________
@@ -59,8 +60,12 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private var curBlink = true // Blinking (showed) vs. non-blinking (hidden).
     private var dim = CPDim(W, H)
     private var canvY = 0
+
     private var rlMode = false
     private var rlLatch: CountDownLatch = _
+    private var rlStartX = 0
+    private var rlStartY = 0
+    private var rlBuf = ""
 
     clear()
 
@@ -95,12 +100,26 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     override def readLine(repCh: Option[Char], maxLen: Int): String =
         require(!rlMode)
         rlMode = true
+        rlLatch = CountDownLatch(1)
+        rlStartX = curX
+        rlStartY = curY
+        rlBuf = ""
+
+        while rlLatch.getCount > 0 do
+            Try(rlLatch.await()) match
+                case Success(_) ⇒ ()
+                case Failure(e) ⇒ ()
 
         ""
 
-    override def render(ctx: CPSceneObjectContext): Unit =
-        val canv = ctx.getCanvas
+    override def update(ctx: CPSceneObjectContext): Unit =
+        super.update(ctx)
+        if rlMode then
+            ()
 
+    override def render(ctx: CPSceneObjectContext): Unit =
+        super.render(ctx)
+        val canv = ctx.getCanvas
         mux.synchronized {
             dim = canv.dim
 
@@ -116,6 +135,13 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
                     canv.drawPixel(zch.px, x, y, zch.z)
                     x += 1
                 y += 1
+
+            if rlMode then
+                curX = rlStartX
+                curY = rlStartY
+                for ch ← rlBuf do
+                    pane(getCursorY)(getCursorX) = ZChar(ch, getFg, getBg, Int.MaxValue)
+                    advanceCursor()
 
             if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curBlink = !curBlink
             if curBlink && curVis then canv.drawPixel(CUR_PX, curX, curY - canvY, Int.MaxValue)

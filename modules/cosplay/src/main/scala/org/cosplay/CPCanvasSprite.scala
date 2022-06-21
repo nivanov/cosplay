@@ -44,6 +44,8 @@ import impl.CPUtils
   * this sprite will report its size as entire camera frame size. Shaders that work with this sprite should
   * account for it.
   *
+  * Note, if overriding [[CPSceneObject.update()]] method make sure to call `super.update(...)`.
+  *
   * ### Sprites
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
   * that is custom designed for a particular use case. Built-in sprites provide concrete
