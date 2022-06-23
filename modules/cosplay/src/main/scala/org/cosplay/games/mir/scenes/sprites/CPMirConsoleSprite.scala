@@ -21,6 +21,7 @@ import org.cosplay.*
 import CPPixel.*
 import games.mir.*
 import os.*
+import CPKeyboardKey.*
 
 import java.util.concurrent.CountDownLatch
 import scala.util.*
@@ -66,6 +67,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private var rlStartX = 0
     private var rlStartY = 0
     private var rlBuf = ""
+    private var rlBufPos = 0
 
     clear()
 
@@ -97,25 +99,44 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             if zch.z <= z then pane(y2)(x) = ZChar(ch, fg, bg, z)
         }
 
-    override def readLine(repCh: Option[Char], maxLen: Int): String =
+    override def readLine(repCh: Option[Char], maxLen: Int, hist: Option[Seq[String]]): String =
         require(!rlMode)
         rlMode = true
         rlLatch = CountDownLatch(1)
         rlStartX = curX
         rlStartY = curY
         rlBuf = ""
+        rlBufPos = 0
 
         while rlLatch.getCount > 0 do
-            Try(rlLatch.await()) match
-                case Success(_) ⇒ ()
-                case Failure(e) ⇒ ()
+            try rlLatch.await()
+            catch case _: InterruptedException ⇒ ()
 
-        ""
+        rlBuf.strip()
 
     override def update(ctx: CPSceneObjectContext): Unit =
         super.update(ctx)
         if rlMode then
-            ()
+            ctx.getKbEvent match
+                case None ⇒ ()
+                case Some(evt) ⇒
+                    val len = rlBuf.length
+                    if evt.key.isPrintable then
+                        val ch = evt.key.ch
+                        if rlBufPos < len then rlBuf = rlBuf.substring(0, rlBufPos) + ch + rlBuf.substring(rlBufPos) else rlBuf += ch
+                        rlBufPos += 1
+                    else if evt.key == KEY_ENTER then rlLatch.countDown()
+                    else if evt.key == KEY_DEL then ()
+                    else if evt.key == KEY_HOME then rlBufPos = 0
+                    else if evt.key == KEY_END then rlBufPos = len
+                    else if evt.key == KEY_LEFT then rlBufPos = 0.max(rlBufPos - 1)
+                    else if evt.key == KEY_RIGHT then rlBufPos = len.min(rlBufPos + 1)
+                    else if evt.key == KEY_UP then ()
+                    else if evt.key == KEY_DOWN then ()
+                    else if evt.key ==  KEY_BACKSPACE then
+                        if len > 0 then
+                            rlBuf = rlBuf.substring(0, rlBufPos) + rlBuf.substring(rlBufPos)
+                            rlBufPos -= 1
 
     override def render(ctx: CPSceneObjectContext): Unit =
         super.render(ctx)
@@ -139,9 +160,18 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             if rlMode then
                 curX = rlStartX
                 curY = rlStartY
+                var saveCurX = 0
+                var saveCurY = 0
+                var i = 0
                 for ch ← rlBuf do
                     pane(getCursorY)(getCursorX) = ZChar(ch, getFg, getBg, Int.MaxValue)
+                    if i == rlBufPos then
+                        saveCurX = getCursorX
+                        saveCurY = getCursorY
+                    i += 1
                     advanceCursor()
+                curX = saveCurX
+                curY = saveCurY
 
             if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curBlink = !curBlink
             if curBlink && curVis then canv.drawPixel(CUR_PX, curX, curY - canvY, Int.MaxValue)

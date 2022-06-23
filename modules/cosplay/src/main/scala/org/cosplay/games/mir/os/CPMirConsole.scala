@@ -46,8 +46,9 @@ trait CPMirConsole:
       *
       * @param repCh Optional character to replace entered characters (e.g. when entering password).
       * @param maxLen Optional max length of the input.
+      * @param hist Optional history to use for history scrolling and auto-completion.
       */
-    def readLine(repCh: Option[Char] = None, maxLen: Int = Int.MaxValue): String
+    def readLine(repCh: Option[Char] = None, maxLen: Int = Int.MaxValue, hist: Option[Seq[String]] = None): String
 
     /**
       * Gets the current size of the console window in characters.
