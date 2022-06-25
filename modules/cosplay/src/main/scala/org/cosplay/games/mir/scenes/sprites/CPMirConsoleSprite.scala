@@ -51,9 +51,10 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private final val H = 100
     private final val LAST_X = W - 1
     private final val LAST_Y = H - 1
-    private final val mux = Object()
     private final val CUR_PX = ' '&&(FG, FG)
     private final val CUR_BLINK_FRM_NUM = 10
+    private final val TAB_SIZE = 8
+    private final val mux = Object()
     private val pane = Array.ofDim[ZChar](H, W)
     private var curX = 0
     private var curY = 0
@@ -85,7 +86,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         def moveRight(): Unit = pos = len.min(pos + 1)
         def moveHome(): Unit = pos = 0
         def moveEnd(): Unit = pos = len
-        def getText: String = buf.strip()
+        def getText: String = buf
         def getPos: Int = pos
         def insertChar(ch: Char): Unit =
             if len < maxLen then
@@ -188,7 +189,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
                         saveCurX = curX
                         saveCurY = curY
                     i += 1
-                    advanceCursor()
+                    advanceCursor(dim.w)
 
                 if i == bufPos then
                     saveCurX = curX
@@ -217,10 +218,14 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             lastCurY = curY
         }
 
-    private def advanceCursor(): Unit =
+    /**
+      *
+      * @param w Actual width to use.
+      */
+    private def advanceCursor(w: Int): Unit =
         require(Thread.holdsLock(mux))
 
-        if curX < LAST_X then curX += 1
+        if curX < w - 1 then curX += 1
         else if curY < LAST_Y then
             curX = 0
             curY += 1
@@ -233,13 +238,13 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         mux.synchronized {
             def put(ch: Char): Unit =
                 putChar(getCursorX, getCursorY, ch)
-                advanceCursor()
+                advanceCursor(W)
             x.toString.foreach(ch ⇒ ch match
                 case '\r' ⇒ curX = 0 // For Win-compatibility just in case.
                 case '\n' ⇒
                     curX = LAST_X
-                    advanceCursor()
-                case '\t' ⇒ (0 until 8).foreach(_ ⇒ put(' '))
+                    advanceCursor(W)
+                case '\t' ⇒ (0 until TAB_SIZE).foreach(_ ⇒ put(' '))
                 case _ ⇒ put(ch)
             )
         }
