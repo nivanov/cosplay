@@ -162,7 +162,7 @@ protected trait CPIntTuple[T](val ints: Int*) extends Serializable:
       * @param x Other tuple to multiply with.
       * @note Tuples must have the same arity.
       */
-    @targetName("multiTuple")
+    @targetName("multiIntTuple")
     inline def *(x: CPIntTuple[T]): T =
         assert(x.arity == arity)
         ctor(ints.zip(x.ints).map(p => p._1 * p._2))
@@ -173,7 +173,7 @@ protected trait CPIntTuple[T](val ints: Int*) extends Serializable:
       * @param x Other tuple to divide by.
       * @note Tuples must have the same arity.
       */
-    @targetName("divideTuple")
+    @targetName("divideIntTuple")
     inline def /(x: CPIntTuple[T]): T =
         assert(x.arity == arity)
         ctor(ints.zip(x.ints).map(p => p._1 / p._2))
@@ -184,7 +184,7 @@ protected trait CPIntTuple[T](val ints: Int*) extends Serializable:
       * @param x Tuple to subtract.
       * @note Tuples must have the same arity.
       */
-    @targetName("minusTuple")
+    @targetName("minusIntTuple")
     inline def -(x: CPIntTuple[T]): T =
         assert(x.arity == arity)
         ctor(ints.zip(x.ints).map(p => p._1 - p._2))
@@ -195,7 +195,7 @@ protected trait CPIntTuple[T](val ints: Int*) extends Serializable:
       * @param x Tuple to add.
       * @note Tuples must have the same arity.
       */
-    @targetName("plusTuple")
+    @targetName("plusIntTuple")
     inline def +(x: CPIntTuple[_]): T =
         assert(x.arity == arity)
         ctor(ints.zip(x.ints).map(p => p._1 + p._2))
