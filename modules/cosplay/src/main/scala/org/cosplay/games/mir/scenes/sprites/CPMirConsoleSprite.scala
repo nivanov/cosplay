@@ -43,6 +43,8 @@ import scala.util.*
   *
   */
 class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsole:
+    private val keySnd = CPSound(s"$SND_HOME/keypress.wav", .05f)
+
     case class ZChar(ch: Char, fg: CPColor, bg: CPColor, z: Int):
         lazy val px: CPPixel = ch&&(fg, bg)
 
@@ -52,7 +54,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private final val LAST_X = W - 1
     private final val LAST_Y = H - 1
     private final val CUR_PX = ' '&&(FG, FG)
-    private final val CUR_BLINK_FRM_NUM = 10
+    private final val CUR_BLINK_FRM_NUM = 13
     private final val TAB_SIZE = 8
     private final val mux = Object()
     private val pane = Array.ofDim[ZChar](H, W)
@@ -60,8 +62,8 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private var curY = 0
     private var lastCurX = 0
     private var lastCurY = 0
-    private var curVis = true // Visible vs. not-visible.
-    private var curSolid = true // Blinking (showed) vs. non-blinking (hidden).
+    private var curVis = true // Visible vs. non-visible.
+    private var curSolid = true
     private var dim = CPDim(W, H)
     private var canvY = 0
 
@@ -76,14 +78,32 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     /**
       *
       * @param maxLen
+      * @param hist
       */
-    class ReadLineBuffer(maxLen: Int):
+    class ReadLineBuffer(maxLen: Int, hist: Seq[String]):
         private var buf = ""
         private var pos = 0
         private var len = 0
+        private var histIdx = 0
+        private var savedBuf = ""
 
         def moveLeft(): Unit = pos = 0.max(pos - 1)
         def moveRight(): Unit = pos = len.min(pos + 1)
+        private def fromHistory(s: String): Unit =
+            val curLen = buf.length
+            buf = s.padTo(curLen, ' ')
+            len = buf.stripTrailing().length
+            pos = len
+
+        def historyUp(): Unit =
+            if histIdx < hist.size - 1 then
+                if histIdx == 0 then savedBuf = buf.stripTrailing()
+                histIdx += 1
+                fromHistory(hist(histIdx))
+        def historyDown(): Unit =
+            if histIdx > 0 then
+                histIdx -= 1
+                fromHistory(if histIdx == 0 then savedBuf else hist(histIdx))
         def moveHome(): Unit = pos = 0
         def moveEnd(): Unit = pos = len
         def getText: String = buf
@@ -132,14 +152,14 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             if zch.z <= z then pane(y2)(x) = ZChar(ch, fg, bg, z)
         }
 
-    override def readLine(repCh: Option[Char], maxLen: Int, hist: Option[Seq[String]]): String =
+    override def readLine(repCh: Option[Char], maxLen: Int, hist: Seq[String]): String =
         require(!rlMode)
         rlMode = true
         rlLatch = CountDownLatch(1)
         rlStartX = curX
         rlStartY = curY
         rlRepCh = repCh
-        rlBuf = new ReadLineBuffer(maxLen)
+        rlBuf = new ReadLineBuffer(maxLen, hist)
 
         while rlLatch.getCount > 0 do
             try rlLatch.await()
@@ -156,16 +176,17 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
                 ctx.getKbEvent match
                     case None ⇒ ()
                     case Some(evt) ⇒
+                        if stateMgr.state.crtAudio then keySnd.play()
                         val key = evt.key
                         if key.isPrintable then rlBuf.insertChar(key.ch)
                         else if key == KEY_ENTER then rlLatch.countDown()
                         else if key == KEY_DEL then rlBuf.deleteChar()
-                        else if key == KEY_HOME || key == KEY_CTRL_LEFT then rlBuf.moveHome()
-                        else if key == KEY_END || key == KEY_CTRL_RIGHT then rlBuf.moveEnd()
+                        else if key == KEY_HOME then rlBuf.moveHome()
+                        else if key == KEY_END then rlBuf.moveEnd()
                         else if key == KEY_LEFT then rlBuf.moveLeft()
                         else if key == KEY_RIGHT then rlBuf.moveRight()
-                        else if key == KEY_UP then () // TODO
-                        else if key == KEY_DOWN then () // TODO
+                        else if key == KEY_UP then rlBuf.historyUp()
+                        else if key == KEY_DOWN then rlBuf.historyDown()
                         else if key == KEY_BACKSPACE then rlBuf.backspace()
             }
 
@@ -191,11 +212,9 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
                     i += 1
                     advanceCursor(dim.w)
 
-                if i == bufPos then
-                    saveCurX = curX
-                    saveCurY = curY
-                curX = saveCurX
-                curY = saveCurY
+                if i != bufPos then
+                    curX = saveCurX
+                    curY = saveCurY
 
             canvY = if curY < canv.h then 0 else curY - canv.h + 1
             val w = canv.w.min(W)

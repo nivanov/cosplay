@@ -116,7 +116,7 @@ class CPMirOs(fs: CPMirFileSystem, users: Seq[CPMirUser]) extends Serializable:
 
         Future {
             con.print("Enter username: ")
-            con.readLine(maxLen = 32)
+            con.readLine(maxLen = 32, hist = Seq("table", "chair", "kitchen", "automobile"))
             con.println()
             con.print("Enter password: ")
             con.readLine(maxLen = 16, repCh = Some('*'))
