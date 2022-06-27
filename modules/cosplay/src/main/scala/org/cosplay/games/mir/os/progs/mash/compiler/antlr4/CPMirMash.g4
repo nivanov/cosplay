@@ -31,6 +31,8 @@ grammar CPMirMash;
 */
 
 // Parser.
+// =======
+
 mash: decls EOF; // Mash enty point.
 decls
     : decl
@@ -43,20 +45,29 @@ decl
     | exportDecl
     | unexportDecl
     | defDecl
+    | nativeDefDecl
+    | whileDecl
+    | forDecl
     ;
 valDecl: VAL_KW IDENT ASSIGN expr;
-varDecl: VAR_KW IDENT ASSIGN expr;
+varDecl: VAR_KW IDENT (ASSIGN expr)?;
 assignDecl: IDENT ASSIGN expr;
 exportDecl: EXPORT_KW IDENT;
 unexportDecl: UNEXPORT_KW IDENT;
-defDecl: DEF_KW IDENT LPAR funParamList? RPAR ASSIGN (decl|expr)+;
+defDecl: DEF_KW IDENT LPAR funParamList? RPAR ASSIGN compoundExpr;
+nativeDefDecl: NATIVE_KW DEF_KW IDENT LPAR funParamList? RPAR;
+whileDecl: WHILE_KW expr DO_KW compoundExpr;
+forDecl: FOR_KW IDENT IN_KW expr DO_KW compoundExpr;
 funParamList
     : IDENT
     | funParamList COMMA IDENT
     ;
 expr
     // NOTE: order of productions defines precedence.
-    : op=(MINUS | NOT) expr # unaryExpr
+    : IF_KW expr THEN_KW compoundExpr ELSE_KW compoundExpr # ifExpr
+    | FOR_KW IDENT IN_KW expr YIELD_KW compoundExpr # forYieldExpr
+    | LPAR funParamList? RPAR ANON_DEF_KW compoundExpr # anonDefExpr
+    | op=(MINUS | NOT) expr # unaryExpr
     | LPAR expr RPAR # parExpr
     | expr op=(MULT | DIV | MOD) expr # multDivModExpr
     | expr op=(PLUS | MINUS) expr # plusMinusExpr
@@ -64,27 +75,32 @@ expr
     | expr op=(EQ | NEQ) expr # eqNeqExpr
     | expr op=(AND | OR) expr # andOrExpr
     | atom # atomExpr
-    | LBRACE exprList RBRACE # listExpr
+    | LPAR exprList RPAR # listExpr
     | IDENT LPAR callParamList? RPAR # callExpr
-    | varRef # refExpr
+    | varAccess LPAR callParamList? RPAR # fpCallExpr
+    | varAccess # varAccessExpr
     ;
 exprList
     : expr
-    | exprList expr
+    | exprList COMMA expr
+    ;
+compoundExpr
+    : expr
+    | LBRACE (decl|expr)+ RBRACE
     ;
 callParamList
     : expr
     | callParamList COMMA expr
     ;
-varRef
-    : DOLLAR INT
+varAccess
+    : DOLLAR INT // '$1' command line parameter access. '$0' is entire command line as a string.
     | DOLLAR LPAR INT RPAR
-    | DOLLAR IDENT
-    | DOLLAR LPAR IDENT RPAR
+    | DOLLAR IDENT listAccess?
+    | DOLLAR LPAR IDENT RPAR listAccess?
     | DOLLAR POUND // '$#' number of command line paramters.
     | DOLLAR QUESTION // '$?' exit code of the last command.
     ;
-
+listAccess: LBR INT RBR;
 atom
     : NULL
     | INT REAL? EXP?
@@ -98,12 +114,24 @@ qstring
     ;
 
 // Lexer.
+// ======
+
 // Keywords.
 VAR_KW: 'var';
 VAL_KW: 'val';
 DEF_KW: 'def';
+ANON_DEF_KW: '=>';
 EXPORT_KW: 'export';
 UNEXPORT_KW: 'unexport';
+NATIVE_KW: 'native';
+IF_KW: 'if';
+THEN_KW: 'then';
+ELSE_KW: 'else';
+WHILE_KW: 'while';
+DO_KW: 'do';
+YIELD_KW: 'yield';
+FOR_KW: 'for';
+IN_KW: '<-';
 
 // Tokens.
 SQSTRING: SQUOTE ((~'\'') | ('\\''\''))* SQUOTE; // Allow for \' (escaped single quote) in the string.
@@ -151,6 +179,6 @@ EXP: [Ee] [+\-]? INT;
 fragment LETTER: [a-zA-Z];
 //ID: (UNDERSCORE|LETTER|MINUS|DOT|[0-9])+;
 IDENT: (UNDERSCORE|LETTER)+(UNDERSCORE|LETTER|[0-9])*;
-COMMENT : POUND ~[\r\n]* '\r'? ('\n'| EOF) -> skip;
+COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
 WS: [ \r\t\u000C\n]+ -> skip;
 ErrorChar: .;

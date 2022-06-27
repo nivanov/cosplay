@@ -1,0 +1,31 @@
+native def listOf(fromIncl, toExcl)
+val x = null
+export x
+unexport x
+x = true
+
+val WIDTH = 100
+val HEIGHT = 100
+
+def fun(a, b, c) = {
+    def z() = println()
+    var q = (1.054 + 2_00_00) * $4 + $(varName)
+    while $q <= work() do println("something")
+    val newList = for i <- list() yield $i + "str"
+    val anotherList = (1, "true", true, null, ("sub", "list"), $(newList)[1])
+    println("nikita") // Direct function call.
+    $(newList)[1]("some", 1, "arg") // FP-style function call.
+    if boolVal() then {
+        def z() = println()
+        println(z())
+    }
+    else
+        println("Else")
+
+    fun1((p, b) => println($p))
+}
+
+def fun1(f, param) = {
+    // Comment.
+    $f($param)
+}
