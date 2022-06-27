@@ -42,14 +42,49 @@ decl
     | assignDecl
     | exportDecl
     | unexportDecl
+    | defDecl
     ;
 valDecl: VAL_KW IDENT ASSIGN expr;
 varDecl: VAR_KW IDENT ASSIGN expr;
 assignDecl: IDENT ASSIGN expr;
 exportDecl: EXPORT_KW IDENT;
 unexportDecl: UNEXPORT_KW IDENT;
+defDecl: DEF_KW IDENT LPAR funParamList? RPAR ASSIGN (decl|expr)+;
+funParamList
+    : IDENT
+    | funParamList COMMA IDENT
+    ;
 expr
-    : atom #atomExpr;
+    // NOTE: order of productions defines precedence.
+    : op=(MINUS | NOT) expr # unaryExpr
+    | LPAR expr RPAR # parExpr
+    | expr op=(MULT | DIV | MOD) expr # multDivModExpr
+    | expr op=(PLUS | MINUS) expr # plusMinusExpr
+    | expr op=(LTEQ | GTEQ | LT | GT) expr # compExpr
+    | expr op=(EQ | NEQ) expr # eqNeqExpr
+    | expr op=(AND | OR) expr # andOrExpr
+    | atom # atomExpr
+    | LBRACE exprList RBRACE # listExpr
+    | IDENT LPAR callParamList? RPAR # callExpr
+    | varRef # refExpr
+    ;
+exprList
+    : expr
+    | exprList expr
+    ;
+callParamList
+    : expr
+    | callParamList COMMA expr
+    ;
+varRef
+    : DOLLAR INT
+    | DOLLAR LPAR INT RPAR
+    | DOLLAR IDENT
+    | DOLLAR LPAR IDENT RPAR
+    | DOLLAR POUND // '$#' number of command line paramters.
+    | DOLLAR QUESTION // '$?' exit code of the last command.
+    ;
+
 atom
     : NULL
     | INT REAL? EXP?
@@ -63,10 +98,14 @@ qstring
     ;
 
 // Lexer.
+// Keywords.
 VAR_KW: 'var';
 VAL_KW: 'val';
+DEF_KW: 'def';
 EXPORT_KW: 'export';
 UNEXPORT_KW: 'unexport';
+
+// Tokens.
 SQSTRING: SQUOTE ((~'\'') | ('\\''\''))* SQUOTE; // Allow for \' (escaped single quote) in the string.
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BQSTRING: BQUOTE ((~'`') | ('\\''`'))* BQUOTE; // Allow for \` (escape double quote) in the string.
