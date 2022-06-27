@@ -58,6 +58,7 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
         val colWhite = if state.fg == CPMirStateManager.FG_WHITE then UNSEL else " "
         val txtPxs = markup.process(
             s"""
+               |
                | <@ Options @>
                | ---------
                | 
