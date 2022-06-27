@@ -43,11 +43,11 @@ decl
     | exportDecl
     | unexportDecl
     ;
-valDecl: 'val' assignDecl;
-varDecl: 'var' assignDecl;
+valDecl: VAL_KW IDENT ASSIGN expr;
+varDecl: VAR_KW IDENT ASSIGN expr;
 assignDecl: IDENT ASSIGN expr;
-exportDecl: 'export' IDENT;
-unexportDecl: 'unexport' IDENT;
+exportDecl: EXPORT_KW IDENT;
+unexportDecl: UNEXPORT_KW IDENT;
 expr
     : atom #atomExpr;
 atom
@@ -62,6 +62,11 @@ qstring
     | BQSTRING
     ;
 
+// Lexer.
+VAR_KW: 'var';
+VAL_KW: 'val';
+EXPORT_KW: 'export';
+UNEXPORT_KW: 'unexport';
 SQSTRING: SQUOTE ((~'\'') | ('\\''\''))* SQUOTE; // Allow for \' (escaped single quote) in the string.
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BQSTRING: BQUOTE ((~'`') | ('\\''`'))* BQUOTE; // Allow for \` (escape double quote) in the string.
