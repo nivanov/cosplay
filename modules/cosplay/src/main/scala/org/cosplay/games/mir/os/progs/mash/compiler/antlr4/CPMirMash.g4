@@ -30,6 +30,38 @@ grammar CPMirMash;
                ALl rights reserved.
 */
 
+// Parser.
+mash: decls EOF; // Mash enty point.
+decls
+    : decl
+    | decls decl
+    ;
+decl
+    : valDecl
+    | varDecl
+    | assignDecl
+    | exportDecl
+    | unexportDecl
+    ;
+valDecl: 'val' assignDecl;
+varDecl: 'var' assignDecl;
+assignDecl: IDENT ASSIGN expr;
+exportDecl: 'export' IDENT;
+unexportDecl: 'unexport' IDENT;
+expr
+    : atom #atomExpr;
+atom
+    : NULL
+    | INT REAL? EXP?
+    | BOOL
+    | qstring
+    ;
+qstring
+    : SQSTRING
+    | DQSTRING
+    | BQSTRING
+    ;
+
 SQSTRING: SQUOTE ((~'\'') | ('\\''\''))* SQUOTE; // Allow for \' (escaped single quote) in the string.
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BQSTRING: BQUOTE ((~'`') | ('\\''`'))* BQUOTE; // Allow for \` (escape double quote) in the string.
@@ -72,9 +104,9 @@ DOLLAR: '$';
 INT: '0' | [1-9] [_0-9]*;
 REAL: DOT [0-9]+;
 EXP: [Ee] [+\-]? INT;
-
 fragment LETTER: [a-zA-Z];
-ID: (UNDERSCORE|LETTER|MINUS|DOT|[0-9])+;
+//ID: (UNDERSCORE|LETTER|MINUS|DOT|[0-9])+;
+IDENT: (UNDERSCORE|LETTER)+(UNDERSCORE|LETTER|[0-9])*;
 COMMENT : POUND ~[\r\n]* '\r'? ('\n'| EOF) -> skip;
 WS: [ \r\t\u000C\n]+ -> skip;
 ErrorChar: .;
