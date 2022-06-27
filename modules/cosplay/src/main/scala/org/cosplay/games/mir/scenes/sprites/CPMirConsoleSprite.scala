@@ -43,6 +43,8 @@ import scala.util.*
   *
   */
 class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsole:
+    private val keySnd = CPSound(s"$SND_HOME/keypress.wav", .05f)
+
     case class ZChar(ch: Char, fg: CPColor, bg: CPColor, z: Int):
         lazy val px: CPPixel = ch&&(fg, bg)
 
@@ -51,25 +53,79 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     private final val H = 100
     private final val LAST_X = W - 1
     private final val LAST_Y = H - 1
-    private final val mux = Object()
     private final val CUR_PX = ' '&&(FG, FG)
-    private final val CUR_BLINK_FRM_NUM = 15
+    private final val CUR_BLINK_FRM_NUM = 13
+    private final val TAB_SIZE = 8
+    private final val mux = Object()
     private val pane = Array.ofDim[ZChar](H, W)
     private var curX = 0
     private var curY = 0
-    private var curVis = true // Visible vs. not-visible.
-    private var curBlink = true // Blinking (showed) vs. non-blinking (hidden).
+    private var lastCurX = 0
+    private var lastCurY = 0
+    private var curVis = true // Visible vs. non-visible.
+    private var curSolid = true
     private var dim = CPDim(W, H)
     private var canvY = 0
 
+    // Read line staff.
+    private var rlBuf: ReadLineBuffer = _
     private var rlMode = false
     private var rlLatch: CountDownLatch = _
     private var rlStartX = 0
     private var rlStartY = 0
-    private var rlBuf = ""
-    private var rlBufPos = 0
+    private var rlRepCh: Option[Char] = None
+
+    /**
+      *
+      * @param maxLen
+      * @param hist
+      */
+    class ReadLineBuffer(maxLen: Int, hist: Seq[String]):
+        private var buf = ""
+        private var pos = 0
+        private var len = 0
+        private var histIdx = 0
+        private var savedBuf = ""
+
+        def moveLeft(): Unit = pos = 0.max(pos - 1)
+        def moveRight(): Unit = pos = len.min(pos + 1)
+        private def fromHistory(s: String): Unit =
+            val curLen = buf.length
+            buf = s.padTo(curLen, ' ')
+            len = buf.stripTrailing().length
+            pos = len
+
+        def historyUp(): Unit =
+            if histIdx < hist.size - 1 then
+                if histIdx == 0 then savedBuf = buf.stripTrailing()
+                histIdx += 1
+                fromHistory(hist(histIdx))
+        def historyDown(): Unit =
+            if histIdx > 0 then
+                histIdx -= 1
+                fromHistory(if histIdx == 0 then savedBuf else hist(histIdx))
+        def moveHome(): Unit = pos = 0
+        def moveEnd(): Unit = pos = len
+        def getText: String = buf
+        def getPos: Int = pos
+        def insertChar(ch: Char): Unit =
+            if len < maxLen then
+                buf = buf.substring(0, pos) + ch + buf.substring(pos)
+                pos += 1
+                len = buf.stripTrailing().length
+        def deleteChar(): Unit =
+            if pos < len then
+                buf = buf.substring(0, pos) + buf.substring(pos + 1) + ' '
+                len = buf.stripTrailing().length
+        def backspace(): Unit =
+            if pos > 0 then
+                pos -= 1
+                buf = buf.substring(0, pos) + buf.substring(pos + 1) + ' '
+                len = buf.stripTrailing().length
 
     clear()
+
+    inline private def isPositionValid(x: Int, y: Int): Boolean = x >= 0 && x < W && y >= 0 && y < H
 
     override def clear(): Unit = for x ← 0 until W; y ← 0 until H do pane(y)(x) = SPACE
     override def clearLeft(): Unit = for x ← 0 until curX do pane(curY)(x) = SPACE
@@ -78,11 +134,8 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     override def clearColumn(): Unit = for y ← 0 until H do pane(y)(curX) = SPACE
     override def clearAbove(): Unit = for y ← 0 until curY do pane(y)(curX) = SPACE
     override def clearBelow(): Unit = for y ← curY + 1 until H do pane(y)(curX) = SPACE
-
-    inline private def isPositionValid(x: Int, y: Int): Boolean = x >= 0 && x < W && y >= 0 && y < H
-
-    inline override def isCursorVisible: Boolean = curVis
-    inline override def setCursorVisible(f: Boolean): Unit = curVis = f
+    override def isCursorVisible: Boolean = curVis
+    override def setCursorVisible(f: Boolean): Unit = curVis = f
     override def moveCursor(x: Int, y: Int): Unit =
         val y2 = y + canvY
         if isPositionValid(x, y2) then mux.synchronized {
@@ -90,8 +143,8 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             curY = y2
         }
     override def getSize: CPDim = dim
-    inline override def getCursorX: Int = curX
-    inline override def getCursorY: Int = curY - canvY
+    override def getCursorX: Int = curX
+    override def getCursorY: Int = curY - canvY
     override def putChar(x: Int, y: Int, z: Int, ch: Char, fg: CPColor, bg: CPColor): Unit =
         val y2 = y + canvY
         if isPositionValid(x, y2) then mux.synchronized {
@@ -99,50 +152,69 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             if zch.z <= z then pane(y2)(x) = ZChar(ch, fg, bg, z)
         }
 
-    override def readLine(repCh: Option[Char], maxLen: Int, hist: Option[Seq[String]]): String =
+    override def readLine(repCh: Option[Char], maxLen: Int, hist: Seq[String]): String =
         require(!rlMode)
         rlMode = true
         rlLatch = CountDownLatch(1)
         rlStartX = curX
         rlStartY = curY
-        rlBuf = ""
-        rlBufPos = 0
+        rlRepCh = repCh
+        rlBuf = new ReadLineBuffer(maxLen, hist)
 
         while rlLatch.getCount > 0 do
             try rlLatch.await()
             catch case _: InterruptedException ⇒ ()
 
-        rlBuf.strip()
+        rlMode = false
+        rlBuf.getText.strip()
 
     override def update(ctx: CPSceneObjectContext): Unit =
         super.update(ctx)
         if rlMode then
-            ctx.getKbEvent match
-                case None ⇒ ()
-                case Some(evt) ⇒
-                    val len = rlBuf.length
-                    if evt.key.isPrintable then
-                        val ch = evt.key.ch
-                        if rlBufPos < len then rlBuf = rlBuf.substring(0, rlBufPos) + ch + rlBuf.substring(rlBufPos) else rlBuf += ch
-                        rlBufPos += 1
-                    else if evt.key == KEY_ENTER then rlLatch.countDown()
-                    else if evt.key == KEY_DEL then ()
-                    else if evt.key == KEY_HOME then rlBufPos = 0
-                    else if evt.key == KEY_END then rlBufPos = len
-                    else if evt.key == KEY_LEFT then rlBufPos = 0.max(rlBufPos - 1)
-                    else if evt.key == KEY_RIGHT then rlBufPos = len.min(rlBufPos + 1)
-                    else if evt.key == KEY_UP then ()
-                    else if evt.key == KEY_DOWN then ()
-                    else if evt.key ==  KEY_BACKSPACE then
-                        if len > 0 then
-                            rlBuf = rlBuf.substring(0, rlBufPos) + rlBuf.substring(rlBufPos)
-                            rlBufPos -= 1
+            require(rlBuf != null)
+            mux.synchronized {
+                ctx.getKbEvent match
+                    case None ⇒ ()
+                    case Some(evt) ⇒
+                        if stateMgr.state.crtAudio then keySnd.play()
+                        val key = evt.key
+                        if key.isPrintable then rlBuf.insertChar(key.ch)
+                        else if key == KEY_ENTER then rlLatch.countDown()
+                        else if key == KEY_DEL then rlBuf.deleteChar()
+                        else if key == KEY_HOME then rlBuf.moveHome()
+                        else if key == KEY_END then rlBuf.moveEnd()
+                        else if key == KEY_LEFT then rlBuf.moveLeft()
+                        else if key == KEY_RIGHT then rlBuf.moveRight()
+                        else if key == KEY_UP then rlBuf.historyUp()
+                        else if key == KEY_DOWN then rlBuf.historyDown()
+                        else if key == KEY_BACKSPACE then rlBuf.backspace()
+            }
 
     override def render(ctx: CPSceneObjectContext): Unit =
         super.render(ctx)
         val canv = ctx.getCanvas
+
         mux.synchronized {
             dim = canv.dim
+
+            if rlMode then
+                curX = rlStartX
+                curY = rlStartY
+                var saveCurX = curX
+                var saveCurY = curY
+                var i = 0
+                val bufPos = rlBuf.getPos
+                for ch ← rlBuf.getText do
+                    pane(curY)(curX) = ZChar(if ch == ' ' then ch else rlRepCh.getOrElse(ch), getFg, getBg, Int.MaxValue)
+                    if i == bufPos then
+                        saveCurX = curX
+                        saveCurY = curY
+                    i += 1
+                    advanceCursor(dim.w)
+
+                if i != bufPos then
+                    curX = saveCurX
+                    curY = saveCurY
 
             canvY = if curY < canv.h then 0 else curY - canv.h + 1
             val w = canv.w.min(W)
@@ -157,30 +229,22 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
                     x += 1
                 y += 1
 
-            if rlMode then
-                curX = rlStartX
-                curY = rlStartY
-                var saveCurX = 0
-                var saveCurY = 0
-                var i = 0
-                for ch ← rlBuf do
-                    pane(getCursorY)(getCursorX) = ZChar(ch, getFg, getBg, Int.MaxValue)
-                    if i == rlBufPos then
-                        saveCurX = getCursorX
-                        saveCurY = getCursorY
-                    i += 1
-                    advanceCursor()
-                curX = saveCurX
-                curY = saveCurY
+            if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curSolid = !curSolid
+            if lastCurY != curY || lastCurX != curX then curSolid = true // Force solid state on move.
+            if curSolid && curVis then canv.drawPixel(CUR_PX, curX, curY - canvY, Int.MaxValue)
 
-            if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curBlink = !curBlink
-            if curBlink && curVis then canv.drawPixel(CUR_PX, curX, curY - canvY, Int.MaxValue)
+            lastCurX = curX
+            lastCurY = curY
         }
 
-    private def advanceCursor(): Unit =
+    /**
+      *
+      * @param w Actual width to use.
+      */
+    private def advanceCursor(w: Int): Unit =
         require(Thread.holdsLock(mux))
 
-        if curX < LAST_X then curX += 1
+        if curX < w - 1 then curX += 1
         else if curY < LAST_Y then
             curX = 0
             curY += 1
@@ -193,13 +257,13 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         mux.synchronized {
             def put(ch: Char): Unit =
                 putChar(getCursorX, getCursorY, ch)
-                advanceCursor()
+                advanceCursor(W)
             x.toString.foreach(ch ⇒ ch match
                 case '\r' ⇒ curX = 0 // For Win-compatibility just in case.
                 case '\n' ⇒
                     curX = LAST_X
-                    advanceCursor()
-                case '\t' ⇒ (0 until 8).foreach(_ ⇒ put(' '))
+                    advanceCursor(W)
+                case '\t' ⇒ (0 until TAB_SIZE).foreach(_ ⇒ put(' '))
                 case _ ⇒ put(ch)
             )
         }

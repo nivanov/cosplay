@@ -832,11 +832,16 @@ object CPGuiLog:
       * @param bytes
       */
     private def formatMem(bytes: Long): String =
-        if bytes < KB then s"${numFmt.format(bytes)}B"
-        else if bytes < MB then s"${numFmt.format(bytes / KB)}KB"
-        else if bytes < GB then s"${numFmt.format(bytes / MB)}MB"
-        else if bytes < TB then s"${numFmt.format(bytes / GB)}GB"
-        else s"${numFmt.format(bytes / TB)}TB"
+        // For some (unknown) reason, at least on MacOS, the last
+        // line can produce arithmetic exception with "/ by zero" message.
+        try
+            if bytes < KB then s"${numFmt.format(bytes)}B"
+            else if bytes < MB then s"${numFmt.format(bytes / KB)}KB"
+            else if bytes < GB then s"${numFmt.format(bytes / MB)}MB"
+            else if bytes < TB then s"${numFmt.format(bytes / GB)}GB"
+            else s"${numFmt.format(bytes / TB)}TB"
+        catch
+            case e: ArithmeticException ⇒ ""
 
     /**
       *

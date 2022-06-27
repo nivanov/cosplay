@@ -48,7 +48,7 @@ trait CPMirConsole:
       * @param maxLen Optional max length of the input.
       * @param hist Optional history to use for history scrolling and auto-completion.
       */
-    def readLine(repCh: Option[Char] = None, maxLen: Int = Int.MaxValue, hist: Option[Seq[String]] = None): String
+    def readLine(repCh: Option[Char] = None, maxLen: Int = Int.MaxValue, hist: Seq[String] = Seq.empty): String
 
     /**
       * Gets the current size of the console window in characters.
