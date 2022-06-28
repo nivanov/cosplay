@@ -50,7 +50,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         true,
         3000,
         BG_PX,
-        onFinish = _ ⇒ eyesShdr.start()
+        onFinish = _ => eyesShdr.start()
     )
     private val starStreakShdr = CPStarStreakShader(
         true,
@@ -60,10 +60,10 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
             CPStarStreak('.', CS, 0.015, 25, (-1.5f, 0f), 0),
             CPStarStreak('_', CS, 0.005, 50, (-2.0f, 0f), 0)
         ),
-        skip = (zpx, _, _) ⇒ zpx.z == 1
+        skip = (zpx, _, _) => zpx.z == 1
     )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
-    private val eyesShdr = CPShimmerShader(false, CS, 7, false, (zpx, _, _) ⇒ zpx.px.char != '8')
+    private val eyesShdr = CPShimmerShader(false, CS, 7, false, (zpx, _, _) => zpx.px.char != '8')
 
     // Add scene objects...
     addObjects(
@@ -76,7 +76,7 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         // Toggle audio on 'CTRL+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Transition to the next scene on 'Enter' press fixing the dimension.
-        CPKeyboardSprite(KEY_ENTER, ctx ⇒
+        CPKeyboardSprite(KEY_ENTER, ctx =>
             if !fadeOutShdr.isActive then
                 fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true))
         )

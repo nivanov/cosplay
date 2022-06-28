@@ -122,7 +122,7 @@ class CPMirOs(fs: CPMirFileSystem, users: Seq[CPMirUser]) extends Serializable:
             con.readLine(maxLen = 16, repCh = Some('*'))
             con.println()
             while true do
-                for s ← dummy do
+                for s <- dummy do
                     con.println(s)
                     Thread.sleep(CPRand.between(100, 300))
         }

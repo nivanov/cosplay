@@ -91,7 +91,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
               |**********************************
             """),
         (ch, _, _) => ch match
-            case '*' ⇒ ' '&&(C2, C2)
+            case '*' => ' '&&(C2, C2)
             case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
@@ -112,18 +112,18 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
               |**********************************
             """),
         (ch, _, _) => ch match
-            case '*' ⇒ ' '&&(C2, C2)
+            case '*' => ' '&&(C2, C2)
             case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
             case _ => ch&&(C3, BG_PX.bg.get)
     )
     private val yamEmitter = new CPConfettiEmitter(
-        () ⇒ yamSpr.getX,
-        () ⇒ yamSpr.getY,
+        () => yamSpr.getX,
+        () => yamSpr.getY,
         10,
         15,
         CS,
         BG_PX.fg,
-        _ ⇒ CPRand.rand("oO0Xx"),
+        _ => CPRand.rand("oO0Xx"),
         0
     )
     private val yamPartSpr = CPParticleSprite(emitters = Seq(yamEmitter))
@@ -136,11 +136,11 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
             // Draw border.
-            canv.drawRect(0, scoreH, CPDim(canv.w, canv.h - scoreH), 1, (_, _) ⇒ borderPx)
+            canv.drawRect(0, scoreH, CPDim(canv.w, canv.h - scoreH), 1, (_, _) => borderPx)
             canv.drawLine(1, scoreH + 1, 1, canv.h, 1, borderPx)
             canv.drawLine(canv.w - 2, scoreH + 1, canv.w - 2, canv.h, 1, borderPx)
             // Draw score rectangle fill.
-            canv.fillRect(0, 0, canv.w, scoreH - 1, 1, (_, _) ⇒ scorePx)
+            canv.fillRect(0, 0, canv.w, scoreH - 1, 1, (_, _) => scorePx)
     private val yamShdr = CPShimmerShader(false, CS, 7, true)
     private val yamSpr = new CPAnimationSprite(anis = yamAniSeq, 0, 0, 0, "yamAni", false, shaders = Seq(yamShdr))
     private val snakeSpr: CPCanvasSprite = new CPCanvasSprite:
@@ -177,7 +177,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             val rx = (x * 2).round
             val ry = y.round
             // Check for self-bite death.
-            snake.tail.exists((a, b) ⇒ a == hx && b == hy) ||
+            snake.tail.exists((a, b) => a == hx && b == hy) ||
             // Check borders.
             ry > c.yMax - 1 || ry < scoreH + 1 || rx < 1 || rx > c.xMax - 3
 
@@ -197,7 +197,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                     // Initialize the snake.
                     val cx = canv.xCenter / 2
                     val cy = canv.yCenter
-                    for i ← 0 to 5 do snake +:= cx + i -> cy
+                    for i <- 0 to 5 do snake +:= cx + i -> cy
                     val (hx, hy) = snake.head
                     x = hx.toFloat
                     y = hy.toFloat
@@ -242,8 +242,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                             yamSpr.getX.min(canv.xMax - img.w - 2),
                             yamSpr.getY.min(canv.yMax - img.h - 1),
                             z = 0,
-                            _ ⇒ 0f,
-                            _ ⇒ -0.3f,
+                            _ => 0f,
+                            _ => -0.3f,
                             BG_PX,
                             1000
                         )
@@ -274,7 +274,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
             else
                 if ctx.isKbKey(KEY_SPACE) then
                     youLostSnd.stop(500)
-                    fadeOutShdr.start(ctx ⇒ ctx.switchScene("title", true))
+                    fadeOutShdr.start(ctx => ctx.switchScene("title", true))
 
         override def render(ctx: CPSceneObjectContext): Unit =
             require(snake.nonEmpty)

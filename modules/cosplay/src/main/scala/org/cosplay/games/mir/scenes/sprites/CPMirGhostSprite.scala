@@ -112,8 +112,8 @@ class CPMirGhostSprite(avoidTopLeft: Boolean) extends CPOffScreenSprite:
                 initX = x,
                 initY = y,
                 z = 1,
-                dxf = _ ⇒ dx,
-                dyf = _ ⇒ dy,
+                dxf = _ => dx,
+                dyf = _ => dy,
                 bgPx = BG_PX,
                 durMs = 3500,
                 autoDelete = true

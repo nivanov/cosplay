@@ -93,9 +93,9 @@ object CPMirTutorialScene extends CPMirStarStreakSceneBase("tutorial", "bg1.wav"
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         new CPCenteredImageSprite(img = img, z = 2),
-        new CPKeyboardSprite((_, key) ⇒ key match
-            case KEY_SPACE ⇒ clickThenFade(ctx ⇒ ctx.switchScene(ctx.getGameCache("next_scene")))
-            case _ ⇒ ()
+        new CPKeyboardSprite((_, key) => key match
+            case KEY_SPACE => clickThenFade(ctx => ctx.switchScene(ctx.getGameCache("next_scene")))
+            case _ => ()
         ),
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))

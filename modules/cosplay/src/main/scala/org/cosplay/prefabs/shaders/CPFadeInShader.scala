@@ -53,7 +53,7 @@ import org.cosplay.*
   *     100% the actual pixel color, value `0.5` means that the color will be a 50% mix between the background
   *     and the actual pixel color. The function takes two parameters: first is a current frame number since the start
   *     of the effect, and the second parameter is the last frame number of the effect. First parameter is always less
-  *     then the second one. By default, the the `(a, b) ⇒ a.toFloat / b` function is used that gives gradual color
+  *     then the second one. By default, the the `(a, b) => a.toFloat / b` function is used that gives gradual color
   *     transition through the frames range. Another popular function to use here is a sigmoid
   *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat()` that gives a different visual effect.
   * @see [[CPFadeOutShader]]
@@ -73,7 +73,7 @@ class CPFadeInShader(
     onFinish: CPSceneObjectContext => Unit = _ => (),
     autoStart: Boolean = true,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
-    balance: (Int, Int) ⇒ Float = (a, b) ⇒ a.toFloat / b
+    balance: (Int, Int) => Float = (a, b) => a.toFloat / b
 ) extends CPShader:
     require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
     require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
@@ -83,7 +83,7 @@ class CPFadeInShader(
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
     private var go = autoStart
-    private var cb: CPSceneObjectContext ⇒ Unit = onFinish
+    private var cb: CPSceneObjectContext => Unit = onFinish
 
     if autoStart then start()
 
@@ -93,7 +93,7 @@ class CPFadeInShader(
       * @param onFinish Optional override for the callback to call when shader effect is finished.
       *         If not provided, the default value is the callback supplied at the creation of this shader.
       */
-    def start(onFinish: CPSceneObjectContext ⇒ Unit = cb): Unit =
+    def start(onFinish: CPSceneObjectContext => Unit = cb): Unit =
         cb = onFinish
         frmCnt = 0
         go = true
@@ -103,7 +103,7 @@ class CPFadeInShader(
       *
       * @param onFinish Override for the callback to call when shader effect is finished.
       */
-    def setOnFinish(onFinish: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinish        
+    def setOnFinish(onFinish: CPSceneObjectContext => Unit): Unit = cb = onFinish
 
     /**
       * Tests whether this shader is in progress.

@@ -67,7 +67,7 @@ object CPMirFileSystemTests:
         def assertRootPath(p1: String, p2: String): Unit = assertPath(root, p1, p2)
         def assertPath(cp: CPMirDirectoryFile, p1: String, p2: String): Unit = assert(cp.file(p1).get.getAbsolutePath == p2)
 
-        root.scan(f ⇒ println(f.getAbsolutePath))
+        root.scan(f => println(f.getAbsolutePath))
         assertRootPath("/info.txt", "/info.txt")
         assertRootPath("info.txt", "/info.txt")
         assertRootPath("./info.txt", "/info.txt")

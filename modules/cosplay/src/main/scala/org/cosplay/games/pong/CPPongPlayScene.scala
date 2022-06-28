@@ -132,7 +132,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
             case '+' => ch&C1
-            case '&' ⇒ '+'&C4
+            case '&' => '+'&C4
             case _ => ch&C2
     ).trimBg()
 
@@ -154,7 +154,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
-            case '&' ⇒ '+'&C4
+            case '&' => '+'&C4
             case '+' => ch&C1
             case _ => ch&C2
     ).trimBg()
@@ -177,7 +177,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
-            case '&' ⇒ '+'&C4
+            case '&' => '+'&C4
             case '+' => ch&C1
             case _ => ch&C2
     ).trimBg()
@@ -194,31 +194,31 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
       *
       * @param xf X-coordinate producer.
       */
-    private def mkScoreSprite(xf: (CPCanvas, CPImageSprite) ⇒ Int): CPImageSprite =
+    private def mkScoreSprite(xf: (CPCanvas, CPImageSprite) => Int): CPImageSprite =
         new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)): // Initial score is zero.
             override def update(ctx: CPSceneObjectContext): Unit = setX(xf(ctx.getCanvas, this))
 
     // Score sprites.
-    private val plyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
-    private val npcScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
+    private val plyScoreSpr = mkScoreSprite((canv, spr) => (canv.dim.w - spr.getImage.w) / 4)
+    private val npcScoreSpr = mkScoreSprite((canv, spr) => (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
     private val plyScoreEmitter = new CPConfettiEmitter(
-        () ⇒ plyScoreSpr.getRect.centerX,
-        () ⇒ plyScoreSpr.getRect.h / 2,
+        () => plyScoreSpr.getRect.centerX,
+        () => plyScoreSpr.getRect.h / 2,
         15,
         15,
         CS,
         BG_PX.fg,
-        _ ⇒ CPRand.rand("1234567890"),
+        _ => CPRand.rand("1234567890"),
         1
     )
     private val npcScoreEmitter = new CPConfettiEmitter(
-        () ⇒ npcScoreSpr.getRect.centerX,
-        () ⇒ npcScoreSpr.getRect.h / 2,
+        () => npcScoreSpr.getRect.centerX,
+        () => npcScoreSpr.getRect.h / 2,
         15,
         15,
         CS,
         BG_PX.fg,
-        _ ⇒ CPRand.rand("1234567890"),
+        _ => CPRand.rand("1234567890"),
         1
     )
     private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
@@ -230,7 +230,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         CS,
         2,
         true,
-        skip = (zpx, _, _) ⇒ zpx.z != 10 || zpx.char == BG_PX.char || zpx.char == ' '
+        skip = (zpx, _, _) => zpx.z != 10 || zpx.char == BG_PX.char || zpx.char == ' '
     )
     private val boostSpr = new CPImageSprite(x = 0, y = 0, z = 10, FIG_RECTANGLES.render("boost", C1).trimBg(), shaders = Seq(boostShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =

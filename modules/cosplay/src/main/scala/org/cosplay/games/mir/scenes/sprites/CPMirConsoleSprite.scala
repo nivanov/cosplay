@@ -127,13 +127,13 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
 
     inline private def isPositionValid(x: Int, y: Int): Boolean = x >= 0 && x < W && y >= 0 && y < H
 
-    override def clear(): Unit = for x ← 0 until W; y ← 0 until H do pane(y)(x) = SPACE
-    override def clearLeft(): Unit = for x ← 0 until curX do pane(curY)(x) = SPACE
-    override def clearRight(): Unit = for x ← curX + 1 until W do pane(curY)(x) = SPACE
-    override def clearRow(): Unit = for x ← 0 until W do pane(x)(curY) = SPACE
-    override def clearColumn(): Unit = for y ← 0 until H do pane(y)(curX) = SPACE
-    override def clearAbove(): Unit = for y ← 0 until curY do pane(y)(curX) = SPACE
-    override def clearBelow(): Unit = for y ← curY + 1 until H do pane(y)(curX) = SPACE
+    override def clear(): Unit = for x <- 0 until W; y <- 0 until H do pane(y)(x) = SPACE
+    override def clearLeft(): Unit = for x <- 0 until curX do pane(curY)(x) = SPACE
+    override def clearRight(): Unit = for x <- curX + 1 until W do pane(curY)(x) = SPACE
+    override def clearRow(): Unit = for x <- 0 until W do pane(x)(curY) = SPACE
+    override def clearColumn(): Unit = for y <- 0 until H do pane(y)(curX) = SPACE
+    override def clearAbove(): Unit = for y <- 0 until curY do pane(y)(curX) = SPACE
+    override def clearBelow(): Unit = for y <- curY + 1 until H do pane(y)(curX) = SPACE
     override def isCursorVisible: Boolean = curVis
     override def setCursorVisible(f: Boolean): Unit = curVis = f
     override def moveCursor(x: Int, y: Int): Unit =
@@ -163,7 +163,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
 
         while rlLatch.getCount > 0 do
             try rlLatch.await()
-            catch case _: InterruptedException ⇒ ()
+            catch case _: InterruptedException => ()
 
         rlMode = false
         rlBuf.getText.strip()
@@ -174,8 +174,8 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             require(rlBuf != null)
             mux.synchronized {
                 ctx.getKbEvent match
-                    case None ⇒ ()
-                    case Some(evt) ⇒
+                    case None => ()
+                    case Some(evt) =>
                         if stateMgr.state.crtAudio then keySnd.play()
                         val key = evt.key
                         if key.isPrintable then rlBuf.insertChar(key.ch)
@@ -204,7 +204,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
                 var saveCurY = curY
                 var i = 0
                 val bufPos = rlBuf.getPos
-                for ch ← rlBuf.getText do
+                for ch <- rlBuf.getText do
                     pane(curY)(curX) = ZChar(if ch == ' ' then ch else rlRepCh.getOrElse(ch), getFg, getBg, Int.MaxValue)
                     if i == bufPos then
                         saveCurX = curX
@@ -249,8 +249,8 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             curX = 0
             curY += 1
         else
-            for y ← 1 until H do Array.copy(pane(y), 0, pane(y - 1), 0, W)
-            for x ← 0 until W do pane(LAST_Y)(x) = SPACE
+            for y <- 1 until H do Array.copy(pane(y), 0, pane(y - 1), 0, W)
+            for x <- 0 until W do pane(LAST_Y)(x) = SPACE
             curX = 0
 
     override def print(x: Any): Unit =
@@ -258,12 +258,12 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
             def put(ch: Char): Unit =
                 putChar(getCursorX, getCursorY, ch)
                 advanceCursor(W)
-            x.toString.foreach(ch ⇒ ch match
-                case '\r' ⇒ curX = 0 // For Win-compatibility just in case.
-                case '\n' ⇒
+            x.toString.foreach(ch => ch match
+                case '\r' => curX = 0 // For Win-compatibility just in case.
+                case '\n' =>
                     curX = LAST_X
                     advanceCursor(W)
-                case '\t' ⇒ (0 until TAB_SIZE).foreach(_ ⇒ put(' '))
-                case _ ⇒ put(ch)
+                case '\t' => (0 until TAB_SIZE).foreach(_ => put(' '))
+                case _ => put(ch)
             )
         }

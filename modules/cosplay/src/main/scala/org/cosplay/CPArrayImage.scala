@@ -180,21 +180,21 @@ object CPArrayImage:
         require(align == -1 || align == 0 || align == 1 || align == 2, "'align' parameter can only be one of '-1', '0', '1', or '2'.")
 
         val lines = CPUtils
-            .splitBy(pxs.filter(_.char != '\r'), px ⇒ px.char == '\n')
-            .map(seq ⇒ if align == 2 then seq else CPUtils.trimBy(seq, px ⇒ px.char == spacePx.char))
-            .map(seq ⇒ ArrayBuffer.from(seq))
+            .splitBy(pxs.filter(_.char != '\r'), px => px.char == '\n')
+            .map(seq => if align == 2 then seq else CPUtils.trimBy(seq, px => px.char == spacePx.char))
+            .map(seq => ArrayBuffer.from(seq))
         val maxSz = lines.maxBy(_.size).size
-        for line ← lines if line.size < maxSz do
+        for line <- lines if line.size < maxSz do
             val d = maxSz - line.length
             if align == -1 || align == 2then // Left align.
-                (0 until d).foreach(_ ⇒ line += spacePx)
+                (0 until d).foreach(_ => line += spacePx)
             else if align == 1 then // Right align.
-                (0 until d).foreach(_ ⇒ line.prepend(spacePx))
+                (0 until d).foreach(_ => line.prepend(spacePx))
             else // Center align.
                 val left = d / 2
                 val right = d - left
-                (0 until left).foreach(_ ⇒ line.prepend(spacePx))
-                (0 until right).foreach(_ ⇒ line += spacePx)
+                (0 until left).foreach(_ => line.prepend(spacePx))
+                (0 until right).foreach(_ => line += spacePx)
 
         new CPArrayImage(CPArray2D(lines.flatMap(_.toSeq), maxSz))
 

@@ -743,7 +743,7 @@ object CPImage:
       */
     def vertImage(imgs: CPImage*): CPImage =
         require(imgs.nonEmpty)
-        imgs.tail.foldLeft(imgs.head)((acc, img) ⇒ acc.stitchBelow(img))
+        imgs.tail.foldLeft(imgs.head)((acc, img) => acc.stitchBelow(img))
 
     /**
       * Creates new image by stacking given images horizontally, starting with the 1st image,
@@ -753,7 +753,7 @@ object CPImage:
       */
     def horImage(imgs: CPImage*): CPImage =
         require(imgs.nonEmpty)
-        imgs.tail.foldLeft(imgs.head)((acc, img) ⇒ acc.stitchRight(img))
+        imgs.tail.foldLeft(imgs.head)((acc, img) => acc.stitchRight(img))
 
     /**
       * Loads image using [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.

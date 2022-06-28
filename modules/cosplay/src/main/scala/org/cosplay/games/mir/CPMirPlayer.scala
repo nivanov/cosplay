@@ -145,12 +145,12 @@ case class CPMirPlayer(
             ++ favBands
             ++ favGames.map(_.character)
             ++ children.map(_.name)
-        for w ← words.distinct; n ← nums.distinct yield s"${w.toLowerCase}$n"
+        for w <- words.distinct; n <- nums.distinct yield s"${w.toLowerCase}$n"
     }
     val roleLowerCase: String = role match
-        case ROLE_PILOT ⇒ "mission pilot"
-        case ROLE_ENGINEER ⇒ "mission engineer"
-        case ROLE_SPECIALIST ⇒ "mission specialist"
+        case ROLE_PILOT => "mission pilot"
+        case ROLE_ENGINEER => "mission engineer"
+        case ROLE_SPECIALIST => "mission specialist"
 
     def debugString: String =
         s"""
@@ -261,7 +261,7 @@ object CPMirPlayer:
         ("Mega", "Mega Man"),
         ("Samus", "Metroid Prime"),
         ("Diddy", "Donkey Kong")
-    ).map(t ⇒ CPMirFavGame(t._1, t._2))
+    ).map(t => CPMirFavGame(t._1, t._2))
 
     private val rockBands = Seq(
         "Nirvana",      "Soundgarden",      "Radiohead",        "Pantera ",         "Metallica",
@@ -424,7 +424,7 @@ object CPMirPlayer:
         val birth = CPRand.rand(towns)
         val home = CPRand.rand(towns)
         val kids = ArrayBuffer.empty[CPMirPlayerChild]
-        for i ← 0 until CPRand.randInt(1, 4) do kids += newChild()
+        for i <- 0 until CPRand.randInt(1, 4) do kids += newChild()
         CPMirPlayer(
             CPRand.rand(boyNames),
             CPRand.rand(familyNames),

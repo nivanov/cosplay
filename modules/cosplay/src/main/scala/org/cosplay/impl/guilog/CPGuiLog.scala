@@ -841,7 +841,7 @@ object CPGuiLog:
             else if bytes < TB then s"${numFmt.format(bytes / GB)}GB"
             else s"${numFmt.format(bytes / TB)}TB"
         catch
-            case e: ArithmeticException ⇒ ""
+            case e: ArithmeticException => ""
 
     /**
       *

@@ -140,7 +140,7 @@ class CPShimmerShader(
                             lastSet += PixelXYZ(newPx, x, y, zpx.z)
                 })
             else
-                for px ← lastSet do canv.drawPixel(px.px, px.x, px.y, px.z)
+                for px <- lastSet do canv.drawPixel(px.px, px.x, px.y, px.z)
 
 
 

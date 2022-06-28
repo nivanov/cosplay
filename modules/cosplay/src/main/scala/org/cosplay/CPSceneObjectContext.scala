@@ -111,7 +111,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       *         Note that the actual delay can be bigger but never smaller than this parameter.
       * @param f A function to run later in the current scene.
       */
-    def runLater(delayMs: Long, f: CPSceneObjectContext ⇒ Unit): Unit
+    def runLater(delayMs: Long, f: CPSceneObjectContext => Unit): Unit
 
     /**
       * Schedules given function to run at the next frame update. More specifically,
@@ -121,7 +121,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       *
       * @param f A function to run in the next frame update of the current scene.
       */
-    def runNextFrame(f: CPSceneObjectContext ⇒ Unit): Unit
+    def runNextFrame(f: CPSceneObjectContext => Unit): Unit
 
     /**
       * Deletes given scene object after this update cycle. Change will be visible only
@@ -178,7 +178,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       *
       * @param tags One or more tags to filter by.
       */
-    def deleteObjectsForTags(tags: String*): Unit = getObjectsForTags(tags: _*).foreach(obj ⇒ deleteObject(obj.getId))
+    def deleteObjectsForTags(tags: String*): Unit = getObjectsForTags(tags: _*).foreach(obj => deleteObject(obj.getId))
 
     /**
       * Gets number of scene objects with given tags. All tags must be present in the scene object
@@ -216,7 +216,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       */
     def switchScene(id: String, delCur: Boolean, cacheProps: (String, AnyRef)*): Unit =
         val cache = getGameCache
-        cacheProps.foreach(t ⇒ cache.put(t._1, t._2))
+        cacheProps.foreach(t => cache.put(t._1, t._2))
         switchScene(id, delCur)
 
     /**
@@ -240,8 +240,8 @@ trait CPSceneObjectContext extends CPBaseContext:
       */
     def isKbKey(key: CPKeyboardKey): Boolean =
         getKbEvent match
-            case Some(k) ⇒ k.key == key
-            case None ⇒ false
+            case Some(k) => k.key == key
+            case None => false
 
     /**
       * Tests whether or not current object is a input keyboard focus owner.

@@ -161,8 +161,8 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
       * @see [[CPColor.lighter()]]
       */
     inline def withLighterBg(factor: Float): CPPixel = bg match
-        case Some(c) ⇒ CPPixel(char, fg, Option(c.lighter(factor)), tag)
-        case None ⇒ this
+        case Some(c) => CPPixel(char, fg, Option(c.lighter(factor)), tag)
+        case None => this
 
     /**
       * Gets a copy of this pixel with darker background.
@@ -171,8 +171,8 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
       * @see [[CPColor.darker()]]
       */
     inline def withDarkerBg(factor: Float): CPPixel = bg match
-        case Some(c) ⇒ CPPixel(char, fg, Option(c.darker(factor)), tag)
-        case None ⇒ this
+        case Some(c) => CPPixel(char, fg, Option(c.darker(factor)), tag)
+        case None => this
 
     /**
       * Gets a copy of this pixel with a new tag.

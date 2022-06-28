@@ -58,7 +58,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
             CPStarStreak('|', CS, 0.005, 50, (0f, .8f), 0)
         ),
         autoStart = true,
-        skip = (zpx, _, _) ⇒ zpx.z == 1
+        skip = (zpx, _, _) => zpx.z == 1
     )
     private val borderShdr = CPBorderShader(true, 5, true, -.03f, true)
     private val blinkShdr = new CPShader():

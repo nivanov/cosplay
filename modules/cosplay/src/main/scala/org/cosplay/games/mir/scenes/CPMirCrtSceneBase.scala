@@ -54,13 +54,13 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         true,
         3500,
         bgPx = BG_PX,
-        onFinish = _ ⇒ if stateMgr.state.crtVisual then crtShdr.start()
+        onFinish = _ => if stateMgr.state.crtVisual then crtShdr.start()
     )
     protected val fadeOutShdr: CPFadeOutShader = CPFadeOutShader(
         true,
         500,
         bgPx = BG_PX,
-        onFinish = _ ⇒ if stateMgr.state.crtVisual then crtShdr.stop()
+        onFinish = _ => if stateMgr.state.crtVisual then crtShdr.stop()
     )
     protected val crtShdr: CPOldCRTShader = new CPOldCRTShader(
         autoStart = false,
@@ -80,7 +80,7 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         if stateMgr.state.crtAudio then
             crtShdr.setTearSound(Option(tearSnd))
             knockSnd.play()
-            noiseSnd.loop(1000, _ ⇒ knockSnd.play())
+            noiseSnd.loop(1000, _ => knockSnd.play())
         else
             crtShdr.setTearSound(None)
 

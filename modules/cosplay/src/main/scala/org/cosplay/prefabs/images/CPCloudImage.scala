@@ -50,9 +50,9 @@ object CPCloudImage extends CPArrayImage(
         """
     ),
     (ch, _, _) => ch match
-        case 'x' ⇒ ' '&C_BLACK
-        case ' ' ⇒ XRAY
-        case _ ⇒ ch&C_WHITE
+        case 'x' => ' '&C_BLACK
+        case ' ' => XRAY
+        case _ => ch&C_WHITE
 )
 
 /**

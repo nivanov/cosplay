@@ -68,9 +68,9 @@ object CPMirLoadScene extends CPMirStarStreakSceneBase("load", "bg1.wav"):
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         menuSpr,
-        new CPKeyboardSprite((_, key) ⇒ key match
-            case KEY_SPACE ⇒ clickThenFade(_.switchScene("menu"))
-            case _ ⇒ ()
+        new CPKeyboardSprite((_, key) => key match
+            case KEY_SPACE => clickThenFade(_.switchScene("menu"))
+            case _ => ()
         ),
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))

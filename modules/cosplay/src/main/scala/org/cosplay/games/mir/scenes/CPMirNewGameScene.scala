@@ -83,9 +83,9 @@ object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav")
     private val img = CPArrayImage(txtPxs, BG_PX).trimBg(_ == BG_PX)
 
     addObjects(
-        new CPKeyboardSprite((ctx, key) ⇒ key match
-            case KEY_SPACE ⇒ clickThenFade(_.switchScene("tutorial", false, ("next_scene", "main")))
-            case _ ⇒ ()
+        new CPKeyboardSprite((ctx, key) => key match
+            case KEY_SPACE => clickThenFade(_.switchScene("tutorial", false, ("next_scene", "main")))
+            case _ => ()
         ),
         // Sprite for ghost images.
         new CPMirGhostSprite(false),

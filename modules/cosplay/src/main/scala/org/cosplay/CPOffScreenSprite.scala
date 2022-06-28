@@ -109,6 +109,6 @@ object CPOffScreenSprite:
       * @param f Function that takes scene object context to perform an action on each [[CPSceneObject.update()]]
       *     callback.
       */
-    def apply(f: CPSceneObjectContext ⇒ Unit): CPOffScreenSprite =
+    def apply(f: CPSceneObjectContext => Unit): CPOffScreenSprite =
         new CPOffScreenSprite():
             override def update(ctx: CPSceneObjectContext): Unit = f(ctx)

@@ -119,7 +119,7 @@ object CPEngine:
     private enum State:
         case ENG_INIT, ENG_STARTED, ENG_STOPPED
 
-    private case class LaterRun(tsMs: Long, f: CPSceneObjectContext ⇒ Unit)
+    private case class LaterRun(tsMs: Long, f: CPSceneObjectContext => Unit)
 
     private val FPS = 30 // Target FPS.
     private val FRAME_NANOS = 1_000_000_000 / FPS
@@ -675,7 +675,7 @@ object CPEngine:
         val msgQ = mutable.HashMap.empty[String, mutable.Buffer[AnyRef]]
         val delayedQ = mutable.ArrayBuffer.empty[() => Unit]
         val laterRuns = mutable.ArrayBuffer.empty[LaterRun]
-        val nextFrameRuns = mutable.ArrayBuffer.empty[CPSceneObjectContext ⇒ Unit]
+        val nextFrameRuns = mutable.ArrayBuffer.empty[CPSceneObjectContext => Unit]
         val gameCache = CPCache(delayedQ)
         val sceneCache = CPCache(delayedQ)
         val collidedBuf = mutable.ArrayBuffer.empty[CPSceneObject]
@@ -937,8 +937,8 @@ object CPEngine:
                     override def getGameCache: CPCache = gameCache
                     override def getSceneCache: CPCache = sceneCache
                     override def getFrameMs: Long = frameMs
-                    override def runLater(delayMs: Long, f: CPSceneObjectContext ⇒ Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
-                    override def runNextFrame(f: CPSceneObjectContext ⇒ Unit): Unit = nextFrameRuns += f
+                    override def runLater(delayMs: Long, f: CPSceneObjectContext => Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
+                    override def runNextFrame(f: CPSceneObjectContext => Unit): Unit = nextFrameRuns += f
                     override def getKbEvent: Option[CPKeyboardEvent] = if kbFocusOwner.isEmpty || kbFocusOwner.get == myId then kbEvt else None
                     override def sendMessage(id: String, msgs: AnyRef*): Unit =
                         val cloId = id
@@ -1087,7 +1087,7 @@ object CPEngine:
 
                 // Shader pass for all objects (including invisible and outside the frame).
                 // First, process shaders for all visible objects, then for all invisible objects.
-                for set ← Seq(objs.filter(_.isVisible), objs.filter(!_.isVisible)) if !stopFrame do
+                for set <- Seq(objs.filter(_.isVisible), objs.filter(!_.isVisible)) if !stopFrame do
                     for obj <- set if !stopFrame do
                         val shaders = obj.getShaders
                         if shaders.nonEmpty then

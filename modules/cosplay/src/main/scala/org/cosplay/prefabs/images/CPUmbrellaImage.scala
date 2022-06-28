@@ -49,9 +49,9 @@ object CPUmbrellaImage extends CPArrayImage(
       |       J
     """),
     (ch, _, _) => ch match
-        case 'J' ⇒ ch&C_SANDY_BROWN
-        case 'Z' ⇒ '|'&C_SANDY_BROWN
-        case _ ⇒ ch&C_RED
+        case 'J' => ch&C_SANDY_BROWN
+        case 'Z' => '|'&C_SANDY_BROWN
+        case _ => ch&C_RED
 )
 /**
  * Previews image using the built-in image viewer.

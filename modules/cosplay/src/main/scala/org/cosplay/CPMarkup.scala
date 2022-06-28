@@ -88,7 +88,7 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
         require(!elm.openTag.contains(' '), s"Markup opening tag cannot have space: '${elm.openTag}'")
         require(!elm.closeTag.contains(' '), s"Markup closing tag cannot have space: '${elm.closeTag}'")
     require(!CPUtils.hasDups(elements.flatMap(e => Seq(e.openTag, e.closeTag))), s"Markup opening and closing tags cannot have duplicates.")
-    require(!elements.exists(elm ⇒ elements.exists(x ⇒
+    require(!elements.exists(elm => elements.exists(x =>
         x != elm &&
         (
             x.openTag.contains(elm.openTag) ||
@@ -109,8 +109,8 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
       * @param bg Default optional background color.
       * @param elms Markup elements as list of tuples. Can be empty.
       */
-    def this(fg: CPColor, bg: Option[CPColor], elms: List[(String, String, Char ⇒ CPPixel)]) =
-        this(fg, bg, elms.map(elm ⇒ CPMarkupElement(elm._1, elm._2, elm._3)))
+    def this(fg: CPColor, bg: Option[CPColor], elms: List[(String, String, Char => CPPixel)]) =
+        this(fg, bg, elms.map(elm => CPMarkupElement(elm._1, elm._2, elm._3)))
 
     /**
       * Creates new markup spec with a single markup element.
@@ -121,7 +121,7 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
       * @param closeTag Closing tag.
       * @param skin Character to pixel converter.
       */
-    def this(fg: CPColor, bg: Option[CPColor], openTag: String, closeTag: String, skin: Char ⇒ CPPixel) =
+    def this(fg: CPColor, bg: Option[CPColor], openTag: String, closeTag: String, skin: Char => CPPixel) =
         this(fg, bg, Seq(CPMarkupElement(openTag, closeTag, skin)))
 
     /**
@@ -133,7 +133,7 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
       * @see [[CPArrayImage.apply()]] method for creating an image from the list of pixel representing text.
       */
     def process(in: String): List[CPPixel] =
-        var skin = (ch: Char) ⇒ ch&?(fg, bg)
+        var skin = (ch: Char) => ch&?(fg, bg)
         var skinStack = List(skin)
         val buf = ArrayBuffer.empty[CPPixel]
         val len = in.length
@@ -141,24 +141,24 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
         var start = 0
         while (idx < len)
             val s = in.substring(start, idx + 1)
-            elements.find(elm ⇒ s.endsWith(elm.openTag)) match
-                case Some(elm) ⇒
+            elements.find(elm => s.endsWith(elm.openTag)) match
+                case Some(elm) =>
                     for ch <- s.substring(0, s.length - elm.openTag.length) do buf += skin(ch)
                     start += s.length
                     // Stack push.
                     skin = elm.skin
                     skinStack ::= skin
-                case None ⇒
-                    elements.find(elm ⇒ s.endsWith(elm.closeTag)) match
-                        case Some(elm) ⇒
+                case None =>
+                    elements.find(elm => s.endsWith(elm.closeTag)) match
+                        case Some(elm) =>
                             for ch <- s.substring(0, s.length - elm.closeTag.length) do buf += skin(ch)
                             start += s.length
                             // Stack pop.
                             skinStack = skinStack.tail
                             skin = skinStack.head
-                        case None ⇒ ()
+                        case None => ()
             idx += 1
-        for i ← start until len do buf += skin(in.charAt(i))
+        for i <- start until len do buf += skin(in.charAt(i))
         buf.toList
 
 

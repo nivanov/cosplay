@@ -50,8 +50,8 @@ object CPMirClockTests:
         CPMirClock.setElapsedTime(0)
         val fmt = SimpleDateFormat("yyyy MMMM dd HH:mm z")
         (0 until 10).foreach {
-            _ ⇒ println(s"System timestamp: ${fmt.format(new Date(CPMirClock.randSysTime()))}")
+            _ => println(s"System timestamp: ${fmt.format(new Date(CPMirClock.randSysTime()))}")
         }
         (0 until 10).foreach {
-            _ ⇒ println(s"Crew timestamp: ${fmt.format(new Date(CPMirClock.randCrewTime()))}")
+            _ => println(s"Crew timestamp: ${fmt.format(new Date(CPMirClock.randCrewTime()))}")
         }

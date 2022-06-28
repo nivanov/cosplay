@@ -100,7 +100,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             CPStarStreak('|', CS, 0.005, 50, (-.3f, .8f), 0)
         ),
         autoStart = true,
-        skip = (zpx, _, _) ⇒ zpx.z == 1
+        skip = (zpx, _, _) => zpx.z == 1
     )
     private val borderShdr = CPBorderShader(true, 5, true, -.03f, true)
 
@@ -160,19 +160,19 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
               |**********************************
             """),
         (ch, _, _) => ch match
-            case '*' ⇒ ' '&&(C, C)
+            case '*' => ' '&&(C, C)
             case c if c.isLetter || c == '/' => c&&(C4, BLUE_BLACK)
             case _ => ch&&(C3, BLUE_BLACK)
     )
 
     private val scoreEmitter = new CPConfettiEmitter(
-        () ⇒ scoreSpr.getRect.centerX,
-        () ⇒ scoreSpr.getRect.centerY,
+        () => scoreSpr.getRect.centerX,
+        () => scoreSpr.getRect.centerY,
         10,
         15,
         CS.map(c => c.transformHSB(1f, 1.2f, 1f)),
         GAME_BG_PX.fg,
-        _ ⇒ CPRand.rand("oO0Xx"),
+        _ => CPRand.rand("oO0Xx"),
         0
     )
     private val scorePartSpr = CPParticleSprite(emitters = Seq(scoreEmitter))
@@ -383,7 +383,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         dead = true
         if audioOn then
             stopBgAudio()
-            hitSnd.play(200, _ ⇒ fallSnd.play(0, _ => {
+            hitSnd.play(200, _ => fallSnd.play(0, _ => {
                 loseSpr.show()
                 lostShdr.start()
                 birdSpr.hide()
@@ -403,8 +403,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         ctx.deleteObjectsForTags("pipe")
 
         // Reset variables.
-        ctx.runNextFrame(_ ⇒ closestPipeX = 60)
-        ctx.runNextFrame(_ ⇒ closestPipeCut = 0)
+        ctx.runNextFrame(_ => closestPipeX = 60)
+        ctx.runNextFrame(_ => closestPipeCut = 0)
         speed = 1f
         vel = 0f
         delta = 0.4f
@@ -421,7 +421,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         if audioOn then startBgAudio()
 
         // Make sure NOT to change dead/live state in the middle of frame update.
-        ctx.runNextFrame(_ ⇒ dead = false)
+        ctx.runNextFrame(_ => dead = false)
 
     loseSpr.hide() // Hide initially.
 

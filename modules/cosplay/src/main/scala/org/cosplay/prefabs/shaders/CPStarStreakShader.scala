@@ -88,7 +88,7 @@ case class CPStarStreak(
   *          CPStarStreak('.', CS, 0.015, 25, (-1.5f, 0f), 0),
   *          CPStarStreak('_', CS, 0.005, 20, (-2.0f, 0f), 0)
   *      ),
-  *      skip = (zpx, _, _) ⇒ zpx.z == 1
+  *      skip = (zpx, _, _) => zpx.z == 1
   *  )
   * }}}
   *
@@ -188,7 +188,7 @@ class CPStarStreakShader(
             val canv = ctx.getCanvas
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             // Replenish with new sparkles until full.
-            for streak ← streaks do
+            for streak <- streaks do
                 val num = (canv.w * canv.h * streak.ratio).round
                 var cnt = stars.count(_.streak == streak)
                 while cnt < num do

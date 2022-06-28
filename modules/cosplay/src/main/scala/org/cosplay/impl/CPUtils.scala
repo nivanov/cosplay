@@ -141,11 +141,11 @@ object CPUtils:
       * @param col Collection to split.
       * @param sep Separator predicate.
       */
-    def splitBy[T](col: Seq[T], sep: T ⇒ Boolean): Seq[Seq[T]] =
+    def splitBy[T](col: Seq[T], sep: T => Boolean): Seq[Seq[T]] =
         val bufs = new ArrayBuffer[ArrayBuffer[T]]()
 
         var idx = 0
-        for t ← col do
+        for t <- col do
             if sep(t) then
                 bufs += ArrayBuffer.empty[T]
                 idx += 1
@@ -160,10 +160,10 @@ object CPUtils:
       * @param col Collection to trim.
       * @param trim Trimming predicate.
       */
-    def trimBy[T](col: Seq[T], trim: T ⇒ Boolean): Seq[T] =
+    def trimBy[T](col: Seq[T], trim: T => Boolean): Seq[T] =
         col.indexWhere(!trim(_)) match
-            case -1 ⇒ Seq.empty[T]
-            case a ⇒ col.slice(a, col.lastIndexWhere(!trim(_)) + 1)
+            case -1 => Seq.empty[T]
+            case a => col.slice(a, col.lastIndexWhere(!trim(_)) + 1)
 
     /**
       * Gets system property, or environment variable (in that order), or `None` if none exists.

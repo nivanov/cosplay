@@ -54,7 +54,7 @@ class CPConfettiParticle(
     maxAge: Int,
     colors: Seq[CPColor],
     bgFg: CPColor,
-    chf: Int ⇒ Char,
+    chf: Int => Char,
     z: Int) extends CPParticle:
     require(colors.nonEmpty, "Colors cannot be empty.")
 

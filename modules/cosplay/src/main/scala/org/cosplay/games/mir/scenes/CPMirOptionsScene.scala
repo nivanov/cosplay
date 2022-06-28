@@ -85,39 +85,39 @@ object CPMirOptionsScene extends CPMirStarStreakSceneBase("options", "bg1.wav"):
     /**
       *
       */
-    private def update(): Unit = click(() ⇒ imgSpr.setImage(mkImage()))
+    private def update(): Unit = click(() => imgSpr.setImage(mkImage()))
 
     addObjects(
-        new CPKeyboardSprite((ctx, key) ⇒ {
+        new CPKeyboardSprite((ctx, key) => {
             val state = stateMgr.state
             key match
-                case KEY_LO_V ⇒
+                case KEY_LO_V =>
                     state.crtVisual = !state.crtVisual
                     update()
-                case KEY_LO_A ⇒
+                case KEY_LO_A =>
                     state.crtAudio = !state.crtAudio
                     update()
-                case KEY_LO_C ⇒
+                case KEY_LO_C =>
                     if state.fg == FG_GREEN then state.fg = FG_YELLOW
                     else if state.fg == FG_YELLOW then state.fg = FG_WHITE
                     else state.fg = FG_GREEN
                     update()
-                case KEY_LO_X ⇒
+                case KEY_LO_X =>
                     state.crtVisual = savedCrtVisual
                     state.crtAudio = savedCrtAudio
                     state.fg = savedFg
                     state.bg = savedBg
                     clickThenFade(_.switchScene("menu"))
-                case KEY_SPACE ⇒
-                    clickThenFade(ctx ⇒ Try(stateMgr.save()) match
-                        case Success(_) ⇒ ctx.switchScene("menu")
-                        case Failure(e) ⇒ showError(
+                case KEY_SPACE =>
+                    clickThenFade(ctx => Try(stateMgr.save()) match
+                        case Success(_) => ctx.switchScene("menu")
+                        case Failure(e) => showError(
                             s"Failed to save game options due to: <%${e.getMessage}%>",
-                            () ⇒ imgSpr.hide(),
-                            () ⇒ imgSpr.show()
+                            () => imgSpr.hide(),
+                            () => imgSpr.show()
                         )
                     )
-                case _ ⇒ ()
+                case _ => ()
         }),
         // Sprite for ghost images.
         new CPMirGhostSprite(false),

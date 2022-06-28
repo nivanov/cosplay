@@ -183,7 +183,7 @@ trait CPLog:
       */
     def snapshot(): Unit =
         CPEngine.getRenderStats match
-            case Some(stats) ⇒
+            case Some(stats) =>
                 val tbl = CPAsciiTable("Frm#", "ScFrm#", "FPS", "AvgFPS", "Low1%FPS", "UsrTime", "SysTime", "Obj#", "VisObj#")
                 tbl += (
                     stats.frameCount,
@@ -198,7 +198,7 @@ trait CPLog:
                 )
                 tbl.trace(this, Option("Performance snapshot:"))
 
-            case None ⇒ ()
+            case None => ()
 
     /**
       * Logs object with [[CPLogLevel.TRACE]] level.

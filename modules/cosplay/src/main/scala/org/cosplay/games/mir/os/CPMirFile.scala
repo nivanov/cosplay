@@ -64,8 +64,8 @@ abstract class CPMirFile(
     override def hashCode(): Int = guid.hashCode()
     override def equals(obj: Any): Boolean =
         obj match
-            case f: CPMirFile ⇒ f.guid == guid
-            case _ ⇒ false
+            case f: CPMirFile => f.guid == guid
+            case _ => false
 
     /**
       *

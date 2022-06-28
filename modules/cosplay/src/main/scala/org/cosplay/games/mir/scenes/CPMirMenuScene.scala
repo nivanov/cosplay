@@ -89,13 +89,13 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
         // Sprite for ghost images.
         new CPMirGhostSprite(false),
         menuSpr,
-        new CPKeyboardSprite((_, key) ⇒ key match
-            case KEY_LO_Q ⇒ clickThenFade(_.exitGame())
-            case KEY_LO_T ⇒ clickThenFade(_.switchScene("tutorial", false, ("next_scene", "menu")))
-            case KEY_LO_O ⇒ clickThenFade(_.switchScene("options"))
-            case KEY_LO_L ⇒ clickThenFade(_.switchScene("load"))
-            case KEY_LO_N ⇒ clickThenFade(_.switchScene("new_game"))
-            case KEY_LO_S ⇒ clickThenFade(_ => {
+        new CPKeyboardSprite((_, key) => key match
+            case KEY_LO_Q => clickThenFade(_.exitGame())
+            case KEY_LO_T => clickThenFade(_.switchScene("tutorial", false, ("next_scene", "menu")))
+            case KEY_LO_O => clickThenFade(_.switchScene("options"))
+            case KEY_LO_L => clickThenFade(_.switchScene("load"))
+            case KEY_LO_N => clickThenFade(_.switchScene("new_game"))
+            case KEY_LO_S => clickThenFade(_ => {
                 Try(stateMgr.save()) match
                     case Success(_) => showConfirm(
                         s"Current game progress has been successfully saved.",
@@ -109,7 +109,7 @@ object CPMirMenuScene extends CPMirStarStreakSceneBase("menu", "bg1.wav"):
                         () => menuSpr.show()
                     )
             })
-            case _ ⇒ ()
+            case _ => ()
         ),
         // Add full-screen shaders - order is important.
         new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))

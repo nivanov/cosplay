@@ -47,13 +47,13 @@ import games.snake.*
   * @param z Z-index to use to draw particles from this emitter.
   */
 class CPConfettiEmitter(
-    xf: () ⇒ Int,
-    yf: () ⇒ Int,
+    xf: () => Int,
+    yf: () => Int,
     genSize: Int,
     maxAge: Int,
     colors: Seq[CPColor],
     bgFg: CPColor,
-    chf: Int ⇒ Char,
+    chf: Int => Char,
     z: Int) extends CPParticleEmitter():
     require(colors.nonEmpty, "Colors cannot be empty.")
 

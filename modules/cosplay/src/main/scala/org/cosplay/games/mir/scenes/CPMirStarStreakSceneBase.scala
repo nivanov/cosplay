@@ -55,7 +55,7 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
             CPStarStreak('.', colors, 0.015, 25, (-.7f, 0f), 0),
             CPStarStreak('_', colors, 0.005, 50, (-1f, 0f), 0)
         ),
-        skip = (zpx, _, _) ⇒ zpx.z >= 1
+        skip = (zpx, _, _) => zpx.z >= 1
     )
 
     /**
@@ -63,15 +63,15 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
       *
       * @param f Context closure to call.
       */
-    protected def clickThenFade(f: CPSceneObjectContext ⇒ Unit): Unit =
-        clickSnd.play(0, _ ⇒ fadeOutShdr.start(f))
+    protected def clickThenFade(f: CPSceneObjectContext => Unit): Unit =
+        clickSnd.play(0, _ => fadeOutShdr.start(f))
 
     /**
       * Plays click sound and (asynchronously) calls given closure.
       *
       * @param f Closure to call.
       */
-    protected def click(f: () ⇒ Unit): Unit =
+    protected def click(f: () => Unit): Unit =
         clickSnd.play()
         f()
 
@@ -82,7 +82,7 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
       * @param onDeact Call on [[CPSceneObject.onDeactivate()]] callback.
       * @param title Optional dialog title.
       */
-    protected def showError(errMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit, title: String = "Error"): Unit =
+    protected def showError(errMsg: String, onAct: () => Unit, onDeact: () => Unit, title: String = "Error"): Unit =
         val dash = "-" * (2 + title.length)
         val errPxs = markup.process(
             s"""
@@ -105,10 +105,10 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
                 super.update(ctx)
                 ctx.acquireMyFocus() // Ensure that only this dialog gets keyboard focus.
                 ctx.getKbEvent match
-                    case Some(evt) ⇒ evt.key match
-                        case KEY_SPACE ⇒ click(() ⇒ ctx.deleteMyself())
-                        case _ ⇒ ()
-                    case None ⇒ ()
+                    case Some(evt) => evt.key match
+                        case KEY_SPACE => click(() => ctx.deleteMyself())
+                        case _ => ()
+                    case None => ()
         )
 
     /**
@@ -118,7 +118,7 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
       * @param onDeact Call on [[CPSceneObject.onDeactivate()]] callback.
       * @param title Optional dialog title.
       */
-    protected def showConfirm(confirmMsg: String, onAct: () ⇒ Unit, onDeact: () => Unit, title: String = "Confirmation"): Unit =
+    protected def showConfirm(confirmMsg: String, onAct: () => Unit, onDeact: () => Unit, title: String = "Confirmation"): Unit =
         val dash = "-" * (2 + title.length)
         val errPxs = markup.process(
             s"""
@@ -140,10 +140,10 @@ abstract class CPMirStarStreakSceneBase(id: String, bgSndFile: String) extends C
                 super.update(ctx)
                 ctx.acquireMyFocus() // Ensure that only this dialog gets keyboard focus.
                 ctx.getKbEvent match
-                    case Some(evt) ⇒ evt.key match
-                        case KEY_SPACE ⇒ click(() ⇒ ctx.deleteMyself())
-                        case _ ⇒ ()
-                    case None ⇒ ()
+                    case Some(evt) => evt.key match
+                        case KEY_SPACE => click(() => ctx.deleteMyself())
+                        case _ => ()
+                    case None => ()
         )
 
     // Make sure to call 'super(...)'.

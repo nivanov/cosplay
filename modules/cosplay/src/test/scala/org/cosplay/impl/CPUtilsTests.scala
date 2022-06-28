@@ -57,17 +57,17 @@ object CPUtilsTests:
         assertTrue(CPUtils.trimBy("a b c", _ == ' ').mkString == "a b c")
         assertTrue(CPUtils.trimBy("a b c  ", _ == ' ').mkString == "a b c")
         assertTrue(CPUtils.trimBy("  a b c", _ == ' ').mkString == "a b c")
-        assertTrue(CPUtils.trimBy("x  a b c     x", ch ⇒ ch == ' ' || ch == 'x').mkString == "a b c")
+        assertTrue(CPUtils.trimBy("x  a b c     x", ch => ch == ' ' || ch == 'x').mkString == "a b c")
 
     @Test
     def splitByTest(): Unit =
         var s = "123"
-        var ss = CPUtils.splitBy(s, ch ⇒ ch == ' ' || ch == 'x')
+        var ss = CPUtils.splitBy(s, ch => ch == ' ' || ch == 'x')
         assertTrue(ss.length == 1)
         assertTrue(ss.head.mkString == "123")
 
         s = "  123x456    789    a b xx c"
-        ss = CPUtils.splitBy(s, ch ⇒ ch == ' ' || ch == 'x')
+        ss = CPUtils.splitBy(s, ch => ch == ' ' || ch == 'x')
         assertTrue(ss.length == 6)
         assertTrue(ss.head.mkString == "123")
         assertTrue(ss(1).mkString == "456")

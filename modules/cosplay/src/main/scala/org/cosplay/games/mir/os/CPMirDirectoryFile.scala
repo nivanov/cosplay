@@ -91,12 +91,12 @@ class CPMirDirectoryFile(
       * @param f Callback for each scanned file that was accepted by the filter.
       * @param p Optional file filter.
       */
-    def scan(f: CPMirFile ⇒ Unit, p: CPMirFile ⇒ Boolean = _ ⇒ true): Unit =
-        for child ← children do
+    def scan(f: CPMirFile => Unit, p: CPMirFile => Boolean = _ => true): Unit =
+        for child <- children do
             if p(child) then f(child)
             child match
-                case d: CPMirDirectoryFile ⇒ d.scan(f, p)
-                case _ ⇒ ()
+                case d: CPMirDirectoryFile => d.scan(f, p)
+                case _ => ()
 
     /**
       *
@@ -109,8 +109,8 @@ class CPMirDirectoryFile(
         if file.getName == ".." then throw E(s"File name '..' is reserved.")
         if children.exists(_.getName == file.getName) then throw E(s"This directory already has a file with name: ${file.getName}")
         file match
-            case d: CPMirDirectoryFile ⇒ require(!d.isRoot)
-            case _ ⇒ ()
+            case d: CPMirDirectoryFile => require(!d.isRoot)
+            case _ => ()
         children += file
 
     /**
@@ -119,8 +119,8 @@ class CPMirDirectoryFile(
       */
     def removeFile(file: CPMirFile): Boolean =
         children.indexOf(file) match
-            case -1 ⇒ false
-            case idx ⇒
+            case -1 => false
+            case idx =>
                 children.remove(idx)
                 true
 
@@ -130,8 +130,8 @@ class CPMirDirectoryFile(
       */
     def removeFile(name: String): Boolean =
         children.indexWhere(_.getName == name) match
-            case -1 ⇒ false
-            case idx ⇒
+            case -1 => false
+            case idx =>
                 children.remove(idx)
                 true
 
@@ -139,7 +139,7 @@ class CPMirDirectoryFile(
       *
       * @param p File predicate.
       */
-    def list(p: CPMirFile ⇒ Boolean): Seq[CPMirFile] = children.filter(p).toSeq
+    def list(p: CPMirFile => Boolean): Seq[CPMirFile] = children.filter(p).toSeq
 
     /**
       *
@@ -155,18 +155,18 @@ class CPMirDirectoryFile(
         while i < n && !failed do
             val part = parts(i)
             part match
-                case "." ⇒ () // Ignore any '.'.
-                case ".." ⇒ f match
+                case "." => () // Ignore any '.'.
+                case ".." => f match
                     // Ignore spurious '..'.
-                    case d: CPMirDirectoryFile ⇒ if !d.isRoot then f = d.getParent.get
-                    case _ ⇒ failed = true
-                case name: String ⇒ f match
-                    case d: CPMirDirectoryFile ⇒
+                    case d: CPMirDirectoryFile => if !d.isRoot then f = d.getParent.get
+                    case _ => failed = true
+                case name: String => f match
+                    case d: CPMirDirectoryFile =>
                         d.children.find(_.getName == name) match
-                            case Some(x) ⇒ f = x
-                            case None ⇒ failed = true
+                            case Some(x) => f = x
+                            case None => failed = true
                     // Non-directory can only be the last element.
-                    case x ⇒ if i == n - 1 && x.getName == name then f = x else failed = true
+                    case x => if i == n - 1 && x.getName == name then f = x else failed = true
             i += 1
         if failed then None else Some(f)
 
@@ -175,10 +175,10 @@ class CPMirDirectoryFile(
       * @param path Relative or fully qualified path.
       */
     def dir(path: String): Option[CPMirDirectoryFile] = file(path) match
-        case Some(f) ⇒ f match
-            case d: CPMirDirectoryFile ⇒ Some(d)
-            case _ ⇒ None
-        case None ⇒ None
+        case Some(f) => f match
+            case d: CPMirDirectoryFile => Some(d)
+            case _ => None
+        case None => None
 
     /**
       *

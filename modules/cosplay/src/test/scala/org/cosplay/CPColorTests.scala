@@ -103,7 +103,7 @@ object CPColorTests:
                 </td>
             </tr>
         */
-        for c ← cs do
+        for c <- cs do
             println(
                 s"""
                   |<tr>

@@ -152,7 +152,7 @@ class CPSparkleShader(
                     val x = rect.randX()
                     val y = rect.randY()
                     val zpx = canv.getZPixel(x, y)
-                    found = !skip(zpx, x, y) && !sparkles.exists(s ⇒ s.x == x && s.y == y)
+                    found = !skip(zpx, x, y) && !sparkles.exists(s => s.x == x && s.y == y)
                     if found then sparkles += Sparkle(zpx, x, y)
 
             // Draw sparkles.

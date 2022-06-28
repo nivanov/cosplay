@@ -57,8 +57,8 @@ class CPBubbleSprite(
     initX: Int,
     initY: Int,
     z: Int,
-    dxf: CPSceneObjectContext ⇒ Float,
-    dyf: CPSceneObjectContext ⇒ Float,
+    dxf: CPSceneObjectContext => Float,
+    dyf: CPSceneObjectContext => Float,
     bgPx: CPPixel,
     durMs: Long,
     onFinish: CPSceneObjectContext => Unit = _ => (),
@@ -71,12 +71,12 @@ class CPBubbleSprite(
             durMs,
             bgPx,
             autoStart = true,
-            onFinish = ctx ⇒ {
+            onFinish = ctx => {
                 // Delete the sprite when shader is finished, if required.
                 if autoDelete then ctx.deleteObject(id)
                 onFinish(ctx)
             },
-            skip = (zpx, _, _) ⇒ zpx.z > z // Don't modify above Z-layers.
+            skip = (zpx, _, _) => zpx.z > z // Don't modify above Z-layers.
         )
     )
     private var x: Float = initX.toFloat

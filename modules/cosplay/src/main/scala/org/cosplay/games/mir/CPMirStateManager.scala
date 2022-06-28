@@ -99,14 +99,14 @@ class CPMirStateManager:
     val state: CPMirState = init()
 //        try
 //            loadLatestState() match
-//                case Some(v) ⇒
+//                case Some(v) =>
 //                    loaded = true
 //                    v
-//                case None ⇒
+//                case None =>
 //                    loaded = false
 //                    init()
 //        catch
-//            case e: Exception ⇒
+//            case e: Exception =>
 //                loadFailed = true
 //                loaded = false
 //                init()
@@ -117,11 +117,11 @@ class CPMirStateManager:
     private def init(): CPMirState =
         // Crew.
         val crew = mutable.ArrayBuffer(player) // Crew always includes the player.
-        for i ← 0 until NPC_CNT do
+        for i <- 0 until NPC_CNT do
             var found = false
             while !found do
                 val crewman = CPMirPlayer.newPlayer
-                if !crew.exists(p ⇒ p != player && (p.username == player.username || p.lastName == player.lastName)) then
+                if !crew.exists(p => p != player && (p.username == player.username || p.lastName == player.lastName)) then
                     found = true
                     crew += crewman
 
@@ -129,7 +129,7 @@ class CPMirStateManager:
         // NOTE: root password is not guessable in the game - but can be obtained.
         val rootUsr = CPMirUser(None, true, "root", CPRand.guid6)
         val usrs = mutable.ArrayBuffer(rootUsr)
-        crew.foreach(p ⇒ usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
+        crew.foreach(p => usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
 
         // File system.
         val rootDir = CPMirDirectoryFile("", rootUsr, None)
