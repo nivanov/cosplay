@@ -2,25 +2,34 @@ native def listOf(fromIncl, toExcl)
 val x = null
 export x
 unexport x
-x = true
+$x = true
 
 val WIDTH = 100
 val HEIGHT = 100
+
+val list0 = (1, 2, 3, true, null)
+val list1 = () // Empty list.
+
+val map = ~($HEIGHT -> 2 * 0.4, "name"->"cosplay" + ' ' + "engine")
+
+println($map["name"]) // Prints "cosplay engine".
 
 def fun(a, b, c) = {
     def z() = println()
     var q = (1.054 + 2_00_00) * $4 + $(varName)
     while $q <= work() do println("something")
-    val newList = for i <- list() yield $i + "str"
+    var newList = for i <- list() yield $i + "str"
+    $newList = (1, 2, 3)
     val anotherList = (1, "true", true, null, ("sub", "list"), $(newList)[1])
     println("nikita") // Direct function call.
-    $(newList)[1]("some", 1, "arg") // FP-style function call.
+    $(newList)[$q]("some", 1, "arg") // FP-style function call.
     if boolVal() then {
         def z() = println()
         println(z())
     }
     else
         println("Else")
+    if !boolVal() then null else null
 
     fun1((p, b) => println($p))
 }

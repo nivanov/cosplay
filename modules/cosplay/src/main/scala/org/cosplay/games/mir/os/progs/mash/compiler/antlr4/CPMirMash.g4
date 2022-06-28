@@ -48,10 +48,11 @@ decl
     | nativeDefDecl
     | whileDecl
     | forDecl
+    | compoundExpr
     ;
 valDecl: VAL_KW IDENT ASSIGN expr;
 varDecl: VAR_KW IDENT (ASSIGN expr)?;
-assignDecl: IDENT ASSIGN expr;
+assignDecl: varAccess ASSIGN expr;
 exportDecl: EXPORT_KW IDENT;
 unexportDecl: UNEXPORT_KW IDENT;
 defDecl: DEF_KW IDENT LPAR funParamList? RPAR ASSIGN compoundExpr;
@@ -68,6 +69,7 @@ expr
     | FOR_KW IDENT IN_KW expr YIELD_KW compoundExpr # forYieldExpr
     | LPAR funParamList? RPAR ANON_DEF_KW compoundExpr # anonDefExpr
     | op=(MINUS | NOT) expr # unaryExpr
+    | expr MOD expr # modExpr
     | LPAR expr RPAR # parExpr
     | expr op=(MULT | DIV | MOD) expr # multDivModExpr
     | expr op=(PLUS | MINUS) expr # plusMinusExpr
@@ -75,14 +77,20 @@ expr
     | expr op=(EQ | NEQ) expr # eqNeqExpr
     | expr op=(AND | OR) expr # andOrExpr
     | atom # atomExpr
-    | LPAR exprList RPAR # listExpr
+    | LPAR listItems? RPAR # listExpr
+    | TILDA LPAR mapItems? RPAR # mapExpr
     | IDENT LPAR callParamList? RPAR # callExpr
     | varAccess LPAR callParamList? RPAR # fpCallExpr
     | varAccess # varAccessExpr
     ;
-exprList
+listItems
     : expr
-    | exprList COMMA expr
+    | listItems COMMA expr
+    ;
+mapItem: expr ASSOC_KW expr;
+mapItems
+    : mapItem
+    | mapItems COMMA mapItem
     ;
 compoundExpr
     : expr
@@ -95,12 +103,12 @@ callParamList
 varAccess
     : DOLLAR INT // '$1' command line parameter access. '$0' is entire command line as a string.
     | DOLLAR LPAR INT RPAR
-    | DOLLAR IDENT listAccess?
-    | DOLLAR LPAR IDENT RPAR listAccess?
+    | DOLLAR IDENT keyAccess?
+    | DOLLAR LPAR IDENT RPAR keyAccess?
     | DOLLAR POUND // '$#' number of command line paramters.
     | DOLLAR QUESTION // '$?' exit code of the last command.
     ;
-listAccess: LBR INT RBR;
+keyAccess: LBR expr RBR;
 atom
     : NULL
     | INT REAL? EXP?
@@ -121,6 +129,7 @@ VAR_KW: 'var';
 VAL_KW: 'val';
 DEF_KW: 'def';
 ANON_DEF_KW: '=>';
+ASSOC_KW: '->';
 EXPORT_KW: 'export';
 UNEXPORT_KW: 'unexport';
 NATIVE_KW: 'native';
