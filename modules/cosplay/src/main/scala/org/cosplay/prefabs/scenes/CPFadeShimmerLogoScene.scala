@@ -50,7 +50,7 @@ import org.cosplay.prefabs.shaders.*
   * @param nextSc ID of the next scene to switch to once this scene has finished its shimmering logo effect.
   * @param fadeInMs Optional fade in duration in milliseconds. Default value is 2000.
   * @param fadeOutMs Optional fade out duration in milliseconds. Default value is 1000.
-  * @param shimmerKeyFrame Optional shimmer shader keyframe. DEfault value is 2.
+  * @param shimmerKeyFrame Optional shimmer shader keyframe. Default value is 2.
   *
   * @see [[CPFadeShimmerLogoScene]]
   */

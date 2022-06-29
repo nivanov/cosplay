@@ -45,7 +45,8 @@ object CPMacarena1AniImage extends CPArrayImage(
           | o  o  o  o  o (O (O) O) o
           |.|.\|.\| /// X  \  | (| (|)
           | /\ )\/(  )\/(  )\/(  )\ /(
-    """),
+        """
+    ),
     (ch, _, y) => ch match
         case ' ' => XRAY
         case _ if y != 2 => ch&C_WHITE

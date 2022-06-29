@@ -156,7 +156,6 @@ import scala.util.Using
   *  - https://www.asciiart.eu/
   *  - http://www.ascii-art.de/
   *  - https://asciiart.website
-  *  - http://www.afn.org/~afn39695/collect.htm
   *  - https://www.incredibleart.org/links/ascii.html
   *  - http://blocktronics.org/
   *  - http://ansiart.com/

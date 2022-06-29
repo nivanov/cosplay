@@ -37,7 +37,6 @@ import CPPixel.*
 
 /**
  * Art by Rowan Crawford
- * http://www.afn.org/~afn39695/crawford.htm
  */
 object CPCactusImage extends CPArrayImage(
     prepSeq("""
