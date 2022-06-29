@@ -52,7 +52,7 @@ import org.cosplay.prefabs.shaders.*
   * @param slideInDir Slide in direction. Default value is [[CPSlideDirection.LEFT_TO_RIGHT]].
   * @param slideOutMs Optional slide out duration in milliseconds. Default value is 1000.
   * @param slideOutDir Slide out direction. Default value is [[CPSlideDirection.LEFT_TO_RIGHT]].
-  * @param shimmerKeyFrame Optional shimmer shader keyframe. DEfault value is 2.
+  * @param shimmerKeyFrame Optional shimmer shader keyframe. Default value is 2.
   *
   * @see [[CPFadeShimmerLogoScene]]
   */

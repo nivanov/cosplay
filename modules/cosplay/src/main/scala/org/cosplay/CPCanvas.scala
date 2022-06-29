@@ -82,7 +82,6 @@ import scala.collection.mutable
   *  - https://www.asciiart.eu/
   *  - https://asciiart.website
   *  - https://www.incredibleart.org/links/ascii.html
-  *  - http://www.afn.org/~afn39695/collect.html
   *  - http://blocktronics.org/
   *  - http://ansiart.com/
   *  - http://www.ascii-art.de/
