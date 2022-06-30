@@ -65,12 +65,12 @@ funParamList
     ;
 expr
     // NOTE: order of productions defines precedence.
-    : IF_KW expr THEN_KW compoundExpr ELSE_KW compoundExpr # ifExpr
-    | FOR_KW IDENT IN_KW expr YIELD_KW compoundExpr # forYieldExpr
-    | LPAR funParamList? RPAR ANON_DEF_KW compoundExpr # anonDefExpr
-    | op=(MINUS | NOT) expr # unaryExpr
+    : op=(MINUS | NOT) expr # unaryExpr
     | expr MOD expr # modExpr
     | LPAR expr RPAR # parExpr
+    | IF_KW expr THEN_KW compoundExpr ELSE_KW compoundExpr # ifExpr
+    | FOR_KW IDENT IN_KW expr YIELD_KW compoundExpr # forYieldExpr
+    | LPAR funParamList? RPAR ANON_DEF_KW compoundExpr # anonDefExpr
     | expr op=(MULT | DIV | MOD) expr # multDivModExpr
     | expr op=(PLUS | MINUS) expr # plusMinusExpr
     | expr op=(LTEQ | GTEQ | LT | GT) expr # compExpr
@@ -101,12 +101,12 @@ callParamList
     | callParamList COMMA expr
     ;
 varAccess
-    : DOLLAR INT // '$1' command line parameter access. '$0' is entire command line as a string.
-    | DOLLAR LPAR INT RPAR
-    | DOLLAR IDENT keyAccess?
-    | DOLLAR LPAR IDENT RPAR keyAccess?
-    | DOLLAR POUND // '$#' number of command line paramters.
-    | DOLLAR QUESTION // '$?' exit code of the last command.
+    : AT INT // '$1' command line parameter access. '$0' is entire command line as a string.
+    | AT LPAR INT RPAR
+    | AT IDENT keyAccess*
+    | AT LPAR IDENT RPAR keyAccess*
+    | AT POUND // '$#' number of command line paramters.
+    | AT QUESTION // '$?' exit code of the last command.
     ;
 keyAccess: LBR expr RBR;
 atom
@@ -143,9 +143,9 @@ FOR_KW: 'for';
 IN_KW: '<-';
 
 // Tokens.
-SQSTRING: SQUOTE ((~'\'') | ('\\''\''))* SQUOTE; // Allow for \' (escaped single quote) in the string.
+SQSTRING: SQUOTE (~'\'')* SQUOTE; //
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
-BQSTRING: BQUOTE ((~'`') | ('\\''`'))* BQUOTE; // Allow for \` (escape double quote) in the string.
+BQSTRING: BQUOTE (~'`')* BQUOTE;
 BOOL: 'true' | 'false';
 NULL: 'null';
 EQ: '==';
@@ -186,8 +186,8 @@ INT: '0' | [1-9] [_0-9]*;
 REAL: DOT [0-9]+;
 EXP: [Ee] [+\-]? INT;
 fragment LETTER: [a-zA-Z];
-//ID: (UNDERSCORE|LETTER|MINUS|DOT|[0-9])+;
 IDENT: (UNDERSCORE|LETTER)+(UNDERSCORE|LETTER|[0-9])*;
+//PATH: (DIV|DOT|UNDERSCORE|MINUS|LETTER|DOLLAR|[0-9])+;
 COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
 WS: [ \r\t\u000C\n]+ -> skip;
 ErrorChar: .;
