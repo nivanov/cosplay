@@ -115,7 +115,7 @@ object CPImageCarouselExample:
         private val fadeOutShdr = new CPFadeOutShader(false, 1000, bgPx, onFinish = _ => setVisible(false))
         private final val shdrs = Seq(fadeInShdr, fadeOutShdr)
 
-        private var x: Float = leftOffScrX.toFloat
+        private var x = leftOffScrX.toFloat
         private var step = 0f
         private var targetX = 0
 

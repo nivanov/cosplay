@@ -208,13 +208,13 @@ object CPArrayImage:
     def prepSeq(marginCh: Char, s: String, trim: Boolean): Seq[String] =
         if s.isEmpty then Seq.empty
         else
-            var arr = s.stripMargin(marginCh).split(CPUtils.NL)
+            var arr = CPUtils.splitByNewLine(s.stripMargin(marginCh))
 
             if arr.nonEmpty then
                 if trim then
                     if arr.head.trim.isEmpty then arr = arr.tail // Trim leading empty string.
                     if arr.last.trim.isEmpty then arr = arr.dropRight(1) // Trim trailing empty string.
-                arr.toSeq
+                arr
             else
                 Seq.empty
 

@@ -101,7 +101,7 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @return Image as a rendering of the given string with this font.
       */
     def renderMulti(s: String, fg: CPColor, bg: Option[CPColor] = None, align: Int = 0): CPImage =
-        renderSeq(s.split(CPUtils.NL).filter(!_.isBlank).toSeq, fg, bg, align)
+        renderSeq(CPUtils.splitByNewLine(s).filter(!_.isBlank), fg, bg, align)
 
     /**
       * Renders single line text as an image with this font.

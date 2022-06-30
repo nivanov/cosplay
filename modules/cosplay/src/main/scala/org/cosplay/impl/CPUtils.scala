@@ -66,9 +66,6 @@ object CPUtils:
     private val isTracking = !isSysEnvSet("COSPLAY_DISABLE_MIXPANEL")
 
     /** */
-    val NL: String = System.getProperty("line.separator")
-
-    /** */
     final val PING_MSG = "8369926740-3247024617-2096692631-7483698541-4348351625-9412150510-5442257448-4805421296-5646586017-0232477804"
 
     /**
@@ -86,6 +83,16 @@ object CPUtils:
         val parent = file.getParentFile
         if !parent.exists() && !parent.mkdirs() then throw E(s"Failed to create folder: ${parent.getAbsolutePath}")
         file
+
+    /**
+      * Safely splits given string into substring by '\n' character, ignoring Windows vs. Unix
+      * differences in new line character.
+      *
+      * @param s String to split.
+      * @return
+      */
+    def splitByNewLine(s: String): Seq[String] =
+        s.replaceAll("\r", "").split("\n").toSeq
 
     /**
       *
