@@ -213,7 +213,7 @@ object CPArrayImage:
             if arr.nonEmpty then
                 if trim then
                     if arr.head.trim.isEmpty then arr = arr.tail // Trim leading empty string.
-                    if arr.last.trim.isEmpty then arr = arr.dropRight(1) // Trim trailing empty strings.
+                    if arr.last.trim.isEmpty then arr = arr.dropRight(1) // Trim trailing empty string.
                 arr.toSeq
             else
                 Seq.empty
