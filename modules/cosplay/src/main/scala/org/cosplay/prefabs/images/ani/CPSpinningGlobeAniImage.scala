@@ -36,7 +36,7 @@ import CPPixel.*
 */
 
 /**
-  * https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/creative/animations/globe_animation.html
+  * https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/creative/animations/globe_animation.html
   */
 object CPSpinningGlobeAniImage extends CPArrayImage(
     // 30 frames 47x23

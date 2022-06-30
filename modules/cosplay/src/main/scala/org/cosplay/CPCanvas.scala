@@ -69,13 +69,13 @@ import scala.collection.mutable
   * obtained you can use it with any image-based sprites to display it.
   *
   * There are many online tutorials for ASCII art that are highly recommended, including from:
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Joan_Stark.html Joan Stark]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Daniel_Au.html Daniel Au]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Susie_Oviatt.html Susie Oviatt]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Rowan_Crawford.html Rowan Crawford]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Normand_Veilleux.html Normand Veilleux]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Targon.html Targon]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Hayley_Wakenshaw.html Hayley Wakenshaw]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Joan_Stark.html Joan Stark]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Daniel_Au.html Daniel Au]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Susie_Oviatt.html Susie Oviatt]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Rowan_Crawford.html Rowan Crawford]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Normand_Veilleux.html Normand Veilleux]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Targon.html Targon]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Hayley_Wakenshaw.html Hayley Wakenshaw]]
   *
   * See also the following resources for general ASCII art collections:
   *  - http://www.asciiworld.com/

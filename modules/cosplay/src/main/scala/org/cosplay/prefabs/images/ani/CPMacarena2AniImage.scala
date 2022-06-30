@@ -36,7 +36,7 @@ import CPPixel.*
 */
 
 /**
-  * https://www.ludd.ltu.se/~vk/q/asc-anim/macarena.html
+  * https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/q/asc-anim/macarena.html
   */
 object CPMacarena2AniImage extends CPArrayImage(
     // 3x3
