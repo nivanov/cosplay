@@ -30,26 +30,5 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-/**
-  *
-  * @param args
-  * @param con
-  * @param rt
-  * @param fs
-  * @param workDir
-  * @param env
-  * @param user
-  */
-case class CPMirProgramContext(
-    args: Seq[String],
-    con: CPMirConsole,
-    rt: CPMirRuntime,
-    fs: CPMirFileSystem,
-    workDir: CPMirDirectoryFile,
-    env: Map[String, String],
-    user: CPMirUser,
-    in: CPMirInputStream,
-    out: CPMirOutputStream,
-    err: CPMirOutputStream
-)
+trait CPMirInputStream
 
