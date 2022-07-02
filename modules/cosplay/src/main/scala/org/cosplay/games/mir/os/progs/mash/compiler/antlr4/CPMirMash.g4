@@ -108,8 +108,11 @@ varAccess
     | DOLLAR LPAR INT RPAR
     | DOLLAR IDENT keyAccess*
     | DOLLAR LPAR IDENT RPAR keyAccess*
-    | DOLLAR POUND // '$#' number of command line paramters.
-    | DOLLAR QUESTION // '$?' exit code of the last command.
+    | CMD_ARGS_NUM
+    | LAST_EXIT_STATUS
+    | LAST_PID
+    | LAST_BG_PID
+    | CMD_ARGS_LIST
     ;
 keyAccess: LBR expr RBR;
 atom
@@ -126,6 +129,11 @@ qstring
 // Lexer.
 // ======
 
+CMD_ARGS_NUM: '$#';
+LAST_EXIT_STATUS: '$?';
+LAST_PID: '$$';
+LAST_BG_PID: '$!';
+CMD_ARGS_LIST: '$@';
 VAR: 'var';
 VAL: 'val';
 DEF: 'def';

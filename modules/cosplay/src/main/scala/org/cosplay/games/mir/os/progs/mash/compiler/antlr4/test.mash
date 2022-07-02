@@ -16,10 +16,18 @@ println($map["name"]["key"])
 
 val s = !#("cat /file.txt | wc | take 1")
 
-println()
+println("Number of command line arguments is $#")
+println("Last exit status is $?")
+println("Current PID $$")
+println("Last background PID $!")
 
 someapp()
 
+/*
+ * Test function.
+ *
+ * @param a 1st parameter.
+ */
 def fun(a, b, c) = {
     def z() = println()
     var q = (1.054 + 2_00_00) * $4 + $(varName)[2]
