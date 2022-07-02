@@ -53,6 +53,12 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExportDecl(CPMirMashParser.ExportDeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#execDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExecDecl(CPMirMashParser.ExecDeclContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CPMirMashParser#unexportDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -151,6 +157,13 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUnaryExpr(CPMirMashParser.UnaryExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code execExpr}
+	 * labeled alternative in {@link CPMirMashParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExecExpr(CPMirMashParser.ExecExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code forYieldExpr}
 	 * labeled alternative in {@link CPMirMashParser#expr}.

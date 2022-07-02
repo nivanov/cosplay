@@ -78,6 +78,16 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 */
 	void exitExportDecl(CPMirMashParser.ExportDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CPMirMashParser#execDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterExecDecl(CPMirMashParser.ExecDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CPMirMashParser#execDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitExecDecl(CPMirMashParser.ExecDeclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CPMirMashParser#unexportDecl}.
 	 * @param ctx the parse tree
 	 */
@@ -245,6 +255,18 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUnaryExpr(CPMirMashParser.UnaryExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code execExpr}
+	 * labeled alternative in {@link CPMirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExecExpr(CPMirMashParser.ExecExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code execExpr}
+	 * labeled alternative in {@link CPMirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExecExpr(CPMirMashParser.ExecExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code forYieldExpr}
 	 * labeled alternative in {@link CPMirMashParser#expr}.

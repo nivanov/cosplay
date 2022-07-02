@@ -100,6 +100,18 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterExecDecl(CPMirMashParser.ExecDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExecDecl(CPMirMashParser.ExecDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterUnexportDecl(CPMirMashParser.UnexportDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -275,6 +287,18 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitUnaryExpr(CPMirMashParser.UnaryExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExecExpr(CPMirMashParser.ExecExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExecExpr(CPMirMashParser.ExecExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

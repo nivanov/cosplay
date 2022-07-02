@@ -49,16 +49,18 @@ decl
     | whileDecl
     | forDecl
     | compoundExpr
+    | execDecl
     ;
-valDecl: VAL_KW IDENT ASSIGN expr;
-varDecl: VAR_KW IDENT (ASSIGN expr)?;
+valDecl: VAL IDENT ASSIGN expr;
+varDecl: VAR IDENT (ASSIGN expr)?;
 assignDecl: varAccess ASSIGN expr;
-exportDecl: EXPORT_KW IDENT;
-unexportDecl: UNEXPORT_KW IDENT;
-defDecl: DEF_KW IDENT LPAR funParamList? RPAR ASSIGN compoundExpr;
-nativeDefDecl: NATIVE_KW DEF_KW IDENT LPAR funParamList? RPAR;
-whileDecl: WHILE_KW expr DO_KW compoundExpr;
-forDecl: FOR_KW IDENT IN_KW expr DO_KW compoundExpr;
+exportDecl: EXPORT IDENT;
+execDecl: EXEC LPAR qstring RPAR;
+unexportDecl: UNEXPORT IDENT;
+defDecl: DEF IDENT LPAR funParamList? RPAR ASSIGN compoundExpr;
+nativeDefDecl: NATIVE DEF IDENT LPAR funParamList? RPAR;
+whileDecl: WHILE expr DO compoundExpr;
+forDecl: FOR IDENT IN expr DO compoundExpr;
 funParamList
     : IDENT
     | funParamList COMMA IDENT
@@ -68,15 +70,16 @@ expr
     : op=(MINUS | NOT) expr # unaryExpr
     | expr MOD expr # modExpr
     | LPAR expr RPAR # parExpr
-    | IF_KW expr THEN_KW compoundExpr ELSE_KW compoundExpr # ifExpr
-    | FOR_KW IDENT IN_KW expr YIELD_KW compoundExpr # forYieldExpr
-    | LPAR funParamList? RPAR ANON_DEF_KW compoundExpr # anonDefExpr
+    | IF expr THEN compoundExpr (ELSE compoundExpr)? # ifExpr
+    | FOR IDENT IN expr YIELD compoundExpr # forYieldExpr
+    | LPAR funParamList? RPAR ANON_DEF compoundExpr # anonDefExpr
     | expr op=(MULT | DIV | MOD) expr # multDivModExpr
     | expr op=(PLUS | MINUS) expr # plusMinusExpr
     | expr op=(LTEQ | GTEQ | LT | GT) expr # compExpr
     | expr op=(EQ | NEQ) expr # eqNeqExpr
     | expr op=(AND | OR) expr # andOrExpr
     | atom # atomExpr
+    | EXEC_VAL LPAR qstring RPAR # execExpr
     | LPAR listItems? RPAR # listExpr
     | TILDA LPAR mapItems? RPAR # mapExpr
     | IDENT LPAR callParamList? RPAR # callExpr
@@ -87,7 +90,7 @@ listItems
     : expr
     | listItems COMMA expr
     ;
-mapItem: expr ASSOC_KW expr;
+mapItem: expr ASSOC expr;
 mapItems
     : mapItem
     | mapItems COMMA mapItem
@@ -101,12 +104,12 @@ callParamList
     | callParamList COMMA expr
     ;
 varAccess
-    : AT INT // '$1' command line parameter access. '$0' is entire command line as a string.
-    | AT LPAR INT RPAR
-    | AT IDENT keyAccess*
-    | AT LPAR IDENT RPAR keyAccess*
-    | AT POUND // '$#' number of command line paramters.
-    | AT QUESTION // '$?' exit code of the last command.
+    : DOLLAR INT // '$1' command line parameter access. '$0' is entire command line as a string.
+    | DOLLAR LPAR INT RPAR
+    | DOLLAR IDENT keyAccess*
+    | DOLLAR LPAR IDENT RPAR keyAccess*
+    | DOLLAR POUND // '$#' number of command line paramters.
+    | DOLLAR QUESTION // '$?' exit code of the last command.
     ;
 keyAccess: LBR expr RBR;
 atom
@@ -118,34 +121,31 @@ atom
 qstring
     : SQSTRING
     | DQSTRING
-    | BQSTRING
     ;
 
 // Lexer.
 // ======
 
-// Keywords.
-VAR_KW: 'var';
-VAL_KW: 'val';
-DEF_KW: 'def';
-ANON_DEF_KW: '=>';
-ASSOC_KW: '->';
-EXPORT_KW: 'export';
-UNEXPORT_KW: 'unexport';
-NATIVE_KW: 'native';
-IF_KW: 'if';
-THEN_KW: 'then';
-ELSE_KW: 'else';
-WHILE_KW: 'while';
-DO_KW: 'do';
-YIELD_KW: 'yield';
-FOR_KW: 'for';
-IN_KW: '<-';
-
-// Tokens.
+VAR: 'var';
+VAL: 'val';
+DEF: 'def';
+ANON_DEF: '=>';
+ASSOC: '->';
+EXPORT: 'export';
+UNEXPORT: 'unexport';
+NATIVE: 'native';
+IF: 'if';
+THEN: 'then';
+ELSE: 'else';
+WHILE: 'while';
+DO: 'do';
+YIELD: 'yield';
+FOR: 'for';
+IN: '<-';
+EXEC: '!!';
+EXEC_VAL: '!#';
 SQSTRING: SQUOTE (~'\'')* SQUOTE; //
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
-BQSTRING: BQUOTE (~'`')* BQUOTE;
 BOOL: 'true' | 'false';
 NULL: 'null';
 EQ: '==';
@@ -170,7 +170,6 @@ LBR: '[';
 RBR: ']';
 POUND: '#';
 COMMA: ',';
-COLON: ':';
 MINUS: '-';
 DOT: '.';
 UNDERSCORE: '_';
@@ -180,14 +179,12 @@ QUESTION: '?';
 MULT: '*';
 DIV: '/';
 MOD: '%';
-AT: '@';
 DOLLAR: '$';
 INT: '0' | [1-9] [_0-9]*;
 REAL: DOT [0-9]+;
 EXP: [Ee] [+\-]? INT;
 fragment LETTER: [a-zA-Z];
 IDENT: (UNDERSCORE|LETTER)+(UNDERSCORE|LETTER|[0-9])*;
-//PATH: (DIV|DOT|UNDERSCORE|MINUS|LETTER|DOLLAR|[0-9])+;
 COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
 WS: [ \r\t\u000C\n]+ -> skip;
 ErrorChar: .;
