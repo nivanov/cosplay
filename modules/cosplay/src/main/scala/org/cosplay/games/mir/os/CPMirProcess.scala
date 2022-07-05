@@ -59,7 +59,7 @@ trait CPMirProcess:
     /**
       *
       */
-    def getMainArguments: Seq[String]
+    def getArguments: Seq[String]
 
     /**
       *

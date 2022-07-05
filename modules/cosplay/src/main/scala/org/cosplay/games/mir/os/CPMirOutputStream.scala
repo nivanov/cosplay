@@ -30,5 +30,33 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-trait CPMirOutputStream
+/**
+  *
+  */
+trait CPMirOutputStream:
+    /**
+      *
+      */
+    def close(): Unit
+
+    /**
+      *
+      * @param arr
+      */
+    def write(arr: Array[Byte]): Unit
+
+    /**
+      *
+      * @param arr
+      * @param off
+      * @param len
+      */
+    def write(arr: Array[Byte], off: Int, len: Int): Unit
+
+    /**
+      *
+      * @param b
+      */
+    def write(b: Int): Unit
+
 

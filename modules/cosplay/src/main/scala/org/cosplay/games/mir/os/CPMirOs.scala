@@ -45,21 +45,27 @@ class CPMirOs(fs: CPMirFileSystem, users: Seq[CPMirUser]) extends Serializable:
     require(users.exists(_.isRoot))
 
     private val rootUsr = users.find(_.isRoot).get
+    private val rt = new CPMirRuntime
 
     /**
       *
       */
-    inline def getFs: CPMirFileSystem = fs
+    def getFs: CPMirFileSystem = fs
 
     /**
       *
       */
-    inline def getRootUser: CPMirUser = rootUsr
+    def getRootUser: CPMirUser = rootUsr
 
     /**
       *
       */
-    inline def getAllUsers: Seq[CPMirUser] = users
+    def getAllUsers: Seq[CPMirUser] = users
+
+    /**
+      *
+      */
+    def restart(): Unit = ???
 
     /**
       *

@@ -31,15 +31,13 @@ package org.cosplay.games.mir.os
 */
 
 class CPMirRuntime:
-    /**
-      * Unix 'PID'.
-      */
-    def getPid: Long = ???
-
-    /**
-      * Unix 'PPID'.
-      */
-    def getParentPid: Long = ???
+    def exec(
+        file: CPMirProgramFile,
+        args: Seq[String],
+        workDir: CPMirDirectoryFile,
+        usr: CPMirUser,
+        env: Map[String, String],
+        in: CPMirInputStream): CPMirProcess = ???
 
     /**
       *

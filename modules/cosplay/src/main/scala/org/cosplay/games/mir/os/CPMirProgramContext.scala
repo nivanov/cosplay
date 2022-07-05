@@ -40,7 +40,7 @@ package org.cosplay.games.mir.os
   * @param env
   * @param user
   */
-case class CPMirProgramContext(
+abstract case class CPMirProgramContext(
     args: Seq[String],
     con: CPMirConsole,
     rt: CPMirRuntime,
@@ -51,5 +51,6 @@ case class CPMirProgramContext(
     in: CPMirInputStream,
     out: CPMirOutputStream,
     err: CPMirOutputStream
-)
+):
+    def isKilled: Boolean
 

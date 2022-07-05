@@ -30,5 +30,67 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-trait CPMirInputStream
+/**
+  *
+  */
+trait CPMirInputStream:
+    /**
+      *
+      */
+    def available(): Int
+
+    /**
+      *
+       */
+    def close(): Unit
+
+    /**
+      *
+      */
+    def read(): Int
+
+    /**
+      *
+      * @param arr
+      */
+    def read(arr: Array[Byte]): Int
+
+    /**
+      *
+      * @param arr
+      * @param off
+      * @param len
+      */
+    def read(arr: Array[Byte], off: Int, len: Int): Int
+
+    /**
+      *
+      */
+    def readAllBytes(): Array[Byte]
+
+    /**
+      *
+      * @param arr
+      * @param off
+      * @param len
+      */
+    def readNBytes(arr: Array[Byte], off: Int, len: Int): Int
+
+    /**
+      *
+      * @param len
+      */
+    def readNBytes(len: Int): Array[Byte]
+
+    /**
+      *
+      * @param n
+      */
+    def skip(n: Long): Long
+
+    /**
+      *
+      * @param out
+      */
+    def transferTo(out: CPMirOutputStream): Long
 
