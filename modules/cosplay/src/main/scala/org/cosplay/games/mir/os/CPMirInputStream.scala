@@ -30,43 +30,36 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import java.io.*
+
 /**
-  *
+  * Wrapper for input stream.
   */
-trait CPMirInputStream:
+class CPMirInputStream(impl: InputStream):
     /**
       *
       */
-    def available(): Int
-
-    /**
-      *
-       */
-    def close(): Unit
+    @throws[IOException]
+    def available(): Int = impl.available()
 
     /**
       *
       */
-    def read(): Int
+    @throws[IOException]
+    def close(): Unit = impl.close()
+
+    /**
+      *
+      */
+    @throws[IOException]
+    def read(): Int = impl.read()
 
     /**
       *
       * @param arr
       */
-    def read(arr: Array[Byte]): Int
-
-    /**
-      *
-      * @param arr
-      * @param off
-      * @param len
-      */
-    def read(arr: Array[Byte], off: Int, len: Int): Int
-
-    /**
-      *
-      */
-    def readAllBytes(): Array[Byte]
+    @throws[IOException]
+    def read(arr: Array[Byte]): Int = impl.read(arr)
 
     /**
       *
@@ -74,23 +67,51 @@ trait CPMirInputStream:
       * @param off
       * @param len
       */
-    def readNBytes(arr: Array[Byte], off: Int, len: Int): Int
+    @throws[IOException]
+    def read(arr: Array[Byte], off: Int, len: Int): Int = impl.read(arr, off, len)
+
+    /**
+      *
+      */
+    @throws[IOException]
+    def readAllBytes(): Array[Byte] = impl.readAllBytes()
+
+    /**
+      *
+      * @param arr
+      * @param off
+      * @param len
+      */
+    @throws[IOException]
+    def readNBytes(arr: Array[Byte], off: Int, len: Int): Int = impl.readNBytes(arr, off, len)
 
     /**
       *
       * @param len
       */
-    def readNBytes(len: Int): Array[Byte]
+    @throws[IOException]
+    def readNBytes(len: Int): Array[Byte] = impl.readNBytes(len)
 
     /**
       *
       * @param n
       */
-    def skip(n: Long): Long
+    @throws[IOException]
+    def skip(n: Long): Long = impl.skip(n)
+
+/**
+  *
+  */
+object CPMirInputStream:
+    /**
+      *
+      */
+    def nullStream(): CPMirInputStream = CPMirInputStream(InputStream.nullInputStream())
 
     /**
       *
-      * @param out
+      * @param impl
       */
-    def transferTo(out: CPMirOutputStream): Long
+    def nativeStream(impl: InputStream): CPMirInputStream = CPMirInputStream(impl)
+
 

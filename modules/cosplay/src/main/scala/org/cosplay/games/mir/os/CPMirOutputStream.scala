@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os
 
+import java.io.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -37,13 +39,15 @@ trait CPMirOutputStream:
     /**
       *
       */
+    @throws[IOException]
     def close(): Unit
 
     /**
       *
       * @param arr
       */
-    def write(arr: Array[Byte]): Unit
+    @throws[IOException]
+    def write(arr: Array[Byte]): Unit = write(arr, 0, arr.length)
 
     /**
       *
@@ -51,12 +55,34 @@ trait CPMirOutputStream:
       * @param off
       * @param len
       */
-    def write(arr: Array[Byte], off: Int, len: Int): Unit
+    @throws[IOException]
+    def write(arr: Array[Byte], off: Int, len: Int): Unit =
+        var i = 0
+        while i < len do
+            write(arr(off + i))
+            i += 1
 
     /**
       *
       * @param b
       */
+    @throws[IOException]
     def write(b: Int): Unit
+
+/**
+  * 
+  */
+object CPMirOutputStream:
+    /**
+      *
+      * @param con
+      */
+    def consoleStream(con: CPMirConsole): CPMirOutputStream = ???
+
+    /**
+      *
+      * @param impl
+      */
+    def nativeStream(impl: OutputStream): CPMirOutputStream = ???
 
 

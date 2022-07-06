@@ -30,14 +30,48 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-class CPMirRuntime:
+/**
+  *
+  * @param fs
+  * @param con
+  */
+class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
+    /**
+      *
+      * @param file
+      * @param args
+      * @param workDir
+      * @param usr
+      * @param env
+      * @param in
+      * @param out
+      * @param err
+      * @return
+      */
     def exec(
         file: CPMirProgramFile,
         args: Seq[String],
         workDir: CPMirDirectoryFile,
         usr: CPMirUser,
         env: Map[String, String],
-        in: CPMirInputStream): CPMirProcess = ???
+        in: CPMirInputStream,
+        out: CPMirOutputStream,
+        err: CPMirOutputStream): CPMirProcess =
+        val ctx = CPMirProgramContext(
+            args,
+            con,
+            this,
+            fs,
+            workDir,
+            env,
+            usr,
+            in,
+            out,
+            err
+        )
+
+        // TODO
+        null
 
     /**
       *
