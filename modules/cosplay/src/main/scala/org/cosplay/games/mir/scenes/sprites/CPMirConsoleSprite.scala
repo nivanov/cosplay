@@ -43,6 +43,8 @@ import scala.util.*
   *
   */
 class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsole:
+    import CPMirConsole.*
+
     private val keySnd = CPSound(s"$SND_HOME/keypress.wav", .05f)
 
     case class ZChar(ch: Char, fg: CPColor, bg: CPColor, z: Int):
@@ -110,17 +112,17 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         def getPos: Int = pos
         def insertChar(ch: Char): Unit =
             if len < maxLen then
-                buf = buf.substring(0, pos) + ch + buf.substring(pos)
+                buf = s"${buf.substring(0, pos)}$ch${buf.substring(pos)}"
                 pos += 1
                 len = buf.stripTrailing().length
         def deleteChar(): Unit =
             if pos < len then
-                buf = buf.substring(0, pos) + buf.substring(pos + 1) + ' '
+                buf = s"${buf.substring(0, pos)}${buf.substring(pos + 1)} "
                 len = buf.stripTrailing().length
         def backspace(): Unit =
             if pos > 0 then
                 pos -= 1
-                buf = buf.substring(0, pos) + buf.substring(pos + 1) + ' '
+                buf = s"${buf.substring(0, pos)}${buf.substring(pos + 1)} "
                 len = buf.stripTrailing().length
 
     clear()
@@ -146,11 +148,15 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     override def getCursorX: Int = curX
     override def getCursorY: Int = curY - canvY
     override def putChar(x: Int, y: Int, z: Int, ch: Char, fg: CPColor, bg: CPColor): Unit =
-        val y2 = y + canvY
-        if isPositionValid(x, y2) then mux.synchronized {
-            val zch = pane(y2)(x)
-            if zch.z <= z then pane(y2)(x) = ZChar(ch, fg, bg, z)
-        }
+        ch match
+            case CTRL_REV_COL => inverseColors()
+            case CTRL_RST_COL => resetColors()
+            case _ =>
+                val y2 = y + canvY
+                if isPositionValid(x, y2) then mux.synchronized {
+                    val zch = pane(y2)(x)
+                    if zch.z <= z then pane(y2)(x) = ZChar(ch, fg, bg, z)
+                }
 
     override def readLine(repCh: Option[Char], maxLen: Int, hist: Seq[String]): String =
         require(!rlMode)
@@ -257,7 +263,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         mux.synchronized {
             def put(ch: Char): Unit =
                 putChar(getCursorX, getCursorY, ch)
-                advanceCursor(W)
+                if !isControl(ch) then advanceCursor(W)
             x.toString.foreach(ch => ch match
                 case '\r' => curX = 0 // For Win-compatibility just in case.
                 case '\n' =>
