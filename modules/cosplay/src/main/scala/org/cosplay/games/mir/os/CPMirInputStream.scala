@@ -35,7 +35,7 @@ import java.io.*
 /**
   * Wrapper for input stream.
   */
-class CPMirInputStream(impl: InputStream):
+class CPMirInputStream(impl: InputStream) extends Closeable:
     /**
       *
       */

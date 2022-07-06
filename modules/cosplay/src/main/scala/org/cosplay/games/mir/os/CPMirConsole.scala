@@ -36,7 +36,7 @@ import games.mir.*
 /**
   *
   */
-trait CPMirConsole:
+trait CPMirConsole extends CPMirPrintable:
     private var fg = FG
     private var bg = BG
 
@@ -54,26 +54,7 @@ trait CPMirConsole:
       * Gets the current size of the console window in characters.
       */
     def getSize: CPDim
-
-    /**
-      *
-      * @param x
-      */
-    def println(x: Any = ""): Unit = print(s"$x\n")
-
-    /**
-      *
-      * @param x
-      */
-    def print(x: Any): Unit
-
-    /**
-      *
-      * @param text
-      * @param args
-      */
-    def printf(text: String, args: Any*): Unit = print(text.format(args))
-
+    
     /**
       *
       */

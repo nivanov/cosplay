@@ -35,7 +35,7 @@ import java.io.*
 /**
   *
   */
-trait CPMirOutputStream:
+trait CPMirOutputStream extends Closeable, CPMirPrintable:
     /**
       *
       */
@@ -70,19 +70,45 @@ trait CPMirOutputStream:
     def write(b: Int): Unit
 
 /**
-  * 
+  *
   */
 object CPMirOutputStream:
     /**
       *
+      */
+    def nullStream(): CPMirOutputStream =
+        new CPMirOutputStream:
+            private val impl = PrintStream(OutputStream.nullOutputStream())
+            override def close(): Unit = impl.close()
+            override def write(b: Int): Unit = impl.write(b)
+            override def print(x: Any): Unit = impl.print(x.toString)
+
+    /**
+      *
       * @param con
       */
-    def consoleStream(con: CPMirConsole): CPMirOutputStream = ???
+    def consoleStream(con: CPMirConsole): CPMirOutputStream =
+        new CPMirOutputStream:
+            private var closed = false
+
+            override def close(): Unit = closed = true
+            protected def ensureOpen(): Unit = if closed then throw new IOException("Stream closed.")
+            override def write(b: Int): Unit =
+                ensureOpen()
+                con.print(s"${b.toChar}")
+            override def print(x: Any): Unit =
+                ensureOpen()
+                con.print(x)
 
     /**
       *
       * @param impl
       */
-    def nativeStream(impl: OutputStream): CPMirOutputStream = ???
+    def nativeStream(impl: OutputStream): CPMirOutputStream =
+        new CPMirOutputStream:
+            private val ps = PrintStream(impl)
+            override def close(): Unit = ps.close()
+            override def write(b: Int): Unit = ps.write(b)
+            override def print(x: Any): Unit = ps.print(x.toString)
 
 
