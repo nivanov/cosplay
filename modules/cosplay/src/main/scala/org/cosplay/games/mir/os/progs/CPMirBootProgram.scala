@@ -37,5 +37,5 @@ import os.*
   *
   */
 class CPMirBootProgram extends CPMirProgram:
-    override def mainEntry(ctx: CPMirProgramContext): Int = ???
-    override def getSizeOnDisk: Long = ???
+    override def mainEntry(ctx: CPMirProgramContext): Int = 0 // TODO
+    override def getSizeOnDisk: Long = 1024 // TODO

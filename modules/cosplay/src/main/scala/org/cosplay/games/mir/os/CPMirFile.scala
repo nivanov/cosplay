@@ -38,11 +38,11 @@ import scala.collection.mutable
 /**
   *
   * @param typ
-  * @param name
-  * @param owner
+  * @param name Name of file (not including its path).
+  * @param owner User owner of this file.
   * @param parent
-  * @param otherRead
-  * @param otherWrite
+  * @param otherAccess Can others read or execute. Owner can do anything.
+  * @param otherModify Can others change or delete. Owner can do anything.
   */
 @SerialVersionUID(1_0_0L)
 abstract class CPMirFile(
@@ -50,8 +50,8 @@ abstract class CPMirFile(
     private var name: String,
     private var owner: CPMirUser,
     private var parent: Option[CPMirDirectoryFile],
-    private var otherRead: Boolean = false,
-    private var otherWrite: Boolean = false
+    private var otherAccess: Boolean = false,
+    private var otherModify: Boolean = false
 ) extends Serializable:
     private var createTs = CPMirClock.now()
     private var updateTs = CPMirClock.now()
@@ -165,24 +165,24 @@ abstract class CPMirFile(
     /**
       *
       */
-    def canOtherRead: Boolean = otherRead
+    def canOtherAccess: Boolean = otherAccess
 
     /**
       *
-      * @param otherRead
+      * @param otherAccess
       */
-    def setOtherRead(otherRead: Boolean): Unit = this.otherRead = otherRead
+    def setOtherAccess(otherAccess: Boolean): Unit = this.otherAccess = otherAccess
 
     /**
       *
-      * @param otherWrite
+      * @param otherModify
       */
-    def setOtherWrite(otherWrite: Boolean): Unit = this.otherWrite = otherWrite
+    def setOtherModify(otherModify: Boolean): Unit = this.otherModify = otherModify
 
     /**
       *
       */
-    def canOtherWrite: Boolean = otherWrite
+    def canOtherModify: Boolean = otherModify
 
     /**
       *

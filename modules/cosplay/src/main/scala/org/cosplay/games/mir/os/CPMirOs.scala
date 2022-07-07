@@ -18,6 +18,8 @@
 package org.cosplay.games.mir.os
 
 import org.cosplay.*
+import org.cosplay.games.mir.os.progs.CPMirBootProgram
+
 import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -46,15 +48,29 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
 
     private val rootUsr = users.find(_.isRoot).get
     private var rt: CPMirRuntime = _
-    private val fs = fsOpt.getOrElse(initFs())
+    private val fs = fsOpt.getOrElse(installFs())
 
     /**
       * Initializes brand new file system.
       */
-    private def initFs(): CPMirFileSystem =
+    private def installFs(): CPMirFileSystem =
         val root = CPMirDirectoryFile.mkRoot(rootUsr)
-        val x = new CPMirFileSystem(root)
-        x
+
+        // Install directory structure.
+        val bin = root.addDirFile("bin", rootUsr)
+        val sbin = root.addDirFile("sbin", rootUsr)
+        val dev = root.addDirFile("dev", rootUsr)
+        val home = root.addDirFile("home", rootUsr)
+        val tmp = root.addDirFile("tmp", rootUsr)
+        val etc = root.addDirFile("etc", rootUsr)
+        val lib = root.addDirFile("lib", rootUsr)
+        val usr = root.addDirFile("usr", rootUsr)
+        val usrBin = usr.addDirFile("bin", rootUsr)
+
+        // Install files.
+        sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
+
+        new CPMirFileSystem(root)
 
     /**
       *

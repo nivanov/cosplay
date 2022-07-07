@@ -36,20 +36,32 @@ import org.cosplay.games.mir.os.CPMirFileType.*
 
 /**
   *
-  * @param name
-  * @param owner
+  * @param name Name of file (not including its path).
+  * @param owner User owner of this file.
   * @param parent
+  * @param otherAcs Can others read or execute. Owner can do anything.
+  * @param otherMod Can others change or delete. Owner can do anything.
   */
 class CPMirRegularFile(
     name: String,
     owner: CPMirUser,
-    parent: Option[CPMirDirectoryFile]
-) extends CPMirFile(FT_REG, name, owner, parent):
+    parent: Option[CPMirDirectoryFile],
+    otherAcs: Boolean,
+    otherMod: Boolean
+) extends CPMirFile(FT_REG, name, owner, parent, otherAcs, otherMod):
     /**
       *
-      * @param name
-      * @param owner
+      * @param name Name of file (not including its path).
+      * @param owner User owner of this file.
       * @param parent
+      * @param otherAcs Can others read or execute. Owner can do anything.
+      * @param otherMod Can others change or delete. Owner can do anything.
       */
-    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile) = this(name, owner, Some(parent))
+    def this(
+        name: String,
+        owner: CPMirUser,
+        parent: CPMirDirectoryFile,
+        otherAcs: Boolean = false,
+        otherMod: Boolean = false
+    ) = this(name, owner, Option(parent), otherAcs, otherMod)
 
