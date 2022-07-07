@@ -33,12 +33,29 @@ package org.cosplay.games.mir.os
 import org.cosplay.*
 import games.mir.*
 
+object CPMirConsole:
+    /**  */
+    val CTRL_REV_COL = '\u0001'
+    /**  */
+    val CTRL_RST_COL = '\u0002'
+
+    /**
+      *
+      * @param ch
+      */
+    def isControl(ch: Char): Boolean = ch match
+        case CTRL_REV_COL | CTRL_RST_COL => true
+        case _ => false
+
 /**
   *
   */
 trait CPMirConsole extends CPMirPrintable:
     private var fg = FG
     private var bg = BG
+
+    protected val initFg: CPColor = FG
+    protected val initBg: CPColor = BG
 
     /**
       * Reads the line form the console at the current cursor position. This call will be blocked
@@ -133,11 +150,26 @@ trait CPMirConsole extends CPMirPrintable:
       *
       * @param x
       * @param y
+      * @param z
       * @param ch
       * @param fg
       * @param bg
       */
     def putChar(x: Int, y: Int, z: Int, ch: Char, fg: CPColor, bg: CPColor): Unit
+
+    /**
+      *
+      */
+    def inverseColors(): Unit =
+        setFg(initBg)
+        setBg(initFg)
+
+    /**
+      *
+      */
+    def resetColors(): Unit =
+        setFg(initFg)
+        setBg(initBg)
 
     /**
       *

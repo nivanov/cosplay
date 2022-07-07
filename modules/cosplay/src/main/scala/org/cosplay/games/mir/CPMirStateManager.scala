@@ -55,11 +55,11 @@ case class CPMirState(
     var crtOverscanFactor: Float,
     var crtTearProb: Float,
     var timeMs: Long,
-    val badgeMirXAdmin: CPMirPlayerBadge,
-    val badgeMashDev: CPMirPlayerBadge,
-    val badgeCommSpec: CPMirPlayerBadge,
-    val badgeLifeSupportSpec: CPMirPlayerBadge,
-    val badgeOrbitalSpec: CPMirPlayerBadge
+    badgeMirXAdmin: CPMirPlayerBadge,
+    badgeMashDev: CPMirPlayerBadge,
+    badgeCommSpec: CPMirPlayerBadge,
+    badgeLifeSupportSpec: CPMirPlayerBadge,
+    badgeOrbitalSpec: CPMirPlayerBadge
 ) extends Serializable
 
 /**

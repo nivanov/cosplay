@@ -108,7 +108,7 @@ object CPMirOutputStream:
         new CPMirOutputStream:
             private val ps = PrintStream(impl)
             override def close(): Unit = ps.close()
-            override def write(b: Int): Unit = ps.write(b)
-            override def print(x: Any): Unit = ps.print(x.toString)
+            override def write(b: Int): Unit = if !CPMirConsole.isControl(b.toChar) then ps.write(b)
+            override def print(x: Any): Unit = ps.print(x.toString.filter(ch => !CPMirConsole.isControl(ch)))
 
 
