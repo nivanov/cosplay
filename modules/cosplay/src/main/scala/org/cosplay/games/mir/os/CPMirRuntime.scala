@@ -49,14 +49,14 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
       * @return
       */
     def exec(
-        file: CPMirProgramFile,
-        args: Seq[String],
-        workDir: CPMirDirectoryFile,
-        usr: CPMirUser,
-        env: Map[String, String],
-        in: CPMirInputStream,
-        out: CPMirOutputStream,
-        err: CPMirOutputStream): CPMirProcess =
+                file: CPMirExecFile,
+                args: Seq[String],
+                workDir: CPMirDirectoryFile,
+                usr: CPMirUser,
+                env: Map[String, String],
+                in: CPMirInputStream,
+                out: CPMirOutputStream,
+                err: CPMirOutputStream): CPMirProcess =
         val ctx = CPMirProgramContext(
             args,
             con,

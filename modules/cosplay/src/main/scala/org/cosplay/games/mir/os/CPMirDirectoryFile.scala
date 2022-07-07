@@ -115,6 +115,31 @@ class CPMirDirectoryFile(
 
     /**
       *
+      * @param name
+      * @param owner
+      */
+    @throws[CPException]
+    def addRegFile(name: String, owner: CPMirUser): Unit = addFile(new CPMirRegularFile(name, owner, this))
+
+    /**
+      *
+      * @param name
+      * @param owner
+      * @param prg
+      */
+    @throws[CPException]
+    def addExecFile(name: String, owner: CPMirUser, prg: CPMirProgram): Unit = addFile(new CPMirExecFile(name, owner, this, prg))
+
+    /**
+      *
+      * @param name
+      * @param owner
+      */
+    @throws[CPException]
+    def addDirFile(name: String, owner: CPMirUser): Unit = addFile(new CPMirDirectoryFile(name, owner, this))
+
+    /**
+      *
       * @param file
       */
     def removeFile(file: CPMirFile): Boolean =

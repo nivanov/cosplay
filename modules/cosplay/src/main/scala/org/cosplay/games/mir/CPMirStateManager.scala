@@ -131,12 +131,8 @@ class CPMirStateManager:
         val usrs = mutable.ArrayBuffer(rootUsr)
         crew.foreach(p => usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
 
-        // File system.
-        val rootDir = CPMirDirectoryFile("", rootUsr, None)
-        val fs = CPMirFileSystem(rootDir)
-
         // OS.
-        os = CPMirOs(fs, usrs.toSeq)
+        os = CPMirOs(None, usrs.toSeq) // TODO
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 

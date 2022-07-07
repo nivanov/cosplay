@@ -41,11 +41,20 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * @param users
   */
 @SerialVersionUID(1_0_0L)
-class CPMirOs(fs: CPMirFileSystem, users: Seq[CPMirUser]) extends Serializable:
+class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Serializable:
     require(users.exists(_.isRoot))
 
     private val rootUsr = users.find(_.isRoot).get
     private var rt: CPMirRuntime = _
+    private val fs = fsOpt.getOrElse(initFs())
+
+    /**
+      * Initializes brand new file system.
+      */
+    private def initFs(): CPMirFileSystem =
+        val root = CPMirDirectoryFile.mkRoot(rootUsr)
+        val x = new CPMirFileSystem(root)
+        x
 
     /**
       *

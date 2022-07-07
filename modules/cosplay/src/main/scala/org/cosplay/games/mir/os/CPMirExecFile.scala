@@ -40,7 +40,7 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   * @param owner
   * @param prg
   */
-class CPMirProgramFile(
+class CPMirExecFile(
     name: String,
     owner: CPMirUser,
     parent: Option[CPMirDirectoryFile],
