@@ -38,18 +38,11 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param parent
+  * @param parent Parent directory of this file.
   */
 class CPMirDeviceFile(
     name: String,
     owner: CPMirUser,
-    parent: Option[CPMirDirectoryFile]
-) extends CPMirFile(FT_DEV, name, owner, parent):
-    /**
-      *
-      * @param name Name of file (not including its path).
-      * @param owner User owner of this file.
-      * @param parent
-      */
-    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile) = this(name, owner, Some(parent))
+    parent: CPMirDirectoryFile
+) extends CPMirFile(FT_DEV, name, owner, Option(parent))
 

@@ -37,10 +37,10 @@ import scala.collection.mutable
 
 /**
   *
-  * @param typ
+  * @param typ Type of the file.
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param parent
+  * @param parent Parent directory of this file or `None` if this is a root directory file.
   * @param otherAccess Can others read or execute. Owner can do anything.
   * @param otherModify Can others change or delete. Owner can do anything.
   */
@@ -53,6 +53,8 @@ abstract class CPMirFile(
     private var otherAccess: Boolean = false,
     private var otherModify: Boolean = false
 ) extends Serializable:
+    require((parent.isEmpty && typ == FT_DIR) || parent.nonEmpty)
+
     private var createTs = CPMirClock.now()
     private var updateTs = CPMirClock.now()
     private var size = 0L

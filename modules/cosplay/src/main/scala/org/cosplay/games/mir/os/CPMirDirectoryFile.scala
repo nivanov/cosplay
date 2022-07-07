@@ -55,7 +55,7 @@ import org.cosplay.games.mir.os.CPMirFileSystem.*
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param parent 
+  * @param parent Parent directory of this file or `None` if this is a root directory.
   * @param otherAcs Can others read or execute. Owner can do anything.
   * @param otherMod Can others change or delete. Owner can do anything.
   */
@@ -72,7 +72,7 @@ class CPMirDirectoryFile(
       *
       * @param name Name of file (not including its path).
       * @param owner User owner of this file.
-      * @param parent
+      * @param parent Parent directory of this file.
       * @param otherAcs Can others read or execute. Owner can do anything.
       * @param otherMod Can others change or delete. Owner can do anything.
       */
