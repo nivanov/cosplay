@@ -30,14 +30,23 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import java.util.concurrent.*
+import scala.collection.mutable
+
 /**
   *
   * @param fs
   * @param con
   */
 class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
+    private final val THREAD_POOL_SIZE = 16
+    private val procs = mutable.ArrayBuffer.empty[CPMirProcess]
+    private val exec = Executors.newFixedThreadPool(THREAD_POOL_SIZE)
+    private var pidGen = 1L
+
     /**
       *
+      * @param parent
       * @param file
       * @param args
       * @param workDir
@@ -49,6 +58,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
       * @return
       */
     def exec(
+        parent: Option[CPMirProcess],
         file: CPMirExecFile,
         args: Seq[String],
         workDir: CPMirDirectoryFile,
@@ -70,8 +80,37 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             err
         )
 
-        // TODO
-        null
+        var queued = true
+        var code: Option[Int] = None
+        val submitTs = CPMirClock.now()
+        var startTs: Long = 0
+        var pid = pidGen
+        pidGen += 1
+
+        val fut = exec.submit(new Runnable() {
+            override def run(): Unit =
+                queued = false
+                startTs = CPMirClock.now()
+                try
+                    code = Option(file.getProgram.mainEntry(ctx))
+                catch
+                    case _: InterruptedException => ()
+                    case e: Exception => err.println(s"")
+        })
+
+        new CPMirProcess:
+            override def getOwner: CPMirUser = usr
+            override def getPid: Long = pid
+            override def getParent: Option[CPMirProcess] = parent
+            override def getProgramFile: CPMirExecFile = file
+            override def getWorkingDirectory: CPMirDirectoryFile = workDir
+            override def getArguments: Seq[String] = args
+            override def getStartTime: Long = startTs
+            override def getSubmitTime: Long = submitTs
+            override def isQueued: Boolean = queued
+            override def isDone: Boolean = fut.isDone
+            override def kill(): Boolean = fut.cancel(true)
+            override def exitCode: Option[Int] = code
 
     /**
       *
