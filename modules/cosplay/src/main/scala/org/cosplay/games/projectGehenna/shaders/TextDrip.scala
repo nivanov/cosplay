@@ -15,11 +15,8 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.projectGehenna
-
+package org.cosplay.games.projectGehenna.shaders
 import org.cosplay.*
-import org.cosplay.CPFIGLetFont.*
-import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________
@@ -35,28 +32,13 @@ import org.cosplay.prefabs.shaders.*
 */
 
 
-object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
-    private val titleText = "Project Gehenna"
+object TextDrip extends CPShader:
+    private var go = false
 
-    private val fadeInShdr = CPSlideInShader.sigmoid(
-        CPSlideDirection.CENTRIFUGAL,
-        true,
-        3000,
-        GAME_BG_PX
-    )
+    def start(): Unit = go = true
+    def stop(): Unit = go = false
 
-    private def titleImage(): CPImage = FIG_OGRE.render(titleText, C1).trimBg()
-
-    private val titleSpr = new CPImageSprite("title", 0, 0, 1, titleImage(), shaders = Seq(fadeInShdr)):
-        private val clickSound = CPSound("sounds/games/gehenna/click.wav")
-        private val introSong = CPSound("sounds/games/gehenna/intro song.wav")
-
-        override def update(ctx: CPSceneObjectContext): Unit =
-            setX((ctx.getCanvas.w - this.getWidth) / 2)
-
-            if !introSong.isPlaying then
-                introSong.loop(3000)
-
-    addObjects(
-        titleSpr
-    )
+    override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
+        if go then
+            val canv = ctx.getCanvas
+            val tw = objRect.w
