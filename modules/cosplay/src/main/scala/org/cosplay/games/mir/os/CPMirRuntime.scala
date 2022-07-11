@@ -67,6 +67,13 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
         in: CPMirInputStream = CPMirInputStream.nullStream(),
         out: CPMirOutputStream = CPMirOutputStream.consoleStream(con),
         err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
+        var queued = true
+        var code: Option[Int] = None
+        val submitTs = CPMirClock.now()
+        var startTs: Long = 0
+        val pid = pidGen
+        pidGen += 1
+
         val ctx = CPMirProgramContext(
             args,
             con,
@@ -79,13 +86,6 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             out,
             err
         )
-
-        var queued = true
-        var code: Option[Int] = None
-        val submitTs = CPMirClock.now()
-        var startTs: Long = 0
-        var pid = pidGen
-        pidGen += 1
 
         val fut = exec.submit(new Runnable() {
             override def run(): Unit =
