@@ -30,5 +30,88 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-trait CPMirInputStream
+import java.io.*
+
+/**
+  * Wrapper for input stream.
+  */
+class CPMirInputStream(impl: InputStream) extends Closeable:
+    /**
+      *
+      */
+    @throws[IOException]
+    def available(): Int = impl.available()
+
+    /**
+      *
+      */
+    @throws[IOException]
+    def close(): Unit = impl.close()
+
+    /**
+      *
+      */
+    @throws[IOException]
+    def read(): Int = impl.read()
+
+    /**
+      *
+      * @param arr
+      */
+    @throws[IOException]
+    def read(arr: Array[Byte]): Int = impl.read(arr)
+
+    /**
+      *
+      * @param arr
+      * @param off
+      * @param len
+      */
+    @throws[IOException]
+    def read(arr: Array[Byte], off: Int, len: Int): Int = impl.read(arr, off, len)
+
+    /**
+      *
+      */
+    @throws[IOException]
+    def readAllBytes(): Array[Byte] = impl.readAllBytes()
+
+    /**
+      *
+      * @param arr
+      * @param off
+      * @param len
+      */
+    @throws[IOException]
+    def readNBytes(arr: Array[Byte], off: Int, len: Int): Int = impl.readNBytes(arr, off, len)
+
+    /**
+      *
+      * @param len
+      */
+    @throws[IOException]
+    def readNBytes(len: Int): Array[Byte] = impl.readNBytes(len)
+
+    /**
+      *
+      * @param n
+      */
+    @throws[IOException]
+    def skip(n: Long): Long = impl.skip(n)
+
+/**
+  *
+  */
+object CPMirInputStream:
+    /**
+      *
+      */
+    def nullStream(): CPMirInputStream = CPMirInputStream(InputStream.nullInputStream())
+
+    /**
+      *
+      * @param impl
+      */
+    def nativeStream(impl: InputStream): CPMirInputStream = CPMirInputStream(impl)
+
 

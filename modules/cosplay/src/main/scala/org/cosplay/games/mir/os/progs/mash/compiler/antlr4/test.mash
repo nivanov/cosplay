@@ -14,7 +14,7 @@ val map = ~($HEIGHT -> 2 * 0.4, "name"->"cosplay" + ' ' + "engine")
 
 println($map["name"]["key"])
 
-val s = !#("cat /file.txt | wc | take 1")
+val s = !#("cat /home/file.txt | wc | take 1")
 
 println("Number of command line arguments is $#")
 println("Last exit status is $?")
@@ -22,6 +22,8 @@ println("Current PID $$")
 println("Last background PID $!")
 
 someapp()
+
+alias ll = !!("ls -la -F")
 
 /*
  * Test function.

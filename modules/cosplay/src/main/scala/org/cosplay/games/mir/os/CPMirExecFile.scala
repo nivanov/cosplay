@@ -38,11 +38,22 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param parent Parent directory of this file.
+  * @param prg
+  * @param otherAcs Can others read or execute. Owner can do anything.
+  * @param otherMod Can others change or delete. Owner can do anything.
   */
-class CPMirDeviceFile(
+class CPMirExecFile(
     name: String,
     owner: CPMirUser,
-    parent: CPMirDirectoryFile
-) extends CPMirFile(FT_DEV, name, owner, Option(parent))
+    parent: CPMirDirectoryFile,
+    prg: CPMirProgram,
+    otherAcs: Boolean,
+    otherMod: Boolean
+) extends CPMirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod):
+    setSize(prg.getSizeOnDisk)
+
+    /**
+      *
+      */
+    def getProgram: CPMirProgram = prg
 

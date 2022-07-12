@@ -38,7 +38,10 @@ package org.cosplay.games.mir.os
   * @param fs
   * @param workDir
   * @param env
-  * @param user
+  * @param usr
+  * @param in
+  * @param out
+  * @param err
   */
 case class CPMirProgramContext(
     args: Seq[String],
@@ -47,9 +50,21 @@ case class CPMirProgramContext(
     fs: CPMirFileSystem,
     workDir: CPMirDirectoryFile,
     env: Map[String, String],
-    user: CPMirUser,
+    usr: CPMirUser,
     in: CPMirInputStream,
     out: CPMirOutputStream,
     err: CPMirOutputStream
-)
+):
+    @transient private var killed = false
+
+    /**
+      *
+      * @return
+      */
+    def isKilled: Boolean = killed
+
+    /**
+      *
+      */
+    def kill(): Unit = killed = true
 

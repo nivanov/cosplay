@@ -47,30 +47,42 @@ object CPMirDirectoryFile:
       */
     def mkRoot(owner: CPMirUser): CPMirDirectoryFile =
         require(owner.isRoot)
-        CPMirDirectoryFile("", owner, None)
+        CPMirDirectoryFile("", owner, None, true, false)
 
 import org.cosplay.games.mir.os.CPMirFileSystem.*
 
 /**
   *
-  * @param name
-  * @param owner
-  * @param parent
+  * @param name Name of file (not including its path).
+  * @param owner User owner of this file.
+  * @param parent Parent directory of this file or `None` if this is a root directory.
+  * @param otherAcs Can others read or execute. Owner can do anything.
+  * @param otherMod Can others change or delete. Owner can do anything.
   */
 class CPMirDirectoryFile(
     name: String,
     owner: CPMirUser,
-    parent: Option[CPMirDirectoryFile]
-) extends CPMirFile(FT_DIR, name, owner, parent) with Iterable[CPMirFile]:
+    parent: Option[CPMirDirectoryFile],
+    otherAcs: Boolean,
+    otherMod: Boolean
+) extends CPMirFile(FT_DIR, name, owner, parent, otherAcs, otherMod) with Iterable[CPMirFile]:
     private val children = mutable.ArrayBuffer.empty[CPMirFile]
 
     /**
       *
-      * @param name
-      * @param owner
-      * @param parent
+      * @param name Name of file (not including its path).
+      * @param owner User owner of this file.
+      * @param parent Parent directory of this file.
+      * @param otherAcs Can others read or execute. Owner can do anything.
+      * @param otherMod Can others change or delete. Owner can do anything.
       */
-    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile) = this(name, owner, Some(parent))
+    def this(
+        name: String,
+        owner: CPMirUser,
+        parent: CPMirDirectoryFile,
+        otherAcs: Boolean = true,
+        otherMod: Boolean = false
+    ) = this(name, owner, Some(parent), otherAcs, otherMod)
 
     /** */
     val isRoot: Boolean = parent.isEmpty
@@ -112,6 +124,46 @@ class CPMirDirectoryFile(
             case d: CPMirDirectoryFile => require(!d.isRoot)
             case _ => ()
         children += file
+
+    /**
+      *
+      * @param name Name of file (not including its path).
+      * @param owner User owner of this file.
+      * @param otherAcs Can others read or execute. Owner can do anything.
+      * @param otherMod Can others change or delete. Owner can do anything.
+      */
+    @throws[CPException]
+    def addRegFile(name: String, owner: CPMirUser, otherAcs: Boolean = false, otherMod: Boolean = false): CPMirRegularFile =
+        val f = new CPMirRegularFile(name, owner, this, otherAcs, otherMod)
+        addFile(f)
+        f
+
+    /**
+      *
+      * @param name Name of file (not including its path).
+      * @param owner User owner of this file.
+      * @param prg
+      * @param otherAcs Can others read or execute. Owner can do anything.
+      * @param otherMod Can others change or delete. Owner can do anything.
+      */
+    @throws[CPException]
+    def addExecFile(name: String, owner: CPMirUser, prg: CPMirProgram, otherAcs: Boolean = false, otherMod: Boolean = false): CPMirExecFile =
+        val f = new CPMirExecFile(name, owner, this, prg, otherAcs, otherMod)
+        addFile(f)
+        f
+
+    /**
+      *
+      * @param name Name of file (not including its path).
+      * @param owner User owner of this file.
+      * @param otherAcs Can others read or execute. Owner can do anything.
+      * @param otherMod Can others change or delete. Owner can do anything.
+      */
+    @throws[CPException]
+    def addDirFile(name: String, owner: CPMirUser, otherAcs: Boolean = true, otherMod: Boolean = false): CPMirDirectoryFile =
+        val d = new CPMirDirectoryFile(name, owner, this, otherAcs, otherMod)
+        addFile(d)
+        d
 
     /**
       *

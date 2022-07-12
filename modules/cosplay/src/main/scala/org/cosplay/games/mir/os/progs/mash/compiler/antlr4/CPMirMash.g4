@@ -50,7 +50,9 @@ decl
     | forDecl
     | compoundExpr
     | execDecl
+    | aliasDecl
     ;
+aliasDecl: ALIAS IDENT ASSIGN execDecl;
 valDecl: VAL IDENT ASSIGN expr;
 varDecl: VAR IDENT (ASSIGN expr)?;
 assignDecl: varAccess ASSIGN expr;
@@ -129,6 +131,7 @@ qstring
 // Lexer.
 // ======
 
+ALIAS: 'alias';
 CMD_ARGS_NUM: '$#';
 LAST_EXIT_STATUS: '$?';
 LAST_PID: '$$';

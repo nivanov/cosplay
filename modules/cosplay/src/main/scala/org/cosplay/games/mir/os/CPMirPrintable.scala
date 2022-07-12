@@ -30,19 +30,24 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
+trait CPMirPrintable:
+    /**
+      *
+      * @param x
+      */
+    def println(x: Any = ""): Unit = print(s"$x\n")
 
-/**
-  *
-  * @param name Name of file (not including its path).
-  * @param owner User owner of this file.
-  * @param parent Parent directory of this file.
-  */
-class CPMirDeviceFile(
-    name: String,
-    owner: CPMirUser,
-    parent: CPMirDirectoryFile
-) extends CPMirFile(FT_DEV, name, owner, Option(parent))
+    /**
+      *
+      * @param x
+      */
+    def print(x: Any): Unit
+
+    /**
+      *
+      * @param text
+      * @param args
+      */
+    def printf(text: String, args: Any*): Unit = print(text.format(args))
+
 

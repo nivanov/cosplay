@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os
 
+import java.io.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -30,5 +32,83 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-trait CPMirOutputStream
+/**
+  *
+  */
+trait CPMirOutputStream extends Closeable, CPMirPrintable:
+    /**
+      *
+      */
+    @throws[IOException]
+    def close(): Unit
+
+    /**
+      *
+      * @param arr
+      */
+    @throws[IOException]
+    def write(arr: Array[Byte]): Unit = write(arr, 0, arr.length)
+
+    /**
+      *
+      * @param arr
+      * @param off
+      * @param len
+      */
+    @throws[IOException]
+    def write(arr: Array[Byte], off: Int, len: Int): Unit =
+        var i = 0
+        while i < len do
+            write(arr(off + i))
+            i += 1
+
+    /**
+      *
+      * @param b
+      */
+    @throws[IOException]
+    def write(b: Int): Unit
+
+/**
+  *
+  */
+object CPMirOutputStream:
+    /**
+      *
+      */
+    def nullStream(): CPMirOutputStream =
+        new CPMirOutputStream:
+            private val impl = PrintStream(OutputStream.nullOutputStream())
+            override def close(): Unit = impl.close()
+            override def write(b: Int): Unit = impl.write(b)
+            override def print(x: Any): Unit = impl.print(x.toString)
+
+    /**
+      *
+      * @param con
+      */
+    def consoleStream(con: CPMirConsole): CPMirOutputStream =
+        new CPMirOutputStream:
+            private var closed = false
+
+            override def close(): Unit = closed = true
+            protected def ensureOpen(): Unit = if closed then throw new IOException("Stream closed.")
+            override def write(b: Int): Unit =
+                ensureOpen()
+                con.print(s"${b.toChar}")
+            override def print(x: Any): Unit =
+                ensureOpen()
+                con.print(x)
+
+    /**
+      *
+      * @param impl
+      */
+    def nativeStream(impl: OutputStream): CPMirOutputStream =
+        new CPMirOutputStream:
+            private val ps = PrintStream(impl)
+            override def close(): Unit = ps.close()
+            override def write(b: Int): Unit = if !CPMirConsole.isControl(b.toChar) then ps.write(b)
+            override def print(x: Any): Unit = ps.print(x.toString.filter(ch => !CPMirConsole.isControl(ch)))
+
 

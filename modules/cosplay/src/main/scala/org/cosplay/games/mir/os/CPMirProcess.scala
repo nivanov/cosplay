@@ -44,12 +44,12 @@ trait CPMirProcess:
     /**
       *
       */
-    def getParentPid: Long
+    def getParent: Option[CPMirProcess]
 
     /**
       *
       */
-    def getProgramFile: CPMirProgramFile
+    def getProgramFile: CPMirExecFile
 
     /**
       *
@@ -59,10 +59,57 @@ trait CPMirProcess:
     /**
       *
       */
-    def getMainArguments: Seq[String]
+    def getArguments: Seq[String]
+
+    /**
+      *
+      */
+    def getSubmitTime: Long
 
     /**
       *
       */
     def getStartTime: Long
+
+    /**
+      *
+      * @return
+      */
+    def getFinishTime: Long
+
+    /**
+      *
+      */
+    def isRunning: Boolean = !isQueued && !isDone
+
+    /**
+      *
+      */
+    def isQueued: Boolean
+
+    /**
+      *
+      */
+    def isDone: Boolean
+
+    /**
+      *
+      */
+    def isKilled: Boolean
+
+    /**
+      *
+      * @param ms
+      */
+    def get(ms: Long): Option[Int]
+
+    /**
+      *
+      */
+    def kill(): Boolean
+
+    /**
+      *
+      */
+    def exitCode: Option[Int]
 

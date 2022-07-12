@@ -30,21 +30,106 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-class CPMirRuntime:
-    /**
-      * Unix 'PID'.
-      */
-    def getPid: Long = ???
+import java.util.concurrent.*
+import scala.collection.mutable
+
+/**
+  *
+  * @param fs
+  * @param con
+  */
+class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
+    private final val THREAD_POOL_SIZE = 16
+    private val procs = mutable.ArrayBuffer.empty[CPMirProcess]
+    private val exec = Executors.newFixedThreadPool(THREAD_POOL_SIZE)
+    private var pidGen = 1L
 
     /**
-      * Unix 'PPID'.
+      *
+      * @param parent
+      * @param file
+      * @param args
+      * @param workDir
+      * @param usr
+      * @param env
+      * @param in
+      * @param out
+      * @param err
+      * @return
       */
-    def getParentPid: Long = ???
+    def exec(
+        parent: Option[CPMirProcess],
+        file: CPMirExecFile,
+        args: Seq[String],
+        workDir: CPMirDirectoryFile,
+        usr: CPMirUser,
+        env: Map[String, String],
+        in: CPMirInputStream = CPMirInputStream.nullStream(),
+        out: CPMirOutputStream = CPMirOutputStream.consoleStream(con),
+        err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
+        var queued = true
+        var code: Option[Int] = None
+        val submitTs = CPMirClock.now()
+        var finishTs = -1L
+        var startTs: Long = 0
+        val pid = pidGen
+        pidGen += 1
+
+        val ctx = CPMirProgramContext(
+            args,
+            con,
+            this,
+            fs,
+            workDir,
+            env,
+            usr,
+            in,
+            out,
+            err
+        )
+
+        val fut = exec.submit(new Callable[Int]() {
+            override def call(): Int =
+                queued = false
+                startTs = CPMirClock.now()
+                try
+                    code = Option(file.getProgram.mainEntry(ctx))
+                catch
+                    case _: InterruptedException => ()
+                    case e: Exception => err.println(s"")
+                finishTs = CPMirClock.now()
+                code.getOrElse(-1)
+        })
+
+        val proc = new CPMirProcess:
+            override def getOwner: CPMirUser = usr
+            override def getPid: Long = pid
+            override def getParent: Option[CPMirProcess] = parent
+            override def getProgramFile: CPMirExecFile = file
+            override def getWorkingDirectory: CPMirDirectoryFile = workDir
+            override def getArguments: Seq[String] = args
+            override def getStartTime: Long = startTs
+            override def getSubmitTime: Long = submitTs
+            override def isQueued: Boolean = queued
+            override def isDone: Boolean = fut.isDone
+            override def kill(): Boolean = fut.cancel(true)
+            override def isKilled: Boolean = fut.isCancelled
+            override def exitCode: Option[Int] = code
+            override def get(ms: Long): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
+            override def getFinishTime: Long = finishTs
+
+        procs.synchronized {
+            procs += proc
+        }
+
+        proc
 
     /**
       *
       */
-    def list: Seq[CPMirProcess] = ???
+    def list: Seq[CPMirProcess] = procs.synchronized {
+        procs.toSeq
+    }
 
     /**
       *

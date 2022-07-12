@@ -40,21 +40,19 @@ object CPMirFileSystemTests:
         val rootUsr = CPMirUser.mkRoot()
         val rootDir = CPMirDirectoryFile.mkRoot(rootUsr)
 
-        def addRegFile(name: String, dir: CPMirDirectoryFile): Unit = dir.addFile(new CPMirRegularFile(name, rootUsr, dir))
-
         val fs = new CPMirFileSystem(rootDir)
 
-        addRegFile("info.txt", rootDir)
-        addRegFile("image.png", rootDir)
-        addRegFile("script.mash", rootDir)
+        rootDir.addRegFile("info.txt", rootUsr)
+        rootDir.addRegFile("image.png", rootUsr)
+        rootDir.addRegFile("script.mash", rootUsr)
 
         val binDir = new CPMirDirectoryFile("bin", rootUsr, rootDir)
 
         rootDir.addFile(binDir)
 
-        addRegFile("bin_info.txt", binDir)
-        addRegFile("bin_image.png", binDir)
-        addRegFile("bin_script.mash", binDir)
+        binDir.addRegFile("bin_info.txt", rootUsr)
+        binDir.addRegFile("bin_image.png", rootUsr)
+        binDir.addRegFile("bin_script.mash", rootUsr)
 
         fs
 
@@ -65,7 +63,7 @@ object CPMirFileSystemTests:
         val bin = root.dir("/bin").get
 
         def assertRootPath(p1: String, p2: String): Unit = assertPath(root, p1, p2)
-        def assertPath(cp: CPMirDirectoryFile, p1: String, p2: String): Unit = assert(cp.file(p1).get.getAbsolutePath == p2)
+        def assertPath(dir: CPMirDirectoryFile, p1: String, p2: String): Unit = assert(dir.file(p1).get.getAbsolutePath == p2)
 
         root.scan(f => println(f.getAbsolutePath))
         assertRootPath("/info.txt", "/info.txt")

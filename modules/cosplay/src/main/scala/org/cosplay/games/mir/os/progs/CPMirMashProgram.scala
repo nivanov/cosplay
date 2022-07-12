@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir.os.progs
+
+import org.cosplay.games.mir.os.{CPMirProgram, CPMirProgramContext}
 
 /*
    _________            ______________
@@ -25,40 +27,14 @@ package org.cosplay.games.mir.os
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII GAME ENGINE FOR SCALA3
-            (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+          2D ASCII JVM GAME ENGINE FOR SCALA3
+              (C) 2021 Rowan Games, Inc.
+                ALl rights reserved.
 */
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
 
 /**
   *
-  * @param name
-  * @param owner
-  * @param prg
   */
-class CPMirProgramFile(
-    name: String,
-    owner: CPMirUser,
-    parent: Option[CPMirDirectoryFile],
-    prg: CPMirProgram
-) extends CPMirFile(FT_EXE, name, owner, parent):
-    setSize(prg.getSizeOnDisk)
-
-    /**
-      *
-      * @param name
-      * @param owner
-      * @param parent
-      * @param prg
-      */
-    def this(name: String, owner: CPMirUser, parent: CPMirDirectoryFile, prg: CPMirProgram) = this(name, owner, Some(parent), prg)
-
-    /**
-      *
-      */
-    def getProgram: CPMirProgram = prg
-
+class CPMirMashProgram extends CPMirProgram:
+    override def mainEntry(ctx: CPMirProgramContext): Int = 0 // TODO
+    override def getSizeOnDisk: Long = 1024 // TODO

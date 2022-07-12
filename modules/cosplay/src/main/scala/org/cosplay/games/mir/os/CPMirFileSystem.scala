@@ -31,6 +31,7 @@ package org.cosplay.games.mir.os
 */
 
 import CPMirFileType.*
+import org.cosplay.*
 
 /**
   *
@@ -46,6 +47,25 @@ class CPMirFileSystem(val root: CPMirDirectoryFile) extends Serializable:
       * @param path Relative to root or fully qualified path.
       */
     def file(path: String): Option[CPMirFile] = root.file(path)
+
+    /**
+      *
+      * @param path
+      */
+    def dir(path: String): Option[CPMirDirectoryFile] =
+        root.file(path) match
+            case Some(x) => x match
+                case f: CPMirDirectoryFile => Some(f)
+                case _ => None
+            case _ => None
+
+    /**
+      *
+      * @param path
+      */
+    def getDir(path: String): CPMirDirectoryFile = dir(path) match
+        case Some(d) => d
+        case _ => throw new CPException(s"Unknown directory: $path")
 
     /**
       *
