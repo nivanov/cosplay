@@ -18,7 +18,7 @@
 package org.cosplay.games.mir.os
 
 import org.cosplay.*
-import org.cosplay.games.mir.os.progs.CPMirBootProgram
+import org.cosplay.games.mir.os.progs.*
 
 import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -69,6 +69,9 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
 
         // Install files.
         sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
+        sbin.addExecFile("ls", rootUsr, new CPMirLsProgram)
+        sbin.addExecFile("login", rootUsr, new CPMirLoginProgram)
+        sbin.addExecFile("mash", rootUsr, new CPMirMashProgram)
 
         new CPMirFileSystem(root)
 
