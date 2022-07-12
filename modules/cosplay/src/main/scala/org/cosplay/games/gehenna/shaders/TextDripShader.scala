@@ -17,6 +17,7 @@
 
 package org.cosplay.games.gehenna.shaders
 import org.cosplay.*
+import scala.util.*
 
 /*
    _________            ______________
@@ -39,6 +40,17 @@ object TextDripShader extends CPShader:
     def stop(): Unit = go = false
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go then
+        if go && ctx.isVisible then
             val canv = ctx.getCanvas
             val tw = objRect.w
+
+            val rect = objRect
+
+            rect.loop((x, y) => {
+                if canv.isValid(x, y) then
+                    val dripX = Random.between(0, x)
+
+
+            })
+
+
