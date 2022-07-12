@@ -70,6 +70,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
         var queued = true
         var code: Option[Int] = None
         val submitTs = CPMirClock.now()
+        var finishTs = -1L
         var startTs: Long = 0
         val pid = pidGen
         pidGen += 1
@@ -87,8 +88,8 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             err
         )
 
-        val fut = exec.submit(new Runnable() {
-            override def run(): Unit =
+        val fut = exec.submit(new Callable[Int]() {
+            override def call(): Int =
                 queued = false
                 startTs = CPMirClock.now()
                 try
@@ -96,9 +97,11 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
                 catch
                     case _: InterruptedException => ()
                     case e: Exception => err.println(s"")
+                finishTs = CPMirClock.now()
+                code.getOrElse(-1)
         })
 
-        new CPMirProcess:
+        val proc = new CPMirProcess:
             override def getOwner: CPMirUser = usr
             override def getPid: Long = pid
             override def getParent: Option[CPMirProcess] = parent
@@ -110,12 +113,23 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             override def isQueued: Boolean = queued
             override def isDone: Boolean = fut.isDone
             override def kill(): Boolean = fut.cancel(true)
+            override def isKilled: Boolean = fut.isCancelled
             override def exitCode: Option[Int] = code
+            override def get(ms: Long): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
+            override def getFinishTime: Long = finishTs
+
+        procs.synchronized {
+            procs += proc
+        }
+
+        proc
 
     /**
       *
       */
-    def list: Seq[CPMirProcess] = ???
+    def list: Seq[CPMirProcess] = procs.synchronized {
+        procs.toSeq
+    }
 
     /**
       *
