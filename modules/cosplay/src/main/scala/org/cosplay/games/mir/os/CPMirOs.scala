@@ -101,6 +101,15 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
     def boot(con: CPMirConsole): Unit =
         rt = CPMirRuntime(fs, con)
 
+        rt.exec(
+            None,
+            fs.file("/sbin/boot").get,
+            Seq.empty,
+            fs.file("/").get,
+            rootUsr,
+            Map.empty
+        )
+
     /**
       *
       */

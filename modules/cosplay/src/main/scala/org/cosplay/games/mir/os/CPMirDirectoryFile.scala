@@ -197,7 +197,7 @@ class CPMirDirectoryFile(
       *
       * @param path Relative or fully qualified path.
       */
-    def file(path: String): Option[CPMirFile] =
+    def resolve(path: String): Option[CPMirFile] =
         val p = path.strip()
         var f: CPMirFile = if p.startsWith(PATH_SEP) then root else this
         val parts = p.split(PATH_SEP).filter(_.nonEmpty)
@@ -226,9 +226,9 @@ class CPMirDirectoryFile(
       *
       * @param path Relative or fully qualified path.
       */
-    def dir(path: String): Option[CPMirDirectoryFile] = file(path) match
+    def file[T <: CPMirFile](path: String): Option[T] = resolve(path) match
         case Some(f) => f match
-            case d: CPMirDirectoryFile => Some(d)
+            case x: T => Some(x)
             case _ => None
         case None => None
 
@@ -236,5 +236,5 @@ class CPMirDirectoryFile(
       *
       * @param path Relative or fully qualified path.
       */
-    def exist(path: String): Boolean = file(path).isDefined
+    def exist(path: String): Boolean = resolve(path).isDefined
 

@@ -134,5 +134,9 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
     /**
       *
       */
-    def kill(pid: Long): Unit = ???
+    def kill(pid: Long): Boolean = procs.synchronized {
+        procs.find(_.getPid == pid) match
+            case Some(p) => p.kill()
+            case None => false
+    }
 
