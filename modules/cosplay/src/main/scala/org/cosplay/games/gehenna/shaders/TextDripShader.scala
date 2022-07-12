@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.projectGehenna
+package org.cosplay.games.gehenna.shaders
+import org.cosplay.*
 
 /*
    _________            ______________
@@ -30,41 +31,14 @@ package org.cosplay.games.projectGehenna
                 ALl rights reserved.
 */
 
-import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.CPFIGLetFont.*
-import org.cosplay.CPPixel.*
-import org.cosplay.prefabs.scenes.*
 
-val BLUE_BLACK = CPColor("0x00000F")
-val ORIG_BLUE = CPColor("0x003040")
-val C1 = CPColor("0xFF8000") // Orange.
-val C2 = CPColor("0x33FF33") // Green (bright).
-val C3 = CPColor("0x008C46") // Green (dark).
-val C4 = CPColor("0xFFFFFF") // White.
-val C5 = CPColor("0x66B2FF") // Light blue.
-val C6 = CPColor("0x66FFB2") // Light olive.
-val CS = Seq(C1, C2, C3, C4, C5, C6)
+object TextDripShader extends CPShader:
+    private var go = false
 
-val LOGO_BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK)
-val GAME_BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
+    def start(): Unit = go = true
+    def stop(): Unit = go = false
 
-object ProjectGehenna:
-    def main(args: Array[String]): Unit =
-        val dim = CPDim(100, 100) // Dimension for the scenes.
-
-        // Initialize the engine.
-        CPEngine.init(CPGameInfo(
-            name = "Project Gehenna",
-            initDim = Option(dim)
-        ))
-
-        try
-            CPEngine.startGame(
-                new CPSlideShimmerLogoScene("logo", None, LOGO_BG_PX, CS, "title"),
-                ProjectGehennaTitle,
-            )
-        finally CPEngine.dispose()
-
-        sys.exit(0)
-
+    override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
+        if go then
+            val canv = ctx.getCanvas
+            val tw = objRect.w

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.projectGehenna
+package org.cosplay.games.gehenna
 
 import org.cosplay.*
 import org.cosplay.CPFIGLetFont.*
