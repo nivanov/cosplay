@@ -73,6 +73,12 @@ trait CPMirProcess:
 
     /**
       *
+      * @return
+      */
+    def getFinishTime: Long
+
+    /**
+      *
       */
     def isRunning: Boolean = !isQueued && !isDone
 
@@ -85,6 +91,17 @@ trait CPMirProcess:
       *
       */
     def isDone: Boolean
+
+    /**
+      *
+      */
+    def isKilled: Boolean
+
+    /**
+      *
+      * @param ms
+      */
+    def get(ms: Long): Option[Int]
 
     /**
       *

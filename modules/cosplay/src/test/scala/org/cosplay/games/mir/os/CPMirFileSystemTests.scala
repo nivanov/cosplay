@@ -60,10 +60,10 @@ object CPMirFileSystemTests:
     def pathTest(): Unit =
         val fs = initFs()
         val root = fs.root
-        val bin = root.dir("/bin").get
+        val bin = root.file[CPMirDirectoryFile]("/bin").get
 
         def assertRootPath(p1: String, p2: String): Unit = assertPath(root, p1, p2)
-        def assertPath(dir: CPMirDirectoryFile, p1: String, p2: String): Unit = assert(dir.file(p1).get.getAbsolutePath == p2)
+        def assertPath(dir: CPMirDirectoryFile, p1: String, p2: String): Unit = assert(dir.resolve(p1).get.getAbsolutePath == p2)
 
         root.scan(f => println(f.getAbsolutePath))
         assertRootPath("/info.txt", "/info.txt")
