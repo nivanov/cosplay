@@ -36,9 +36,10 @@ import CPColor.*
 import CPArrayImage.*
 import CPKeyboardKey.*
 import prefabs.scenes.*
-import prefabs.sprites.*
 import prefabs.shaders.*
 import CPSlideDirection.*
+import org.cosplay.prefabs.sprites.CPCenteredImageSprite
+
 import scala.collection.mutable
 
 /**
@@ -68,7 +69,7 @@ object CPSlideShaderExample:
     private val cols = Seq(C_STEEL_BLUE1, C_LIME, C_ORANGE1)
 
     // In-code image creation & "painting".
-    private val img = CPArrayImage(
+    private val img = new CPArrayImage(
         prepSeq("""
             |******************************************************
             |******************************************************
@@ -126,7 +127,7 @@ object CPSlideShaderExample:
 
         var lastShdr: CPSlideOutShader = null
         val shdrs = mutable.Buffer.empty[CPSlideInShader | CPSlideOutShader]
-        for (dir <- CPSlideDirection.values)
+        for dir <- CPSlideDirection.values do
             val s1 = CPSlideInShader.sigmoid(dir, false, 1500, BG_PX, _ => (), lastShdr == null)
             val s2 = CPSlideOutShader.sigmoid(dir, false, 1500, BG_PX, _ => labelSpr.reset(), false)
             s1.setOnFinish(_ => {
@@ -147,7 +148,7 @@ object CPSlideShaderExample:
         val sc = new CPScene("scene", Option(dim), BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), BG_PX, cols, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), BG_PX, cols, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

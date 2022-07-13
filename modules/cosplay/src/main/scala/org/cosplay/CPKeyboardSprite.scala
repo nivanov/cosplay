@@ -62,8 +62,12 @@ import org.cosplay.impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param f Keyboard key handler.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
-class CPKeyboardSprite(f: (CPSceneObjectContext, CPKeyboardKey) => Unit) extends CPOffScreenSprite(s"kbd-spr-${CPRand.guid6}"):
+class CPKeyboardSprite(
+    f: (CPSceneObjectContext, CPKeyboardKey) => Unit,
+    tags: String*
+) extends CPOffScreenSprite(s"kbd-spr-${CPRand.guid6}", tags = tags: _*):
     /** @inheritdoc */ 
     override def update(ctx: CPSceneObjectContext): Unit = ctx.getKbEvent match
         case Some(evt) => f(ctx, evt.key)

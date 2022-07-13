@@ -22,7 +22,7 @@ import org.cosplay.CPCanvas.ArtLineStyle.ART_SMOOTH
 import org.cosplay.CPColor.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.*
 
@@ -134,7 +134,7 @@ object CPCameraExample:
                 super.render(ctx)
 
         // Paint the brick-like ground.
-        val brickImg = CPArrayImage(
+        val brickImg = new CPArrayImage(
             // 5x3
             prepSeq(
                 """
@@ -152,12 +152,12 @@ object CPCameraExample:
         )
         
         val brickCanv = CPCanvas(CPDim(bgW, 3), bgPx)
-        for (i <- 0 until bgW / brickImg.getWidth) brickCanv.drawImage(brickImg, i * 5, 0, 2)
+        for i <- 0 until bgW / brickImg.getWidth do brickCanv.drawImage(brickImg, i * 5, 0, 2)
         val brickY = bgH - brickImg.getHeight
         val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, 2, brickCanv.capture())
 
         // Paint palm trees.
-        val palmImg = CPArrayImage(
+        val palmImg = new CPArrayImage(
             prepSeq(
                 """
                   |    __ _.--..--._ _
@@ -177,14 +177,14 @@ object CPCameraExample:
                 case c => c&C_GREEN1
         ).trimBg()
         val palmY = bgH - brickImg.getHeight - palmImg.getHeight
-        val palmSeq = for (i <- 0 until 6) yield
+        val palmSeq = for i <- 0 until 6 yield
             new CPStaticImageSprite(s"palm$i", CPRand.randInt(10, bgW - 10), palmY, 3, palmImg)
 
         // +===================>--END--<========================+
         // | Procedural generation of the terrain & background. |
         // +====================================================+
 
-        val ufoImg = CPArrayImage(
+        val ufoImg = new CPArrayImage(
             prepSeq(
                 """
                   |    .-""`""-.
@@ -245,7 +245,7 @@ object CPCameraExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     id = "logo",
                     Option(initDim),
                     bgPx,

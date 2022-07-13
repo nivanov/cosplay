@@ -47,14 +47,16 @@ import games.snake.*
   * @param z Z-index to use to draw particles from this emitter.
   */
 class CPConfettiEmitter(
-    xf: () ⇒ Int,
-    yf: () ⇒ Int,
+    xf: () => Int,
+    yf: () => Int,
     genSize: Int,
     maxAge: Int,
     colors: Seq[CPColor],
     bgFg: CPColor,
-    chf: Int ⇒ Char,
+    chf: Int => Char,
     z: Int) extends CPParticleEmitter():
+    require(colors.nonEmpty, "Colors cannot be empty.")
+
     // Number of particles this emitter will emit on each update.
     private final val GEN_SIZE = 10
     private val MAX_AGE = 15
@@ -65,7 +67,7 @@ class CPConfettiEmitter(
         if !isPaused && age < MAX_AGE then
             age += 1
             // Emit particles in 360 degree semi-circle.
-            for (_ <- 0 to GEN_SIZE) yield
+            for _ <- 0 to GEN_SIZE yield
                 CPConfettiParticle(
                     xf(),
                     yf(),

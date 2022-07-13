@@ -56,13 +56,17 @@ import org.apache.commons.math3.analysis.function.*
   *     100% the actual pixel color, value `0.5` means that the color will be a 50% mix between the background
   *     and the actual pixel color. The function takes two parameters: first is a current frame number since the start
   *     of the effect, and the second parameter is the last frame number of the effect. First parameter is always less
-  *     then the second one. By default, the the `(a, b) ⇒ a.toFloat / b` function is used that gives gradual color
+  *     then the second one. By default, the the `(a, b) => a.toFloat / b` function is used that gives gradual color
   *     transition through the frames range. Another popular function to use here is a sigmoid
   *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat` that gives a different visual effect.
-  * @see [[CPOffScreenSprite]]
-  * @see [[CPSlideInShader]]
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPShimmerShader]]
+  * @see [[CPSparkleShader]]
+  * @see [[CPStarStreakShader]]
+  * @see [[CPFlashlightShader]]
+  * @see [[CPOffScreenSprite]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
 class CPSlideOutShader(
@@ -73,7 +77,7 @@ class CPSlideOutShader(
     onFinish: CPSceneObjectContext => Unit = _ => (),
     autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
-    balance: (Int, Int) ⇒ Float = (a, b) ⇒ a.toFloat / b
+    balance: (Int, Int) => Float = (a, b) => a.toFloat / b
 ) extends CPShader:
     require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
     require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
@@ -82,10 +86,8 @@ class CPSlideOutShader(
     private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
-    private val crossOverBrightness = if bgPx.char == ' ' then bgBg.brightness else bgFg.brightness
-    private var crossedOver = false
     private var go = autoStart
-    private var cb: CPSceneObjectContext ⇒ Unit = onFinish
+    private var cb: CPSceneObjectContext => Unit = onFinish
     private var matrix: Array[Array[Int]] = _
 
     if autoStart then start()
@@ -93,26 +95,25 @@ class CPSlideOutShader(
     /**
       * Resets this shaders to its initial state starting its effect on the next frame.
       *
-      * @param onFinishOverride Optional override for the callback to call when shader effect is finished.
+      * @param onFinish Optional override for the callback to call when shader effect is finished.
       *         If not provided, the default value is the callback supplied at the creation of this shader.
       */
-    def start(onFinishOverride: CPSceneObjectContext ⇒ Unit = cb): Unit =
-        cb = onFinishOverride
+    def start(onFinish: CPSceneObjectContext => Unit = cb): Unit =
+        cb = onFinish
         frmCnt = 0
-        crossedOver = false
         go = true
 
     /**
       * Set the callback to call when shader effect is finished.
       *
-      * @param onFinishOverride Override for the callback to call when shader effect is finished.
+      * @param onFinish Override for the callback to call when shader effect is finished.
       */
-    def setOnFinish(onFinishOverride: CPSceneObjectContext ⇒ Unit): Unit = cb = onFinishOverride        
+    def setOnFinish(onFinish: CPSceneObjectContext => Unit): Unit = cb = onFinish
 
     /**
-      * Tests whether this shader is in progress or not.
+      * Tests whether this shader is in progress.
       */
-    def isFinished: Boolean = !go
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
@@ -128,17 +129,12 @@ class CPSlideOutShader(
                         val px = zpx.px
                         val maxFrame = matrix(x - rect.x)(y - rect.y)
                         val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
+                        require(bal >= 0f && bal <= 1f, "Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg match
                             case Some(c) => Option(CPColor.mixture(c, bgBg, bal))
                             case None => None
-                        var newPx = px.withFg(newFg).withBg(newBg)
-                        val xc = if newPx.char == ' ' then newBg.getOrElse(newFg) else newFg
-                        if newPx.char != ' ' then
-                            if xc.brightness <= crossOverBrightness then newPx = newPx.withChar(bgPx.char) else crossedOver = true
-                        else if !crossedOver then
-                            newPx = newPx.withChar(bgPx.char)
-                        canv.drawPixel(newPx, x, y, zpx.z)
+                        canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then
@@ -153,8 +149,7 @@ object CPSlideOutShader:
       * Creates new slide out shader with sigmoid-based color balance function.
       *
       * @param dir Slide direction as defined by [[CPSlideDirection]].
-      * @param entireFrame Whether apply to the entire camera frame or just the object this
-      *     shader is attached to.
+      * @param entireFrame Whether apply to the entire camera frame or just the object this shader is attached to.
       * @param durMs Duration of the effect in milliseconds.
       * @param bgPx Background pixel to fade in from.
       * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.

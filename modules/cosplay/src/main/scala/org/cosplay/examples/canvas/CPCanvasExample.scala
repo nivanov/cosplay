@@ -25,7 +25,7 @@ import CPPixel.*
 import CPKeyboardKey.*
 import CPStyledString.*
 import CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
@@ -66,7 +66,7 @@ object CPCanvasExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val alienImg = CPArrayImage(
+        val alienImg = new CPArrayImage(
             // 12x9
             prepSeq("""
               |    .  .
@@ -168,7 +168,7 @@ object CPCanvasExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     Option(dim),
                     bgPx,

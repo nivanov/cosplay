@@ -90,7 +90,7 @@ class CPLabelSprite(
     reset()
 
     /**
-      * Creates label sprite with given parameters.
+      * Creates label sprite with given parameters using system font.
       *
       * @param x X-coordinate of the label.
       * @param y Y-coordinate of the label.

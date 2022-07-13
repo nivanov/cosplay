@@ -76,8 +76,8 @@ object CPSoundExample:
         val c1 = C_SKY_BLUE1
         val c2 = C_LIGHT_CYAN1
         val lbl = CPStaticImageSprite(12, 5, 1, new CPArrayImage(
-            styleStr("[Space]", c1) ++ styleStr(" Play/Pause", c2) ++
-            styleStr("    [Up]/[Down] ", c1) ++ styleStr("Volume Up/Down", c2) ++
+            styleStr("[SPACE]", c1) ++ styleStr(" Play/Pause", c2) ++
+            styleStr("    [UP]/[DOWN] ", c1) ++ styleStr("Volume Up/Down", c2) ++
             styleStr("    [R] ", c1) ++ styleStr("Rewind", c2)
         ).trimBg())
 

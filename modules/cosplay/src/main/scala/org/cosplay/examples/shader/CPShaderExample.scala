@@ -70,7 +70,7 @@ object CPShaderExample:
         val dim = CPDim(80, 40)
 
         // In-code image creation & "painting".
-        val bulbImg = CPArrayImage(
+        val bulbImg = new CPArrayImage(
             prepSeq("""
               |  ___
               | /   \
@@ -87,7 +87,7 @@ object CPShaderExample:
                 case _ => ch&C_WHITE
         ).trimBg()
 
-        val ctrlImg = CPArrayImage(
+        val ctrlImg = new CPArrayImage(
             prepSeq(
                 """
                   |                    UP
@@ -102,9 +102,9 @@ object CPShaderExample:
                   |               `----'`----'
                   |
                   |            [Q]      Quit
-                  |            [Ctrl+Q] FPS Overlay
-                  |            [Ctrl+L] Open Log
-                  |            [Space]  Toggle Light
+                  |            [CTRL+Q] FPS Overlay
+                  |            [CTRL+L] Open Log
+                  |            [SPACE]  Toggle Light
                 """),
             (ch, _, _) => ch match
                 case c if c.isLetter => c&C_STEEL_BLUE1
@@ -120,8 +120,8 @@ object CPShaderExample:
             override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
                 if on then
                     val canv = ctx.getCanvas
-                    val cx = objRect.xCenter
-                    val cy = objRect.yCenter
+                    val cx = objRect.centerX
+                    val cy = objRect.centerY
                     val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
                     effRect.loop((x, y) => {
                         if canv.isValid(x, y) then
@@ -179,7 +179,7 @@ object CPShaderExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

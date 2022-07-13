@@ -45,9 +45,9 @@ object CPTntImage extends CPArrayImage(
       |                      ' `" ' `
     """),
     (ch, _, _) => ch match
-        case '_' ⇒ ch&C_RED
-        case '(' ⇒ ch&C_RED
-        case '|' ⇒ ch&C_RED
+        case '_' => ch&C_RED
+        case '(' => ch&C_RED
+        case '|' => ch&C_RED
         case '~' => ch&C_GREY
         case _ => ch&C_YELLOW
 )

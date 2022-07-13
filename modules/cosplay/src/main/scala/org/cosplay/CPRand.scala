@@ -79,6 +79,46 @@ object CPRand:
         RND.nextInt(to - from) + from
 
     /**
+      * Gets random integer in the given range.
+      *
+      * @param from Inclusive range from value.
+      * @param to Inclusive range to value.
+      */
+    def randIntExcl(from: Int, to: Int): Int =
+        assert(from < to)
+        RND.nextInt(to - from) + from
+
+    /**
+      * Gets random long in the given range.
+      *
+      * @param from Inclusive range from value.
+      * @param to Inclusive range to value.
+      */
+    def randLong(from: Long, to: Long): Long =
+        assert(from < to)
+        RND.nextLong(to - from) + from
+
+    /**
+      * Gets random long in the given range.
+      *
+      * @param from Inclusive range from value.
+      * @param to Inclusive range to value.
+      */
+    def randLongExcl(from: Long, to: Long): Long =
+        assert(from < to)
+        RND.nextLong(to - from) + from
+
+    /**
+      * Gets random integer in the given range.
+      *
+      * @param from Inclusive range from value.
+      * @param to Inclusive range to value.
+      */
+    def randIntIncl(from: Int, to: Int): Int =
+        assert(from < to)
+        RND.nextInt(to - from + 1) + from
+
+    /**
       * Gets random xterm color from the list of [[CPColor.CS_XTERM_ALL]].
       */
     def randXtermColor(): CPColor = rand(CPColor.CS_XTERM_ALL)
@@ -102,6 +142,11 @@ object CPRand:
       * Gets the next pseudorandom, uniformly distributed `float` value between `0.0` and `1.0`.
       */
     def randFloat(): Float = RND.nextFloat()
+
+    /**
+      * Random boolean value.
+      */
+    def coinFlip(): Boolean = RND.nextFloat() < .5f
 
     /**
       * Gets a random uppercase or lowercase letter.
@@ -130,31 +175,35 @@ object CPRand:
 
     /**
       * Gets random number in given range.
+      *
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
-    def between(a: Int, b: Int): Int = RND.between(a, b)
+    def between(a: Int, b: Int): Int = if a < b then RND.between(a, b) else RND.between(b, a)
 
     /**
       * Gets random number in given range.
+      *
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
-    def between(a: Double, b: Double): Double = RND.between(a, b)
+    def between(a: Double, b: Double): Double = if a < b then RND.between(a, b) else RND.between(b, a)
 
     /**
       * Gets random number in given range.
+      *
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
-    def between(a: Long, b: Long): Long = RND.between(a, b)
+    def between(a: Long, b: Long): Long = if a < b then RND.between(a, b) else RND.between(b, a)
 
     /**
       * Gets random number in given range.
+      *
       * @param a Inclusive start of the range.
       * @param b Exclusive end of the range.
       */
-    def between(a: Float, b: Float): Float = RND.between(a, b)
+    def between(a: Float, b: Float): Float = if a < b then RND.between(a, b) else RND.between(b, a)
 
     /**
       * Gets a random red color from the list of [[CPColor.CS_X11_REDS]].

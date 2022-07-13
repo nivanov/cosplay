@@ -19,6 +19,8 @@ package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
 
+import scala.collection.mutable
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -58,6 +60,7 @@ import org.cosplay.*
   * @see [[CPFadeOutShader]]
   * @see [[CPFlashlightShader]]
   * @see [[CPSparkleShader]]
+  * @see [[CPStarStreakShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
   */
 class CPShimmerShader(
@@ -69,9 +72,13 @@ class CPShimmerShader(
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
+    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+
+    case class PixelXYZ(px: CPPixel, x: Int, y: Int, z: Int)
     private var go = autoStart
-    private var lastImg: CPImage = _
+    private val lastSet = mutable.ArrayBuffer.empty[PixelXYZ]
     private var startMs = 0L
+    private var lastRect = CPRect.ZERO
 
     if autoStart then start()
 
@@ -82,7 +89,7 @@ class CPShimmerShader(
       */
     def start(): Unit =
         go = true
-        lastImg = null
+        lastSet.clear()
         startMs = System.currentTimeMillis()
 
     /**
@@ -93,7 +100,7 @@ class CPShimmerShader(
       */
     def stop(): Unit =
         go = false
-        lastImg = null
+        lastSet.clear()
         startMs = 0
 
     /**
@@ -116,22 +123,24 @@ class CPShimmerShader(
         if flag && System.currentTimeMillis() - startMs > durMs then
             stop()
             onDuration(ctx)
-        if flag then
+        else if flag then
             val canv = ctx.getCanvas
-            if lastImg == null || ctx.getFrameCount % keyFrame == 0 then
+            if lastSet.isEmpty || lastRect != canv.rect || ctx.getFrameCount % keyFrame == 0 then
+                lastSet.clear()
+                lastRect = canv.rect
                 val rect = if entireFrame then ctx.getCameraFrame else objRect
                 rect.loop((x, y) => {
                     if canv.isValid(x, y) then
                         val zpx = canv.getZPixel(x, y)
-                        val px = zpx.px
                         if !skip(zpx, x, y) then
                             val rc = CPRand.rand(colors)
+                            val px = zpx.px
                             val newPx = if px.char == ' ' then px.withBg(Option(rc)) else px.withFg(rc)
                             canv.drawPixel(newPx, x, y, zpx.z)
+                            lastSet += PixelXYZ(newPx, x, y, zpx.z)
                 })
-                lastImg = canv.capture(objRect)
             else
-                canv.drawImage(lastImg, objRect.x, objRect.y, 0)
+                for px <- lastSet do canv.drawPixel(px.px, px.x, px.y, px.z)
 
 
 

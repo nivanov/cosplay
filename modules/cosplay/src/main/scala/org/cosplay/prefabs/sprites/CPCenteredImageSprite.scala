@@ -40,12 +40,15 @@ import org.cosplay.impl.CPUtils
   * @param img The image to render. It can be [[CPImageSprite.setImage() changed later]].
   * @param z Z-index at which to render the image.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
 class CPCenteredImageSprite(
     id: String = s"center-img-spr-${CPRand.guid6}",
     img: CPImage,
     z: Int,
-    shaders: Seq[CPShader] = Seq.empty) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders):
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: String*
+) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders, tags = tags: _*):
     override def update(ctx: CPSceneObjectContext): Unit =
         super.update(ctx)
         val canv = ctx.getCanvas

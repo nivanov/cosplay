@@ -36,7 +36,7 @@ import CPPixel.*
 */
 
 /**
-  * http://www.afn.org/~afn39695/andersso.htm
+  * 
   */
 val CPGuitarImage = CPImage.load(
     "prefab/images/guitar.txt",

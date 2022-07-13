@@ -43,75 +43,43 @@ import CPKeyboardKey.*
   * Snake game title scene.
   */
 object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
-    private val introSnd = CPSound(s"sounds/games/snake/intro.wav", 0.5f)
-    private val logoImg = CPArrayImage(
-        prepSeq(
-            """
-              |      ______     __   __     ______     __  __     ______
-              |     /\  ___\   /\ "-.\ \   /\  __ \   /\ \/ /    /\  ___\
-              |     \ \___  \  \ \ \-.  \  \ \  __ \  \ \  _"-.  \ \  __\
-              |      \/\_____\  \ \_\\"\_\  \ \_\ \_\  \ \_\ \_\  \ \_____\
-              |       \/_____/   \/_/ \/_/   \/_/\/_/   \/_/\/_/   \/_____/
-              |       
-              |     
-              |>> BEWARE OF INITIAL KEYBOARD PRESS DELAY   <<   ---_,......._-_--.
-              |>> CHANGE DIFFICULTY BY RESIZING THE SCREEN <<  (&\ /      / /& \  \
-              |                                                /  /     .'  -=-'   `.
-              | ____   ____   ____   ____                     /  /    .'             )
-              |||w || ||a || ||s || ||d ||                 __/  /   .'       ,_.)   /
-              |||__|| ||__|| ||__|| ||__||                / o   o        _.-' /  .''
-              ||/__\| |/__\| |/__\| |/__\|                \          _.-'    / .'*|
-              |                                            \______.-'//    .'.' \*|
-              |                                             \|  \ | //   .'.' _ |*|
-              |[ENTER]   Play                                `   \|//  .'.'_ _ _|*|
-              |[Q]       Quit                                 .  .// .'.' | _ _ |*|
-              |[CTRL@A]  Audio On~Off                         \`-|\_/ /   | _ _ |*|
-              |[CTRL@L]  Log Console                           `/'\__/    \ _ _ |*\
-              |[CTRL@Q]  FPS Overlay                          /^|          \ _ _ \*\
-              |                                              '  `           \ _ _ \*\
-              |                                                              \ _ _ \*\
-              |Copyright (C) 2022 Rowan Games, Inc                            \ _ _ \.'
-              |                                                                | _ _ |
-              |                                                                / _ _ /
-              |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-.' _ _ '
-              | + _ - * - _ * _ - - _ + _ - - _ * _ - + _ - * - _ * _ - - _ * _ _  /
-              |_,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,._,.-"`-._,.'"
-            """),
-        (ch, x, y) =>
-            if y < 5 || (y == 23 && x <= 35) then ch&C3
-            else
-                ch match
-                    case c if c.isLetter => c&C4
-                    case '~' ⇒ '/'&C4
-                    case '@' ⇒ '+'&C4
-                    case '&' ⇒ '8'&C1 // Eyes.
-                    case '<' | '>' => ch&C2
-                    case '[' | ']' => ch&C5
-                    case _ => ch.toUpper&C1
-    ).trimBg()
-
+    private val introSnd = CPSound("sounds/games/snake/intro.wav", 0.5f)
+    private val logoImg = CPImage.loadRexXp("images/games/snake/snake_logo.xp").trimBg()
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.LEFT_TO_RIGHT,
         true,
         3000,
         BG_PX,
-        onFinish = _ ⇒ eyesShdr.start()
+        onFinish = _ => eyesShdr.start()
+    )
+    private val starStreakShdr = CPStarStreakShader(
+        true,
+        BG_PX.bg.get,
+        Seq(
+            CPStarStreak('.', CS, 0.025, 30, (-.5f, 0f), 0),
+            CPStarStreak('.', CS, 0.015, 25, (-1.5f, 0f), 0),
+            CPStarStreak('_', CS, 0.005, 50, (-2.0f, 0f), 0)
+        ),
+        skip = (zpx, _, _) => zpx.z == 1
     )
     private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
-    private val eyesShdr = CPShimmerShader(false, CS, 7, false, (zpx, _, _) ⇒ zpx.px.char != '8')
+    private val eyesShdr = CPShimmerShader(false, CS, 7, false, (zpx, _, _) => zpx.px.char != '8')
 
     // Add scene objects...
     addObjects(
         // Main logo.
-        CPCenteredImageSprite(img = logoImg, 0, shaders = Seq(eyesShdr)),
+        CPCenteredImageSprite(img = logoImg, 1, shaders = Seq(eyesShdr)),
         // Off screen sprite since shaders are applied to entire screen.
-        new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr)),
+        new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, fadeOutShdr)),
         // Exit on 'Q' press.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        // Toggle audio on 'Ctrl+A' press.
+        // Toggle audio on 'CTRL+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Transition to the next scene on 'Enter' press fixing the dimension.
-        CPKeyboardSprite(KEY_ENTER, ctx ⇒ fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true)))
+        CPKeyboardSprite(KEY_ENTER, ctx =>
+            if !fadeOutShdr.isActive then
+                fadeOutShdr.start(_.addScene(new CPSnakePlayScene(ctx.getCanvas.dim), true))
+        )
     )
 
     private def startBgAudio(): Unit = introSnd.loop(2000)
@@ -129,10 +97,13 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
             audioOn = true
 
     override def onActivate(): Unit =
-        super.onActivate()
-        fadeInShdr.start() // Reset the shader.
+        // Reset the shaders.
+        fadeInShdr.start()
+        starStreakShdr.start()
         if audioOn then startBgAudio()
 
     override def onDeactivate(): Unit =
-        super.onDeactivate()
+        // Stop shaders.
+        starStreakShdr.stop()
+        eyesShdr.stop()
         stopBgAudio()

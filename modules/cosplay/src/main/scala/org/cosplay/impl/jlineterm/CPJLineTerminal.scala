@@ -102,10 +102,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     class TermDimensionReader extends Thread:
         @volatile var st0p = false
 
-        /**
-          *
-              */
-        private def getDim: CPDim =
+        def getDim: CPDim =
             assert(term != null)
             val termSz = term.getSize
             if termSz.getColumns == 0 || termSz.getRows == 0 then CPDim.ZERO else CPDim(termSz.getColumns, termSz.getRows)
@@ -203,8 +200,8 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         writer = term.writer()
         reader = term.reader()
 
-        curDim = getDim
         termDimReader = TermDimensionReader()
+        curDim = termDimReader.getDim
         termDimReader.start()
 
         write(WIN_TITLE_SAVE) // Save current terminal window title.

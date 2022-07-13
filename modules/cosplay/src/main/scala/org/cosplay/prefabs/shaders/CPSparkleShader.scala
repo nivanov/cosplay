@@ -35,7 +35,6 @@ import games.*
 import CPColor.*
 
 import scala.collection.mutable
-import scala.util.Random
 
 /**
   * Color sparkle shader.
@@ -45,7 +44,8 @@ import scala.util.Random
   * Not that unlike [[CPShimmerShader]] that produces a random color changes, this shader relies on smooth gradual
   * dimming and brightening. Both effects are visually similar but work differently.
   *
-  * @param colors Set of color to use for sparking effect.
+  * @param entireFrame Whether apply to the entire camera frame or just the object this shader is attached to.
+  * @param colors Set of color to use for sparking effect. Colors will be randomly chosen for each pixel.
   * @param ratio Percentage of pixels to sparkle at the same time. Default value is `0.04`, i.e. 4%. For example,
   *         if the camera frame size is 100x50 characters then the default 4% ratio will result in 200 pixels
   *         sparkling at any given time.
@@ -60,11 +60,16 @@ import scala.util.Random
   *
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
+  * @see [[CPSlideInShader]]
+  * @see [[CPSlideOutShader]]
   * @see [[CPFlashlightShader]]
   * @see [[CPShimmerShader]]
+  * @see [[CPStarStreakShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
+  * @example See [[org.cosplay.games.pong.CPPongTitleScene]] game scene for example of using this shader.
   */
 class CPSparkleShader(
+    entireFrame: Boolean,
     colors: Seq[CPColor],
     ratio: Float = 0.04f,
     steps: Int = 40,
@@ -73,11 +78,15 @@ class CPSparkleShader(
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
+    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    require(ratio >= 0f && ratio <= 1f, "Ratio must be in [0,1] range.")
+    require(colors.nonEmpty, "Colors cannot be empty.")
+
     case class Sparkle(zpx: CPZPixel, x: Int, y: Int):
         private val initCol = CPRand.rand(colors)
         private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, steps / 2) ++ CPColor.gradientSeq(initCol, zpx.px.fg, steps / 2)
         private val gradSz = grad.size
-        private var gradIdx = Random.between(0, gradSz)
+        private var gradIdx = CPRand.between(0, gradSz)
 
         def isAlive: Boolean = gradIdx < gradSz
         def draw(canv: CPCanvas): Unit =
@@ -125,26 +134,25 @@ class CPSparkleShader(
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go && System.currentTimeMillis() - startMs > durMs then
+        val flag = go && (entireFrame || (ctx.isVisible && inCamera)) 
+        
+        if flag && System.currentTimeMillis() - startMs > durMs then
             stop()
             onDuration(ctx)
-
-        if go then
+        else if flag then
             // Remove stale sparkles, if any.
             sparkles.filterInPlace(_.isAlive)
-
             val canv = ctx.getCanvas
-
             // Replenish with new sparkles until full.
             val num = (canv.w * canv.h * ratio).round
-            val rect = canv.rect
+            val rect = if entireFrame then ctx.getCameraFrame else objRect
             while sparkles.size < num do
                 var found = false
                 while !found do
                     val x = rect.randX()
                     val y = rect.randY()
                     val zpx = canv.getZPixel(x, y)
-                    found = !skip(zpx, x, y) && !sparkles.exists(s ⇒ s.x == x && s.y == y)
+                    found = !skip(zpx, x, y) && !sparkles.exists(s => s.x == x && s.y == y)
                     if found then sparkles += Sparkle(zpx, x, y)
 
             // Draw sparkles.

@@ -38,7 +38,9 @@ import scala.annotation.targetName
   * @param width Width in characters.
   * @param height Height in characters.
   */
-final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width, height) with Ordered[CPDim]:
+final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width, height)
+    with Ordered[CPDim]
+    with Serializable:
     override protected def ctor(ints: Seq[Int]): CPDim =
         assert(ints.sizeIs == arity)
         CPDim(ints.head, ints(1))
@@ -109,7 +111,7 @@ final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width,
     infix def >=@(that: CPDim): Boolean = width >= that.width && height >= that.height
 
     /**
-      * Area in square characters for this dimension.
+      * Area in characters for this dimension.
       */
     final val area: Int = width * height
 

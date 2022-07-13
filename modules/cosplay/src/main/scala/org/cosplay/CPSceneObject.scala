@@ -68,9 +68,17 @@ import impl.CPUtils
   * render itself. Note that shaders are called always, regardless of whether the object visible, in camera
   * frame or invisible.
   *
+  * Note that shader pass consists of two phases:
+  * - On the 1st phase shaders for all visible scene objects are processed
+  * - On the 2nd phase shaders for all invisible scene objects are processed.
+  * This allows to minimize the interference between object shaders and full-screen shaders that are typically
+  * attached to the off-screen sprite that is invisible. In other words, full-screen shaders will be execute
+  * after all object shaders in a given scene.
+  *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
-abstract class CPSceneObject(id: String = CPRand.guid6) extends CPGameObject(id) with CPLifecycle:
+abstract class CPSceneObject(id: String = CPRand.guid6, tags: Set[String] = Set.empty) extends CPGameObject(id, tags) with CPLifecycle:
     private var visible = true
 
     private[cosplay] def toExtStr: String =

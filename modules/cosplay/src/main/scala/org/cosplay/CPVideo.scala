@@ -122,11 +122,11 @@ object CPVideo:
                         case _ => ()
 
         val lblImg = new CPArrayImage(
-            styleStr("[Space]", C_MEDIUM_PURPLE3) ++ styleStr("Play|Pause    ", C_GREEN1) ++
+            styleStr("[SPACE]", C_MEDIUM_PURPLE3) ++ styleStr("Play|Pause    ", C_GREEN1) ++
             styleStr("[R]", C_MEDIUM_PURPLE3) ++ styleStr("Rewind    ", C_GREEN1) ++
             styleStr("[Q]", C_MEDIUM_PURPLE3) ++ styleStr("Quit    ", C_GREEN1) ++
-            styleStr("[Ctrl-L]", C_MEDIUM_PURPLE3) ++ styleStr("Log    ", C_GREEN1) ++
-            styleStr("[Ctrl-Q]", C_MEDIUM_PURPLE3) ++ styleStr("FPS Overlay", C_GREEN1)
+            styleStr("[CTRL-L]", C_MEDIUM_PURPLE3) ++ styleStr("Log    ", C_GREEN1) ++
+            styleStr("[CTRL-Q]", C_MEDIUM_PURPLE3) ++ styleStr("FPS Overlay", C_GREEN1)
         ).trimBg()
         val vidDim = vid.getFrameDim
         val lblDim = lblImg.getDim

@@ -24,8 +24,8 @@ import impl.CPUtils
 import CPPixel.*
 import org.cosplay.prefabs.images.*
 
-import java.io.{File, PrintStream}
-import java.nio.{ByteBuffer, ByteOrder}
+import java.io.*
+import java.nio.*
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Using
@@ -113,8 +113,8 @@ import scala.util.Using
   * You can load images from the external source like URL or file path in one of the following formats:
   *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native binary format supported by
   *    [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor. This format supports full color information.
-  *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
-  *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
+  *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This format
+  *    is natively exported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
   *    supported by CosPlay to save an image with. This format supports full color information.
   *  - `*.txt` format. Image in this format is a simple *.txt file and it does not provide or store any color
   *     information.
@@ -136,12 +136,18 @@ import scala.util.Using
   *
   * ### Saving Images
   * You can save image to the local file path in the following format:
-  *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This is the interchangeable format
-  *    that is natively supported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
+  *  - `*.csv` [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format. This format
+  *    is natively exported by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and also
   *    supported by CosPlay to save an image with. This format supports full color information.
+  *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native format
+  *    used by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and can be loaded
+  *    by the REXPaint.This format supports full color information.
+  *  - `*.txt` Text format. This format does not retain color inforation.
   *
-  *  Use the following method to save the image to the file path:
-  *   - [[save() save(...)]]
+  *  Use the following methods to save the image to the file path:
+  *   - [[saveRexCsv() saveRexCsv(...)]]
+  *   - [[saveRexXp() saveRexXp(...)]]
+  *   - [[saveTxt() saveTxt(...)]]
   *
   * ### ASCII Art Online
   * There's a vast collection of existing ASCII art imagery online. Here's some of the main resources where
@@ -150,7 +156,6 @@ import scala.util.Using
   *  - https://www.asciiart.eu/
   *  - http://www.ascii-art.de/
   *  - https://asciiart.website
-  *  - http://www.afn.org/~afn39695/collect.htm
   *  - https://www.incredibleart.org/links/ascii.html
   *  - http://blocktronics.org/
   *  - http://ansiart.com/
@@ -174,7 +179,7 @@ import scala.util.Using
   */
 abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     override val toString: String = s"Image [dim=$getDim, origin=$origin]"
-    
+
     /** @inheritdoc */
     override val getOrigin: String = origin
 
@@ -182,25 +187,96 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *
       * @param path Local file path.
-      * @param bg Background pixel to replace in pixels with no background.
+      * @param bg Background color to replace in pixels with no background.
       * @see https://www.gridsagegames.com/rexpaint
       */
-    def save(path: String, bg: CPColor): Unit =
-        save(new File(path), bg)
+    def saveRexCsv(path: String, bg: CPColor): Unit =
+        saveRexCsv(new File(path), bg)
+
+    /**
+      * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
+      *
+      * @param path Local file path.
+      * @param bg Background color to replace in pixels with no background.
+      * @see https://www.gridsagegames.com/rexpaint
+      */
+    def saveRexXp(path: String, bg: CPColor): Unit =
+        saveRexXp(new File(path), bg)
 
     /**
       * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *
       * @param file File instance.
-      * @param bg Background pixel to replace in pixels with no background.
+      * @param bg Background color to replace in pixels with no background.
       * @see https://www.gridsagegames.com/rexpaint
       */
-    def save(file: File, bg: CPColor): Unit =
+    def saveRexCsv(file: File, bg: CPColor): Unit =
         Using.resource(new PrintStream(file)) { ps =>
             val dim = getDim
             ps.println(s"CosPlay image [${dim.w}x${dim.h}, origin=$origin, bg=${bg.hex}]")
             loop((px, x, y) => ps.println(s"$x,$y,${px.char.toInt},${px.fg.hex},${px.bg.getOrElse(bg).hex}"))
         }
+
+    /**
+      * Saves this image in `*.txt` format. Note that this format does not retain the color information.
+      *
+      * @param file File instance.
+      */
+    def saveTxt(file: File): Unit =
+        Using.resource(new PrintStream(file)) { ps =>
+            val dim = getDim
+            var x = 0
+            var y = 0
+            while (y < dim.h)
+                x = 0
+                while (x < dim.w)
+                    val px = getPixel(x, y)
+                    ps.print(px.char)
+                    x += 1
+                ps.println()
+                y += 1
+        }
+
+    /**
+      * Saves this image in `*.txt` format. Note that this format does not retain the color information.
+      *
+      * @param path Local file path.
+      */
+    def saveTxt(path: String): Unit = saveTxt(new File(path))
+
+    /**
+      * Saves this image in [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
+      * Note that this is a native format used by REXPaint and images in this format can be
+      * loaded by REXPaint for editing.
+      *
+      * @param file File instance.
+      * @param bg Background color to set in pixels that have no background defined.
+      * @see https://www.gridsagegames.com/rexpaint
+      */
+    def saveRexXp(file: File, bg: CPColor): Unit =
+        val dim = getDim
+        val byteSize = 10 * dim.area + 4/* Version (-1). */ + 4/* Number of layers. */ + 4/* Width. */ + 4/* Height. */
+        val buf = ByteBuffer.allocate(byteSize)
+        require(buf.hasArray)
+        buf.order(ByteOrder.LITTLE_ENDIAN)
+        buf.putInt(-1) // Version (-1 for REXPaint 1.60)
+        buf.putInt(1) // Only 1 layer.
+        buf.putInt(dim.w) // Image width.
+        buf.putInt(dim.h) // Image height.
+        loopVert((px, _, _) => {
+            buf.putInt(if px.isXray then ' '.toInt else px.char.toInt)
+            val fgc = px.fg
+            val bgc = px.bg.getOrElse(bg)
+            buf.put(fgc.red.toByte)
+            buf.put(fgc.green.toByte)
+            buf.put(fgc.blue.toByte)
+            buf.put(bgc.red.toByte)
+            buf.put(bgc.green.toByte)
+            buf.put(bgc.blue.toByte)
+        })
+        buf.flip()
+
+        Using.resource(new DataOutputStream(new FileOutputStream(file))) { _.write(CPUtils.zipBytes(buf.array())) }
 
     /**
       * Splits this image into sequence of `[w,h]` images.
@@ -233,20 +309,20 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       *
       * @param newDim Dimension to crop  by.
       * @param bgPx Background pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
-      * @see [[cropByInsets()]]
+      * @see [[resizeByInsets()]]
       */
-    def cropByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
+    def resizeByDim(newDim: CPDim, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
-        cropByInsets(new CPInsets((newDim.w - dim.w) / 2, (newDim.h - dim.h) / 2))
+        resizeByInsets(new CPInsets((newDim.w - dim.w) / 2, (newDim.h - dim.h) / 2))
 
     /**
       * Crops this image using given insets. Insets can be positive or negative.
       *
       * @param insets Insets to crop by.
       * @param bgPx Background pixel in case of bigger dimension. Default value is [[CPPixel.XRAY]].
-      * @see [[cropByDim()]]
+      * @see [[resizeByDim()]]
       */
-    def cropByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
+    def resizeByInsets(insets: CPInsets, bgPx: CPPixel = CPPixel.XRAY): CPImage =
         val dim = getDim
         val w = dim.w + insets.horOffset
         val h = dim.h + insets.verOffset
@@ -259,7 +335,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             if data.isValid(x2, y2) then data.set(x2, y2, px)
         })
 
-        CPArrayImage(data, origin)
+        new CPArrayImage(data, origin)
 
     /**
       * Converts this image into 2D array of pixels.
@@ -321,19 +397,75 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         new CPArrayImage(data, origin)
 
     /**
-      * Trims blank pixels from this image returning a new, trimmed image.
+      * Trims blank rows and columns from this image returning a new, trimmed image.
       *
-      * @param isBlank Function to determine is pixel is blank.
+      * @param isBlank Function to determine if an individual pixel is blank. Row or column is
+      *         blank if all of its pixels satisfy this predicate.
       */
     def trim(isBlank: CPPixel => Boolean): CPImage = new CPArrayImage(toArray2D.trim(isBlank), origin)
 
     /**
       * Loops over the pixels in image.
+      * Iteration over the pixels in this image will be horizontal first. In other words,
+      * given the pixels with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
       *
-      * @param f Function to call on each pixel. Note that unlike standard [[foreach()]] funciton, this
+      * @param f Function to call on each pixel. Note that unlike standard [[foreach()]] function, this
       *     function also takes pixel's XY-coordinate.
       */
     def loop(f: (CPPixel, Int, Int) => Unit): Unit = getRect.loop((x, y) => f(getPixel(x, y), x, y))
+
+    /**
+      * Loops over the pixels in image.
+      * Iteration over the pixels in this image will be horizontal first. In other words,
+      * given the pixels with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
+      *
+      * @param f Function to call on each pixel. Note that unlike standard [[foreach()]] function, this
+      *     function also takes pixel's XY-coordinate.
+      */
+    def loopHor(f: (CPPixel, Int, Int) => Unit): Unit = getRect.loopHor((x, y) => f(getPixel(x, y), x, y))
+
+    /**
+      * Loops over the pixels in image.
+      * Iteration over the pixels in this image will be vertical first. In other words,
+      * given the pixels with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)
+      * }}}
+      *
+      * @param f Function to call on each pixel. Note that unlike standard [[foreach()]] function, this
+      *     function also takes pixel's XY-coordinate.
+      */
+    def loopVert(f: (CPPixel, Int, Int) => Unit): Unit = getRect.loopVert((x, y) => f(getPixel(x, y), x, y))
 
     /**
       * Tests if there is a pixel in this image for which given predicate would return `true`.
@@ -353,17 +485,18 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * Detects all background pixels and replaces them with a given pixel returning new image.
       *
       * A pixel is considered to be a background pixel when:
-      *  - It's [[CPPixel.char character]] is space (' ').
-      *  - It's not equal to given `bgPx`.
-      *  - It's on the edge of the image or there's a path from it to the edge of the image through background
-      *    pixels only.
+      *  - It's satisfies given predicate
+      *  - It's not equal to given replacement pixel
+      *  - There's a path from it to the edge of the image through background pixels only
       *
-      *  For example, a fully enclosed area of the image that contains spaces will no be considered a background
-      *  as there's no path to the edge of the image without crossing a non-background image.
+      * For example, a fully enclosed area of the image containing background pixels will NOT be considered a background
+      * as there's no path to the edge of the image without crossing a non-background pixels.
       *
-      * @param bgPx Pixel to replace the detected background pixels.
+      * @param isBgPx Predicate determining if given pixel is a background pixel.
+      * @param replacePx Pixel to replace the detected background pixels.
+      * @see [[trimBg()]]
       */
-    def replaceBg(bgPx: CPPixel): CPImage =
+    def replaceBg(isBgPx: CPPixel => Boolean, replacePx: CPPixel): CPImage =
         import CPPixel.*
 
         val rect = getRect
@@ -378,28 +511,49 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             arr.rect.loop((x, y) =>
                 val px = arr.get(x, y)
                 // Space at the edge of the image is always considered background.
-                if px != bgPx && px.char == ' ' &&
-                    (
-                        x == 0 ||
-                        y == 0 ||
-                        x == xMax ||
-                        y == yMax ||
-                        arr.get(x + 1, y) == bgPx ||
-                        arr.get(x - 1, y) == bgPx ||
-                        arr.get(x, y + 1) == bgPx ||
-                        arr.get(x, y - 1) == bgPx
-                    ) then
-                        arr.set(x, y, bgPx)
+                if px != replacePx && isBgPx(px) && (
+                    x == 0 ||
+                    y == 0 ||
+                    x == xMax ||
+                    y == yMax ||
+                    arr.get(x + 1, y) == replacePx ||
+                    arr.get(x - 1, y) == replacePx ||
+                    arr.get(x, y + 1) == replacePx ||
+                    arr.get(x, y - 1) == replacePx) then {
+                        arr.set(x, y, replacePx)
                         ok = true
+                    }
             )
 
         new CPArrayImage(arr, origin)
 
     /**
-      * Detects all background pixels and replaces them with [[CPPixel.XRAY]] returning a new image.
-      * This effectively makes the background transparent.
+      * A shortcut method that considers all pixels with ' ' (space) character as background pixels
+      * and replaces them  with [[CPPixel.XRAY]] returning a new image. This effectively makes the background
+      * transparent.
+      *
+      * This is equivalent to:
+      * {{{
+      *     replaceBg(_.char == ' ', CPPixel.XRAY)
+      * }}}
+      *
+      * @see [[replaceBg()]]
       */
-    def trimBg(): CPImage = replaceBg(CPPixel.XRAY)
+    def trimBg(): CPImage = replaceBg(_.char == ' ', CPPixel.XRAY)
+
+    /**
+      * A shortcut method that detects background pixels and replaces them  with [[CPPixel.XRAY]] returning a
+      * new image. This effectively makes the background transparent.
+      *
+      * This is equivalent to:
+      * {{{
+      *     replaceBg(isBgPx, CPPixel.XRAY)
+      * }}}
+      *
+      * @param isBgPx Predicate determining if given pixel is a background pixel.
+      * @see [[replaceBg()]]
+      */
+    def trimBg(isBgPx: CPPixel => Boolean): CPImage = replaceBg(isBgPx, CPPixel.XRAY)
 
     /**
       * Makes a deep snapshot copy of the current image.
@@ -543,9 +697,6 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
   * Companion object with utility functions.
   */
 object CPImage:
-    /** */
-    val NL: String = System.getProperty("line.separator")
-
     // First search for '_1' then, if not found, search for '_2'.
     private final val HOR_FLIP_MAP = Seq(
         '{' -> '}',
@@ -567,6 +718,7 @@ object CPImage:
         '-' -> '-', // Don't replace.
         '_' -> '-',
         '`' -> '.',
+        '.' -> '.',
         '"' -> ',',
         ',' -> '\'',
         '\'' -> ',',
@@ -580,7 +732,27 @@ object CPImage:
         'z' -> 's'
     )
 
-    private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
+    private final val DFLT_PREVIEW_BG = CPPixel('.', C_GRAY2, C_GRAY1)
+
+    /**
+      * Creates new image by stacking given images vertically, starting with the 1st image,
+      * then stitching the 2nd image underneath the 1st, etc.
+      *
+      * @param imgs Non-empty set of images to stitch vertically.
+      */
+    def vertImage(imgs: CPImage*): CPImage =
+        require(imgs.nonEmpty)
+        imgs.tail.foldLeft(imgs.head)((acc, img) => acc.stitchBelow(img))
+
+    /**
+      * Creates new image by stacking given images horizontally, starting with the 1st image,
+      * then stitching the 2nd image to the right of the 1st, etc.
+      *
+      * @param imgs Non-empty set of images to stitch horizontally.
+      */
+    def horImage(imgs: CPImage*): CPImage =
+        require(imgs.nonEmpty)
+        imgs.tail.foldLeft(imgs.head)((acc, img) => acc.stitchRight(img))
 
     /**
       * Loads image using [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
@@ -602,7 +774,7 @@ object CPImage:
                     val fg = CPColor(Integer.decode(parts(3)))
                     val bg = CPColor(Integer.decode(parts(4)))
 
-                    CPPosPixel(CPPixel(ch, fg, Some(bg)), x, y)
+                    CPPosPixel(CPPixel(ch, fg, Option(bg)), x, y)
                 catch
                     case e: Exception => E(s"Invalid CSV file format at line $idx: $src", e)
             })
@@ -620,11 +792,11 @@ object CPImage:
     def loadRexXp(src: String, skin: (CPPixel, Int, Int) => CPPixel = (px, _, _) => px): CPImage =
         val bb = ByteBuffer.wrap(CPUtils.unzipBytes(CPUtils.readAllBytes(src)))
         bb.order(ByteOrder.LITTLE_ENDIAN)
-        bb.getInt // Version (skip).
+        bb.getInt // '-1' in REXPaint 1.60  (skip).
         val layerCnt = bb.getInt
         if layerCnt <= 0 then E(s"Image file is empty: $src")
         val layers = ArrayBuffer.empty[CPArray2D[CPPixel]]
-        for (_ <- 0 until layerCnt)
+        for _ <- 0 until layerCnt do
             val w = bb.getInt
             val h = bb.getInt
             val layer = new CPArray2D[CPPixel](w, h, CPPixel.XRAY)
@@ -639,18 +811,17 @@ object CPImage:
                 val fgB = unsigned(bb.get)
                 val bgR = unsigned(bb.get)
                 val bgG = unsigned(bb.get)
-                val bgB= unsigned(bb.get)
+                val bgB = unsigned(bb.get)
                 val fg = CPColor(fgR, fgG, fgB)
-                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Some(CPColor(bgR, bgG, bgB)) // Transparency background.
-                val px = if ch == ' ' then CPPixel.XRAY else CPPixel(ch, fg, bg)
-                layer.set(x, y, px)
+                // REXPaint uses RGB(255, 0, 255) as a built-in transparent background.
+                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB))
+                layer.set(x, y, CPPixel(ch, fg, bg))
                 idx += 1
             layers += layer
         val w = layers.head.width
         val h = layers.head.height
         val data = new CPArray2D[CPPixel](w, h, CPPixel.XRAY)
-        for (layer <- layers)
-            layer.map((px, x, y) => if !px.isXray then data.set(x, y, px))
+        for layer <- layers do layer.map((px, x, y) => if !px.isXray then data.set(x, y, px))
         new CPArrayImage(data.map(skin))
 
     /**
@@ -674,7 +845,7 @@ object CPImage:
       * recognized:
       *  - `*.csv` will use [[https://www.gridsagegames.com/rexpaint/ REXPaint CSV]] format.
       *  - `*.xp` will use [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format.
-      *  - `*.csv` will use text format.
+      *  - `*.txt` will use text format.
       *
       *
       * @param path Local filesystem file path.
@@ -695,7 +866,7 @@ object CPImage:
       * @param emuTerm Whether or not to use terminal emulation. Default value is `true`.
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       */
-    def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_BG): Unit =
+    def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_PREVIEW_BG): Unit =
         require(fps < 1_000, "FPS must be < 1,000.")
         val frameDim = imgs.head.getDim
         require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
@@ -703,7 +874,7 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview (${frameDim.w}x${frameDim.h})",
-                initDim = Some(dim),
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -711,13 +882,10 @@ object CPImage:
         try
             val ani = CPAnimation.filmStrip("ani", 1_000 / fps, true, false, imgs)
             val spr = CPAnimationSprite("spr", Seq(ani), 4, 4, 0, "ani")
-            CPEngine.rootLog().info(s"Animation preview [" +
-                s"frames=${imgs.size}, " +
-                s"frameDim=$frameDim, " +
-                s"]")
+            CPEngine.rootLog().info(s"Animation preview [frames=${imgs.size}, frameDim=$frameDim]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 spr, // Animation we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
@@ -732,26 +900,22 @@ object CPImage:
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       * @param emuTerm Whether or not to use terminal emulation. Default value is `true`.
       */
-    def previewImage(img: CPImage, bg: CPPixel = DFLT_BG, emuTerm: Boolean = true): Unit =
+    def previewImage(img: CPImage, bg: CPPixel = DFLT_PREVIEW_BG, emuTerm: Boolean = true): Unit =
         val imgDim = img.getDim
         val dim = imgDim + 8
         CPEngine.init(
             CPGameInfo(
                 name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.w}x${imgDim.h})",
-                initDim = Some(dim),
+                initDim = Option(dim),
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
         )
         try
-            CPEngine.rootLog().info(s"Image preview [" +
-                s"origin=${img.getOrigin}, " +
-                s"dim=${img.getDim}, " +
-                s"class=${img.getClass.getName}" +
-            s"]")
+            CPEngine.rootLog().info(s"Image preview [origin=${img.getOrigin}, dim=${img.getDim}, class=${img.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Some(dim),
+                Option(dim),
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.

@@ -91,8 +91,8 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @param s Multiline text to render as an image. Must be non-empty.
       * @param fg Foreground color to use.
       * @param bg Optional background color to use. Default value is `None`.
-      * @param align Alignment of text. The only allowed values:
-      *  - `-1` - right justified alignment.
+      * @param align Alignment of text. The only allowed values are:
+      *  - `-1` - left justified alignment.
       *  - `0` - centered alignment.
       *  - `1` - right justified alignment.
       *
@@ -101,7 +101,7 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @return Image as a rendering of the given string with this font.
       */
     def renderMulti(s: String, fg: CPColor, bg: Option[CPColor] = None, align: Int = 0): CPImage =
-        renderSeq(s.split(CPUtils.NL).filter(!_.isBlank).toSeq, fg, bg, align)
+        renderSeq(CPUtils.splitByNewLine(s).filter(!_.isBlank), fg, bg, align)
 
     /**
       * Renders single line text as an image with this font.
@@ -119,8 +119,8 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @param ss Sequence of text lines to render as an image. Must be non-empty.
       * @param fg Foreground color to use.
       * @param bg Optional background color to use. Default value is `None`.
-      * @param align Alignment of text. The only allowed values:
-      *  - `-1` - right justified alignment.
+      * @param align Alignment of text. The only allowed values are:
+      *  - `-1` - left justified alignment.
       *  - `0` - centered alignment.
       *  - `1` - right justified alignment.
       *
@@ -142,11 +142,11 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
                 val w = img.w
                 val d = maxW - w
                 if d == 0 then img
-                    else if align == -1 then img.cropByInsets(CPInsets(0, 0, 0, d), bgPx)
-                    else if align == 1 then img.cropByInsets(CPInsets(0, d, 0, 0), bgPx)
+                    else if align == -1 then img.resizeByInsets(CPInsets(0, 0, 0, d), bgPx)
+                    else if align == 1 then img.resizeByInsets(CPInsets(0, d, 0, 0), bgPx)
                     else
                         val half1 = d / 2
                         val half2 = d - half1
-                        img.cropByInsets(CPInsets(0, half1, 0, half2), bgPx) // align == 0
+                        img.resizeByInsets(CPInsets(0, half1, 0, half2), bgPx) // align == 0
 
             imgs.tail.foldLeft(doAlign(imgs.head))((a, b) => a.stitchBelow(doAlign(b), bgPx))

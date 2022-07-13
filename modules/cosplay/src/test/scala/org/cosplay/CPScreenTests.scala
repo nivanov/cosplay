@@ -51,7 +51,7 @@ object CPScreenTests:
         val scr1 = CPScreen(CPDim(500, 100), bg)
         val scr2 = CPScreen(CPDim(500, 100), bg)
 
-        scr1.canvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
+        scr1.newCanvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
         scr1.copyTo(scr2, scr1.getRect)
 
         assertEquals(scr1, scr2)
@@ -66,12 +66,11 @@ object CPScreenTests:
         val scr1 = CPScreen(dim, bgPx)
         val scr2 = CPScreen(dim, bgPx)
 
-        scr1.canvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
+        scr1.newCanvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
 
         val num = 10
         val start = System.currentTimeMillis()
-        for (_ <- 0 until num)
-            scr1.copyTo(scr2, scr1.getRect)
+        for _ <- 0 until num do scr1.copyTo(scr2, scr1.getRect)
 
         val dur = System.currentTimeMillis() - start
 
@@ -86,8 +85,7 @@ object CPScreenTests:
         val bgPx = CPPixel('.', C_PINK1, C_LIGHT_PINK1)
         val scr = CPScreen(dim, bgPx)
 
-        for (x <- 0 until scr.getDim.w; y <- 0 until scr.getDim.h)
-            assert(scr.getPixel(x, y).px == bgPx)
+        for x <- 0 until scr.getDim.w; y <- 0 until scr.getDim.h do assert(scr.getPixel(x, y).px == bgPx)
 
     /**
       *
@@ -100,9 +98,7 @@ object CPScreenTests:
 
         val num = 10
         val start = System.currentTimeMillis()
-        for (_ <- 0 until num)
-            scr.clear()
-
+        for _ <- 0 until num do scr.clear()
         val dur = System.currentTimeMillis() - start
 
         println(s"Performance of one $dim screen clears is ${dur / num}ms.")

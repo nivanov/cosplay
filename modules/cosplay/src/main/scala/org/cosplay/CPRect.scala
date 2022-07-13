@@ -131,22 +131,22 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * X-coordinate of the center point.
       */
-    final val xCenter = if width == 0 then x else x + (xMax - x) / 2
+    final val centerX = if width == 0 then x else x + (xMax - x) / 2
 
     /**
       * X-coordinate of the center point as a float.
       */
-    final lazy val xCenterF = xCenter.toFloat
+    final lazy val centerXF = centerX.toFloat
 
     /**
       * Y-coordinate of the center point.
       */
-    final val yCenter = if height == 0 then y else y + (yMax - y) / 2
+    final val centerY = if height == 0 then y else y + (yMax - y) / 2
 
     /**
       * Y-coordinate of the center point as a float.
       */
-    final lazy val yCenterF = yCenter.toFloat
+    final lazy val centerYF = centerY.toFloat
 
     /**
       * Creates rectangle from two tuples.
@@ -201,10 +201,47 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
 
     /**
       * Calls given XY-coordinate function on each point in this rectangle.
+      * Iteration over the points in this rectangle will be horizontal first. In other words,
+      * given the rectangle with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
       *
       * @param f XY-coordinate function to call.
+      * @see [[loopVert()]]
+      * @see [[loopHor()]]
       */
-    def loop(f: (Int, Int) => Unit): Unit =
+    def loop(f: (Int, Int) => Unit): Unit = loopHor(f)
+
+    /**
+      * Calls given XY-coordinate function on each point in this rectangle.
+      * Iteration over the points in this rectangle will be vertical first. In other words,
+      * given the rectangle with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)
+      * }}}
+      *
+      * @param f XY-coordinate function to call.
+      * @see [[loop()]]
+      * @see [[loopHor()]]
+      */
+    def loopVert(f: (Int, Int) => Unit): Unit =
         if nonEmpty then
             var a = x
             var b = y
@@ -214,6 +251,37 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
                     f(a, b)
                     b += 1
                 a += 1
+
+    /**
+      * Calls given XY-coordinate function on each point in this rectangle.
+      * Iteration over the points in this rectangle will be horizontal first. In other words,
+      * given the rectangle with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
+      *
+      * @param f XY-coordinate function to call.
+      * @see [[loop()]]
+      * @see [[loopVert()]]
+      */
+    def loopHor(f: (Int, Int) => Unit): Unit =
+        if nonEmpty then
+            var a = x
+            var b = y
+            while (b <= yMax)
+                a = x
+                while (a <= xMax)
+                    f(a, b)
+                    a += 1
+                b += 1
 
     /**
       * Tests whether this rectangle has at least one points satisfying given predicate.

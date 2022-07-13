@@ -43,7 +43,7 @@ object CPBirdAniImage extends CPArrayImage(
           | \\   //
           |( ^)>( ^)>
           | //   \\
-    """),
+        """),
     (ch, _, y) => ch match
         case ' ' => XRAY
         case _ if y != 2 => ch&C_WHITE
@@ -54,5 +54,5 @@ object CPBirdAniImage extends CPArrayImage(
  * Previews image using the built-in image viewer.
  */
 @main def previewBirdAniImage(): Unit =
-    CPImage.previewAnimation(CPMacarena1AniImage.trimBg().split(5, 3))
+    CPImage.previewAnimation(CPBirdAniImage.trimBg().split(5, 3))
     sys.exit(0)

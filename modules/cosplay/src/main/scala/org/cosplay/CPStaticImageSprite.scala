@@ -62,6 +62,7 @@ import impl.CPUtils
   * @param img The image to render.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPImageSprite]]
   * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
   *     using images.
@@ -75,7 +76,9 @@ class CPStaticImageSprite(
     z: Int,
     img: CPImage,
     collidable: Boolean = false,
-    shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: String*
+) extends CPSceneObject(id, tags.toSet):
     private val imgDim = img.getDim
     private val imgRect = new CPRect(x, y, imgDim)
 
@@ -88,7 +91,7 @@ class CPStaticImageSprite(
       * @param img The image to render.
       */
     def this(x: Int, y: Int, z: Int, img: CPImage) =
-        this(CPRand.guid6, x, y, z, img)
+        this(s"static-img-spr-${CPRand.guid6}", x, y, z, img)
 
     /** @inheritdoc */
     override def getShaders: Seq[CPShader] = shaders

@@ -44,6 +44,8 @@ import impl.CPUtils
   * this sprite will report its size as entire camera frame size. Shaders that work with this sprite should
   * account for it.
   *
+  * Note, if overriding [[CPSceneObject.update()]] method make sure to call `super.update(...)`.
+  *
   * ### Sprites
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
   * that is custom designed for a particular use case. Built-in sprites provide concrete
@@ -61,10 +63,18 @@ import impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param id Optional ID of this sprite.
+  * @param shaders Optional list of [[CPShader shaders]] attached to this canvas sprite.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
-abstract class CPCanvasSprite(id: String = s"canv-spr-${CPRand.guid6}") extends CPSceneObject(id):
+abstract class CPCanvasSprite(
+    id: String = s"canv-spr-${CPRand.guid6}",
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: String*
+) extends CPSceneObject(id, tags.toSet):
     private var rect: CPRect = _
 
+    /** @inheritdoc */
+    override def getShaders: Seq[CPShader] = shaders
     /** @inheritdoc */
     override def update(ctx: CPSceneObjectContext): Unit = rect = ctx.getCameraFrame
     /** @inheritdoc */

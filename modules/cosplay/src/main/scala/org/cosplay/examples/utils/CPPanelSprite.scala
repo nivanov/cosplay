@@ -37,7 +37,14 @@ import org.cosplay.CPStyledString.*
 import org.cosplay.CPPixel.*
 
 /**
-  * Reusable titled panel for the built-in examples.
+  * Reusable titled panel for the built-in examples. It creates the following bordered panel:
+  * <pre>
+  *  +----< Title >-----+
+  *  |                  |
+  *  |                  |
+  *  |                  |
+  *  +------------------+
+  * </pre>
   *
   * @param x1 Left-top X-coordinate.
   * @param y1 Left-top Y-coordinate.

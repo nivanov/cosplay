@@ -128,11 +128,13 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * When playback reaches the end the player will rewind back to the beginning and stops.
       *
       * @param fadeInMs Fade in duration in milliseconds. Default is zero.
+      * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       */
-    def play(fadeInMs: Long = 0): Unit =
+    def play(fadeInMs: Long = 0, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
         player.setOnEndOfMedia(() => {
             seek(0) // Force rewind.
             player.stop()
+            endFun(this)
         })
         if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
 
@@ -236,11 +238,11 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def adjustVolume(delta: Float): Unit = setVolume(vol + delta)
 
     /**
-      * Fades in stopped or fades out the playing audio.
+      * Fades in stopped or pauses the playing audio.
       *
-      * @param fadeMs Fade in or fade out duration in milliseconds. Default is zero.
+      * @param fadeInMs Fade in duration in milliseconds. Default is zero.
       */
-    def toggle(fadeMs: Long = 0): Unit = if isPlaying then stop(fadeMs) else play(fadeMs)
+    def toggle(fadeInMs: Long = 0): Unit = if isPlaying then pause() else play(fadeInMs)
 
     /**
       * Stops the playback.
@@ -346,3 +348,4 @@ object CPSound:
         if tags.isEmpty then immutable.HashSet.from(tracks.values).foreach(_.dispose())
         else immutable.HashSet.from(tracks.getForTags(tags: _*)).foreach(_.dispose())
     }
+

@@ -96,6 +96,23 @@ package org.cosplay
   * managed by the developer, they can be freely shared between scenes or scene objects as any other standard
   * Scala objects.
   *
+  * ### Full-Screen Shaders
+  * Shader can work with either a scene object it is attached to or with full screen. Typically, a full
+  * screen shader will be attached to an off-screen sprite (since the particular scene object such shader
+  * is attached to is irrelevant). In more elaborate games, there could be multiple off-screen sprites with
+  * multiple full-screen shaders - where all these shaders work with the same screen real estate.  In such
+  * cases it can be non-trivial to control the order in which shaders are executed, if required. The recommended
+  * technique for such cases is to have only one off-screen sprite that attaches all full-screen shaders so that
+  * their order can be easily defined and controlled.
+  *
+  * ### Order Of Processing
+  * Note that shader pass consists of two phases:
+  * - On the 1st phase shaders for all visible scene objects are processed
+  * - On the 2nd phase shaders for all invisible scene objects are processed.
+  * This allows to minimize the interference between object shaders and full-screen shaders that are typically
+  * attached to the off-screen sprite that is invisible. In other words, full-screen shaders will be execute 
+  * after all object shaders in a given scene.
+  *
   * @see [[org.cosplay.prefabs.shaders.CPFadeInShader]]
   * @see [[org.cosplay.prefabs.shaders.CPFadeOutShader]]
   * @example See [[org.cosplay.examples.shader.CPShaderExample CPShaderExample]] class for the example of using shaders.
@@ -110,7 +127,8 @@ trait CPShader extends CPAsset:
       *
       * @param ctx Scene object context for this shader pass. Note that scene object context is associated with the
       *     scene object this shader is attached to.
-      * @param objRect Current rectangular shape of the scene object this shader is attached to.
+      * @param objRect Current rectangular shape of the scene object this shader is attached to in the canvas
+      *     coordinate system.
       * @param inCamera Whether or not the scene object is in camera frame. Note that this callback is called
       *     regardless of whether or not the scene object is visible or in camera frame.
       */

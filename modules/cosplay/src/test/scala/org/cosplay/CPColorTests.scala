@@ -48,6 +48,11 @@ object CPColorTests:
         val c3 = CPColor(0, (255 * 0.5f).round, 0)
         assertTrue(c2 == c3)
 
+    @Test
+    def HSBandRGBTest(): Unit =
+        val c = CPColor(10, 20, 30)
+        assertEquals(c, CPColor.fromHSB(c.hue, c.saturation, c.brightness))
+
     /**
      *
      */
@@ -62,7 +67,7 @@ object CPColorTests:
         val c5 = c.fgAnsi
         val c6 = c.darker(0.5)
         val c7 = c.lighter(0.5)
-        val c8 = c.transform(0.2, 0.8, 0.5)
+        val c8 = c.transformRGB(0.2, 0.8, 0.5)
         val c9 = c.color8Bit
         val f1 = CPColor.gradientFun(C_WHITE, C_BLACK, 20)
         val s1 = CPColor.gradientSeq(C_WHITE, C_BLACK, 20)
@@ -98,7 +103,7 @@ object CPColorTests:
                 </td>
             </tr>
         */
-        for (c ← cs)
+        for c <- cs do
             println(
                 s"""
                   |<tr>

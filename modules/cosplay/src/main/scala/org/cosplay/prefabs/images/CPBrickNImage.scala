@@ -50,7 +50,7 @@ object CPBrickNImage extends CPArrayImage(
         case '"' => '"'&&(C_GREEN1, C_GREEN_YELLOW)
         case '{' => '['&&(C_SANDY_BROWN, C_DARK_ORANGE3)
         case '-' => '_'&&(C_SANDY_BROWN, C_DARK_ORANGE3)
-        case c ⇒ c&&(C_MAROON, C_DARK_ORANGE3)
+        case c => c&&(C_MAROON, C_DARK_ORANGE3)
 )
 
 /**

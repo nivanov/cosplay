@@ -58,7 +58,7 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
                 lines.grouped(lines.size / FRAME_CNT).toSeq.map { frameLines =>
                     // Psychedelic mode :-)
                     val c = CPRand.rand(CS_X11_ALL)
-                    CPArrayImage(frameLines, (ch, _, _) => {
+                    new CPArrayImage(frameLines, (ch, _, _) => {
                         ch match
                             // Color it for more contrast.
                             case '.' => ch&c.darker(0.4)

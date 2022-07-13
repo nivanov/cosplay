@@ -22,7 +22,7 @@ import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.XRAY
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.*
 
@@ -72,7 +72,7 @@ object CPAnimationExample:
             case 'o' => ch&C_LIGHT_CORAL
             case _ => ch&C_WHITE
 
-        val imgsRight = CPArrayImage(
+        val imgsRight = new CPArrayImage(
             // 8 frames @ 6x3
             prepSeq(
                 """
@@ -108,7 +108,7 @@ object CPAnimationExample:
             ),
             skin).split(6, 3)
         val imgsLeft = imgsRight.map(_.horFlip())
-        val imgsIdle = CPArrayImage(
+        val imgsIdle = new CPArrayImage(
             prepSeq(
                 """
                   |   o
@@ -134,7 +134,7 @@ object CPAnimationExample:
                 """).filter(!_.endsWith("------")
             ),
             skin).split(5, 3)
-        val imgVert = CPArrayImage(
+        val imgVert = new CPArrayImage(
             prepSeq(
                 """
                   |   o/
@@ -156,7 +156,7 @@ object CPAnimationExample:
                 """).filter(!_.endsWith("------")
             ),
             skin).split(5, 3)
-        val imgHelp = CPArrayImage(
+        val imgHelp = new CPArrayImage(
             prepSeq(
                 """
                   |                    UP
@@ -225,7 +225,6 @@ object CPAnimationExample:
                     y += dy
 
             override def onStart(): Unit =
-                super.onStart()
                 bgSnd.setVolume(0.2f) // Make background 20% volume.
                 bgSnd.loop(1500) // Auto-play with fade-in.
                 // Example of the per-frame sound synchronization.
@@ -260,7 +259,7 @@ object CPAnimationExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     Option(dim),
                     bgPx,

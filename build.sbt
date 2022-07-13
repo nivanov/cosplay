@@ -28,24 +28,27 @@
                ALl rights reserved.
 */
 
-val cosPlayVer = "0.6.5"
+val cosPlayVer = "0.7.2"
 
 val scalaMajVer = "3"
-val scalaMinVer = "1.0"
-val log4jVer = "2.17.1"
-val scalaLoggingVer = "3.9.4"
+val scalaMinVer = "1.3"
+val log4jVer = "2.18.0"
+val scalaLoggingVer = "3.9.5"
 val scalaParColVer = "1.0.4"
 val commonsLang3Ver = "3.12.0"
 val commonsMath3Ver = "3.6.1"
+val commonsTextVer = "1.9"
 val scalaReflectVer = "1.1.4"
 val junitVer = "5.8.2"
-val scalaTestVer = "3.2.11"
-val openjfxVer = "15.0.1"
-val flatlafVer = "1.6.5"
-val ikonliVer = "12.3.0"
+val scalaTestVer = "3.2.12"
+val openjfxVer = "17.0.2"
+val ikonliVer = "12.3.1"
+val flatlafVer = "2.3"
 val miglayoutVer = "11.0"
 val jlineVer = "3.21.0"
 val jnaVer = "5.10.0"
+val mixPanelVer = "1.5.0"
+val antlr4Ver = "4.10.1"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
 ThisBuild / version := cosPlayVer
@@ -53,7 +56,7 @@ ThisBuild / organization := "org.cosplay"
 ThisBuild / organizationName := "Rowan Games, Inc."
 ThisBuild / description := "2D ASCII Game Engine for Scala3."
 ThisBuild / licenses := List("Apache-2.0" -> url("https://github.com/sbt/sbt/blob/develop/LICENSE"))
-ThisBuild / homepage := Some(url("https://github.com/nivanov/cosplay"))
+ThisBuild / homepage := Some(url("https://cosplayengine.com"))
 ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/nivanov/cosplay"), "scm:git@github.com:nivanov/cosplay.git"))
 ThisBuild / developers ++= List(
     "nivanov" -> "Nikita Ivanov",
@@ -73,10 +76,9 @@ lazy val cosplay = (project in file("modules/cosplay"))
             "-project-footer", "(C) 2021 Rowan Games, Inc.",
             "-project-version", cosPlayVer,
             "-siteroot", ".",
-            "-skip-by-id:org.cosplay.impl",
-            "-skip-by-id:org.cosplay.impl.emuterm",
-            "-skip-by-id:org.cosplay.impl.jlineterm",
-            "-skip-by-id:org.cosplay.impl.guilog",
+            "-skip-by-regex:org.cosplay.impl",
+            "-skip-by-regex:org.cosplay.examples",
+            "-skip-by-regex:org.cosplay.games",
             "-doc-root-content", "scaladoc/docroot.md",
             "-source-links:github://nivanov/cosplay/master",
             "-social-links:github::https://github.com/nivanov/cosplay"
@@ -86,21 +88,24 @@ lazy val cosplay = (project in file("modules/cosplay"))
         javaOptions += "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
 
         // Dependencies.
-        libraryDependencies += "org.apache.commons" % "commons-math3" % s"$commonsMath3Ver",
-        libraryDependencies += "org.apache.commons" % "commons-lang3" % s"$commonsLang3Ver",
-        libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % s"$log4jVer",
-        libraryDependencies += "org.apache.logging.log4j" % "log4j-api" % s"$log4jVer",
-        libraryDependencies += "com.miglayout" % "miglayout-swing" % s"$miglayoutVer",
-        libraryDependencies += "org.kordamp.ikonli" % "ikonli-swing" % s"$ikonliVer",
-        libraryDependencies += "org.kordamp.ikonli" % "ikonli-lineawesome-pack" % s"$ikonliVer",
-        libraryDependencies += "com.formdev" % "flatlaf-intellij-themes" % s"$flatlafVer",
-        libraryDependencies += "com.formdev" % "flatlaf" % s"$flatlafVer",
-        libraryDependencies += "org.openjfx" % "javafx-media" % s"$openjfxVer",
-        libraryDependencies += "co.blocke" %% s"scala-reflection" % s"$scalaReflectVer",
-        libraryDependencies += "com.typesafe.scala-logging" % s"scala-logging_$scalaMajVer" % s"$scalaLoggingVer",
+        libraryDependencies += "org.apache.commons" % "commons-math3" % commonsMath3Ver,
+        libraryDependencies += "org.apache.commons" % "commons-lang3" % commonsLang3Ver,
+        libraryDependencies += "org.apache.commons" % "commons-text" % commonsTextVer,
+        libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % log4jVer,
+        libraryDependencies += "org.apache.logging.log4j" % "log4j-api" % log4jVer,
+        libraryDependencies += "com.miglayout" % "miglayout-swing" % miglayoutVer,
+        libraryDependencies += "org.kordamp.ikonli" % "ikonli-swing" % ikonliVer,
+        libraryDependencies += "org.kordamp.ikonli" % "ikonli-lineawesome-pack" % ikonliVer,
+        libraryDependencies += "com.formdev" % "flatlaf-intellij-themes" % flatlafVer,
+        libraryDependencies += "com.formdev" % "flatlaf" % flatlafVer,
+        libraryDependencies += "org.openjfx" % "javafx-media" % openjfxVer,
+        libraryDependencies += "co.blocke" %% s"scala-reflection" % scalaReflectVer,
+        libraryDependencies += "com.typesafe.scala-logging" % s"scala-logging_$scalaMajVer" % scalaLoggingVer,
         libraryDependencies += "org.jline" % "jline-terminal" % s"$jlineVer",
         libraryDependencies += "net.java.dev.jna" % "jna" % s"$jnaVer",
-        libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % s"$scalaParColVer",
+        libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % scalaParColVer,
+        libraryDependencies += "com.mixpanel" % "mixpanel-java" % mixPanelVer,
+        libraryDependencies += "org.antlr" % "antlr4-runtime" % antlr4Ver,
 
         // Test scope.
         libraryDependencies += "org.scalatest" %% s"scalatest" % s"$scalaTestVer" % Test,

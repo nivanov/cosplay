@@ -33,7 +33,7 @@ import scala.collection.mutable
 */
 
 /**
-  * Container for style string rendered using system font.
+  * Builder for a styled string rendered using system font.
   *
   * This utility class provides a builder pattern to built styled (colored) strings that
   * are rendered using a [[CPSystemFont system font]]. Once styled string is built it can be
@@ -45,11 +45,11 @@ import scala.collection.mutable
   * import CPStyledString.styleStr
   * 
   * val lblImg = new CPArrayImage(
-  *     styleStr("[Space]", C_WHITE) ++ styleStr("Play|Pause ", C_GREEN) ++
+  *     styleStr("[SPACE]", C_WHITE) ++ styleStr("Play|Pause ", C_GREEN) ++
   *     styleStr("[R]", C_WHITE) ++ styleStr("Rewind ", C_GREEN) ++
   *     styleStr("[Q]", C_WHITE) ++ styleStr("Quit ", C_GREEN) ++
-  *     styleStr("[Ctrl-L]", C_WHITE) ++ styleStr("Log ", C_GREEN) ++
-  *     styleStr("[Ctrl-Q]", C_WHITE) ++ styleStr("FPS Overlay", C_GREEN)
+  *     styleStr("[CTRL-L]", C_WHITE) ++ styleStr("Log ", C_GREEN) ++
+  *     styleStr("[CTRL-Q]", C_WHITE) ++ styleStr("FPS Overlay", C_GREEN)
   * ).trimBg()
   * }}}
   *
@@ -102,7 +102,7 @@ class CPStyledString:
       */
     def str(obj: Any): CPStyledString =
         if fg == null then E(s"Foreground color must be specified first.")
-        for (ch <- obj.toString) buf += CPPixel(ch, fg, bg)
+        for ch <- obj.toString do buf += CPPixel(ch, fg, bg)
         this
 
     /**

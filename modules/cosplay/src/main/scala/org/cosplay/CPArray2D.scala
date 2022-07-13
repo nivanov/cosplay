@@ -35,8 +35,7 @@ import scala.reflect.ClassTag
 */
 
 /**
-  * General, immutable 2D-array. Optionally, has a clear value that is used to [[clear()]] out
-  * array.
+  * Immutable 2D-array. Optionally, has a clear value that is used to [[clear()]] out array.
   *
   * @param width Width of the array. Must be >= 0.
   * @param height Height of the array. Must be >= 0.
@@ -200,12 +199,145 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     def foreach(f: T => Unit): Unit = rect.loop((x, y) => f(data(x)(y)))
 
     /**
+      * Checks whether this array contains at least one element satisfying given predicate.
+      *
+      * @param p Predicate to test.
+      */
+    def contains(p: T => Boolean): Boolean =
+        var x = 0
+        var y = 0
+        var found = false
+        while (x <= xMax && !found)
+            y = 0
+            while (y <= yMax && !found)
+                if p(data(x)(y)) then found = true
+                y += 1
+            x += 1
+        found
+
+    /**
+      * Collapses given array into a single value given the initial value and associative binary operation
+      * acting as an accumulator. Folding over the elements in this 2D array will be horizontal first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
+      *
+      * @param z Initial value.
+      * @param op Accumulating binary operation.
+      */
+    def foldHor[Z](z: Z)(op: (Z, T) => Z): Z =
+        var zz = z
+        loopHor((t, _, _) => zz = op(zz, t))
+        zz
+
+    /**
+      * Collapses given array into a single value given the initial value and associative binary operation
+      * acting as an accumulator. Folding over the elements in this 2D array will be vertical first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)
+      * }}}
+      *
+      * @param z Initial value.
+      * @param op Accumulating binary operation.
+      */
+    def foldVert[Z](z: Z)(op: (Z, T) => Z): Z =
+        var zz = z
+        loopVert((t, _, _) => zz = op(zz, t))
+        zz
+
+    /**
+      * Counts how many elements in this array satisfying given predicate.
+      *
+      * @param p Predicate to test.
+      */
+    def count(p: T => Boolean): Int = foldHor(0)((n, t) => if p(t) then n + 1 else n)
+
+    /**
       * Calls given function for each array element.
+      * Iteration over the elements in this 2D array will be horizontal first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
       *
       * @param f Function to call for each element. The function takes value and its XY-coordinate
       *     in the array.
+      * @see [[loopVert()]]
+      * @see [[loopHor()]]
       */
-    def loop(f: (T, Int, Int) => Unit): Unit = rect.loop((x, y) => f(get(x, y), x, y))
+    def loop(f: (T, Int, Int) => Unit): Unit = loopHor(f)
+
+    /**
+      * Calls given function for each array element.
+      * Iteration over the elements in this 2D array will be horizontal first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (1,0) (2,0) (0,1) (1,1) (2,1) (0,2) (1,2) (2,2)
+      * }}}
+      *
+      * @param f Function to call for each element. The function takes value and its XY-coordinate
+      *     in the array.
+      * @see [[loopVert()]]
+      * @see [[loop()]]
+      */
+    def loopHor(f: (T, Int, Int) => Unit): Unit = rect.loopHor((x, y) => f(get(x, y), x, y))
+
+    /**
+      * Calls given function for each array element.
+      * Iteration over the elements in this 2D array will be vertical first. In other words,
+      * given the 2D array with the following coordinates:
+      * {{{
+      *     +-----------------+
+      *     |(0,0) (1,0) (2,0)|
+      *     |(0,1) (1,1) (2,1)|
+      *     |(0,2) (1,2) (2,2)|
+      *     +-----------------+
+      * }}}
+      * this method will iterate in the following order:
+      * {{{
+      *     (0,0) (0,1) (0,2) (1,0) (1,1) (1,2) (2,0) (2,1) (2,2)
+      * }}}
+      *
+      * @param f Function to call for each element. The function takes value and its XY-coordinate
+      *     in the array.
+      * @see [[loop()]]
+      * @see [[loopHor()]]
+      */
+    def loopVert(f: (T, Int, Int) => Unit): Unit = rect.loopVert((x, y) => f(get(x, y), x, y))
 
    /**
       *
@@ -255,7 +387,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     /**
       *
       * @param x X-coordinate
-      * @param f
+      * @param f Blank predicate.
       */
     private def isColumnBlank(x: Int, f: T => Boolean): Boolean =
         if nonEmpty then
@@ -271,7 +403,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     /**
       *
       * @param y Y-coordinate
-      * @param f
+      * @param f Blank predicate.
       */
     private def isRowBlank(y: Int, f: T => Boolean): Boolean =
         if nonEmpty then
@@ -336,7 +468,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
         if nonEmpty && this.rect.contains(rect) then
             val arr = new CPArray2D[T](rect.dim)
             var arrX = 0
-            for (x <- rect.xMin to rect.xMax)
+            for x <- rect.xMin to rect.xMax do
                 Array.copy(data(x), rect.yMin, arr.data(arrX), 0, rect.height)
                 arrX += 1
             arr
@@ -351,7 +483,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       */
     def copyTo(other: CPArray2D[T], frame: CPRect = rect): Unit =
         if nonEmpty && other.nonEmpty && rect.contains(frame) then
-            for (x <- frame.xMin to frame.xMax)
+            for x <- frame.xMin to frame.xMax do
                 Array.copy(data(x), frame.yMin, other.data(x), frame.yMin, frame.height)
 
     /**
@@ -375,6 +507,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
 object CPArray2D:
     /**
       * Creates new 2D array from given list of [[CPPosPixel]] instances.
+      * Note that clear value is not set.
       *
       * @param pps List of [[CPPosPixel]] instances to create a new array from.
       */
@@ -384,9 +517,10 @@ object CPArray2D:
         val arr = new CPArray2D[CPPixel](w, h)
         pps.foreach(pp => arr.set(pp.x, pp.y, pp.px))
         arr
-
+        
     /**
       * Creates new 2D array from given sequence of [[CPPixel pixels]] and width.
+      * Note that clear value is not set.
       *
       * @param pxs Sequence of [[CPPixel pixels]].
       * @param width Required width. Height is calculated automatically.
@@ -405,6 +539,7 @@ object CPArray2D:
 
     /**
       * Creates new 2D array of [[Char]] from given string. Height of the array will be 1.
+      * Note that clear value will be set to ' ' (space).
       *
       * @param str String to creates new 2D array from.
       */
@@ -412,17 +547,19 @@ object CPArray2D:
 
     /**
       * Creates new 2D array of [[Char]] from given sequence of strings.
+      * Note that clear value will be set to ' ' (space). All strings will be padded
+      * to the maximum value with clear value ' ' (space) too.
       *
       * @param data Sequence of strings to create new 2D array from.
       */
     def apply(data: Seq[String]): CPArray2D[Char] =
         val w = data.maxBy(_.length).length
         val h = data.length
-        val arr = new CPArray2D[Char](h, w) // Note reverse width and height.
+        val arr = new CPArray2D[Char](h, w, ' ') // Note reverse width and height.
         var y = 0
         while (y < h)
             // Normalize (pad).
-            val s = data(y).padTo(w, ' ')
+            val s = data(y).padTo(w, arr.clearVal)
             val a1 = s.toCharArray
             val a2 = arr.data(y)
             Array.copy(a1, 0, a2, 0, w)

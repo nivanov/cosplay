@@ -102,21 +102,42 @@ trait CPSceneObjectContext extends CPBaseContext:
     def exitGame(): Unit
 
     /**
-      * Schedules given function to run at least `delayMs` milliseconds later.
+      * Schedules given function to run at least `delayMs` milliseconds later. Given function
+      * will only run if its timer elapses during the current scene. In other words, at scene switch
+      * all currently pending functions will be discarded. Note that given function will run at the minimum
+      * the next frame and never in the current frame (even if `delayMs` is set to 1ms, for example).
       *
-      * @param delayMs Minimum number of milliseconds before given function will run. Note that the actual
-      *         delay can be bigger but never smaller than this parameter.
-      * @param f A function to run later.
+      * @param delayMs Minimum number of milliseconds before given function will run in the current scene.
+      *         Note that the actual delay can be bigger but never smaller than this parameter.
+      * @param f A function to run later in the current scene.
       */
-    def runLater(delayMs: Long, f: CPBaseContext ⇒ Unit): Unit
+    def runLater(delayMs: Long, f: CPSceneObjectContext => Unit): Unit
+
+    /**
+      * Schedules given function to run at the next frame update. More specifically,
+      * this function will run before any of the scene objects updates on the next frame. Given function
+      * will only run if the next frame belongs to the same scene. In other words, at scene switch
+      * all currently pending functions will be discarded.
+      *
+      * @param f A function to run in the next frame update of the current scene.
+      */
+    def runNextFrame(f: CPSceneObjectContext => Unit): Unit
 
     /**
       * Deletes given scene object after this update cycle. Change will be visible only
-      * on the next frame update.
+      * on the next frame update. Note that focus owner will be released if held by the deleted
+      * object.
       *
       * @param id ID of the scene object to delete after this update cycle.
       */
     def deleteObject(id: String): Unit
+
+    /**
+      * Deletes current scene object after this update cycle. Change will be visible only
+      * on the next frame update. Note that focus owner will be released if held by the this
+      * object.
+      */
+    def deleteMyself(): Unit = deleteObject(getId)
 
     /**
       * Adds given scene object to the scene after this update cycle. Change will be visible only
@@ -151,6 +172,23 @@ trait CPSceneObjectContext extends CPBaseContext:
     def getObjectsForTags(tags: String*): Seq[CPSceneObject]
 
     /**
+      * Deletes scene objects with given tags. All tags must be present in the scene object
+      * to be deleted. Change will be visible only on the next frame update. Note that focus owner
+      * will be released if held by the deleted object.
+      *
+      * @param tags One or more tags to filter by.
+      */
+    def deleteObjectsForTags(tags: String*): Unit = getObjectsForTags(tags: _*).foreach(obj => deleteObject(obj.getId))
+
+    /**
+      * Gets number of scene objects with given tags. All tags must be present in the scene object
+      * to be returned as part of the result sequence.
+      *
+      * @param tags One or more tags to filter by.
+      */
+    def countObjectsForTags(tags: String*): Int
+
+    /**
       * Adds new scene. Change will be visible only on the next frame update.
       *
       * @param newSc A scene to add.
@@ -167,6 +205,19 @@ trait CPSceneObjectContext extends CPBaseContext:
       * @param delCur Whether or not to remove the current scene.
       */
     def switchScene(id: String, delCur: Boolean = false): Unit
+
+    /**
+      * Switches to the given scene as well as settings game cache parameters before the switch. Note that
+      * switch will happen only after the current frame update cycle completes.
+      *
+      * @param id ID of the scene to switch to.
+      * @param delCur Whether or not to remove the current scene.
+      * @param cacheProps Game cache parameters to set before switching the scene.
+      */
+    def switchScene(id: String, delCur: Boolean, cacheProps: (String, AnyRef)*): Unit =
+        val cache = getGameCache
+        cacheProps.foreach(t => cache.put(t._1, t._2))
+        switchScene(id, delCur)
 
     /**
       * Deletes given scene. Note that you can't delete current scene.
@@ -189,8 +240,8 @@ trait CPSceneObjectContext extends CPBaseContext:
       */
     def isKbKey(key: CPKeyboardKey): Boolean =
         getKbEvent match
-            case Some(k) ⇒ k.key == key
-            case None ⇒ false
+            case Some(k) => k.key == key
+            case None => false
 
     /**
       * Tests whether or not current object is a input keyboard focus owner.
@@ -214,7 +265,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       * @see [[releaseFocus()]]
       * @see [[releaseMyFocus()]]
       */
-    def acquireMyFocus(): Unit
+    def acquireMyFocus(): Unit = acquireFocus(getId)
 
     /**
       * Gets the current owner of input keyboard focus.

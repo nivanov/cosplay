@@ -98,7 +98,7 @@ import scala.annotation.targetName
   * @see [[CPPosPixel]]
   * @see [[CPZPixel]]
   */
-final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, tag: Int):
+final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, tag: Int) extends Serializable:
     private var shadow: CPPixel = _
 
     override def toString: String = s"Pixel ['$char', fg=$fg, bg=$bg, tag=$tag]"
@@ -135,6 +135,44 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
       * @param x New foreground color.
       */
     inline def withFg(x: CPColor): CPPixel = if fg != x then CPPixel(char, x, bg, tag) else this
+
+    /**
+      * Gets a copy of this pixel with lighter foreground.
+      *
+      * @param factor Mixing factor in `[0.1]` range. `1.0` means pure white, `0.9` means 90% lighter,
+      *     `0.1` means 10% lighter.
+      * @see [[CPColor.lighter()]]
+      */
+    inline def withLighterFg(factor: Float): CPPixel = CPPixel(char, fg.lighter(factor), bg, tag)
+
+    /**
+      * Gets a copy of this pixel with darker foreground.
+      *
+      * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
+      * @see [[CPColor.darker()]]
+      */
+    inline def withDarkerFg(factor: Float): CPPixel = CPPixel(char, fg.darker(factor), bg, tag)
+
+    /**
+      * Gets a copy of this pixel with lighter background.
+      *
+      * @param factor Mixing factor in `[0.1]` range. `1.0` means pure white, `0.9` means 90% lighter,
+      *     `0.1` means 10% lighter.
+      * @see [[CPColor.lighter()]]
+      */
+    inline def withLighterBg(factor: Float): CPPixel = bg match
+        case Some(c) => CPPixel(char, fg, Option(c.lighter(factor)), tag)
+        case None => this
+
+    /**
+      * Gets a copy of this pixel with darker background.
+      *
+      * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
+      * @see [[CPColor.darker()]]
+      */
+    inline def withDarkerBg(factor: Float): CPPixel = bg match
+        case Some(c) => CPPixel(char, fg, Option(c.darker(factor)), tag)
+        case None => this
 
     /**
       * Gets a copy of this pixel with a new tag.
@@ -253,7 +291,7 @@ object CPPixel:
       */
     def seq(first: Char, last: Char, fg: CPColor, bg: Option[CPColor]): Seq[CPPixel] =
         if first > last then E(s"'first' char ('$first') must < 'last' char ('$last').")
-        for (ch <- first to last) yield CPPixel(ch, fg, bg, 0)
+        for ch <- first to last yield CPPixel(ch, fg, bg, 0)
 
     /**
       * Makes a sequence of pixel from the range of characters. Range must be sequential.
@@ -266,7 +304,7 @@ object CPPixel:
       */
     def seq(first: Char, last: Char, fgf: Char => CPColor, bgf: Char => Option[CPColor]): Seq[CPPixel] =
         if first > last then E(s"'first' char ('$first') must < 'last' char ('$last').")
-        for (ch <- first to last) yield CPPixel(ch, fgf(ch), bgf(ch), 0)
+        for ch <- first to last yield CPPixel(ch, fgf(ch), bgf(ch), 0)
 
     /**
       * Makes a sequence of pixel from given string.
@@ -277,7 +315,7 @@ object CPPixel:
       * @note Pixel tag will be set to zero.
       */
     def seq(chars: String, fg: CPColor, bg: Option[CPColor]): Seq[CPPixel] =
-        for (ch <- chars) yield CPPixel(ch, fg, bg, 0)
+        for ch <- chars yield CPPixel(ch, fg, bg, 0)
 
     /**
       * Makes a sequence of pixel from given string.
@@ -288,7 +326,7 @@ object CPPixel:
       * @note Pixel tag will be set to zero.
       */
     def seq(chars: String, fgf: Char => CPColor, bgf: Char => Option[CPColor]): Seq[CPPixel] =
-        for (ch <- chars) yield CPPixel(ch, fgf(ch), bgf(ch), 0)
+        for ch <- chars yield CPPixel(ch, fgf(ch), bgf(ch), 0)
 
     given Conversion[(Char, CPColor), CPPixel] = t => CPPixel(t._1, t._2)
 

@@ -98,7 +98,7 @@ object CPTextInputExample:
             next = Option("user")
         )
         val panel = CPPanelSprite(2, 2, 24, 11, 0, "Login")
-        val focusAcq = CPOffScreenSprite(ctx ⇒ if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user"))
+        val focusAcq = CPOffScreenSprite(ctx => if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user"))
 
         val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val sc = new CPScene("scene", Option(CPDim(27, 13)), bgPx,

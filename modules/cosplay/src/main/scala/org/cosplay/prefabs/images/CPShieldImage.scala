@@ -36,8 +36,7 @@ import CPPixel.*
 */
 
 /**
- * Art by Rowan Crawford
- * http://www.afn.org/~afn39695/crawford.htm
+ * Art by Rowan Crawford.
  */
 object CPShieldImage extends CPArrayImage(
     prepSeq("""

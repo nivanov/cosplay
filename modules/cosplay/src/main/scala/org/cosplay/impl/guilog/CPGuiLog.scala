@@ -73,7 +73,7 @@ class CPGuiLog(cat: String) extends CPLog:
         log.inheritFrom(this)
         log
     override def getCategory: String = cat
-    override def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit =
+    override def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit =
         if isEnabled(lvl) then
             CPGuiLog.addLog(nthFrame, lvl, cat, obj, ex)
 
@@ -83,14 +83,14 @@ class CPGuiLog(cat: String) extends CPLog:
 object CPGuiLog:
     initLaF()
 
-    private val KB = 1024
-    private val MB = KB * 1024
-    private val GB = MB * 1024
-    private val TB = GB * 1024
+    private final val KB = 1024
+    private final val MB = KB * 1024
+    private final val GB = MB * 1024
+    private final val TB = GB * 1024
 
-    private val MAX_DOC_SIZE = 50_000
-    private val LOG_FONT_SIZE = 14
-    private val MIN_LOG_SEARCH_TERM_LEN = 3
+    private final val MAX_DOC_SIZE = 50_000
+    private final val LOG_FONT_SIZE = 14
+    private final val MIN_LOG_SEARCH_TERM_LEN = 3
     private var frame: JFrame = _
     private var frameCnt = 1L
     private var logPaused = false
@@ -628,7 +628,7 @@ object CPGuiLog:
                     off = docTxt.indexOf(term, off + termLen)
                 if logSearchOffs.nonEmpty then
                     val attrs = new SimpleAttributeSet()
-                    for (off <- logSearchOffs)
+                    for off <- logSearchOffs do
                         if off == activeLogSearchOff then
                             StyleConstants.setBackground(attrs, C_ORANGE_RED1.awt)
                         else
@@ -832,11 +832,16 @@ object CPGuiLog:
       * @param bytes
       */
     private def formatMem(bytes: Long): String =
-        if bytes < KB then s"${numFmt.format(bytes)}B"
-        else if bytes < MB then s"${numFmt.format(bytes / KB)}KB"
-        else if bytes < GB then s"${numFmt.format(bytes / MB)}MB"
-        else if bytes < TB then s"${numFmt.format(bytes / GB)}GB"
-        else s"${numFmt.format(bytes / TB)}TB"
+        // For some (unknown) reason, at least on MacOS, the last
+        // line can produce arithmetic exception with "/ by zero" message.
+        try
+            if bytes < KB then s"${numFmt.format(bytes)}B"
+            else if bytes < MB then s"${numFmt.format(bytes / KB)}KB"
+            else if bytes < GB then s"${numFmt.format(bytes / MB)}MB"
+            else if bytes < TB then s"${numFmt.format(bytes / GB)}GB"
+            else s"${numFmt.format(bytes / TB)}TB"
+        catch
+            case e: ArithmeticException => ""
 
     /**
       *
@@ -911,7 +916,8 @@ object CPGuiLog:
         p.add(mkButton(searchLastAct))
         p.add(mkButton(searchClearAct))
         p.add(new JLabel("Results:"), "gapleft 10")
-        p.add(searchCntLbl, "pushx")
+        p.add(searchCntLbl, "wrap")
+        p.add(new JLabel("<html><span style='font-size: 85%'><b>NOTE:</b> pause log to enable search</span></html>"))
 
         p
 
@@ -927,7 +933,8 @@ object CPGuiLog:
         p.add(new JLabel("Debug:"), "wrap")
         p.add(dbgSimKbChkBox)
         p.add(dbgKbCombo)
-        p.add(mkButton(dbgStepAct))
+        p.add(mkButton(dbgStepAct), "wrap")
+        p.add(new JLabel("<html><span style='font-size: 85%'><b>NOTE:</b> pause game to enable debug</span></html>"))
 
         p
 

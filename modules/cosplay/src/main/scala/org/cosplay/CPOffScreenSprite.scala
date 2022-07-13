@@ -36,8 +36,10 @@ import impl.CPUtils
   * Scene object that has no rendering content of its own.
   *
   * This type of sprites is typically used for keyboard handlers or shaders-only rendering, e.g. fade in of the entire
-  * screen, etc. Off-screen sprite has its visible flag set to `false`, XY-coordinate set to `(0,0)` and its Z-index
-  * set to zero. Its dimension set to [[CPDim.ZERO]] and it shape set to [[CPRect.ZERO]] as well.
+  * screen, etc. Note that shaders must be attached to some scene object but that object doesn't have to be visible for
+  * the shader to render - hence the convenience of using off-screen sprites for screen-wide shader rendering. Off-screen
+  * sprite has its visible flag set to `false`, XY-coordinate set to `(0,0)` and its Z-index set to zero. Its dimension
+  * set to [[CPDim.ZERO]] and it shape set to [[CPRect.ZERO]] as well.
   *
   * Since this is an off-screen, invisible sprite the method [[CPSceneObject.render()]] will never
   * be called. Use [[CPSceneObject.update()]] callback, if necessary, instead and make sure to
@@ -61,8 +63,13 @@ import impl.CPUtils
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   * @param shaders Optional sequence of shaders for this sprite.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
-class CPOffScreenSprite(id: String = s"off-scr-spr-${CPRand.guid6}", shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+class CPOffScreenSprite(
+    id: String = s"off-scr-spr-${CPRand.guid6}",
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: String*
+) extends CPSceneObject(id, tags.toSet):
     setVisible(false)
 
     /**
@@ -102,6 +109,6 @@ object CPOffScreenSprite:
       * @param f Function that takes scene object context to perform an action on each [[CPSceneObject.update()]]
       *     callback.
       */
-    def apply(f: CPSceneObjectContext ⇒ Unit): CPOffScreenSprite =
+    def apply(f: CPSceneObjectContext => Unit): CPOffScreenSprite =
         new CPOffScreenSprite():
             override def update(ctx: CPSceneObjectContext): Unit = f(ctx)

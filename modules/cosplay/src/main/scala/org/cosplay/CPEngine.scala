@@ -103,6 +103,14 @@ def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, c
   * | `COSPLAY_FORCE_8BIT_COLOR`| `Boolean` | Forces the automatic conversion from 24-bit color to 8-bit color. Only needed when running in the native terminal that does not support 24-bit color. Default value is `false`. |
   * | `COSPLAY_TERM_CLASSNAME`| `String` | Fully qualified class name for the custom terminal emulator implementation. Class must implement [[org.cosplay.CPTerminal]] trait. |
   *
+  * ### Reserved Keyboard Keys
+  * There are three reserved key strokes that are used by the game engine itself and therefore NOT available
+  * to the game. These keystrokes are intercepted before frame update and not propagated to the scene object
+  * context:
+  *  - 'CTRL+Q' - toggles in-game FPS overlay
+  *  - 'CTRL+L' - opens GUI-based loc viewer & debugger
+  *  - 'F12' - saves current frame screenshot as *.xp image to the current working folder.
+  *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
   *     working with game engine including initialization and game start.
   * @note See developer guide at [[https://cosplayengine.com]]
@@ -111,7 +119,7 @@ object CPEngine:
     private enum State:
         case ENG_INIT, ENG_STARTED, ENG_STOPPED
 
-    private case class LaterRun(tsMs: Long, f: CPBaseContext ⇒ Unit)
+    private case class LaterRun(tsMs: Long, f: CPSceneObjectContext => Unit)
 
     private val FPS = 30 // Target FPS.
     private val FRAME_NANOS = 1_000_000_000 / FPS
@@ -132,7 +140,7 @@ object CPEngine:
     private var kbKey: CPKeyboardKey = _
     private final val kbMux = AnyRef
     private final val pauseMux = AnyRef
-    private var engLog: Log4jWrapper = _
+    private var engLog: CPLog = BufferedLog("").getLog("root")
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
     private var savedEx: Throwable = _
@@ -169,10 +177,25 @@ object CPEngine:
       *
       * @param impl Log implementation.
       */
-    private class Log4jWrapper(val impl: CPLog) extends CPLog :
+    private class Log4jMirrorLog(impl: CPLog) extends CPLog:
         private val log4j = LogManager.getLogger(impl.getCategory)
 
-        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit =
+        init()
+
+        private def init(): Unit =
+            val buf = BufferedLog.buf
+            if buf.nonEmpty then
+                buf.foreach(ent => log(
+                    ent.nthFrame,
+                    ent.lvl,
+                    ent.obj,
+                    ent.cat,
+                    ent.ex
+                ))
+                buf.clear()
+
+
+        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit =
             if frameCnt % nthFrame == 0 then
                 if obj.toString != CPUtils.PING_MSG then
                     lvl match
@@ -182,16 +205,32 @@ object CPEngine:
                         case CPLogLevel.WARN => log4j.warn(obj, ex)
                         case CPLogLevel.ERROR => log4j.error(obj, ex)
                         case CPLogLevel.FATAL => log4j.fatal(obj, ex)
-                impl.log(nthFrame, lvl, obj, ex)
-
-        def getLog(category: String): CPLog = new Log4jWrapper(impl.getLog(category))
-
+                impl.log(nthFrame, lvl, obj, cat, ex)
+        def getLog(category: String): CPLog = new Log4jMirrorLog(impl.getLog(category))
         def getCategory: String = impl.getCategory
 
     /**
       *
       */
-    private class NativeKbReader extends Thread :
+    object BufferedLog:
+        case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception)
+        val buf: mutable.ArrayBuffer[BufferedLogEntry] = mutable.ArrayBuffer.empty[BufferedLogEntry]
+
+    import BufferedLog.*
+
+    /**
+      *
+      * @param cat Log category.
+      */
+    private class BufferedLog(cat: String) extends CPLog:
+        def getLog(category: String): CPLog = new BufferedLog(s"$cat/$category")
+        def getCategory: String = cat
+        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit = buf += BufferedLogEntry(nthFrame, lvl, obj, cat, ex)
+
+    /**
+      *
+      */
+    private class NativeKbReader extends Thread:
         private final val EOF = -1
         private final val TIMEOUT = -2
         private final val ESC = 27
@@ -200,8 +239,7 @@ object CPEngine:
         @volatile var st0p = false
 
         // Prep keyboard map.
-        for (key <- CPKeyboardKey.values)
-            key.rawCodes.foreach(s => mapping += s.map(_.toInt) -> key)
+        for key <- CPKeyboardKey.values do key.rawCodes.foreach(s => mapping += s.map(_.toInt) -> key)
 
         private def read(timeout: Long): Int = term.nativeKbRead(timeout)
 
@@ -256,14 +294,14 @@ object CPEngine:
         gameInfo
 
     /**
-      * Initialized the game engine.
+      * Initializes the game engine.
       *
       * @param gameInfo Game information.
       * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
       *     value will be result of this expression: {{{System.console() == null}}}
       */
     def init(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Unit =
-        if state == State.ENG_STARTED then E("Engine is already started.")
+        if state == State.ENG_STARTED then E("Engine is already initialized.")
         if state == State.ENG_STOPPED then E("Engine is stopped and cannot be restarted.")
 
         // Initialize JavaFX toolkit for audio.
@@ -286,8 +324,6 @@ object CPEngine:
         try term = Class.forName(termClsName).getDeclaredConstructor(classOf[CPGameInfo]).newInstance(gameInfo).asInstanceOf[CPTerminal]
         catch case e: Exception => E(s"Failed to create the terminal for class: $termClsName", e)
 
-        engLog = new Log4jWrapper(term.getRootLog.getLog("cosplay"))
-
         // Set terminal window title.
         updateTitle(term.getDim)
 
@@ -298,6 +334,8 @@ object CPEngine:
 
         state = State.ENG_STARTED
 
+        engLog = new Log4jMirrorLog(term.getRootLog.getLog("cosplay"))
+
         // For some reasons, GUI-based log (some Swing activity) is **required** to avoid
         // strange behavior of the native terminal in shaders. Specifically, fade-in
         // and fade-out shaders stutter in native terminal unless GUI-based subsystem
@@ -305,6 +343,7 @@ object CPEngine:
         // the log (both log4j and GUI-based logger) with the game information.
         asciiLogo()
         ackGameInfo()
+        CPUtils.startPing(gameInfo)
 
     /**
       *
@@ -346,6 +385,7 @@ object CPEngine:
       * @param dim
       */
     private def updateTitle(dim: CPDim): Unit =
+        assert(dim != null, "Dimension is null.")
         term.setTitle(s"CosPlay - ${gameInfo.name} v${gameInfo.semVer}, ${dim.w}x${dim.h}")
 
     /**
@@ -356,14 +396,16 @@ object CPEngine:
 
     /**
       * Gets root log for the game engine.
+      *
+      * NOTE: unlike most other methods in the game engine, you can use this method before engine is initialized.
+      * In such case the log entries will be buffered until the engine is initialized.
       */
-    def rootLog(): CPLog =
-        checkState()
-        engLog
+    def rootLog(): CPLog = engLog
 
     /**
       * Shows or hides the built-in FPS overlay in the right top corner. Can
       * also be turned on or off by pressing `Ctrl-q` in the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param show Show/hide flag.
       */
@@ -374,12 +416,14 @@ object CPEngine:
     /**
       * Opens GUI-based log window by bringing it upfront.
       * Can also be open by pressing `Ctrl-l` in the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def openLog(): Unit =
         rootLog().info(CPUtils.PING_MSG)
 
     /**
       * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def dispose(): Unit =
         checkState()
@@ -398,6 +442,7 @@ object CPEngine:
       *     openLog()
       * }}}
       * This is a convenient call to programmatically start the debugging session.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def startDebug(): Unit =
         pauseGame()
@@ -405,6 +450,7 @@ object CPEngine:
 
     /**
       * Pauses the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def pauseGame(): Unit =
         checkState()
@@ -416,6 +462,7 @@ object CPEngine:
 
     /**
       * Tests whether or not the game is paused.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def isGamePaused: Boolean =
         checkState()
@@ -423,6 +470,7 @@ object CPEngine:
 
     /**
       * Debug steps through the game on frame at a time. Note that the game must be paused.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param kbKey Optional keyboard key event to emulate for this debug step.
       *     If provided, the real keyboard event, if any, will be ignored.
@@ -439,6 +487,7 @@ object CPEngine:
 
     /**
       * Resumes the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def resumeGame(): Unit =
         checkState()
@@ -451,6 +500,7 @@ object CPEngine:
 
     /**
       * Starts the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param startSceneId ID of the scene to start with.
       * @param scs Set of scene comprising the game. Note that scenes can be dynamically
@@ -464,6 +514,7 @@ object CPEngine:
 
     /**
       * Starts the game.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param startSceneId ID of the scene to start with.
       * @param scs Set of scene comprising the game. Note that scenes can be dynamically
@@ -473,6 +524,7 @@ object CPEngine:
 
     /**
       * Starts the game. Games start with the first scene in the list.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
       *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
@@ -481,6 +533,7 @@ object CPEngine:
 
     /**
       * Starts the game. Games start with the first scene in the list.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
       * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
       *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
@@ -489,6 +542,7 @@ object CPEngine:
 
     /**
       * Exits the game. Calling this method will exit the [[startGame()]] method.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
     def exitGame(): Unit =
         checkState()
@@ -621,6 +675,7 @@ object CPEngine:
         val msgQ = mutable.HashMap.empty[String, mutable.Buffer[AnyRef]]
         val delayedQ = mutable.ArrayBuffer.empty[() => Unit]
         val laterRuns = mutable.ArrayBuffer.empty[LaterRun]
+        val nextFrameRuns = mutable.ArrayBuffer.empty[CPSceneObjectContext => Unit]
         val gameCache = CPCache(delayedQ)
         val sceneCache = CPCache(delayedQ)
         val collidedBuf = mutable.ArrayBuffer.empty[CPSceneObject]
@@ -638,14 +693,13 @@ object CPEngine:
         var low1FpsCnt = 0
         var scLog = engLog.getLog(s"${startScene.getId}")
         var forceStatsUpdate = false
-        var forceRedraw = false
 
         def lifecycleStart(x: CPLifecycle): Unit =
             x.getState match
                 case LF_INIT =>
-                    x.onStart()
-                    x.onActivate()
-                case LF_INACTIVE | LF_STARTED => x.onActivate()
+                    x.onStartX()
+                    x.onActivateX()
+                case LF_INACTIVE | LF_STARTED => x.onActivateX()
                 case LF_ACTIVE => ()
                 case LF_STOPPED => assert(false)
 
@@ -654,9 +708,9 @@ object CPEngine:
                 x.getState match
                     case LF_INIT => ()
                     case LF_ACTIVE | LF_STARTED =>
-                        x.onDeactivate()
-                        x.onStop()
-                    case LF_INACTIVE => x.onStop()
+                        x.onDeactivateX()
+                        x.onStopX()
+                    case LF_INACTIVE => x.onStopX()
                     case LF_STOPPED => ()
             catch case e: Exception => engLog.error(s"Failed to stop object: $x", e)
 
@@ -735,8 +789,7 @@ object CPEngine:
 
                 val termW = termDim.w
                 val termH = termDim.h
-                val redraw = forceRedraw || scFrameCnt == 0 || lastTermDim != termDim
-                forceRedraw = false
+                val redraw = scFrameCnt == 0 || lastTermDim != termDim
                 lastTermDim = termDim
 
                 if redraw then // Update terminal window title.
@@ -822,21 +875,6 @@ object CPEngine:
 
                 if camRect == null then camRect = new CPRect(camX, camY, termDim).intersectWith(new CPRect(0, 0, scDim))
 
-                // Handle later runs.
-                val toRun = laterRuns.filter(_.tsMs <= frameMs)
-                if toRun.nonEmpty then
-                    val bc = new CPBaseContext:
-                        override def getLog: CPLog = scLog
-                        override def getGameCache: CPCache = gameCache
-                        override def getSceneCache: CPCache = sceneCache
-                        override def getFrameCount: Long = frameCnt
-                        override def getSceneFrameCount: Long = scFrameCnt
-                        override def getStartGameMs: Long = startMs
-                        override def getStartSceneMs: Long = startScMs
-                        override def getFrameMs: Long = frameMs
-                    toRun.foreach(_.f(bc))
-                    laterRuns.filterInPlace(_.tsMs >= frameMs)
-
                 class CPSceneObjectContextImpl(canv: CPCanvas) extends CPSceneObjectContext :
                     private var myId: String = _
                     private var myObj: CPSceneObject = _
@@ -844,7 +882,7 @@ object CPEngine:
 
                     private def collide(f: CPRect => Boolean, zs: Int*): Seq[CPSceneObject] =
                         collidedBuf.clear()
-                        for (obj <- objs)
+                        for obj <- objs do
                             if obj.isVisible && (zs.isEmpty || zs.contains(obj.getZ)) then
                                 obj.getCollisionRect match
                                     case Some(clsRect) if f(clsRect) => collidedBuf += obj
@@ -866,8 +904,8 @@ object CPEngine:
                                     case Some(s) => lifecycleStop(s)
                                     case _ => ()
                             else
-                                sc.onDeactivate()
-                                sc.objects.values.foreach(_.onDeactivate())
+                                sc.onDeactivateX()
+                                sc.objects.values.foreach(_.onDeactivateX())
                             sc = scenes.grab(cloId)
                             scLog = engLog.getLog(s"scene:${sc.getId}")
                             scr = null
@@ -879,6 +917,7 @@ object CPEngine:
                             scFrameCnt = 0
                             stopFrame = true
                             laterRuns.clear()
+                            nextFrameRuns.clear()
                             startScMs = System.currentTimeMillis()
                             logSceneSwitch(sc)
                         })
@@ -898,15 +937,16 @@ object CPEngine:
                     override def getGameCache: CPCache = gameCache
                     override def getSceneCache: CPCache = sceneCache
                     override def getFrameMs: Long = frameMs
-                    override def runLater(delayMs: Long, f: CPBaseContext ⇒ Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
+                    override def runLater(delayMs: Long, f: CPSceneObjectContext => Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
+                    override def runNextFrame(f: CPSceneObjectContext => Unit): Unit = nextFrameRuns += f
                     override def getKbEvent: Option[CPKeyboardEvent] = if kbFocusOwner.isEmpty || kbFocusOwner.get == myId then kbEvt else None
                     override def sendMessage(id: String, msgs: AnyRef*): Unit =
                         val cloId = id
                         val cloMsgs = msgs
                         delayedQ += (() => postQ(cloId, cloMsgs))
                     override def receiveMessage(): Seq[AnyRef] = msgQ.get(myId) match
-                        case Some(buf) =>
-                            val pckt = Seq.empty ++ buf // Copy.
+                        case Some(b) =>
+                            val pckt = Seq.empty ++ b // Copy.
                             msgQ.remove(myId)
                             pckt
                         case None => Seq.empty
@@ -918,7 +958,6 @@ object CPEngine:
                             scLog.trace(s"Input focus is currently held by '${kbFocusOwner.get}', switching to '$id'.")
                         val cloId = id
                         delayedQ += (() => kbFocusOwner = Option(cloId))
-                    override def acquireMyFocus(): Unit = acquireFocus(myId)
                     override def getFocusOwner: Option[String] = kbFocusOwner
                     override def releaseFocus(id: String): Unit =
                         if kbFocusOwner.isDefined && kbFocusOwner.get == id then
@@ -926,41 +965,43 @@ object CPEngine:
                     override def releaseMyFocus(): Unit = releaseFocus(myId)
                     override def addObject(obj: CPSceneObject): Unit =
                         val cloObj = obj
-                        delayedQ += (() =>
+                        delayedQ += (() => {
                             sc.objects.add(cloObj)
                             engLog.info(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
-                        )
+                        })
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
                     override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
+                    override def countObjectsForTags(tags: String*): Int = sc.objects.countForTags(tags: _*)
                     override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit = 
-                        delayedQ += (() =>
+                        delayedQ += (() => {
                             engLog.info(s"Scene added: ${newSc.getId}")
                             scenes.add(newSc)
-                        )
+                        })
                         if switchTo then doSwitchScene(newSc.getId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
                         if sc.getId == id then E(s"Cannot remove current scene: ${sc.getId}")
                         else
-                            val colId = id
+                            val cloId = id
                             delayedQ += (() => {
-                                scenes.remove(colId) match
+                                scenes.remove(cloId) match
                                     case Some(s) =>
                                         engLog.info(s"Scene deleted: ${s.getId}")
                                         lifecycleStop(s)
                                     case _ =>
-                                        engLog.warn(s"Ignored an attempt to delete unknown scene: $colId")
+                                        engLog.warn(s"Ignored an attempt to delete unknown scene: $cloId")
                             })
                     override def deleteObject(id: String): Unit =
-                        val colId = id
+                        val cloId = id
                         delayedQ += (() => {
-                            sc.objects.remove(colId) match
+                            sc.objects.remove(cloId) match
                                 case Some(obj) =>
+                                    if kbFocusOwner.isDefined && kbFocusOwner.get == cloId then kbFocusOwner = None
                                     engLog.info(s"Scene object deleted from '${sc.getId}' scene: ${obj.toExtStr}")
                                     lifecycleStop(obj)
                                 case _ =>
-                                    engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $colId")
+                                    engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $cloId")
                         })
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
                         if myObj.getCollisionRect.isEmpty then E(s"Current object does not provide collision shape: ${myObj.getId}")
@@ -972,12 +1013,20 @@ object CPEngine:
                     override def collisions(rect: CPRect, zs: Int*): Seq[CPSceneObject] =
                         collide(r => r.overlaps(rect), zs: _*)
 
-                val ctx = new CPSceneObjectContextImpl(scr.canvas())
+                val ctx = new CPSceneObjectContextImpl(scr.newCanvas())
 
-                var visObjCnt = 0
+                // Handle later runs.
+                val toRun = laterRuns.filter(_.tsMs <= frameMs)
+                if toRun.nonEmpty then
+                    toRun.foreach(_.f(ctx))
+                    laterRuns.filterInPlace(_.tsMs > frameMs)
+
+                // Handle next frame runs.
+                nextFrameRuns.foreach(_(ctx))
+                nextFrameRuns.clear()
 
                 // Update all objects (including invisible and outside the frame) in the scene.
-                for (obj <- objs if !stopFrame)
+                for obj <- objs if !stopFrame do
                     ctx.setSceneObject(obj)
                     obj.update(ctx)
 
@@ -1004,12 +1053,12 @@ object CPEngine:
                                     if focusRect.containsHor(objRect) then
                                         if cam.isMinPanningX then 0 else camPanX
                                     else
-                                        (objRect.xCenter - focusRect.xCenter).toFloat
+                                        (objRect.centerX - focusRect.centerX).toFloat
                                 camPanY =
                                     if focusRect.containsVer(objRect) then
                                         if cam.isMinPanningY then 0 else camPanY
                                     else
-                                        (objRect.yCenter - focusRect.yCenter).toFloat
+                                        (objRect.centerY - focusRect.centerY).toFloat
                             // If not redrawing and tracking object cannot be found - leave the camera frame as is.
                             case None => ()
 
@@ -1028,28 +1077,44 @@ object CPEngine:
                 // NOTE: Create camera frame after the objects were updated BUT before object are drawn.
                 camRect = adjustCameraFrame(scr.getRect, camX, camY, termW, termH)
 
+                var visObjCnt = 0
+
                 // Repaint visible and in-frame objects only.
-                for (obj <- objs if !stopFrame && obj.isVisible && camRect.overlaps(obj.getRect))
+                for obj <- objs if !stopFrame && obj.isVisible && camRect.overlaps(obj.getRect) do
                     ctx.setSceneObject(obj)
                     obj.render(ctx)
                     visObjCnt += 1
 
                 // Shader pass for all objects (including invisible and outside the frame).
-                for (obj <- objs if !stopFrame)
-                    val shaders = obj.getShaders
-                    if shaders.nonEmpty then
-                        val objRect = obj.getRect
-                        val inCamera = camRect.overlaps(objRect)
-                        for (shdr <- shaders if !stopFrame)
-                            ctx.setSceneObject(obj)
-                            shdr.render(ctx, objRect, inCamera)
+                // First, process shaders for all visible objects, then for all invisible objects.
+                for set <- Seq(objs.filter(_.isVisible), objs.filter(!_.isVisible)) if !stopFrame do
+                    for obj <- set if !stopFrame do
+                        val shaders = obj.getShaders
+                        if shaders.nonEmpty then
+                            val objRect = obj.getRect
+                            val inCamera = camRect.overlaps(objRect)
+                            for shdr <- shaders if !stopFrame do
+                                ctx.setSceneObject(obj)
+                                shdr.render(ctx, objRect, inCamera)
 
                 val startSysNs = System.nanoTime()
 
                 // Perform all delayed operations for the next frame.
-                for (f <- delayedQ if !stopFrame) f()
+                for f <- delayedQ if !stopFrame do f()
                 // Clear delayed operations.
                 delayedQ.clear()
+
+                // Built-in support for 'CTRL+Q', 'CTRL+L' and 'F12'.
+                if kbEvt.isDefined then
+                    if kbEvt.get.key == KEY_CTRL_Q then
+                        isShowFps = !isShowFps
+                    else if kbEvt.get.key == KEY_F12 then
+                        val path = s"cosplay-screenshot-${CPRand.guid6}.xp"
+                        ctx.getCanvas.capture().saveRexXp(path, sc.getBgColor)
+                        engLog.info(s"Screenshot saved: $path")
+                    else if kbEvt.get.key == KEY_CTRL_L then
+                        engLog.info(CPUtils.PING_MSG)
+                end if
 
                 // Rendering...
                 if !stopFrame then
@@ -1085,13 +1150,6 @@ object CPEngine:
                     low1FpsList = fpsList.sorted.take(FPS_1PCT_LIST_SIZE)
                     low1FpsCnt = low1FpsList.length
 
-                // Built-in support for Ctrl-q and Ctrl-l.
-                if kbEvt.isDefined then
-                    if kbEvt.get.key == KEY_CTRL_Q then isShowFps = !isShowFps
-                    else if kbEvt.get.key == KEY_CTRL_R then forceRedraw = true
-                    else if kbEvt.get.key == KEY_CTRL_L then engLog.info(CPUtils.PING_MSG)
-                end if
-
                 if scFrameCnt == 0 || frameCnt % 3 == 0 || forceStatsUpdate then // Reduce flicker.
                     forceStatsUpdate = false
 
@@ -1101,8 +1159,8 @@ object CPEngine:
 
                     stats = Option(CPRenderStats(frameCnt, scFrameCnt, fps, avgFps, avgLow1Fps, usrNs, sysNs, objs.length, visObjCnt, kbEvt))
 
-                    // Update GUI log if it is used.
-                    if engLog.impl.isInstanceOf[CPGuiLog] then CPGuiLog.updateStats(stats.get)
+                    // Update GUI log.
+                    CPGuiLog.updateStats(stats.get)
 
                 // Notify stats listeners, if any.
                 stats match
@@ -1125,7 +1183,7 @@ object CPEngine:
             engLog.info("Game stopped.")
 
             // Stop all the scenes and their scene objects.
-            for (sc <- scenes.values)
+            for sc <- scenes.values do
                 // Stop scene object first.
                 sc.objects.values.foreach(lifecycleStop)
                 // Stop the scene itself.

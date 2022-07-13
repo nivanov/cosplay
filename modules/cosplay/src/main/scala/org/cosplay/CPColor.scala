@@ -82,25 +82,17 @@ import java.awt.Color
   * @param red Red RGB component.
   * @param green Green RGB component.
   * @param blue Blue RGB component.
+  * @param name Optional color name. Can be `null` or empty string. For built-in color this is color's constant name in this class.
   */
-final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPColor](red, green, blue) with Ordered[CPColor]:
+final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) extends CPIntTuple[CPColor](red, green, blue)
+    with Ordered[CPColor]
+    with Serializable:
     import CPColor.*
 
-    assert(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
+    require(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
 
-    private var name: String = _
-    private val strClr = if name == null then s"[r=$red,g=$green,b=$blue]" else s"[r=$red,g=$green,b=$blue,name=$name]"
-
-    /**
-      *
-      * @param red Red RGB component.
-      * @param green Green RGB component.
-      * @param blue Blue RGB component.
-      * @param name Optional color name. Can be `null` or empty string. For built-in color this is color's constant name in this class.
-      */
-    def this(red: Int, green: Int, blue: Int, name: String) =
-        this(red, green, blue)
-        this.name = name
+    private val rgbStr = s"[r=$red,g=$green,b=$blue]"
+    private inline def strClr = if name == null then rgbStr else name
 
     override def compare(that: CPColor): Int = rgb.compareTo(that.rgb)
     override protected def ctor(rgb: Seq[Int]): CPColor =
@@ -192,31 +184,61 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
     final val awt = if force8Bit then new Color(XTERM_COLORS(xterm)) else new Color(red, green, blue)
 
     /**
-      * Gets a new color by multiplying RGB values by given `factor`.
+      * Creates a new color by multiplying RGB values by given `factor`.
+      * Note that result value must be valid RGB value.
       *
       * @param factor Factor to multiply each RGB value by.
       */
-    def transform(factor: Float): CPColor =
-        assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
+    def transformRGB(factor: Float): CPColor =
         mapInt(d => (d * factor).round)
 
     /**
-      * Gets a new color by multiplying RGB values by given channel-specific `factor`s.
+      * Creates a new color by multiplying RGB values by given channel-specific `factor`s.
+      * Note that result value must be valid RGB value.
       *
       * @param factorR Factor to multiply each red-channel value by.
       * @param factorG Factor to multiply each green-channel value by.
       * @param factorB Factor to multiply each blue-channel value by.
       */
-    def transform(factorR: Float, factorG: Float, factorB: Float): CPColor =
-        assert(factorR >= 0 && factorR <= 1, "Red channel factor must be >= 0 && <= 1")
-        assert(factorG >= 0 && factorG <= 1, "Green channel factor must be >= 0 && <= 1")
-        assert(factorB >= 0 && factorB <= 1, "Blue channel factor must be >= 0 && <= 1")
+    def transformRGB(factorR: Float, factorG: Float, factorB: Float): CPColor =
         CPColor((red * factorR).round, (green * factorG).round, (blue * factorB).round)
 
     /**
-      * Gets a new darker color.
+      * Creates a new color by multiplying HSB values by given channel-specific `factor`s.
+      * Note that result value must be valid HSB value.
       *
-      * @param factor Mixing factor in `[0,1]` range. 0.9` means 90% darker, 0.1` means 10% darker.
+      * @param factorH Factor to multiply each hue value by.
+      * @param factorS Factor to multiply each saturation value by.
+      * @param factorB Factor to multiply each brightness value by.
+      */
+    def transformHSB(factorH: Float, factorS: Float, factorB: Float): CPColor =
+        CPColor.fromHSB(hue * factorH, saturation * factorS, brightness * factorB)
+
+    /**
+      * Creates new color with given red channel value.
+      *
+      * @param newRed Value for red channel.
+      */
+    def setRed(newRed: Int): CPColor = CPColor(newRed, green, blue)
+
+    /**
+      * Creates new color with given green channel value.
+      *
+      * @param newGreen Value for green channel.
+      */
+    def setGreen(newGreen: Int): CPColor = CPColor(red, newGreen, blue)
+
+    /**
+      * Creates new color with given blue channel value.
+      *
+      * @param newBlue Value for blue channel.
+      */
+    def setBlue(newBlue: Int): CPColor = CPColor(red, green, newBlue)
+
+    /**
+      * Creates a new darker color.
+      *
+      * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
       */
     inline def darker(factor: Float): CPColor =
         assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
@@ -224,7 +246,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         mapInt(d => (d * inv).round)
 
     /**
-      * Gets a new black-and-white version of this color. It is using basic
+      * Creates a new black-and-white version of this color. It is using basic
       * averaging method.
       */
     inline def bw(): CPColor =
@@ -232,7 +254,7 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         CPColor(avg, avg, avg)
 
     /**
-      * Gets a new black-and-white version of this color. It is method that is weighted for lighter
+      * Creates a new black-and-white version of this color. It is method that is weighted for lighter
       * greens and darker blues.
       */
     inline def bw2(): CPColor =
@@ -240,10 +262,10 @@ final case class CPColor(red: Int, green: Int, blue: Int) extends CPIntTuple[CPC
         CPColor(avg, avg, avg)
 
     /**
-      * Get a new lighter color.
+      * Creates a new lighter color.
       *
-      * @param factor Mixing factor in `[0.1]` range. '1.0' means pure white, '0.9' means 90% lighter,
-      *     '0.1' means 10% lighter.
+      * @param factor Mixing factor in `[0.1]` range. `1.0` means pure white, `0.9` means 90% lighter,
+      *     `0.1` means 10% lighter.
       */
     inline def lighter(factor: Float): CPColor =
         assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
@@ -543,6 +565,17 @@ object CPColor:
         CPColor(r,g, b)
 
     /**
+      * Creates new color with given hue, saturation and brightness values. Each value must be in [0, 1] range.
+      *
+      * @param hue Hue value in [0,1] range.
+      * @param saturation Saturation value in [0,1] range.
+      * @param brightness Brightness value in [0,1] range.
+      */
+    def fromHSB(hue: Float, saturation: Float, brightness: Float): CPColor =
+        val rgb = Color.HSBtoRGB(hue, saturation, brightness)
+        new CPColor(rgb >> 16 & 0xff, rgb >> 8 & 0xFF, rgb & 0xFF)
+
+    /**
       *
       * @param r Red.
       * @param g Green
@@ -669,22 +702,22 @@ object CPColor:
     /*
      * System colors.
      */
-    final val C_BLACK = CPColor(0,  0,  0)
-    final val C_MAROON  = CPColor(128, 0, 0)
-    final val C_GREEN  = CPColor(0, 128, 0)
-    final val C_OLIVE  = CPColor(128, 128, 0)
-    final val C_NAVY  = CPColor(0, 0, 128)
-    final val C_PURPLE  = CPColor(128, 0, 128)
-    final val C_TEAL  = CPColor(0, 128, 128)
-    final val C_SILVER  = CPColor(192, 192, 192)
-    final val C_GREY  = CPColor(128, 128, 128)
-    final val C_RED  = CPColor(255, 0, 0)
-    final val C_LIME  = CPColor(0, 255, 0)
-    final val C_YELLOW  = CPColor(255, 255, 0)
-    final val C_BLUE  = CPColor(0, 0, 255)
-    final val C_FUCHSIA  = CPColor(255, 0, 255)
-    final val C_AQUA  = CPColor(0, 255, 255)
-    final val C_WHITE  = CPColor(255, 255, 255)
+    final val C_BLACK = new CPColor(0,  0,  0, "C_BLACK")
+    final val C_MAROON  = new CPColor(128, 0, 0, "C_MAROON")
+    final val C_GREEN = new CPColor(0, 128, 0, "C_GREEN")
+    final val C_OLIVE = new CPColor(128, 128, 0, "C_OLIVE")
+    final val C_NAVY = new CPColor(0, 0, 128, "C_NAVY")
+    final val C_PURPLE = new CPColor(128, 0, 128, "C_PURPLE")
+    final val C_TEAL = new CPColor(0, 128, 128, "C_TEAL")
+    final val C_SILVER = new CPColor(192, 192, 192, "C_SILVER")
+    final val C_GREY = new CPColor(128, 128, 128, "C_GREY")
+    final val C_RED = new CPColor(255, 0, 0, "C_RED")
+    final val C_LIME = new CPColor(0, 255, 0, "C_LIME")
+    final val C_YELLOW = new CPColor(255, 255, 0, "C_YELLOW")
+    final val C_BLUE = new CPColor(0, 0, 255, "C_BLUE")
+    final val C_FUCHSIA = new CPColor(255, 0, 255, "C_FUCHSIA")
+    final val C_AQUA = new CPColor(0, 255, 255, "C_AQUA")
+    final val C_WHITE = new CPColor(255, 255, 255, "C_WHITE")
 
     /*
      * xterm colors.

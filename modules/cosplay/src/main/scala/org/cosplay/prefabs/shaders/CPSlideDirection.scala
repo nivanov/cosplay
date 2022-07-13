@@ -84,14 +84,13 @@ object CPSlideDirection:
       * @param dir
       * @param dim
       * @param maxFrmCnt
-      * @return
       */
     def mkMatrix(dir: CPSlideDirection, dim: CPDim, maxFrmCnt: Int): Array[Array[Int]] =
         val w = dim.w
         val h = dim.h
         val matrix = Array.ofDim[Int](w, h)
         dir match
-            case HOR_COLLAPSE ⇒
+            case HOR_COLLAPSE =>
                 var d = 0f
                 val dx = maxFrmCnt.toFloat / h * 2
                 var x = 0
@@ -106,7 +105,7 @@ object CPSlideDirection:
                         x += 1
                     y += 1
                     d += dx
-            case HOR_EXPAND ⇒
+            case HOR_EXPAND =>
                 var d = maxFrmCnt.toFloat
                 val dx = d / h * 2
                 var x = 0
@@ -121,7 +120,7 @@ object CPSlideDirection:
                         x += 1
                     y += 1
                     d -= dx
-            case VER_COLLAPSE ⇒
+            case VER_COLLAPSE =>
                 var d = 0f
                 val dx = maxFrmCnt.toFloat / w * 2
                 var x = 0
@@ -136,7 +135,7 @@ object CPSlideDirection:
                         y += 1
                     x += 1
                     d += dx
-            case VER_EXPAND ⇒
+            case VER_EXPAND =>
                 var d = maxFrmCnt.toFloat
                 val dx = d / w * 2
                 var x = 0
@@ -151,7 +150,7 @@ object CPSlideDirection:
                         y += 1
                     x += 1
                     d -= dx
-            case LEFT_TO_RIGHT ⇒
+            case LEFT_TO_RIGHT =>
                 var d = maxFrmCnt.toFloat
                 val dx = d / w
                 var x = w - 1
@@ -163,7 +162,7 @@ object CPSlideDirection:
                         y += 1
                     x -= 1
                     d -= dx
-            case RIGHT_TO_LEFT ⇒
+            case RIGHT_TO_LEFT =>
                 var d = maxFrmCnt.toFloat
                 val dx = d / w
                 var x = 0
@@ -175,7 +174,7 @@ object CPSlideDirection:
                         y += 1
                     x += 1
                     d -= dx
-            case TOP_TO_BOTTOM ⇒
+            case TOP_TO_BOTTOM =>
                 var d = maxFrmCnt.toFloat
                 val dx = d / w
                 var x = 0
@@ -187,7 +186,7 @@ object CPSlideDirection:
                         x += 1
                     d -= dx
                     y -= 1
-            case BOTTOM_TO_TOP ⇒
+            case BOTTOM_TO_TOP =>
                 var d = maxFrmCnt.toFloat
                 val dx = d / w
                 var x = 0
@@ -199,7 +198,7 @@ object CPSlideDirection:
                         x += 1
                     d -= dx
                     y += 1
-            case RANDOM ⇒
+            case RANDOM =>
                 var x = 0
                 var y = 0
                 while (x < w)
@@ -208,7 +207,7 @@ object CPSlideDirection:
                         matrix(x)(y) = CPRand.randInt(0, maxFrmCnt)
                         y += 1
                     x += 1
-            case RANDOM_VERT_LINE ⇒
+            case RANDOM_VERT_LINE =>
                 var x = 0
                 var y = 0
                 while (x < w)
@@ -218,7 +217,7 @@ object CPSlideDirection:
                         matrix(x)(y) = d
                         y += 1
                     x += 1
-            case RANDOM_HOR_LINE ⇒
+            case RANDOM_HOR_LINE =>
                 var x = 0
                 var y = 0
                 while (y < h)

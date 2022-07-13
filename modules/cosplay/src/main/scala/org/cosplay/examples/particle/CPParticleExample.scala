@@ -23,7 +23,7 @@ import CPColor.*
 import CPKeyboardKey.*
 import CPStyledString.styleStr
 import CPPixel.*
-import org.cosplay.prefabs.scenes.CPLogoScene
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
@@ -71,7 +71,7 @@ object CPParticleExample:
         val h = 40
         val dim = CPDim(w, h)
 
-        val bomb = CPArrayImage(
+        val bomb = new CPArrayImage(
             prepSeq("""
               | )
               | (
@@ -87,10 +87,10 @@ object CPParticleExample:
         val c2 = C_ORANGE1
 
         val ctrlImg = new CPArrayImage(
-            styleStr("[Space]", c1) ++ styleStr(" Kaboom!    ", c2) ++
+            styleStr("[SPACE]", c1) ++ styleStr(" Kaboom!    ", c2) ++
             styleStr("[Q]", c1) ++ styleStr(" Quit    ", c2) ++
-            styleStr("[Ctrl-L]", c1) ++ styleStr(" Log    ", c2) ++
-            styleStr("[Ctrl-Q]", c1) ++ styleStr(" FPS Overlay", c2)
+            styleStr("[CTRL-L]", c1) ++ styleStr(" Log    ", c2) ++
+            styleStr("[CTRL-Q]", c1) ++ styleStr(" FPS Overlay", c2)
         ).trimBg()
 
         // Initialize the engine.
@@ -157,7 +157,7 @@ object CPParticleExample:
                 if !isPaused && age < MAX_AGE then
                     age += 1
                     // Emit particles in 360 degree semi-circle.
-                    for (_ <- 0 to GEN_SIZE) yield KaboomParticle(x, y,
+                    for _ <- 0 to GEN_SIZE yield KaboomParticle(x, y,
                         (CPRand.randFloat() - 0.5f) * 3.5f,
                         (CPRand.randFloat() - 0.5f) * 2f,
                     )
@@ -193,7 +193,7 @@ object CPParticleExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

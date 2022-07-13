@@ -75,6 +75,7 @@ import scala.collection.mutable
   * @param submitKeys Optional set of keyboard keys to accept for submission action. When one of these keys
   *     is pressed the sprite will make result available via [[isReady]] method and will optionally switch
   *     keyboard focus for the `next` scene object, if any. Default value is [[CPKeyboardKey.KEY_ENTER]].
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @example See [[org.cosplay.examples.textinput.CPTextInputExample CPTextInputExample]] class for the example of
   *     using labels and text input.
   */
@@ -90,8 +91,9 @@ class CPTextInputSprite(
     offSkin: (Char, Int, Boolean) => CPPixel,
     private var next: Option[String] = None,
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
-    submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER)
-) extends CPSceneObject(id):
+    submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
+    tags: String*
+) extends CPSceneObject(id, tags.toSet):
     require(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
     require(initTxt != null, "Initial text cannot be 'null'.")
 

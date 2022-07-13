@@ -25,11 +25,11 @@ import CPArrayImage.*
 import CPFIGLetFont.*
 import CPKeyboardKey.*
 import prefabs.shaders.*
-import prefabs.sprites.*
 import pong.shaders.*
 import CPSlideDirection.*
 import org.apache.commons.lang3.SystemUtils
 import org.cosplay.prefabs.particles.confetti.CPConfettiEmitter
+import org.cosplay.prefabs.sprites.CPCenteredImageSprite
 
 /*
    _________            ______________
@@ -67,7 +67,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var gameOver = false
     private var ballAngle = randBallAngle()
 
-    private val ballImg = CPArrayImage(
+    private val ballImg = new CPArrayImage(
         prepSeq(
             """
               | _
@@ -78,7 +78,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     ).trimBg()
 
     private def mkPaddleImage(c: CPColor): CPImage =
-        CPArrayImage(
+        new CPArrayImage(
             prepSeq(
                 """
                   |X
@@ -113,7 +113,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private final val bgSnd = CPSound(s"sounds/games/pong/bg.wav", 0.02f)
     private final val boostSnd = CPSound(s"sounds/games/pong/boost.wav", 0.2f)
 
-    private val serveImg = CPArrayImage(
+    private val serveImg = new CPArrayImage(
         prepSeq(
             """
               |+------------------------------+
@@ -132,11 +132,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
             case '+' => ch&C1
-            case '&' ⇒ '+'&C4
+            case '&' => '+'&C4
             case _ => ch&C2
     ).trimBg()
 
-    private val youLostImg = CPArrayImage(
+    private val youLostImg = new CPArrayImage(
         prepSeq(
             """
               |+------------------------------+
@@ -154,12 +154,12 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
-            case '&' ⇒ '+'&C4
+            case '&' => '+'&C4
             case '+' => ch&C1
             case _ => ch&C2
     ).trimBg()
 
-    private val youWonImg = CPArrayImage(
+    private val youWonImg = new CPArrayImage(
         prepSeq(
             """
               |+------------------------------+
@@ -177,7 +177,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             """),
         (ch, _, _) => ch match
             case c if c.isLetter => c&C4
-            case '&' ⇒ '+'&C4
+            case '&' => '+'&C4
             case '+' => ch&C1
             case _ => ch&C2
     ).trimBg()
@@ -194,31 +194,31 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
       *
       * @param xf X-coordinate producer.
       */
-    private def mkScoreSprite(xf: (CPCanvas, CPImageSprite) ⇒ Int): CPImageSprite =
+    private def mkScoreSprite(xf: (CPCanvas, CPImageSprite) => Int): CPImageSprite =
         new CPImageSprite(x = 0, y = 0, z = 0, mkScoreImage(0)): // Initial score is zero.
             override def update(ctx: CPSceneObjectContext): Unit = setX(xf(ctx.getCanvas, this))
 
     // Score sprites.
-    private val plyScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.w) / 4)
-    private val npcScoreSpr = mkScoreSprite((canv, spr) ⇒ (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
+    private val plyScoreSpr = mkScoreSprite((canv, spr) => (canv.dim.w - spr.getImage.w) / 4)
+    private val npcScoreSpr = mkScoreSprite((canv, spr) => (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
     private val plyScoreEmitter = new CPConfettiEmitter(
-        () ⇒ plyScoreSpr.getRect.xCenter,
-        () ⇒ plyScoreSpr.getRect.h / 2,
+        () => plyScoreSpr.getRect.centerX,
+        () => plyScoreSpr.getRect.h / 2,
         15,
         15,
         CS,
         BG_PX.fg,
-        _ ⇒ CPRand.rand("1234567890"),
+        _ => CPRand.rand("1234567890"),
         1
     )
     private val npcScoreEmitter = new CPConfettiEmitter(
-        () ⇒ npcScoreSpr.getRect.xCenter,
-        () ⇒ npcScoreSpr.getRect.h / 2,
+        () => npcScoreSpr.getRect.centerX,
+        () => npcScoreSpr.getRect.h / 2,
         15,
         15,
         CS,
         BG_PX.fg,
-        _ ⇒ CPRand.rand("1234567890"),
+        _ => CPRand.rand("1234567890"),
         1
     )
     private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
@@ -230,7 +230,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         CS,
         2,
         true,
-        skip = (zpx, _, _) ⇒ zpx.z != 10 || zpx.char == BG_PX.char || zpx.char == ' '
+        skip = (zpx, _, _) => zpx.z != 10 || zpx.char == BG_PX.char || zpx.char == ' '
     )
     private val boostSpr = new CPImageSprite(x = 0, y = 0, z = 10, FIG_RECTANGLES.render("boost", C1).trimBg(), shaders = Seq(boostShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -303,7 +303,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     // Ball sprite.
     private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false,
-        Seq(CPPongBallBoostShader, new CPFlashlightShader(radius = 6))):
+        Seq(CPPongBallBoostShader, new CPFlashlightShader(radius = 6, autoStart = true))):
         private var x, y = INIT_VAL
         private var boosted = false
 
@@ -439,7 +439,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     addObjects(
         // Handle 'Q' press globally for this scene.
         CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        // Toggle audio on 'Ctrl+A' press.
+        // Toggle audio on 'CTRL+A' press.
         CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
         // Score sprites.
         plyScoreSpr,
@@ -469,13 +469,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         paddleSnd.stop()
         bgSnd.stop()
 
-    override def onDeactivate(): Unit =
-        super.onDeactivate()
-        stopAudio()
-
+    override def onDeactivate(): Unit = stopAudio()
     override def onActivate(): Unit =
-        super.onActivate()
-
         // Start background audio.
         if audioOn then bgSnd.loop(2000)
 

@@ -21,7 +21,7 @@ import org.cosplay.*
 import games.*
 import CPColor.*
 import CPPixel.*
-import prefabs.scenes.CPLogoScene
+import prefabs.scenes.CPFadeShimmerLogoScene
 
 /*
    _________            ______________
@@ -72,7 +72,7 @@ object CPPongGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPLogoScene("logo", None, BG_PX, CS, "title"),
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, CS, "title"),
                 CPPongTitleScene,
                 CPPongPlayScene
             )

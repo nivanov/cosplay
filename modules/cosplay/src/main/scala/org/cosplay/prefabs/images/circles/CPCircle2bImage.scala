@@ -36,7 +36,7 @@ import CPPixel.*
 */
 
 /**
-  * https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Hayley_Wakenshaw.html
+  * https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Hayley_Wakenshaw.html
   */
 
 object CPCircle2bImage extends CPArrayImage(

@@ -40,7 +40,7 @@ import scala.collection.mutable
 */
 
 /**
-  * 2D rendering pane.
+  * 2D rendering pane. Canvas is synonymous with screen, i.e. it is an object that allows to draw on the screen.
   *
   * For each game frame, the game engine creates a new empty canvas for all scene objects to draw on.
   * This canvas is available to scene objects via [[CPSceneObjectContext.getCanvas]] method. Game engine
@@ -69,20 +69,19 @@ import scala.collection.mutable
   * obtained you can use it with any image-based sprites to display it.
   *
   * There are many online tutorials for ASCII art that are highly recommended, including from:
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Joan_Stark.html Joan Stark]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Daniel_Au.html Daniel Au]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Susie_Oviatt.html Susie Oviatt]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Rowan_Crawford.html Rowan Crawford]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Normand_Veilleux.html Normand Veilleux]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Targon.html Targon]]
-  *  - [[https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Hayley_Wakenshaw.html Hayley Wakenshaw]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Joan_Stark.html Joan Stark]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Daniel_Au.html Daniel Au]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Susie_Oviatt.html Susie Oviatt]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Rowan_Crawford.html Rowan Crawford]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Normand_Veilleux.html Normand Veilleux]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Targon.html Targon]]
+  *  - [[https://web.archive.org/web/20160912041244/https://www.ludd.ltu.se/~vk/pics/ascii/junkyard/techstuff/tutorials/Hayley_Wakenshaw.html Hayley Wakenshaw]]
   *
   * See also the following resources for general ASCII art collections:
   *  - http://www.asciiworld.com/
   *  - https://www.asciiart.eu/
   *  - https://asciiart.website
   *  - https://www.incredibleart.org/links/ascii.html
-  *  - http://www.afn.org/~afn39695/collect.html
   *  - http://blocktronics.org/
   *  - http://ansiart.com/
   *  - http://www.ascii-art.de/
@@ -359,14 +358,14 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
                 // Fill in the gaps.
                 val gaps = mutable.ArrayBuffer.empty[CPInt2]
                 var last: CPInt2 = null
-                for (p <- buf)
+                for p <- buf do
                     if last != null then
                         val dx = last.x - p.x
                         val dy = last.y - p.y
                         if dx.abs > 1 || dy.abs > 1 then
                             var x = last.x
                             var y = last.y
-                            for (i <- 1 until dx.abs.max(dy.abs))
+                            for i <- 1 until dx.abs.max(dy.abs) do
                                 if x != p.x then x = last.x - i * dx.sign
                                 if y != p.y then y = last.y - i * dy.sign
                                 gaps += CPInt2(x, y)
@@ -613,10 +612,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
                 pxs(0) = pxs(0).withChar('.')
             else if by <= ay then // Going up.
                 val lastIdx = sz - 1
-                for (i <- 0 until lastIdx) pxs(i) = newPosPx(pxs(i), pxs(i + 1))
+                for i <- 0 until lastIdx do pxs(i) = newPosPx(pxs(i), pxs(i + 1))
                 pxs(lastIdx) = pxs(lastIdx).withChar(pxs(lastIdx - 1).char) // Repeat the previous to last point.
             else // by > ay // Going down.
-                for (i <- 1 until sz) pxs(i) = newPosPx(pxs(i), pxs(i - 1))
+                for i <- 1 until sz do pxs(i) = newPosPx(pxs(i), pxs(i - 1))
                 pxs(0) = pxs(0).withChar(pxs(1).char) // Repeat the second point.
 
             if style == ART_SMOOTH && sz >= 3 then
@@ -626,7 +625,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
                 // Smooth out:
                 //   __/ -> ,-'
                 //   \__ -> `-.
-                for (i <- 0 until sz - 3)
+                for i <- 0 until sz - 3 do
                     val px1 = pxs(i)
                     val px2 = pxs(i + 1)
                     val px3 = pxs(i + 2)
@@ -1123,7 +1122,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawArtPolyline(pts: Seq[(Int, Int)], z: Int, pxf: CPPosPixel => CPPixel, style: ArtLineStyle = ART_BLOCK): Unit =
         require(pts.length >= 2, "Polyline must have at 2 or more points.")
 
-        for (i <- 0 until pts.length - 1)
+        for i <- 0 until pts.length - 1 do
             val pt1 = pts(i)
             val pt2 = pts(i + 1)
             drawArtLine(pt1._1, pt1._2, pt2._1, pt2._2, z, pxf, style)
@@ -1323,8 +1322,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     private def captureRect(x1: Int, y1: Int, x2: Int, y2: Int, f: CPZPixel => CPPixel): CPImage =
         val rect = new CPRect(x1 -> y1, x2 -> y2)
         val arr = new CPArray2D[CPPixel](rect.dim)
-        rect.loop((x, y) => arr.set(x - rect.x, y - rect.y, f(pane.getPixel(x, y))))
-        CPArrayImage(arr, "code")
+        rect.loop((x, y) =>
+            val px = if isValid(x, y) then f(pane.getPixel(x, y)) else CPPixel.XRAY
+            arr.set(x - rect.x, y - rect.y, px)
+        )
+        new CPArrayImage(arr, "code")
 
     /**
       * Draws given string using [[CPSystemFont system font]].
@@ -1334,7 +1336,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param str String to draw.
       * @param fg Foreground color.
-      * @param bg Optional background color. Default value is `NOne`.
+      * @param bg Optional background color. Default value is `None`.
       */
     def drawString(x: Int, y: Int, z: Int, str: String, fg: CPColor, bg: Option[CPColor] = None): Unit =
         var i = 0

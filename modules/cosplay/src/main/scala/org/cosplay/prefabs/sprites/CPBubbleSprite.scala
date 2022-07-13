@@ -18,7 +18,7 @@
 package org.cosplay.prefabs.sprites
 
 import org.cosplay.*
-import prefabs.shaders.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________
@@ -49,6 +49,7 @@ import prefabs.shaders.*
   * @param onFinish Optional callback to call when the effect is finished. Default is a np-op.
   * @param autoDelete Optional flag on whether or not to auto-delete the sprite from its scene
   *     when the effect is finished. Default value is `true`.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
 class CPBubbleSprite(
     id: String = s"bubble-img-spr-${CPRand.guid6}",
@@ -56,24 +57,26 @@ class CPBubbleSprite(
     initX: Int,
     initY: Int,
     z: Int,
-    dxf: CPSceneObjectContext ⇒ Float,
-    dyf: CPSceneObjectContext ⇒ Float,
+    dxf: CPSceneObjectContext => Float,
+    dyf: CPSceneObjectContext => Float,
     bgPx: CPPixel,
     durMs: Long,
     onFinish: CPSceneObjectContext => Unit = _ => (),
-    autoDelete: Boolean = true) extends CPImageSprite(id, initX, initY, z, img):
+    autoDelete: Boolean = true,
+    tags: String*
+) extends CPImageSprite(id, initX, initY, z, img, tags = tags: _*):
     private val shdrs = Seq(
         CPFadeOutShader(
             false,
             durMs,
             bgPx,
             autoStart = true,
-            onFinish = ctx ⇒ {
+            onFinish = ctx => {
                 // Delete the sprite when shader is finished, if required.
                 if autoDelete then ctx.deleteObject(id)
                 onFinish(ctx)
             },
-            skip = (zpx, _, _) ⇒ zpx.z > z // Don't modify above Z-layers.
+            skip = (zpx, _, _) => zpx.z > z // Don't modify above Z-layers.
         )
     )
     private var x: Float = initX.toFloat

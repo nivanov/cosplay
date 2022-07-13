@@ -99,14 +99,13 @@ object CPMacarenaGame:
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             new CPOffScreenSprite:
                 override def onStart(): Unit =
-                    super.onStart()
                     music.loop(1500) // Auto-play with fade-in.
         )
 
         // Start the game & wait for exit.
         try CPEngine.startGame(
             // CosPlay logo scene.
-            new CPLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES,"danceFloor"),
+            new CPSlideShimmerLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES, nextSc = "danceFloor"),
             sc
         )
         finally CPEngine.dispose()

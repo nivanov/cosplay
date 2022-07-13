@@ -40,9 +40,7 @@ import impl.CPUtils
   * their tags.
   *
   * @param id Unique ID of this game object. By default, a random 6-character ID will be used.
-  * @param tags Optional set of organizational tags. These tags are here only for the game
-  *     developer benefits as they are not used by the game engine itself. By default, the
-  *     empty set is used.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPSceneObjectContext.getObjectsForTags()]]
   */
 abstract class CPGameObject(id: String = CPRand.guid6, tags: Set[String] = Set.empty):

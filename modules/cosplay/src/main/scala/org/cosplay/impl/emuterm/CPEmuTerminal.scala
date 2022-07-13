@@ -30,7 +30,7 @@ import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.swing.FontIcon
 
 import java.awt.*
-import java.awt.Frame.MAXIMIZED_HORIZ
+import java.awt.Frame.*
 import java.awt.RenderingHints.*
 import java.awt.event.*
 import java.awt.event.KeyEvent.*
@@ -143,15 +143,12 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         configFont(g)
         val fm = g.getFontMetrics(termFont)
         descent = fm.getMaxDescent
-        chW = fm.getWidths.max + chWOff
-        chH = fm.getHeight - fm.getLeading + chHOff
         val maxW = fm.getWidths.max
         val maxH = fm.getHeight
 
         // Fix sometime incorrect font width (on MacOS or Linux).
-        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") then
-            if maxW > maxH / 2 then
-                chWOff = -(maxW - maxH / 2)
+        if !CPUtils.isSysEnvSet("COSPLAY_EMUTERM_CH_WIDTH_OFFSET") && maxW > maxH / 2 then
+            chWOff = -(maxW - maxH / 2)
 
         chW = maxW + chWOff
         chH = maxH - fm.getLeading + chHOff
@@ -162,7 +159,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
      * @param ikon
      * @param fg
      * @param size
-     * @return
      */
     private def mkIcon(ikon: Ikon, fg: CPColor, size: Int): Icon =
         FontIcon.of(
@@ -174,7 +170,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     /**
      *
      * @param ikon
-     * @return
      */
     private def mkIcon(ikon: Ikon): Icon =
         mkIcon(
@@ -280,7 +275,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 fillRect(g2, bg, 0, 0, w, h)
                 renderMux.synchronized {
                     if pxs.nonEmpty then
-                        for (px <- pxs)
+                        for px <- pxs do
                             val glyph = glyphCache.get(px.px) match
                                 case Some(img) => img
                                 case None =>

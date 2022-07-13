@@ -62,6 +62,7 @@ object CPImageCarouselExample:
     // Images for the carousel.
     private val imgs = Seq(
         CPAardvarkImage.trimBg(),
+        CPCubesImage.trimBg(),
         CPAlienImage.trimBg(),
         CPAmigaImage,
         CPAtari2080STImage,
@@ -70,7 +71,7 @@ object CPImageCarouselExample:
         CPCastleImage.trimBg(),
         CPGlobeImage,
         CPHelicopterImage.trimBg(),
-        CPAstronautImage.trimBg(),
+        CPAstronaut1Image.trimBg(),
         CPOceanLinerImage,
         CPPlaneImage.trimBg(),
         CPSaturnImage.trimBg(),
@@ -91,7 +92,7 @@ object CPImageCarouselExample:
         CPUmbrellaImage.trimBg(),
         CPSpaceShipImage.trimBg(),
         CPBedImage.trimBg(),
-        CPMoonImage.trimBg(),
+        CPMoon1Image.trimBg(),
         CPKnifeImage.trimBg(),
         CPTntImage.trimBg(),
         CPCactusImage.trimBg(),
@@ -114,7 +115,7 @@ object CPImageCarouselExample:
         private val fadeOutShdr = new CPFadeOutShader(false, 1000, bgPx, onFinish = _ => setVisible(false))
         private final val shdrs = Seq(fadeInShdr, fadeOutShdr)
 
-        private var x: Float = leftOffScrX.toFloat
+        private var x = leftOffScrX.toFloat
         private var step = 0f
         private var targetX = 0
 
@@ -159,7 +160,7 @@ object CPImageCarouselExample:
         val maxImgW = imgs.maxBy(_.getDim.w).getWidth
         val maxImgH = imgs.maxBy(_.getDim.h).getHeight
 
-        val ctrlImg = CPArrayImage(
+        val ctrlImg = new CPArrayImage(
             prepSeq(
                 """
                   |              LEFT            RIGHT
@@ -167,7 +168,7 @@ object CPImageCarouselExample:
                   |          | <= || A  |    | D  || => |
                   |          `----'`----'    `----'`----'
                   |
-                  |[Q] Quit   [Ctrl+Q] FPS Overlay   [Ctrl+L] Open Log
+                  |[Q] Quit   [CTRL+Q] FPS Overlay   [CTRL+L] Open Log
                 """),
             (ch, _, _) => ch match
                 case c if c.isLetter => c&C_STEEL_BLUE1
@@ -223,7 +224,7 @@ object CPImageCarouselExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

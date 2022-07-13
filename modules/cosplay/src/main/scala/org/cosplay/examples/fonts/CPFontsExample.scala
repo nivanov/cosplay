@@ -22,7 +22,7 @@ import CPColor.*
 import CPPixel.*
 import CPFIGLetFont.*
 import CPKeyboardKey.KEY_LO_Q
-import prefabs.scenes.CPLogoScene
+import prefabs.scenes.CPFadeShimmerLogoScene
 import prefabs.shaders.CPFadeInShader
 
 /*
@@ -111,7 +111,7 @@ object CPFontsExample:
         try
             // Start the game & wait for exit.
             CPEngine.startGame(
-                new CPLogoScene(
+                new CPFadeShimmerLogoScene(
                     "logo",
                     Some(dim),
                     bgPx,

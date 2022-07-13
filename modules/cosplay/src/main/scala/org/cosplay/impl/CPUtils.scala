@@ -20,16 +20,23 @@ package org.cosplay.impl
 import org.cosplay.*
 import CPKeyboardKey.*
 
-import java.util.{Random, UUID} // Doing '*' will conflict with Scala List, etc.
+import java.util.{Locale, Random, TimeZone, UUID}
 import java.util.zip.*
 import java.net.*
 import java.io.*
 import java.lang.management.*
+import java.net.http.*
 import scala.io.Source
 import scala.sys.SystemProperties
 import scala.util.Using
 import java.nio.file.*
 import scala.collection.mutable.ArrayBuffer
+import com.mixpanel.mixpanelapi.*
+import org.json.JSONObject
+import org.apache.commons.lang3.*
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /*
    _________            ______________
@@ -53,9 +60,10 @@ object CPUtils:
     private val sysMx = ManagementFactory.getOperatingSystemMXBean
     private val memMx = ManagementFactory.getMemoryMXBean
     private final val HOME_DIR = ".cosplay"
-
-    /** */
-    val NL: String = System.getProperty("line.separator")
+    // Open, unsecure storage.
+    private val MIXPANEL_TOKEN = "b5149f93d5a7693c42d1fa558896b70f"
+    private val DFLT_MIXPANEL_GUID = "314159265359"
+    private val isTracking = !isSysEnvSet("COSPLAY_DISABLE_MIXPANEL")
 
     /** */
     final val PING_MSG = "8369926740-3247024617-2096692631-7483698541-4348351625-9412150510-5442257448-4805421296-5646586017-0232477804"
@@ -70,7 +78,21 @@ object CPUtils:
       *
       * @param path
       */
-    def homeFile(path: String): File = new File(System.getProperty("user.home"), s"$HOME_DIR/$path")
+    def homeFile(path: String): File =
+        val file = new File(SystemUtils.getUserHome, s"$HOME_DIR/$path")
+        val parent = file.getParentFile
+        if !parent.exists() && !parent.mkdirs() then throw E(s"Failed to create folder: ${parent.getAbsolutePath}")
+        file
+
+    /**
+      * Safely splits given string into substring by '\n' character, ignoring Windows vs. Unix
+      * differences in new line character.
+      *
+      * @param s String to split.
+      * @return
+      */
+    def splitByNewLine(s: String): Seq[String] =
+        s.replaceAll("\r", "").split("\n").toSeq
 
     /**
       *
@@ -121,15 +143,34 @@ object CPUtils:
         (free.toFloat / total * 100).round
 
     /**
-      * Removes only 1st found element `t`, if any.
+      * Splits given collection by specified separator predicate.
       *
-      * @param list List to remove the element in.
-      * @param t Element (only 1st one found, if any) to remove from the list.
-      * @return Result list with removed element, if any.
+      * @param col Collection to split.
+      * @param sep Separator predicate.
       */
-    def remove1st[T](list: List[T], t: T): List[T] =
-        val (left, right) = list.span(_ != t)
-        left ::: right.drop(1)
+    def splitBy[T](col: Seq[T], sep: T => Boolean): Seq[Seq[T]] =
+        val bufs = new ArrayBuffer[ArrayBuffer[T]]()
+
+        var idx = 0
+        for t <- col do
+            if sep(t) then
+                bufs += ArrayBuffer.empty[T]
+                idx += 1
+            else
+                if idx < bufs.size then bufs(idx) += t else bufs += ArrayBuffer(t)
+
+        bufs.filter(_.nonEmpty).map(_.toSeq).toSeq
+
+    /**
+      * Trims leading and trailing elements satisfying given predicate.
+      *
+      * @param col Collection to trim.
+      * @param trim Trimming predicate.
+      */
+    def trimBy[T](col: Seq[T], trim: T => Boolean): Seq[T] =
+        col.indexWhere(!trim(_)) match
+            case -1 => Seq.empty[T]
+            case a => col.slice(a, col.lastIndexWhere(!trim(_)) + 1)
 
     /**
       * Gets system property, or environment variable (in that order), or `None` if none exists.
@@ -191,6 +232,27 @@ object CPUtils:
                 close(gis)
         catch
             case e: Exception => E(s"Failed to unzip byte array.", e)
+
+    /**
+      *
+      * @param bytes Array of bytes to unzip.
+      */
+    def zipBytes(bytes: Array[Byte]): Array[Byte] =
+        try
+            val gis = new ByteArrayInputStream(bytes)
+            try
+                val bout = new ByteArrayOutputStream()
+                val out = new GZIPOutputStream(bout)
+                val buf = new Array[Byte](1024)
+                while (gis.available() > 0)
+                    val cnt = gis.read(buf, 0, 1024)
+                    if cnt > 0 then out.write(buf, 0, cnt)
+                close(out)
+                bout.toByteArray
+            finally
+                close(gis)
+        catch
+            case e: Exception => E(s"Failed to zip byte array.", e)
 
     /**
       * Creates gzip file.
@@ -294,6 +356,13 @@ object CPUtils:
         mapStream(in, enc, _.map(p => p).toList)
 
     /**
+      * Checks if given collection has any dups.
+      *
+      * @param col Collection to check.
+      */
+    def hasDups[T](col: Seq[T]): Boolean = col.distinct.sizeCompare(col) != 0
+
+    /**
       *
       * @param in Stream to read from.
       * @param name Name of the stream for error messages.
@@ -354,6 +423,53 @@ object CPUtils:
       */
     def mapResource[T](res: String, enc: String = "UTF-8", mapper: Iterator[String] => T): T =
         mapStream(getStream(res), enc, mapper)
+
+    /**
+      *
+      * @param evtName
+      * @param props
+      */
+    private def sendMixpanelEvent(evtName: String, props: JSONObject): Unit =
+        if isTracking then
+            Future {
+                try
+                    // Anonymous data only.
+                    val guid = NetworkInterface.getByInetAddress(InetAddress.getLocalHost) match
+                        case null => DFLT_MIXPANEL_GUID
+                        case nif =>
+                            val addr = nif.getHardwareAddress
+                            if addr == null then DFLT_MIXPANEL_GUID else addr.mkString(",").hashCode.toString
+                    val msgBldr = new MessageBuilder(MIXPANEL_TOKEN)
+                    val evt = msgBldr.event(guid, evtName, props)
+                    val pckt = new ClientDelivery()
+                    pckt.addMessage(evt)
+                    new MixpanelAPI().deliver(pckt)
+                catch
+                    case _: Exception => () // Ignore.
+            }
+
+    /**
+      * Records anonymous GA event. Ignores any errors.
+      *
+      * @param gi Game info.
+      */
+    def startPing(gi: CPGameInfo): Unit =
+        if isTracking then
+            val props = new JSONObject()
+            props.put("game-name", gi.name)
+            props.put("game-ver", gi.semVer)
+            props.put("game-id", gi.id)
+            props.put("cosplay-ver", CPVersion.latest.semver)
+            props.put("cosplay-date", CPVersion.latest.date.toString)
+            props.put("locale", Locale.getDefault.toString)
+            props.put("os", SystemUtils.OS_NAME)
+            props.put("java-ver", SystemUtils.JAVA_VERSION)
+            props.put("java-vendor", SystemUtils.JAVA_VM_VENDOR)
+            props.put("java-vm-info", SystemUtils.JAVA_VM_INFO)
+            val tz = java.util.TimeZone.getDefault
+            props.put("tz_zone_id", tz.toZoneId.toString)
+            props.put("tz_name", tz.getDisplayName)
+            sendMixpanelEvent("game-start", props)
 
 
 
