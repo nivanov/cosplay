@@ -49,6 +49,8 @@ object TextDripShader extends CPShader:
             rect.loop((x, y) => {
                 if canv.isValid(x, y) then
                     val dripX = Random.between(0, x)
+                    val zpx = canv.getZPixel(dripX, canv.yMax)
+                    canv.drawPixel(zpx.px, dripX, canv.yMax + 4, 0)
             })
 
 

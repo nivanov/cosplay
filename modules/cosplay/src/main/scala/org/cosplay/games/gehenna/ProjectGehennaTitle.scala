@@ -19,6 +19,7 @@ package org.cosplay.games.gehenna
 
 import org.cosplay.*
 import org.cosplay.CPFIGLetFont.*
+import org.cosplay.games.gehenna.shaders.TextDripShader
 import org.cosplay.prefabs.shaders.*
 
 /*
@@ -47,7 +48,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
     private def titleImage(): CPImage = FIG_OGRE.render(titleText, C1).trimBg()
 
-    private val titleSpr = new CPImageSprite("title", 0, 0, 1, titleImage(), shaders = Seq(fadeInShdr)):
+    private val titleSpr = new CPImageSprite("title", 0, 0, 1, titleImage(), shaders = Seq(fadeInShdr, TextDripShader)):
         private val clickSound = CPSound("sounds/games/gehenna/click.wav")
         private val introSong = CPSound("sounds/games/gehenna/intro song.wav")
 
