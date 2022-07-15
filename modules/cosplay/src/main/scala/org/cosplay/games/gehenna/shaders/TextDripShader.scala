@@ -16,7 +16,9 @@
  */
 
 package org.cosplay.games.gehenna.shaders
+
 import org.cosplay.*
+import games.gehenna.*
 import scala.util.*
 
 /*
@@ -35,22 +37,33 @@ import scala.util.*
 
 object TextDripShader extends CPShader:
     private var go = false
+    private var firstFrame = false
+    private var startFrame = -1L
 
-    def start(): Unit = go = true
-    def stop(): Unit = go = false
+    def start(): Unit =
+        go = true
+        firstFrame = true
+    def stop(): Unit =
+        go = false
+        firstFrame = false
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go && ctx.isVisible then
+            if firstFrame then
+                startFrame = ctx.getFrameCount
+                firstFrame = false
+
             val canv = ctx.getCanvas
-            val tw = objRect.w
+            val curFrame = ctx.getFrameCount
 
-            val rect = objRect
-
-            rect.loop((x, y) => {
+            objRect.loop((x, y) => {
                 if canv.isValid(x, y) then
-                    val dripX = Random.between(0, x)
-                    val zpx = canv.getZPixel(dripX, canv.yMax)
-                    canv.drawPixel(zpx.px, dripX, canv.yMax + 4, 0)
+                    val zpx = canv.getZPixel(x, y)
+                    val newY = CPRand.between(1, 5) + (curFrame - startFrame) * (y - objRect.y)
+                    canv.drawPixel(zpx.px, x, newY.toInt, zpx.z)
+                    canv.drawPixel(GAME_BG_PX, x, y, zpx.z)
             })
+
+            // TODO: detect the end of the effect and call stop().
 
 

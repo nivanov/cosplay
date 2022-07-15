@@ -43,7 +43,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         CPSlideDirection.CENTRIFUGAL,
         true,
         3000,
-        GAME_BG_PX
+        GAME_BG_PX,
+        onFinish = _ => TextDripShader.start()
     )
 
     private def titleImage(): CPImage = FIG_OGRE.render(titleText, C1).trimBg()
