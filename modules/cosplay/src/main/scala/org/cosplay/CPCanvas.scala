@@ -41,11 +41,17 @@ import scala.collection.mutable
 
 /**
   * 2D rendering pane. Canvas is synonymous with screen, i.e. it is an object that allows to draw on the screen.
+  * Canvas has the dimension of the current scene or, if scene doesn't provide its own dimension, the size of the
+  * terminal. Note that this behavior means that canvas can change its size from frame to frame if the current
+  * scene does not provide its own dimension and the terminal size is changing.
   *
-  * For each game frame, the game engine creates a new empty canvas for all scene objects to draw on.
-  * This canvas is available to scene objects via [[CPSceneObjectContext.getCanvas]] method. Game engine
+  * For each game frame, the game engine creates a new empty canvas for all scene objects to draw on with the dimension
+  * set as described above. This canvas is available to scene objects via [[CPSceneObjectContext.getCanvas]] method. Game engine
   * then compares previous canvas and this one to determine which areas of the terminal need redrawing.
-  * You can also create the canvas object outside game loop using companion object methods.
+  *
+  * You can also create the canvas object outside game loop using companion object methods. Such "off-line" canvas is
+  * convinient when one needs to draw something off the screen and then capture that drawing as an image, for example,
+  * during scene intialization out of the game loop.
   *
   * Canvas `(0,0)` coordinate point is located in the top left corner. X-axis goes to the right and Y-axis
   * points down. Every drawn pixel on the canvas also has a Z-index or depth. Pixel with larger or equal

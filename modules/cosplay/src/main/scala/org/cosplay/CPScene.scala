@@ -33,7 +33,8 @@ import org.cosplay.impl.CPContainer
 */
 
 /**
-  * A scene is a container for [[CPSceneObject scene objects]].
+  * A scene is a container for [[CPSceneObject scene objects]]. Scene objects from the scene are drawn on the
+  * screen on each frame.
   *
   * Scene has an ID, optional dimension and one or more scene objects. Note that scene must always have at
   * least one scene object. In CosPlay there is no hierarchy of scene objects in the scene - all scene objects form
