@@ -39,6 +39,11 @@ object TextDripShader extends CPShader:
     private var go = false
     private var firstFrame = false
     private var startFrame = -1L
+    private var currDrip = true
+    private var newDrip = true
+    private var currDripHeight = 0
+
+    private var randX = 0
 
     def start(): Unit =
         go = true
@@ -56,12 +61,20 @@ object TextDripShader extends CPShader:
             val canv = ctx.getCanvas
             val curFrame = ctx.getFrameCount
 
-            objRect.loop((x, y) => {
+                objRect.loop((x, y) => {
                 if canv.isValid(x, y) then
+                    if newDrip then
+                        randX = CPRand.between(1, objRect.w)
+                        newDrip = false
+
                     val zpx = canv.getZPixel(x, y)
-                    val newY = CPRand.between(1, 5) + (curFrame - startFrame) * (y - objRect.y)
-                    canv.drawPixel(zpx.px, x, newY.toInt, zpx.z)
-                    canv.drawPixel(GAME_BG_PX, x, y, zpx.z)
+                    val newY = CPRand.between(3, 4) + (curFrame - startFrame) * (y - objRect.y)
+                    canv.drawPixel(zpx.px, randX, newY.toInt, zpx.z)
+
+                    if newY >= canv.yMax + 300 && ctx.getFrameCount % 10 == 0 then
+                        startFrame = ctx.getFrameCount
+                        newDrip = true
+                    //canv.drawPixel(GAME_BG_PX, x, y, zpx.z)
             })
 
             // TODO: detect the end of the effect and call stop().
