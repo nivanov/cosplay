@@ -39,19 +39,29 @@ pipeline
     | pipeline op item
     ;
 item: prg AMP?;
-prg: STR args;
-args
-    : STR
-    | args STR
+prg: STR argList?;
+argList
+    : arg
+    | argList arg
     ;
+arg: STR | qstring;
 op: PIPE_IN | TO_FILE | APPEND;
+qstring
+    : SQSTRING
+    | DQSTRING
+    ;
+
 // Lexer.
 // ======
 
+SQUOTE: '\'';
+DQUOTE: '"';
+SQSTRING: SQUOTE (~'\'')* SQUOTE;
+DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 AMP: '&';
-PIPE_IN: '||';
+PIPE_IN: '|';
 TO_FILE: '>';
 APPEND: '>>';
-STR: ~[\r\n\t]+;
+STR: ~[\r\n\t ]+;
 WS: [ \r\t\u000C\n]+ -> skip;
 ErrorChar: .;
