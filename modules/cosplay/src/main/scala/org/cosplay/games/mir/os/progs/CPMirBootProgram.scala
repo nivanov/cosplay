@@ -37,6 +37,16 @@ import os.*
   *
   */
 class CPMirBootProgram extends CPMirProgram:
+    private val boot = """
+          |Award Modular BIOS v4.50G, An Energy Star Ally
+          |Copyright (C) 1984-92, Award Software, Inc.
+          |
+          |80486DX2 CPU at 66MHz
+          |64MB memory
+          |
+          |Starting MirX...
+          |""".stripMargin
+
     override def mainEntry(ctx: CPMirProgramContext): Int =
         ctx.out.println("Welcome to MirX.")
         0
