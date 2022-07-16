@@ -17,26 +17,28 @@ public class CPMirMashCmdParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		AMP=1, PIPE_IN=2, TO_FILE=3, APPEND=4, STR=5, WS=6, ErrorChar=7;
+		SQUOTE=1, DQUOTE=2, SQSTRING=3, DQSTRING=4, AMP=5, PIPE_IN=6, TO_FILE=7, 
+		APPEND=8, STR=9, WS=10, ErrorChar=11;
 	public static final int
-		RULE_mashCmd = 0, RULE_pipeline = 1, RULE_item = 2, RULE_prg = 3, RULE_args = 4, 
-		RULE_op = 5;
+		RULE_mashCmd = 0, RULE_pipeline = 1, RULE_item = 2, RULE_prg = 3, RULE_argList = 4, 
+		RULE_arg = 5, RULE_op = 6, RULE_qstring = 7;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"mashCmd", "pipeline", "item", "prg", "args", "op"
+			"mashCmd", "pipeline", "item", "prg", "argList", "arg", "op", "qstring"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'&'", "'||'", "'>'", "'>>'"
+			null, "'''", "'\"'", null, null, "'&'", "'|'", "'>'", "'>>'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "AMP", "PIPE_IN", "TO_FILE", "APPEND", "STR", "WS", "ErrorChar"
+			null, "SQUOTE", "DQUOTE", "SQSTRING", "DQSTRING", "AMP", "PIPE_IN", "TO_FILE", 
+			"APPEND", "STR", "WS", "ErrorChar"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -115,9 +117,9 @@ public class CPMirMashCmdParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(12);
+			setState(16);
 			pipeline(0);
-			setState(13);
+			setState(17);
 			match(EOF);
 			}
 		}
@@ -172,11 +174,11 @@ public class CPMirMashCmdParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(16);
+			setState(20);
 			item();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(24);
+			setState(28);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -187,16 +189,16 @@ public class CPMirMashCmdParser extends Parser {
 					{
 					_localctx = new PipelineContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_pipeline);
-					setState(18);
+					setState(22);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(19);
+					setState(23);
 					op();
-					setState(20);
+					setState(24);
 					item();
 					}
 					} 
 				}
-				setState(26);
+				setState(30);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 			}
@@ -238,14 +240,14 @@ public class CPMirMashCmdParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(27);
+			setState(31);
 			prg();
-			setState(29);
+			setState(33);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
 				{
-				setState(28);
+				setState(32);
 				match(AMP);
 				}
 				break;
@@ -265,8 +267,8 @@ public class CPMirMashCmdParser extends Parser {
 
 	public static class PrgContext extends ParserRuleContext {
 		public TerminalNode STR() { return getToken(CPMirMashCmdParser.STR, 0); }
-		public ArgsContext args() {
-			return getRuleContext(ArgsContext.class,0);
+		public ArgListContext argList() {
+			return getRuleContext(ArgListContext.class,0);
 		}
 		public PrgContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -288,10 +290,18 @@ public class CPMirMashCmdParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(31);
+			setState(35);
 			match(STR);
-			setState(32);
-			args(0);
+			setState(37);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
+			case 1:
+				{
+				setState(36);
+				argList(0);
+				}
+				break;
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -305,66 +315,68 @@ public class CPMirMashCmdParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ArgsContext extends ParserRuleContext {
-		public TerminalNode STR() { return getToken(CPMirMashCmdParser.STR, 0); }
-		public ArgsContext args() {
-			return getRuleContext(ArgsContext.class,0);
+	public static class ArgListContext extends ParserRuleContext {
+		public ArgContext arg() {
+			return getRuleContext(ArgContext.class,0);
 		}
-		public ArgsContext(ParserRuleContext parent, int invokingState) {
+		public ArgListContext argList() {
+			return getRuleContext(ArgListContext.class,0);
+		}
+		public ArgListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_args; }
+		@Override public int getRuleIndex() { return RULE_argList; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashCmdListener ) ((CPMirMashCmdListener)listener).enterArgs(this);
+			if ( listener instanceof CPMirMashCmdListener ) ((CPMirMashCmdListener)listener).enterArgList(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashCmdListener ) ((CPMirMashCmdListener)listener).exitArgs(this);
+			if ( listener instanceof CPMirMashCmdListener ) ((CPMirMashCmdListener)listener).exitArgList(this);
 		}
 	}
 
-	public final ArgsContext args() throws RecognitionException {
-		return args(0);
+	public final ArgListContext argList() throws RecognitionException {
+		return argList(0);
 	}
 
-	private ArgsContext args(int _p) throws RecognitionException {
+	private ArgListContext argList(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
-		ArgsContext _localctx = new ArgsContext(_ctx, _parentState);
-		ArgsContext _prevctx = _localctx;
+		ArgListContext _localctx = new ArgListContext(_ctx, _parentState);
+		ArgListContext _prevctx = _localctx;
 		int _startState = 8;
-		enterRecursionRule(_localctx, 8, RULE_args, _p);
+		enterRecursionRule(_localctx, 8, RULE_argList, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(35);
-			match(STR);
+			setState(40);
+			arg();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(41);
+			setState(46);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new ArgsContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_args);
-					setState(37);
+					_localctx = new ArgListContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_argList);
+					setState(42);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(38);
-					match(STR);
+					setState(43);
+					arg();
 					}
 					} 
 				}
-				setState(43);
+				setState(48);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			}
 			}
 		}
@@ -375,6 +387,62 @@ public class CPMirMashCmdParser extends Parser {
 		}
 		finally {
 			unrollRecursionContexts(_parentctx);
+		}
+		return _localctx;
+	}
+
+	public static class ArgContext extends ParserRuleContext {
+		public TerminalNode STR() { return getToken(CPMirMashCmdParser.STR, 0); }
+		public QstringContext qstring() {
+			return getRuleContext(QstringContext.class,0);
+		}
+		public ArgContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_arg; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CPMirMashCmdListener ) ((CPMirMashCmdListener)listener).enterArg(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CPMirMashCmdListener ) ((CPMirMashCmdListener)listener).exitArg(this);
+		}
+	}
+
+	public final ArgContext arg() throws RecognitionException {
+		ArgContext _localctx = new ArgContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_arg);
+		try {
+			setState(51);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case STR:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(49);
+				match(STR);
+				}
+				break;
+			case SQSTRING:
+			case DQSTRING:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(50);
+				qstring();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
 		}
 		return _localctx;
 	}
@@ -399,14 +467,61 @@ public class CPMirMashCmdParser extends Parser {
 
 	public final OpContext op() throws RecognitionException {
 		OpContext _localctx = new OpContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_op);
+		enterRule(_localctx, 12, RULE_op);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(44);
+			setState(53);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PIPE_IN) | (1L << TO_FILE) | (1L << APPEND))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class QstringContext extends ParserRuleContext {
+		public TerminalNode SQSTRING() { return getToken(CPMirMashCmdParser.SQSTRING, 0); }
+		public TerminalNode DQSTRING() { return getToken(CPMirMashCmdParser.DQSTRING, 0); }
+		public QstringContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_qstring; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof CPMirMashCmdListener ) ((CPMirMashCmdListener)listener).enterQstring(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof CPMirMashCmdListener ) ((CPMirMashCmdListener)listener).exitQstring(this);
+		}
+	}
+
+	public final QstringContext qstring() throws RecognitionException {
+		QstringContext _localctx = new QstringContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_qstring);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(55);
+			_la = _input.LA(1);
+			if ( !(_la==SQSTRING || _la==DQSTRING) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -432,7 +547,7 @@ public class CPMirMashCmdParser extends Parser {
 		case 1:
 			return pipeline_sempred((PipelineContext)_localctx, predIndex);
 		case 4:
-			return args_sempred((ArgsContext)_localctx, predIndex);
+			return argList_sempred((ArgListContext)_localctx, predIndex);
 		}
 		return true;
 	}
@@ -443,7 +558,7 @@ public class CPMirMashCmdParser extends Parser {
 		}
 		return true;
 	}
-	private boolean args_sempred(ArgsContext _localctx, int predIndex) {
+	private boolean argList_sempred(ArgListContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 1:
 			return precpred(_ctx, 1);
@@ -452,35 +567,40 @@ public class CPMirMashCmdParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0007/\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u000b:\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
-		"\u0005\u0007\u0005\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0001"+
-		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0005"+
-		"\u0001\u0017\b\u0001\n\u0001\f\u0001\u001a\t\u0001\u0001\u0002\u0001\u0002"+
-		"\u0003\u0002\u001e\b\u0002\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0004"+
-		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0005\u0004(\b\u0004"+
-		"\n\u0004\f\u0004+\t\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0000\u0002"+
-		"\u0002\b\u0006\u0000\u0002\u0004\u0006\b\n\u0000\u0001\u0001\u0000\u0002"+
-		"\u0004+\u0000\f\u0001\u0000\u0000\u0000\u0002\u000f\u0001\u0000\u0000"+
-		"\u0000\u0004\u001b\u0001\u0000\u0000\u0000\u0006\u001f\u0001\u0000\u0000"+
-		"\u0000\b\"\u0001\u0000\u0000\u0000\n,\u0001\u0000\u0000\u0000\f\r\u0003"+
-		"\u0002\u0001\u0000\r\u000e\u0005\u0000\u0000\u0001\u000e\u0001\u0001\u0000"+
-		"\u0000\u0000\u000f\u0010\u0006\u0001\uffff\uffff\u0000\u0010\u0011\u0003"+
-		"\u0004\u0002\u0000\u0011\u0018\u0001\u0000\u0000\u0000\u0012\u0013\n\u0001"+
-		"\u0000\u0000\u0013\u0014\u0003\n\u0005\u0000\u0014\u0015\u0003\u0004\u0002"+
-		"\u0000\u0015\u0017\u0001\u0000\u0000\u0000\u0016\u0012\u0001\u0000\u0000"+
-		"\u0000\u0017\u001a\u0001\u0000\u0000\u0000\u0018\u0016\u0001\u0000\u0000"+
-		"\u0000\u0018\u0019\u0001\u0000\u0000\u0000\u0019\u0003\u0001\u0000\u0000"+
-		"\u0000\u001a\u0018\u0001\u0000\u0000\u0000\u001b\u001d\u0003\u0006\u0003"+
-		"\u0000\u001c\u001e\u0005\u0001\u0000\u0000\u001d\u001c\u0001\u0000\u0000"+
-		"\u0000\u001d\u001e\u0001\u0000\u0000\u0000\u001e\u0005\u0001\u0000\u0000"+
-		"\u0000\u001f \u0005\u0005\u0000\u0000 !\u0003\b\u0004\u0000!\u0007\u0001"+
-		"\u0000\u0000\u0000\"#\u0006\u0004\uffff\uffff\u0000#$\u0005\u0005\u0000"+
-		"\u0000$)\u0001\u0000\u0000\u0000%&\n\u0001\u0000\u0000&(\u0005\u0005\u0000"+
-		"\u0000\'%\u0001\u0000\u0000\u0000(+\u0001\u0000\u0000\u0000)\'\u0001\u0000"+
-		"\u0000\u0000)*\u0001\u0000\u0000\u0000*\t\u0001\u0000\u0000\u0000+)\u0001"+
-		"\u0000\u0000\u0000,-\u0007\u0000\u0000\u0000-\u000b\u0001\u0000\u0000"+
-		"\u0000\u0003\u0018\u001d)";
+		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0005\u0001\u001b\b\u0001\n"+
+		"\u0001\f\u0001\u001e\t\u0001\u0001\u0002\u0001\u0002\u0003\u0002\"\b\u0002"+
+		"\u0001\u0003\u0001\u0003\u0003\u0003&\b\u0003\u0001\u0004\u0001\u0004"+
+		"\u0001\u0004\u0001\u0004\u0001\u0004\u0005\u0004-\b\u0004\n\u0004\f\u0004"+
+		"0\t\u0004\u0001\u0005\u0001\u0005\u0003\u00054\b\u0005\u0001\u0006\u0001"+
+		"\u0006\u0001\u0007\u0001\u0007\u0001\u0007\u0000\u0002\u0002\b\b\u0000"+
+		"\u0002\u0004\u0006\b\n\f\u000e\u0000\u0002\u0001\u0000\u0006\b\u0001\u0000"+
+		"\u0003\u00046\u0000\u0010\u0001\u0000\u0000\u0000\u0002\u0013\u0001\u0000"+
+		"\u0000\u0000\u0004\u001f\u0001\u0000\u0000\u0000\u0006#\u0001\u0000\u0000"+
+		"\u0000\b\'\u0001\u0000\u0000\u0000\n3\u0001\u0000\u0000\u0000\f5\u0001"+
+		"\u0000\u0000\u0000\u000e7\u0001\u0000\u0000\u0000\u0010\u0011\u0003\u0002"+
+		"\u0001\u0000\u0011\u0012\u0005\u0000\u0000\u0001\u0012\u0001\u0001\u0000"+
+		"\u0000\u0000\u0013\u0014\u0006\u0001\uffff\uffff\u0000\u0014\u0015\u0003"+
+		"\u0004\u0002\u0000\u0015\u001c\u0001\u0000\u0000\u0000\u0016\u0017\n\u0001"+
+		"\u0000\u0000\u0017\u0018\u0003\f\u0006\u0000\u0018\u0019\u0003\u0004\u0002"+
+		"\u0000\u0019\u001b\u0001\u0000\u0000\u0000\u001a\u0016\u0001\u0000\u0000"+
+		"\u0000\u001b\u001e\u0001\u0000\u0000\u0000\u001c\u001a\u0001\u0000\u0000"+
+		"\u0000\u001c\u001d\u0001\u0000\u0000\u0000\u001d\u0003\u0001\u0000\u0000"+
+		"\u0000\u001e\u001c\u0001\u0000\u0000\u0000\u001f!\u0003\u0006\u0003\u0000"+
+		" \"\u0005\u0005\u0000\u0000! \u0001\u0000\u0000\u0000!\"\u0001\u0000\u0000"+
+		"\u0000\"\u0005\u0001\u0000\u0000\u0000#%\u0005\t\u0000\u0000$&\u0003\b"+
+		"\u0004\u0000%$\u0001\u0000\u0000\u0000%&\u0001\u0000\u0000\u0000&\u0007"+
+		"\u0001\u0000\u0000\u0000\'(\u0006\u0004\uffff\uffff\u0000()\u0003\n\u0005"+
+		"\u0000).\u0001\u0000\u0000\u0000*+\n\u0001\u0000\u0000+-\u0003\n\u0005"+
+		"\u0000,*\u0001\u0000\u0000\u0000-0\u0001\u0000\u0000\u0000.,\u0001\u0000"+
+		"\u0000\u0000./\u0001\u0000\u0000\u0000/\t\u0001\u0000\u0000\u00000.\u0001"+
+		"\u0000\u0000\u000014\u0005\t\u0000\u000024\u0003\u000e\u0007\u000031\u0001"+
+		"\u0000\u0000\u000032\u0001\u0000\u0000\u00004\u000b\u0001\u0000\u0000"+
+		"\u000056\u0007\u0000\u0000\u00006\r\u0001\u0000\u0000\u000078\u0007\u0001"+
+		"\u0000\u00008\u000f\u0001\u0000\u0000\u0000\u0005\u001c!%.3";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

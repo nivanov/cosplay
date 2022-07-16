@@ -29,6 +29,12 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDecl(CPMirMashParser.DeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#aliasDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAliasDecl(CPMirMashParser.AliasDeclContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CPMirMashParser#valDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

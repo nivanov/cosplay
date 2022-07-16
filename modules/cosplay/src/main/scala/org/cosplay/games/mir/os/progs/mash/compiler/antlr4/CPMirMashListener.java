@@ -38,6 +38,16 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 */
 	void exitDecl(CPMirMashParser.DeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CPMirMashParser#aliasDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterAliasDecl(CPMirMashParser.AliasDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CPMirMashParser#aliasDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitAliasDecl(CPMirMashParser.AliasDeclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CPMirMashParser#valDecl}.
 	 * @param ctx the parse tree
 	 */
