@@ -1,0 +1,11 @@
+AMP=1
+PIPE_IN=2
+TO_FILE=3
+APPEND=4
+STR=5
+WS=6
+ErrorChar=7
+'&'=1
+'||'=2
+'>'=3
+'>>'=4

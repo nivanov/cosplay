@@ -30,14 +30,17 @@ package org.cosplay.games.mir.os.progs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
+import org.cosplay.*
+import games.mir.*
 import os.*
+import CPMirConsole.*
 
 /**
   *
   */
 class CPMirBootProgram extends CPMirProgram:
-    private val boot = """
+    private val sz = CPRand.between(1.kb, 20.kb)
+    private val boot = s"""
           |Award Modular BIOS v4.50G, An Energy Star Ally
           |Copyright (C) 1984-92, Award Software, Inc.
           |
@@ -48,6 +51,12 @@ class CPMirBootProgram extends CPMirProgram:
           |""".stripMargin
 
     override def mainEntry(ctx: CPMirProgramContext): Int =
-        ctx.out.println("Welcome to MirX.")
+        boot.split("\n").foreach(s => {
+            ctx.out.println(s)
+            Thread.sleep(CPRand.between(250L, 1000L))
+        })
+
+        // Return code.
         0
-    override def getSizeOnDisk: Long = 1024 // TODO
+
+    override def getSizeOnDisk: Long = sz
