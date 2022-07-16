@@ -39,7 +39,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
   * MirX.
   *
-  * @param fs
+  * @param fsOpt
   * @param users
   */
 @SerialVersionUID(1_0_0L)
@@ -61,7 +61,7 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
         val sbin = root.addDirFile("sbin", rootUsr)
         val dev = root.addDirFile("dev", rootUsr)
         val home = root.addDirFile("home", rootUsr)
-        val tmp = root.addDirFile("tmp", rootUsr)
+        root.addDirFile("tmp", rootUsr)
         val etc = root.addDirFile("etc", rootUsr)
         val lib = root.addDirFile("lib", rootUsr)
         val usr = root.addDirFile("usr", rootUsr)
