@@ -48,12 +48,24 @@ class CPMirBootProgram extends CPMirProgram:
           |64MB memory
           |
           |Starting MirX...
+          |
+          | /88      /88 /88          /88   /88
+          || 888    /888|__/         | 88  / 88
+          || 8888  /8888 /88  /888888|  88/ 88/
+          || 88 88/88 88| 88 /88__  88\\  8888/ 
+          || 88  888| 88| 88| 88  \\__/ >88  88
+          || 88\\  8 | 88| 88| 88      /88/\\  88
+          || 88 \\/  | 88| 88| 88     | 88  \\ 88
+          ||__/     |__/|__/|__/     |__/  |__/
+          |
+          |Runtime system started: ${CPMirRuntime.THREAD_POOL_SIZE} threads
+          |System clock synchronized: ${CPMirClock.formatTimeDate()}
           |""".stripMargin
 
     override def mainEntry(ctx: CPMirProgramContext): Int =
         boot.split("\n").foreach(s => {
             ctx.out.println(s)
-            Thread.sleep(CPRand.between(250L, 1000L))
+            Thread.sleep(CPRand.between(150L, 500L))
         })
 
         // Return code.
