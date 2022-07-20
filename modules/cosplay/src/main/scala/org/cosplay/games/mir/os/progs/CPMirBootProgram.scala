@@ -68,17 +68,17 @@ class CPMirBootProgram extends CPMirProgram:
             |
             |""".stripMargin
 
-        def sleep(): Unit = Thread.sleep(CPRand.between(50L, 250L))
+        def stutter(): Unit = Thread.sleep(CPRand.between(50L, 250L))
 
         boot.split("\n").foreach(s => {
             ctx.out.println(s)
-            sleep()
+            stutter()
         })
 
         ctx.out.println("Device map:")
-        ctx.fs.file[CPMirDirectoryFile]("/dev").get.list().foreach(f => {
+        ctx.fs.dir("/dev").get.list().foreach(f => {
             ctx.out.println(s"  |- '${f.getAbsolutePath}' initialized.")
-            sleep()
+            stutter()
         })
 
         // Return code.
