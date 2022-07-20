@@ -40,32 +40,45 @@ import CPMirConsole.*
   */
 class CPMirBootProgram extends CPMirProgram:
     private val sz = CPRand.between(1.kb, 20.kb)
-    private val boot = s"""
-          |Award Modular BIOS v4.50G, An Energy Star Ally
-          |Copyright (C) 1984-92, Award Software, Inc.
-          |
-          |80486DX2 CPU at 66MHz
-          |64MB memory
-          |
-          |Starting MirX...
-          |
-          | /88      /88 /88          /88   /88
-          || 888    /888|__/         | 88  / 88
-          || 8888  /8888 /88  /888888|  88/ 88/
-          || 88 88/88 88| 88 /88__  88\\  8888/ 
-          || 88  888| 88| 88| 88  \\__/ >88  88
-          || 88\\  8 | 88| 88| 88      /88/\\  88
-          || 88 \\/  | 88| 88| 88     | 88  \\ 88
-          ||__/     |__/|__/|__/     |__/  |__/
-          |
-          |Runtime system started: ${CPMirRuntime.THREAD_POOL_SIZE} threads
-          |System clock synchronized: ${CPMirClock.formatTimeDate()}
-          |""".stripMargin
 
     override def mainEntry(ctx: CPMirProgramContext): Int =
+        val boot = s"""
+            |Award Modular BIOS v4.50G, An Energy Star Ally
+            |Copyright (C) 1984-92, Award Software, Inc.
+            |
+            |80486DX2 CPU at 66MHz
+            |64MB memory
+            |
+            |Starting MirX...
+            |
+            | /88      /88 /88          /88   /88
+            || 888    /888|__/         | 88  / 88
+            || 8888  /8888 /88  /888888|  88/ 88/
+            || 88 88/88 88| 88 /88__  88\\  8888/
+            || 88  888| 88| 88| 88  \\__/ >88  88
+            || 88\\  8 | 88| 88| 88      /88/\\  88
+            || 88 \\/  | 88| 88| 88     | 88  \\ 88
+            ||__/     |__/|__/|__/     |__/  |__/
+            |
+            |ver 1.12.04, Dec 12, 1993
+            |Copyright (C) 1991-94, RKK "Energia", Russian Federation
+            |
+            |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
+            |System clock synchronized: ${CPMirClock.formatTimeDate()}
+            |
+            |""".stripMargin
+
+        def sleep(): Unit = Thread.sleep(CPRand.between(50L, 250L))
+
         boot.split("\n").foreach(s => {
             ctx.out.println(s)
-            Thread.sleep(CPRand.between(150L, 500L))
+            sleep()
+        })
+
+        ctx.out.println("Device map:")
+        ctx.fs.file[CPMirDirectoryFile]("/dev").get.list().foreach(f => {
+            ctx.out.println(s"  |- '${f.getAbsolutePath}' initialized.")
+            sleep()
         })
 
         // Return code.

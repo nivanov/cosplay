@@ -30,21 +30,9 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
-
-/**
-  *
-  * @param name Name of file (not including its path).
-  * @param owner User owner of this file.
-  * @param parent Parent directory of this file.
-  * @param drv Device driver.
-  */
-class CPMirDeviceFile(
-    name: String,
-    owner: CPMirUser,
-    parent: CPMirDirectoryFile,
-    drv: CPMirDeviceDriver
-) extends CPMirFile(FT_DEV, name, owner, Option(parent), true, false)
+trait CPMirDeviceDriver(file: CPMirDeviceFile):
+    /**
+      *
+      */
+    def init(): Unit
 
