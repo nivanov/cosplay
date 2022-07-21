@@ -64,13 +64,15 @@ object TextDripShader extends CPShader:
                 objRect.loop((x, y) => {
                 if canv.isValid(x, y) then
                     if newDrip then
-                        randX = CPRand.between(1, objRect.w)
+                        val imageOffSet = (canv.w - objRect.w) / 2
+                        randX = CPRand.between(imageOffSet, objRect.w + imageOffSet)
                         newDrip = false
 
                     val zpx = canv.getZPixel(x, y)
-                    val newY = CPRand.between(3, 4) + (curFrame - startFrame) * (y - objRect.y)
+                    val newY = 3 + (curFrame - startFrame) * (y - objRect.y)
                     canv.drawPixel(zpx.px, randX, newY.toInt, zpx.z)
 
+                    // Reset drip.
                     if newY >= canv.yMax + 300 && ctx.getFrameCount % 10 == 0 then
                         startFrame = ctx.getFrameCount
                         newDrip = true

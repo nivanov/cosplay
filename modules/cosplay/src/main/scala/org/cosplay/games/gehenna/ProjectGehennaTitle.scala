@@ -38,6 +38,7 @@ import org.cosplay.prefabs.shaders.*
 
 object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val titleText = "Project Gehenna"
+    private val startImg = CPImage.loadRexCsv("images/games/gehenna/startBtn.csv").trimBg()
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -47,7 +48,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         onFinish = _ => TextDripShader.start()
     )
 
-    private def titleImage(): CPImage = FIG_OGRE.render(titleText, C1).trimBg()
+    private def titleImage(): CPImage = FIG_OGRE.render(titleText, BLOOD_RED).trimBg()
 
     private val titleSpr = new CPImageSprite("title", 0, 0, 1, titleImage(), shaders = Seq(fadeInShdr, TextDripShader)):
         private val clickSound = CPSound("sounds/games/gehenna/click.wav")
@@ -59,6 +60,11 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             if !introSong.isPlaying then
                 introSong.loop(3000)
 
+    private val startSpr = new CPImageSprite("start", 0, 30, 1, startImg, shaders = Seq(fadeInShdr)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            setX((ctx.getCanvas.w - this.getWidth) / 2)
+
     addObjects(
-        titleSpr
+        titleSpr,
+        startSpr
     )
