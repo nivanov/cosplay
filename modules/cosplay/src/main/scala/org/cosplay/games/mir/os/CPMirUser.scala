@@ -50,7 +50,7 @@ object CPMirUser:
   * @param password
   */
 case class CPMirUser(
-    player: Option[CPMirPlayer],
+    player: Option[CPMirCrewMember],
     isRoot: Boolean,
     username: String,
     password: String

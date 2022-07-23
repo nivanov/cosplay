@@ -44,8 +44,8 @@ import scala.util.Using
 case class CPMirState(
     gameId: String = CPRand.guid6,
     os: CPMirOs,
-    player: CPMirPlayer,
-    crew: Seq[CPMirPlayer],
+    player: CPMirCrewMember,
+    crew: Seq[CPMirCrewMember],
     var logoImg: String,
     var bg: CPColor,
     var fg: CPColor,
@@ -90,7 +90,7 @@ import CPMirStateManager.*
   */
 class CPMirStateManager:
     // Player protagonist.
-    private val player = CPMirPlayer.newPlayer
+    private val player = CPMirCrewMember.newPlayer
     private var os: CPMirOs = _
 
     private var stateFound = false
@@ -120,7 +120,7 @@ class CPMirStateManager:
         for i <- 0 until NPC_CNT do
             var found = false
             while !found do
-                val crewman = CPMirPlayer.newPlayer
+                val crewman = CPMirCrewMember.newPlayer
                 if !crew.exists(p => p != player && (p.username == player.username || p.lastName == player.lastName)) then
                     found = true
                     crew += crewman

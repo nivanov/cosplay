@@ -40,13 +40,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * MirX.
   *
   * @param fsOpt
-  * @param users
+  * @param usrs
   */
 @SerialVersionUID(1_0_0L)
-class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Serializable:
-    require(users.exists(_.isRoot))
+class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser]) extends Serializable:
+    require(usrs.exists(_.isRoot))
 
-    private val rootUsr = users.find(_.isRoot).get
+    private val rootUsr = usrs.find(_.isRoot).get
     private var rt: CPMirRuntime = _
     private val fs = fsOpt.getOrElse(installFs())
 
@@ -140,7 +140,7 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
     /**
       *
       */
-    def getAllUsers: Seq[CPMirUser] = users
+    def getAllUsers: Seq[CPMirUser] = usrs
 
     /**
       *

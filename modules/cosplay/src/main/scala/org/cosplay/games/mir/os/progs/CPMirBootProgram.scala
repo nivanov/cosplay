@@ -61,7 +61,7 @@ class CPMirBootProgram extends CPMirProgram:
             ||__/     |__/|__/|__/     |__/  |__/
             |
             |ver 1.12.04, Dec 12, 1993
-            |Copyright (C) 1991-94, RKK "Energia", Russian Federation
+            |Copyright (C) 1991-94, RCS "Energia", Russia
             |
             |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
             |System clock synchronized: ${CPMirClock.formatTimeDate()}
@@ -80,6 +80,9 @@ class CPMirBootProgram extends CPMirProgram:
             ctx.out.println(s"  |- '${f.getAbsolutePath}' initialized.")
             stutter()
         })
+
+        ctx.out.println("Users verified:")
+        // TODO: read '/etc/passwd' file.
 
         // Return code.
         0
