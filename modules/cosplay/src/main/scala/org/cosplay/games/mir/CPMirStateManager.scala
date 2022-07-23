@@ -167,7 +167,7 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
-        val path = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
+        val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
         Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
         CPEngine.rootLog().info(s"Game saved: $path")
 

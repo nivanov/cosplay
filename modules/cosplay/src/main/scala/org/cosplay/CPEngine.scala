@@ -18,6 +18,7 @@
 package org.cosplay
 
 import org.apache.logging.log4j.LogManager
+import org.apache.commons.lang3.*
 import impl.emuterm.*
 import impl.guilog.*
 import impl.jlineterm.*
@@ -26,7 +27,7 @@ import CPLifecycle.State.*
 import CPKeyboardKey.*
 import impl.*
 
-import java.io.InterruptedIOException
+import java.io.*
 import scala.collection.mutable
 
 /*
@@ -121,12 +122,14 @@ object CPEngine:
 
     private case class LaterRun(tsMs: Long, f: CPSceneObjectContext => Unit)
 
-    private val FPS = 30 // Target FPS.
-    private val FRAME_NANOS = 1_000_000_000 / FPS
-    private val FRAME_MICROS = 1_000_000 / FPS
-    private val FRAME_MILLIS = 1_000 / FPS
-    private val FPS_LIST_SIZE = 500
-    private val FPS_1PCT_LIST_SIZE = FPS_LIST_SIZE / 100
+    private final val FPS = 30 // Target FPS.
+    private final val FRAME_NANOS = 1_000_000_000 / FPS
+    private final val FRAME_MICROS = 1_000_000 / FPS
+    private final val FRAME_MILLIS = 1_000 / FPS
+    private final val FPS_LIST_SIZE = 500
+    private final val FPS_1PCT_LIST_SIZE = FPS_LIST_SIZE / 100
+    private final val HOME_DIR = ".cosplay"
+
     private val scenes = CPContainer[CPScene]()
     private var term: CPTerminal = _
     private var pause = false
@@ -292,6 +295,37 @@ object CPEngine:
       */
     def getGameInfo: CPGameInfo =
         gameInfo
+
+    /**
+      *
+      * @param path
+      */
+    def homePath(path: String): String = homeFile(path).getAbsolutePath
+
+    /**
+      * Creates file with given relative path in the engine's special, system-specific, root location. The actual
+      * absolute path is OS-specific and shouldn't be relied on or used.
+      *
+      * @param path Relative path of the file.
+      */
+    def homeFile(path: String): File = newFile(s"$HOME_DIR/fs/", path)
+
+    /**
+      * Creates file in the engine's special, system-specific, temporary file location. The actual
+      * absolute path is OS-specific and shouldn't be relied on or used.
+      */
+    def tempFile(): File = newFile(s"$HOME_DIR/temp/", CPRand.guid)
+
+    /**
+      *
+      * @param root
+      * @param path
+      */
+    private def newFile(root: String, path: String): File =
+        val file = new File(SystemUtils.getUserHome, s"$root/$path")
+        val parent = file.getParentFile
+        if !parent.exists() && !parent.mkdirs() then throw E(s"Failed to create folder: ${parent.getAbsolutePath}")
+        file
 
     /**
       * Initializes the game engine.
