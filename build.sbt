@@ -47,7 +47,7 @@ val flatlafVer = "2.4"
 val miglayoutVer = "11.0"
 val jlineVer = "3.21.0"
 val jnaVer = "5.10.0"
-val mixPanelVer = "1.5.0"
+val mixPanelVer = "1.5.1"
 val antlr4Ver = "4.10.1"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
