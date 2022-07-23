@@ -30,24 +30,61 @@ package org.cosplay.games.mir.os.progs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
+import org.cosplay.*
+import games.mir.*
 import os.*
+import CPMirConsole.*
 
 /**
   *
   */
 class CPMirBootProgram extends CPMirProgram:
-    private val boot = """
-          |Award Modular BIOS v4.50G, An Energy Star Ally
-          |Copyright (C) 1984-92, Award Software, Inc.
-          |
-          |80486DX2 CPU at 66MHz
-          |64MB memory
-          |
-          |Starting MirX...
-          |""".stripMargin
+    private val sz = CPRand.between(1.kb, 20.kb)
 
     override def mainEntry(ctx: CPMirProgramContext): Int =
-        ctx.out.println("Welcome to MirX.")
+        val boot = s"""
+            |Award Modular BIOS v4.50G, An Energy Star Ally
+            |Copyright (C) 1984-92, Award Software, Inc.
+            |
+            |80486DX2 CPU at 66MHz
+            |64MB memory
+            |
+            |Starting MirX...
+            |
+            | /88      /88 /88          /88   /88
+            || 888    /888|__/         | 88  / 88
+            || 8888  /8888 /88  /888888|  88/ 88/
+            || 88 88/88 88| 88 /88__  88\\  8888/
+            || 88  888| 88| 88| 88  \\__/ >88  88
+            || 88\\  8 | 88| 88| 88      /88/\\  88
+            || 88 \\/  | 88| 88| 88     | 88  \\ 88
+            ||__/     |__/|__/|__/     |__/  |__/
+            |
+            |ver 1.12.04, Dec 12, 1993
+            |Copyright (C) 1991-94, RCS "Energia", Russia
+            |
+            |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
+            |System clock synchronized: ${CPMirClock.formatTimeDate()}
+            |
+            |""".stripMargin
+
+        def stutter(): Unit = Thread.sleep(CPRand.between(50L, 250L))
+
+        boot.split("\n").foreach(s => {
+            ctx.out.println(s)
+            stutter()
+        })
+
+        ctx.out.println("Device map:")
+        ctx.fs.dir("/dev").get.list().foreach(f => {
+            ctx.out.println(s"  |- '${f.getAbsolutePath}' initialized.")
+            stutter()
+        })
+
+        ctx.out.println("Users verified:")
+        // TODO: read '/etc/passwd' file.
+
+        // Return code.
         0
-    override def getSizeOnDisk: Long = 1024 // TODO
+
+    override def getSizeOnDisk: Long = sz

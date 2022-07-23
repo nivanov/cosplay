@@ -46,7 +46,8 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
     private val turnOnSnd = CPSound(s"$SND_HOME/crt_turn_on.wav")
     private val tearSnd = CPSound(s"$SND_HOME/crt_tear.wav")
     private val knockSnd = CPSound(s"$SND_HOME/crt_knock.wav")
-    private val noiseSnd = CPSound(s"$SND_HOME/crt_noise.wav")
+    private val crtNoiseSnd = CPSound(s"$SND_HOME/crt_noise.wav")
+    private val whiteNoiseSnd = CPSound(s"$SND_HOME/white_noise.wav")
 
     // Should be controlled by the subclass.
     protected val fadeInShdr: CPSlideInShader = CPSlideInShader.sigmoid(
@@ -80,7 +81,8 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
         if stateMgr.state.crtAudio then
             crtShdr.setTearSound(Option(tearSnd))
             knockSnd.play()
-            noiseSnd.loop(1000, _ => knockSnd.play())
+            crtNoiseSnd.loop(1000, _ => knockSnd.play())
+            whiteNoiseSnd.loop(1000)
         else
             crtShdr.setTearSound(None)
 
@@ -88,6 +90,7 @@ abstract class CPMirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(
     override def onDeactivate(): Unit =
         // Handles only audio.
         bgSnd.stop(500)
-        noiseSnd.stop()
+        crtNoiseSnd.stop()
+        whiteNoiseSnd.stop()
 
 

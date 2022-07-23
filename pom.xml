@@ -118,14 +118,14 @@
         <scalatest.ver>3.2.12</scalatest.ver>
         <openjfx.ver>17.0.2</openjfx.ver>
         <ikonli.ver>12.3.1</ikonli.ver>
-        <flatlaf.ver>2.3</flatlaf.ver>
+        <flatlaf.ver>2.4</flatlaf.ver>
         <miglayout.ver>11.0</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
-        <exec.maven.ver>3.0.0</exec.maven.ver>
+        <exec.maven.ver>3.1.0</exec.maven.ver>
         <jna.ver>5.12.1</jna.ver>
-        <mixpanel.ver>1.5.0</mixpanel.ver>
+        <mixpanel.ver>1.5.1</mixpanel.ver>
         <org.antlr4.ver>4.10.1</org.antlr4.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>

@@ -155,7 +155,7 @@ FOR: 'for';
 IN: '<-';
 EXEC: '!!';
 EXEC_VAL: '!#';
-SQSTRING: SQUOTE (~'\'')* SQUOTE; //
+SQSTRING: SQUOTE (~'\'')* SQUOTE;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BOOL: 'true' | 'false';
 NULL: 'null';

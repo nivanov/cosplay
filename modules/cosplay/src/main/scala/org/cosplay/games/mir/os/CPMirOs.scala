@@ -40,13 +40,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * MirX.
   *
   * @param fsOpt
-  * @param users
+  * @param usrs
   */
 @SerialVersionUID(1_0_0L)
-class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Serializable:
-    require(users.exists(_.isRoot))
+class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser]) extends Serializable:
+    require(usrs.exists(_.isRoot))
 
-    private val rootUsr = users.find(_.isRoot).get
+    private val rootUsr = usrs.find(_.isRoot).get
     private var rt: CPMirRuntime = _
     private val fs = fsOpt.getOrElse(installFs())
 
@@ -73,6 +73,58 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
         sbin.addExecFile("login", rootUsr, new CPMirLoginProgram)
         sbin.addExecFile("mash", rootUsr, new CPMirMashProgram)
 
+        // Install devices
+        dev.addDeviceFile("radio", rootUsr, null /* TODO */)
+        dev.addDeviceFile("stela1", rootUsr, null /* TODO */)
+        dev.addDeviceFile("stela2", rootUsr, null /* TODO */)
+        dev.addDeviceFile("travers", rootUsr, null /* TODO */)
+        dev.addDeviceFile("lira", rootUsr, null /* TODO */)
+        dev.addDeviceFile("alt", rootUsr, null /* TODO */)
+        dev.addDeviceFile("uhf", rootUsr, null /* TODO */)
+        dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
+
+        // Core module.
+        dev.addDeviceFile("cm_pwr", rootUsr, null /* TODO */)
+        dev.addDeviceFile("cm_oxy", rootUsr, null /* TODO */)
+        dev.addDeviceFile("cm_fd", rootUsr, null /* TODO */)
+        dev.addDeviceFile("cm_ap", rootUsr, null /* TODO */)
+        dev.addDeviceFile("cm_fs", rootUsr, null /* TODO */)
+
+        // Kvant-1 module.
+        dev.addDeviceFile("kv1_pwr", rootUsr, null /* TODO */)
+        dev.addDeviceFile("kv1_oxy", rootUsr, null /* TODO */)
+        dev.addDeviceFile("kv1_fd", rootUsr, null /* TODO */)
+        dev.addDeviceFile("kv1_ap", rootUsr, null /* TODO */)
+        dev.addDeviceFile("kv1_fs", rootUsr, null /* TODO */)
+
+        // Kvant-2 module.
+        dev.addDeviceFile("kv2_pwr", rootUsr, null /* TODO */)
+        dev.addDeviceFile("kv2_oxy", rootUsr, null /* TODO */)
+        dev.addDeviceFile("kv2_fd", rootUsr, null /* TODO */)
+        dev.addDeviceFile("kv2_ap", rootUsr, null /* TODO */)
+        dev.addDeviceFile("kv2_fs", rootUsr, null /* TODO */)
+
+        // Kristal module.
+        dev.addDeviceFile("krs_pwr", rootUsr, null /* TODO */)
+        dev.addDeviceFile("krs_oxy", rootUsr, null /* TODO */)
+        dev.addDeviceFile("krs_fd", rootUsr, null /* TODO */)
+        dev.addDeviceFile("krs_ap", rootUsr, null /* TODO */)
+        dev.addDeviceFile("krs_fs", rootUsr, null /* TODO */)
+
+        // Spektr module.
+        dev.addDeviceFile("spk_pwr", rootUsr, null /* TODO */)
+        dev.addDeviceFile("spk_oxy", rootUsr, null /* TODO */)
+        dev.addDeviceFile("spk_fd", rootUsr, null /* TODO */)
+        dev.addDeviceFile("spk_ap", rootUsr, null /* TODO */)
+        dev.addDeviceFile("spk_fs", rootUsr, null /* TODO */)
+
+        // Priroda module.
+        dev.addDeviceFile("prd_pwr", rootUsr, null /* TODO */)
+        dev.addDeviceFile("prd_oxy", rootUsr, null /* TODO */)
+        dev.addDeviceFile("prd_fd", rootUsr, null /* TODO */)
+        dev.addDeviceFile("prd_ap", rootUsr, null /* TODO */)
+        dev.addDeviceFile("prd_fs", rootUsr, null /* TODO */)
+
         new CPMirFileSystem(root)
 
     /**
@@ -88,7 +140,7 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
     /**
       *
       */
-    def getAllUsers: Seq[CPMirUser] = users
+    def getAllUsers: Seq[CPMirUser] = usrs
 
     /**
       *

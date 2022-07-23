@@ -52,6 +52,18 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAliasDecl(CPMirMashParser.AliasDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAliasDecl(CPMirMashParser.AliasDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterValDecl(CPMirMashParser.ValDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}

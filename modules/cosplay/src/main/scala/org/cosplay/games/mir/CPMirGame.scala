@@ -55,6 +55,11 @@ val markup = CPMarkup(
     )
 )
 
+extension(d: Int)
+    def kb: Long = d * 1024
+    def mb: Long = d * 1024 * 1024
+    def gb: Long = d * 1024 * 1024 * 1024
+
 /**
   *
   */

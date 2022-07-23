@@ -38,13 +38,15 @@ object CPMirConsole:
     val CTRL_REV_COL = '\u0001'
     /**  */
     val CTRL_RST_COL = '\u0002'
+    /**  */
+    val CTRL_BEEP = '\u0007'
 
     /**
       *
       * @param ch
       */
     def isControl(ch: Char): Boolean = ch match
-        case CTRL_REV_COL | CTRL_RST_COL => true
+        case CTRL_REV_COL | CTRL_RST_COL | CTRL_BEEP => true
         case _ => false
 
 /**

@@ -39,4 +39,4 @@ import Assertions.*
 object CPMirPlayerTests:
     @Test
     def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(CPMirPlayer.newPlayer.debugString))
+        (0 to 100).foreach(_ => println(CPMirCrewMember.newPlayer.debugString))

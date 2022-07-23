@@ -39,10 +39,12 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
   * @param parent Parent directory of this file.
+  * @param drv Device driver.
   */
 class CPMirDeviceFile(
     name: String,
     owner: CPMirUser,
-    parent: CPMirDirectoryFile
-) extends CPMirFile(FT_DEV, name, owner, Option(parent))
+    parent: CPMirDirectoryFile,
+    drv: CPMirDeviceDriver
+) extends CPMirFile(FT_DEV, name, owner, Option(parent), true, false)
 

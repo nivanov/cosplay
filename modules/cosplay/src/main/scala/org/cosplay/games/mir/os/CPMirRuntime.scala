@@ -35,11 +35,18 @@ import scala.collection.mutable
 
 /**
   *
+  */
+object CPMirRuntime:
+    final val THREAD_POOL_SIZE = 16
+
+/**
+  *
   * @param fs
   * @param con
   */
 class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
-    private final val THREAD_POOL_SIZE = 16
+    import CPMirRuntime.*
+
     private val procs = mutable.ArrayBuffer.empty[CPMirProcess]
     private val exec = Executors.newFixedThreadPool(THREAD_POOL_SIZE)
     private var pidGen = 1L

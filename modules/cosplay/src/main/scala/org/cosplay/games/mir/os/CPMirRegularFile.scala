@@ -47,5 +47,6 @@ class CPMirRegularFile(
     owner: CPMirUser,
     parent: CPMirDirectoryFile,
     otherAcs: Boolean,
-    otherMod: Boolean
+    otherMod: Boolean,
+    lines: Seq[String] = Seq.empty
 ) extends CPMirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod)

@@ -38,6 +38,13 @@ public class CPMirMashBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitAliasDecl(CPMirMashParser.AliasDeclContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitValDecl(CPMirMashParser.ValDeclContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

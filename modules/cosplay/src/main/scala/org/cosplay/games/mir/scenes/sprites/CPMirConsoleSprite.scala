@@ -46,6 +46,9 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     import CPMirConsole.*
 
     private val keySnd = CPSound(s"$SND_HOME/keypress.wav", .05f)
+    private val beepSnd = CPSound(s"$SND_HOME/beep.wav")
+    private var beepCnt = 0
+    private var isBeeping = false
 
     case class ZChar(ch: Char, fg: CPColor, bg: CPColor, z: Int):
         lazy val px: CPPixel = ch&&(fg, bg)
@@ -151,6 +154,7 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
         ch match
             case CTRL_REV_COL => inverseColors()
             case CTRL_RST_COL => resetColors()
+            case CTRL_BEEP => beepCnt += 1
             case _ =>
                 val y2 = y + canvY
                 if isPositionValid(x, y2) then mux.synchronized {
@@ -199,6 +203,14 @@ class CPMirConsoleSprite extends CPCanvasSprite(id = "console") with CPMirConsol
     override def render(ctx: CPSceneObjectContext): Unit =
         super.render(ctx)
         val canv = ctx.getCanvas
+
+        // Handle beeps.
+        if beepCnt > 0 && !isBeeping then
+            isBeeping = true
+            beepSnd.play(endFun = _ => {
+                beepCnt -= 1
+                isBeeping = false
+            })
 
         mux.synchronized {
             dim = canv.dim

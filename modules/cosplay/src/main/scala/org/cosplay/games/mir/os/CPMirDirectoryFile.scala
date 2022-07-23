@@ -156,6 +156,18 @@ class CPMirDirectoryFile(
       *
       * @param name Name of file (not including its path).
       * @param owner User owner of this file.
+      * @param drv Device driver.
+      */
+    @throws[CPException]
+    def addDeviceFile(name: String, owner: CPMirUser, drv: CPMirDeviceDriver): CPMirDeviceFile =
+        val f = new CPMirDeviceFile(name, owner, this, drv)
+        addFile(f)
+        f
+
+    /**
+      *
+      * @param name Name of file (not including its path).
+      * @param owner User owner of this file.
       * @param otherAcs Can others read or execute. Owner can do anything.
       * @param otherMod Can others change or delete. Owner can do anything.
       */
@@ -189,9 +201,9 @@ class CPMirDirectoryFile(
 
     /**
       *
-      * @param p File predicate.
+      * @param p Optional file predicate.
       */
-    def list(p: CPMirFile => Boolean): Seq[CPMirFile] = children.filter(p).toSeq
+    def list(p: CPMirFile => Boolean = _ => true): Seq[CPMirFile] = children.filter(p).toSeq
 
     /**
       *

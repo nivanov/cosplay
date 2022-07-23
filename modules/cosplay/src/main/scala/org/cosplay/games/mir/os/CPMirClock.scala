@@ -32,15 +32,18 @@ package org.cosplay.games.mir.os
 
 import java.text.*
 import org.cosplay.*
+import java.util.Date
 
 /**
   *
   */
 object CPMirClock:
-    private final val FMT = SimpleDateFormat("yyyy MMMM dd HH:mm z")
-    private final val CRASH_TIME = FMT.parse("1997 June 25 09:18 UTC").getTime
-    private final val OS_BUILD_TIME = FMT.parse("1990 Jan 1 00:01 UTC").getTime
-    private final val OS_CREW_ARRIVE_TIME = FMT.parse("1995 Jan 1 00:01 UTC").getTime
+    private final val DATETIME_ZONE_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm z")
+    private final val DATETIME_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm:ss")
+    private final val TIME_FMT = SimpleDateFormat("HH:mm:ss")
+    private final val CRASH_TIME = DATETIME_ZONE_FMT.parse("1997 June 25 09:18 UTC").getTime
+    private final val OS_BUILD_TIME = DATETIME_ZONE_FMT.parse("1990 Jan 1 00:01 UTC").getTime
+    private final val OS_CREW_ARRIVE_TIME = DATETIME_ZONE_FMT.parse("1995 Jan 1 00:01 UTC").getTime
     private final val YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000L
 
     private var elapsedMs = 0L
@@ -62,6 +65,21 @@ object CPMirClock:
       * Gets current station time in milliseconds.
       */
     inline def now(): Long = time
+
+    /**
+      *
+      */
+    def formatTimeDate(): String = DATETIME_FMT.format(new Date(now()))
+
+    /**
+      *
+      */
+    def formatTime(): String = ???
+
+    /**
+      *
+      */
+    def formatDate(): String = ???
 
     /**
       *
