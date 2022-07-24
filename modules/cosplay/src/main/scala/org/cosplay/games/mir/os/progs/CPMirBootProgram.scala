@@ -70,19 +70,27 @@ class CPMirBootProgram extends CPMirExec:
 
         def stutter(): Unit = Thread.sleep(CPRand.between(50L, 250L))
 
+        val fs = ctx.fs
+        val out = ctx.out
+
         boot.split("\n").foreach(s => {
-            ctx.out.println(s)
+            out.println(s)
             stutter()
         })
 
-        ctx.out.println("Device map:")
-        ctx.fs.dir("/dev").get.list().foreach(f => {
-            ctx.out.println(s"  |- '${f.getAbsolutePath}' initialized.")
+        out.println("Device map:")
+        val devDir = fs.dirFile("/dev")
+        devDir.list().foreach(f => {
+            out.println(s"  |- '${f.getAbsolutePath}' initialized.")
             stutter()
         })
 
-        ctx.out.println("Users verified:")
-        // TODO: read '/etc/passwd' file.
+        out.println()
+        out.println("Users verified:")
+        val passwd = fs.regFile("/etc/passwd").readLines
+        for (line <- passwd)
+            val parts = line.split(":")
+            out.println(s"  |- ${parts.head}, ${parts(2)} -> ${parts(3)}")
 
         // Return code.
         0

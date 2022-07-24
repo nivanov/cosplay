@@ -60,6 +60,26 @@ class CPMirRegularFile(
       *
       */
     @throws[IOException]
+    def readLines: Seq[String] =
+        val in = getInput
+        try in.readLines()
+        finally in.close()
+
+    /**
+      *
+      * @param lines
+      * @param append
+      */
+    @throws[IOException]
+    def writeLines(lines: Seq[String], append: Boolean = false): Unit =
+        val out = getOutput(append)
+        try lines.foreach(out.println)
+        finally out.close()
+
+    /**
+      *
+      */
+    @throws[IOException]
     def getInput: CPMirInputStream =
         CPMirInputStream.nativeStream(new FileInputStream(file))
 

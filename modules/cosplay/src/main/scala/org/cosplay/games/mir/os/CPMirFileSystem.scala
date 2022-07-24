@@ -50,10 +50,60 @@ class CPMirFileSystem(val root: CPMirDirectoryFile) extends Serializable:
 
     /**
       *
+      * @param path
+      * @tparam T
+      */
+    private def mandatoryFile[T <: CPMirFile](path: String): T = file[T](path) match
+        case None => throw E(s"File is missing: $path")
+        case Some(f) => f
+
+    /**
+      *
       * @param path Relative to root or fully qualified path.
       */
-    def dir(path: String): Option[CPMirDirectoryFile] = file[CPMirDirectoryFile](path)
+    def regFile(path: String): CPMirRegularFile = mandatoryFile[CPMirRegularFile](path)
 
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def execFile(path: String): CPMirExecFile = mandatoryFile[CPMirExecFile](path)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def devFile(path: String): CPMirDeviceFile = mandatoryFile[CPMirDeviceFile](path)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def dirFile(path: String): CPMirDirectoryFile = mandatoryFile[CPMirDirectoryFile](path)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def regFileOpt(path: String): Option[CPMirRegularFile] = file[CPMirRegularFile](path)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def execFileOpt(path: String): Option[CPMirExecFile] = file[CPMirExecFile](path)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def devFileOpt(path: String): Option[CPMirDeviceFile] = file[CPMirDeviceFile](path)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def dirFileOpt(path: String): Option[CPMirDirectoryFile] = file[CPMirDirectoryFile](path)
 
     /**
       *

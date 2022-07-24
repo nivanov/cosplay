@@ -103,7 +103,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
                     code = Option(file.getExec.mainEntry(ctx))
                 catch
                     case _: InterruptedException => ()
-                    case e: Exception => err.println(s"")
+                    case e: Exception => err.println(e.getLocalizedMessage)
                 finishTs = CPMirClock.now()
                 code.getOrElse(-1)
         })
