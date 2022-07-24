@@ -297,14 +297,8 @@ object CPEngine:
         gameInfo
 
     /**
-      *
-      * @param path
-      */
-    def homePath(path: String): String = homeFile(path).getAbsolutePath
-
-    /**
       * Creates file with given relative path in the engine's special, system-specific, root location. The actual
-      * absolute path is OS-specific and shouldn't be relied on or used.
+      * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
       *
       * @param path Relative path of the file.
       */
@@ -312,7 +306,7 @@ object CPEngine:
 
     /**
       * Creates file in the engine's special, system-specific, temporary file location. The actual
-      * absolute path is OS-specific and shouldn't be relied on or used.
+      * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
       */
     def tempFile(): File = newFile(s"$HOME_DIR/temp/", CPRand.guid)
 

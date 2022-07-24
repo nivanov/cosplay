@@ -131,11 +131,16 @@ class CPMirDirectoryFile(
       * @param owner User owner of this file.
       * @param otherAcs Can others read or execute. Owner can do anything.
       * @param otherMod Can others change or delete. Owner can do anything.
+      * @param lines Optional file content as sequence of individual lines.
       */
     @throws[CPException]
-    def addRegFile(name: String, owner: CPMirUser, otherAcs: Boolean = false, otherMod: Boolean = false): CPMirRegularFile =
-        val f = new CPMirRegularFile(name, owner, this, otherAcs, otherMod)
+    def addRegFile(name: String, owner: CPMirUser, otherAcs: Boolean = false, otherMod: Boolean = false, lines: Seq[String] =  Seq.empty): CPMirRegularFile =
+        val f = new CPMirRegularFile(name, owner, this, otherAcs, otherMod, lines)
         addFile(f)
+        if lines.nonEmpty then
+            val out = f.getOutput(false)
+            try lines.foreach(out.println)
+            finally out.close()
         f
 
     /**

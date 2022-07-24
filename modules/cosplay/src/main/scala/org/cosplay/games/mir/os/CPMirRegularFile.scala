@@ -30,9 +30,13 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
+import java.io.*
+import org.cosplay.*
+import games.mir.*
+import games.mir.os.*
+import CPMirFileType.*
+
+import java.io.FileInputStream
 
 /**
   *
@@ -49,4 +53,20 @@ class CPMirRegularFile(
     otherAcs: Boolean,
     otherMod: Boolean,
     lines: Seq[String] = Seq.empty
-) extends CPMirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod)
+) extends CPMirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod):
+    private val file = CPEngine.homeFile(CPRand.guid)
+
+    /**
+      *
+      */
+    @throws[IOException]
+    def getInput: CPMirInputStream =
+        CPMirInputStream.nativeStream(new FileInputStream(file))
+
+    /**
+      *
+      * @param append
+      */
+    @throws[IOException]
+    def getOutput(append: Boolean = false): CPMirOutputStream =
+        CPMirOutputStream.nativeStream(new FileOutputStream(file, append))

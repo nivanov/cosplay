@@ -67,6 +67,9 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser]) extends Seri
         val usr = root.addDirFile("usr", rootUsr)
         val usrBin = usr.addDirFile("bin", rootUsr)
 
+        // Add homes for all non-root users.
+        usrs.foreach(usr => if !usr.isRoot then home.addDirFile(usr.username, usr))
+
         // Install files.
         sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
         sbin.addExecFile("ls", rootUsr, new CPMirLsProgram)
@@ -83,47 +86,53 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser]) extends Seri
         dev.addDeviceFile("uhf", rootUsr, null /* TODO */)
         dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
 
-        // Core module.
+        // 'Core' module.
         dev.addDeviceFile("cm_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("cm_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("cm_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("cm_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("cm_fs", rootUsr, null /* TODO */)
 
-        // Kvant-1 module.
+        // 'Kvant-1' module.
         dev.addDeviceFile("kv1_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv1_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv1_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv1_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv1_fs", rootUsr, null /* TODO */)
 
-        // Kvant-2 module.
+        // 'Kvant-2' module.
         dev.addDeviceFile("kv2_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv2_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv2_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv2_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv2_fs", rootUsr, null /* TODO */)
 
-        // Kristal module.
+        // 'Kristal' module.
         dev.addDeviceFile("krs_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("krs_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("krs_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("krs_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("krs_fs", rootUsr, null /* TODO */)
 
-        // Spektr module.
+        // 'Spektr' module.
         dev.addDeviceFile("spk_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_fs", rootUsr, null /* TODO */)
 
-        // Priroda module.
+        // 'Priroda' module.
         dev.addDeviceFile("prd_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("prd_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("prd_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("prd_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("prd_fs", rootUsr, null /* TODO */)
+
+        val passwd = usrs.map(usr =>
+            val info = if usr.isRoot then "" else usr.player.get.nameCamelCase
+            s"${usr.username}:${usr.id}:$info:/home/${usr.username}"
+        )
+        etc.addRegFile("passwd", rootUsr, true, false, passwd)
 
         new CPMirFileSystem(root)
 
