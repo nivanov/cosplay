@@ -13,8 +13,8 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.examples.shader.CPShaderExample"
-$ sbt "package cosplay; runMain org.cosplay.examples.shader.CPSlideShaderExample"
+$ sbt "project cosplay; runMain org.cosplay.examples.shader.CPShaderExample"
+$ sbt "project cosplay; runMain org.cosplay.examples.shader.CPSlideShaderExample"
 ```
 #### Maven:
 ```shell

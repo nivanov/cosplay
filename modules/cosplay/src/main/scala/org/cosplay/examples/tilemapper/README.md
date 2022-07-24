@@ -13,7 +13,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.examples.tilemapper.CPTileMapperExample"
+$ sbt "project cosplay; runMain org.cosplay.examples.tilemapper.CPTileMapperExample"
 ```
 #### Maven:
 ```shell

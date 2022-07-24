@@ -13,8 +13,8 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.examples.image.CPImageFormatsExample"
-$ sbt "package cosplay; runMain org.cosplay.examples.image.CPImageCarouselExample"
+$ sbt "project cosplay; runMain org.cosplay.examples.image.CPImageFormatsExample"
+$ sbt "project cosplay; runMain org.cosplay.examples.image.CPImageCarouselExample"
 ```
 #### Maven:
 ```shell

@@ -17,7 +17,7 @@
 
 package org.cosplay.games.mir.os.progs
 
-import org.cosplay.games.mir.os.{CPMirProgram, CPMirProgramContext}
+import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
 
 /*
    _________            ______________
@@ -35,6 +35,6 @@ import org.cosplay.games.mir.os.{CPMirProgram, CPMirProgramContext}
 /**
   *
   */
-class CPMirLoginProgram extends CPMirProgram:
-    override def mainEntry(ctx: CPMirProgramContext): Int = 0 // TODO
+class CPMirLoginProgram extends CPMirExec:
+    override def mainEntry(ctx: CPMirExecContext): Int = 0 // TODO
     override def getSizeOnDisk: Long = 1024 // TODO

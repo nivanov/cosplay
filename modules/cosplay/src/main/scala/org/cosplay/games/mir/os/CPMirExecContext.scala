@@ -32,16 +32,39 @@ package org.cosplay.games.mir.os
 
 /**
   *
+  * @param args
+  * @param con
+  * @param rt
+  * @param fs
+  * @param workDir
+  * @param env
+  * @param usr
+  * @param in
+  * @param out
+  * @param err
   */
-abstract class CPMirProgram:
+case class CPMirExecContext(
+    args: Seq[String],
+    con: CPMirConsole,
+    rt: CPMirRuntime,
+    fs: CPMirFileSystem,
+    workDir: CPMirDirectoryFile,
+    env: Map[String, String],
+    usr: CPMirUser,
+    in: CPMirInputStream,
+    out: CPMirOutputStream,
+    err: CPMirOutputStream
+):
+    @transient private var killed = false
+
     /**
       *
-      * @param ctx
+      * @return
       */
-    def mainEntry(ctx: CPMirProgramContext): Int
+    def isKilled: Boolean = killed
 
     /**
       *
       */
-    def getSizeOnDisk: Long
+    def kill(): Unit = killed = true
 

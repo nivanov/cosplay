@@ -38,10 +38,10 @@ import CPMirConsole.*
 /**
   *
   */
-class CPMirBootProgram extends CPMirProgram:
+class CPMirBootProgram extends CPMirExec:
     private val sz = CPRand.between(1.kb, 20.kb)
 
-    override def mainEntry(ctx: CPMirProgramContext): Int =
+    override def mainEntry(ctx: CPMirExecContext): Int =
         val boot = s"""
             |Award Modular BIOS v4.50G, An Energy Star Ally
             |Copyright (C) 1984-92, Award Software, Inc.

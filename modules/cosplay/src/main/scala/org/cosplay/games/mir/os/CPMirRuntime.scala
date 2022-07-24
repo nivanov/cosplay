@@ -82,7 +82,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
         val pid = pidGen
         pidGen += 1
 
-        val ctx = CPMirProgramContext(
+        val ctx = CPMirExecContext(
             args,
             con,
             this,
@@ -100,7 +100,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
                 queued = false
                 startTs = CPMirClock.now()
                 try
-                    code = Option(file.getProgram.mainEntry(ctx))
+                    code = Option(file.getExec.mainEntry(ctx))
                 catch
                     case _: InterruptedException => ()
                     case e: Exception => err.println(s"")
