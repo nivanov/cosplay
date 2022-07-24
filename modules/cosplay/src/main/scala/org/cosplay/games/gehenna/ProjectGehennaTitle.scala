@@ -18,6 +18,9 @@
 package org.cosplay.games.gehenna
 
 import org.cosplay.*
+import CPColor.*
+import CPPixel.*
+import CPKeyboardKey.*
 import org.cosplay.CPFIGLetFont.*
 import org.cosplay.games.gehenna.shaders.TextDripShader
 import org.cosplay.prefabs.shaders.*
@@ -38,7 +41,9 @@ import org.cosplay.prefabs.shaders.*
 
 object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val titleText = "Project Gehenna"
-    private val startImg = CPImage.loadRexCsv("images/games/gehenna/startBtn.csv").trimBg()
+    private val startImg = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
+    private val settingsImg = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
+    private val helpImg = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -64,7 +69,43 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
+    private val helpSpr = new CPImageSprite("help", 0, 30, 1, helpImg, shaders = Seq(fadeInShdr)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            setX(((ctx.getCanvas.w - this.getWidth) / 2) - 30 - getWidth)
+
+    private val settingsSpr = new CPImageSprite("settings", 0, 30, 1, settingsImg, shaders = Seq(fadeInShdr)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            setX(((ctx.getCanvas.w - this.getWidth) / 2) + 30)
+
+    private val underLine = new CPCanvasSprite("underLine"):
+        val btns: List[CPImageSprite] = List(helpSpr, startSpr, settingsSpr)
+        var btnIndex = 1
+
+        override def render(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+
+            val btn = btns(btnIndex)
+
+            canv.drawLine(btn.getX - 1, btn.getY - 1, btn.getX + btn.getWidth, btn.getY - 1, 1, '_'&C2)
+            canv.drawLine(btn.getX - 1, btn.getY, btn.getX + btn.getWidth, btn.getY, 1, '_'&C2)
+
+            ctx.getKbEvent match
+                case Some(evt) =>
+                    evt.key match
+                        case KEY_LO_D | KEY_RIGHT => btnIndex += 1
+                        case KEY_LO_A | KEY_LEFT => btnIndex -= 1
+                        case _ => ()
+                case None => ()
+
+            if btnIndex < 0 then
+                btnIndex = btns.length - 1
+            else if btnIndex > btns.length - 1 then
+                btnIndex = 0
+
     addObjects(
         titleSpr,
-        startSpr
+        startSpr,
+        helpSpr,
+        settingsSpr,
+        underLine
     )
