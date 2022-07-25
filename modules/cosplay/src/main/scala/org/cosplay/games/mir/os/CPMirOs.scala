@@ -18,7 +18,9 @@
 package org.cosplay.games.mir.os
 
 import org.cosplay.*
-import org.cosplay.games.mir.os.progs.*
+import games.mir.*
+import os.*
+import progs.*
 
 import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,9 +43,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
   *
   * @param fsOpt
   * @param usrs
+  * @param player
   */
 @SerialVersionUID(1_0_0L)
-class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser]) extends Serializable:
+class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMirCrewMember) extends Serializable:
     require(usrs.exists(_.isRoot))
 
     private val rootUsr = usrs.find(_.isRoot).get
@@ -68,7 +71,15 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser]) extends Seri
         val usrBin = usr.addDirFile("bin", rootUsr)
 
         // Add homes for all non-root users.
-        usrs.foreach(usr => if !usr.isRoot then home.addDirFile(usr.username, usr))
+        usrs.foreach(usr =>
+            if !usr.isRoot then
+                val usrHome = home.addDirFile(usr.username, usr)
+                usrHome.addDirFile("inbox", usr)
+                usrHome.addDirFile("outbox", usr)
+        )
+
+        val plyInbox = root.dirFile(s"/home/${player.username}/inbox")
+        val plyOutbox = root.dirFile(s"/home/${player.username}/outbox")
 
         // Install files.
         sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)

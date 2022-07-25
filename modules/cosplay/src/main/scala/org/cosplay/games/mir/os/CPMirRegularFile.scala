@@ -35,6 +35,7 @@ import org.cosplay.*
 import games.mir.*
 import games.mir.os.*
 import CPMirFileType.*
+import org.cosplay.impl.CPUtils
 
 import java.io.FileInputStream
 
@@ -55,6 +56,24 @@ class CPMirRegularFile(
     lines: Seq[String] = Seq.empty
 ) extends CPMirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod):
     private val file = CPEngine.homeFile(CPRand.guid)
+
+    /**
+      *
+      * @param name
+      * @param owner
+      * @param parent
+      * @param otherAcs
+      * @param otherMod
+      * @param path
+      */
+    def this(
+        name: String,
+        owner: CPMirUser,
+        parent: CPMirDirectoryFile,
+        otherAcs: Boolean,
+        otherMod: Boolean,
+        path: String
+    ) = this(name, owner, parent, otherAcs, otherMod, CPUtils.readAllStrings(path))
 
     /**
       *

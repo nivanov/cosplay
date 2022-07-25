@@ -67,7 +67,7 @@ class CPMirDirectoryFile(
     parent: Option[CPMirDirectoryFile],
     otherAcs: Boolean,
     otherMod: Boolean
-) extends CPMirFile(FT_DIR, name, owner, parent, otherAcs, otherMod) with Iterable[CPMirFile]:
+) extends CPMirFile(FT_DIR, name, owner, parent, otherAcs, otherMod) with CPMirFileDirectory with Iterable[CPMirFile]:
     private val children = mutable.ArrayBuffer.empty[CPMirFile]
 
     /**
@@ -251,10 +251,3 @@ class CPMirDirectoryFile(
             case x: T => Some(x)
             case _ => None
         case None => None
-
-    /**
-      *
-      * @param path Relative or fully qualified path.
-      */
-    def exist(path: String): Boolean = resolve(path).isDefined
-

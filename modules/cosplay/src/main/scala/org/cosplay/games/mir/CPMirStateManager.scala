@@ -132,7 +132,7 @@ class CPMirStateManager:
         crew.foreach(p => usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
 
         // OS.
-        os = CPMirOs(None, usrs.toSeq) // TODO
+        os = CPMirOs(None, usrs.toSeq, player) 
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 
