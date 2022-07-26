@@ -81,7 +81,9 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMi
         val plyInbox = root.dirFile(s"/home/${player.username}/inbox")
         val plyOutbox = root.dirFile(s"/home/${player.username}/outbox")
 
-        // Install files.
+        usr.addDirFile("crew", rootUsr)
+
+        // Install executables.
         sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
         sbin.addExecFile("ls", rootUsr, new CPMirLsProgram)
         sbin.addExecFile("login", rootUsr, new CPMirLoginProgram)
