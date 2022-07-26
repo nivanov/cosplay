@@ -21,6 +21,7 @@ import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*
+import org.cosplay.CPArrayImage.*
 import org.cosplay.CPFIGLetFont.*
 import org.cosplay.games.gehenna.shaders.TextDripShader
 import org.cosplay.prefabs.shaders.*
@@ -53,10 +54,46 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         onFinish = _ => TextDripShader.start()
     )
 
+    private def skullImg(): CPImage =
+        new CPArrayImage(
+            prepSeq(
+                """
+                |                      :::!~!!!!!:.
+                |                  .xUHWH!! !!?M88WHX:.
+                |                .X*#M@$!!  !X!M$$$$$$WWx:.
+                |               :!!!!!!?H! :!$!$$$$$$$$$$8X:
+                |              !!~  ~:~!! :~!$!#$$$$$$$$$$8X:
+                |             :!~::!H!<   ~.U$X!?R$$$$$$$$MM!
+                |             ~!~!!!!~~ .:XW$$$U!!?$$$$$$RMM!
+                |               !:~~~ .:!M"T#$$$$WX??#MRRMMM!
+                |               ~?WuxiW*`   `"#$$$$8!!!!??!!!
+                |             :X- M$$$$       `"T#$T~!8$WUXU~
+                |            :%`  ~#$$$m:        ~!~ ?$$$$$$
+                |          :!`.-   ~T$$$$8xx.  .xWW- ~""##*"
+                |.....   -~~:<` !    ~?T#$$@@W@*?$$      /`
+                |W$@@M!!! .!~~ !!     .:XUW$W!~ `"~:    :
+                |#"~~`.:x%`!!  !H:   !WM$$$$Ti.: .!WUn+!`
+                |:::~:!!`:X~ .: ?H.!u "$$$B$$$!W:U!T$$M~
+                |.~~   :X@!.-~   ?@WTWo("*$$$W$TH$! `
+                |Wi.~!X$?!-~    : ?$$$B$Wu("**$RM!
+                |$R@i.~~ !     :   ~$$$$$B$$en:``
+                |?MXT@Wx.~    :     ~"##*$$$$M~
+                """
+            ),
+            (ch, _, _) => ch&BLOOD_RED.darker(0.55)
+        )
+
+    private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr)):
+        override def update(ctx: CPSceneObjectContext): Unit =
+            super.update(ctx)
+            val canv = ctx.getCanvas
+
+            setY(((canv.w - getWidth) / 2) - 15)
+            setX(((canv.h - getHeight) / 2) + 10)
+
     private def titleImage(): CPImage = FIG_OGRE.render(titleText, BLOOD_RED).trimBg()
 
     private val titleSpr = new CPImageSprite("title", 0, 0, 1, titleImage(), shaders = Seq(fadeInShdr, TextDripShader)):
-        private val clickSound = CPSound("sounds/games/gehenna/click.wav")
         private val introSong = CPSound("sounds/games/gehenna/intro song.wav")
 
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -65,21 +102,23 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             if !introSong.isPlaying then
                 introSong.loop(3000)
 
-    private val startSpr = new CPImageSprite("start", 0, 30, 1, startImg, shaders = Seq(fadeInShdr)):
+    private val startSpr = new CPImageSprite("start", 0, 43, 1, startImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
-    private val helpSpr = new CPImageSprite("help", 0, 30, 1, helpImg, shaders = Seq(fadeInShdr)):
+    private val helpSpr = new CPImageSprite("help", 0, 45, 1, helpImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX(((ctx.getCanvas.w - this.getWidth) / 2) - 30 - getWidth)
 
-    private val settingsSpr = new CPImageSprite("settings", 0, 30, 1, settingsImg, shaders = Seq(fadeInShdr)):
+    private val settingsSpr = new CPImageSprite("settings", 0, 45, 1, settingsImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX(((ctx.getCanvas.w - this.getWidth) / 2) + 30)
 
     private val underLine = new CPCanvasSprite("underLine"):
         val btns: List[CPImageSprite] = List(helpSpr, startSpr, settingsSpr)
         var btnIndex = 1
+
+        val menuClick = CPSound("sounds/games/gehenna/UIClick.wav")
 
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
@@ -92,8 +131,14 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_LO_D | KEY_RIGHT => btnIndex += 1
-                        case KEY_LO_A | KEY_LEFT => btnIndex -= 1
+                        case KEY_LO_D | KEY_RIGHT =>
+                            btnIndex += 1
+                            menuClick.stop(0)
+                            menuClick.play(0)
+                        case KEY_LO_A | KEY_LEFT =>
+                            btnIndex -= 1
+                            menuClick.stop(0)
+                            menuClick.play(0)
                         case _ => ()
                 case None => ()
 
@@ -107,5 +152,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         startSpr,
         helpSpr,
         settingsSpr,
-        underLine
+        underLine,
+        skullSpr
     )
