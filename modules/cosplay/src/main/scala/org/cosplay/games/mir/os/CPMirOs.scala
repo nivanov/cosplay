@@ -19,6 +19,7 @@ package org.cosplay.games.mir.os
 
 import org.cosplay.*
 import games.mir.*
+import org.cosplay.games.mir.os.progs.mash.CPMirMashProgram
 import os.*
 import progs.*
 
