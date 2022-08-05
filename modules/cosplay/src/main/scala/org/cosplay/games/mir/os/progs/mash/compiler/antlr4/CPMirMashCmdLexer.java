@@ -18,7 +18,7 @@ public class CPMirMashCmdLexer extends Lexer {
 		new PredictionContextCache();
 	public static final int
 		SQUOTE=1, DQUOTE=2, SQSTRING=3, DQSTRING=4, AMP=5, PIPE_IN=6, TO_FILE=7, 
-		APPEND=8, STR=9, WS=10, ErrorChar=11;
+		APPEND_FILE=8, STR=9, WS=10, ErrorChar=11;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -30,7 +30,7 @@ public class CPMirMashCmdLexer extends Lexer {
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"SQUOTE", "DQUOTE", "SQSTRING", "DQSTRING", "AMP", "PIPE_IN", "TO_FILE", 
-			"APPEND", "STR", "WS", "ErrorChar"
+			"APPEND_FILE", "STR", "WS", "ErrorChar"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -44,7 +44,7 @@ public class CPMirMashCmdLexer extends Lexer {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, "SQUOTE", "DQUOTE", "SQSTRING", "DQSTRING", "AMP", "PIPE_IN", "TO_FILE", 
-			"APPEND", "STR", "WS", "ErrorChar"
+			"APPEND_FILE", "STR", "WS", "ErrorChar"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();

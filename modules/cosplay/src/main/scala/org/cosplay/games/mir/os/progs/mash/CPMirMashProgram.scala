@@ -3,19 +3,21 @@
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the '
+ * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an '
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-grammar CPMirMashCmd;
+package org.cosplay.games.mir.os.progs.mash
+
+import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
 
 /*
    _________            ______________
@@ -25,42 +27,14 @@ grammar CPMirMashCmd;
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII GAME ENGINE FOR SCALA3
-            (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+          2D ASCII JVM GAME ENGINE FOR SCALA3
+              (C) 2021 Rowan Games, Inc.
+                ALl rights reserved.
 */
 
-// Parser.
-// =======
-
-mashCmd: pipeline AMP? EOF; // Mash enty point.
-pipeline
-    : prg
-    | pipeline op prg
-    ;
-prg: str argList?;
-argList
-    : str
-    | argList str
-    ;
-str
-    : STR
-    | SQSTRING
-    | DQSTRING
-    ;
-op: PIPE_IN | TO_FILE | APPEND_FILE;
-
-// Lexer.
-// ======
-
-SQUOTE: '\'';
-DQUOTE: '"';
-SQSTRING: SQUOTE (~'\'')* SQUOTE;
-DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
-AMP: '&';
-PIPE_IN: '|';
-TO_FILE: '>';
-APPEND_FILE: '>>';
-STR: ~[\r\n\t ]+;
-WS: [ \r\t\u000C\n]+ -> skip;
-ErrorChar: .;
+/**
+  *
+  */
+class CPMirMashProgram extends CPMirExec:
+    override def mainEntry(ctx: CPMirExecContext): Int = 0 // TODO
+    override def getSizeOnDisk: Long = 1024 // TODO

@@ -40,18 +40,6 @@ public class CPMirMashCmdBaseListener implements CPMirMashCmdListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterItem(CPMirMashCmdParser.ItemContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitItem(CPMirMashCmdParser.ItemContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterPrg(CPMirMashCmdParser.PrgContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -76,13 +64,13 @@ public class CPMirMashCmdBaseListener implements CPMirMashCmdListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArg(CPMirMashCmdParser.ArgContext ctx) { }
+	@Override public void enterStr(CPMirMashCmdParser.StrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArg(CPMirMashCmdParser.ArgContext ctx) { }
+	@Override public void exitStr(CPMirMashCmdParser.StrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -95,18 +83,6 @@ public class CPMirMashCmdBaseListener implements CPMirMashCmdListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitOp(CPMirMashCmdParser.OpContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterQstring(CPMirMashCmdParser.QstringContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitQstring(CPMirMashCmdParser.QstringContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
