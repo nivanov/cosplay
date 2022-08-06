@@ -25,7 +25,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.games.snake.CPSnakeGame"
+$ sbt "project cosplay; runMain org.cosplay.games.snake.CPSnakeGame"
 ```
 #### Maven:
 ```shell

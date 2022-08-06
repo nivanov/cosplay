@@ -18,7 +18,10 @@
 package org.cosplay.games.mir.os
 
 import org.cosplay.*
-import org.cosplay.games.mir.os.progs.*
+import games.mir.*
+import org.cosplay.games.mir.os.progs.mash.CPMirMashProgram
+import os.*
+import progs.*
 
 import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,13 +43,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * MirX.
   *
   * @param fsOpt
-  * @param users
+  * @param usrs
+  * @param player
   */
 @SerialVersionUID(1_0_0L)
-class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Serializable:
-    require(users.exists(_.isRoot))
+class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMirCrewMember) extends Serializable:
+    require(usrs.exists(_.isRoot))
 
-    private val rootUsr = users.find(_.isRoot).get
+    private val rootUsr = usrs.find(_.isRoot).get
     private var rt: CPMirRuntime = _
     private val fs = fsOpt.getOrElse(installFs())
 
@@ -67,7 +71,20 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
         val usr = root.addDirFile("usr", rootUsr)
         val usrBin = usr.addDirFile("bin", rootUsr)
 
-        // Install files.
+        // Add homes for all non-root users.
+        usrs.foreach(usr =>
+            if !usr.isRoot then
+                val usrHome = home.addDirFile(usr.username, usr)
+                usrHome.addDirFile("inbox", usr)
+                usrHome.addDirFile("outbox", usr)
+        )
+
+        val plyInbox = root.dirFile(s"/home/${player.username}/inbox")
+        val plyOutbox = root.dirFile(s"/home/${player.username}/outbox")
+
+        usr.addDirFile("crew", rootUsr)
+
+        // Install executables.
         sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
         sbin.addExecFile("ls", rootUsr, new CPMirLsProgram)
         sbin.addExecFile("login", rootUsr, new CPMirLoginProgram)
@@ -83,47 +100,53 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
         dev.addDeviceFile("uhf", rootUsr, null /* TODO */)
         dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
 
-        // Core module.
+        // 'Core' module.
         dev.addDeviceFile("cm_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("cm_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("cm_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("cm_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("cm_fs", rootUsr, null /* TODO */)
 
-        // Kvant-1 module.
+        // 'Kvant-1' module.
         dev.addDeviceFile("kv1_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv1_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv1_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv1_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv1_fs", rootUsr, null /* TODO */)
 
-        // Kvant-2 module.
+        // 'Kvant-2' module.
         dev.addDeviceFile("kv2_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv2_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv2_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv2_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("kv2_fs", rootUsr, null /* TODO */)
 
-        // Kristal module.
+        // 'Kristal' module.
         dev.addDeviceFile("krs_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("krs_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("krs_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("krs_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("krs_fs", rootUsr, null /* TODO */)
 
-        // Spektr module.
+        // 'Spektr' module.
         dev.addDeviceFile("spk_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_fs", rootUsr, null /* TODO */)
 
-        // Priroda module.
+        // 'Priroda' module.
         dev.addDeviceFile("prd_pwr", rootUsr, null /* TODO */)
         dev.addDeviceFile("prd_oxy", rootUsr, null /* TODO */)
         dev.addDeviceFile("prd_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("prd_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("prd_fs", rootUsr, null /* TODO */)
+
+        val passwd = usrs.map(usr =>
+            val info = if usr.isRoot then "" else usr.player.get.nameCamelCase
+            s"${usr.username}:${usr.id}:$info:/home/${usr.username}"
+        )
+        etc.addRegFile("passwd", rootUsr, true, false, passwd)
 
         new CPMirFileSystem(root)
 
@@ -140,7 +163,7 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], users: Seq[CPMirUser]) extends Ser
     /**
       *
       */
-    def getAllUsers: Seq[CPMirUser] = users
+    def getAllUsers: Seq[CPMirUser] = usrs
 
     /**
       *

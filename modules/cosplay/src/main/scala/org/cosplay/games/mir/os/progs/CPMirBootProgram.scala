@@ -38,10 +38,10 @@ import CPMirConsole.*
 /**
   *
   */
-class CPMirBootProgram extends CPMirProgram:
+class CPMirBootProgram extends CPMirExec:
     private val sz = CPRand.between(1.kb, 20.kb)
 
-    override def mainEntry(ctx: CPMirProgramContext): Int =
+    override def mainEntry(ctx: CPMirExecContext): Int =
         val boot = s"""
             |Award Modular BIOS v4.50G, An Energy Star Ally
             |Copyright (C) 1984-92, Award Software, Inc.
@@ -61,25 +61,28 @@ class CPMirBootProgram extends CPMirProgram:
             ||__/     |__/|__/|__/     |__/  |__/
             |
             |ver 1.12.04, Dec 12, 1993
-            |Copyright (C) 1991-94, RKK "Energia", Russian Federation
+            |Copyright (C) 1991-94, RCS "Energia", Russia
             |
             |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
             |System clock synchronized: ${CPMirClock.formatTimeDate()}
             |
             |""".stripMargin
 
-        def stutter(): Unit = Thread.sleep(CPRand.between(50L, 250L))
+        val fs = ctx.fs
+        val out = ctx.out
 
-        boot.split("\n").foreach(s => {
-            ctx.out.println(s)
-            stutter()
-        })
+        boot.split("\n").foreach(out.println)
 
-        ctx.out.println("Device map:")
-        ctx.fs.dir("/dev").get.list().foreach(f => {
-            ctx.out.println(s"  |- '${f.getAbsolutePath}' initialized.")
-            stutter()
-        })
+        out.println("Device map:")
+        val devDir = fs.dirFile("/dev")
+        devDir.list().foreach(f => out.println(s"  |- '${f.getAbsolutePath}' initialized."))
+
+        out.println()
+        out.println("Users verified:")
+        val passwd = fs.regFile("/etc/passwd").readLines
+        for (line <- passwd)
+            val parts = line.split(":")
+            out.println(s"  |- ${parts.head}, ${parts(2)} -> ${parts(3)}")
 
         // Return code.
         0

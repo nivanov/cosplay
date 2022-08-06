@@ -19,7 +19,7 @@ package org.cosplay.games.mir
 
 import org.apache.commons.text.*
 import org.cosplay.*
-import org.cosplay.games.mir.CPMirPlayer.*
+import org.cosplay.games.mir.CPMirCrewMember.*
 
 import java.util.Locale
 import scala.collection.mutable.ArrayBuffer
@@ -108,7 +108,7 @@ case class CPMirTeamSport(name: String, teams: Seq[String])
   * @param children
   */
 @SerialVersionUID(1_0_0L)
-case class CPMirPlayer(
+case class CPMirCrewMember(
     firstName: String,
     lastName: String,
     birthCountry: String,
@@ -169,7 +169,7 @@ case class CPMirPlayer(
 /**
   *
   */
-object CPMirPlayer:
+object CPMirCrewMember:
     private val sports: Seq[CPMirTeamSport] = Seq(
         CPMirTeamSport("Basketball", Seq(
             "76ers",        "Bucks",        "Bulls",        "Cavaliers",        "Celtics",
@@ -420,12 +420,12 @@ object CPMirPlayer:
     /**
       *
       */
-    def newPlayer: CPMirPlayer =
+    def newPlayer: CPMirCrewMember =
         val birth = CPRand.rand(towns)
         val home = CPRand.rand(towns)
         val kids = ArrayBuffer.empty[CPMirPlayerChild]
         for i <- 0 until CPRand.randInt(1, 4) do kids += newChild()
-        CPMirPlayer(
+        CPMirCrewMember(
             CPRand.rand(boyNames),
             CPRand.rand(familyNames),
             birth._1,

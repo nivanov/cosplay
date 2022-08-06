@@ -17,6 +17,7 @@
 
 package org.cosplay.games.mir.os
 
+import org.cosplay.*
 import java.io.*
 
 /*
@@ -91,11 +92,17 @@ object CPMirOutputStream:
         new CPMirOutputStream:
             private var closed = false
 
+            def stutter(): Unit = Thread.sleep(CPRand.between(50L, 250L))
+
             override def close(): Unit = closed = true
             protected def ensureOpen(): Unit = if closed then throw new IOException("Stream closed.")
             override def write(b: Int): Unit =
                 ensureOpen()
                 con.print(s"${b.toChar}")
+
+            override def println(x: Any): Unit =
+                super.println(x)
+                stutter() // Emulate "slow performance".
             override def print(x: Any): Unit =
                 ensureOpen()
                 con.print(x)

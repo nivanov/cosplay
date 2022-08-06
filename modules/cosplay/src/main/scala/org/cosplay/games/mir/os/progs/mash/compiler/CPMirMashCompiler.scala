@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs
+package org.cosplay.games.mir.os.progs.mash.compiler
 
 /*
    _________            ______________
@@ -30,12 +30,5 @@ package org.cosplay.games.mir.os.progs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import os.*
+class CPMirMashCompiler
 
-/**
-  *
-  */
-class CPMirLsProgram extends CPMirExec:
-    override def mainEntry(ctx: CPMirExecContext): Int = 0 // TODO
-    override def getSizeOnDisk: Long = 1024 // TODO

@@ -59,7 +59,6 @@ object CPUtils:
     private val rt = Runtime.getRuntime
     private val sysMx = ManagementFactory.getOperatingSystemMXBean
     private val memMx = ManagementFactory.getMemoryMXBean
-    private final val HOME_DIR = ".cosplay"
     // Open, unsecure storage.
     private val MIXPANEL_TOKEN = "b5149f93d5a7693c42d1fa558896b70f"
     private val DFLT_MIXPANEL_GUID = "314159265359"
@@ -67,23 +66,7 @@ object CPUtils:
 
     /** */
     final val PING_MSG = "8369926740-3247024617-2096692631-7483698541-4348351625-9412150510-5442257448-4805421296-5646586017-0232477804"
-
-    /**
-      *
-      * @param path
-      */
-    def homePath(path: String): String = homeFile(path).getAbsolutePath
-
-    /**
-      *
-      * @param path
-      */
-    def homeFile(path: String): File =
-        val file = new File(SystemUtils.getUserHome, s"$HOME_DIR/$path")
-        val parent = file.getParentFile
-        if !parent.exists() && !parent.mkdirs() then throw E(s"Failed to create folder: ${parent.getAbsolutePath}")
-        file
-
+    
     /**
       * Safely splits given string into substring by '\n' character, ignoring Windows vs. Unix
       * differences in new line character.

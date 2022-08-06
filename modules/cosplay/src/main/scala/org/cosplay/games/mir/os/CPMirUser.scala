@@ -37,6 +37,17 @@ import games.mir.*
   *
   */
 object CPMirUser:
+    private val ROOT_USER_ID = 0
+    private var usrIdGen = 1
+
+    /**
+      *
+      */
+    private def genUserId: Int =
+        val id = usrIdGen
+        usrIdGen += 1
+        id
+
     /**
       *
       */
@@ -50,9 +61,13 @@ object CPMirUser:
   * @param password
   */
 case class CPMirUser(
-    player: Option[CPMirPlayer],
+    player: Option[CPMirCrewMember],
     isRoot: Boolean,
     username: String,
     password: String
-) extends Serializable
+) extends Serializable:
+    import CPMirUser.*
+
+    /** */
+    final val id = if isRoot then ROOT_USER_ID else genUserId
 

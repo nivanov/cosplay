@@ -25,7 +25,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.games.pong.CPPongGame"
+$ sbt "project cosplay; runMain org.cosplay.games.pong.CPPongGame"
 ```
 #### Maven:
 ```shell

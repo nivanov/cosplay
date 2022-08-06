@@ -44,8 +44,8 @@ import scala.util.Using
 case class CPMirState(
     gameId: String = CPRand.guid6,
     os: CPMirOs,
-    player: CPMirPlayer,
-    crew: Seq[CPMirPlayer],
+    player: CPMirCrewMember,
+    crew: Seq[CPMirCrewMember],
     var logoImg: String,
     var bg: CPColor,
     var fg: CPColor,
@@ -90,7 +90,7 @@ import CPMirStateManager.*
   */
 class CPMirStateManager:
     // Player protagonist.
-    private val player = CPMirPlayer.newPlayer
+    private val player = CPMirCrewMember.newPlayer
     private var os: CPMirOs = _
 
     private var stateFound = false
@@ -120,7 +120,7 @@ class CPMirStateManager:
         for i <- 0 until NPC_CNT do
             var found = false
             while !found do
-                val crewman = CPMirPlayer.newPlayer
+                val crewman = CPMirCrewMember.newPlayer
                 if !crew.exists(p => p != player && (p.username == player.username || p.lastName == player.lastName)) then
                     found = true
                     crew += crewman
@@ -132,7 +132,7 @@ class CPMirStateManager:
         crew.foreach(p => usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
 
         // OS.
-        os = CPMirOs(None, usrs.toSeq) // TODO
+        os = CPMirOs(None, usrs.toSeq, player) 
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 
@@ -167,7 +167,7 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
-        val path = CPUtils.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
+        val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
         Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
         CPEngine.rootLog().info(s"Game saved: $path")
 

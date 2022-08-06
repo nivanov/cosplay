@@ -56,6 +56,12 @@ class CPMirInputStream(impl: InputStream) extends Closeable:
 
     /**
       *
+      */
+    @throws[IOException]
+    def readLines(): Seq[String] = readAllBytes().map(_.toChar).mkString("", "", "").split("[\r\n]").toSeq
+
+    /**
+      *
       * @param arr
       */
     @throws[IOException]
