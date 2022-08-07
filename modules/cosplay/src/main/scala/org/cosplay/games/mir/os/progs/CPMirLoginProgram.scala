@@ -36,5 +36,14 @@ import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
   *
   */
 class CPMirLoginProgram extends CPMirExec:
-    override def mainEntry(ctx: CPMirExecContext): Int = 0 // TODO
-    override def getSizeOnDisk: Long = 1024 // TODO
+    override def mainEntry(ctx: CPMirExecContext): Int =
+        val out = ctx.out
+        val in = ctx.in
+
+        out.println()
+        out.println("Welcome aboard MirX!")
+        out.print("username: ")
+        ctx.con.r
+
+        0
+

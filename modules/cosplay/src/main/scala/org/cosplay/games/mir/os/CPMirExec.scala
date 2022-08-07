@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os
 
+import org.cosplay.CPRand
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -30,10 +32,15 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import org.cosplay.*
+import games.mir.*
+
 /**
   *
   */
 abstract class CPMirExec:
+    private val sz = CPRand.between(10.kb, 50.kb)
+
     /**
       *
       * @param ctx
@@ -43,5 +50,5 @@ abstract class CPMirExec:
     /**
       *
       */
-    def getSizeOnDisk: Long
+    def getSizeOnDisk: Long = sz
 
