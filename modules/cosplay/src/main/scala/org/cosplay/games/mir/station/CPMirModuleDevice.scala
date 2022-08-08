@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir.station
+
+import org.cosplay.games.mir.os.*
 
 /*
    _________            ______________
@@ -30,9 +32,14 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-trait CPMirDeviceDriver:
+trait CPMirModuleDevice:
     /**
       *
       */
-    def init(): Unit
+    def getDriver: CPMirDeviceDriver
+
+    /**
+      *
+      */
+    def getAbbreviation: String
 

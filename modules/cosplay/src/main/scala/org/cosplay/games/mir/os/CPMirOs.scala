@@ -100,6 +100,9 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMi
         dev.addDeviceFile("uhf", rootUsr, null /* TODO */)
         dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
 
+        for mod <- stateMgr.state.station.allModules do
+
+
         // 'Core' module.
         dev.addDeviceFile("cor_pwr", rootUsr, null /* TODO */) // Power supply.
         dev.addDeviceFile("cor_oxy", rootUsr, null /* TODO */) // Oxygen level.
