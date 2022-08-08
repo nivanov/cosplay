@@ -38,12 +38,12 @@ import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
 class CPMirLoginProgram extends CPMirExec:
     override def mainEntry(ctx: CPMirExecContext): Int =
         val out = ctx.out
-        val in = ctx.in
+        val con = ctx.con
 
         out.println()
-        out.println("Welcome aboard MirX!")
-        out.print("username: ")
-        ctx.con.r
+        out.println("Login - Welcome Aboard MirX")
+        out.println("---------------------------")
+        out.print  ("Username: ")
 
         0
 

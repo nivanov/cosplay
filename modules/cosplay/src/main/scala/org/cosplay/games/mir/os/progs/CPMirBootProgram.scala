@@ -76,6 +76,12 @@ class CPMirBootProgram extends CPMirExec:
         devDir.list().foreach(f => out.println(s"  |- '${f.getAbsolutePath}' initialized."))
 
         out.println()
+        out.println("MirX rebooted due to:")
+        out.println("  |- Fault 0x11F0 (power supply interruption)")
+        out.println("  |- Fault 0x10B7 (structural integrity sensors)")
+        out.println("  |- Fault 0x217A (oxygen sensor readout)")
+
+        out.println()
         out.println("Users verified:")
         val passwd = fs.regFile("/etc/passwd").readLines
         for (line <- passwd)
