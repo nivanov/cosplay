@@ -33,6 +33,7 @@ package org.cosplay.games.mir
 import org.cosplay.*
 import impl.*
 import games.mir.os.*
+import games.mir.station.*
 import org.apache.commons.lang3.SystemUtils
 
 import java.io.*
@@ -42,8 +43,10 @@ import scala.util.Using
 
 @SerialVersionUID(1_0_0L)
 case class CPMirState(
-    gameId: String = CPRand.guid6,
+    gameId: String,
     os: CPMirOs,
+    var osRebootCnt: Int,
+    station: CPMirStation,
     player: CPMirCrewMember,
     crew: Seq[CPMirCrewMember],
     var logoImg: String,
@@ -92,6 +95,7 @@ class CPMirStateManager:
     // Player protagonist.
     private val player = CPMirCrewMember.newPlayer
     private var os: CPMirOs = _
+    private var station: CPMirStation = _
 
     private var stateFound = false
     private var stateLoadFailed = false
@@ -133,11 +137,16 @@ class CPMirStateManager:
 
         // OS.
         os = CPMirOs(None, usrs.toSeq, player) 
+        // Station sim.
+        station = CPMirStation()
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 
         CPMirState(
+            gameId = CPRand.guid6,
             os = os,
+            station = station,
+            osRebootCnt = 0,
             player = player,
             crew = crew.toSeq,
             bg = DFLT_BG,

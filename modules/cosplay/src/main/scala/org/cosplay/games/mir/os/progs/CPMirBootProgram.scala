@@ -75,11 +75,15 @@ class CPMirBootProgram extends CPMirExec:
         val devDir = fs.dirFile("/dev")
         devDir.list().foreach(f => out.println(s"  |- '${f.getAbsolutePath}' initialized."))
 
-        out.println()
-        out.println("MirX rebooted due to:")
-        out.println("  |- Fault 0x11F0 (power supply interruption)")
-        out.println("  |- Fault 0x10B7 (structural integrity sensors)")
-        out.println("  |- Fault 0x217A (oxygen sensor readout)")
+
+
+        // Only show the 1st time.
+        if stateMgr.state.osRebootCnt == 1 then
+            out.println()
+            out.println("MirX rebooted due to:")
+            out.println("  |- Fault 0x11F0 (power supply interruption)")
+            out.println("  |- Fault 0x10B7 (docking module 'dck' - structural integrity sensors)")
+            out.println("  |- Fault 0x217A (docking module 'dck' - oxygen sensor readout)")
 
         out.println()
         out.println("Users verified:")

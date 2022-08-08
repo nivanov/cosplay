@@ -101,11 +101,11 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMi
         dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
 
         // 'Core' module.
-        dev.addDeviceFile("cm_pwr", rootUsr, null /* TODO */)
-        dev.addDeviceFile("cm_oxy", rootUsr, null /* TODO */)
-        dev.addDeviceFile("cm_fd", rootUsr, null /* TODO */)
-        dev.addDeviceFile("cm_ap", rootUsr, null /* TODO */)
-        dev.addDeviceFile("cm_fs", rootUsr, null /* TODO */)
+        dev.addDeviceFile("cor_pwr", rootUsr, null /* TODO */) // Power supply.
+        dev.addDeviceFile("cor_oxy", rootUsr, null /* TODO */) // Oxygen level.
+        dev.addDeviceFile("cor_fd", rootUsr, null /* TODO */) // Fire detector.
+        dev.addDeviceFile("cor_ap", rootUsr, null /* TODO */) // Atmospheric pressure.
+        dev.addDeviceFile("cor_fs", rootUsr, null /* TODO */) // Fire suppression.
 
         // 'Kvant-1' module.
         dev.addDeviceFile("kv1_pwr", rootUsr, null /* TODO */)
@@ -134,6 +134,13 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMi
         dev.addDeviceFile("spk_fd", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_ap", rootUsr, null /* TODO */)
         dev.addDeviceFile("spk_fs", rootUsr, null /* TODO */)
+
+        // 'Docking' module.
+        dev.addDeviceFile("dck_pwr", rootUsr, null /* TODO */)
+        dev.addDeviceFile("dck_oxy", rootUsr, null /* TODO */)
+        dev.addDeviceFile("dck_fd", rootUsr, null /* TODO */)
+        dev.addDeviceFile("dck_ap", rootUsr, null /* TODO */)
+        dev.addDeviceFile("dck_fs", rootUsr, null /* TODO */)
 
         // 'Priroda' module.
         dev.addDeviceFile("prd_pwr", rootUsr, null /* TODO */)
@@ -174,6 +181,8 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMi
       *
       */
     def boot(con: CPMirConsole): Unit =
+        stateMgr.state.osRebootCnt += 1
+
         rt = CPMirRuntime(fs, con)
 
         rt.exec(
