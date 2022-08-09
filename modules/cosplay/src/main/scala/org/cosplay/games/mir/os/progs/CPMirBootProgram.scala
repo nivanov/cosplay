@@ -71,11 +71,15 @@ class CPMirBootProgram extends CPMirExec:
 
         boot.split("\n").foreach(out.println)
 
+        out.println()
+        out.println("Pressurized modules:")
+        for mod ← stateMgr.state.station.allModules do
+            out.println(s"  |- ${mod.getName} ('${mod.getAbbreviation}') - OK.")
+
+        out.println()
         out.println("Device map:")
         val devDir = fs.dirFile("/dev")
         devDir.list().foreach(f => out.println(s"  |- '${f.getAbsolutePath}' initialized."))
-
-
 
         // Only show the 1st time.
         if stateMgr.state.osRebootCnt == 1 then
@@ -88,7 +92,7 @@ class CPMirBootProgram extends CPMirExec:
         out.println()
         out.println("Users verified:")
         val passwd = fs.regFile("/etc/passwd").readLines
-        for (line <- passwd)
+        for line <- passwd do
             val parts = line.split(":")
             out.println(s"  |- ${parts.head}, ${parts(2)} -> ${parts(3)}")
 

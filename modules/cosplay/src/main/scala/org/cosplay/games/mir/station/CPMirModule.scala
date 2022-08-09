@@ -40,13 +40,32 @@ object CPMirModule:
       *
       * @param name
       * @param abbr
+      * @param launchDate
+      * @param pwrDev
+      * @param oxyDev
+      * @param fdrDev
+      * @param fspDev
+      * @param apsDev
       */
-    def apply(name: String, abbr: String, launchDate: Date): CPMirModule =
+    def apply(
+        name: String,
+        abbr: String,
+        launchDate: Date,
+        pwrDev: CPMirModuleDevice,
+        oxyDev: CPMirModuleDevice,
+        fdrDev: CPMirModuleDevice,
+        fspDev: CPMirModuleDevice,
+        apsDev: CPMirModuleDevice
+        ): CPMirModule =
         new CPMirModule:
             override def getName: String = name
             override def getAbbreviation: String = abbr
             override def getLaunchDate: Date = launchDate
-
+            override def getAirPressureDevice: CPMirModuleDevice = apsDev
+            override def getFireDetectorDevice: CPMirModuleDevice = fdrDev
+            override def getFireSuppressionDevice: CPMirModuleDevice = fspDev
+            override def getOxygenDetectorDevice: CPMirModuleDevice = oxyDev
+            override def getPowerSupplyDevice: CPMirModuleDevice = pwrDev
 /**
   *
   */
@@ -69,26 +88,25 @@ trait CPMirModule:
     /**
       *
       */
-    val powerSupplyDevPath: String = s"/dev/${getAbbreviation}_pwr"
+    def getPowerSupplyDevice: CPMirModuleDevice
 
     /**
       *
       */
-    val oxygenLevelDevPath: String = s"/dev/${getAbbreviation}_oxy"
+    def getOxygenDetectorDevice: CPMirModuleDevice
 
     /**
       *
       */
-    val fireDetectorDevPath: String = s"/dev/${getAbbreviation}_fdr"
+    def getFireDetectorDevice: CPMirModuleDevice
 
     /**
       *
       */
-    val atmospherePressureDevPath: String = s"/dev/${getAbbreviation}_aps"
+    def getFireSuppressionDevice: CPMirModuleDevice
 
     /**
       *
       */
-    val fireSuppressionDevPath: String = s"/dev/${getAbbreviation}_fsp"
-
+    def getAirPressureDevice: CPMirModuleDevice
 

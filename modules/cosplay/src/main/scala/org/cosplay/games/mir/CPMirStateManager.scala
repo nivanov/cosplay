@@ -135,10 +135,10 @@ class CPMirStateManager:
         val usrs = mutable.ArrayBuffer(rootUsr)
         crew.foreach(p => usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
 
-        // OS.
-        os = CPMirOs(None, usrs.toSeq, player) 
         // Station sim.
         station = CPMirStation()
+        // OS.
+        os = CPMirOs(None, usrs.toSeq, player, station) 
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 

@@ -20,6 +20,7 @@ package org.cosplay.games.mir.os
 import org.cosplay.*
 import games.mir.*
 import org.cosplay.games.mir.os.progs.mash.CPMirMashProgram
+import org.cosplay.games.mir.station.{CPMirCrewMember, CPMirModuleDevice, CPMirStation}
 import os.*
 import progs.*
 
@@ -47,7 +48,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * @param player
   */
 @SerialVersionUID(1_0_0L)
-class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMirCrewMember) extends Serializable:
+class CPMirOs(
+    fsOpt: Option[CPMirFileSystem],
+    usrs: Seq[CPMirUser],
+    player: CPMirCrewMember,
+    station: CPMirStation) extends Serializable:
     require(usrs.exists(_.isRoot))
 
     private val rootUsr = usrs.find(_.isRoot).get
@@ -100,57 +105,17 @@ class CPMirOs(fsOpt: Option[CPMirFileSystem], usrs: Seq[CPMirUser], player: CPMi
         dev.addDeviceFile("uhf", rootUsr, null /* TODO */)
         dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
 
-        for mod <- stateMgr.state.station.allModules do
+        def addDeviceFile(modAbbr: String, modDev: CPMirModuleDevice): Unit =
+            dev.addDeviceFile(s"$modAbbr-${modDev.getAbbreviation}", rootUsr, modDev.getDriver)
+            ()
 
-
-        // 'Core' module.
-        dev.addDeviceFile("cor_pwr", rootUsr, null /* TODO */) // Power supply.
-        dev.addDeviceFile("cor_oxy", rootUsr, null /* TODO */) // Oxygen level.
-        dev.addDeviceFile("cor_fd", rootUsr, null /* TODO */) // Fire detector.
-        dev.addDeviceFile("cor_ap", rootUsr, null /* TODO */) // Atmospheric pressure.
-        dev.addDeviceFile("cor_fs", rootUsr, null /* TODO */) // Fire suppression.
-
-        // 'Kvant-1' module.
-        dev.addDeviceFile("kv1_pwr", rootUsr, null /* TODO */)
-        dev.addDeviceFile("kv1_oxy", rootUsr, null /* TODO */)
-        dev.addDeviceFile("kv1_fd", rootUsr, null /* TODO */)
-        dev.addDeviceFile("kv1_ap", rootUsr, null /* TODO */)
-        dev.addDeviceFile("kv1_fs", rootUsr, null /* TODO */)
-
-        // 'Kvant-2' module.
-        dev.addDeviceFile("kv2_pwr", rootUsr, null /* TODO */)
-        dev.addDeviceFile("kv2_oxy", rootUsr, null /* TODO */)
-        dev.addDeviceFile("kv2_fd", rootUsr, null /* TODO */)
-        dev.addDeviceFile("kv2_ap", rootUsr, null /* TODO */)
-        dev.addDeviceFile("kv2_fs", rootUsr, null /* TODO */)
-
-        // 'Kristal' module.
-        dev.addDeviceFile("krs_pwr", rootUsr, null /* TODO */)
-        dev.addDeviceFile("krs_oxy", rootUsr, null /* TODO */)
-        dev.addDeviceFile("krs_fd", rootUsr, null /* TODO */)
-        dev.addDeviceFile("krs_ap", rootUsr, null /* TODO */)
-        dev.addDeviceFile("krs_fs", rootUsr, null /* TODO */)
-
-        // 'Spektr' module.
-        dev.addDeviceFile("spk_pwr", rootUsr, null /* TODO */)
-        dev.addDeviceFile("spk_oxy", rootUsr, null /* TODO */)
-        dev.addDeviceFile("spk_fd", rootUsr, null /* TODO */)
-        dev.addDeviceFile("spk_ap", rootUsr, null /* TODO */)
-        dev.addDeviceFile("spk_fs", rootUsr, null /* TODO */)
-
-        // 'Docking' module.
-        dev.addDeviceFile("dck_pwr", rootUsr, null /* TODO */)
-        dev.addDeviceFile("dck_oxy", rootUsr, null /* TODO */)
-        dev.addDeviceFile("dck_fd", rootUsr, null /* TODO */)
-        dev.addDeviceFile("dck_ap", rootUsr, null /* TODO */)
-        dev.addDeviceFile("dck_fs", rootUsr, null /* TODO */)
-
-        // 'Priroda' module.
-        dev.addDeviceFile("prd_pwr", rootUsr, null /* TODO */)
-        dev.addDeviceFile("prd_oxy", rootUsr, null /* TODO */)
-        dev.addDeviceFile("prd_fd", rootUsr, null /* TODO */)
-        dev.addDeviceFile("prd_ap", rootUsr, null /* TODO */)
-        dev.addDeviceFile("prd_fs", rootUsr, null /* TODO */)
+        for mod <- station.allModules do
+            val modAbbr = mod.getAbbreviation
+            addDeviceFile(modAbbr, mod.getOxygenDetectorDevice)
+            addDeviceFile(modAbbr, mod.getAirPressureDevice)
+            addDeviceFile(modAbbr, mod.getFireDetectorDevice)
+            addDeviceFile(modAbbr, mod.getFireSuppressionDevice)
+            addDeviceFile(modAbbr, mod.getPowerSupplyDevice)
 
         val passwd = usrs.map(usr =>
             val info = if usr.isRoot then "" else usr.player.get.nameCamelCase

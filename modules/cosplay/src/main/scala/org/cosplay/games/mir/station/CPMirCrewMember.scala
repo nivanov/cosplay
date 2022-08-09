@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.station
 
 import org.apache.commons.text.*
 import org.cosplay.*
-import org.cosplay.games.mir.CPMirCrewMember.*
+import org.cosplay.games.mir.*
+import org.cosplay.games.mir.station.CPMirCrewMember.*
 
 import java.util.Locale
 import scala.collection.mutable.ArrayBuffer
@@ -50,7 +51,7 @@ enum CPMirPlayerRole:
     /** Chief mission pilot. */
     case ROLE_PILOT
 
-import CPMirPlayerRole.*
+import org.cosplay.games.mir.station.CPMirPlayerRole.*
 
 /**
   *

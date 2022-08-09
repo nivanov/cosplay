@@ -42,13 +42,75 @@ object CPMirStation:
     def apply(): CPMirStation =
         val fmt = SimpleDateFormat("dd MMMM yyyy")
         val modules = Seq(
-            CPMirModule("Core Module", "cor", fmt.parse("19 Feb 1986")),
-            CPMirModule("Kvant-1", "kv1", fmt.parse("31 Mar 1987")),
-            CPMirModule("Kvant-2", "kv2", fmt.parse("26 Nov 1989")),
-            CPMirModule("Kristal", "krs", fmt.parse("31 May 1990")),
-            CPMirModule("Spektr", "spk", fmt.parse("20 May 1995")),
-            CPMirModule("Docking Module", "dck", fmt.parse("15 Nov 1995")),
-            CPMirModule("Priroda", "prd", fmt.parse("26 Apr 1996"))
+            CPMirModule(
+                "Core Module", "cor",
+                fmt.parse("19 Feb 1986"),
+                CPMirModuleDevice(null /* TODO */, "pwr"),
+                CPMirModuleDevice(null /* TODO */, "oxy"),
+                CPMirModuleDevice(null /* TODO */, "fdr"),
+                CPMirModuleDevice(null /* TODO */, "fsp"),
+                CPMirModuleDevice(null /* TODO */, "aps")
+            ),
+            CPMirModule(
+                "Kvant-1",
+                "kv1",
+                fmt.parse("31 Mar 1987"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Kvant-2",
+                "kv2",
+                fmt.parse("26 Nov 1989"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Kristal",
+                "krs",
+                fmt.parse("31 May 1990"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Spektr",
+                "spk",
+                fmt.parse("20 May 1995"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Docking Module",
+                "dck",
+                fmt.parse("15 Nov 1995"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Priroda",
+                "prd",
+                fmt.parse("26 Apr 1996"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            )
         )
 
         new CPMirStation:
