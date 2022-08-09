@@ -45,6 +45,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val startImg = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
     private val settingsImg = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
     private val helpImg = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
+    //private val songNameSprite = new CPLabelSprite("name", 0, 0, 1, CPSystemFont, "Song : ", BLOOD_RED)
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -125,8 +126,14 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
             val btn = btns(btnIndex)
 
-            canv.drawLine(btn.getX - 1, btn.getY - 1, btn.getX + btn.getWidth, btn.getY - 1, 1, '_'&C2)
-            canv.drawLine(btn.getX - 1, btn.getY, btn.getX + btn.getWidth, btn.getY, 1, '_'&C2)
+            // Top line.
+            canv.drawLine(btn.getX - 1, btn.getY - 1, btn.getX + btn.getWidth, btn.getY - 1, 1, '_'&NEON_BLUE)
+
+            // Middle line.
+            //canv.drawLine(btn.getX - 1, btn.getY, btn.getX + btn.getWidth, btn.getY, 1, '_'&NEON_BLUE)
+
+            // Bottom line.
+            canv.drawLine(btn.getX, btn.getY + 1, btn.getX + btn.getWidth - 1, btn.getY + 1, 1, '-'&NEON_BLUE)
 
             ctx.getKbEvent match
                 case Some(evt) =>
@@ -146,6 +153,15 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 btnIndex = btns.length - 1
             else if btnIndex > btns.length - 1 then
                 btnIndex = 0
+
+    private val songNameSprite = new CPLabelSprite("name", 0, 0, 1, CPSystemFont, "Song : ", BLOOD_RED)
+        def update(ctx: CPSceneObjectContext): Unit =
+            val canv = ctx.getCanvas
+
+            if ctx.getFrameCount % 10 == 0 then
+                println("Move")
+
+
 
     addObjects(
         titleSpr,

@@ -39,6 +39,8 @@ import org.cosplay.prefabs.scenes.*
 val BLUE_BLACK = CPColor("0x00000F")
 val ORIG_BLUE = CPColor("0x003040")
 val BLOOD_RED = CPColor("#eb1b0c")
+val ORANGE_ORANGE = CPColor("#EB8B0C")
+val NEON_BLUE = CPColor("#0CDCEB")
 val C1 = CPColor("0xFF8000") // Orange.
 val C2 = CPColor("0x33FF33") // Green (bright).
 val C3 = CPColor("0x008C46") // Green (dark).
