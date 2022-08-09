@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -30,12 +30,41 @@ package org.cosplay.games.mir.os.progs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import os.*
-
 /**
   *
+  * @param args
+  * @param con
+  * @param rt
+  * @param fs
+  * @param workDir
+  * @param env
+  * @param usr
+  * @param in
+  * @param out
+  * @param err
   */
-class CPMirLsProgram extends CPMirExec:
-    override def mainEntry(ctx: CPMirExecContext): Int = 0 // TODO
-    override def getSizeOnDisk: Long = 1024 // TODO
+case class CPMirExecContext(
+    args: Seq[String],
+    con: CPMirConsole,
+    rt: CPMirRuntime,
+    fs: CPMirFileSystem,
+    workDir: CPMirDirectoryFile,
+    env: Map[String, String],
+    usr: CPMirUser,
+    in: CPMirInputStream,
+    out: CPMirOutputStream,
+    err: CPMirOutputStream
+):
+    @transient private var killed = false
+
+    /**
+      *
+      * @return
+      */
+    def isKilled: Boolean = killed
+
+    /**
+      *
+      */
+    def kill(): Unit = killed = true
+

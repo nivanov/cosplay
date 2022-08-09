@@ -41,7 +41,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.games.mir.CPMirGame"
+$ sbt "project cosplay; runMain org.cosplay.games.mir.CPMirGame"
 ```
 #### Maven:
 ```shell

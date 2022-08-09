@@ -30,7 +30,7 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-trait CPMirDeviceDriver(file: CPMirDeviceFile):
+trait CPMirDeviceDriver:
     /**
       *
       */

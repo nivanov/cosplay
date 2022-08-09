@@ -28,16 +28,6 @@ public interface CPMirMashCmdListener extends ParseTreeListener {
 	 */
 	void exitPipeline(CPMirMashCmdParser.PipelineContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPMirMashCmdParser#item}.
-	 * @param ctx the parse tree
-	 */
-	void enterItem(CPMirMashCmdParser.ItemContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CPMirMashCmdParser#item}.
-	 * @param ctx the parse tree
-	 */
-	void exitItem(CPMirMashCmdParser.ItemContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link CPMirMashCmdParser#prg}.
 	 * @param ctx the parse tree
 	 */
@@ -58,15 +48,15 @@ public interface CPMirMashCmdListener extends ParseTreeListener {
 	 */
 	void exitArgList(CPMirMashCmdParser.ArgListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPMirMashCmdParser#arg}.
+	 * Enter a parse tree produced by {@link CPMirMashCmdParser#str}.
 	 * @param ctx the parse tree
 	 */
-	void enterArg(CPMirMashCmdParser.ArgContext ctx);
+	void enterStr(CPMirMashCmdParser.StrContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPMirMashCmdParser#arg}.
+	 * Exit a parse tree produced by {@link CPMirMashCmdParser#str}.
 	 * @param ctx the parse tree
 	 */
-	void exitArg(CPMirMashCmdParser.ArgContext ctx);
+	void exitStr(CPMirMashCmdParser.StrContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CPMirMashCmdParser#op}.
 	 * @param ctx the parse tree
@@ -77,14 +67,4 @@ public interface CPMirMashCmdListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitOp(CPMirMashCmdParser.OpContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CPMirMashCmdParser#qstring}.
-	 * @param ctx the parse tree
-	 */
-	void enterQstring(CPMirMashCmdParser.QstringContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CPMirMashCmdParser#qstring}.
-	 * @param ctx the parse tree
-	 */
-	void exitQstring(CPMirMashCmdParser.QstringContext ctx);
 }

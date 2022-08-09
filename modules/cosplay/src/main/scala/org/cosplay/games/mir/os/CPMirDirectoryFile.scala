@@ -34,6 +34,8 @@ import org.cosplay.*
 import org.cosplay.games.mir.*
 import org.cosplay.games.mir.os.*
 import org.cosplay.games.mir.os.CPMirFileType.*
+
+import java.io.*
 import scala.collection.mutable
 
 /**
@@ -65,7 +67,7 @@ class CPMirDirectoryFile(
     parent: Option[CPMirDirectoryFile],
     otherAcs: Boolean,
     otherMod: Boolean
-) extends CPMirFile(FT_DIR, name, owner, parent, otherAcs, otherMod) with Iterable[CPMirFile]:
+) extends CPMirFile(FT_DIR, name, owner, parent, otherAcs, otherMod) with CPMirFileDirectory with Iterable[CPMirFile]:
     private val children = mutable.ArrayBuffer.empty[CPMirFile]
 
     /**
@@ -131,24 +133,30 @@ class CPMirDirectoryFile(
       * @param owner User owner of this file.
       * @param otherAcs Can others read or execute. Owner can do anything.
       * @param otherMod Can others change or delete. Owner can do anything.
+      * @param lines Optional file content as sequence of individual lines.
       */
     @throws[CPException]
-    def addRegFile(name: String, owner: CPMirUser, otherAcs: Boolean = false, otherMod: Boolean = false): CPMirRegularFile =
-        val f = new CPMirRegularFile(name, owner, this, otherAcs, otherMod)
+    @throws[IOException]
+    def addRegFile(name: String, owner: CPMirUser, otherAcs: Boolean = false, otherMod: Boolean = false, lines: Seq[String] =  Seq.empty): CPMirRegularFile =
+        val f = new CPMirRegularFile(name, owner, this, otherAcs, otherMod, lines)
         addFile(f)
+        if lines.nonEmpty then
+            val out = f.getOutput(false)
+            try lines.foreach(out.println)
+            finally out.close()
         f
 
     /**
       *
       * @param name Name of file (not including its path).
       * @param owner User owner of this file.
-      * @param prg
+      * @param exe Executable program.
       * @param otherAcs Can others read or execute. Owner can do anything.
       * @param otherMod Can others change or delete. Owner can do anything.
       */
     @throws[CPException]
-    def addExecFile(name: String, owner: CPMirUser, prg: CPMirProgram, otherAcs: Boolean = false, otherMod: Boolean = false): CPMirExecFile =
-        val f = new CPMirExecFile(name, owner, this, prg, otherAcs, otherMod)
+    def addExecFile(name: String, owner: CPMirUser, exe: CPMirExec, otherAcs: Boolean = false, otherMod: Boolean = false): CPMirExecFile =
+        val f = new CPMirExecFile(name, owner, this, exe, otherAcs, otherMod)
         addFile(f)
         f
 
@@ -243,10 +251,3 @@ class CPMirDirectoryFile(
             case x: T => Some(x)
             case _ => None
         case None => None
-
-    /**
-      *
-      * @param path Relative or fully qualified path.
-      */
-    def exist(path: String): Boolean = resolve(path).isDefined
-

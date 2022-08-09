@@ -44,7 +44,7 @@ val FG = stateMgr.state.fg
 val FG_LITE = FG.lighter(.4f)
 val FG_DARK = FG.darker(.4f)
 val BG_PX = ' '&&(BG, BG)
-val SND_HOME = "sounds/games/mir"
+val SND_HOME = "mir/sounds"
 val markup = CPMarkup(
     FG,
     Option(BG),

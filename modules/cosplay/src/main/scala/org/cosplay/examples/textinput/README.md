@@ -13,7 +13,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.examples.textinput.CPTextInputExample"
+$ sbt "project cosplay; runMain org.cosplay.examples.textinput.CPTextInputExample"
 ```
 #### Maven:
 ```shell

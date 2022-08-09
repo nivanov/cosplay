@@ -33,23 +33,22 @@ grammar CPMirMashCmd;
 // Parser.
 // =======
 
-mashCmd: pipeline EOF; // Mash enty point.
+mashCmd: pipeline AMP? EOF; // Mash enty point.
 pipeline
-    : item
-    | pipeline op item
+    : prg
+    | pipeline op prg
     ;
-item: prg AMP?;
-prg: STR argList?;
+prg: str argList?;
 argList
-    : arg
-    | argList arg
+    : str
+    | argList str
     ;
-arg: STR | qstring;
-op: PIPE_IN | TO_FILE | APPEND;
-qstring
-    : SQSTRING
+str
+    : STR
+    | SQSTRING
     | DQSTRING
     ;
+op: PIPE_IN | TO_FILE | APPEND_FILE;
 
 // Lexer.
 // ======
@@ -61,7 +60,7 @@ DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double qu
 AMP: '&';
 PIPE_IN: '|';
 TO_FILE: '>';
-APPEND: '>>';
+APPEND_FILE: '>>';
 STR: ~[\r\n\t ]+;
 WS: [ \r\t\u000C\n]+ -> skip;
 ErrorChar: .;

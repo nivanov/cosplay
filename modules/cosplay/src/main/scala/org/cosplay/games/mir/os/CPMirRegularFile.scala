@@ -30,9 +30,14 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
+import java.io.*
+import org.cosplay.*
+import games.mir.*
+import games.mir.os.*
+import CPMirFileType.*
+import org.cosplay.impl.CPUtils
+
+import java.io.FileInputStream
 
 /**
   *
@@ -49,4 +54,58 @@ class CPMirRegularFile(
     otherAcs: Boolean,
     otherMod: Boolean,
     lines: Seq[String] = Seq.empty
-) extends CPMirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod)
+) extends CPMirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod):
+    private val file = CPEngine.homeFile(CPRand.guid)
+
+    /**
+      *
+      * @param name
+      * @param owner
+      * @param parent
+      * @param otherAcs
+      * @param otherMod
+      * @param path
+      */
+    def this(
+        name: String,
+        owner: CPMirUser,
+        parent: CPMirDirectoryFile,
+        otherAcs: Boolean,
+        otherMod: Boolean,
+        path: String
+    ) = this(name, owner, parent, otherAcs, otherMod, CPUtils.readAllStrings(path))
+
+    /**
+      *
+      */
+    @throws[IOException]
+    def readLines: Seq[String] =
+        val in = getInput
+        try in.readLines()
+        finally in.close()
+
+    /**
+      *
+      * @param lines
+      * @param append
+      */
+    @throws[IOException]
+    def writeLines(lines: Seq[String], append: Boolean = false): Unit =
+        val out = getOutput(append)
+        try lines.foreach(out.println)
+        finally out.close()
+
+    /**
+      *
+      */
+    @throws[IOException]
+    def getInput: CPMirInputStream =
+        CPMirInputStream.nativeStream(new FileInputStream(file))
+
+    /**
+      *
+      * @param append
+      */
+    @throws[IOException]
+    def getOutput(append: Boolean = false): CPMirOutputStream =
+        CPMirOutputStream.nativeStream(new FileOutputStream(file, append))

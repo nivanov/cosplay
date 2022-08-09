@@ -38,7 +38,7 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param prg
+  * @param exe Executable program.
   * @param otherAcs Can others read or execute. Owner can do anything.
   * @param otherMod Can others change or delete. Owner can do anything.
   */
@@ -46,14 +46,14 @@ class CPMirExecFile(
     name: String,
     owner: CPMirUser,
     parent: CPMirDirectoryFile,
-    prg: CPMirProgram,
+    exe: CPMirExec,
     otherAcs: Boolean,
     otherMod: Boolean
 ) extends CPMirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod):
-    setSize(prg.getSizeOnDisk)
+    setSize(exe.getSizeOnDisk)
 
     /**
       *
       */
-    def getProgram: CPMirProgram = prg
+    def getExec: CPMirExec = exe
 

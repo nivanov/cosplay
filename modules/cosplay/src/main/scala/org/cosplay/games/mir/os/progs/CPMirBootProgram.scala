@@ -38,10 +38,8 @@ import CPMirConsole.*
 /**
   *
   */
-class CPMirBootProgram extends CPMirProgram:
-    private val sz = CPRand.between(1.kb, 20.kb)
-
-    override def mainEntry(ctx: CPMirProgramContext): Int =
+class CPMirBootProgram extends CPMirExec:
+    override def mainEntry(ctx: CPMirExecContext): Int =
         val boot = s"""
             |Award Modular BIOS v4.50G, An Energy Star Ally
             |Copyright (C) 1984-92, Award Software, Inc.
@@ -68,23 +66,31 @@ class CPMirBootProgram extends CPMirProgram:
             |
             |""".stripMargin
 
-        def stutter(): Unit = Thread.sleep(CPRand.between(50L, 250L))
+        val fs = ctx.fs
+        val out = ctx.out
 
-        boot.split("\n").foreach(s => {
-            ctx.out.println(s)
-            stutter()
-        })
+        boot.split("\n").foreach(out.println)
 
-        ctx.out.println("Device map:")
-        ctx.fs.dir("/dev").get.list().foreach(f => {
-            ctx.out.println(s"  |- '${f.getAbsolutePath}' initialized.")
-            stutter()
-        })
+        out.println("Device map:")
+        val devDir = fs.dirFile("/dev")
+        devDir.list().foreach(f => out.println(s"  |- '${f.getAbsolutePath}' initialized."))
 
-        ctx.out.println("Users verified:")
-        // TODO: read '/etc/passwd' file.
+
+
+        // Only show the 1st time.
+        if stateMgr.state.osRebootCnt == 1 then
+            out.println()
+            out.println("MirX rebooted due to:")
+            out.println("  |- Fault 0x11F0 (power supply interruption)")
+            out.println("  |- Fault 0x10B7 (docking module 'dck' - structural integrity sensors)")
+            out.println("  |- Fault 0x217A (docking module 'dck' - oxygen sensor readout)")
+
+        out.println()
+        out.println("Users verified:")
+        val passwd = fs.regFile("/etc/passwd").readLines
+        for (line <- passwd)
+            val parts = line.split(":")
+            out.println(s"  |- ${parts.head}, ${parts(2)} -> ${parts(3)}")
 
         // Return code.
         0
-
-    override def getSizeOnDisk: Long = sz

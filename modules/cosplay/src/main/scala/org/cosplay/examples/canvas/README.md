@@ -13,7 +13,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.examples.canvas.CPCanvasExample"
+$ sbt "project cosplay; runMain org.cosplay.examples.canvas.CPCanvasExample"
 ```
 #### Maven:
 ```shell

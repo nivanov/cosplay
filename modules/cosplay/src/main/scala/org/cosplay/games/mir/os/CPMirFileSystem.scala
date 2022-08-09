@@ -35,10 +35,10 @@ import org.cosplay.*
 
 /**
   *
-  * @param root
+  * @param root Root directory.
   */
 @SerialVersionUID(1_0_0L)
-class CPMirFileSystem(val root: CPMirDirectoryFile) extends Serializable:
+class CPMirFileSystem(val root: CPMirDirectoryFile) extends CPMirFileDirectory with Serializable:
     require(root.getOwner.isRoot)
     require(root.getName.isBlank)
 
@@ -47,19 +47,6 @@ class CPMirFileSystem(val root: CPMirDirectoryFile) extends Serializable:
       * @param path Relative to root or fully qualified path.
       */
     def file[T <: CPMirFile](path: String): Option[T] = root.file(path)
-
-    /**
-      *
-      * @param path Relative to root or fully qualified path.
-      */
-    def dir(path: String): Option[CPMirDirectoryFile] = file[CPMirDirectoryFile](path)
-
-
-    /**
-      *
-      * @param path Relative to root or fully qualified path.
-      */
-    def exist(path: String): Boolean = root.resolve(path).isDefined
 
 /**
   *

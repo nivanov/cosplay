@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir.station
+
+import java.text.SimpleDateFormat
 
 /*
    _________            ______________
@@ -32,39 +34,32 @@ package org.cosplay.games.mir.os
 
 /**
   *
-  * @param args
-  * @param con
-  * @param rt
-  * @param fs
-  * @param workDir
-  * @param env
-  * @param usr
-  * @param in
-  * @param out
-  * @param err
   */
-case class CPMirProgramContext(
-    args: Seq[String],
-    con: CPMirConsole,
-    rt: CPMirRuntime,
-    fs: CPMirFileSystem,
-    workDir: CPMirDirectoryFile,
-    env: Map[String, String],
-    usr: CPMirUser,
-    in: CPMirInputStream,
-    out: CPMirOutputStream,
-    err: CPMirOutputStream
-):
-    @transient private var killed = false
-
-    /**
-      *
-      * @return
-      */
-    def isKilled: Boolean = killed
-
+object CPMirStation:
     /**
       *
       */
-    def kill(): Unit = killed = true
+    def apply(): CPMirStation =
+        val fmt = SimpleDateFormat("dd MMMM yyyy")
+        val modules = Seq(
+            CPMirModule("Core Module", "cor", fmt.parse("19 Feb 1986")),
+            CPMirModule("Kvant-1", "kv1", fmt.parse("31 Mar 1987")),
+            CPMirModule("Kvant-2", "kv2", fmt.parse("26 Nov 1989")),
+            CPMirModule("Kristal", "krs", fmt.parse("31 May 1990")),
+            CPMirModule("Spektr", "spk", fmt.parse("20 May 1995")),
+            CPMirModule("Docking Module", "dck", fmt.parse("15 Nov 1995")),
+            CPMirModule("Priroda", "prd", fmt.parse("26 Apr 1996"))
+        )
+
+        new CPMirStation:
+            override def allModules: Seq[CPMirModule] = modules
+
+/**
+  *
+  */
+trait CPMirStation:
+    /**
+      *
+      */
+    def allModules: Seq[CPMirModule]
 

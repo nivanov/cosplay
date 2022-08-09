@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs
+package org.cosplay.games.mir.os
+
+import org.cosplay.CPRand
 
 /*
    _________            ______________
@@ -30,12 +32,23 @@ package org.cosplay.games.mir.os.progs
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import os.*
+import org.cosplay.*
+import games.mir.*
 
 /**
   *
   */
-class CPMirLsProgram extends CPMirExec:
-    override def mainEntry(ctx: CPMirExecContext): Int = 0 // TODO
-    override def getSizeOnDisk: Long = 1024 // TODO
+abstract class CPMirExec:
+    private val sz = CPRand.between(10.kb, 50.kb)
+
+    /**
+      *
+      * @param ctx
+      */
+    def mainEntry(ctx: CPMirExecContext): Int
+
+    /**
+      *
+      */
+    def getSizeOnDisk: Long = sz
+

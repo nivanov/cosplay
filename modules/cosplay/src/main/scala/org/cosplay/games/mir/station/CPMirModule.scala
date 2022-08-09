@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir.station
+
+import java.util.Date
 
 /*
    _________            ______________
@@ -33,15 +35,60 @@ package org.cosplay.games.mir.os
 /**
   *
   */
-abstract class CPMirProgram:
+object CPMirModule:
     /**
       *
-      * @param ctx
+      * @param name
+      * @param abbr
       */
-    def mainEntry(ctx: CPMirProgramContext): Int
+    def apply(name: String, abbr: String, launchDate: Date): CPMirModule =
+        new CPMirModule:
+            override def getName: String = name
+            override def getAbbreviation: String = abbr
+            override def getLaunchDate: Date = launchDate
+
+/**
+  *
+  */
+trait CPMirModule:
+    /**
+      *
+      */
+    def getName: String
 
     /**
       *
       */
-    def getSizeOnDisk: Long
+    def getLaunchDate: Date
+
+    /**
+      *
+      */
+    def getAbbreviation: String
+
+    /**
+      *
+      */
+    val powerSupplyDevPath: String = s"/dev/${getAbbreviation}_pwr"
+
+    /**
+      *
+      */
+    val oxygenLevelDevPath: String = s"/dev/${getAbbreviation}_oxy"
+
+    /**
+      *
+      */
+    val fireDetectorDevPath: String = s"/dev/${getAbbreviation}_fdr"
+
+    /**
+      *
+      */
+    val atmospherePressureDevPath: String = s"/dev/${getAbbreviation}_aps"
+
+    /**
+      *
+      */
+    val fireSuppressionDevPath: String = s"/dev/${getAbbreviation}_fsp"
+
 

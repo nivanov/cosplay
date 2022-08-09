@@ -13,7 +13,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.examples.fonts.CPFontsExample"
+$ sbt "project cosplay; runMain org.cosplay.examples.fonts.CPFontsExample"
 ```
 #### Maven:
 ```shell

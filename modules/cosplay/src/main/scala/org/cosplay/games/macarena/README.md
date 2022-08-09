@@ -25,7 +25,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "package cosplay; runMain org.cosplay.games.macarena.CPMacarenaGame"
+$ sbt "project cosplay; runMain org.cosplay.games.macarena.CPMacarenaGame"
 ```
 #### Maven:
 ```shell
