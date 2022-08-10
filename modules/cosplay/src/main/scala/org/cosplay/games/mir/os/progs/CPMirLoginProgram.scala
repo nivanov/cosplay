@@ -41,9 +41,9 @@ class CPMirLoginProgram extends CPMirExec:
         val con = ctx.con
 
         out.println()
-        out.println("Login - Welcome Aboard MirX")
-        out.println("---------------------------")
-        out.print  ("Username: ")
+        out.println("| Login - Welcome Aboard MirX")
+        out.println("|>---------------------------")
+        out.print  ("| Username: ")
 
         0
 
