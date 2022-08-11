@@ -73,7 +73,7 @@ class CPMirBootProgram extends CPMirExec:
 
         out.println()
         out.println("Pressurized modules:")
-        for mod ← stateMgr.state.station.allModules do
+        for mod <- stateMgr.state.station.allModules do
             out.println(s"  |- ${mod.getName} ('${mod.getAbbreviation}') - OK.")
 
         out.println()

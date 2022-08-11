@@ -79,7 +79,7 @@ class CPMirOs(
         // Add homes for all non-root users.
         usrs.foreach(usr =>
             if !usr.isRoot then
-                val usrHome = home.addDirFile(usr.username, usr)
+                val usrHome = home.addDirFile(usr.getUsername, usr)
                 usrHome.addDirFile("inbox", usr)
                 usrHome.addDirFile("outbox", usr)
         )
@@ -118,8 +118,8 @@ class CPMirOs(
             addDeviceFile(modAbbr, mod.getPowerSupplyDevice)
 
         val passwd = usrs.map(usr =>
-            val info = if usr.isRoot then "" else usr.player.get.nameCamelCase
-            s"${usr.username}:${usr.id}:$info:/home/${usr.username}"
+            val info = if usr.isRoot then "" else usr.getPlayer.get.nameCamelCase
+            s"${usr.getUsername}:${usr.getId}:$info:/home/${usr.getUsername}"
         )
         etc.addRegFile("passwd", rootUsr, true, false, passwd)
 

@@ -51,24 +51,58 @@ object CPMirUser:
 
     /**
       *
+      * @param username
+      * @param password
+      * @param player
       */
-    def mkRoot(): CPMirUser = CPMirUser(None, true, "root", CPRand.guid6)
+    def apply(username: String, password: String, player: Option[CPMirCrewMember]): CPMirUser =
+        require(username != null && username.nonEmpty)
+        require(password != null && password.nonEmpty)
+
+        new CPMirUser :
+            private val id = genUserId
+
+            override def getPlayer: Option[CPMirCrewMember] = player
+            override def getId: Int = id
+            override def getPassword: String = password
+            override def getUsername: String = username
+            override def isRoot: Boolean = false
+
+    /**
+      *
+      */
+    def mkRoot(): CPMirUser = new CPMirUser:
+        override def getPlayer: Option[CPMirCrewMember] = None
+        override def getId: Int = ROOT_USER_ID
+        override def getPassword: String = CPRand.guid6
+        override def getUsername: String = "root"
+        override def isRoot: Boolean = true
 
 /**
   *
-  * @param player
-  * @param isRoot
-  * @param username
-  * @param password
   */
-case class CPMirUser(
-    player: Option[CPMirCrewMember],
-    isRoot: Boolean,
-    username: String,
-    password: String
-) extends Serializable:
-    import CPMirUser.*
+trait CPMirUser:
+    /**
+      *
+      */
+    def getPlayer: Option[CPMirCrewMember]
 
-    /** */
-    final val id = if isRoot then ROOT_USER_ID else genUserId
+    /**
+      *
+      */
+    def isRoot: Boolean
 
+    /**
+      *
+      */
+    def getUsername: String
+
+    /**
+      *
+      */
+    def getPassword: String
+
+    /**
+      *
+      */
+    def getId: Int

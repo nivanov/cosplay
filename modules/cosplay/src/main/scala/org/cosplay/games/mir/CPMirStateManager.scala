@@ -131,9 +131,9 @@ class CPMirStateManager:
 
         // Users.
         // NOTE: root password is not guessable in the game - but can be obtained.
-        val rootUsr = CPMirUser(None, true, "root", CPRand.guid6)
+        val rootUsr = CPMirUser.mkRoot()
         val usrs = mutable.ArrayBuffer(rootUsr)
-        crew.foreach(p => usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
+        crew.foreach(p => usrs += CPMirUser(p.username, CPRand.rand(p.passwords), Option(p)))
 
         // Station sim.
         station = CPMirStation()
