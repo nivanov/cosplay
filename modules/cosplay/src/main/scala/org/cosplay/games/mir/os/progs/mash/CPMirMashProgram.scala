@@ -17,7 +17,7 @@
 
 package org.cosplay.games.mir.os.progs.mash
 
-import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
+import org.cosplay.games.mir.os.{CPMirExecutable, CPMirExecutableContext}
 
 /*
    _________            ______________
@@ -35,6 +35,6 @@ import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
 /**
   *
   */
-class CPMirMashProgram extends CPMirExec:
-    override def mainEntry(ctx: CPMirExecContext): Int = 0 // TODO
+class CPMirMashProgram extends CPMirExecutable:
+    override def mainEntry(ctx: CPMirExecutableContext): Int = 0 // TODO
     override def getSizeOnDisk: Long = 1024 // TODO

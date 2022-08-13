@@ -30,41 +30,30 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.*
+import org.cosplay.games.mir.os.CPMirFileType.*
+
 /**
   *
-  * @param args
-  * @param con
-  * @param rt
-  * @param fs
-  * @param workDir
-  * @param env
-  * @param usr
-  * @param in
-  * @param out
-  * @param err
+  * @param name Name of file (not including its path).
+  * @param owner User owner of this file.
+  * @param exe Executable program.
+  * @param otherAcs Can others read or execute. Owner can do anything.
+  * @param otherMod Can others change or delete. Owner can do anything.
   */
-case class CPMirExecContext(
-    args: Seq[String],
-    con: CPMirConsole,
-    rt: CPMirRuntime,
-    fs: CPMirFileSystem,
-    workDir: CPMirDirectoryFile,
-    env: Map[String, String],
-    usr: CPMirUser,
-    in: CPMirInputStream,
-    out: CPMirOutputStream,
-    err: CPMirOutputStream
-):
-    @transient private var killed = false
-
-    /**
-      *
-      * @return
-      */
-    def isKilled: Boolean = killed
+class CPMirExecutableFile(
+    name: String,
+    owner: CPMirUser,
+    parent: CPMirDirectoryFile,
+    exe: CPMirExecutable,
+    otherAcs: Boolean,
+    otherMod: Boolean
+) extends CPMirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod):
+    setSize(exe.getSizeOnDisk)
 
     /**
       *
       */
-    def kill(): Unit = killed = true
+    def getExec: CPMirExecutable = exe
 

@@ -17,7 +17,7 @@
 
 package org.cosplay.games.mir.os.progs
 
-import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
+import org.cosplay.games.mir.os.{CPMirExecutable, CPMirExecutableContext}
 
 /*
    _________            ______________
@@ -35,8 +35,8 @@ import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
 /**
   *
   */
-class CPMirLoginProgram extends CPMirExec:
-    override def mainEntry(ctx: CPMirExecContext): Int =
+class CPMirLoginProgram extends CPMirExecutable:
+    override def mainEntry(ctx: CPMirExecutableContext): Int =
         val out = ctx.out
         val con = ctx.con
 

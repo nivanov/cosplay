@@ -65,15 +65,15 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
       * @return
       */
     def exec(
-        parent: Option[CPMirProcess],
-        file: CPMirExecFile,
-        args: Seq[String],
-        workDir: CPMirDirectoryFile,
-        usr: CPMirUser,
-        env: Map[String, String],
-        in: CPMirInputStream = CPMirInputStream.nullStream(),
-        out: CPMirOutputStream = CPMirOutputStream.consoleStream(con),
-        err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
+                parent: Option[CPMirProcess],
+                file: CPMirExecutableFile,
+                args: Seq[String],
+                workDir: CPMirDirectoryFile,
+                usr: CPMirUser,
+                env: Map[String, String],
+                in: CPMirInputStream = CPMirInputStream.nullStream(),
+                out: CPMirOutputStream = CPMirOutputStream.consoleStream(con),
+                err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
         var queued = true
         var code: Option[Int] = None
         val submitTs = CPMirClock.now()
@@ -82,7 +82,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
         val pid = pidGen
         pidGen += 1
 
-        val ctx = CPMirExecContext(
+        val ctx = CPMirExecutableContext(
             args,
             con,
             this,
@@ -112,7 +112,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             override def getOwner: CPMirUser = usr
             override def getPid: Long = pid
             override def getParent: Option[CPMirProcess] = parent
-            override def getProgramFile: CPMirExecFile = file
+            override def getProgramFile: CPMirExecutableFile = file
             override def getWorkingDirectory: CPMirDirectoryFile = workDir
             override def getArguments: Seq[String] = args
             override def getStartTime: Long = startTs

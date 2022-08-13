@@ -49,7 +49,7 @@ trait CPMirProcess:
     /**
       *
       */
-    def getProgramFile: CPMirExecFile
+    def getProgramFile: CPMirExecutableFile
 
     /**
       *

@@ -155,8 +155,8 @@ class CPMirDirectoryFile(
       * @param otherMod Can others change or delete. Owner can do anything.
       */
     @throws[CPException]
-    def addExecFile(name: String, owner: CPMirUser, exe: CPMirExec, otherAcs: Boolean = false, otherMod: Boolean = false): CPMirExecFile =
-        val f = new CPMirExecFile(name, owner, this, exe, otherAcs, otherMod)
+    def addExecFile(name: String, owner: CPMirUser, exe: CPMirExecutable, otherAcs: Boolean = false, otherMod: Boolean = false): CPMirExecutableFile =
+        val f = new CPMirExecutableFile(name, owner, this, exe, otherAcs, otherMod)
         addFile(f)
         f
 

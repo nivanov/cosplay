@@ -38,14 +38,14 @@ import games.mir.*
 /**
   *
   */
-abstract class CPMirExec:
+abstract class CPMirExecutable:
     private val sz = CPRand.between(10.kb, 50.kb)
 
     /**
       *
       * @param ctx
       */
-    def mainEntry(ctx: CPMirExecContext): Int
+    def mainEntry(ctx: CPMirExecutableContext): Int
 
     /**
       *
