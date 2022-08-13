@@ -45,7 +45,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val startImg = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
     private val settingsImg = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
     private val helpImg = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
-    //private val songNameSprite = new CPLabelSprite("name", 0, 0, 1, CPSystemFont, "Song : ", BLOOD_RED)
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -84,6 +83,18 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&BLOOD_RED.darker(0.55)
         )
 
+    private def songPlayingImg(): CPImage =
+        new CPArrayImage(
+            prepSeq(
+                """
+                  |
+                  |Now Playing:
+                  |
+                  """
+            ),
+            (ch, _, _) => ch&NEON_BLUE
+        )
+
     private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -115,11 +126,11 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX(((ctx.getCanvas.w - this.getWidth) / 2) + 30)
 
-    private val underLine = new CPCanvasSprite("underLine"):
-        val btns: List[CPImageSprite] = List(helpSpr, startSpr, settingsSpr)
-        var btnIndex = 1
+    private val underLine: CPCanvasSprite = new CPCanvasSprite("underLine"):
+        private val btns: List[CPImageSprite] = List(helpSpr, startSpr, settingsSpr)
+        private var btnIndex = 1
 
-        val menuClick = CPSound("sounds/games/gehenna/UIClick.wav")
+        private val menuClick = CPSound("sounds/games/gehenna/UIClick.wav")
 
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
@@ -154,14 +165,28 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             else if btnIndex > btns.length - 1 then
                 btnIndex = 0
 
-    private val songNameSprite = new CPLabelSprite("name", 0, 0, 1, CPSystemFont, "Song : ", BLOOD_RED)
-        def update(ctx: CPSceneObjectContext): Unit =
+    private val nowPlaySpr = new CPImageSprite(x = 10, y = 10, z = 4, songPlayingImg(), false, Seq(fadeInShdr)):
+        private val exitSpeed = -1.5f
+        private val normSpeed = -1f
+        private val focusSpeed = -0.5f
+        private var speed = normSpeed
+
+        private var currX = 0f
+
+        override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
-            if ctx.getFrameCount % 10 == 0 then
-                println("Move")
+            currX += speed
+            setX(currX.toInt)
 
+            if (getX >= (canv.w / 2)) && ((getX - getWidth) <= (canv.w / 2)) then
+                speed = focusSpeed
+            else
+                speed = normSpeed
 
+            if currX <= -getWidth - 100 then
+                currX = canv.w + 10
+                speed = normSpeed
 
     addObjects(
         titleSpr,
@@ -169,5 +194,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         helpSpr,
         settingsSpr,
         underLine,
-        skullSpr
+        skullSpr,
+        nowPlaySpr
     )
