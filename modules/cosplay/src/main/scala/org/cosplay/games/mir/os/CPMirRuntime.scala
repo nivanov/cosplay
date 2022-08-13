@@ -65,15 +65,15 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
       * @return
       */
     def exec(
-                parent: Option[CPMirProcess],
-                file: CPMirExecutableFile,
-                args: Seq[String],
-                workDir: CPMirDirectoryFile,
-                usr: CPMirUser,
-                env: Map[String, String],
-                in: CPMirInputStream = CPMirInputStream.nullStream(),
-                out: CPMirOutputStream = CPMirOutputStream.consoleStream(con),
-                err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
+        parent: Option[CPMirProcess],
+        file: CPMirExecutableFile,
+        args: Seq[String],
+        workDir: CPMirDirectoryFile,
+        usr: CPMirUser,
+        env: Map[String, String],
+        in: CPMirInputStream = CPMirInputStream.nullStream(),
+        out: CPMirOutputStream = CPMirOutputStream.consoleStream(con),
+        err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
         var queued = true
         var code: Option[Int] = None
         val submitTs = CPMirClock.now()

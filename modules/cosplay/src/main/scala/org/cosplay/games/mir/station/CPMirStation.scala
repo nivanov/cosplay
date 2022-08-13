@@ -119,7 +119,7 @@ object CPMirStation:
 /**
   *
   */
-trait CPMirStation:
+trait CPMirStation extends Serializable:
     /**
       *
       */

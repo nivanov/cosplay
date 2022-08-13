@@ -69,7 +69,7 @@ object CPMirModule:
 /**
   *
   */
-trait CPMirModule:
+trait CPMirModule extends Serializable:
     /**
       *
       */

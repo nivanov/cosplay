@@ -48,7 +48,7 @@ object CPMirModuleDevice:
 /**
   *
   */
-trait CPMirModuleDevice:
+trait CPMirModuleDevice extends Serializable:
     /**
       *
       */

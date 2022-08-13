@@ -81,7 +81,7 @@ object CPMirUser:
 /**
   *
   */
-trait CPMirUser:
+trait CPMirUser extends Serializable:
     /**
       *
       */

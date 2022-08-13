@@ -73,7 +73,7 @@ class CPGuiLog(cat: String) extends CPLog:
         log.inheritFrom(this)
         log
     override def getCategory: String = cat
-    override def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit =
+    override def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit =
         if isEnabled(lvl) then
             CPGuiLog.addLog(nthFrame, lvl, cat, obj, ex)
 
@@ -759,7 +759,7 @@ object CPGuiLog:
       * @param obj
       * @param ex
       */
-    private def addLog(nthFrame: Int, lvl: CPLogLevel, cat: String, obj: Any, ex: Exception): Unit =
+    private def addLog(nthFrame: Int, lvl: CPLogLevel, cat: String, obj: Any, ex: Throwable): Unit =
         if frameCnt % nthFrame == 0 then
             if frame == null then initGui()
             val objStr = if obj == null then "null" else obj.toString

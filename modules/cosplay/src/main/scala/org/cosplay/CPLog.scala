@@ -147,7 +147,7 @@ trait CPLog:
       * @param obj Object to log.
       * @param ex Optional exception to log. Default value is `null`.
       */
-    def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Exception = null): Unit = log(nthFrame, lvl, obj, getCategory, ex)
+    def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, ex: Throwable = null): Unit = log(nthFrame, lvl, obj, getCategory, ex)
 
     /**
       * Logs given message with throttling and explicit category.
@@ -159,7 +159,7 @@ trait CPLog:
       * @param cat Explicit log category.
       * @param ex Exception to log. Can be `null`.
       */
-    def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit
+    def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit
 
     /**
       * Gets a new logger for given category. New logger will inherit log levels and throttle value.
@@ -278,7 +278,7 @@ trait CPLog:
       * @param obj Object to log.
       * @param ex Optional exception to log. Default value is `null`.
       */
-    def error(obj: Any, ex: Exception = null): Unit = log(throttle, ERROR, obj, ex)
+    def error(obj: Any, ex: Throwable = null): Unit = log(throttle, ERROR, obj, ex)
 
     /**
       * Logs object with [[CPLogLevel.ERROR]] level and throttling.
@@ -288,7 +288,7 @@ trait CPLog:
       * @param obj Object to log.
       * @param ex Optional exception to log. Default value is `null`.
       */
-    def errorx(nthFrame: Int, obj: Any, ex: Exception = null): Unit = log(nthFrame, ERROR, obj, ex)
+    def errorx(nthFrame: Int, obj: Any, ex: Throwable = null): Unit = log(nthFrame, ERROR, obj, ex)
 
     /**
       * Logs object with [[CPLogLevel.FATAL]] level.

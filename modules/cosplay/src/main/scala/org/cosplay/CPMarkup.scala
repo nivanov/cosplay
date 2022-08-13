@@ -126,7 +126,7 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
 
     /**
       * Converts sequence of characters into list of [[CPPixel pixels]] based on this markup.
-      * See [[CPArrayImage.apply()]] method for convenient way if creating an image from the list of pixel
+      * See [[CPArrayImage.apply()]] method for a convenient way of creating an image from the list of pixel
       * representing text.
       *
       * @param in Input sequence of characters.

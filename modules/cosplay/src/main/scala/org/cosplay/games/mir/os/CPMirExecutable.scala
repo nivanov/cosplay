@@ -38,7 +38,7 @@ import games.mir.*
 /**
   *
   */
-abstract class CPMirExecutable:
+abstract class CPMirExecutable extends Serializable:
     private val sz = CPRand.between(10.kb, 50.kb)
 
     /**
