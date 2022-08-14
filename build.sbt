@@ -38,6 +38,7 @@ val scalaParColVer = "1.0.4"
 val commonsLang3Ver = "3.12.0"
 val commonsMath3Ver = "3.6.1"
 val commonsTextVer = "1.9"
+val commonsIoVer = "2.11.0"
 val scalaReflectVer = "1.1.4"
 val scalaTestVer = "3.2.13"
 val junitVer = "5.9.0"
@@ -90,6 +91,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         // Dependencies.
         libraryDependencies += "org.apache.commons" % "commons-math3" % commonsMath3Ver,
         libraryDependencies += "org.apache.commons" % "commons-lang3" % commonsLang3Ver,
+        libraryDependencies += "commons-io" % "commons-io" % commonsIoVer,
         libraryDependencies += "org.apache.commons" % "commons-text" % commonsTextVer,
         libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % log4jVer,
         libraryDependencies += "org.apache.logging.log4j" % "log4j-api" % log4jVer,

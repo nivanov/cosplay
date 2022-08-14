@@ -26,6 +26,13 @@ import org.cosplay.CPFIGLetFont.*
 import org.cosplay.games.gehenna.shaders.TextDripShader
 import org.cosplay.prefabs.shaders.*
 
+import java.io.*
+import org.apache.commons.io.*
+
+import java.nio.charset.Charset
+import scala.io.Source
+import scala.jdk.CollectionConverters.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -45,6 +52,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val startImg = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
     private val settingsImg = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
     private val helpImg = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
+
+    private var menuSong = CPSound("sounds/games/gehenna/intro song.wav")
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -106,13 +115,17 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private def titleImage(): CPImage = FIG_OGRE.render(titleText, BLOOD_RED).trimBg()
 
     private val titleSpr = new CPImageSprite("title", 0, 0, 1, titleImage(), shaders = Seq(fadeInShdr, TextDripShader)):
-        private val introSong = CPSound("sounds/games/gehenna/intro song.wav")
+        private var introSong = menuSong
 
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
             if !introSong.isPlaying then
                 introSong.loop(3000)
+
+            if introSong != menuSong then
+                introSong.stop(0)
+                introSong = menuSong
 
     private val startSpr = new CPImageSprite("start", 0, 43, 1, startImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -165,16 +178,33 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             else if btnIndex > btns.length - 1 then
                 btnIndex = 0
 
-    private val nowPlaySpr = new CPImageSprite(x = 10, y = 10, z = 4, songPlayingImg(), false, Seq(fadeInShdr)):
-        private val exitSpeed = -1.5f
-        private val normSpeed = -1f
-        private val focusSpeed = -0.5f
+    private val nowPlaySpr = new CPImageSprite(x = 0, y = 10, z = 4, songPlayingImg(), false, Seq(fadeInShdr)):
+        private final val normSpeed = -1f
+        private final val focusSpeed = -0.7f
         private var speed = normSpeed
-
         private var currX = 0f
+
+        private final val lvlDir ="gehenna/levels"
+        private final val lvlDirFile = new File(lvlDir)
+
+        private def readLines(res: String): Seq[String] =
+            IOUtils.readLines(getClass.getClassLoader().getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
+
+        override def onStart(): Unit =
+            super.onStart()
+            val dirs = readLines(lvlDir)
+            val rndDir = CPRand.rand(dirs.toSeq)
+            val lvlTxt = readLines(s"$lvlDir/$rndDir/level.txt")
+            menuSong = CPSound(s"$lvlDir/$rndDir/song.wav")
+            lvlTxt.foreach(println)
+
+            val songName = lvlTxt(1).replace(".LevelSongName:", "")
+            println(songName)
 
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
+
+            setY(canv.h - 7)
 
             currX += speed
             setX(currX.toInt)

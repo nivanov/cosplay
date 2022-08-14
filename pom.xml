@@ -113,7 +113,8 @@
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
         <commons.math.ver>3.6.1</commons.math.ver>
         <commons.text.ver>1.9</commons.text.ver>
-        <scala3.reflect.ver>1.1.4</scala3.reflect.ver>
+        <commons.io.ver>2.11.0</commons.io.ver>
+        <scala3.reflect.er>1.1.4</scala3.reflect.er>
         <scalatest.ver>3.2.13</scalatest.ver>
         <junit.ver>5.9.0</junit.ver>
         <openjfx.ver>17.0.2</openjfx.ver>
@@ -152,6 +153,12 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-runtime</artifactId>
                 <version>${org.antlr4.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.ver}</version>
             </dependency>
 
             <dependency>
