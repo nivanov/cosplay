@@ -37,7 +37,7 @@ import org.cosplay.games.mir.os.CPMirClock
   * @param name
   */
 @SerialVersionUID(1_0_0L)
-case class CPMirPlayerBadge(name: String):
+case class CPMirPlayerBadge(name: String) extends Serializable:
     private var earnedMs = 0L
     private var earned = false
 

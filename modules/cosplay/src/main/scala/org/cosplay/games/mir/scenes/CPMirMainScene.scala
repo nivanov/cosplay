@@ -35,6 +35,9 @@ import sprites.*
                ALl rights reserved.
 */
 
+/**
+  *
+  */
 object CPMirMainScene extends CPMirCrtSceneBase("main", "bg5.wav"):
     private val conSpr = CPMirConsoleSprite()
 
@@ -46,7 +49,7 @@ object CPMirMainScene extends CPMirCrtSceneBase("main", "bg5.wav"):
 
     override def onStart(): Unit =
         super.onStart()
-        stateMgr.state.os.boot(conSpr)
+        stateMgr.state.os.bootUp(conSpr)
 
 
 

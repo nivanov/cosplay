@@ -41,128 +41,73 @@ import scala.concurrent.ExecutionContext.Implicits.global
 */
 
 /**
-  * MirX.
   *
-  * @param fsOpt
-  * @param usrs
-  * @param player
   */
-@SerialVersionUID(1_0_0L)
-class CPMirOs(
-    fsOpt: Option[CPMirFileSystem],
-    usrs: Seq[CPMirUser],
-    player: CPMirCrewMember,
-    station: CPMirStation) extends Serializable:
-    require(usrs.exists(_.isRoot))
-
-    private val rootUsr = usrs.find(_.isRoot).get
-    private var rt: CPMirRuntime = _
-    private val fs = fsOpt.getOrElse(installFs())
-
+object CPMirOs:
     /**
-      * Initializes brand new file system.
+      *
+      * @param fs
+      * @param usrs
+      * @param player
       */
-    private def installFs(): CPMirFileSystem =
-        val root = CPMirDirectoryFile.mkRoot(rootUsr)
+    def apply(
+        fs: CPMirFileSystem,
+        usrs: Seq[CPMirUser],
+        player: CPMirCrewMember
+    ): CPMirOs =
+        require(usrs.exists(_.isRoot))
 
-        // Install directory structure.
-        val bin = root.addDirFile("bin", rootUsr)
-        val sbin = root.addDirFile("sbin", rootUsr)
-        val dev = root.addDirFile("dev", rootUsr)
-        val home = root.addDirFile("home", rootUsr)
-        root.addDirFile("tmp", rootUsr)
-        val etc = root.addDirFile("etc", rootUsr)
-        val lib = root.addDirFile("lib", rootUsr)
-        val usr = root.addDirFile("usr", rootUsr)
-        val usrBin = usr.addDirFile("bin", rootUsr)
+        val rootUsr = usrs.find(_.isRoot).get
 
-        // Add homes for all non-root users.
-        usrs.foreach(usr =>
-            if !usr.isRoot then
-                val usrHome = home.addDirFile(usr.getUsername, usr)
-                usrHome.addDirFile("inbox", usr)
-                usrHome.addDirFile("outbox", usr)
-        )
+        new CPMirOs:
+            override def getFs: CPMirFileSystem = fs
+            override def bootUp(con: CPMirConsole): Unit =
+                stateMgr.state.osRebootCnt += 1
 
-        val plyInbox = root.dirFile(s"/home/${player.username}/inbox")
-        val plyOutbox = root.dirFile(s"/home/${player.username}/outbox")
+                CPMirRuntime(fs, con).exec(
+                    None,
+                    fs.file("/sbin/boot").get,
+                    Seq.empty,
+                    fs.file("/").get,
+                    rootUsr,
+                    Map.empty
+                )
 
-        usr.addDirFile("crew", rootUsr)
+            override def getAllUsers: Seq[CPMirUser] = usrs
+            override def getRootUser: CPMirUser = rootUsr
+            override def shutDown(): Unit = ???
+            override def restart(): Unit = ???
 
-        // Install executables.
-        sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
-        sbin.addExecFile("ls", rootUsr, new CPMirLsProgram)
-        sbin.addExecFile("login", rootUsr, new CPMirLoginProgram)
-        sbin.addExecFile("mash", rootUsr, new CPMirMashProgram)
-
-        // Install devices
-        dev.addDeviceFile("radio", rootUsr, null /* TODO */)
-        dev.addDeviceFile("stela1", rootUsr, null /* TODO */)
-        dev.addDeviceFile("stela2", rootUsr, null /* TODO */)
-        dev.addDeviceFile("travers", rootUsr, null /* TODO */)
-        dev.addDeviceFile("lira", rootUsr, null /* TODO */)
-        dev.addDeviceFile("alt", rootUsr, null /* TODO */)
-        dev.addDeviceFile("uhf", rootUsr, null /* TODO */)
-        dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
-
-        def addDeviceFile(modAbbr: String, modDev: CPMirModuleDevice): Unit =
-            dev.addDeviceFile(s"$modAbbr-${modDev.getAbbreviation}", rootUsr, modDev.getDriver)
-            ()
-
-        for mod <- station.allModules do
-            val modAbbr = mod.getAbbreviation
-            addDeviceFile(modAbbr, mod.getOxygenDetectorDevice)
-            addDeviceFile(modAbbr, mod.getAirPressureDevice)
-            addDeviceFile(modAbbr, mod.getFireDetectorDevice)
-            addDeviceFile(modAbbr, mod.getFireSuppressionDevice)
-            addDeviceFile(modAbbr, mod.getPowerSupplyDevice)
-
-        val passwd = usrs.map(usr =>
-            val info = if usr.isRoot then "" else usr.getPlayer.get.nameCamelCase
-            s"${usr.getUsername}:${usr.getId}:$info:/home/${usr.getUsername}"
-        )
-        etc.addRegFile("passwd", rootUsr, true, false, passwd)
-
-        new CPMirFileSystem(root)
+/**
+  * MirX.
+  */
+trait CPMirOs extends Serializable:
+    /**
+      *
+      */
+    def getFs: CPMirFileSystem
 
     /**
       *
       */
-    def getFs: CPMirFileSystem = fs
+    def getRootUser: CPMirUser
 
     /**
       *
       */
-    def getRootUser: CPMirUser = rootUsr
+    def getAllUsers: Seq[CPMirUser]
 
     /**
       *
       */
-    def getAllUsers: Seq[CPMirUser] = usrs
+    def restart(): Unit
+
+    /**
+      * @param con
+      */
+    def bootUp(con: CPMirConsole): Unit
 
     /**
       *
       */
-    def restart(): Unit = ???
-
-    /**
-      *
-      */
-    def boot(con: CPMirConsole): Unit =
-        stateMgr.state.osRebootCnt += 1
-
-        rt = CPMirRuntime(fs, con)
-
-        rt.exec(
-            None,
-            fs.file("/sbin/boot").get,
-            Seq.empty,
-            fs.file("/").get,
-            rootUsr,
-            Map.empty
-        )
-
-    /**
-      *
-      */
-    def shutdown(): Unit = ???
+    def shutDown(): Unit

@@ -33,6 +33,8 @@ package org.cosplay.games.mir
 import org.cosplay.*
 import impl.*
 import games.mir.os.*
+import progs.*
+import progs.mash.*
 import games.mir.station.*
 import org.apache.commons.lang3.SystemUtils
 
@@ -137,8 +139,69 @@ class CPMirStateManager:
 
         // Station sim.
         station = CPMirStation()
+
+        // Init file system.
+        val root = CPMirDirectoryFile.mkRoot(rootUsr)
+
+        // Install directory structure.
+        val bin = root.addDirFile("bin", rootUsr)
+        val sbin = root.addDirFile("sbin", rootUsr)
+        val dev = root.addDirFile("dev", rootUsr)
+        val home = root.addDirFile("home", rootUsr)
+        root.addDirFile("tmp", rootUsr)
+        val etc = root.addDirFile("etc", rootUsr)
+        val lib = root.addDirFile("lib", rootUsr)
+        val usr = root.addDirFile("usr", rootUsr)
+        val usrBin = usr.addDirFile("bin", rootUsr)
+
+        // Add homes for all non-root users.
+        usrs.foreach(usr =>
+            if !usr.isRoot then
+                val usrHome = home.addDirFile(usr.getUsername, usr)
+                usrHome.addDirFile("inbox", usr)
+                usrHome.addDirFile("outbox", usr)
+        )
+
+        val plyInbox = root.dirFile(s"/home/${player.username}/inbox")
+        val plyOutbox = root.dirFile(s"/home/${player.username}/outbox")
+
+        usr.addDirFile("crew", rootUsr)
+
+        // Install executables.
+        sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
+        sbin.addExecFile("ls", rootUsr, new CPMirLsProgram)
+        sbin.addExecFile("login", rootUsr, new CPMirLoginProgram)
+        sbin.addExecFile("mash", rootUsr, new CPMirMashProgram)
+
+        // Install devices
+        dev.addDeviceFile("radio", rootUsr, null /* TODO */)
+        dev.addDeviceFile("stela1", rootUsr, null /* TODO */)
+        dev.addDeviceFile("stela2", rootUsr, null /* TODO */)
+        dev.addDeviceFile("travers", rootUsr, null /* TODO */)
+        dev.addDeviceFile("lira", rootUsr, null /* TODO */)
+        dev.addDeviceFile("alt", rootUsr, null /* TODO */)
+        dev.addDeviceFile("uhf", rootUsr, null /* TODO */)
+        dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
+
+        def addDeviceFile(modAbbr: String, modDev: CPMirModuleDevice): Unit =
+            dev.addDeviceFile(s"$modAbbr-${modDev.getAbbreviation}", rootUsr, modDev.getDriver)
+
+        for mod <- station.allModules do
+            val modAbbr = mod.getAbbreviation
+            addDeviceFile(modAbbr, mod.getOxygenDetectorDevice)
+            addDeviceFile(modAbbr, mod.getAirPressureDevice)
+            addDeviceFile(modAbbr, mod.getFireDetectorDevice)
+            addDeviceFile(modAbbr, mod.getFireSuppressionDevice)
+            addDeviceFile(modAbbr, mod.getPowerSupplyDevice)
+
+        val passwd = usrs.map(usr =>
+            val info = if usr.isRoot then "" else usr.getPlayer.get.nameCamelCase
+            s"${usr.getUsername}:${usr.getId}:$info:/home/${usr.getUsername}"
+        ).toSeq
+        etc.addRegFile("passwd", rootUsr, true, false, passwd)
+
         // OS.
-        os = CPMirOs(None, usrs.toSeq, player, station) 
+        os = CPMirOs(new CPMirFileSystem(root), usrs.toSeq, player)
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 
