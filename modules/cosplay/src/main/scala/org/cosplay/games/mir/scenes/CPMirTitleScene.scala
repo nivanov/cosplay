@@ -44,7 +44,7 @@ import prefabs.sprites.*
 object CPMirTitleScene extends CPMirStarStreakSceneBase("title", "bg2.wav"):
     private val state = stateMgr.state
     private val clickSnd = CPSound(s"$SND_HOME/click.wav")
-    private val logoImg = CPImage.loadRexXp(s"images/games/mir/${state.logoImg}").trimBg()
+    private val logoImg = CPImage.loadRexXp(s"$IMG_HOME/${state.logoImg}").trimBg()
     private val spinGlobeImgs = CPSpinningGlobeAniImage.trimBg().split(47, 23).map(
         _.skin((px, _, _) => px.withFg(FG).withDarkerFg(0.85f))
     )

@@ -45,6 +45,7 @@ val FG_LITE = FG.lighter(.4f)
 val FG_DARK = FG.darker(.4f)
 val BG_PX = ' '&&(BG, BG)
 val SND_HOME = "mir/sounds"
+val IMG_HOME = "mir/images"
 val markup = CPMarkup(
     FG,
     Option(BG),
@@ -82,7 +83,7 @@ object CPMirGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"main", fadeInMs = 3000),
                 CPMirTitleScene,
                 CPMirLoadScene,
                 CPMirNewGameScene,

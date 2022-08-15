@@ -47,7 +47,7 @@ object CPMirRuntime:
 class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
     import CPMirRuntime.*
 
-    private val procs = mutable.ArrayBuffer.empty[CPMirProcess]
+    private val procs = mutable.HashMap.empty[Long, CPMirProcess]
     private val exec = Executors.newFixedThreadPool(THREAD_POOL_SIZE)
     private var pidGen = 1L
 
@@ -83,6 +83,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
         pidGen += 1
 
         val ctx = CPMirExecutableContext(
+            pid,
             args,
             con,
             this,
@@ -121,12 +122,12 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             override def isDone: Boolean = fut.isDone
             override def kill(): Boolean = fut.cancel(true)
             override def isKilled: Boolean = fut.isCancelled
-            override def exitCode: Option[Int] = code
-            override def get(ms: Long): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
+            override def isAlive: Boolean = !isDone && !isKilled
+            override def get(ms: Long = Long.MaxValue): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
             override def getFinishTime: Long = finishTs
 
         procs.synchronized {
-            procs += proc
+            procs.put(pid, proc)
         }
 
         proc
@@ -134,16 +135,34 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
     /**
       *
       */
-    def list: Seq[CPMirProcess] = procs.synchronized {
-        procs.toSeq
+    def listAll: Seq[CPMirProcess] = procs.synchronized {
+        procs.values.toSeq
+    }
+
+    /**
+      *
+      */
+    def listAlive: Seq[CPMirProcess] = procs.synchronized {
+        procs.values.filter(_.isAlive).toSeq
+    }
+
+    /**
+      *
+      * @param pid
+      */
+    def get(pid: Long): Option[CPMirProcess] = procs.synchronized {
+        procs.get(pid)
     }
 
     /**
       *
       */
     def kill(pid: Long): Boolean = procs.synchronized {
-        procs.find(_.getPid == pid) match
-            case Some(p) => p.kill()
+        procs.get(pid) match
+            case Some(p) =>
+                p.kill()
+                procs.remove(pid)
+                true
             case None => false
     }
 

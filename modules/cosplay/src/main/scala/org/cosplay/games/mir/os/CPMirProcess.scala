@@ -90,6 +90,11 @@ trait CPMirProcess:
     /**
       *
       */
+    def isAlive: Boolean
+
+    /**
+      *
+      */
     def isDone: Boolean
 
     /**
@@ -98,6 +103,7 @@ trait CPMirProcess:
     def isKilled: Boolean
 
     /**
+      * Gets exit code.
       *
       * @param ms
       */
@@ -107,9 +113,4 @@ trait CPMirProcess:
       *
       */
     def kill(): Boolean
-
-    /**
-      *
-      */
-    def exitCode: Option[Int]
 

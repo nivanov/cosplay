@@ -17,7 +17,8 @@
 
 package org.cosplay.games.mir.os.progs
 
-import org.cosplay.games.mir.os.{CPMirExecutable, CPMirExecutableContext}
+import org.cosplay.games.mir.*
+import os.*
 
 /*
    _________            ______________
@@ -40,10 +41,18 @@ class CPMirLoginProgram extends CPMirExecutable:
         val out = ctx.out
         val con = ctx.con
 
+        val ply = stateMgr.state.player
+
         out.println()
         out.println("| Login - Welcome Aboard MirX")
         out.println("|>---------------------------")
-        out.print  ("| Username: ")
 
+        var done = false
+        while !done do
+            val username = con.promptReadLine("| Username: ")
+            if username != ply.username then
+                con.println(s"<err>: only ${ply.nameCamelCase} (${ply.username}) ia authorized to login at this terminal.")
+            else
+                done = true
         0
 

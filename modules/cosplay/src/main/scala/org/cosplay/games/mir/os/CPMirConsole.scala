@@ -70,6 +70,23 @@ trait CPMirConsole extends CPMirPrintable:
     def readLine(repCh: Option[Char] = None, maxLen: Int = Int.MaxValue, hist: Seq[String] = Seq.empty): String
 
     /**
+      * Prints given prompts and reads the line form the console at the current cursor position.
+      * This call will be blocked until 'Enter' key is pressed.
+      *
+      * @param prompt Prompt to print before reading the line.
+      * @param repCh Optional character to replace entered characters (e.g. when entering password).
+      * @param maxLen Optional max length of the input.
+      * @param hist Optional history to use for history scrolling and auto-completion.
+      */
+    def promptReadLine(
+        prompt: String,
+        repCh: Option[Char] = None,
+        maxLen: Int = Int.MaxValue,
+        hist: Seq[String] = Seq.empty): String =
+        print(prompt)
+        readLine(repCh, maxLen, hist)
+
+    /**
       * Gets the current size of the console window in characters.
       */
     def getSize: CPDim

@@ -32,6 +32,7 @@ package org.cosplay.games.mir.os
 
 /**
   *
+  * @param pid
   * @param args
   * @param con
   * @param rt
@@ -44,6 +45,7 @@ package org.cosplay.games.mir.os
   * @param err
   */
 case class CPMirExecutableContext(
+    pid: Long,
     args: Seq[String],
     con: CPMirConsole,
     rt: CPMirRuntime,
@@ -56,6 +58,32 @@ case class CPMirExecutableContext(
     err: CPMirOutputStream
 ):
     @transient private var killed = false
+
+    /**
+      *
+      * @param file
+      * @param args
+      * @param in
+      * @param out
+      * @param err
+      */
+    def exec(
+        file: CPMirExecutableFile,
+        args: Seq[String],
+        in: CPMirInputStream = CPMirInputStream.nullStream(),
+        out: CPMirOutputStream = CPMirOutputStream.consoleStream(con),
+        err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
+        rt.exec(
+            rt.get(pid),
+            file,
+            args,
+            workDir,
+            usr,
+            env,
+            in,
+            out,
+            err
+        )
 
     /**
       *
