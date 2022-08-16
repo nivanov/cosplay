@@ -42,17 +42,28 @@ class CPMirLoginProgram extends CPMirExecutable:
         val con = ctx.con
 
         val ply = stateMgr.state.player
+        val tty = "tty0"
 
         out.println()
-        out.println("| Login - Welcome Aboard MirX")
-        out.println("|>---------------------------")
+        out.println(s"MirX ${CPMirOs.VERSION} ($tty) \n")
 
         var done = false
         while !done do
-            val username = con.promptReadLine("| Username: ")
-            if username != ply.username then
-                con.println(s"<err>: only ${ply.nameCamelCase} (${ply.username}) ia authorized to login at this terminal.")
+            val username = con.promptReadLine("Login: ")
+            if username != ply.getUsername then
+                con.println(s"\n<err>: only ${ply.getPlayer.get.nameCamelCase} (${ply.getUsername}) ia authorized to login at this terminal ($tty).")
             else
                 done = true
+
+        con.println()
+
+        done = false
+        while !done do
+            val passwd = con.promptReadLine("Password: ", Option('*'))
+            if passwd != ply.getPassword then
+                con.println(s"\n<err>: password is invalid (${ply.getUsername}).")
+            else
+                done = true
+
         0
 

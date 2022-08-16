@@ -58,12 +58,11 @@ class CPMirBootProgram extends CPMirExecutable:
             || 88 \\/  | 88| 88| 88     | 88  \\ 88
             ||__/     |__/|__/|__/     |__/  |__/
             |
-            |ver 1.12.04, Dec 12, 1993
+            |ver ${CPMirOs.VERSION}, Dec 12, 1993
             |Copyright (C) 1991-94, RCS "Energia", Russia
             |
             |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
             |System clock synchronized: ${CPMirClock.formatTimeDate()}
-            |
             |""".stripMargin
 
         val fs = ctx.fs
@@ -94,9 +93,9 @@ class CPMirBootProgram extends CPMirExecutable:
         val passwd = fs.regFile("/etc/passwd").readLines
         for line <- passwd do
             val parts = line.split(":")
-            out.println(s"  |- ${parts.head}, ${parts(2)} -> ${parts(3)}")
+            val username = parts.head
+            val base = s"  |- $username, ${parts(2)} -> ${parts(3)}"
+            if username == stateMgr.state.player.getUsername then out.println(s"$base (*)") else out.println(base)
 
-        ctx.exec(fs.file("/sbin/login").get, Seq.empty).get()
-
-        // Return code.
-        0
+        // Start 'sbin/login' and wait indefinitely.
+        ctx.fork(fs.file("/sbin/login").get, Seq.empty).exitCode().getOrElse(-1)

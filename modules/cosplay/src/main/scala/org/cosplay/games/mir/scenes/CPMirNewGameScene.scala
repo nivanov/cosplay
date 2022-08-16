@@ -42,7 +42,7 @@ import CPKeyboardKey.*
   *
   */
 object CPMirNewGameScene extends CPMirStarStreakSceneBase("new_game", "bg1.wav"):
-    private val player = stateMgr.state.player
+    private val player = stateMgr.state.player.getPlayer.get
     private val name = player.nameCamelCase
     private val username = player.username
     private val role = player.roleLowerCase

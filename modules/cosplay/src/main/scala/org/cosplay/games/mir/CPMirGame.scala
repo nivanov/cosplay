@@ -57,9 +57,17 @@ val markup = CPMarkup(
 )
 
 extension(d: Int)
+    // To bytes...
     def kb: Long = d * 1024
     def mb: Long = d * 1024 * 1024
     def gb: Long = d * 1024 * 1024 * 1024
+
+    // To milliseconds.
+    def secs: Long = d * 1000
+    def mins: Long = d * 1000 * 60
+    def hours: Long = d * 1000 * 60 * 60
+    def days: Long = d * 1000 * 60 * 60 * 24
+    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
 
 /**
   *

@@ -44,6 +44,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
   *
   */
 object CPMirOs:
+    val VERSION = "1.12.04"
+
     /**
       *
       * @param fs

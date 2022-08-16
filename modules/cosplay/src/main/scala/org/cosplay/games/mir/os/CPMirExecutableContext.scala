@@ -67,7 +67,7 @@ case class CPMirExecutableContext(
       * @param out
       * @param err
       */
-    def exec(
+    def fork(
         file: CPMirExecutableFile,
         args: Seq[String],
         in: CPMirInputStream = CPMirInputStream.nullStream(),

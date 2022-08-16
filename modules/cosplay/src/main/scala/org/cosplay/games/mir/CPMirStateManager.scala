@@ -49,7 +49,7 @@ case class CPMirState(
     os: CPMirOs,
     var osRebootCnt: Int,
     station: CPMirStation,
-    player: CPMirCrewMember,
+    player: CPMirUser,
     crew: Seq[CPMirCrewMember],
     var logoImg: String,
     var bg: CPColor,
@@ -59,7 +59,8 @@ case class CPMirState(
     var crtOverscanProb: Float,
     var crtOverscanFactor: Float,
     var crtTearProb: Float,
-    var timeMs: Long,
+    var elapsedTimeMs: Long,
+    var lastLoginTstamp: Long,
     badgeMirXAdmin: CPMirPlayerBadge,
     badgeMashDev: CPMirPlayerBadge,
     badgeCommSpec: CPMirPlayerBadge,
@@ -165,6 +166,8 @@ class CPMirStateManager:
         val plyInbox = root.dirFile(s"/home/${player.username}/inbox")
         val plyOutbox = root.dirFile(s"/home/${player.username}/outbox")
 
+        // TODO: add content to 'inbox' and 'outbox'.
+
         usr.addDirFile("crew", rootUsr)
 
         // Install executables.
@@ -205,12 +208,15 @@ class CPMirStateManager:
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 
+        // Init the clock.
+        CPMirClock.setElapsedTimeMs(0)
+
         CPMirState(
             gameId = CPRand.guid6,
             os = os,
             station = station,
             osRebootCnt = 0,
-            player = player,
+            player = usrs.find(_.getUsername == player.username).get,
             crew = crew.toSeq,
             bg = DFLT_BG,
             fg = DFLT_FG,
@@ -220,7 +226,8 @@ class CPMirStateManager:
             crtOverscanProb = .005f,
             crtOverscanFactor = if SystemUtils.IS_OS_MAC then .03f else .01f,
             crtTearProb = .03f,
-            timeMs = 0L,
+            elapsedTimeMs = 0L,
+            lastLoginTstamp = CPMirClock.randSysTime(),
             badgeMirXAdmin = CPMirPlayerBadge("MirX Administrator"),
             badgeMashDev = CPMirPlayerBadge("Mash Developer"),
             badgeCommSpec = CPMirPlayerBadge("Communication Specialist"),
@@ -239,7 +246,7 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
-        val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
+        val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.elapsedTimeMs}.mir")
         Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
         CPEngine.rootLog().info(s"Game saved: $path")
 

@@ -32,6 +32,7 @@ package org.cosplay.games.mir.os
 
 import java.text.*
 import org.cosplay.*
+import games.mir.*
 import java.util.Date
 
 /**
@@ -41,19 +42,18 @@ object CPMirClock:
     private final val DATETIME_ZONE_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm z")
     private final val DATETIME_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm:ss")
     private final val TIME_FMT = SimpleDateFormat("HH:mm:ss")
-    private final val CRASH_TIME = DATETIME_ZONE_FMT.parse("1997 June 25 09:18 UTC").getTime
-    private final val OS_BUILD_TIME = DATETIME_ZONE_FMT.parse("1990 Jan 1 00:01 UTC").getTime
-    private final val OS_CREW_ARRIVE_TIME = DATETIME_ZONE_FMT.parse("1995 Jan 1 00:01 UTC").getTime
+    private final val CRASH_TIME_MS = DATETIME_ZONE_FMT.parse("1997 June 25 09:18 UTC").getTime
+    private final val OS_BUILD_TIME_MS = DATETIME_ZONE_FMT.parse("1990 Jan 1 00:01 UTC").getTime
+    private final val OS_CREW_ARRIVE_TIME_MS = DATETIME_ZONE_FMT.parse("1995 Jan 1 00:01 UTC").getTime
     private final val YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000L
 
-    private var elapsedMs = 0L
     private var time = 0L
 
     /**
       *
-      * @param time
+      * @param timeMs
       */
-    def setElapsedTime(time: Long): Unit = this.time = CRASH_TIME + time
+    def setElapsedTimeMs(timeMs: Long): Unit = time = CRASH_TIME_MS + timeMs
 
     /**
       *
@@ -81,13 +81,15 @@ object CPMirClock:
       */
     def formatDate(): String = ???
 
-    /**
-      *
-      */
-    def randSysTime(): Long = OS_BUILD_TIME + CPRand.randLong(0L, YEAR_IN_MS)
+    def randLastLoginBeforeCrash(): Long = CRASH_TIME_MS - CPRand.randLong(5.hours, 24.hours)
 
     /**
       *
       */
-    def randCrewTime(): Long = OS_CREW_ARRIVE_TIME + CPRand.randLong(0L, 2 * YEAR_IN_MS)
+    def randSysTime(): Long = OS_BUILD_TIME_MS + CPRand.randLong(0L, YEAR_IN_MS)
+
+    /**
+      *
+      */
+    def randCrewTime(): Long = OS_CREW_ARRIVE_TIME_MS + CPRand.randLong(0L, 2 * YEAR_IN_MS)
 

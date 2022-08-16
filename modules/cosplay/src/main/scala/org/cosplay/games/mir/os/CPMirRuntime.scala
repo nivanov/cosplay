@@ -122,8 +122,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             override def isDone: Boolean = fut.isDone
             override def kill(): Boolean = fut.cancel(true)
             override def isKilled: Boolean = fut.isCancelled
-            override def isAlive: Boolean = !isDone && !isKilled
-            override def get(ms: Long = Long.MaxValue): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
+            override def exitCode(ms: Long = Long.MaxValue): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
             override def getFinishTime: Long = finishTs
 
         procs.synchronized {
@@ -142,8 +141,8 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
     /**
       *
       */
-    def listAlive: Seq[CPMirProcess] = procs.synchronized {
-        procs.values.filter(_.isAlive).toSeq
+    def listRunning: Seq[CPMirProcess] = procs.synchronized {
+        procs.values.filter(_.isRunning).toSeq
     }
 
     /**

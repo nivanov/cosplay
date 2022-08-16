@@ -90,11 +90,6 @@ trait CPMirProcess:
     /**
       *
       */
-    def isAlive: Boolean
-
-    /**
-      *
-      */
     def isDone: Boolean
 
     /**
@@ -107,7 +102,7 @@ trait CPMirProcess:
       *
       * @param ms
       */
-    def get(ms: Long = Long.MaxValue): Option[Int]
+    def exitCode(ms: Long = Long.MaxValue): Option[Int]
 
     /**
       *

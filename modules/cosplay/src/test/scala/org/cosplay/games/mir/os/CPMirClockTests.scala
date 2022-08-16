@@ -40,14 +40,14 @@ import java.util.*
 object CPMirClockTests:
     @Test
     def nowTest(): Unit =
-        CPMirClock.setElapsedTime(0)
+        CPMirClock.setElapsedTimeMs(0)
         val t1 = CPMirClock.now()
         val t2 = System.currentTimeMillis()
         println(s"Elapsed years since crash: ${(t2 - t1) / 365 / 24 / 60 / 60 / 1000}")
 
     @Test
     def sysAndCrewTimeTest(): Unit =
-        CPMirClock.setElapsedTime(0)
+        CPMirClock.setElapsedTimeMs(0)
         val fmt = SimpleDateFormat("yyyy MMMM dd HH:mm z")
         (0 until 10).foreach {
             _ => println(s"System timestamp: ${fmt.format(new Date(CPMirClock.randSysTime()))}")

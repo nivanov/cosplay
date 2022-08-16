@@ -425,7 +425,7 @@ object CPMirCrewMember:
         val birth = CPRand.rand(towns)
         val home = CPRand.rand(towns)
         val kids = ArrayBuffer.empty[CPMirPlayerChild]
-        for i <- 0 until CPRand.randInt(1, 4) do kids += newChild()
+        for _ <- 0 until CPRand.randInt(1, 4) do kids += newChild()
         CPMirCrewMember(
             CPRand.rand(boyNames),
             CPRand.rand(familyNames),
