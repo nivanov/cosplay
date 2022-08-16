@@ -96,7 +96,7 @@ class CPMirBootProgram extends CPMirExecutable:
             val parts = line.split(":")
             out.println(s"  |- ${parts.head}, ${parts(2)} -> ${parts(3)}")
 
-        ctx.exec(fs.file("/sbin/login").get, Seq.empty)
+        ctx.exec(fs.file("/sbin/login").get, Seq.empty).get()
 
         // Return code.
         0

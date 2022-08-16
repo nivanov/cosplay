@@ -107,7 +107,7 @@ trait CPMirProcess:
       *
       * @param ms
       */
-    def get(ms: Long): Option[Int]
+    def get(ms: Long = Long.MaxValue): Option[Int]
 
     /**
       *
