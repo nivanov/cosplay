@@ -40,6 +40,7 @@ import sprites.*
   */
 object CPMirMainScene extends CPMirCrtSceneBase("main", "bg5.wav"):
     private val conSpr = CPMirConsoleSprite()
+    private val bootupSnd = CPSound(s"$SND_HOME/bootup.wav")
 
     addObjects(
         conSpr,
@@ -49,6 +50,7 @@ object CPMirMainScene extends CPMirCrtSceneBase("main", "bg5.wav"):
 
     override def onStart(): Unit =
         super.onStart()
+        bootupSnd.play()
         stateMgr.state.os.bootUp(conSpr)
 
 

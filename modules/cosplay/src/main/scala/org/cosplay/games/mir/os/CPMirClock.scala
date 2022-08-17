@@ -72,15 +72,18 @@ object CPMirClock:
     def formatTimeDate(): String = DATETIME_FMT.format(new Date(now()))
 
     /**
-      *
+      * @param ms
       */
-    def formatTime(): String = ???
+    def formatTime(ms: Long): String = TIME_FMT.format(new Date(ms))
+
+    /**
+      * @param ms
+      */
+    def formatDate(ms: Long): String = DATETIME_FMT.format(new Date(ms))
 
     /**
       *
       */
-    def formatDate(): String = ???
-
     def randLastLoginBeforeCrash(): Long = CRASH_TIME_MS - CPRand.randLong(5.hours, 24.hours)
 
     /**

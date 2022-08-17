@@ -61,10 +61,14 @@ object CPMirUser:
 
         new CPMirUser :
             private val id = genUserId
+            private var pwd = password
 
             override def getPlayer: Option[CPMirCrewMember] = player
             override def getId: Int = id
-            override def getPassword: String = password
+            override def getPassword: String = pwd
+            override def setPassword(pwd: String): Unit =
+                require(pwd != null && pwd.nonEmpty)
+                this.pwd = pwd
             override def getUsername: String = username
             override def isRoot: Boolean = false
 
@@ -72,10 +76,15 @@ object CPMirUser:
       *
       */
     def mkRoot(): CPMirUser = new CPMirUser:
+        private var pwd = CPRand.guid6
+
         override def getPlayer: Option[CPMirCrewMember] = None
         override def getId: Int = ROOT_USER_ID
-        override def getPassword: String = CPRand.guid6
+        override def getPassword: String = pwd
         override def getUsername: String = "root"
+        override def setPassword(pwd: String): Unit =
+            require(pwd != null && pwd.nonEmpty)
+            this.pwd = pwd
         override def isRoot: Boolean = true
 
 /**
@@ -101,6 +110,12 @@ trait CPMirUser extends Serializable:
       *
       */
     def getPassword: String
+
+    /**
+      *
+      * @param pwd
+      */
+    def setPassword(pwd: String): Unit
 
     /**
       *
