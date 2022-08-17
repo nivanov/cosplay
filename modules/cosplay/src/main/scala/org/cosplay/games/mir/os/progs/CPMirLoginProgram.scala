@@ -59,7 +59,7 @@ class CPMirLoginProgram extends CPMirExecutable:
             else
                 done = true
 
-        con.println(s"Reset the password for '$username' due to system fault restart.")
+        con.println(s"Reset password for '$username' due to system fault restart.")
 
         done = false
         while !done do

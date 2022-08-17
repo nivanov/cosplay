@@ -47,29 +47,41 @@ object CPMirClock:
     private final val OS_CREW_ARRIVE_TIME_MS = DATETIME_ZONE_FMT.parse("1995 Jan 1 00:01 UTC").getTime
     private final val YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000L
 
-    private var time = 0L
+    private var localStartMs = 0L
+    private var initMs = 0L
 
     /**
       *
-      * @param timeMs
+      * @param elapsedMs
       */
-    def setElapsedTimeMs(timeMs: Long): Unit = time = CRASH_TIME_MS + timeMs
+    def initElapsedTime(elapsedMs: Long): Unit =
+        require(localStartMs == 0)
+        localStartMs = CRASH_TIME_MS + elapsedMs
+        initMs = System.currentTimeMillis()
 
     /**
       *
-      * @param deltaMs
       */
-    def addTime(deltaMs: Long): Unit = time += deltaMs
+    def getElapsedTime: Long =
+        require(localStartMs != 0)
+        now() - CRASH_TIME_MS
 
     /**
       * Gets current station time in milliseconds.
       */
-    inline def now(): Long = time
+    def now(): Long =
+        require(localStartMs != 0)
+        localStartMs + (System.currentTimeMillis() - initMs)
 
     /**
       *
       */
-    def formatTimeDate(): String = DATETIME_FMT.format(new Date(now()))
+    def formatNowTimeDate(): String = DATETIME_FMT.format(new Date(now()))
+
+    /**
+      * @param ms
+      */
+    def formatTimeDate(ms: Long): String = DATETIME_FMT.format(new Date(ms))
 
     /**
       * @param ms

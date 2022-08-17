@@ -122,6 +122,9 @@ class CPMirStateManager:
       *
       */
     private def init(): CPMirState =
+        // Init the clock.
+        CPMirClock.initElapsedTime(0)
+
         // Crew.
         val crew = mutable.ArrayBuffer(player) // Crew always includes the player.
         for i <- 0 until NPC_CNT do
@@ -208,9 +211,6 @@ class CPMirStateManager:
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 
-        // Init the clock.
-        CPMirClock.setElapsedTimeMs(0)
-
         CPMirState(
             gameId = CPRand.guid6,
             os = os,
@@ -246,6 +246,9 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
+        // Save the current clock.
+        state.elapsedTimeMs = CPMirClock.getElapsedTime
+
         val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.elapsedTimeMs}.mir")
         Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
         CPEngine.rootLog().info(s"Game saved: $path")
