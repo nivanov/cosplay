@@ -145,31 +145,47 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         private val menuClick = CPSound("sounds/games/gehenna/UIClick.wav")
 
+        private var darkness = 1f
+
+        private var otherDarkness = 3f
+
+        private var lastBtn = btns(btnIndex)
+
+        private def swtichBtn(change:Int): Unit =
+            lastBtn = btns(btnIndex)
+
+            btnIndex += change
+            menuClick.stop(0)
+            menuClick.play(0)
+
+            otherDarkness = darkness
+
+            darkness = 1
+
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
 
             val btn = btns(btnIndex)
 
-            // Top line.
-            canv.drawLine(btn.getX - 1, btn.getY - 1, btn.getX + btn.getWidth, btn.getY - 1, 1, '_'&NEON_BLUE)
-
-            // Middle line.
-            //canv.drawLine(btn.getX - 1, btn.getY, btn.getX + btn.getWidth, btn.getY, 1, '_'&NEON_BLUE)
-
             // Bottom line.
-            canv.drawLine(btn.getX, btn.getY + 1, btn.getX + btn.getWidth - 1, btn.getY + 1, 1, '-'&NEON_BLUE)
+            canv.drawLine(btn.getX, btn.getY + 1, btn.getX + btn.getWidth - 1, btn.getY + 1, 1, '-'&NEON_BLUE.darker(darkness))
+
+            // Other line.
+            if otherDarkness != 3 then
+                canv.drawLine(lastBtn.getX, lastBtn.getY + 1, lastBtn.getX + lastBtn.getWidth - 1, lastBtn.getY + 1, 1, '-'&NEON_BLUE.darker(otherDarkness))
+                if otherDarkness < 1f && ctx.getFrameCount % 1 == 0 then
+                    otherDarkness += 0.1f
+
+            if darkness > 0.1f && ctx.getFrameCount % 1 == 0 then
+                darkness -= 0.1f
 
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
                         case KEY_LO_D | KEY_RIGHT =>
-                            btnIndex += 1
-                            menuClick.stop(0)
-                            menuClick.play(0)
+                            swtichBtn(1)
                         case KEY_LO_A | KEY_LEFT =>
-                            btnIndex -= 1
-                            menuClick.stop(0)
-                            menuClick.play(0)
+                            swtichBtn(-1)
                         case _ => ()
                 case None => ()
 
