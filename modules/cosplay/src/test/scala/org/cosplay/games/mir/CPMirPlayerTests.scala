@@ -32,12 +32,16 @@ package org.cosplay.games.mir
 
 import org.junit.jupiter.api.*
 import Assertions.*
-import org.cosplay.games.mir.station.CPMirCrewMember
+import org.cosplay.games.mir.os.*
+import org.cosplay.games.mir.station.*
 
 /**
   *
   */
 object CPMirPlayerTests:
+    @BeforeAll
+    def init(): Unit = CPMirClock.initElapsedTime(0)
+
     @Test
     def newPlayerGenTest(): Unit =
         (0 to 100).foreach(_ => println(CPMirCrewMember.newPlayer.debugString))
