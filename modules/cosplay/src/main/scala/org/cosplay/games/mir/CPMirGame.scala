@@ -20,8 +20,10 @@ package org.cosplay.games.mir
 import org.cosplay.*
 import prefabs.scenes.*
 import games.mir.scenes.*
+import games.mir.os.*
 import CPColor.*
 import CPPixel.*
+import org.cosplay.games.mir.station.CPMirClock
 
 /*
    _________            ______________
@@ -39,6 +41,7 @@ import CPPixel.*
 val EVENT_YEAR = 1997
 val NPC_CNT = 2
 val stateMgr = CPMirStateManager()
+val clock = CPMirClock(0L)
 val BG = stateMgr.state.bg
 val FG = stateMgr.state.fg
 val FG_LITE = FG.lighter(.4f)

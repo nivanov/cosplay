@@ -17,7 +17,9 @@
 
 package org.cosplay.games.mir.os
 
+import org.cosplay.games.mir.station.CPMirClock
 import org.junit.jupiter.api.*
+
 import java.text.*
 import java.util.*
 

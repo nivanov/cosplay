@@ -32,6 +32,7 @@ package org.cosplay.games.mir.os
 
 import java.util.concurrent.*
 import scala.collection.mutable
+import org.cosplay.games.mir.*
 
 /**
   *
@@ -76,7 +77,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
         err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
         var queued = true
         var code: Option[Int] = None
-        val submitTs = CPMirClock.now()
+        val submitTs = clock.now()
         var finishTs = -1L
         var startTs: Long = 0
         val pid = pidGen
@@ -99,13 +100,13 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
         val fut = exec.submit(new Callable[Int]() {
             override def call(): Int =
                 queued = false
-                startTs = CPMirClock.now()
+                startTs = clock.now()
                 try
                     code = Option(file.getExec.mainEntry(ctx))
                 catch
                     case _: InterruptedException => ()
                     case e: Exception => err.println(e.getLocalizedMessage)
-                finishTs = CPMirClock.now()
+                finishTs = clock.now()
                 code.getOrElse(-1)
         })
 

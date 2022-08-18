@@ -33,7 +33,9 @@ package org.cosplay.games.mir.os
 import org.cosplay.*
 import CPMirFileType.*
 import CPMirFileSystem.*
+
 import scala.collection.mutable
+import games.mir.*
 
 /**
   *
@@ -55,8 +57,8 @@ abstract class CPMirFile(
 ) extends Serializable:
     require((parent.isEmpty && typ == FT_DIR) || parent.nonEmpty)
 
-    private var createTs = CPMirClock.now()
-    private var updateTs = CPMirClock.now()
+    private var createTs = clock.now()
+    private var updateTs = clock.now()
     private var size = 0L
     private var absPath = mkAbsolutePath()
 
@@ -128,7 +130,7 @@ abstract class CPMirFile(
     /**
       *
       */
-    def touch(): Unit = updateTs = CPMirClock.now()
+    def touch(): Unit = updateTs = clock.now()
 
     /**
       *

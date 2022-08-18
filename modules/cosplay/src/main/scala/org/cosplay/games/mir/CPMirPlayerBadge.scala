@@ -17,7 +17,7 @@
 
 package org.cosplay.games.mir
 
-import org.cosplay.games.mir.os.CPMirClock
+import org.cosplay.games.mir.station.CPMirClock
 
 /*
    _________            ______________
@@ -43,7 +43,7 @@ case class CPMirPlayerBadge(name: String) extends Serializable:
 
     def earn(): Unit =
         earned = true
-        earnedMs = CPMirClock.now()
+        earnedMs = clock.now()
 
     /**
       *

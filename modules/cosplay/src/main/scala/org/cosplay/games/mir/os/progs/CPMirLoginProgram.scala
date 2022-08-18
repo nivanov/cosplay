@@ -18,6 +18,7 @@
 package org.cosplay.games.mir.os.progs
 
 import org.cosplay.games.mir.*
+import org.cosplay.games.mir.station.CPMirClock
 import os.*
 
 /*
@@ -74,7 +75,7 @@ class CPMirLoginProgram extends CPMirExecutable:
 
         val lastLoginTstamp = stateMgr.state.lastLoginTstamp
 
-        stateMgr.state.lastLoginTstamp = CPMirClock.now()
+        stateMgr.state.lastLoginTstamp = clock.now()
 
         con.println(s"Last login ${CPMirClock.formatDate(lastLoginTstamp)} on $tty.")
 

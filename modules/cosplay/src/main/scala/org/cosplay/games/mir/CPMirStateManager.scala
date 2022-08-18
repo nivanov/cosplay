@@ -122,9 +122,6 @@ class CPMirStateManager:
       *
       */
     private def init(): CPMirState =
-        // Init the clock.
-        CPMirClock.initElapsedTime(0)
-
         // Crew.
         val crew = mutable.ArrayBuffer(player) // Crew always includes the player.
         for i <- 0 until NPC_CNT do
@@ -247,7 +244,7 @@ class CPMirStateManager:
       */
     def save(): Unit =
         // Save the current clock.
-        state.elapsedTimeMs = CPMirClock.getElapsedTime
+        state.elapsedTimeMs = clock.getElapsedTime
 
         val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.elapsedTimeMs}.mir")
         Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
