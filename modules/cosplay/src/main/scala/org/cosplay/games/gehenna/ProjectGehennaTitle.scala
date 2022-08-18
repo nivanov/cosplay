@@ -92,7 +92,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&BLOOD_RED.darker(0.55)
         )
 
-    private def songPlayingImg(): CPImage =
+    private def songPlayingImg(darkness:Float): CPImage =
         new CPArrayImage(
             prepSeq(
                 """
@@ -101,7 +101,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                   |
                   """
             ),
-            (ch, _, _) => ch&NEON_BLUE
+            (ch, _, _) => ch&NEON_BLUE.darker(darkness)
         )
 
     private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr)):
@@ -155,8 +155,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             lastBtn = btns(btnIndex)
 
             btnIndex += change
-            menuClick.stop(0)
-            menuClick.play(0)
+            //menuClick.stop(0)
+            //menuClick.play(0)
 
             otherDarkness = darkness
 
@@ -194,14 +194,19 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             else if btnIndex > btns.length - 1 then
                 btnIndex = 0
 
-    private val nowPlaySpr = new CPImageSprite(x = 0, y = 10, z = 4, songPlayingImg(), false, Seq(fadeInShdr)):
+    private val nowPlaySpr = new CPImageSprite(x = 0, y = 10, z = 4, songPlayingImg(1), false, Seq(fadeInShdr)):
         private final val normSpeed = -1f
         private final val focusSpeed = -0.7f
-        private var speed = normSpeed
-        private var currX = 0f
+        private var visible = false
 
         private final val lvlDir ="gehenna/levels"
         private final val lvlDirFile = new File(lvlDir)
+
+        private var lastMs = 0f
+
+        private var darkness = 1f
+
+        private val fadeSpeed = 0.03f
 
         private def readLines(res: String): Seq[String] =
             IOUtils.readLines(getClass.getClassLoader().getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
@@ -221,18 +226,26 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             val canv = ctx.getCanvas
 
             setY(canv.h - 7)
+            setX((canv.w / 2) - getWidth / 2)
 
-            currX += speed
-            setX(currX.toInt)
+            // Appearance.
+            if visible == true && ctx.getFrameMs - lastMs >= 5000 then
+                visible = false
+                lastMs = ctx.getFrameMs
 
-            if (getX >= (canv.w / 2)) && ((getX - getWidth) <= (canv.w / 2)) then
-                speed = focusSpeed
-            else
-                speed = normSpeed
+            if visible == true && darkness > 0.1 then
+                darkness -= fadeSpeed
+                setImage(songPlayingImg(darkness))
 
-            if currX <= -getWidth - 100 then
-                currX = canv.w + 10
-                speed = normSpeed
+            // Disappear.
+            if visible == false && ctx.getFrameMs - lastMs >= 5000 then
+                visible = true
+                lastMs = ctx.getFrameMs
+
+            if visible == false && darkness < 1 then
+                darkness += fadeSpeed
+                setImage(songPlayingImg(darkness))
+
 
     addObjects(
         titleSpr,
