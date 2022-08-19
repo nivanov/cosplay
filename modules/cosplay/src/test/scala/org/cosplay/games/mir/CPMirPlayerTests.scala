@@ -39,9 +39,6 @@ import org.cosplay.games.mir.station.*
   *
   */
 object CPMirPlayerTests:
-    @BeforeAll
-    def init(): Unit = CPMirClock.initElapsedTime(0)
-
     @Test
     def newPlayerGenTest(): Unit =
         (0 to 100).foreach(_ => println(CPMirCrewMember.newPlayer.debugString))

@@ -74,7 +74,7 @@ class CPMirBootProgram extends CPMirExecutable:
         out.println()
         out.println("Pressurized modules:")
         for mod <- stateMgr.state.station.allModules do
-            out.println(s"  |- ${mod.getName} ('${mod.getAbbreviation}') - OK.")
+            out.println(s"  |- ${mod.name} ('${mod.abbreviation}') - OK.")
 
         out.println()
         out.println("Device map:")
