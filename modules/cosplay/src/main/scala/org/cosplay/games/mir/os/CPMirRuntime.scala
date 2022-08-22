@@ -44,8 +44,9 @@ object CPMirRuntime:
   *
   * @param fs
   * @param con
+  * @param clock
   */
-class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
+class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
     import CPMirRuntime.*
 
     private val procs = mutable.HashMap.empty[Long, CPMirProcess]
@@ -88,6 +89,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             args,
             con,
             this,
+            clock,
             fs,
             workDir,
             env,

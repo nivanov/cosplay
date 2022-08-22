@@ -30,6 +30,8 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import org.cosplay.games.mir.*
+
 /**
   *
   * @param pid
@@ -49,6 +51,7 @@ case class CPMirExecutableContext(
     args: Seq[String],
     con: CPMirConsole,
     rt: CPMirRuntime,
+    clock: CPMirClock,
     fs: CPMirFileSystem,
     workDir: CPMirDirectoryFile,
     env: Map[String, String],

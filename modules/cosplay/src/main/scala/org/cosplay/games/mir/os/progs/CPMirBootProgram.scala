@@ -34,7 +34,6 @@ import org.cosplay.*
 import games.mir.*
 import os.*
 import CPMirConsole.*
-import org.cosplay.games.mir.station.CPMirClock
 
 /**
   *
@@ -63,7 +62,7 @@ class CPMirBootProgram extends CPMirExecutable:
             |Copyright (C) 1991-94, RCS "Energia", Russia
             |
             |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
-            |System clock synchronized: ${clock.formatNowTimeDate()}
+            |System clock synchronized: ${ctx.clock.formatNowTimeDate()}
             |""".stripMargin
 
         val fs = ctx.fs

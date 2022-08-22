@@ -19,8 +19,8 @@ package org.cosplay.games.mir.os
 
 import org.cosplay.*
 import games.mir.*
-import org.cosplay.games.mir.os.progs.mash.CPMirMashProgram
-import org.cosplay.games.mir.station.{CPMirCrewMember, CPMirModuleDevice, CPMirStation}
+import os.progs.mash.CPMirMashProgram
+import station.*
 import os.*
 import progs.*
 
@@ -60,13 +60,15 @@ object CPMirOs:
         require(usrs.exists(_.isRoot))
 
         val rootUsr = usrs.find(_.isRoot).get
+        val clock = CPMirClock(stateMgr.state.elapsedTimeMs)
 
         new CPMirOs:
             override def getFs: CPMirFileSystem = fs
+            override def getClock: CPMirClock = clock
             override def bootUp(con: CPMirConsole): Unit =
                 stateMgr.state.osRebootCnt += 1
 
-                CPMirRuntime(fs, con).exec(
+                CPMirRuntime(fs, con, clock).exec(
                     None,
                     fs.file("/sbin/boot").get,
                     Seq.empty,
@@ -88,6 +90,11 @@ trait CPMirOs extends Serializable:
       *
       */
     def getFs: CPMirFileSystem
+
+    /**
+      *
+      */
+    def getClock: CPMirClock
 
     /**
       *

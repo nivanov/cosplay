@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.station
+package org.cosplay.games.mir
 
 /*
    _________            ______________
@@ -31,8 +31,7 @@ package org.cosplay.games.mir.station
 */
 
 import org.cosplay.*
-import games.mir.*
-import CPMirClock.*
+import mir.*
 
 import java.text.*
 import java.util.Date
@@ -43,16 +42,10 @@ import java.util.Date
   * @param elapsedMs Elapsed time in milliseconds since the start of the game.
   */
 class CPMirClock(elapsedMs: Long):
-    private var startMs = CRASH_TIME_MS + elapsedMs
-    private var initMs = System.currentTimeMillis()
+    import CPMirClock.*
 
-    /**
-      *
-      * @param elapsedMs Elapsed time in milliseconds since the start of the game.
-      */
-    def setElapsedTime(elapsedMs: Long): Unit =
-        startMs = CRASH_TIME_MS + elapsedMs
-        initMs = System.currentTimeMillis()
+    private val startMs = CRASH_TIME_MS + elapsedMs
+    private val initMs = System.currentTimeMillis()
 
     /**
       *
