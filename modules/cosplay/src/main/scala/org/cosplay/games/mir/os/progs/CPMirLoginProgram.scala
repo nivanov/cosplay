@@ -71,6 +71,7 @@ class CPMirLoginProgram extends CPMirExecutable:
             else
                 done = true
                 stateMgr.state.player.setPassword(passwd1)
+                con.println(s"Password reset for '$username'.")
 
         val lastLoginTstamp = stateMgr.state.lastLoginTstamp
 
