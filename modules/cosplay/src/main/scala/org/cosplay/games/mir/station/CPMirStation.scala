@@ -19,6 +19,9 @@ package org.cosplay.games.mir.station
 
 import java.text.SimpleDateFormat
 import org.cosplay.games.mir.*
+import os.CPMirUser
+
+import scala.collection.mutable
 
 /*
    _________            ______________
@@ -36,14 +39,19 @@ import org.cosplay.games.mir.*
 /**
   *
   */
-object CPMirStation:
+class CPMirStation extends Serializable:
+    private var modules: Seq[CPMirModule] = _
+    private var crew: Seq[CPMirCrewMember] = _
+    private val clock = CPMirClock(stateMgr.state.elapsedTimeMs)
+
+    init()
+
     /**
       *
       */
-    def apply(): CPMirStation =
+    private def init(): Unit =
         val fmt = SimpleDateFormat("dd MMMM yyyy")
-        val clock = CPMirClock(stateMgr.state.elapsedTimeMs)
-        val modules = Seq(
+        modules = Seq(
             CPMirModule(
                 "Core Module", "cor",
                 fmt.parse("19 Feb 1986"),
@@ -114,22 +122,28 @@ object CPMirStation:
                 CPMirModuleDevice(null /* TODO */ , "aps")
             )
         )
-
-        new CPMirStation:
-            override def allModules: Seq[CPMirModule] = modules
-            override def getClock: CPMirClock = clock
-
-/**
-  *
-  */
-trait CPMirStation extends Serializable:
-    /**
-      *
-      */
-    def allModules: Seq[CPMirModule]
+        val arr = mutable.ArrayBuffer.empty
+        for i <- 0 until NPC_CNT + 1 do
+            var found = false
+            while !found do
+                val crewman = CPMirCrewMember.newPlayer
+                if !arr.exists(p => p != player && (p.username == player.username || p.lastName == player.lastName)) then
+                    found = true
+                    arr += crewman
+        crew = arr
 
     /**
       *
       */
-    def geClock: CPMirClock
+    def allModules: Seq[CPMirModule] = modules
+
+    /**
+      * Gets all crew members including NPCs and the player.
+      */
+    def getCrew: Seq[CPMirCrewMember] = crew
+
+    /**
+      *
+      */
+    def getClock: CPMirClock = clock
 

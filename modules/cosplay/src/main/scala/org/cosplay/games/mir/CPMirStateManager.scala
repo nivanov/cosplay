@@ -96,7 +96,7 @@ import CPMirStateManager.*
   */
 class CPMirStateManager:
     // Player protagonist.
-    private val player = CPMirCrewMember.newPlayer
+    private var player = _
     private var os: CPMirOs = _
     private var station: CPMirStation = _
 
@@ -122,24 +122,16 @@ class CPMirStateManager:
       *
       */
     private def init(): CPMirState =
-        // Crew.
-        val crew = mutable.ArrayBuffer(player) // Crew always includes the player.
-        for i <- 0 until NPC_CNT do
-            var found = false
-            while !found do
-                val crewman = CPMirCrewMember.newPlayer
-                if !crew.exists(p => p != player && (p.username == player.username || p.lastName == player.lastName)) then
-                    found = true
-                    crew += crewman
+        // Station sim.
+        station = CPMirStation()
 
         // Users.
         // NOTE: root password is not guessable in the game - but can be obtained.
+        val crew = station.getCrew
+        player = crew.head
         val rootUsr = CPMirUser.mkRoot()
         val usrs = mutable.ArrayBuffer(rootUsr)
-        crew.foreach(p => usrs += CPMirUser(p.username, CPRand.rand(p.passwords), Option(p)))
-
-        // Station sim.
-        station = CPMirStation()
+        crew.tail.foreach(p => usrs += CPMirUser(p.username, CPRand.rand(p.passwords), Option(p)))
 
         // Init file system.
         val root = CPMirDirectoryFile.mkRoot(rootUsr)
@@ -243,11 +235,16 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
-        // Save the current clock.
-        state.elapsedTimeMs = clock.getElapsedTime
-
         val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.elapsedTimeMs}.mir")
-        Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
+        Using.resource(
+            new ObjectOutputStream(
+                new BufferedOutputStream(
+                    new FileOutputStream(path)
+                )
+            )
+        ) {
+            _.writeObject(state)
+        }
         CPEngine.rootLog().info(s"Game saved: $path")
 
 
