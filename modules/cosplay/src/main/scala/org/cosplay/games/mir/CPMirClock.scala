@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir
 
 /*
    _________            ______________
@@ -30,10 +30,47 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import java.text.*
 import org.cosplay.*
-import games.mir.*
+import mir.*
+
+import java.text.*
 import java.util.Date
+
+/**
+  * "Hardware" station clock.
+  *
+  * @param elapsedMs Elapsed time in milliseconds since the start of the game.
+  */
+class CPMirClock(elapsedMs: Long):
+    import CPMirClock.*
+
+    private val startMs = CRASH_TIME_MS + elapsedMs
+    private val initMs = System.currentTimeMillis()
+
+    /**
+      *
+      */
+    def getElapsedTime: Long = now() - CRASH_TIME_MS
+
+    /**
+      * Gets current station time in milliseconds.
+      */
+    def now(): Long = startMs + (System.currentTimeMillis() - initMs)
+
+    /**
+      *
+      */
+    def formatNowTimeDate(): String = DATETIME_FMT.format(new Date(now()))
+
+    /**
+      *
+      */
+    def formatNowTime(): String = TIME_FMT.format(new Date(now()))
+
+    /**
+     *
+     */
+    def formatNowDate(): String = DATE_FMT.format(new Date(now()))
 
 /**
   *
@@ -41,35 +78,17 @@ import java.util.Date
 object CPMirClock:
     private final val DATETIME_ZONE_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm z")
     private final val DATETIME_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm:ss")
+    private final val DATE_FMT = SimpleDateFormat("yyyy MMMM dd")
     private final val TIME_FMT = SimpleDateFormat("HH:mm:ss")
     private final val CRASH_TIME_MS = DATETIME_ZONE_FMT.parse("1997 June 25 09:18 UTC").getTime
     private final val OS_BUILD_TIME_MS = DATETIME_ZONE_FMT.parse("1990 Jan 1 00:01 UTC").getTime
     private final val OS_CREW_ARRIVE_TIME_MS = DATETIME_ZONE_FMT.parse("1995 Jan 1 00:01 UTC").getTime
     private final val YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000L
 
-    private var time = 0L
-
     /**
-      *
-      * @param timeMs
+      * @param ms
       */
-    def setElapsedTimeMs(timeMs: Long): Unit = time = CRASH_TIME_MS + timeMs
-
-    /**
-      *
-      * @param deltaMs
-      */
-    def addTime(deltaMs: Long): Unit = time += deltaMs
-
-    /**
-      * Gets current station time in milliseconds.
-      */
-    inline def now(): Long = time
-
-    /**
-      *
-      */
-    def formatTimeDate(): String = DATETIME_FMT.format(new Date(now()))
+    def formatTimeDate(ms: Long): String = DATETIME_FMT.format(new Date(ms))
 
     /**
       * @param ms
@@ -79,7 +98,7 @@ object CPMirClock:
     /**
       * @param ms
       */
-    def formatDate(ms: Long): String = DATETIME_FMT.format(new Date(ms))
+    def formatDate(ms: Long): String = DATE_FMT.format(new Date(ms))
 
     /**
       *

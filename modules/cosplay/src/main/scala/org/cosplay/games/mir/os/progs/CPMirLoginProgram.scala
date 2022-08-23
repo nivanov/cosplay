@@ -59,7 +59,7 @@ class CPMirLoginProgram extends CPMirExecutable:
             else
                 done = true
 
-        con.println(s"Reset the password for '$username' due to system fault restart.")
+        con.println(s"Reset password for '$username' due to system fault restart.")
 
         done = false
         while !done do
@@ -75,7 +75,7 @@ class CPMirLoginProgram extends CPMirExecutable:
 
         val lastLoginTstamp = stateMgr.state.lastLoginTstamp
 
-        stateMgr.state.lastLoginTstamp = CPMirClock.now()
+        stateMgr.state.lastLoginTstamp = ctx.clock.now()
 
         con.println(s"Last login ${CPMirClock.formatDate(lastLoginTstamp)} on $tty.")
 

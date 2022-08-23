@@ -62,7 +62,7 @@ class CPMirBootProgram extends CPMirExecutable:
             |Copyright (C) 1991-94, RCS "Energia", Russia
             |
             |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
-            |System clock synchronized: ${CPMirClock.formatTimeDate()}
+            |System clock synchronized: ${ctx.clock.formatNowTimeDate()}
             |""".stripMargin
 
         val fs = ctx.fs
@@ -73,7 +73,7 @@ class CPMirBootProgram extends CPMirExecutable:
         out.println()
         out.println("Pressurized modules:")
         for mod <- stateMgr.state.station.allModules do
-            out.println(s"  |- ${mod.getName} ('${mod.getAbbreviation}') - OK.")
+            out.println(s"  |- ${mod.name} ('${mod.abbreviation}') - OK.")
 
         out.println()
         out.println("Device map:")

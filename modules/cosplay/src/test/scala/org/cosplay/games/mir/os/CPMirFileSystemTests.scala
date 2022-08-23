@@ -17,6 +17,7 @@
 
 package org.cosplay.games.mir.os
 
+import org.cosplay.games.mir.CPMirClock
 import org.junit.jupiter.api.Test
 
 /*
@@ -31,6 +32,8 @@ import org.junit.jupiter.api.Test
             (C) 2021 Rowan Games, Inc.
                ALl rights reserved.
 */
+
+val clock = CPMirClock(0L)
 
 /**
   *

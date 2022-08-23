@@ -34,79 +34,22 @@ import java.util.Date
 
 /**
   *
+  * @param name
+  * @param abbreviation
+  * @param launchDate
+  * @param powerSupplyDevice
+  * @param oxygenDetectorDevice
+  * @param fireDetectorDevice
+  * @param fireSuppressionDevice
+  * @param airPressureDevice
   */
-object CPMirModule:
-    /**
-      *
-      * @param name
-      * @param abbr
-      * @param launchDate
-      * @param pwrDev
-      * @param oxyDev
-      * @param fdrDev
-      * @param fspDev
-      * @param apsDev
-      */
-    def apply(
-        name: String,
-        abbr: String,
-        launchDate: Date,
-        pwrDev: CPMirModuleDevice,
-        oxyDev: CPMirModuleDevice,
-        fdrDev: CPMirModuleDevice,
-        fspDev: CPMirModuleDevice,
-        apsDev: CPMirModuleDevice
-        ): CPMirModule =
-        new CPMirModule:
-            override def getName: String = name
-            override def getAbbreviation: String = abbr
-            override def getLaunchDate: Date = launchDate
-            override def getAirPressureDevice: CPMirModuleDevice = apsDev
-            override def getFireDetectorDevice: CPMirModuleDevice = fdrDev
-            override def getFireSuppressionDevice: CPMirModuleDevice = fspDev
-            override def getOxygenDetectorDevice: CPMirModuleDevice = oxyDev
-            override def getPowerSupplyDevice: CPMirModuleDevice = pwrDev
-/**
-  *
-  */
-trait CPMirModule extends Serializable:
-    /**
-      *
-      */
-    def getName: String
-
-    /**
-      *
-      */
-    def getLaunchDate: Date
-
-    /**
-      *
-      */
-    def getAbbreviation: String
-
-    /**
-      *
-      */
-    def getPowerSupplyDevice: CPMirModuleDevice
-
-    /**
-      *
-      */
-    def getOxygenDetectorDevice: CPMirModuleDevice
-
-    /**
-      *
-      */
-    def getFireDetectorDevice: CPMirModuleDevice
-
-    /**
-      *
-      */
-    def getFireSuppressionDevice: CPMirModuleDevice
-
-    /**
-      *
-      */
-    def getAirPressureDevice: CPMirModuleDevice
-
+case class CPMirModule(
+    name: String,
+    abbreviation: String,
+    launchDate: Date,
+    powerSupplyDevice: CPMirModuleDevice,
+    oxygenDetectorDevice: CPMirModuleDevice,
+    fireDetectorDevice: CPMirModuleDevice,
+    fireSuppressionDevice: CPMirModuleDevice,
+    airPressureDevice: CPMirModuleDevice
+) extends Serializable

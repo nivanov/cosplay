@@ -18,6 +18,7 @@
 package org.cosplay.games.mir.station
 
 import java.text.SimpleDateFormat
+import org.cosplay.games.mir.*
 
 /*
    _________            ______________
@@ -41,6 +42,7 @@ object CPMirStation:
       */
     def apply(): CPMirStation =
         val fmt = SimpleDateFormat("dd MMMM yyyy")
+        val clock = CPMirClock(stateMgr.state.elapsedTimeMs)
         val modules = Seq(
             CPMirModule(
                 "Core Module", "cor",
@@ -115,6 +117,7 @@ object CPMirStation:
 
         new CPMirStation:
             override def allModules: Seq[CPMirModule] = modules
+            override def getClock: CPMirClock = clock
 
 /**
   *
@@ -124,4 +127,9 @@ trait CPMirStation extends Serializable:
       *
       */
     def allModules: Seq[CPMirModule]
+
+    /**
+      *
+      */
+    def geClock: CPMirClock
 

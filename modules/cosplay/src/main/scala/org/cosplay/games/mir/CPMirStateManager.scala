@@ -190,12 +190,12 @@ class CPMirStateManager:
             dev.addDeviceFile(s"$modAbbr-${modDev.getAbbreviation}", rootUsr, modDev.getDriver)
 
         for mod <- station.allModules do
-            val modAbbr = mod.getAbbreviation
-            addDeviceFile(modAbbr, mod.getOxygenDetectorDevice)
-            addDeviceFile(modAbbr, mod.getAirPressureDevice)
-            addDeviceFile(modAbbr, mod.getFireDetectorDevice)
-            addDeviceFile(modAbbr, mod.getFireSuppressionDevice)
-            addDeviceFile(modAbbr, mod.getPowerSupplyDevice)
+            val modAbbr = mod.abbreviation
+            addDeviceFile(modAbbr, mod.oxygenDetectorDevice)
+            addDeviceFile(modAbbr, mod.airPressureDevice)
+            addDeviceFile(modAbbr, mod.fireDetectorDevice)
+            addDeviceFile(modAbbr, mod.fireSuppressionDevice)
+            addDeviceFile(modAbbr, mod.powerSupplyDevice)
 
         val passwd = usrs.map(usr =>
             val info = if usr.isRoot then "" else usr.getPlayer.get.nameCamelCase
@@ -207,9 +207,6 @@ class CPMirStateManager:
         os = CPMirOs(new CPMirFileSystem(root), usrs.toSeq, player)
 
         CPEngine.rootLog().info(s"New game state is initialized.")
-
-        // Init the clock.
-        CPMirClock.setElapsedTimeMs(0)
 
         CPMirState(
             gameId = CPRand.guid6,
@@ -246,6 +243,9 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
+        // Save the current clock.
+        state.elapsedTimeMs = clock.getElapsedTime
+
         val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.elapsedTimeMs}.mir")
         Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
         CPEngine.rootLog().info(s"Game saved: $path")

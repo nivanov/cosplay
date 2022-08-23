@@ -20,6 +20,7 @@ package org.cosplay.games.mir
 import org.cosplay.*
 import prefabs.scenes.*
 import games.mir.scenes.*
+import games.mir.os.*
 import CPColor.*
 import CPPixel.*
 
@@ -35,6 +36,9 @@ import CPPixel.*
             (C) 2021 Rowan Games, Inc.
                ALl rights reserved.
 */
+
+val GAME_NAME = "Escape From Mir"
+val GAME_VER = "0.0.1"
 
 val EVENT_YEAR = 1997
 val NPC_CNT = 2
@@ -79,11 +83,7 @@ object CPMirGame:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(
-            name = "Escape From Mir",
-            semVer = "0.0.1",
-            termBg = BG
-        )
+        val gameInfo = CPGameInfo(name = GAME_NAME, semVer = GAME_VER, termBg = BG)
 
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))

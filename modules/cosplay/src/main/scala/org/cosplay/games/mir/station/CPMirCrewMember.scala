@@ -58,7 +58,6 @@ import org.cosplay.games.mir.station.CPMirPlayerRole.*
   * @param name
   * @param isMale
   */
-@SerialVersionUID(1_0_0L)
 case class CPMirPlayerChild(
     name: String,
     isMale: Boolean
@@ -75,7 +74,6 @@ case class CPMirPlayerChild(
   * @param character
   * @param game
   */
-@SerialVersionUID(1_0_0L)
 case class CPMirFavGame(character: String, game: String) extends Serializable:
     def debugString: String = s"$character from $game"
 
@@ -84,7 +82,6 @@ case class CPMirFavGame(character: String, game: String) extends Serializable:
   * @param title
   * @param author
   */
-@SerialVersionUID(1_0_0L)
 case class CPMirFavBook(title: String, author: String) extends Serializable:
     def debugString: String = s"$title by $author"
 
@@ -108,7 +105,6 @@ case class CPMirTeamSport(name: String, teams: Seq[String])
   * @param wifeLastName
   * @param children
   */
-@SerialVersionUID(1_0_0L)
 case class CPMirCrewMember(
     firstName: String,
     lastName: String,
