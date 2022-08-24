@@ -60,15 +60,13 @@ object CPMirOs:
         require(usrs.exists(_.isRoot))
 
         val rootUsr = usrs.find(_.isRoot).get
-        val clock = CPMirClock(stateMgr.state.elapsedTimeMs)
 
         new CPMirOs:
             override def getFs: CPMirFileSystem = fs
-            override def getClock: CPMirClock = clock
             override def bootUp(con: CPMirConsole): Unit =
                 stateMgr.state.osRebootCnt += 1
 
-                CPMirRuntime(fs, con, clock).exec(
+                CPMirRuntime(fs, con).exec(
                     None,
                     fs.file("/sbin/boot").get,
                     Seq.empty,
@@ -90,11 +88,6 @@ trait CPMirOs extends Serializable:
       *
       */
     def getFs: CPMirFileSystem
-
-    /**
-      *
-      */
-    def getClock: CPMirClock
 
     /**
       *

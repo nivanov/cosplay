@@ -75,7 +75,7 @@ class CPMirLoginProgram extends CPMirExecutable:
 
         val lastLoginTstamp = stateMgr.state.lastLoginTstamp
 
-        stateMgr.state.lastLoginTstamp = ctx.clock.now()
+        stateMgr.state.lastLoginTstamp = CPMirClock.now()
 
         con.println(s"Last login ${CPMirClock.formatDate(lastLoginTstamp)} on $tty.")
 

@@ -44,9 +44,8 @@ object CPMirRuntime:
   *
   * @param fs
   * @param con
-  * @param clock
   */
-class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
+class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
     import CPMirRuntime.*
 
     private val procs = mutable.HashMap.empty[Long, CPMirProcess]
@@ -78,7 +77,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
         err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
         var queued = true
         var code: Option[Int] = None
-        val submitTs = clock.now()
+        val submitTs = CPMirClock.now()
         var finishTs = -1L
         var startTs: Long = 0
         val pid = pidGen
@@ -89,7 +88,6 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
             args,
             con,
             this,
-            clock,
             fs,
             workDir,
             env,
@@ -102,13 +100,13 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
         val fut = exec.submit(new Callable[Int]() {
             override def call(): Int =
                 queued = false
-                startTs = clock.now()
+                startTs = CPMirClock.now()
                 try
                     code = Option(file.getExec.mainEntry(ctx))
                 catch
                     case _: InterruptedException => ()
                     case e: Exception => err.println(e.getLocalizedMessage)
-                finishTs = clock.now()
+                finishTs = CPMirClock.now()
                 code.getOrElse(-1)
         })
 
@@ -123,7 +121,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
             override def getSubmitTime: Long = submitTs
             override def isQueued: Boolean = queued
             override def isDone: Boolean = fut.isDone
-            override def kill(): Boolean = fut.cancel(true)
+            override def kill: Boolean = fut.cancel(true)
             override def isKilled: Boolean = fut.isCancelled
             override def exitCode(ms: Long = Long.MaxValue): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
             override def getFinishTime: Long = finishTs
@@ -162,7 +160,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
     def kill(pid: Long): Boolean = procs.synchronized {
         procs.get(pid) match
             case Some(p) =>
-                p.kill()
+                p.kill
                 procs.remove(pid)
                 true
             case None => false

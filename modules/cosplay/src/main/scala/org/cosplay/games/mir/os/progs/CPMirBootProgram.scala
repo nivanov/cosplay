@@ -62,7 +62,7 @@ class CPMirBootProgram extends CPMirExecutable:
             |Copyright (C) 1991-94, RCS "Energia", Russia
             |
             |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
-            |System clock synchronized: ${ctx.clock.formatNowTimeDate()}
+            |System clock synchronized: ${CPMirClock.formatNowTimeDate()}
             |""".stripMargin
 
         val fs = ctx.fs

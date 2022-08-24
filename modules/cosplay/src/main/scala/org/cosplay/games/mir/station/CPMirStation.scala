@@ -42,7 +42,6 @@ import scala.collection.mutable
 class CPMirStation extends Serializable:
     private var modules: Seq[CPMirModule] = _
     private var crew: Seq[CPMirCrewMember] = _
-    private val clock = CPMirClock(stateMgr.state.elapsedTimeMs)
 
     init()
 
@@ -122,15 +121,15 @@ class CPMirStation extends Serializable:
                 CPMirModuleDevice(null /* TODO */ , "aps")
             )
         )
-        val arr = mutable.ArrayBuffer.empty
+        val arr = mutable.ArrayBuffer.empty[CPMirCrewMember]
         for i <- 0 until NPC_CNT + 1 do
             var found = false
             while !found do
                 val crewman = CPMirCrewMember.newPlayer
-                if !arr.exists(p => p != player && (p.username == player.username || p.lastName == player.lastName)) then
+                if !arr.exists(p => p.username == crewman.username || p.lastName == crewman.lastName) then
                     found = true
                     arr += crewman
-        crew = arr
+        crew = arr.toSeq
 
     /**
       *
@@ -141,9 +140,3 @@ class CPMirStation extends Serializable:
       * Gets all crew members including NPCs and the player.
       */
     def getCrew: Seq[CPMirCrewMember] = crew
-
-    /**
-      *
-      */
-    def getClock: CPMirClock = clock
-

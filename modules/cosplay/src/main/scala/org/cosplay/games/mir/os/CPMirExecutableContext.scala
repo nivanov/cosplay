@@ -51,7 +51,6 @@ case class CPMirExecutableContext(
     args: Seq[String],
     con: CPMirConsole,
     rt: CPMirRuntime,
-    clock: CPMirClock,
     fs: CPMirFileSystem,
     workDir: CPMirDirectoryFile,
     env: Map[String, String],

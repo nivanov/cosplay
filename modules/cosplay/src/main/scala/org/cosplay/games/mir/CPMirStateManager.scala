@@ -96,7 +96,7 @@ import CPMirStateManager.*
   */
 class CPMirStateManager:
     // Player protagonist.
-    private var player = _
+    private var player: CPMirCrewMember = _
     private var os: CPMirOs = _
     private var station: CPMirStation = _
 
