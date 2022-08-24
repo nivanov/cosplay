@@ -100,6 +100,13 @@ trait CPMirUser extends Serializable:
     /**
       *
       */
+    def crew: CPMirCrewMember =
+        require(!isRoot)
+        getCrewMember.get
+
+    /**
+      *
+      */
     def isRoot: Boolean
 
     /**

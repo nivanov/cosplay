@@ -57,6 +57,8 @@ object CPMirClock:
       * @param elapsedMs
       */
     def init(elapsedMs: Long): Unit =
+        require(elapsedMs >= 0)
+
         startMs = CRASH_TIME_MS + elapsedMs
         initMs = System.currentTimeMillis()
 
@@ -68,7 +70,10 @@ object CPMirClock:
     /**
       * Gets current station time in milliseconds.
       */
-    def now(): Long = startMs + (System.currentTimeMillis() - initMs)
+    def now(): Long =
+        require(startMs != -1L && initMs != -1L, "Clock was not initialized.")
+
+        startMs + (System.currentTimeMillis() - initMs)
 
     /**
       *

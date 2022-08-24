@@ -48,7 +48,7 @@ class CPMirLoginProgram extends CPMirExecutable:
         out.println()
         out.println(s"MirX ${CPMirOs.VERSION} ($tty) \n")
 
-        def err(s: String): Unit = con.println(s"${CPMirConsole.CTRL_BEEP}login: $s")
+        def err(s: String): Unit = con.println(s"${CPMirConsole.CTRL_BEEP}err: $s")
 
         var done = false
         while !done do
@@ -77,7 +77,7 @@ class CPMirLoginProgram extends CPMirExecutable:
 
         stateMgr.state.lastLoginTstamp = CPMirClock.now()
 
-        con.println(s"Last login ${CPMirClock.formatDate(lastLoginTstamp)} on $tty.")
+        con.println(s"Last login ${CPMirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
 
         0
 

@@ -122,6 +122,8 @@ class CPMirStateManager:
       *
       */
     private def init(): CPMirState =
+        CPMirClock.init(0L)
+
         // Station sim.
         station = CPMirStation()
 
