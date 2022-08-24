@@ -63,7 +63,7 @@ object CPMirUser:
             private val id = genUserId
             private var pwd = password
 
-            override def getPlayer: Option[CPMirCrewMember] = player
+            override def getCrewMember: Option[CPMirCrewMember] = player
             override def getId: Int = id
             override def getPassword: String = pwd
             override def setPassword(pwd: String): Unit =
@@ -75,17 +75,18 @@ object CPMirUser:
     /**
       *
       */
-    def mkRoot(): CPMirUser = new CPMirUser:
-        private var pwd = CPRand.guid6
+    def mkRoot(): CPMirUser =
+        new CPMirUser:
+            private var pwd = CPRand.guid6
 
-        override def getPlayer: Option[CPMirCrewMember] = None
-        override def getId: Int = ROOT_USER_ID
-        override def getPassword: String = pwd
-        override def getUsername: String = "root"
-        override def setPassword(pwd: String): Unit =
-            require(pwd != null && pwd.nonEmpty)
-            this.pwd = pwd
-        override def isRoot: Boolean = true
+            override def getCrewMember: Option[CPMirCrewMember] = None
+            override def getId: Int = ROOT_USER_ID
+            override def getPassword: String = pwd
+            override def getUsername: String = "root"
+            override def setPassword(pwd: String): Unit =
+                require(pwd != null && pwd.nonEmpty)
+                this.pwd = pwd
+            override def isRoot: Boolean = true
 
 /**
   *
@@ -94,7 +95,7 @@ trait CPMirUser extends Serializable:
     /**
       *
       */
-    def getPlayer: Option[CPMirCrewMember]
+    def getCrewMember: Option[CPMirCrewMember]
 
     /**
       *

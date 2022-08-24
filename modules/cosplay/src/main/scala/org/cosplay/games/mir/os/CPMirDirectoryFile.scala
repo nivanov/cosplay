@@ -70,7 +70,7 @@ class CPMirDirectoryFile(
     otherAcs: Boolean = true,
     otherMod: Boolean = false,
     initMs: Long = CPMirClock.now()
-) extends CPMirFile(FT_DIR, name, owner, parent, initMs, otherAcs, otherMod) with CPMirFileDirectory with Iterable[CPMirFile]:
+) extends CPMirFile(FT_DIR, name, owner, parent, otherAcs, otherMod, initMs) with CPMirFileDirectory with Iterable[CPMirFile]:
     private val children = mutable.ArrayBuffer.empty[CPMirFile]
 
     /** */

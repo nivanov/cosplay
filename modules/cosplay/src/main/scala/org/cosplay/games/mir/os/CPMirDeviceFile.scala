@@ -48,5 +48,5 @@ class CPMirDeviceFile(
     parent: CPMirDirectoryFile,
     drv: CPMirDeviceDriver,
     initMs: Long = CPMirClock.now()
-) extends CPMirFile(FT_DEV, name, owner, Option(parent), initMs, true, false)
+) extends CPMirFile(FT_DEV, name, owner, Option(parent), true, false, initMs)
 

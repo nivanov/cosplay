@@ -56,7 +56,7 @@ class CPMirRegularFile(
     otherMod: Boolean,
     lines: Seq[String] = Seq.empty,
     initMs: Long = CPMirClock.now()
-) extends CPMirFile(FT_REG, name, owner, Option(parent), initMs, otherAcs, otherMod):
+) extends CPMirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod, initMs):
     private val file = CPEngine.homeFile(CPRand.guid)
 
     /**

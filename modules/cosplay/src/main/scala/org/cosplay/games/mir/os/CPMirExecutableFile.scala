@@ -51,7 +51,7 @@ class CPMirExecutableFile(
     otherAcs: Boolean,
     otherMod: Boolean,
     initMs: Long = CPMirClock.now()
-) extends CPMirFile(FT_EXE, name, owner, Option(parent), initMs, otherAcs, otherMod):
+) extends CPMirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod, initMs):
     setSize(exe.getSizeOnDisk)
 
     /**

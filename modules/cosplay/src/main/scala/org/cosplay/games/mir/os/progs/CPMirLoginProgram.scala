@@ -55,7 +55,7 @@ class CPMirLoginProgram extends CPMirExecutable:
             val login = con.promptReadLine("Login: ")
             con.println()
             if login != username then
-                err(s"only ${ply.getPlayer.get.nameCamelCase} ($username) ia authorized to login at this terminal ($tty).")
+                err(s"only ${ply.getCrewMember.get.nameCamelCase} ($username) ia authorized to login at this terminal ($tty).")
             else
                 done = true
 

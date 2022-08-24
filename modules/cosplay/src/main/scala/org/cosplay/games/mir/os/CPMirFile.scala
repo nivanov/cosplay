@@ -53,9 +53,9 @@ abstract class CPMirFile(
     private var name: String,
     private var owner: CPMirUser,
     private var parent: Option[CPMirDirectoryFile],
-    private var initMs: Long,
     private var otherAccess: Boolean = false,
-    private var otherModify: Boolean = false
+    private var otherModify: Boolean = false,
+    private var initMs: Long
 ) extends Serializable:
     require((parent.isEmpty && typ == FT_DIR) || parent.nonEmpty)
 

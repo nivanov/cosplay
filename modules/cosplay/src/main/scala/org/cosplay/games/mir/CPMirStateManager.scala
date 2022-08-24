@@ -96,7 +96,7 @@ import CPMirStateManager.*
   */
 class CPMirStateManager:
     // Player protagonist.
-    private var player: CPMirCrewMember = _
+    private var player: CPMirUser = _
     private var os: CPMirOs = _
     private var station: CPMirStation = _
 
@@ -128,9 +128,11 @@ class CPMirStateManager:
         // Users.
         // NOTE: root password is not guessable in the game - but can be obtained.
         val crew = station.getCrew
-        player = crew.head
+        val head = crew.head
+        player = CPMirUser(head.username, CPRand.rand(head.passwords), Option(head))
+        val playerCrew = player.getCrewMember.get
         val rootUsr = CPMirUser.mkRoot()
-        val usrs = mutable.ArrayBuffer(rootUsr)
+        val usrs = mutable.ArrayBuffer(player, rootUsr)
         crew.tail.foreach(p => usrs += CPMirUser(p.username, CPRand.rand(p.passwords), Option(p)))
 
         // Init file system.
@@ -155,12 +157,14 @@ class CPMirStateManager:
                 usrHome.addDirFile("outbox", usr)
         )
 
-        val plyInbox = root.dirFile(s"/home/${player.username}/inbox")
-        val plyOutbox = root.dirFile(s"/home/${player.username}/outbox")
+        val plyInbox = root.dirFile(s"/home/${playerCrew.username}/inbox")
+        val plyOutbox = root.dirFile(s"/home/${playerCrew.username}/outbox")
+        val crewDir = usr.addDirFile("crew", rootUsr)
 
-        // TODO: add content to 'inbox' and 'outbox'.
-
-        usr.addDirFile("crew", rootUsr)
+        // TODO: add content to:
+        // TODO: - 'inbox' folder
+        // TODO: - 'outbox' folder
+        // TODO: - 'crew' folder.
 
         // Install executables.
         sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
@@ -190,13 +194,13 @@ class CPMirStateManager:
             addDeviceFile(modAbbr, mod.powerSupplyDevice)
 
         val passwd = usrs.map(usr =>
-            val info = if usr.isRoot then "" else usr.getPlayer.get.nameCamelCase
+            val info = if usr.isRoot then "" else usr.getCrewMember.get.nameCamelCase
             s"${usr.getUsername}:${usr.getId}:$info:/home/${usr.getUsername}"
         ).toSeq
         etc.addRegFile("passwd", rootUsr, true, false, passwd)
 
         // OS.
-        os = CPMirOs(new CPMirFileSystem(root), usrs.toSeq, player)
+        os = CPMirOs(new CPMirFileSystem(root), usrs.toSeq, playerCrew)
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 
@@ -205,8 +209,8 @@ class CPMirStateManager:
             os = os,
             station = station,
             osRebootCnt = 0,
-            player = usrs.find(_.getUsername == player.username).get,
-            crew = crew.toSeq,
+            player = usrs.find(_.getUsername == playerCrew.username).get,
+            crew = crew,
             bg = DFLT_BG,
             fg = DFLT_FG,
             logoImg = DFLT_LOGO_IMAGE,
