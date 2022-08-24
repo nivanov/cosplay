@@ -40,9 +40,7 @@ import java.util.*
   *
   */
 object CPMirClockTests:
-    @BeforeAll
-    def init(): Unit =
-        CPMirClock.init(0)
+    CPMirClock.init(0)
 
     @Test
     def nowTest(): Unit =
