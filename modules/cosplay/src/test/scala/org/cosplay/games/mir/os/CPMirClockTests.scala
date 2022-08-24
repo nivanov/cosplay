@@ -40,11 +40,13 @@ import java.util.*
   *
   */
 object CPMirClockTests:
-    private val clock = CPMirClock(0L)
+    @BeforeAll
+    def init(): Unit =
+        CPMirClock.init(0)
 
     @Test
     def nowTest(): Unit =
-        val t1 = clock.now()
+        val t1 = CPMirClock.now()
         val t2 = System.currentTimeMillis()
         println(s"Elapsed years since crash: ${(t2 - t1) / 365 / 24 / 60 / 60 / 1000}")
 

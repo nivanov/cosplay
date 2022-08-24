@@ -40,11 +40,13 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   * @param owner User owner of this file.
   * @param parent Parent directory of this file.
   * @param drv Device driver.
+  * @param initMs Initial creation and update timestamp. Defaults to the current time.
   */
 class CPMirDeviceFile(
     name: String,
     owner: CPMirUser,
     parent: CPMirDirectoryFile,
-    drv: CPMirDeviceDriver
-) extends CPMirFile(FT_DEV, name, owner, Option(parent), true, false)
+    drv: CPMirDeviceDriver,
+    initMs: Long = CPMirClock.now()
+) extends CPMirFile(FT_DEV, name, owner, Option(parent), initMs, true, false)
 

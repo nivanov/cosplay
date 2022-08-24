@@ -107,5 +107,5 @@ trait CPMirProcess:
     /**
       *
       */
-    def kill: Boolean
+    def kill(): Boolean
 

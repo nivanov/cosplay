@@ -46,6 +46,7 @@ import java.io.FileInputStream
   * @param parent Parent directory of this file.
   * @param otherAcs Can others read or execute. Owner can do anything.
   * @param otherMod Can others change or delete. Owner can do anything.
+  * @param initMs Initial creation and update timestamp. Defaults to the current time.
   */
 class CPMirRegularFile(
     name: String,
@@ -53,8 +54,9 @@ class CPMirRegularFile(
     parent: CPMirDirectoryFile,
     otherAcs: Boolean,
     otherMod: Boolean,
-    lines: Seq[String] = Seq.empty
-) extends CPMirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod):
+    lines: Seq[String] = Seq.empty,
+    initMs: Long = CPMirClock.now()
+) extends CPMirFile(FT_REG, name, owner, Option(parent), initMs, otherAcs, otherMod):
     private val file = CPEngine.homeFile(CPRand.guid)
 
     /**

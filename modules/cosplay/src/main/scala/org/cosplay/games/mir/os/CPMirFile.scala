@@ -43,6 +43,7 @@ import games.mir.*
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
   * @param parent Parent directory of this file or `None` if this is a root directory file.
+  * @param initMs Initial creation and update timestamp.
   * @param otherAccess Can others read or execute. Owner can do anything.
   * @param otherModify Can others change or delete. Owner can do anything.
   */
@@ -52,13 +53,14 @@ abstract class CPMirFile(
     private var name: String,
     private var owner: CPMirUser,
     private var parent: Option[CPMirDirectoryFile],
+    private var initMs: Long,
     private var otherAccess: Boolean = false,
     private var otherModify: Boolean = false
 ) extends Serializable:
     require((parent.isEmpty && typ == FT_DIR) || parent.nonEmpty)
 
-    private var createTs = clock.now()
-    private var updateTs = clock.now()
+    private var createTs = initMs
+    private var updateTs = initMs
     private var size = 0L
     private var absPath = mkAbsolutePath()
 
@@ -130,7 +132,7 @@ abstract class CPMirFile(
     /**
       *
       */
-    def touch(): Unit = updateTs = clock.now()
+    def touch(): Unit = updateTs = CPMirClock.now()
 
     /**
       *
