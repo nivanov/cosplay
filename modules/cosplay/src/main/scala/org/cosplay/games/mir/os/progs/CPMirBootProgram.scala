@@ -48,7 +48,11 @@ class CPMirBootProgram extends CPMirExecutable:
             |64MB memory
             |
             |Starting MirX...
-            |
+            |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
+            |System clock synchronized: ${CPMirClock.formatNowTimeDate()}
+            |""".stripMargin
+
+        val logo = s"""
             | /88      /88 /88          /88   /88
             || 888    /888|__/         | 88  / 88
             || 8888  /8888 /88  /888888|  88/ 88/
@@ -60,10 +64,8 @@ class CPMirBootProgram extends CPMirExecutable:
             |
             |ver ${CPMirOs.VERSION}, Dec 12, 1993
             |Copyright (C) 1991-94, RCS "Energia", Russia
-            |
-            |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
-            |System clock synchronized: ${CPMirClock.formatNowTimeDate()}
-            |""".stripMargin
+            |""".
+        stripMargin
 
         val fs = ctx.fs
         val out = ctx.out
@@ -94,8 +96,11 @@ class CPMirBootProgram extends CPMirExecutable:
         for line <- passwd do
             val parts = line.split(":")
             val username = parts.head
-            val base = s"  |- $username, ${parts(2)} -> ${parts(3)}"
-            if username == stateMgr.state.player.getUsername then out.println(s"$base (*)") else out.println(base)
+            if username != "root" then
+                val base = s"  |- $username, ${parts(2)} -> ${parts(3)}"
+                if username == stateMgr.state.player.getUsername then out.println(s"$base (*)") else out.println(base)
+
+        logo.split("\n").foreach(out.println)
 
         // Start 'sbin/login' and wait indefinitely.
         ctx.fork(fs.file("/sbin/login").get, Seq.empty).exitCode().getOrElse(-1)

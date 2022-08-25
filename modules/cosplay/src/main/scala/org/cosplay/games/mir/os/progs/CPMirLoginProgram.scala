@@ -46,7 +46,6 @@ class CPMirLoginProgram extends CPMirExecutable:
         val tty = "tty0"
 
         out.println()
-        out.println(s"MirX ${CPMirOs.VERSION} ($tty) \n")
 
         def err(s: String): Unit = con.println(s"${CPMirConsole.CTRL_BEEP}err: $s")
 
