@@ -155,8 +155,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             lastBtn = btns(btnIndex)
 
             btnIndex += change
-            //menuClick.stop(0)
-            //menuClick.play(0)
 
             otherDarkness = darkness
 
@@ -245,6 +243,10 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             if visible == false && darkness < 1 then
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
+
+//    private val flashEffect = new CPOffScreenSprite("flash"):
+//        override def update(ctx: CPSceneObjectContext): Unit =
+//            super.update(ctx)
 
 
     addObjects(
