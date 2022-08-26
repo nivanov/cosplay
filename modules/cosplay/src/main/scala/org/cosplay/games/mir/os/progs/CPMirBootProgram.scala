@@ -40,8 +40,8 @@ import CPMirConsole.*
   */
 class CPMirBootProgram extends CPMirExecutable:
     override def mainEntry(ctx: CPMirExecutableContext): Int =
-        val boot = s"""
-            |Award Modular BIOS v4.50G, An Energy Star Ally
+        val boot =
+            s"""Award Modular BIOS v4.50G, An Energy Star Ally
             |Copyright (C) 1984-92, Award Software, Inc.
             |
             |80486DX2 CPU at 66MHz

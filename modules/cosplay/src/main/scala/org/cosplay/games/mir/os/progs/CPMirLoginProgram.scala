@@ -18,6 +18,7 @@
 package org.cosplay.games.mir.os.progs
 
 import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.progs.CPMirLoginProgram.MIN_PWD_LEN
 import os.*
 
 /*
@@ -36,7 +37,16 @@ import os.*
 /**
   *
   */
+object CPMirLoginProgram:
+    private final val MIN_PWD_LEN = 4
+    private final val ERR_PREFIX = "  |-"
+
+/**
+  *
+  */
 class CPMirLoginProgram extends CPMirExecutable:
+    import CPMirLoginProgram.*
+
     override def mainEntry(ctx: CPMirExecutableContext): Int =
         val out = ctx.out
         val con = ctx.con
@@ -47,7 +57,7 @@ class CPMirLoginProgram extends CPMirExecutable:
 
         out.println()
 
-        def err(s: String): Unit = con.println(s"${CPMirConsole.CTRL_BEEP}err: $s")
+        def err(s: String): Unit = con.println(s"$ERR_PREFIX ${CPMirConsole.CTRL_BEEP}err: $s")
 
         var done = false
         while !done do
@@ -59,6 +69,7 @@ class CPMirLoginProgram extends CPMirExecutable:
                 done = true
 
         con.println(s"Reset password for '$username' due to system fault restart.")
+        con.println(s"$ERR_PREFIX password must be at least $MIN_PWD_LEN characters.")
 
         done = false
         while !done do
@@ -66,7 +77,7 @@ class CPMirLoginProgram extends CPMirExecutable:
             val passwd2 = con.promptReadLine("\nConfirm password: ", Option('*'))
             con.println()
             if passwd1 != passwd2 then err(s"passwords do not match.")
-            else if passwd1.length < 4 then err("password is too short (must be > 4 characters).")
+            else if passwd1.length < MIN_PWD_LEN then err(s"password is too short (must be at least $MIN_PWD_LEN characters).")
             else
                 done = true
                 stateMgr.state.player.setPassword(passwd1)

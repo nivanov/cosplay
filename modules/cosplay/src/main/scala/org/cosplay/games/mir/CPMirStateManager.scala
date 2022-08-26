@@ -241,6 +241,9 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
+        // Save current timestamp.
+        state.elapsedTimeMs = CPMirClock.getElapsedTime
+
         val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.elapsedTimeMs}.mir")
         Using.resource(
             new ObjectOutputStream(
