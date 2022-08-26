@@ -33,6 +33,9 @@ import games.mir.*
                ALl rights reserved.
 */
 
+/**
+  * 
+  */
 object CPMirCreditsScene  extends CPMirStarStreakSceneBase("credits", "bg1.wav"):
     addObjects(
         // Add full-screen shaders - order is important.

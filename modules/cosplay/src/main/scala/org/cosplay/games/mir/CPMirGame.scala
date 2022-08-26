@@ -20,8 +20,6 @@ package org.cosplay.games.mir
 import org.cosplay.*
 import prefabs.scenes.*
 import games.mir.scenes.*
-import CPColor.*
-import CPPixel.*
 
 /*
    _________            ______________
@@ -36,30 +34,6 @@ import CPPixel.*
                ALl rights reserved.
 */
 
-val EVENT_YEAR = 1997
-val NPC_CNT = 2
-val stateMgr = CPMirStateManager()
-val BG = stateMgr.state.bg
-val FG = stateMgr.state.fg
-val FG_LITE = FG.lighter(.4f)
-val FG_DARK = FG.darker(.4f)
-val BG_PX = ' '&&(BG, BG)
-val SND_HOME = "mir/sounds"
-val markup = CPMarkup(
-    FG,
-    Option(BG),
-    Seq(
-        CPMarkupElement("<%", "%>", _&&(FG_LITE, BG)), // Light.
-        CPMarkupElement("<~", "~>", _&&(FG_DARK, BG)), // Dark.
-        CPMarkupElement("<@", "@>", _&&(BG, FG)) // Reverse.
-    )
-)
-
-extension(d: Int)
-    def kb: Long = d * 1024
-    def mb: Long = d * 1024 * 1024
-    def gb: Long = d * 1024 * 1024 * 1024
-
 /**
   *
   */
@@ -70,11 +44,7 @@ object CPMirGame:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val gameInfo = CPGameInfo(
-            name = "Escape From Mir",
-            semVer = "0.0.1",
-            termBg = BG
-        )
+        val gameInfo = CPGameInfo(name = GAME_NAME, semVer = GAME_VER, termBg = BG)
 
         // Initialize the engine.
         CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
@@ -82,7 +52,7 @@ object CPMirGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"main", fadeInMs = 3000),
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
                 CPMirTitleScene,
                 CPMirLoadScene,
                 CPMirNewGameScene,

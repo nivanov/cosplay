@@ -33,7 +33,9 @@ package org.cosplay.games.mir.os
 import org.cosplay.*
 import CPMirFileType.*
 import CPMirFileSystem.*
+
 import scala.collection.mutable
+import games.mir.*
 
 /**
   *
@@ -41,6 +43,7 @@ import scala.collection.mutable
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
   * @param parent Parent directory of this file or `None` if this is a root directory file.
+  * @param initMs Initial creation and update timestamp.
   * @param otherAccess Can others read or execute. Owner can do anything.
   * @param otherModify Can others change or delete. Owner can do anything.
   */
@@ -51,12 +54,13 @@ abstract class CPMirFile(
     private var owner: CPMirUser,
     private var parent: Option[CPMirDirectoryFile],
     private var otherAccess: Boolean = false,
-    private var otherModify: Boolean = false
+    private var otherModify: Boolean = false,
+    private var initMs: Long
 ) extends Serializable:
     require((parent.isEmpty && typ == FT_DIR) || parent.nonEmpty)
 
-    private var createTs = CPMirClock.now()
-    private var updateTs = CPMirClock.now()
+    private var createTs = initMs
+    private var updateTs = initMs
     private var size = 0L
     private var absPath = mkAbsolutePath()
 

@@ -38,8 +38,8 @@ import CPMirConsole.*
 /**
   *
   */
-class CPMirBootProgram extends CPMirExec:
-    override def mainEntry(ctx: CPMirExecContext): Int =
+class CPMirBootProgram extends CPMirExecutable:
+    override def mainEntry(ctx: CPMirExecutableContext): Int =
         val boot = s"""
             |Award Modular BIOS v4.50G, An Energy Star Ally
             |Copyright (C) 1984-92, Award Software, Inc.
@@ -48,7 +48,11 @@ class CPMirBootProgram extends CPMirExec:
             |64MB memory
             |
             |Starting MirX...
-            |
+            |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
+            |System clock synchronized: ${CPMirClock.formatNowTimeDate()}
+            |""".stripMargin
+
+        val logo = s"""
             | /88      /88 /88          /88   /88
             || 888    /888|__/         | 88  / 88
             || 8888  /8888 /88  /888888|  88/ 88/
@@ -58,24 +62,25 @@ class CPMirBootProgram extends CPMirExec:
             || 88 \\/  | 88| 88| 88     | 88  \\ 88
             ||__/     |__/|__/|__/     |__/  |__/
             |
-            |ver 1.12.04, Dec 12, 1993
+            |ver ${CPMirOs.VERSION}, Dec 12, 1993
             |Copyright (C) 1991-94, RCS "Energia", Russia
-            |
-            |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
-            |System clock synchronized: ${CPMirClock.formatTimeDate()}
-            |
-            |""".stripMargin
+            |""".
+        stripMargin
 
         val fs = ctx.fs
         val out = ctx.out
 
         boot.split("\n").foreach(out.println)
 
+        out.println()
+        out.println("Pressurized modules:")
+        for mod <- stateMgr.state.station.allModules do
+            out.println(s"  |- ${mod.name} ('${mod.abbreviation}') - OK.")
+
+        out.println()
         out.println("Device map:")
         val devDir = fs.dirFile("/dev")
         devDir.list().foreach(f => out.println(s"  |- '${f.getAbsolutePath}' initialized."))
-
-
 
         // Only show the 1st time.
         if stateMgr.state.osRebootCnt == 1 then
@@ -88,9 +93,14 @@ class CPMirBootProgram extends CPMirExec:
         out.println()
         out.println("Users verified:")
         val passwd = fs.regFile("/etc/passwd").readLines
-        for (line <- passwd)
+        for line <- passwd do
             val parts = line.split(":")
-            out.println(s"  |- ${parts.head}, ${parts(2)} -> ${parts(3)}")
+            val username = parts.head
+            if username != "root" then
+                val base = s"  |- $username, ${parts(2)} -> ${parts(3)}"
+                if username == stateMgr.state.player.getUsername then out.println(s"$base (*)") else out.println(base)
 
-        // Return code.
-        0
+        logo.split("\n").foreach(out.println)
+
+        // Start 'sbin/login' and wait indefinitely.
+        ctx.fork(fs.file("/sbin/login").get, Seq.empty).exitCode().getOrElse(-1)

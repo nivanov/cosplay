@@ -15,7 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir
+
+import org.cosplay.*
+import CPColor.*
+import CPPixel.*
+
 
 /*
    _________            ______________
@@ -30,41 +35,41 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-/**
-  *
-  * @param args
-  * @param con
-  * @param rt
-  * @param fs
-  * @param workDir
-  * @param env
-  * @param usr
-  * @param in
-  * @param out
-  * @param err
-  */
-case class CPMirExecContext(
-    args: Seq[String],
-    con: CPMirConsole,
-    rt: CPMirRuntime,
-    fs: CPMirFileSystem,
-    workDir: CPMirDirectoryFile,
-    env: Map[String, String],
-    usr: CPMirUser,
-    in: CPMirInputStream,
-    out: CPMirOutputStream,
-    err: CPMirOutputStream
-):
-    @transient private var killed = false
+val GAME_NAME = "Escape From Mir"
+val GAME_VER = "0.0.1"
 
-    /**
-      *
-      * @return
-      */
-    def isKilled: Boolean = killed
+val EVENT_YEAR = 1997
+val NPC_CNT = 2
+val stateMgr = CPMirStateManager()
+val BG = stateMgr.state.bg
+val FG = stateMgr.state.fg
+val FG_LITE = FG.lighter(.4f)
+val FG_DARK = FG.darker(.4f)
+val BG_PX = ' '&&(BG, BG)
+val SND_HOME = "mir/sounds"
+val IMG_HOME = "mir/images"
+val markup = CPMarkup(
+    FG,
+    Option(BG),
+    Seq(
+        CPMarkupElement("<%", "%>", _&&(FG_LITE, BG)), // Light.
+        CPMarkupElement("<~", "~>", _&&(FG_DARK, BG)), // Dark.
+        CPMarkupElement("<@", "@>", _&&(BG, FG)) // Reverse.
+    )
+)
 
-    /**
-      *
-      */
-    def kill(): Unit = killed = true
+extension(d: Int)
+    // To bytes...
+    def kb: Long = d * 1024
+    def mb: Long = d * 1024 * 1024
+    def gb: Long = d * 1024 * 1024 * 1024
+
+    // To milliseconds...
+    def secs: Long = d * 1000
+    def mins: Long = d * 1000 * 60
+    def hours: Long = d * 1000 * 60 * 60
+    def days: Long = d * 1000 * 60 * 60 * 24
+    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
+
+
 

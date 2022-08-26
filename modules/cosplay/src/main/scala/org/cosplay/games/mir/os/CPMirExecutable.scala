@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os
 
+import org.cosplay.CPRand
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -30,30 +32,23 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.CPMirFileType.*
+import org.cosplay.*
+import games.mir.*
 
 /**
   *
-  * @param name Name of file (not including its path).
-  * @param owner User owner of this file.
-  * @param exe Executable program.
-  * @param otherAcs Can others read or execute. Owner can do anything.
-  * @param otherMod Can others change or delete. Owner can do anything.
   */
-class CPMirExecFile(
-    name: String,
-    owner: CPMirUser,
-    parent: CPMirDirectoryFile,
-    exe: CPMirExec,
-    otherAcs: Boolean,
-    otherMod: Boolean
-) extends CPMirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod):
-    setSize(exe.getSizeOnDisk)
+abstract class CPMirExecutable extends Serializable:
+    private val sz = CPRand.between(10.kb, 50.kb)
+
+    /**
+      *
+      * @param ctx
+      */
+    def mainEntry(ctx: CPMirExecutableContext): Int
 
     /**
       *
       */
-    def getExec: CPMirExec = exe
+    def getSizeOnDisk: Long = sz
 

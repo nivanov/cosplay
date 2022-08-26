@@ -198,7 +198,7 @@ object CPEngine:
                 buf.clear()
 
 
-        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit =
+        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit =
             if frameCnt % nthFrame == 0 then
                 if obj.toString != CPUtils.PING_MSG then
                     lvl match
@@ -216,7 +216,7 @@ object CPEngine:
       *
       */
     object BufferedLog:
-        case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception)
+        case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable)
         val buf: mutable.ArrayBuffer[BufferedLogEntry] = mutable.ArrayBuffer.empty[BufferedLogEntry]
 
     import BufferedLog.*
@@ -228,7 +228,7 @@ object CPEngine:
     private class BufferedLog(cat: String) extends CPLog:
         def getLog(category: String): CPLog = new BufferedLog(s"$cat/$category")
         def getCategory: String = cat
-        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Exception): Unit = buf += BufferedLogEntry(nthFrame, lvl, obj, cat, ex)
+        def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit = buf += BufferedLogEntry(nthFrame, lvl, obj, cat, ex)
 
     /**
       *

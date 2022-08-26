@@ -33,6 +33,8 @@ package org.cosplay.games.mir
 import org.cosplay.*
 import impl.*
 import games.mir.os.*
+import progs.*
+import progs.mash.*
 import games.mir.station.*
 import org.apache.commons.lang3.SystemUtils
 
@@ -47,7 +49,7 @@ case class CPMirState(
     os: CPMirOs,
     var osRebootCnt: Int,
     station: CPMirStation,
-    player: CPMirCrewMember,
+    player: CPMirUser,
     crew: Seq[CPMirCrewMember],
     var logoImg: String,
     var bg: CPColor,
@@ -57,7 +59,8 @@ case class CPMirState(
     var crtOverscanProb: Float,
     var crtOverscanFactor: Float,
     var crtTearProb: Float,
-    var timeMs: Long,
+    var elapsedTimeMs: Long,
+    var lastLoginTstamp: Long,
     badgeMirXAdmin: CPMirPlayerBadge,
     badgeMashDev: CPMirPlayerBadge,
     badgeCommSpec: CPMirPlayerBadge,
@@ -93,7 +96,7 @@ import CPMirStateManager.*
   */
 class CPMirStateManager:
     // Player protagonist.
-    private val player = CPMirCrewMember.newPlayer
+    private var player: CPMirUser = _
     private var os: CPMirOs = _
     private var station: CPMirStation = _
 
@@ -119,26 +122,87 @@ class CPMirStateManager:
       *
       */
     private def init(): CPMirState =
-        // Crew.
-        val crew = mutable.ArrayBuffer(player) // Crew always includes the player.
-        for i <- 0 until NPC_CNT do
-            var found = false
-            while !found do
-                val crewman = CPMirCrewMember.newPlayer
-                if !crew.exists(p => p != player && (p.username == player.username || p.lastName == player.lastName)) then
-                    found = true
-                    crew += crewman
+        CPMirClock.init(0L)
+
+        // Station sim.
+        station = CPMirStation()
 
         // Users.
         // NOTE: root password is not guessable in the game - but can be obtained.
-        val rootUsr = CPMirUser(None, true, "root", CPRand.guid6)
-        val usrs = mutable.ArrayBuffer(rootUsr)
-        crew.foreach(p => usrs += CPMirUser(Option(p), false, p.username, CPRand.rand(p.passwords)))
+        val crew = station.getCrew
+        val head = crew.head
+        player = CPMirUser(head.username, CPRand.rand(head.passwords), Option(head))
+        val playerCrew = player.getCrewMember.get
+        val rootUsr = CPMirUser.mkRoot()
+        val usrs = mutable.ArrayBuffer(player, rootUsr)
+        crew.tail.foreach(p => usrs += CPMirUser(p.username, CPRand.rand(p.passwords), Option(p)))
+
+        // Init file system.
+        val root = CPMirDirectoryFile.mkRoot(rootUsr)
+
+        // Install directory structure.
+        val bin = root.addDirFile("bin", rootUsr)
+        val sbin = root.addDirFile("sbin", rootUsr)
+        val dev = root.addDirFile("dev", rootUsr)
+        val home = root.addDirFile("home", rootUsr)
+        root.addDirFile("tmp", rootUsr)
+        val etc = root.addDirFile("etc", rootUsr)
+        val lib = root.addDirFile("lib", rootUsr)
+        val usr = root.addDirFile("usr", rootUsr)
+        val usrBin = usr.addDirFile("bin", rootUsr)
+
+        // Add homes for all non-root users.
+        usrs.foreach(usr =>
+            if !usr.isRoot then
+                val usrHome = home.addDirFile(usr.getUsername, usr)
+                usrHome.addDirFile("inbox", usr)
+                usrHome.addDirFile("outbox", usr)
+        )
+
+        val plyInbox = root.dirFile(s"/home/${playerCrew.username}/inbox")
+        val plyOutbox = root.dirFile(s"/home/${playerCrew.username}/outbox")
+        val crewDir = usr.addDirFile("crew", rootUsr)
+
+        // TODO: add content to:
+        // TODO: - 'inbox' folder
+        // TODO: - 'outbox' folder
+        // TODO: - 'crew' folder.
+
+        // Install executables.
+        sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
+        sbin.addExecFile("ls", rootUsr, new CPMirLsProgram)
+        sbin.addExecFile("login", rootUsr, new CPMirLoginProgram)
+        sbin.addExecFile("mash", rootUsr, new CPMirMashProgram)
+
+        // Install devices
+        dev.addDeviceFile("radio", rootUsr, null /* TODO */)
+        dev.addDeviceFile("stela1", rootUsr, null /* TODO */)
+        dev.addDeviceFile("stela2", rootUsr, null /* TODO */)
+        dev.addDeviceFile("travers", rootUsr, null /* TODO */)
+        dev.addDeviceFile("lira", rootUsr, null /* TODO */)
+        dev.addDeviceFile("alt", rootUsr, null /* TODO */)
+        dev.addDeviceFile("uhf", rootUsr, null /* TODO */)
+        dev.addDeviceFile("thrust", rootUsr, null /* TODO */)
+
+        def addDeviceFile(modAbbr: String, modDev: CPMirModuleDevice): Unit =
+            dev.addDeviceFile(s"$modAbbr-${modDev.getAbbreviation}", rootUsr, modDev.getDriver)
+
+        for mod <- station.allModules do
+            val modAbbr = mod.abbreviation
+            addDeviceFile(modAbbr, mod.oxygenDetectorDevice)
+            addDeviceFile(modAbbr, mod.airPressureDevice)
+            addDeviceFile(modAbbr, mod.fireDetectorDevice)
+            addDeviceFile(modAbbr, mod.fireSuppressionDevice)
+            addDeviceFile(modAbbr, mod.powerSupplyDevice)
+
+        val passwd = usrs.map(usr =>
+            val info = if usr.isRoot then "" else usr.getCrewMember.get.nameCamelCase
+            s"${usr.getUsername}:${usr.getId}:$info:/home/${usr.getUsername}"
+        ).toSeq
+        etc.addRegFile("passwd", rootUsr, true, false, passwd)
 
         // OS.
-        os = CPMirOs(None, usrs.toSeq, player) 
-        // Station sim.
-        station = CPMirStation()
+        os = CPMirOs(new CPMirFileSystem(root), usrs.toSeq, playerCrew)
 
         CPEngine.rootLog().info(s"New game state is initialized.")
 
@@ -147,8 +211,8 @@ class CPMirStateManager:
             os = os,
             station = station,
             osRebootCnt = 0,
-            player = player,
-            crew = crew.toSeq,
+            player = usrs.find(_.getUsername == playerCrew.username).get,
+            crew = crew,
             bg = DFLT_BG,
             fg = DFLT_FG,
             logoImg = DFLT_LOGO_IMAGE,
@@ -157,7 +221,8 @@ class CPMirStateManager:
             crtOverscanProb = .005f,
             crtOverscanFactor = if SystemUtils.IS_OS_MAC then .03f else .01f,
             crtTearProb = .03f,
-            timeMs = 0L,
+            elapsedTimeMs = 0L,
+            lastLoginTstamp = CPMirClock.randSysTime(),
             badgeMirXAdmin = CPMirPlayerBadge("MirX Administrator"),
             badgeMashDev = CPMirPlayerBadge("Mash Developer"),
             badgeCommSpec = CPMirPlayerBadge("Communication Specialist"),
@@ -176,8 +241,16 @@ class CPMirStateManager:
       * @throws Exception Thrown in case of any errors.
       */
     def save(): Unit =
-        val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.timeMs}.mir")
-        Using.resource(new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))) { _.writeObject(state) }
+        val path = CPEngine.homeFile(s"$DIR/${state.gameId}_${state.elapsedTimeMs}.mir")
+        Using.resource(
+            new ObjectOutputStream(
+                new BufferedOutputStream(
+                    new FileOutputStream(path)
+                )
+            )
+        ) {
+            _.writeObject(state)
+        }
         CPEngine.rootLog().info(s"Game saved: $path")
 
 

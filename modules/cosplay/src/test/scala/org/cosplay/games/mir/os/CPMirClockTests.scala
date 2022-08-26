@@ -17,7 +17,9 @@
 
 package org.cosplay.games.mir.os
 
+import org.cosplay.games.mir.CPMirClock
 import org.junit.jupiter.api.*
+
 import java.text.*
 import java.util.*
 
@@ -38,16 +40,16 @@ import java.util.*
   *
   */
 object CPMirClockTests:
+    CPMirClock.init(0)
+
     @Test
     def nowTest(): Unit =
-        CPMirClock.setElapsedTime(0)
         val t1 = CPMirClock.now()
         val t2 = System.currentTimeMillis()
         println(s"Elapsed years since crash: ${(t2 - t1) / 365 / 24 / 60 / 60 / 1000}")
 
     @Test
     def sysAndCrewTimeTest(): Unit =
-        CPMirClock.setElapsedTime(0)
         val fmt = SimpleDateFormat("yyyy MMMM dd HH:mm z")
         (0 until 10).foreach {
             _ => println(s"System timestamp: ${fmt.format(new Date(CPMirClock.randSysTime()))}")

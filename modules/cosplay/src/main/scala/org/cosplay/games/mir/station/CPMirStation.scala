@@ -18,6 +18,10 @@
 package org.cosplay.games.mir.station
 
 import java.text.SimpleDateFormat
+import org.cosplay.games.mir.*
+import os.CPMirUser
+
+import scala.collection.mutable
 
 /*
    _________            ______________
@@ -35,31 +39,104 @@ import java.text.SimpleDateFormat
 /**
   *
   */
-object CPMirStation:
+class CPMirStation extends Serializable:
+    private var modules: Seq[CPMirModule] = _
+    private var crew: Seq[CPMirCrewMember] = _
+
+    init()
+
     /**
       *
       */
-    def apply(): CPMirStation =
+    private def init(): Unit =
         val fmt = SimpleDateFormat("dd MMMM yyyy")
-        val modules = Seq(
-            CPMirModule("Core Module", "cor", fmt.parse("19 Feb 1986")),
-            CPMirModule("Kvant-1", "kv1", fmt.parse("31 Mar 1987")),
-            CPMirModule("Kvant-2", "kv2", fmt.parse("26 Nov 1989")),
-            CPMirModule("Kristal", "krs", fmt.parse("31 May 1990")),
-            CPMirModule("Spektr", "spk", fmt.parse("20 May 1995")),
-            CPMirModule("Docking Module", "dck", fmt.parse("15 Nov 1995")),
-            CPMirModule("Priroda", "prd", fmt.parse("26 Apr 1996"))
+        modules = Seq(
+            CPMirModule(
+                "Core Module", "cor",
+                fmt.parse("19 Feb 1986"),
+                CPMirModuleDevice(null /* TODO */, "pwr"),
+                CPMirModuleDevice(null /* TODO */, "oxy"),
+                CPMirModuleDevice(null /* TODO */, "fdr"),
+                CPMirModuleDevice(null /* TODO */, "fsp"),
+                CPMirModuleDevice(null /* TODO */, "aps")
+            ),
+            CPMirModule(
+                "Kvant-1",
+                "kv1",
+                fmt.parse("31 Mar 1987"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Kvant-2",
+                "kv2",
+                fmt.parse("26 Nov 1989"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Kristal",
+                "krs",
+                fmt.parse("31 May 1990"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Spektr",
+                "spk",
+                fmt.parse("20 May 1995"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Docking Module",
+                "dck",
+                fmt.parse("15 Nov 1995"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            ),
+            CPMirModule(
+                "Priroda",
+                "prd",
+                fmt.parse("26 Apr 1996"),
+                CPMirModuleDevice(null /* TODO */ , "pwr"),
+                CPMirModuleDevice(null /* TODO */ , "oxy"),
+                CPMirModuleDevice(null /* TODO */ , "fdr"),
+                CPMirModuleDevice(null /* TODO */ , "fsp"),
+                CPMirModuleDevice(null /* TODO */ , "aps")
+            )
         )
+        val arr = mutable.ArrayBuffer.empty[CPMirCrewMember]
+        for i <- 0 until NPC_CNT + 1 do
+            var found = false
+            while !found do
+                val crewman = CPMirCrewMember.newPlayer
+                if !arr.exists(p => p.username == crewman.username || p.lastName == crewman.lastName) then
+                    found = true
+                    arr += crewman
+        crew = arr.toSeq
 
-        new CPMirStation:
-            override def allModules: Seq[CPMirModule] = modules
-
-/**
-  *
-  */
-trait CPMirStation:
     /**
       *
       */
-    def allModules: Seq[CPMirModule]
+    def allModules: Seq[CPMirModule] = modules
 
+    /**
+      * Gets all crew members including NPCs and the player.
+      */
+    def getCrew: Seq[CPMirCrewMember] = crew

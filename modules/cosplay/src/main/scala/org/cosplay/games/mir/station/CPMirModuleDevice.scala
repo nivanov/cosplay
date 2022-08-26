@@ -32,7 +32,23 @@ import org.cosplay.games.mir.os.*
                ALl rights reserved.
 */
 
-trait CPMirModuleDevice:
+/**
+  *
+  */
+object CPMirModuleDevice:
+    /**
+      *
+      * @param drv
+      * @param abbr
+      */
+    def apply(drv: CPMirDeviceDriver, abbr: String): CPMirModuleDevice =
+        new CPMirModuleDevice:
+            override def getDriver: CPMirDeviceDriver = drv
+            override def getAbbreviation: String = abbr
+/**
+  *
+  */
+trait CPMirModuleDevice extends Serializable:
     /**
       *
       */

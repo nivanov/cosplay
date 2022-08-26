@@ -32,6 +32,7 @@ package org.cosplay.games.mir.os
 
 import java.util.concurrent.*
 import scala.collection.mutable
+import org.cosplay.games.mir.*
 
 /**
   *
@@ -47,7 +48,7 @@ object CPMirRuntime:
 class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
     import CPMirRuntime.*
 
-    private val procs = mutable.ArrayBuffer.empty[CPMirProcess]
+    private val procs = mutable.HashMap.empty[Long, CPMirProcess]
     private val exec = Executors.newFixedThreadPool(THREAD_POOL_SIZE)
     private var pidGen = 1L
 
@@ -66,7 +67,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
       */
     def exec(
         parent: Option[CPMirProcess],
-        file: CPMirExecFile,
+        file: CPMirExecutableFile,
         args: Seq[String],
         workDir: CPMirDirectoryFile,
         usr: CPMirUser,
@@ -82,7 +83,8 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
         val pid = pidGen
         pidGen += 1
 
-        val ctx = CPMirExecContext(
+        val ctx = CPMirExecutableContext(
+            pid,
             args,
             con,
             this,
@@ -112,7 +114,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             override def getOwner: CPMirUser = usr
             override def getPid: Long = pid
             override def getParent: Option[CPMirProcess] = parent
-            override def getProgramFile: CPMirExecFile = file
+            override def getProgramFile: CPMirExecutableFile = file
             override def getWorkingDirectory: CPMirDirectoryFile = workDir
             override def getArguments: Seq[String] = args
             override def getStartTime: Long = startTs
@@ -121,12 +123,11 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
             override def isDone: Boolean = fut.isDone
             override def kill(): Boolean = fut.cancel(true)
             override def isKilled: Boolean = fut.isCancelled
-            override def exitCode: Option[Int] = code
-            override def get(ms: Long): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
+            override def exitCode(ms: Long = Long.MaxValue): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
             override def getFinishTime: Long = finishTs
 
         procs.synchronized {
-            procs += proc
+            procs.put(pid, proc)
         }
 
         proc
@@ -134,16 +135,34 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
     /**
       *
       */
-    def list: Seq[CPMirProcess] = procs.synchronized {
-        procs.toSeq
+    def listAll: Seq[CPMirProcess] = procs.synchronized {
+        procs.values.toSeq
+    }
+
+    /**
+      *
+      */
+    def listRunning: Seq[CPMirProcess] = procs.synchronized {
+        procs.values.filter(_.isRunning).toSeq
+    }
+
+    /**
+      *
+      * @param pid
+      */
+    def get(pid: Long): Option[CPMirProcess] = procs.synchronized {
+        procs.get(pid)
     }
 
     /**
       *
       */
     def kill(pid: Long): Boolean = procs.synchronized {
-        procs.find(_.getPid == pid) match
-            case Some(p) => p.kill()
+        procs.get(pid) match
+            case Some(p) =>
+                p.kill()
+                procs.remove(pid)
+                true
             case None => false
     }
 

@@ -67,7 +67,7 @@ trait CPMirFileDirectory:
       *
       * @param path Relative to root or fully qualified path.
       */
-    def execFile(path: String): CPMirExecFile = mandatoryFile[CPMirExecFile](path)
+    def execFile(path: String): CPMirExecutableFile = mandatoryFile[CPMirExecutableFile](path)
 
     /**
       *
@@ -91,7 +91,7 @@ trait CPMirFileDirectory:
       *
       * @param path Relative to root or fully qualified path.
       */
-    def execFileOpt(path: String): Option[CPMirExecFile] = file[CPMirExecFile](path)
+    def execFileOpt(path: String): Option[CPMirExecutableFile] = file[CPMirExecutableFile](path)
 
     /**
       *

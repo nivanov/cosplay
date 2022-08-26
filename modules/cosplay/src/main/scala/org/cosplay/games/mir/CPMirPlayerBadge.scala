@@ -17,8 +17,6 @@
 
 package org.cosplay.games.mir
 
-import org.cosplay.games.mir.os.CPMirClock
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -37,13 +35,17 @@ import org.cosplay.games.mir.os.CPMirClock
   * @param name
   */
 @SerialVersionUID(1_0_0L)
-case class CPMirPlayerBadge(name: String):
+case class CPMirPlayerBadge(name: String) extends Serializable:
     private var earnedMs = 0L
     private var earned = false
 
-    def earn(): Unit =
+    /**
+      *
+      * @param earnedMs
+      */
+    def earn(earnedMs: Long): Unit =
         earned = true
-        earnedMs = CPMirClock.now()
+        this.earnedMs = earnedMs
 
     /**
       *

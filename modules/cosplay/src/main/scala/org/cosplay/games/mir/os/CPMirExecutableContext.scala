@@ -30,82 +30,71 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-trait CPMirProcess:
-    /**
-      *
-      */
-    def getOwner: CPMirUser
+import org.cosplay.games.mir.*
+
+/**
+  *
+  * @param pid
+  * @param args
+  * @param con
+  * @param rt
+  * @param fs
+  * @param workDir
+  * @param env
+  * @param usr
+  * @param in
+  * @param out
+  * @param err
+  */
+case class CPMirExecutableContext(
+    pid: Long,
+    args: Seq[String],
+    con: CPMirConsole,
+    rt: CPMirRuntime,
+    fs: CPMirFileSystem,
+    workDir: CPMirDirectoryFile,
+    env: Map[String, String],
+    usr: CPMirUser,
+    in: CPMirInputStream,
+    out: CPMirOutputStream,
+    err: CPMirOutputStream
+):
+    @transient private var killed = false
 
     /**
       *
+      * @param file
+      * @param args
+      * @param in
+      * @param out
+      * @param err
       */
-    def getPid: Long
-
-    /**
-      *
-      */
-    def getParent: Option[CPMirProcess]
-
-    /**
-      *
-      */
-    def getProgramFile: CPMirExecutableFile
-
-    /**
-      *
-      */
-    def getWorkingDirectory: CPMirDirectoryFile
-
-    /**
-      *
-      */
-    def getArguments: Seq[String]
-
-    /**
-      *
-      */
-    def getSubmitTime: Long
-
-    /**
-      *
-      */
-    def getStartTime: Long
+    def fork(
+        file: CPMirExecutableFile,
+        args: Seq[String],
+        in: CPMirInputStream = CPMirInputStream.nullStream(),
+        out: CPMirOutputStream = CPMirOutputStream.consoleStream(con),
+        err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
+        rt.exec(
+            rt.get(pid),
+            file,
+            args,
+            workDir,
+            usr,
+            env,
+            in,
+            out,
+            err
+        )
 
     /**
       *
       * @return
       */
-    def getFinishTime: Long
+    def isKilled: Boolean = killed
 
     /**
       *
       */
-    def isRunning: Boolean = !isQueued && !isDone
-
-    /**
-      *
-      */
-    def isQueued: Boolean
-
-    /**
-      *
-      */
-    def isDone: Boolean
-
-    /**
-      *
-      */
-    def isKilled: Boolean
-
-    /**
-      * Gets exit code.
-      *
-      * @param ms
-      */
-    def exitCode(ms: Long = Long.MaxValue): Option[Int]
-
-    /**
-      *
-      */
-    def kill(): Boolean
+    def kill(): Unit = killed = true
 

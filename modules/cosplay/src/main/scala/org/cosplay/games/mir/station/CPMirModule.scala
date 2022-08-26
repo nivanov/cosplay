@@ -34,61 +34,22 @@ import java.util.Date
 
 /**
   *
+  * @param name
+  * @param abbreviation
+  * @param launchDate
+  * @param powerSupplyDevice
+  * @param oxygenDetectorDevice
+  * @param fireDetectorDevice
+  * @param fireSuppressionDevice
+  * @param airPressureDevice
   */
-object CPMirModule:
-    /**
-      *
-      * @param name
-      * @param abbr
-      */
-    def apply(name: String, abbr: String, launchDate: Date): CPMirModule =
-        new CPMirModule:
-            override def getName: String = name
-            override def getAbbreviation: String = abbr
-            override def getLaunchDate: Date = launchDate
-
-/**
-  *
-  */
-trait CPMirModule:
-    /**
-      *
-      */
-    def getName: String
-
-    /**
-      *
-      */
-    def getLaunchDate: Date
-
-    /**
-      *
-      */
-    def getAbbreviation: String
-
-    /**
-      *
-      */
-    val powerSupplyDevPath: String = s"/dev/${getAbbreviation}_pwr"
-
-    /**
-      *
-      */
-    val oxygenLevelDevPath: String = s"/dev/${getAbbreviation}_oxy"
-
-    /**
-      *
-      */
-    val fireDetectorDevPath: String = s"/dev/${getAbbreviation}_fdr"
-
-    /**
-      *
-      */
-    val atmospherePressureDevPath: String = s"/dev/${getAbbreviation}_aps"
-
-    /**
-      *
-      */
-    val fireSuppressionDevPath: String = s"/dev/${getAbbreviation}_fsp"
-
-
+case class CPMirModule(
+    name: String,
+    abbreviation: String,
+    launchDate: Date,
+    powerSupplyDevice: CPMirModuleDevice,
+    oxygenDetectorDevice: CPMirModuleDevice,
+    fireDetectorDevice: CPMirModuleDevice,
+    fireSuppressionDevice: CPMirModuleDevice,
+    airPressureDevice: CPMirModuleDevice
+) extends Serializable

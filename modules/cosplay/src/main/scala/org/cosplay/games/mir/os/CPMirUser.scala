@@ -19,6 +19,7 @@ package org.cosplay.games.mir.os
 
 import org.cosplay.*
 import games.mir.*
+import org.cosplay.games.mir.station.CPMirCrewMember
 
 /*
    _________            ______________
@@ -50,24 +51,81 @@ object CPMirUser:
 
     /**
       *
+      * @param username
+      * @param password
+      * @param player
       */
-    def mkRoot(): CPMirUser = CPMirUser(None, true, "root", CPRand.guid6)
+    def apply(username: String, password: String, player: Option[CPMirCrewMember]): CPMirUser =
+        require(username != null && username.nonEmpty)
+        require(password != null && password.nonEmpty)
+
+        new CPMirUser :
+            private val id = genUserId
+            private var pwd = password
+
+            override def getCrewMember: Option[CPMirCrewMember] = player
+            override def getId: Int = id
+            override def getPassword: String = pwd
+            override def setPassword(pwd: String): Unit =
+                require(pwd != null && pwd.nonEmpty)
+                this.pwd = pwd
+            override def getUsername: String = username
+            override def isRoot: Boolean = false
+
+    /**
+      *
+      */
+    def mkRoot(): CPMirUser =
+        new CPMirUser:
+            private var pwd = CPRand.guid6
+
+            override def getCrewMember: Option[CPMirCrewMember] = None
+            override def getId: Int = ROOT_USER_ID
+            override def getPassword: String = pwd
+            override def getUsername: String = "root"
+            override def setPassword(pwd: String): Unit =
+                require(pwd != null && pwd.nonEmpty)
+                this.pwd = pwd
+            override def isRoot: Boolean = true
 
 /**
   *
-  * @param player
-  * @param isRoot
-  * @param username
-  * @param password
   */
-case class CPMirUser(
-    player: Option[CPMirCrewMember],
-    isRoot: Boolean,
-    username: String,
-    password: String
-) extends Serializable:
-    import CPMirUser.*
+trait CPMirUser extends Serializable:
+    /**
+      *
+      */
+    def getCrewMember: Option[CPMirCrewMember]
 
-    /** */
-    final val id = if isRoot then ROOT_USER_ID else genUserId
+    /**
+      *
+      */
+    def crew: CPMirCrewMember =
+        require(!isRoot)
+        getCrewMember.get
 
+    /**
+      *
+      */
+    def isRoot: Boolean
+
+    /**
+      *
+      */
+    def getUsername: String
+
+    /**
+      *
+      */
+    def getPassword: String
+
+    /**
+      *
+      * @param pwd
+      */
+    def setPassword(pwd: String): Unit
+
+    /**
+      *
+      */
+    def getId: Int

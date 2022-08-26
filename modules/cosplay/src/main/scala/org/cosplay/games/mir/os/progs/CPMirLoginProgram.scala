@@ -17,7 +17,8 @@
 
 package org.cosplay.games.mir.os.progs
 
-import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
+import org.cosplay.games.mir.*
+import os.*
 
 /*
    _________            ______________
@@ -35,15 +36,47 @@ import org.cosplay.games.mir.os.{CPMirExec, CPMirExecContext}
 /**
   *
   */
-class CPMirLoginProgram extends CPMirExec:
-    override def mainEntry(ctx: CPMirExecContext): Int =
+class CPMirLoginProgram extends CPMirExecutable:
+    override def mainEntry(ctx: CPMirExecutableContext): Int =
         val out = ctx.out
         val con = ctx.con
 
+        val ply = stateMgr.state.player
+        val username = ply.getUsername
+        val tty = "tty0"
+
         out.println()
-        out.println("Login - Welcome Aboard MirX")
-        out.println("---------------------------")
-        out.print  ("Username: ")
+
+        def err(s: String): Unit = con.println(s"${CPMirConsole.CTRL_BEEP}err: $s")
+
+        var done = false
+        while !done do
+            val login = con.promptReadLine("Login: ")
+            con.println()
+            if login != username then
+                err(s"only ${ply.getCrewMember.get.nameCamelCase} ($username) ia authorized to login at this terminal ($tty).")
+            else
+                done = true
+
+        con.println(s"Reset password for '$username' due to system fault restart.")
+
+        done = false
+        while !done do
+            val passwd1 = con.promptReadLine("Password: ", Option('*'))
+            val passwd2 = con.promptReadLine("\nConfirm password: ", Option('*'))
+            con.println()
+            if passwd1 != passwd2 then err(s"passwords do not match.")
+            else if passwd1.length < 4 then err("password is too short (must be > 4 characters).")
+            else
+                done = true
+                stateMgr.state.player.setPassword(passwd1)
+                con.println(s"Password reset for '$username'.")
+
+        val lastLoginTstamp = stateMgr.state.lastLoginTstamp
+
+        stateMgr.state.lastLoginTstamp = CPMirClock.now()
+
+        con.println(s"Last login ${CPMirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
 
         0
 

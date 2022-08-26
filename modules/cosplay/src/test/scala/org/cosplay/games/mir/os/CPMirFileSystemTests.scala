@@ -17,6 +17,7 @@
 
 package org.cosplay.games.mir.os
 
+import org.cosplay.games.mir.CPMirClock
 import org.junit.jupiter.api.Test
 
 /*
@@ -37,6 +38,8 @@ import org.junit.jupiter.api.Test
   */
 object CPMirFileSystemTests:
     private def initFs(): CPMirFileSystem =
+        CPMirClock.init(0)
+
         val rootUsr = CPMirUser.mkRoot()
         val rootDir = CPMirDirectoryFile.mkRoot(rootUsr)
 
@@ -46,7 +49,7 @@ object CPMirFileSystemTests:
         rootDir.addRegFile("image.png", rootUsr)
         rootDir.addRegFile("script.mash", rootUsr)
 
-        val binDir = new CPMirDirectoryFile("bin", rootUsr, rootDir)
+        val binDir = new CPMirDirectoryFile("bin", rootUsr, Option(rootDir))
 
         rootDir.addFile(binDir)
 

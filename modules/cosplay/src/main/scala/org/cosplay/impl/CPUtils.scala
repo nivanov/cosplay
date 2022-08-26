@@ -126,7 +126,9 @@ object CPUtils:
         (free.toFloat / total * 100).round
 
     /**
-      * Splits given collection by specified separator predicate.
+      * Splits given collection by specified separator predicate. Note that if two
+      * separators are found sequential one after another - it will result in an empty sequence added to the
+      * result. In other words - two sequential separators are not "swallowed".
       *
       * @param col Collection to split.
       * @param sep Separator predicate.
@@ -142,7 +144,7 @@ object CPUtils:
             else
                 if idx < bufs.size then bufs(idx) += t else bufs += ArrayBuffer(t)
 
-        bufs.filter(_.nonEmpty).map(_.toSeq).toSeq
+        bufs.map(_.toSeq).toSeq
 
     /**
       * Trims leading and trailing elements satisfying given predicate.
