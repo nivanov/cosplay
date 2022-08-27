@@ -117,14 +117,19 @@ case class CPMirCrewMember(
     wifeLastName: String,
     children: Seq[CPMirPlayerChild]
 ) extends Serializable:
+    private def camel(s: String): String = CaseUtils.toCamelCase(s, true, ' ')
     private val sport = CPRand.rand(sports)
+
+    val camelFirstName: String = camel(firstName)
+    val camelLastName: String = camel(lastName)
+    val camelName: String = s"$camelFirstName $camelLastName"
     val dobDay: Int = CPRand.between(1, 28 + 1)
     val dobMonth: Int = CPRand.between(1, 12 + 1)
     val dobYear: Int = CPRand.between(EVENT_YEAR - 35, EVENT_YEAR - 55 + 1)
-    val nameCamelCase: String = s"${CaseUtils.toCamelCase(s"$firstName", true, ' ')} ${CaseUtils.toCamelCase(s"$lastName", true, ' ')}"
+    val nameCamelCase: String = s"${camel(s"$firstName")} ${camel(s"$lastName")}"
     val nameUpperCase: String = s"$firstName $lastName".toUpperCase
     val nameLowerCase: String = s"$firstName $lastName".toLowerCase
-    val wifeCamelCase: String = s"${CaseUtils.toCamelCase(s"$wifeFirstName", true, ' ')} ${CaseUtils.toCamelCase(s"$wifeLastName", true, ' ')}"
+    val wifeCamelCase: String = s"${camel(s"$wifeFirstName")} ${camel(s"$wifeLastName")}"
     val wifeUpperCase: String = s"$wifeFirstName $wifeLastName".toUpperCase
     val wifeLowerCase: String = s"$wifeFirstName $wifeLastName".toLowerCase
     val username: String = s"${firstName.head}$lastName".toLowerCase

@@ -46,6 +46,7 @@ object CPMirLoginProgram:
   */
 class CPMirLoginProgram extends CPMirExecutable:
     import CPMirLoginProgram.*
+    import CPMirConsole.*
 
     override def mainEntry(ctx: CPMirExecutableContext): Int =
         val out = ctx.out
@@ -57,7 +58,7 @@ class CPMirLoginProgram extends CPMirExecutable:
 
         out.println()
 
-        def err(s: String): Unit = con.println(s"$ERR_PREFIX ${CPMirConsole.CTRL_BEEP}err: $s")
+        def err(s: String): Unit = con.println(s"$ERR_PREFIX $CTRL_BEEP${CTRL_REV_COL}error$CTRL_RST_COL $s")
 
         var done = false
         while !done do
@@ -69,7 +70,7 @@ class CPMirLoginProgram extends CPMirExecutable:
                 done = true
 
         con.println(s"Reset password for '$username' due to system fault restart.")
-        con.println(s"$ERR_PREFIX password must be at least $MIN_PWD_LEN characters.")
+        con.println(s"Password must be at least $MIN_PWD_LEN characters.")
 
         done = false
         while !done do
@@ -88,6 +89,7 @@ class CPMirLoginProgram extends CPMirExecutable:
         stateMgr.state.lastLoginTstamp = CPMirClock.now()
 
         con.println(s"Last login ${CPMirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
+        con.println(s"Welcome back, ${ply.crew.camelFirstName}.")
 
         0
 
