@@ -41,6 +41,7 @@ import org.cosplay.games.mir.os.CPMirFileType.*
   * @param exe Executable program.
   * @param otherAcs Can others read or execute. Owner can do anything.
   * @param otherMod Can others change or delete. Owner can do anything.
+  * @param initMs Initial creation and update timestamp. Defaults to the current time.
   */
 class CPMirExecutableFile(
     name: String,
@@ -48,8 +49,9 @@ class CPMirExecutableFile(
     parent: CPMirDirectoryFile,
     exe: CPMirExecutable,
     otherAcs: Boolean,
-    otherMod: Boolean
-) extends CPMirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod):
+    otherMod: Boolean,
+    initMs: Long = CPMirClock.now()
+) extends CPMirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod, initMs):
     setSize(exe.getSizeOnDisk)
 
     /**

@@ -44,9 +44,8 @@ object CPMirRuntime:
   *
   * @param fs
   * @param con
-  * @param clock
   */
-class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
+class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
     import CPMirRuntime.*
 
     private val procs = mutable.HashMap.empty[Long, CPMirProcess]
@@ -78,7 +77,7 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
         err: CPMirOutputStream = CPMirOutputStream.consoleStream(con)): CPMirProcess =
         var queued = true
         var code: Option[Int] = None
-        val submitTs = clock.now()
+        val submitTs = CPMirClock.now()
         var finishTs = -1L
         var startTs: Long = 0
         val pid = pidGen
@@ -89,7 +88,6 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
             args,
             con,
             this,
-            clock,
             fs,
             workDir,
             env,
@@ -102,13 +100,13 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, clock: CPMirClock):
         val fut = exec.submit(new Callable[Int]() {
             override def call(): Int =
                 queued = false
-                startTs = clock.now()
+                startTs = CPMirClock.now()
                 try
                     code = Option(file.getExec.mainEntry(ctx))
                 catch
                     case _: InterruptedException => ()
                     case e: Exception => err.println(e.getLocalizedMessage)
-                finishTs = clock.now()
+                finishTs = CPMirClock.now()
                 code.getOrElse(-1)
         })
 

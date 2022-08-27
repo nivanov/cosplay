@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir
 
-import org.cosplay.games.mir.CPMirClock
-import org.junit.jupiter.api.*
+import org.cosplay.*
+import CPColor.*
+import CPPixel.*
 
-import java.text.*
-import java.util.*
 
 /*
    _________            ______________
@@ -36,24 +35,41 @@ import java.util.*
                ALl rights reserved.
 */
 
-/**
-  *
-  */
-object CPMirClockTests:
-    CPMirClock.init(0)
+val GAME_NAME = "Escape From Mir"
+val GAME_VER = "0.0.1"
 
-    @Test
-    def nowTest(): Unit =
-        val t1 = CPMirClock.now()
-        val t2 = System.currentTimeMillis()
-        println(s"Elapsed years since crash: ${(t2 - t1) / 365 / 24 / 60 / 60 / 1000}")
+val EVENT_YEAR = 1997
+val NPC_CNT = 2
+val stateMgr = CPMirStateManager()
+val BG = stateMgr.state.bg
+val FG = stateMgr.state.fg
+val FG_LITE = FG.lighter(.4f)
+val FG_DARK = FG.darker(.4f)
+val BG_PX = ' '&&(BG, BG)
+val SND_HOME = "mir/sounds"
+val IMG_HOME = "mir/images"
+val markup = CPMarkup(
+    FG,
+    Option(BG),
+    Seq(
+        CPMarkupElement("<%", "%>", _&&(FG_LITE, BG)), // Light.
+        CPMarkupElement("<~", "~>", _&&(FG_DARK, BG)), // Dark.
+        CPMarkupElement("<@", "@>", _&&(BG, FG)) // Reverse.
+    )
+)
 
-    @Test
-    def sysAndCrewTimeTest(): Unit =
-        val fmt = SimpleDateFormat("yyyy MMMM dd HH:mm z")
-        (0 until 10).foreach {
-            _ => println(s"System timestamp: ${fmt.format(new Date(CPMirClock.randSysTime()))}")
-        }
-        (0 until 10).foreach {
-            _ => println(s"Crew timestamp: ${fmt.format(new Date(CPMirClock.randCrewTime()))}")
-        }
+extension(d: Int)
+    // To bytes...
+    def kb: Long = d * 1024
+    def mb: Long = d * 1024 * 1024
+    def gb: Long = d * 1024 * 1024 * 1024
+
+    // To milliseconds...
+    def secs: Long = d * 1000
+    def mins: Long = d * 1000 * 60
+    def hours: Long = d * 1000 * 60 * 60
+    def days: Long = d * 1000 * 60 * 60 * 24
+    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
+
+
+

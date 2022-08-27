@@ -33,13 +33,13 @@ import org.junit.jupiter.api.Test
                ALl rights reserved.
 */
 
-val clock = CPMirClock(0L)
-
 /**
   *
   */
 object CPMirFileSystemTests:
     private def initFs(): CPMirFileSystem =
+        CPMirClock.init(0)
+
         val rootUsr = CPMirUser.mkRoot()
         val rootDir = CPMirDirectoryFile.mkRoot(rootUsr)
 
@@ -49,7 +49,7 @@ object CPMirFileSystemTests:
         rootDir.addRegFile("image.png", rootUsr)
         rootDir.addRegFile("script.mash", rootUsr)
 
-        val binDir = new CPMirDirectoryFile("bin", rootUsr, rootDir)
+        val binDir = new CPMirDirectoryFile("bin", rootUsr, Option(rootDir))
 
         rootDir.addFile(binDir)
 

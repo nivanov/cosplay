@@ -37,15 +37,30 @@ import java.text.*
 import java.util.Date
 
 /**
-  * "Hardware" station clock.
   *
-  * @param elapsedMs Elapsed time in milliseconds since the start of the game.
   */
-class CPMirClock(elapsedMs: Long):
-    import CPMirClock.*
+object CPMirClock:
+    private final val DATETIME_ZONE_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm z")
+    private final val DATETIME_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm:ss")
+    private final val DATE_FMT = SimpleDateFormat("yyyy MMMM dd")
+    private final val TIME_FMT = SimpleDateFormat("HH:mm:ss")
+    private final val CRASH_TIME_MS = DATETIME_ZONE_FMT.parse("1997 June 25 09:18 UTC").getTime
+    private final val OS_BUILD_TIME_MS = DATETIME_ZONE_FMT.parse("1990 Jan 1 00:01 UTC").getTime
+    private final val OS_CREW_ARRIVE_TIME_MS = DATETIME_ZONE_FMT.parse("1995 Jan 1 00:01 UTC").getTime
+    private final val YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000L
 
-    private val startMs = CRASH_TIME_MS + elapsedMs
-    private val initMs = System.currentTimeMillis()
+    private var startMs: Long = -1L
+    private var initMs: Long = -1L
+
+    /**
+      *
+      * @param elapsedMs
+      */
+    def init(elapsedMs: Long): Unit =
+        require(elapsedMs >= 0)
+
+        startMs = CRASH_TIME_MS + elapsedMs
+        initMs = System.currentTimeMillis()
 
     /**
       *
@@ -55,7 +70,10 @@ class CPMirClock(elapsedMs: Long):
     /**
       * Gets current station time in milliseconds.
       */
-    def now(): Long = startMs + (System.currentTimeMillis() - initMs)
+    def now(): Long =
+        require(startMs != -1L && initMs != -1L, "Clock was not initialized.")
+
+        startMs + (System.currentTimeMillis() - initMs)
 
     /**
       *
@@ -68,22 +86,9 @@ class CPMirClock(elapsedMs: Long):
     def formatNowTime(): String = TIME_FMT.format(new Date(now()))
 
     /**
-     *
-     */
+      *
+      */
     def formatNowDate(): String = DATE_FMT.format(new Date(now()))
-
-/**
-  *
-  */
-object CPMirClock:
-    private final val DATETIME_ZONE_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm z")
-    private final val DATETIME_FMT = SimpleDateFormat("yyyy MMMM dd HH:mm:ss")
-    private final val DATE_FMT = SimpleDateFormat("yyyy MMMM dd")
-    private final val TIME_FMT = SimpleDateFormat("HH:mm:ss")
-    private final val CRASH_TIME_MS = DATETIME_ZONE_FMT.parse("1997 June 25 09:18 UTC").getTime
-    private final val OS_BUILD_TIME_MS = DATETIME_ZONE_FMT.parse("1990 Jan 1 00:01 UTC").getTime
-    private final val OS_CREW_ARRIVE_TIME_MS = DATETIME_ZONE_FMT.parse("1995 Jan 1 00:01 UTC").getTime
-    private final val YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000L
 
     /**
       * @param ms

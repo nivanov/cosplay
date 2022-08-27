@@ -18,6 +18,7 @@
 package org.cosplay.games.mir.os.progs
 
 import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.progs.CPMirLoginProgram.MIN_PWD_LEN
 import os.*
 
 /*
@@ -36,7 +37,16 @@ import os.*
 /**
   *
   */
+object CPMirLoginProgram:
+    private final val MIN_PWD_LEN = 4
+    private final val ERR_PREFIX = "  |-"
+
+/**
+  *
+  */
 class CPMirLoginProgram extends CPMirExecutable:
+    import CPMirLoginProgram.*
+
     override def mainEntry(ctx: CPMirExecutableContext): Int =
         val out = ctx.out
         val con = ctx.con
@@ -46,20 +56,20 @@ class CPMirLoginProgram extends CPMirExecutable:
         val tty = "tty0"
 
         out.println()
-        out.println(s"MirX ${CPMirOs.VERSION} ($tty) \n")
 
-        def err(s: String): Unit = con.println(s"${CPMirConsole.CTRL_BEEP}login: $s")
+        def err(s: String): Unit = con.println(s"$ERR_PREFIX ${CPMirConsole.CTRL_BEEP}err: $s")
 
         var done = false
         while !done do
             val login = con.promptReadLine("Login: ")
             con.println()
             if login != username then
-                err(s"only ${ply.getPlayer.get.nameCamelCase} ($username) ia authorized to login at this terminal ($tty).")
+                err(s"only ${ply.getCrewMember.get.nameCamelCase} ($username) ia authorized to login at this terminal ($tty).")
             else
                 done = true
 
         con.println(s"Reset password for '$username' due to system fault restart.")
+        con.println(s"$ERR_PREFIX password must be at least $MIN_PWD_LEN characters.")
 
         done = false
         while !done do
@@ -67,7 +77,7 @@ class CPMirLoginProgram extends CPMirExecutable:
             val passwd2 = con.promptReadLine("\nConfirm password: ", Option('*'))
             con.println()
             if passwd1 != passwd2 then err(s"passwords do not match.")
-            else if passwd1.length < 4 then err("password is too short (must be > 4 characters).")
+            else if passwd1.length < MIN_PWD_LEN then err(s"password is too short (must be at least $MIN_PWD_LEN characters).")
             else
                 done = true
                 stateMgr.state.player.setPassword(passwd1)
@@ -75,9 +85,9 @@ class CPMirLoginProgram extends CPMirExecutable:
 
         val lastLoginTstamp = stateMgr.state.lastLoginTstamp
 
-        stateMgr.state.lastLoginTstamp = ctx.clock.now()
+        stateMgr.state.lastLoginTstamp = CPMirClock.now()
 
-        con.println(s"Last login ${CPMirClock.formatDate(lastLoginTstamp)} on $tty.")
+        con.println(s"Last login ${CPMirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
 
         0
 
