@@ -123,7 +123,7 @@ class CPMirStation extends Serializable:
             )
         )
         val arr = mutable.ArrayBuffer.empty
-        for i <- 0 until NPC_CNT + 1 do
+        for _ <- 0 until NPC_CNT + 1 do
             var found = false
             while !found do
                 val crewman = CPMirCrewMember.newPlayer
