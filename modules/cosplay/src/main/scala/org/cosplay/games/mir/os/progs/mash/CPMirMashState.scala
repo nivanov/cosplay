@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os.progs.mash
 
+import org.cosplay.games.mir.os.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -30,5 +32,59 @@ package org.cosplay.games.mir.os.progs.mash
                ALl rights reserved.
 */
 
-class CPMirMashState
+/**
+  * Global state of the mash interpreter instance.
+  */
+class CPMirMashState:
+    /**
+      *
+      */
+    def getWorkingDirectory: CPMirDirectoryFile = ???
+
+    /**
+      *
+      * @param dir
+      */
+    def setWorkingDirectory(dir: CPMirDirectoryFile): Unit = ???
+
+    def getAllAliases: Seq[(String, String)] = ???
+
+    def getAlias(alias: String): String = ???
+
+    def addAlias(alias: String, value: String): Unit = ???
+
+    def hasAlias(alias: String): Boolean = ???
+
+    def removeAlias(alias: String): Boolean = ???
+
+    def getCurrentFilename: String = ???
+
+    def setCurrentFilename (filename: String): Unit = ???
+
+    def getCmdArgument(n: Int): String = ???
+
+    def getAllCmdArguments: Seq[String] = ???
+
+    def setCmdArguments(args: Seq[String]): Unit = ???
+
+    def getLastExitStatus: Int = ???
+
+    def setLastExitStatus(d: Int): Unit = ???
+
+    def getPid: Long = ???
+
+    def setPid(pid: Long): Unit = ???
+
+    def getLastBackgroundPid: Long = ???
+
+    def setLastBackgroundPid(pid: Long): Unit = ???
+
+    def setVariable(name: String, value: String, scope: String): Unit = ???
+
+    def getVariable(name: String, scope: String): String = ???
+
+    def getAllVariables(scope: String): Seq[String] = ???
+
+    def removeVariable(name: String, scope: String): Boolean = ???
+
 
