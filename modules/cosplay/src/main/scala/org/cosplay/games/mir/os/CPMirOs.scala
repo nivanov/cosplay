@@ -19,6 +19,7 @@ package org.cosplay.games.mir.os
 
 import org.cosplay.*
 import games.mir.*
+import org.cosplay.games.mir.os.CPMirOs.HOSTNAME
 import os.progs.mash.CPMirMashProgram
 import station.*
 import os.*
@@ -45,6 +46,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   */
 object CPMirOs:
     val VERSION = "1.12.04"
+    val HOSTNAME = "cormod"
 
     /**
       *
@@ -66,7 +68,7 @@ object CPMirOs:
             override def bootUp(con: CPMirConsole): Unit =
                 stateMgr.state.osRebootCnt += 1
 
-                CPMirRuntime(fs, con).exec(
+                CPMirRuntime(fs, con, getHostname).exec(
                     None,
                     fs.file("/sbin/boot").get,
                     Seq.empty,
@@ -98,6 +100,11 @@ trait CPMirOs extends Serializable:
       *
       */
     def getAllUsers: Seq[CPMirUser]
+
+    /**
+      *
+      */
+    def getHostname: String = HOSTNAME
 
     /**
       *

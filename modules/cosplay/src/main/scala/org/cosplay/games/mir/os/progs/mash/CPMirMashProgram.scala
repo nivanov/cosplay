@@ -17,7 +17,9 @@
 
 package org.cosplay.games.mir.os.progs.mash
 
-import org.cosplay.games.mir.os.{CPMirExecutable, CPMirExecutableContext}
+import org.cosplay.*
+import games.mir.*
+import games.mir.os.*
 
 /*
    _________            ______________
@@ -36,5 +38,33 @@ import org.cosplay.games.mir.os.{CPMirExecutable, CPMirExecutableContext}
   *
   */
 class CPMirMashProgram extends CPMirExecutable:
-    override def mainEntry(ctx: CPMirExecutableContext): Int = 0 // TODO
-    override def getSizeOnDisk: Long = 1024 // TODO
+    private val sz = CPRand.between(3000.kb, 10000.kb)
+
+    override def getSizeOnDisk: Long = sz
+    override def mainEntry(ctx: CPMirExecutableContext): Int =
+        val state = initState(ctx)
+
+        0
+
+    /**
+      *
+      * @param ctx
+      */
+    private def initState(ctx: CPMirExecutableContext): CPMirMashState =
+        val state = new CPMirMashState()
+
+        // Default & well-known Unix environment variables.
+        state.setVariable("PS", """\\u@\\h:\\w\\$""")
+        state.setVariable("HOST", ctx.host)
+        state.setVariable("HOSTNAME", ctx.host)
+        state.setVariable("PWD", ctx.workDir.getAbsolutePath)
+        state.setVariable("HOME", ctx.usr.getHomeDirectory)
+        state.setVariable("UID", ctx.usr.getUid.toString)
+        state.setVariable("USER", ctx.usr.getUsername)
+        state.setVariable("LOGNAME", ctx.usr.getUsername)
+        state.setVariable("LANG", "en_US")
+        state.setVariable("LANGUAGE", "en_US")
+        state.setVariable("SHELL", ctx.file.getAbsolutePath)
+        state.setVariable("MAIL", s"${ctx.usr.getHomeDirectory}/inbox")
+
+        state

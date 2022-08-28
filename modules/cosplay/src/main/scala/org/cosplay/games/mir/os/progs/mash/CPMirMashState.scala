@@ -18,6 +18,7 @@
 package org.cosplay.games.mir.os.progs.mash
 
 import org.cosplay.games.mir.os.*
+import scala.collection.mutable
 
 /*
    _________            ______________
@@ -36,26 +37,51 @@ import org.cosplay.games.mir.os.*
   * Global state of the mash interpreter instance.
   */
 class CPMirMashState:
-    /**
-      *
-      */
-    def getWorkingDirectory: CPMirDirectoryFile = ???
+    private val aliases = mutable.HashMap.empty[String, String]
+    private var workDir: CPMirDirectoryFile = _
 
     /**
       *
-      * @param dir
       */
-    def setWorkingDirectory(dir: CPMirDirectoryFile): Unit = ???
+    def getWorkingDirectory: CPMirDirectoryFile = workDir
 
-    def getAllAliases: Seq[(String, String)] = ???
+    /**
+      *
+      * @param workDir
+      */
+    def setWorkingDirectory(workDir: CPMirDirectoryFile): Unit = this.workDir = workDir
 
-    def getAlias(alias: String): String = ???
+    /**
+      *
+      */
+    def getAllAliases: Seq[(String, String)] = aliases.toSeq
 
-    def addAlias(alias: String, value: String): Unit = ???
+    /**
+      *
+      * @param name
+      */
+    def getAlias(name: String): Option[String] = aliases.get(name)
 
-    def hasAlias(alias: String): Boolean = ???
+    /**
+      *
+      * @param name
+      * @param value
+      */
+    def addAlias(name: String, value: String): Option[String] = aliases.put(name, value)
 
-    def removeAlias(alias: String): Boolean = ???
+    /**
+      *
+      * @param name
+      * @return
+      */
+    def hasAlias(name: String): Boolean = aliases.contains(name)
+
+    /**
+      *
+      * @param name
+      * @return
+      */
+    def removeAlias(name: String): Option[String] = aliases.remove(name)
 
     def getCurrentFilename: String = ???
 
@@ -79,12 +105,12 @@ class CPMirMashState:
 
     def setLastBackgroundPid(pid: Long): Unit = ???
 
-    def setVariable(name: String, value: String, scope: String): Unit = ???
+    def setVariable(name: String, value: String, scope: Option[String] = None): Unit = ???
 
-    def getVariable(name: String, scope: String): String = ???
+    def getVariable(name: String, scope: Option[String] = None): String = ???
 
     def getAllVariables(scope: String): Seq[String] = ???
 
-    def removeVariable(name: String, scope: String): Boolean = ???
+    def removeVariable(name: String, scope: Option[String] = None): Boolean = ???
 
 

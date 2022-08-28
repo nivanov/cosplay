@@ -197,7 +197,7 @@ class CPMirStateManager:
 
         val passwd = usrs.map(usr =>
             val info = if usr.isRoot then "" else usr.getCrewMember.get.nameCamelCase
-            s"${usr.getUsername}:${usr.getId}:$info:/home/${usr.getUsername}"
+            s"${usr.getUsername}:${usr.getUid}:$info:${usr.getHomeDirectory}"
         ).toSeq
         etc.addRegFile("passwd", rootUsr, true, false, passwd)
 

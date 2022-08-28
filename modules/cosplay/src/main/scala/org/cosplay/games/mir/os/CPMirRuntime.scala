@@ -44,8 +44,9 @@ object CPMirRuntime:
   *
   * @param fs
   * @param con
+  * @param host
   */
-class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
+class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole, host: String):
     import CPMirRuntime.*
 
     private val procs = mutable.HashMap.empty[Long, CPMirProcess]
@@ -85,10 +86,12 @@ class CPMirRuntime(fs: CPMirFileSystem, con: CPMirConsole):
 
         val ctx = CPMirExecutableContext(
             pid,
+            file,
             args,
             con,
             this,
             fs,
+            host,
             workDir,
             env,
             usr,

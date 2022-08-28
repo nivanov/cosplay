@@ -38,7 +38,7 @@ import org.cosplay.games.mir.station.CPMirCrewMember
   *
   */
 object CPMirUser:
-    private val ROOT_USER_ID = 0
+    private val ROOT_UID = 0 // Same as in Unix, i.e. root UID is zero.
     private var usrIdGen = 1
 
     /**
@@ -64,7 +64,7 @@ object CPMirUser:
             private var pwd = password
 
             override def getCrewMember: Option[CPMirCrewMember] = player
-            override def getId: Int = id
+            override def getUid: Int = id
             override def getPassword: String = pwd
             override def setPassword(pwd: String): Unit =
                 require(pwd != null && pwd.nonEmpty)
@@ -80,7 +80,7 @@ object CPMirUser:
             private var pwd = CPRand.guid6
 
             override def getCrewMember: Option[CPMirCrewMember] = None
-            override def getId: Int = ROOT_USER_ID
+            override def getUid: Int = ROOT_UID
             override def getPassword: String = pwd
             override def getUsername: String = "root"
             override def setPassword(pwd: String): Unit =
@@ -121,6 +121,11 @@ trait CPMirUser extends Serializable:
 
     /**
       *
+      */
+    def getHomeDirectory: String = s"/home/$getUsername"
+
+    /**
+      *
       * @param pwd
       */
     def setPassword(pwd: String): Unit
@@ -128,4 +133,4 @@ trait CPMirUser extends Serializable:
     /**
       *
       */
-    def getId: Int
+    def getUid: Int

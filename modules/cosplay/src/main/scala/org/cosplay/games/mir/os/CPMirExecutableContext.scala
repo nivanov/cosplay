@@ -35,6 +35,7 @@ import org.cosplay.games.mir.*
 /**
   *
   * @param pid
+  * @param file
   * @param args
   * @param con
   * @param rt
@@ -48,10 +49,12 @@ import org.cosplay.games.mir.*
   */
 case class CPMirExecutableContext(
     pid: Long,
+    file: CPMirExecutableFile,
     args: Seq[String],
     con: CPMirConsole,
     rt: CPMirRuntime,
     fs: CPMirFileSystem,
+    host: String,
     workDir: CPMirDirectoryFile,
     env: Map[String, String],
     usr: CPMirUser,
