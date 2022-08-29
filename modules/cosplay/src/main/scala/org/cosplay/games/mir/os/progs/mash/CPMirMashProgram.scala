@@ -56,14 +56,11 @@ class CPMirMashProgram extends CPMirExecutable:
         // Default & well-known Unix environment variables.
         state.setVariable("PS", """\\u@\\h:\\w\\$""")
         state.setVariable("HOST", ctx.host)
-        state.setVariable("HOSTNAME", ctx.host)
         state.setVariable("PWD", ctx.workDir.getAbsolutePath)
         state.setVariable("HOME", ctx.usr.getHomeDirectory)
         state.setVariable("UID", ctx.usr.getUid.toString)
         state.setVariable("USER", ctx.usr.getUsername)
-        state.setVariable("LOGNAME", ctx.usr.getUsername)
         state.setVariable("LANG", "en_US")
-        state.setVariable("LANGUAGE", "en_US")
         state.setVariable("SHELL", ctx.file.getAbsolutePath)
         state.setVariable("MAIL", s"${ctx.usr.getHomeDirectory}/inbox")
 
