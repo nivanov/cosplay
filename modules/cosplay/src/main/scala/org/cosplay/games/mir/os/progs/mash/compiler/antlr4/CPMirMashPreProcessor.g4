@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-grammar CPMirMashCmd;
+grammar CPMirMashPreProcessor;
 
 /*
    _________            ______________
@@ -34,12 +34,14 @@ grammar CPMirMashCmd;
 // Parser.
 // =======
 
-mashCmd: pipeline AMP? EOF; // Mash enty point.
-pipeline
+source: (other | pipeline)*;
+pipeline: prgList AMP?;
+prgList
     : prg
-    | pipeline op prg
+    | prgList op prg
     ;
-prg: str argList?;
+prg: path argList?;
+path: str;
 argList
     : str
     | argList str
@@ -50,10 +52,12 @@ str
     | DQSTRING
     ;
 op: PIPE_IN | TO_FILE | APPEND_FILE;
+other: KW;
 
 // Lexer.
 // ======
 
+KW: 'if' | 'for' | ';';
 SQUOTE: '\'';
 DQUOTE: '"';
 SQSTRING: SQUOTE (~'\'')* SQUOTE;
