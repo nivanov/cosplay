@@ -39,26 +39,30 @@ decls
     | decls decl
     ;
 decl
-    : valDecl
-    | varDecl
-    | assignDecl
-    | exportDecl
-    | unexportDecl
+    : letDecl
     | defDecl
     | nativeDefDecl
     | whileDecl
     | forDecl
     | compoundExpr
-    | execDecl
     | aliasDecl
+    | pipelineDecl
     ;
-aliasDecl: ALIAS IDENT ASSIGN execDecl;
-valDecl: VAL IDENT ASSIGN expr;
-varDecl: VAR IDENT (ASSIGN expr)?;
-assignDecl: varAccess ASSIGN expr;
-exportDecl: EXPORT IDENT;
-execDecl: EXEC LPAR qstring RPAR;
-unexportDecl: UNEXPORT IDENT;
+pipelineDecl: prgList AMP?;
+prgList
+    : prg
+    | prgList pipeOp prg
+    ;
+prg: path argList?;
+path: PATH_STR;
+arg: (PATH_STR | qstring);
+argList
+    : arg
+    | argList arg
+    ;
+pipeOp: VERT | GT | APPEND_FILE;
+aliasDecl: ALIAS IDENT ASSIGN pipelineDecl;
+letDecl: LET IDENT ASSIGN expr;
 defDecl: DEF IDENT LPAR funParamList? RPAR ASSIGN compoundExpr;
 nativeDefDecl: NATIVE DEF IDENT LPAR funParamList? RPAR;
 whileDecl: WHILE expr DO compoundExpr;
@@ -81,7 +85,6 @@ expr
     | expr op=(EQ | NEQ) expr # eqNeqExpr
     | expr op=(AND | OR) expr # andOrExpr
     | atom # atomExpr
-    | EXEC_VAL LPAR qstring RPAR # execExpr
     | LPAR listItems? RPAR # listExpr
     | TILDA LPAR mapItems? RPAR # mapExpr
     | IDENT LPAR callParamList? RPAR # callExpr
@@ -137,13 +140,10 @@ LAST_EXIT_STATUS: '$?';
 LAST_PID: '$$';
 LAST_BG_PID: '$!';
 CMD_ARGS_LIST: '$@';
-VAR: 'var';
-VAL: 'val';
+LET: 'let';
 DEF: 'def';
 ANON_DEF: '=>';
 ASSOC: '->';
-EXPORT: 'export';
-UNEXPORT: 'unexport';
 NATIVE: 'native';
 IF: 'if';
 THEN: 'then';
@@ -153,8 +153,7 @@ DO: 'do';
 YIELD: 'yield';
 FOR: 'for';
 IN: '<-';
-EXEC: '!!';
-EXEC_VAL: '!#';
+PATH_STR: [0-9a-zA-Z${}/._-]+;
 SQSTRING: SQUOTE (~'\'')* SQUOTE;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BOOL: 'true' | 'false';
@@ -166,6 +165,8 @@ LTEQ: '<=';
 GT: '>';
 LT: '<';
 AND: '&&';
+AMP: '&';
+APPEND_FILE: '>>';
 OR: '||';
 VERT: '|';
 NOT: '!';

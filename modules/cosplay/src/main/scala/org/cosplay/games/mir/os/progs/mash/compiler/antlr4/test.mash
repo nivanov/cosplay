@@ -1,20 +1,19 @@
 native def listOf(fromIncl, toExcl)
-val x = null
-export x
-unexport x
-$x = true
 
-val WIDTH = 100
-val HEIGHT = 100
+let x = null
+let x = true
 
-val list0 = (1, 2, 3, true, null)
-val list1 = () // Empty list.
+let WIDTH = 100
+let HEIGHT = 100
 
-val map = ~($HEIGHT -> 2 * 0.4, "name"->"cosplay" + ' ' + "engine")
+let list0 = (1, 2, 3, true, null)
+let list1 = () // Empty list.
+
+let map = ~($HEIGHT -> 2 * 0.4, "name"->"cosplay" + ' ' + "engine")
 
 println($map["name"]["key"])
 
-val s = !#("cat /home/file.txt | wc | take 1")
+let s = !#("cat /home/file.txt | wc | take 1")
 
 println("Number of command line arguments is $#")
 println("Last exit status is $?")
@@ -32,11 +31,11 @@ alias ll = !!("ls -la -F")
  */
 def fun(a, b, c) = {
     def z() = println()
-    var q = (1.054 + 2_00_00) * $4 + $(varName)[2]
+    let q = (1.054 + 2_00_00) * $4 + $(letName)[2]
     while $q <= work() do println("something")
-    var newList = for i <- list() yield $i + "str"
+    let newList = for i <- list() yield $i + "str"
     $newList = (1, 2, 3)
-    val anotherList = (1, "true", true, null, ("sub", "list"), $(newList)[1])
+    let anotherList = (1, "true", true, null, ("sub", "list"), $(newList)[1])
     println("nikita") // Direct function call.
     $(newList)[$q]("some", 1, "arg") // FP-style function call.
     if boolFunc() && $w then doSome()
