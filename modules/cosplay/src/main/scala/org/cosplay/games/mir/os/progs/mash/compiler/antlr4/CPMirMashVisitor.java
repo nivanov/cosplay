@@ -1,4 +1,4 @@
-// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/CPMirMash.g4 by ANTLR 4.10.1
+// Generated from C:/Users/Nikita Ivanov/Documents/GitHub/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4\CPMirMash.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.mash.compiler.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -28,6 +28,12 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDecl(CPMirMashParser.DeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#delDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDelDecl(CPMirMashParser.DelDeclContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CPMirMashParser#pipelineDecl}.
 	 * @param ctx the parse tree
