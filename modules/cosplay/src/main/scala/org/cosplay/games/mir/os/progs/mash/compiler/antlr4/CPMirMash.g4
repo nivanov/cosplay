@@ -153,7 +153,7 @@ DO: 'do';
 YIELD: 'yield';
 FOR: 'for';
 IN: '<-';
-PATH_STR: [0-9a-zA-Z${}/._-]+;
+PATH_STR: [0-9a-zA-Z${}/._-]+ {getText().equals("bin/sh")}?;
 SQSTRING: SQUOTE (~'\'')* SQUOTE;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BOOL: 'true' | 'false';

@@ -29,19 +29,19 @@ alias ll = !!("ls -la -F")
  *
  * @param a 1st parameter.
  */
-def fun(a, b, c) = {
-    def z() = println()
+def $fun(a, b, c) = {
+    def $z() = println()
     let q = (1.054 + 2_00_00) * $4 + $(letName)[2]
-    while $q <= work() do println("something")
+    while $q <= work() do $println("something")
     let newList = for i <- list() yield $i + "str"
     $newList = (1, 2, 3)
     let anotherList = (1, "true", true, null, ("sub", "list"), $(newList)[1])
     println("nikita") // Direct function call.
     $(newList)[$q]("some", 1, "arg") // FP-style function call.
-    if boolFunc() && $w then doSome()
-    if boolVal() then {
-        def z() = println()
-        println(z())
+    if $boolFunc() && $w then doSome()
+    if $boolVal() then {
+        def z() = $println()
+        $println(z())
     }
     else
         println("Else")

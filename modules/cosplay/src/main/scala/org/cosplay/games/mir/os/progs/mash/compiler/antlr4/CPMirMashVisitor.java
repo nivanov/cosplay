@@ -29,47 +29,59 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDecl(CPMirMashParser.DeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#pipelineDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPipelineDecl(CPMirMashParser.PipelineDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#prgList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrgList(CPMirMashParser.PrgListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#prg}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrg(CPMirMashParser.PrgContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#path}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPath(CPMirMashParser.PathContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#arg}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArg(CPMirMashParser.ArgContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#argList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArgList(CPMirMashParser.ArgListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#pipeOp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPipeOp(CPMirMashParser.PipeOpContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CPMirMashParser#aliasDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAliasDecl(CPMirMashParser.AliasDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CPMirMashParser#valDecl}.
+	 * Visit a parse tree produced by {@link CPMirMashParser#letDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitValDecl(CPMirMashParser.ValDeclContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CPMirMashParser#varDecl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVarDecl(CPMirMashParser.VarDeclContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CPMirMashParser#assignDecl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAssignDecl(CPMirMashParser.AssignDeclContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CPMirMashParser#exportDecl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExportDecl(CPMirMashParser.ExportDeclContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CPMirMashParser#execDecl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExecDecl(CPMirMashParser.ExecDeclContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CPMirMashParser#unexportDecl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUnexportDecl(CPMirMashParser.UnexportDeclContext ctx);
+	T visitLetDecl(CPMirMashParser.LetDeclContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CPMirMashParser#defDecl}.
 	 * @param ctx the parse tree
@@ -163,13 +175,6 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUnaryExpr(CPMirMashParser.UnaryExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code execExpr}
-	 * labeled alternative in {@link CPMirMashParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExecExpr(CPMirMashParser.ExecExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code forYieldExpr}
 	 * labeled alternative in {@link CPMirMashParser#expr}.
