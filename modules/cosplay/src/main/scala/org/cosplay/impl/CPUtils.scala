@@ -434,6 +434,66 @@ object CPUtils:
             }
 
     /**
+      * Safely and silently closes the client socket.
+      *
+      * @param sock Client socket to close.
+      */
+    def close(sock: Socket): Unit =
+        if sock != null then
+            try sock.close()
+            catch case _: Exception => ()
+
+    /**
+      * Safely and silently closes the server socket.
+      *
+      * @param sock Server socket to close.
+      */
+    def close(sock: ServerSocket): Unit =
+        if sock != null then
+            try sock.close()
+            catch case _: Exception => ()
+
+    /**
+      *
+      * @param in Stream.
+      */
+    def close(in: InputStream): Unit =
+        if in != null then
+            try in.close()
+            catch case _: Exception => ()
+
+    /**
+      *
+      * @param out Stream.
+      */
+    def close(out: OutputStream): Unit =
+        if out != null then
+            try out.close()
+            catch case _: Exception => ()
+
+    /**
+      * Closes auto-closeable ignoring any exceptions.
+      *
+      * @param a Resource to close.
+      */
+    def close(a: AutoCloseable): Unit =
+        if a != null then
+            try a.close()
+            catch case _: Exception => ()
+
+    /**
+      *
+      * @param s
+      */
+    def decapitalize(s: String): String = s"${s.head.toLower}${s.tail}"
+
+    /**
+      *
+      * @param s
+      */
+    def capitalize(s: String): String = s"${s.head.toUpper}${s.tail}"
+
+    /**
       * Records anonymous GA event. Ignores any errors.
       *
       * @param gi Game info.

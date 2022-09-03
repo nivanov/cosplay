@@ -45,7 +45,7 @@ object CPMirMashCompilerTests:
         def compile(code: String): Unit =
             Try(comp.compile(code, "test")). match
                 case Success(_) => ()
-                case Failure(e) => assertFalse(false, e.getMessage)
+                case Failure(e) => assertTrue(false, e.getMessage)
 
         compile("let x = 10")
         compile("let x = 10; let y = 'abc'")
