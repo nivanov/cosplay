@@ -18,6 +18,8 @@
 package org.cosplay.games.gehenna.shaders
 
 import org.cosplay.*
+import games.gehenna.*
+import scala.util.*
 
 /*
    _________            ______________
@@ -33,8 +35,12 @@ import org.cosplay.*
 */
 
 
-class FlashShader(radius: Int, bpm: Int, bgPx: CPPixel, skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false) extends CPShader:
+class FlashShader extends CPShader:
+//    (radius: Int, bpm: Int, bgPx: CPPixel, skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false)
     private var go = true
+    private var radius = 10
+    private var bpm = 50
+    private var bgPx = GAME_BG_PX
 
     /**
      * Toggles this shader effect on and off.
@@ -64,26 +70,31 @@ class FlashShader(radius: Int, bpm: Int, bgPx: CPPixel, skip: (CPZPixel, Int, In
     def isActive: Boolean = go
 
     /** @inheritdoc */
+
+    def changeBPM(newBPM: Int): Unit =
+        bpm = newBPM
+
+    def changeRadius: Int = radius
+
+    private val rate = (60/bpm) * 1000
+    private var lastMs = 0f
+
+    private var currFade = 0f
+    private val fadeChange = 0.05f
+
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if go && ctx.isVisible then
-            val canv = ctx.getCanvas
-            val cx = objRect.centerX
-            val cy = objRect.centerY
-            val effRect = CPRect(cx - radius * 2, cy - radius, radius * 4, radius * 2)
-            effRect.loop((x, y) => {
-                if canv.isValid(x, y) then
-                    val zpx = canv.getZPixel(x, y)
-                    if !skip(zpx, x, y) then
-                        val px = zpx.px
-                        // Account for character with/height ratio to make a proper circle...
-                        // NOTE: we can't get the font metrics in the native ANSI terminal so
-                        //       we use 1.85 as a general approximation.
-                        val dx = (cx - x).abs.toFloat / 1.85
-                        val dy = (cy - y).abs.toFloat
-                        val r = Math.sqrt(dx * dx + dy * dy).toFloat
-                        if r <= radius then // Flashlight is a circular effect.
-                            if px.char == bgPx.char then
-                                val newFg = px.fg.lighter(0.2f * (1.0f - r / radius))
-                                canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
-            })
+        if go && ctx.isVisible && (ctx.getFrameMs - rate) >= lastMs then
+            lastMs = ctx.getFrameMs
+            currFade = CPRand.between(0.5f, 1f)
+
+        if currFade != 0 && currFade > fadeChange then
+            currFade -= fadeChange
+
+        val canv = ctx.getCanvas
+        objRect.loop((x, y) => {
+            if canv.isValid(x, y) then
+                val zpx = canv.getZPixel(x, y)
+                val px = zpx.px
+                if px.char != ' ' then canv.drawPixel(px.withLighterFg(currFade), x, y, zpx.z)
+        })
 

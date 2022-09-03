@@ -1,2 +1,3 @@
 .LevelTitle:Second Level
 .LevelSongName:Earth, Wind and Fire - Lets Groove
+.LevelBPM:62
