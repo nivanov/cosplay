@@ -40,6 +40,7 @@ decls
     ;
 decl
     : letDecl
+    | delDecl
     | defDecl
     | nativeDefDecl
     | whileDecl
@@ -48,6 +49,7 @@ decl
     | aliasDecl
     | pipelineDecl
     ;
+delDecl: SCOL;
 pipelineDecl: prgList AMP?;
 prgList
     : prg
@@ -189,6 +191,7 @@ ASSIGN: '=';
 PLUS: '+';
 QUESTION: '?';
 MULT: '*';
+SCOL: ';';
 DIV: '/';
 MOD: '%';
 DOLLAR: '$';
