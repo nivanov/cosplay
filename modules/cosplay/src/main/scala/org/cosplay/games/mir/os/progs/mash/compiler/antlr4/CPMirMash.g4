@@ -45,8 +45,8 @@ decl
     | nativeDefDecl
     | whileDecl
     | forDecl
-    | compoundExpr
     | aliasDecl
+    | expr
     | pipelineDecl
     ;
 delDecl: SCOL;
@@ -55,23 +55,22 @@ prgList
     : prg
     | prgList pipeOp prg
     ;
-prg: path argList?;
-path: PATH_STR;
-arg: (PATH_STR | qstring);
+prg: STR argList?;
+arg: (STR | qstring);
 argList
     : arg
     | argList arg
     ;
 pipeOp: VERT | GT | APPEND_FILE;
-aliasDecl: ALIAS IDENT ASSIGN pipelineDecl;
-letDecl: LET IDENT ASSIGN expr;
-defDecl: DEF IDENT LPAR funParamList? RPAR ASSIGN compoundExpr;
-nativeDefDecl: NATIVE DEF IDENT LPAR funParamList? RPAR;
+aliasDecl: ALIAS STR ASSIGN pipelineDecl;
+letDecl: LET STR ASSIGN expr;
+defDecl: DEF STR LPAR funParamList? RPAR ASSIGN compoundExpr;
+nativeDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
 whileDecl: WHILE expr DO compoundExpr;
-forDecl: FOR IDENT IN expr DO compoundExpr;
+forDecl: FOR STR IN expr DO compoundExpr;
 funParamList
-    : IDENT
-    | funParamList COMMA IDENT
+    : STR
+    | funParamList COMMA STR
     ;
 expr
     // NOTE: order of productions defines precedence.
@@ -79,7 +78,7 @@ expr
     | expr MOD expr # modExpr
     | LPAR expr RPAR # parExpr
     | IF expr THEN compoundExpr (ELSE compoundExpr)? # ifExpr
-    | FOR IDENT IN expr YIELD compoundExpr # forYieldExpr
+    | FOR STR IN expr YIELD compoundExpr # forYieldExpr
     | LPAR funParamList? RPAR ANON_DEF compoundExpr # anonDefExpr
     | expr op=(MULT | DIV | MOD) expr # multDivModExpr
     | expr op=(PLUS | MINUS) expr # plusMinusExpr
@@ -89,9 +88,10 @@ expr
     | atom # atomExpr
     | LPAR listItems? RPAR # listExpr
     | TILDA LPAR mapItems? RPAR # mapExpr
-    | IDENT LPAR callParamList? RPAR # callExpr
+    | STR LPAR callParamList? RPAR # callExpr
     | varAccess LPAR callParamList? RPAR # fpCallExpr
     | varAccess # varAccessExpr
+    | BQUOTE pipelineDecl BQUOTE # pipelineExecExpr
     ;
 listItems
     : expr
@@ -104,17 +104,15 @@ mapItems
     ;
 compoundExpr
     : expr
-    | LBRACE (decl|expr)+ RBRACE
+    | LBRACE (decl|expr)* RBRACE
     ;
 callParamList
-    : expr
-    | callParamList COMMA expr
+    : compoundExpr
+    | callParamList COMMA compoundExpr
     ;
 varAccess
-    : DOLLAR INT // '$1' command line parameter access. '$0' is entire command line as a string.
-    | DOLLAR LPAR INT RPAR
-    | DOLLAR IDENT keyAccess*
-    | DOLLAR LPAR IDENT RPAR keyAccess*
+    : DOLLAR STR keyAccess*
+    | DOLLAR LPAR STR RPAR keyAccess*
     | CMD_ARGS_NUM
     | LAST_EXIT_STATUS
     | LAST_PID
@@ -124,7 +122,7 @@ varAccess
 keyAccess: LBR expr RBR;
 atom
     : NULL
-    | INT REAL? EXP?
+    | STR
     | BOOL
     | qstring
     ;
@@ -155,7 +153,6 @@ DO: 'do';
 YIELD: 'yield';
 FOR: 'for';
 IN: '<-';
-PATH_STR: [0-9a-zA-Z${}/._-]+ {getText().equals("bin/sh")}?;
 SQSTRING: SQUOTE (~'\'')* SQUOTE;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BOOL: 'true' | 'false';
@@ -186,7 +183,6 @@ POUND: '#';
 COMMA: ',';
 MINUS: '-';
 DOT: '.';
-UNDERSCORE: '_';
 ASSIGN: '=';
 PLUS: '+';
 QUESTION: '?';
@@ -195,11 +191,14 @@ SCOL: ';';
 DIV: '/';
 MOD: '%';
 DOLLAR: '$';
-INT: '0' | [1-9] [_0-9]*;
-REAL: DOT [0-9]+;
-EXP: [Ee] [+\-]? INT;
-fragment LETTER: [a-zA-Z];
-IDENT: (UNDERSCORE|LETTER)+(UNDERSCORE|LETTER|[0-9])*;
+//INT: '0' | [1-9] [_0-9]*;
+//REAL: DOT [0-9]+;
+//EXP: [Ee] [+\-]? INT;
+//UNDERSCORE: '_';
+//fragment LETTER: [a-zA-Z];
+//IDENT: (UNDERSCORE|LETTER)+(UNDERSCORE|LETTER|[0-9])*;
+//PATH_STR: [0-9a-zA-Z${}/._-]+;
+STR: [0-9a-zA-Z${}/._-]+;
 COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
 WS: [ \r\t\u000C\n]+ -> skip;
 ErrorChar: .;

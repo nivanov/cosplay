@@ -1,4 +1,4 @@
-// Generated from C:/Users/Nikita Ivanov/Documents/GitHub/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4\CPMirMash.g4 by ANTLR 4.10.1
+// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/CPMirMash.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.mash.compiler.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -95,18 +95,6 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPrg(CPMirMashParser.PrgContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPath(CPMirMashParser.PathContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPath(CPMirMashParser.PathContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -299,6 +287,18 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMapExpr(CPMirMashParser.MapExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

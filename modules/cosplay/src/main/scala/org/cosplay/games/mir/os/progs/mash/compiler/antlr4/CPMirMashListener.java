@@ -1,4 +1,4 @@
-// Generated from C:/Users/Nikita Ivanov/Documents/GitHub/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4\CPMirMash.g4 by ANTLR 4.10.1
+// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/CPMirMash.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.mash.compiler.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -77,16 +77,6 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPrg(CPMirMashParser.PrgContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CPMirMashParser#path}.
-	 * @param ctx the parse tree
-	 */
-	void enterPath(CPMirMashParser.PathContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CPMirMashParser#path}.
-	 * @param ctx the parse tree
-	 */
-	void exitPath(CPMirMashParser.PathContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CPMirMashParser#arg}.
 	 * @param ctx the parse tree
@@ -259,6 +249,18 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMapExpr(CPMirMashParser.MapExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code pipelineExecExpr}
+	 * labeled alternative in {@link CPMirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code pipelineExecExpr}
+	 * labeled alternative in {@link CPMirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code anonDefExpr}
 	 * labeled alternative in {@link CPMirMashParser#expr}.
