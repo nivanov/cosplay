@@ -57,10 +57,19 @@ object CPMirMashCompilerTests:
               |var x = true
               |
               |val WIDTH = 100
-              |val HEIGHT = 100
+              |val HEIGHT = {
+              |    val a = 100
+              |
+              |    (a + 100) * 80
+              |}
               |
               |val list0 = (1, 2, 3, true, null)
               |var list1 = () // Empty list.
+              |
+              |list1 = {
+              |    var a = 1; var b = 2;
+              |    (a, b)
+              |}
               |
               |val map = ~(HEIGHT -> 2 * 0.4, "name"->"cosplay" + ' ' + "engine")
               |
@@ -76,7 +85,7 @@ object CPMirMashCompilerTests:
               |println("Current PID $$")
               |println("Last background PID $!")
               |
-              |someapp()
+              |someapp();;;
               |
               |alias ll = "ls -la -F"
               |

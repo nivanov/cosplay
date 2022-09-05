@@ -52,7 +52,7 @@ decl
     | expr
     ;
 delDecl: SCOL;
-assignDecl: STR ASSIGN expr;
+assignDecl: STR ASSIGN compoundExpr;
 pipelineDecl: prgList AMP?;
 prgList
     : prg
@@ -66,8 +66,8 @@ argList
     ;
 pipeOp: VERT | GT | APPEND_FILE;
 aliasDecl: ALIAS STR ASSIGN qstring;
-valDecl: VAL STR ASSIGN expr;
-varDecl: VAR STR ASSIGN expr;
+valDecl: VAL STR ASSIGN compoundExpr;
+varDecl: VAR STR ASSIGN compoundExpr;
 defDecl: DEF STR LPAR funParamList? RPAR ASSIGN compoundExpr;
 nativeDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
 whileDecl: WHILE expr DO compoundExpr;

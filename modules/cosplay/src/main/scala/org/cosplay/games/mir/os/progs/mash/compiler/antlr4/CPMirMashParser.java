@@ -440,8 +440,8 @@ public class CPMirMashParser extends Parser {
 	public static class AssignDeclContext extends ParserRuleContext {
 		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
 		public TerminalNode ASSIGN() { return getToken(CPMirMashParser.ASSIGN, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public CompoundExprContext compoundExpr() {
+			return getRuleContext(CompoundExprContext.class,0);
 		}
 		public AssignDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -473,7 +473,7 @@ public class CPMirMashParser extends Parser {
 			setState(85);
 			match(ASSIGN);
 			setState(86);
-			expr(0);
+			compoundExpr();
 			}
 		}
 		catch (RecognitionException re) {
@@ -936,8 +936,8 @@ public class CPMirMashParser extends Parser {
 		public TerminalNode VAL() { return getToken(CPMirMashParser.VAL, 0); }
 		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
 		public TerminalNode ASSIGN() { return getToken(CPMirMashParser.ASSIGN, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public CompoundExprContext compoundExpr() {
+			return getRuleContext(CompoundExprContext.class,0);
 		}
 		public ValDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -971,7 +971,7 @@ public class CPMirMashParser extends Parser {
 			setState(131);
 			match(ASSIGN);
 			setState(132);
-			expr(0);
+			compoundExpr();
 			}
 		}
 		catch (RecognitionException re) {
@@ -989,8 +989,8 @@ public class CPMirMashParser extends Parser {
 		public TerminalNode VAR() { return getToken(CPMirMashParser.VAR, 0); }
 		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
 		public TerminalNode ASSIGN() { return getToken(CPMirMashParser.ASSIGN, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public CompoundExprContext compoundExpr() {
+			return getRuleContext(CompoundExprContext.class,0);
 		}
 		public VarDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1024,7 +1024,7 @@ public class CPMirMashParser extends Parser {
 			setState(136);
 			match(ASSIGN);
 			setState(137);
-			expr(0);
+			compoundExpr();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3012,7 +3012,7 @@ public class CPMirMashParser extends Parser {
 		"PK\u0001\u0000\u0000\u0000PL\u0001\u0000\u0000\u0000PM\u0001\u0000\u0000"+
 		"\u0000PN\u0001\u0000\u0000\u0000PO\u0001\u0000\u0000\u0000Q\u0005\u0001"+
 		"\u0000\u0000\u0000RS\u00052\u0000\u0000S\u0007\u0001\u0000\u0000\u0000"+
-		"TU\u00056\u0000\u0000UV\u0005.\u0000\u0000VW\u0003&\u0013\u0000W\t\u0001"+
+		"TU\u00056\u0000\u0000UV\u0005.\u0000\u0000VW\u0003.\u0017\u0000W\t\u0001"+
 		"\u0000\u0000\u0000XZ\u0003\f\u0006\u0000Y[\u0005\u001b\u0000\u0000ZY\u0001"+
 		"\u0000\u0000\u0000Z[\u0001\u0000\u0000\u0000[\u000b\u0001\u0000\u0000"+
 		"\u0000\\]\u0006\u0006\uffff\uffff\u0000]^\u0003\u000e\u0007\u0000^e\u0001"+
@@ -3031,9 +3031,9 @@ public class CPMirMashParser extends Parser {
 		"\u0000|}\u0005\u0001\u0000\u0000}~\u00056\u0000\u0000~\u007f\u0005.\u0000"+
 		"\u0000\u007f\u0080\u00036\u001b\u0000\u0080\u0017\u0001\u0000\u0000\u0000"+
 		"\u0081\u0082\u0005\u0002\u0000\u0000\u0082\u0083\u00056\u0000\u0000\u0083"+
-		"\u0084\u0005.\u0000\u0000\u0084\u0085\u0003&\u0013\u0000\u0085\u0019\u0001"+
+		"\u0084\u0005.\u0000\u0000\u0084\u0085\u0003.\u0017\u0000\u0085\u0019\u0001"+
 		"\u0000\u0000\u0000\u0086\u0087\u0005\u0003\u0000\u0000\u0087\u0088\u0005"+
-		"6\u0000\u0000\u0088\u0089\u0005.\u0000\u0000\u0089\u008a\u0003&\u0013"+
+		"6\u0000\u0000\u0088\u0089\u0005.\u0000\u0000\u0089\u008a\u0003.\u0017"+
 		"\u0000\u008a\u001b\u0001\u0000\u0000\u0000\u008b\u008c\u0005\u0004\u0000"+
 		"\u0000\u008c\u008d\u00056\u0000\u0000\u008d\u008f\u0005 \u0000\u0000\u008e"+
 		"\u0090\u0003$\u0012\u0000\u008f\u008e\u0001\u0000\u0000\u0000\u008f\u0090"+
