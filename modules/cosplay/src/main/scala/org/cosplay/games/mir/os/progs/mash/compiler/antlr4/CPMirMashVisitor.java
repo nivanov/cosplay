@@ -35,6 +35,12 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDelDecl(CPMirMashParser.DelDeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#assignDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssignDecl(CPMirMashParser.AssignDeclContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CPMirMashParser#pipelineDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -77,11 +83,17 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAliasDecl(CPMirMashParser.AliasDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CPMirMashParser#letDecl}.
+	 * Visit a parse tree produced by {@link CPMirMashParser#valDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLetDecl(CPMirMashParser.LetDeclContext ctx);
+	T visitValDecl(CPMirMashParser.ValDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CPMirMashParser#varDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarDecl(CPMirMashParser.VarDeclContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CPMirMashParser#defDecl}.
 	 * @param ctx the parse tree
@@ -141,13 +153,6 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPlusMinusExpr(CPMirMashParser.PlusMinusExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link CPMirMashParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAtomExpr(CPMirMashParser.AtomExprContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code mapExpr}
 	 * labeled alternative in {@link CPMirMashParser#expr}.
 	 * @param ctx the parse tree
@@ -161,6 +166,13 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code atomExpr}
+	 * labeled alternative in {@link CPMirMashParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtomExpr(CPMirMashParser.AtomExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code anonDefExpr}
 	 * labeled alternative in {@link CPMirMashParser#expr}.
@@ -268,12 +280,6 @@ public interface CPMirMashVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCallParamList(CPMirMashParser.CallParamListContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CPMirMashParser#varAccess}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVarAccess(CPMirMashParser.VarAccessContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CPMirMashParser#keyAccess}.
 	 * @param ctx the parse tree

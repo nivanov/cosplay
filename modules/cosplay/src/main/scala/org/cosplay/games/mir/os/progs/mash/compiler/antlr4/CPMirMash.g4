@@ -39,17 +39,20 @@ decls
     | decls decl
     ;
 decl
-    : letDecl
+    : varDecl
+    | valDecl
     | delDecl
     | defDecl
     | nativeDefDecl
     | whileDecl
     | forDecl
     | aliasDecl
-    | expr
+    | assignDecl
     | pipelineDecl
+    | expr
     ;
 delDecl: SCOL;
+assignDecl: STR ASSIGN expr;
 pipelineDecl: prgList AMP?;
 prgList
     : prg
@@ -62,8 +65,9 @@ argList
     | argList arg
     ;
 pipeOp: VERT | GT | APPEND_FILE;
-aliasDecl: ALIAS STR ASSIGN pipelineDecl;
-letDecl: LET STR ASSIGN expr;
+aliasDecl: ALIAS STR ASSIGN qstring;
+valDecl: VAL STR ASSIGN expr;
+varDecl: VAR STR ASSIGN expr;
 defDecl: DEF STR LPAR funParamList? RPAR ASSIGN compoundExpr;
 nativeDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
 whileDecl: WHILE expr DO compoundExpr;
@@ -85,13 +89,13 @@ expr
     | expr op=(LTEQ | GTEQ | LT | GT) expr # compExpr
     | expr op=(EQ | NEQ) expr # eqNeqExpr
     | expr op=(AND | OR) expr # andOrExpr
-    | atom # atomExpr
     | LPAR listItems? RPAR # listExpr
     | TILDA LPAR mapItems? RPAR # mapExpr
+    | STR keyAccess* LPAR callParamList? RPAR # fpCallExpr
+    | STR keyAccess* # varAccessExpr
     | STR LPAR callParamList? RPAR # callExpr
-    | varAccess LPAR callParamList? RPAR # fpCallExpr
-    | varAccess # varAccessExpr
     | BQUOTE pipelineDecl BQUOTE # pipelineExecExpr
+    | atom # atomExpr
     ;
 listItems
     : expr
@@ -110,20 +114,11 @@ callParamList
     : compoundExpr
     | callParamList COMMA compoundExpr
     ;
-varAccess
-    : DOLLAR STR keyAccess*
-    | DOLLAR LPAR STR RPAR keyAccess*
-    | CMD_ARGS_NUM
-    | LAST_EXIT_STATUS
-    | LAST_PID
-    | LAST_BG_PID
-    | CMD_ARGS_LIST
-    ;
 keyAccess: LBR expr RBR;
 atom
     : NULL
-    | STR
     | BOOL
+    | STR
     | qstring
     ;
 qstring
@@ -135,12 +130,8 @@ qstring
 // ======
 
 ALIAS: 'alias';
-CMD_ARGS_NUM: '$#';
-LAST_EXIT_STATUS: '$?';
-LAST_PID: '$$';
-LAST_BG_PID: '$!';
-CMD_ARGS_LIST: '$@';
-LET: 'let';
+VAL: 'val';
+VAR: 'var';
 DEF: 'def';
 ANON_DEF: '=>';
 ASSOC: '->';
@@ -191,14 +182,7 @@ SCOL: ';';
 DIV: '/';
 MOD: '%';
 DOLLAR: '$';
-//INT: '0' | [1-9] [_0-9]*;
-//REAL: DOT [0-9]+;
-//EXP: [Ee] [+\-]? INT;
-//UNDERSCORE: '_';
-//fragment LETTER: [a-zA-Z];
-//IDENT: (UNDERSCORE|LETTER)+(UNDERSCORE|LETTER|[0-9])*;
-//PATH_STR: [0-9a-zA-Z${}/._-]+;
-STR: [0-9a-zA-Z${}/._-]+;
+STR: [0-9a-zA-Z${}/._-]+; // Path, argument, identificator or number.
 COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
 WS: [ \r\t\u000C\n]+ -> skip;
 ErrorChar: .;

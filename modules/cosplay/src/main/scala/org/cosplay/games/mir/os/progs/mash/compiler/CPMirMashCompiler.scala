@@ -185,7 +185,7 @@ class CPMirMashCompiler:
       * @param code
       * @param origin
       */
-    def compile(code: String, origin: String): CPMirMashCompilerResult =
+    def compile(code: String, origin: String): CPMirMashObjectCode =
         val (fsm, parser) = antlr4Setup(code, origin)
 
         // Parse the input IDL and walk the built AST.

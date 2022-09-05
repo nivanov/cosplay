@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os.progs.mash.compiler
 
+import org.cosplay.games.mir.os.progs.mash.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -33,4 +35,9 @@ package org.cosplay.games.mir.os.progs.mash.compiler
 /**
   *
   */
-class CPMirMashCompilerResult
+trait CPMirMashObjectCode:
+    /**
+      *
+      * @param state
+      */
+    def execute(state: CPMirMashState): Unit

@@ -64,6 +64,18 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAssignDecl(CPMirMashParser.AssignDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAssignDecl(CPMirMashParser.AssignDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPipelineDecl(CPMirMashParser.PipelineDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -148,13 +160,25 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLetDecl(CPMirMashParser.LetDeclContext ctx) { }
+	@Override public void enterValDecl(CPMirMashParser.ValDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLetDecl(CPMirMashParser.LetDeclContext ctx) { }
+	@Override public void exitValDecl(CPMirMashParser.ValDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVarDecl(CPMirMashParser.VarDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVarDecl(CPMirMashParser.VarDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -268,18 +292,6 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAtomExpr(CPMirMashParser.AtomExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAtomExpr(CPMirMashParser.AtomExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterMapExpr(CPMirMashParser.MapExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -299,6 +311,18 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAtomExpr(CPMirMashParser.AtomExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAtomExpr(CPMirMashParser.AtomExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -491,18 +515,6 @@ public class CPMirMashBaseListener implements CPMirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCallParamList(CPMirMashParser.CallParamListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterVarAccess(CPMirMashParser.VarAccessContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVarAccess(CPMirMashParser.VarAccessContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

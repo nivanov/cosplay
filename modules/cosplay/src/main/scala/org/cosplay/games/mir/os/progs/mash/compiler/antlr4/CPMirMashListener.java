@@ -48,6 +48,16 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 */
 	void exitDelDecl(CPMirMashParser.DelDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CPMirMashParser#assignDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignDecl(CPMirMashParser.AssignDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CPMirMashParser#assignDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignDecl(CPMirMashParser.AssignDeclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CPMirMashParser#pipelineDecl}.
 	 * @param ctx the parse tree
 	 */
@@ -118,15 +128,25 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 */
 	void exitAliasDecl(CPMirMashParser.AliasDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPMirMashParser#letDecl}.
+	 * Enter a parse tree produced by {@link CPMirMashParser#valDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterLetDecl(CPMirMashParser.LetDeclContext ctx);
+	void enterValDecl(CPMirMashParser.ValDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPMirMashParser#letDecl}.
+	 * Exit a parse tree produced by {@link CPMirMashParser#valDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitLetDecl(CPMirMashParser.LetDeclContext ctx);
+	void exitValDecl(CPMirMashParser.ValDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CPMirMashParser#varDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarDecl(CPMirMashParser.VarDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CPMirMashParser#varDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarDecl(CPMirMashParser.VarDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CPMirMashParser#defDecl}.
 	 * @param ctx the parse tree
@@ -226,18 +246,6 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 */
 	void exitPlusMinusExpr(CPMirMashParser.PlusMinusExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link CPMirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAtomExpr(CPMirMashParser.AtomExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link CPMirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAtomExpr(CPMirMashParser.AtomExprContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code mapExpr}
 	 * labeled alternative in {@link CPMirMashParser#expr}.
 	 * @param ctx the parse tree
@@ -261,6 +269,18 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code atomExpr}
+	 * labeled alternative in {@link CPMirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtomExpr(CPMirMashParser.AtomExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code atomExpr}
+	 * labeled alternative in {@link CPMirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtomExpr(CPMirMashParser.AtomExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code anonDefExpr}
 	 * labeled alternative in {@link CPMirMashParser#expr}.
@@ -443,16 +463,6 @@ public interface CPMirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCallParamList(CPMirMashParser.CallParamListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CPMirMashParser#varAccess}.
-	 * @param ctx the parse tree
-	 */
-	void enterVarAccess(CPMirMashParser.VarAccessContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CPMirMashParser#varAccess}.
-	 * @param ctx the parse tree
-	 */
-	void exitVarAccess(CPMirMashParser.VarAccessContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CPMirMashParser#keyAccess}.
 	 * @param ctx the parse tree

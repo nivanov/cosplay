@@ -54,14 +54,14 @@ class CPMirMashProgram extends CPMirExecutable:
         val state = new CPMirMashState()
 
         // Default & well-known Unix environment variables.
-        state.setVariable("PS", """\\u@\\h:\\w\\$""")
-        state.setVariable("HOST", ctx.host)
-        state.setVariable("PWD", ctx.workDir.getAbsolutePath)
-        state.setVariable("HOME", ctx.usr.getHomeDirectory)
-        state.setVariable("UID", ctx.usr.getUid.toString)
-        state.setVariable("USER", ctx.usr.getUsername)
-        state.setVariable("LANG", "en_US")
-        state.setVariable("SHELL", ctx.file.getAbsolutePath)
-        state.setVariable("MAIL", s"${ctx.usr.getHomeDirectory}/inbox")
+        state.setVariable("PS", """\\u@\\h:\\w\\$""", false)
+        state.setVariable("HOST", ctx.host, false)
+        state.setVariable("PWD", ctx.workDir.getAbsolutePath, false)
+        state.setVariable("HOME", ctx.usr.getHomeDirectory, false)
+        state.setVariable("UID", ctx.usr.getUid.toString, false)
+        state.setVariable("USER", ctx.usr.getUsername, false)
+        state.setVariable("LANG", "en_US", false)
+        state.setVariable("SHELL", ctx.file.getAbsolutePath, false)
+        state.setVariable("MAIL", s"${ctx.usr.getHomeDirectory}/inbox", false)
 
         state

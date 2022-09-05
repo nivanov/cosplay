@@ -47,6 +47,70 @@ object CPMirMashCompilerTests:
                 case Success(_) => ()
                 case Failure(e) => assertTrue(false, e.getMessage)
 
-        compile("let x = 10")
-        compile("let x = 10; let y = 'abc'")
+        compile("var x = 10")
+        compile("val x = 10; val y = 'abc'")
+        compile(
+            """
+              |native def listOf(fromIncl, toExcl)
+              |
+              |val x = null
+              |var x = true
+              |
+              |val WIDTH = 100
+              |val HEIGHT = 100
+              |
+              |val list0 = (1, 2, 3, true, null)
+              |var list1 = () // Empty list.
+              |
+              |val map = ~(HEIGHT -> 2 * 0.4, "name"->"cosplay" + ' ' + "engine")
+              |
+              |println(map["name"]["key"])
+              |
+              |val s = `cat /home/file.txt | wc | take 1`
+              |
+              |echo "Some text echoing" | wc -l
+              |echo "Some staff" > new_file.txt
+              |
+              |println("Number of command line arguments is $#")
+              |println("Last exit status is $?")
+              |println("Current PID $$")
+              |println("Last background PID $!")
+              |
+              |someapp()
+              |
+              |alias ll = "ls -la -F"
+              |
+              |/*
+              | * Test function.
+              | *
+              | * @param a 1st parameter.
+              | */
+              |def fun(a, b, c) = {
+              |    def z() = println()
+              |    val q = (1.054 + 2_00_00) * $4 + valName[2]
+              |    while $q <= work() do println("something")
+              |    val newList = for i <- list() yield i + "str"
+              |
+              |    newList = (1, 2, 3)
+              |
+              |    val anotherList = (1, "true", true, null, ("sub", "list"), newList[1])
+              |    println("nikita") // Direct function call.
+              |    newList[q]("some", 1, "arg") // FP-style function call.
+              |    if boolFunc() && $w then doSome()
+              |    if boolVal() then {
+              |        def z() = println()
+              |        println(z())
+              |    }
+              |    else
+              |        println("Else")
+              |    if !boolVal() then null else null
+              |
+              |    fun1((p, b) => println(p))
+              |}
+              |
+              |def fun1(f, param) = {
+              |    // Comment.
+              |    f($param)
+              |}
+              |""".stripMargin)
 

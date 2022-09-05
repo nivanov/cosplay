@@ -83,34 +83,103 @@ class CPMirMashState:
       */
     def removeAlias(name: String): Option[String] = aliases.remove(name)
 
+    /**
+      *
+      * @return
+      */
     def getCurrentFilename: String = ???
 
+    /**
+      *
+      * @param filename
+      */
     def setCurrentFilename (filename: String): Unit = ???
 
+    /**
+      *
+      * @param n
+      */
     def getCmdArgument(n: Int): String = ???
 
+    /**
+      *
+      */
     def getAllCmdArguments: Seq[String] = ???
 
+    /**
+      *
+      */
     def setCmdArguments(args: Seq[String]): Unit = ???
 
+    /**
+      *
+      */
     def getLastExitStatus: Int = ???
 
+    /**
+      *
+      */
     def setLastExitStatus(d: Int): Unit = ???
 
+    /**
+      *
+      */
     def getPid: Long = ???
 
+    /**
+      *
+      */
     def setPid(pid: Long): Unit = ???
 
+    /**
+      *
+      */
     def getLastBackgroundPid: Long = ???
 
+    /**
+      *
+      * @param pid
+      */
     def setLastBackgroundPid(pid: Long): Unit = ???
 
-    def setVariable(name: String, value: String, scope: Option[String] = None): Unit = ???
+    /**
+      *
+      * @param name
+      * @param value
+      * @param readOnly
+      * @param scope
+      */
+    def setVariable(name: String, value: String, readOnly: Boolean, scope: Option[String] = None): Unit = ???
 
+    /**
+      *
+      * @param name
+      * @param scope
+      * @return
+      */
     def getVariable(name: String, scope: Option[String] = None): String = ???
 
+    /**
+      *
+      * @param name
+      * @param scope
+      * @return
+      */
+    def isVariableReadOnly(name: String, scope: Option[String] = None): Boolean = ???
+
+    /**
+      *
+      * @param scope
+      * @return
+      */
     def getAllVariables(scope: String): Seq[String] = ???
 
+    /**
+      *
+      * @param name
+      * @param scope
+      * @return
+      */
     def removeVariable(name: String, scope: Option[String] = None): Boolean = ???
 
 
