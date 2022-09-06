@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash
+package org.cosplay.games.mir.os.progs.mash.compiler
 
-import org.cosplay.*
-import games.mir.*
-import games.mir.os.*
+import org.cosplay.games.mir.os.progs.mash.*
 
 /*
    _________            ______________
@@ -37,31 +35,9 @@ import games.mir.os.*
 /**
   *
   */
-class CPMirMashProgram extends CPMirExecutable:
-    private val sz = CPRand.between(3000.kb, 10000.kb)
-
-    override def getSizeOnDisk: Long = sz
-    override def mainEntry(ctx: CPMirExecutableContext): Int =
-        val state = initState(ctx)
-
-        0
-
+trait MirMashObjectCode:
     /**
       *
-      * @param ctx
+      * @param state
       */
-    private def initState(ctx: CPMirExecutableContext): CPMirMashState =
-        val state = new CPMirMashState()
-
-        // Default & well-known Unix environment variables.
-        state.setVariable("PS", """\\u@\\h:\\w\\$""", false)
-        state.setVariable("HOST", ctx.host, false)
-        state.setVariable("PWD", ctx.workDir.getAbsolutePath, false)
-        state.setVariable("HOME", ctx.usr.getHomeDirectory, false)
-        state.setVariable("UID", ctx.usr.getUid.toString, false)
-        state.setVariable("USER", ctx.usr.getUsername, false)
-        state.setVariable("LANG", "en_US", false)
-        state.setVariable("SHELL", ctx.file.getAbsolutePath, false)
-        state.setVariable("MAIL", s"${ctx.usr.getHomeDirectory}/inbox", false)
-
-        state
+    def execute(state: MirMashState): Unit

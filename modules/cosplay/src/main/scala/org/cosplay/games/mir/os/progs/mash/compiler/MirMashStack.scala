@@ -17,8 +17,6 @@
 
 package org.cosplay.games.mir.os.progs.mash.compiler
 
-import org.cosplay.games.mir.os.progs.mash.*
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -27,17 +25,26 @@ import org.cosplay.games.mir.os.progs.mash.*
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
+
+import scala.collection.mutable
 
 /**
   *
   */
-trait CPMirMashObjectCode:
-    /**
-      *
-      * @param state
-      */
-    def execute(state: CPMirMashState): Unit
+object CPMirMashStack:
+    private final val UUID = java.util.UUID.randomUUID()
+
+/**
+  *
+  */
+class CPMirMashStack extends mutable.Stack[() => Any]:
+    import CPMirMashStack.*
+
+    // Special marker for stack frames.
+    final val FRAME_MARKER: () => Any = () => UUID
+
+

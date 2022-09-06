@@ -36,7 +36,7 @@ import scala.collection.mutable
 /**
   * Global state of the mash interpreter instance.
   */
-class CPMirMashState:
+class MirMashState:
     private val aliases = mutable.HashMap.empty[String, String]
     private var workDir: CPMirDirectoryFile = _
 

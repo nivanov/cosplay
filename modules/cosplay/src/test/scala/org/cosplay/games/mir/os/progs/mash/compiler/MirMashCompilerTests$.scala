@@ -37,10 +37,10 @@ import org.junit.jupiter.api.*
 /**
   *
   */
-object CPMirMashCompilerTests:
+object MirMashCompilerTests$:
     @Test
     def baseTest(): Unit =
-        val comp = new CPMirMashCompiler
+        val comp = new MirMashCompiler
 
         def compile(code: String): Unit =
             Try(comp.compile(code, "test")). match

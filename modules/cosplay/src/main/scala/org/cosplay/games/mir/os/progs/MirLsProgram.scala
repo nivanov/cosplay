@@ -36,6 +36,6 @@ import os.*
 /**
   *
   */
-class CPMirLsProgram extends CPMirExecutable:
+class MirLsProgram extends CPMirExecutable:
     override def mainEntry(ctx: CPMirExecutableContext): Int = 0 // TODO
     override def getSizeOnDisk: Long = 1024 // TODO

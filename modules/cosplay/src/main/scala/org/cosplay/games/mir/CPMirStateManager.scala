@@ -169,10 +169,10 @@ class CPMirStateManager:
         // TODO: - 'crew' folder.
 
         // Install executables.
-        sbin.addExecFile("boot", rootUsr, new CPMirBootProgram)
-        sbin.addExecFile("ls", rootUsr, new CPMirLsProgram)
+        sbin.addExecFile("boot", rootUsr, new MirBootProgram)
+        sbin.addExecFile("ls", rootUsr, new MirLsProgram)
         sbin.addExecFile("login", rootUsr, new CPMirLoginProgram)
-        sbin.addExecFile("mash", rootUsr, new CPMirMashProgram)
+        sbin.addExecFile("mash", rootUsr, new MirMashProgram)
 
         // Install devices
         dev.addDeviceFile("radio", rootUsr, null /* TODO */)

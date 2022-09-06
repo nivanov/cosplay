@@ -38,7 +38,7 @@ import CPMirConsole.*
 /**
   *
   */
-class CPMirBootProgram extends CPMirExecutable:
+class MirBootProgram extends CPMirExecutable:
     override def mainEntry(ctx: CPMirExecutableContext): Int =
         val boot =
             s"""Award Modular BIOS v4.50G, An Energy Star Ally

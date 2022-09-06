@@ -20,7 +20,7 @@ package org.cosplay.games.mir.os
 import org.cosplay.*
 import games.mir.*
 import org.cosplay.games.mir.os.CPMirOs.HOSTNAME
-import os.progs.mash.CPMirMashProgram
+import os.progs.mash.MirMashProgram
 import station.*
 import os.*
 import progs.*

@@ -32,15 +32,15 @@ package org.cosplay.games.mir.os.progs.mash.compiler
 
 import org.cosplay.impl.CPUtils
 import org.cosplay.*
-
 import org.cosplay.games.mir.os.progs.mash.compiler.antlr4.*
 import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
+import org.cosplay.games.mir.os.progs.mash.MirMashState
 
 /**
   *
   */
-class CPMirMashCompiler:
+class MirMashCompiler:
     /**
       *
       */
@@ -185,7 +185,7 @@ class CPMirMashCompiler:
       * @param code
       * @param origin
       */
-    def compile(code: String, origin: String): CPMirMashObjectCode =
+    def compile(code: String, origin: String): MirMashObjectCode =
         val (fsm, parser) = antlr4Setup(code, origin)
 
         // Parse the input IDL and walk the built AST.
