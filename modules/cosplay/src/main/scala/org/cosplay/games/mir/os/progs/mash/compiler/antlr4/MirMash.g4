@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-grammar CPMirMash;
+grammar MirMash;
 
 /*
    _________            ______________

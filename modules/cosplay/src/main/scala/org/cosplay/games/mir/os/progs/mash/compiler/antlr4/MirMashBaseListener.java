@@ -1,4 +1,4 @@
-// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/CPMirMash.g4 by ANTLR 4.10.1
+// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/MirMash.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.mash.compiler.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -6,551 +6,551 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link CPMirMashListener},
+ * This class provides an empty implementation of {@link MirMashListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-public class CPMirMashBaseListener implements CPMirMashListener {
+public class MirMashBaseListener implements MirMashListener {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMash(CPMirMashParser.MashContext ctx) { }
+	@Override public void enterMash(MirMashParser.MashContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMash(CPMirMashParser.MashContext ctx) { }
+	@Override public void exitMash(MirMashParser.MashContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDecls(CPMirMashParser.DeclsContext ctx) { }
+	@Override public void enterDecls(MirMashParser.DeclsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDecls(CPMirMashParser.DeclsContext ctx) { }
+	@Override public void exitDecls(MirMashParser.DeclsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDecl(CPMirMashParser.DeclContext ctx) { }
+	@Override public void enterDecl(MirMashParser.DeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDecl(CPMirMashParser.DeclContext ctx) { }
+	@Override public void exitDecl(MirMashParser.DeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDelDecl(CPMirMashParser.DelDeclContext ctx) { }
+	@Override public void enterDelDecl(MirMashParser.DelDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDelDecl(CPMirMashParser.DelDeclContext ctx) { }
+	@Override public void exitDelDecl(MirMashParser.DelDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAssignDecl(CPMirMashParser.AssignDeclContext ctx) { }
+	@Override public void enterAssignDecl(MirMashParser.AssignDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAssignDecl(CPMirMashParser.AssignDeclContext ctx) { }
+	@Override public void exitAssignDecl(MirMashParser.AssignDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPipelineDecl(CPMirMashParser.PipelineDeclContext ctx) { }
+	@Override public void enterPipelineDecl(MirMashParser.PipelineDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPipelineDecl(CPMirMashParser.PipelineDeclContext ctx) { }
+	@Override public void exitPipelineDecl(MirMashParser.PipelineDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPrgList(CPMirMashParser.PrgListContext ctx) { }
+	@Override public void enterPrgList(MirMashParser.PrgListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPrgList(CPMirMashParser.PrgListContext ctx) { }
+	@Override public void exitPrgList(MirMashParser.PrgListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPrg(CPMirMashParser.PrgContext ctx) { }
+	@Override public void enterPrg(MirMashParser.PrgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPrg(CPMirMashParser.PrgContext ctx) { }
+	@Override public void exitPrg(MirMashParser.PrgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArg(CPMirMashParser.ArgContext ctx) { }
+	@Override public void enterArg(MirMashParser.ArgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArg(CPMirMashParser.ArgContext ctx) { }
+	@Override public void exitArg(MirMashParser.ArgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArgList(CPMirMashParser.ArgListContext ctx) { }
+	@Override public void enterArgList(MirMashParser.ArgListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArgList(CPMirMashParser.ArgListContext ctx) { }
+	@Override public void exitArgList(MirMashParser.ArgListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPipeOp(CPMirMashParser.PipeOpContext ctx) { }
+	@Override public void enterPipeOp(MirMashParser.PipeOpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPipeOp(CPMirMashParser.PipeOpContext ctx) { }
+	@Override public void exitPipeOp(MirMashParser.PipeOpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAliasDecl(CPMirMashParser.AliasDeclContext ctx) { }
+	@Override public void enterAliasDecl(MirMashParser.AliasDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAliasDecl(CPMirMashParser.AliasDeclContext ctx) { }
+	@Override public void exitAliasDecl(MirMashParser.AliasDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValDecl(CPMirMashParser.ValDeclContext ctx) { }
+	@Override public void enterValDecl(MirMashParser.ValDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValDecl(CPMirMashParser.ValDeclContext ctx) { }
+	@Override public void exitValDecl(MirMashParser.ValDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVarDecl(CPMirMashParser.VarDeclContext ctx) { }
+	@Override public void enterVarDecl(MirMashParser.VarDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVarDecl(CPMirMashParser.VarDeclContext ctx) { }
+	@Override public void exitVarDecl(MirMashParser.VarDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDefDecl(CPMirMashParser.DefDeclContext ctx) { }
+	@Override public void enterDefDecl(MirMashParser.DefDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDefDecl(CPMirMashParser.DefDeclContext ctx) { }
+	@Override public void exitDefDecl(MirMashParser.DefDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNativeDefDecl(CPMirMashParser.NativeDefDeclContext ctx) { }
+	@Override public void enterNativeDefDecl(MirMashParser.NativeDefDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNativeDefDecl(CPMirMashParser.NativeDefDeclContext ctx) { }
+	@Override public void exitNativeDefDecl(MirMashParser.NativeDefDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterWhileDecl(CPMirMashParser.WhileDeclContext ctx) { }
+	@Override public void enterWhileDecl(MirMashParser.WhileDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitWhileDecl(CPMirMashParser.WhileDeclContext ctx) { }
+	@Override public void exitWhileDecl(MirMashParser.WhileDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterForDecl(CPMirMashParser.ForDeclContext ctx) { }
+	@Override public void enterForDecl(MirMashParser.ForDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitForDecl(CPMirMashParser.ForDeclContext ctx) { }
+	@Override public void exitForDecl(MirMashParser.ForDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunParamList(CPMirMashParser.FunParamListContext ctx) { }
+	@Override public void enterFunParamList(MirMashParser.FunParamListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunParamList(CPMirMashParser.FunParamListContext ctx) { }
+	@Override public void exitFunParamList(MirMashParser.FunParamListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFpCallExpr(CPMirMashParser.FpCallExprContext ctx) { }
+	@Override public void enterFpCallExpr(MirMashParser.FpCallExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFpCallExpr(CPMirMashParser.FpCallExprContext ctx) { }
+	@Override public void exitFpCallExpr(MirMashParser.FpCallExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterModExpr(CPMirMashParser.ModExprContext ctx) { }
+	@Override public void enterModExpr(MirMashParser.ModExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitModExpr(CPMirMashParser.ModExprContext ctx) { }
+	@Override public void exitModExpr(MirMashParser.ModExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVarAccessExpr(CPMirMashParser.VarAccessExprContext ctx) { }
+	@Override public void enterVarAccessExpr(MirMashParser.VarAccessExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVarAccessExpr(CPMirMashParser.VarAccessExprContext ctx) { }
+	@Override public void exitVarAccessExpr(MirMashParser.VarAccessExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPlusMinusExpr(CPMirMashParser.PlusMinusExprContext ctx) { }
+	@Override public void enterPlusMinusExpr(MirMashParser.PlusMinusExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPlusMinusExpr(CPMirMashParser.PlusMinusExprContext ctx) { }
+	@Override public void exitPlusMinusExpr(MirMashParser.PlusMinusExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMapExpr(CPMirMashParser.MapExprContext ctx) { }
+	@Override public void enterMapExpr(MirMashParser.MapExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMapExpr(CPMirMashParser.MapExprContext ctx) { }
+	@Override public void exitMapExpr(MirMashParser.MapExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx) { }
+	@Override public void enterPipelineExecExpr(MirMashParser.PipelineExecExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPipelineExecExpr(CPMirMashParser.PipelineExecExprContext ctx) { }
+	@Override public void exitPipelineExecExpr(MirMashParser.PipelineExecExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAtomExpr(CPMirMashParser.AtomExprContext ctx) { }
+	@Override public void enterAtomExpr(MirMashParser.AtomExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAtomExpr(CPMirMashParser.AtomExprContext ctx) { }
+	@Override public void exitAtomExpr(MirMashParser.AtomExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAnonDefExpr(CPMirMashParser.AnonDefExprContext ctx) { }
+	@Override public void enterAnonDefExpr(MirMashParser.AnonDefExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAnonDefExpr(CPMirMashParser.AnonDefExprContext ctx) { }
+	@Override public void exitAnonDefExpr(MirMashParser.AnonDefExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParExpr(CPMirMashParser.ParExprContext ctx) { }
+	@Override public void enterParExpr(MirMashParser.ParExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParExpr(CPMirMashParser.ParExprContext ctx) { }
+	@Override public void exitParExpr(MirMashParser.ParExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnaryExpr(CPMirMashParser.UnaryExprContext ctx) { }
+	@Override public void enterUnaryExpr(MirMashParser.UnaryExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUnaryExpr(CPMirMashParser.UnaryExprContext ctx) { }
+	@Override public void exitUnaryExpr(MirMashParser.UnaryExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterForYieldExpr(CPMirMashParser.ForYieldExprContext ctx) { }
+	@Override public void enterForYieldExpr(MirMashParser.ForYieldExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitForYieldExpr(CPMirMashParser.ForYieldExprContext ctx) { }
+	@Override public void exitForYieldExpr(MirMashParser.ForYieldExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompExpr(CPMirMashParser.CompExprContext ctx) { }
+	@Override public void enterCompExpr(MirMashParser.CompExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCompExpr(CPMirMashParser.CompExprContext ctx) { }
+	@Override public void exitCompExpr(MirMashParser.CompExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIfExpr(CPMirMashParser.IfExprContext ctx) { }
+	@Override public void enterIfExpr(MirMashParser.IfExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIfExpr(CPMirMashParser.IfExprContext ctx) { }
+	@Override public void exitIfExpr(MirMashParser.IfExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMultDivModExpr(CPMirMashParser.MultDivModExprContext ctx) { }
+	@Override public void enterMultDivModExpr(MirMashParser.MultDivModExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMultDivModExpr(CPMirMashParser.MultDivModExprContext ctx) { }
+	@Override public void exitMultDivModExpr(MirMashParser.MultDivModExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAndOrExpr(CPMirMashParser.AndOrExprContext ctx) { }
+	@Override public void enterAndOrExpr(MirMashParser.AndOrExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAndOrExpr(CPMirMashParser.AndOrExprContext ctx) { }
+	@Override public void exitAndOrExpr(MirMashParser.AndOrExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCallExpr(CPMirMashParser.CallExprContext ctx) { }
+	@Override public void enterCallExpr(MirMashParser.CallExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCallExpr(CPMirMashParser.CallExprContext ctx) { }
+	@Override public void exitCallExpr(MirMashParser.CallExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterListExpr(CPMirMashParser.ListExprContext ctx) { }
+	@Override public void enterListExpr(MirMashParser.ListExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListExpr(CPMirMashParser.ListExprContext ctx) { }
+	@Override public void exitListExpr(MirMashParser.ListExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEqNeqExpr(CPMirMashParser.EqNeqExprContext ctx) { }
+	@Override public void enterEqNeqExpr(MirMashParser.EqNeqExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEqNeqExpr(CPMirMashParser.EqNeqExprContext ctx) { }
+	@Override public void exitEqNeqExpr(MirMashParser.EqNeqExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterListItems(CPMirMashParser.ListItemsContext ctx) { }
+	@Override public void enterListItems(MirMashParser.ListItemsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListItems(CPMirMashParser.ListItemsContext ctx) { }
+	@Override public void exitListItems(MirMashParser.ListItemsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMapItem(CPMirMashParser.MapItemContext ctx) { }
+	@Override public void enterMapItem(MirMashParser.MapItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMapItem(CPMirMashParser.MapItemContext ctx) { }
+	@Override public void exitMapItem(MirMashParser.MapItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMapItems(CPMirMashParser.MapItemsContext ctx) { }
+	@Override public void enterMapItems(MirMashParser.MapItemsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMapItems(CPMirMashParser.MapItemsContext ctx) { }
+	@Override public void exitMapItems(MirMashParser.MapItemsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompoundExpr(CPMirMashParser.CompoundExprContext ctx) { }
+	@Override public void enterCompoundExpr(MirMashParser.CompoundExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCompoundExpr(CPMirMashParser.CompoundExprContext ctx) { }
+	@Override public void exitCompoundExpr(MirMashParser.CompoundExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCallParamList(CPMirMashParser.CallParamListContext ctx) { }
+	@Override public void enterCallParamList(MirMashParser.CallParamListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCallParamList(CPMirMashParser.CallParamListContext ctx) { }
+	@Override public void exitCallParamList(MirMashParser.CallParamListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterKeyAccess(CPMirMashParser.KeyAccessContext ctx) { }
+	@Override public void enterKeyAccess(MirMashParser.KeyAccessContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitKeyAccess(CPMirMashParser.KeyAccessContext ctx) { }
+	@Override public void exitKeyAccess(MirMashParser.KeyAccessContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAtom(CPMirMashParser.AtomContext ctx) { }
+	@Override public void enterAtom(MirMashParser.AtomContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAtom(CPMirMashParser.AtomContext ctx) { }
+	@Override public void exitAtom(MirMashParser.AtomContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterQstring(CPMirMashParser.QstringContext ctx) { }
+	@Override public void enterQstring(MirMashParser.QstringContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitQstring(CPMirMashParser.QstringContext ctx) { }
+	@Override public void exitQstring(MirMashParser.QstringContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -1,4 +1,4 @@
-// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/CPMirMash.g4 by ANTLR 4.10.1
+// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/MirMash.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.mash.compiler.antlr4;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class CPMirMashLexer extends Lexer {
+public class MirMashLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -103,13 +103,13 @@ public class CPMirMashLexer extends Lexer {
 	}
 
 
-	public CPMirMashLexer(CharStream input) {
+	public MirMashLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "CPMirMash.g4"; }
+	public String getGrammarFileName() { return "MirMash.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

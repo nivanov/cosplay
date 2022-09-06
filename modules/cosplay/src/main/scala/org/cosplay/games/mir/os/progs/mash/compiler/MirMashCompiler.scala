@@ -54,7 +54,7 @@ class MirMashCompiler:
       * @param code
       * @param origin
       */
-    private class FiniteStateMachine(code: String, origin: String) extends CPMirMashBaseListener
+    private class FiniteStateMachine(code: String, origin: String) extends MirMashBaseListener
 
     /**
       *
@@ -167,9 +167,9 @@ class MirMashCompiler:
       * @param code
       * @param origin
       */
-    private def antlr4Setup(code: String, origin: String): (FiniteStateMachine, CPMirMashParser) =
-        val lexer = new CPMirMashLexer(CharStreams.fromString(code, origin))
-        val parser = new CPMirMashParser(new CommonTokenStream(lexer))
+    private def antlr4Setup(code: String, origin: String): (FiniteStateMachine, MirMashParser) =
+        val lexer = new MirMashLexer(CharStreams.fromString(code, origin))
+        val parser = new MirMashParser(new CommonTokenStream(lexer))
 
         // Set custom error handlers.
         lexer.removeErrorListeners()

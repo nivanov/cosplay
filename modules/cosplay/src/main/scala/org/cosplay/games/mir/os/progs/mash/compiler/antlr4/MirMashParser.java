@@ -1,4 +1,4 @@
-// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/CPMirMash.g4 by ANTLR 4.10.1
+// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/MirMash.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.mash.compiler.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class CPMirMashParser extends Parser {
+public class MirMashParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -101,7 +101,7 @@ public class CPMirMashParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "CPMirMash.g4"; }
+	public String getGrammarFileName() { return "MirMash.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -112,7 +112,7 @@ public class CPMirMashParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public CPMirMashParser(TokenStream input) {
+	public MirMashParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -121,23 +121,18 @@ public class CPMirMashParser extends Parser {
 		public DeclsContext decls() {
 			return getRuleContext(DeclsContext.class,0);
 		}
-		public TerminalNode EOF() { return getToken(CPMirMashParser.EOF, 0); }
+		public TerminalNode EOF() { return getToken(MirMashParser.EOF, 0); }
 		public MashContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_mash; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterMash(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterMash(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitMash(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitMash(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitMash(this);
 		}
 	}
 
@@ -177,16 +172,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_decls; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterDecls(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterDecls(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitDecls(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitDecls(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitDecls(this);
 		}
 	}
 
@@ -285,16 +275,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_decl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitDecl(this);
 		}
 	}
 
@@ -396,23 +381,18 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class DelDeclContext extends ParserRuleContext {
-		public TerminalNode SCOL() { return getToken(CPMirMashParser.SCOL, 0); }
+		public TerminalNode SCOL() { return getToken(MirMashParser.SCOL, 0); }
 		public DelDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_delDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterDelDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterDelDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitDelDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitDelDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitDelDecl(this);
 		}
 	}
 
@@ -438,8 +418,8 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class AssignDeclContext extends ParserRuleContext {
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode ASSIGN() { return getToken(CPMirMashParser.ASSIGN, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode ASSIGN() { return getToken(MirMashParser.ASSIGN, 0); }
 		public CompoundExprContext compoundExpr() {
 			return getRuleContext(CompoundExprContext.class,0);
 		}
@@ -449,16 +429,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_assignDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterAssignDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterAssignDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitAssignDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitAssignDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitAssignDecl(this);
 		}
 	}
 
@@ -491,23 +466,18 @@ public class CPMirMashParser extends Parser {
 		public PrgListContext prgList() {
 			return getRuleContext(PrgListContext.class,0);
 		}
-		public TerminalNode AMP() { return getToken(CPMirMashParser.AMP, 0); }
+		public TerminalNode AMP() { return getToken(MirMashParser.AMP, 0); }
 		public PipelineDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_pipelineDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterPipelineDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterPipelineDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitPipelineDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitPipelineDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitPipelineDecl(this);
 		}
 	}
 
@@ -558,16 +528,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_prgList; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterPrgList(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterPrgList(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitPrgList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitPrgList(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitPrgList(this);
 		}
 	}
 
@@ -629,7 +594,7 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class PrgContext extends ParserRuleContext {
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
 		public ArgListContext argList() {
 			return getRuleContext(ArgListContext.class,0);
 		}
@@ -639,16 +604,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_prg; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterPrg(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterPrg(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitPrg(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitPrg(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitPrg(this);
 		}
 	}
 
@@ -684,7 +644,7 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class ArgContext extends ParserRuleContext {
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
 		public QstringContext qstring() {
 			return getRuleContext(QstringContext.class,0);
 		}
@@ -694,16 +654,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_arg; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterArg(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterArg(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitArg(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitArg(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitArg(this);
 		}
 	}
 
@@ -758,16 +713,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_argList; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterArgList(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterArgList(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitArgList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitArgList(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitArgList(this);
 		}
 	}
 
@@ -827,25 +777,20 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class PipeOpContext extends ParserRuleContext {
-		public TerminalNode VERT() { return getToken(CPMirMashParser.VERT, 0); }
-		public TerminalNode GT() { return getToken(CPMirMashParser.GT, 0); }
-		public TerminalNode APPEND_FILE() { return getToken(CPMirMashParser.APPEND_FILE, 0); }
+		public TerminalNode VERT() { return getToken(MirMashParser.VERT, 0); }
+		public TerminalNode GT() { return getToken(MirMashParser.GT, 0); }
+		public TerminalNode APPEND_FILE() { return getToken(MirMashParser.APPEND_FILE, 0); }
 		public PipeOpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_pipeOp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterPipeOp(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterPipeOp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitPipeOp(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitPipeOp(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitPipeOp(this);
 		}
 	}
 
@@ -880,9 +825,9 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class AliasDeclContext extends ParserRuleContext {
-		public TerminalNode ALIAS() { return getToken(CPMirMashParser.ALIAS, 0); }
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode ASSIGN() { return getToken(CPMirMashParser.ASSIGN, 0); }
+		public TerminalNode ALIAS() { return getToken(MirMashParser.ALIAS, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode ASSIGN() { return getToken(MirMashParser.ASSIGN, 0); }
 		public QstringContext qstring() {
 			return getRuleContext(QstringContext.class,0);
 		}
@@ -892,16 +837,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_aliasDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterAliasDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterAliasDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitAliasDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitAliasDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitAliasDecl(this);
 		}
 	}
 
@@ -933,9 +873,9 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class ValDeclContext extends ParserRuleContext {
-		public TerminalNode VAL() { return getToken(CPMirMashParser.VAL, 0); }
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode ASSIGN() { return getToken(CPMirMashParser.ASSIGN, 0); }
+		public TerminalNode VAL() { return getToken(MirMashParser.VAL, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode ASSIGN() { return getToken(MirMashParser.ASSIGN, 0); }
 		public CompoundExprContext compoundExpr() {
 			return getRuleContext(CompoundExprContext.class,0);
 		}
@@ -945,16 +885,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_valDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterValDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterValDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitValDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitValDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitValDecl(this);
 		}
 	}
 
@@ -986,9 +921,9 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class VarDeclContext extends ParserRuleContext {
-		public TerminalNode VAR() { return getToken(CPMirMashParser.VAR, 0); }
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode ASSIGN() { return getToken(CPMirMashParser.ASSIGN, 0); }
+		public TerminalNode VAR() { return getToken(MirMashParser.VAR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode ASSIGN() { return getToken(MirMashParser.ASSIGN, 0); }
 		public CompoundExprContext compoundExpr() {
 			return getRuleContext(CompoundExprContext.class,0);
 		}
@@ -998,16 +933,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_varDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterVarDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterVarDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitVarDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitVarDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitVarDecl(this);
 		}
 	}
 
@@ -1039,11 +969,11 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class DefDeclContext extends ParserRuleContext {
-		public TerminalNode DEF() { return getToken(CPMirMashParser.DEF, 0); }
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode LPAR() { return getToken(CPMirMashParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(CPMirMashParser.RPAR, 0); }
-		public TerminalNode ASSIGN() { return getToken(CPMirMashParser.ASSIGN, 0); }
+		public TerminalNode DEF() { return getToken(MirMashParser.DEF, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode LPAR() { return getToken(MirMashParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(MirMashParser.RPAR, 0); }
+		public TerminalNode ASSIGN() { return getToken(MirMashParser.ASSIGN, 0); }
 		public CompoundExprContext compoundExpr() {
 			return getRuleContext(CompoundExprContext.class,0);
 		}
@@ -1056,16 +986,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_defDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterDefDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterDefDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitDefDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitDefDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitDefDecl(this);
 		}
 	}
 
@@ -1112,11 +1037,11 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class NativeDefDeclContext extends ParserRuleContext {
-		public TerminalNode NATIVE() { return getToken(CPMirMashParser.NATIVE, 0); }
-		public TerminalNode DEF() { return getToken(CPMirMashParser.DEF, 0); }
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode LPAR() { return getToken(CPMirMashParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(CPMirMashParser.RPAR, 0); }
+		public TerminalNode NATIVE() { return getToken(MirMashParser.NATIVE, 0); }
+		public TerminalNode DEF() { return getToken(MirMashParser.DEF, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode LPAR() { return getToken(MirMashParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(MirMashParser.RPAR, 0); }
 		public FunParamListContext funParamList() {
 			return getRuleContext(FunParamListContext.class,0);
 		}
@@ -1126,16 +1051,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_nativeDefDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterNativeDefDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterNativeDefDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitNativeDefDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitNativeDefDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitNativeDefDecl(this);
 		}
 	}
 
@@ -1180,11 +1100,11 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class WhileDeclContext extends ParserRuleContext {
-		public TerminalNode WHILE() { return getToken(CPMirMashParser.WHILE, 0); }
+		public TerminalNode WHILE() { return getToken(MirMashParser.WHILE, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode DO() { return getToken(CPMirMashParser.DO, 0); }
+		public TerminalNode DO() { return getToken(MirMashParser.DO, 0); }
 		public CompoundExprContext compoundExpr() {
 			return getRuleContext(CompoundExprContext.class,0);
 		}
@@ -1194,16 +1114,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_whileDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterWhileDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterWhileDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitWhileDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitWhileDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitWhileDecl(this);
 		}
 	}
 
@@ -1235,13 +1150,13 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class ForDeclContext extends ParserRuleContext {
-		public TerminalNode FOR() { return getToken(CPMirMashParser.FOR, 0); }
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode IN() { return getToken(CPMirMashParser.IN, 0); }
+		public TerminalNode FOR() { return getToken(MirMashParser.FOR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode IN() { return getToken(MirMashParser.IN, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode DO() { return getToken(CPMirMashParser.DO, 0); }
+		public TerminalNode DO() { return getToken(MirMashParser.DO, 0); }
 		public CompoundExprContext compoundExpr() {
 			return getRuleContext(CompoundExprContext.class,0);
 		}
@@ -1251,16 +1166,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_forDecl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterForDecl(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterForDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitForDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitForDecl(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitForDecl(this);
 		}
 	}
 
@@ -1296,27 +1206,22 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class FunParamListContext extends ParserRuleContext {
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
 		public FunParamListContext funParamList() {
 			return getRuleContext(FunParamListContext.class,0);
 		}
-		public TerminalNode COMMA() { return getToken(CPMirMashParser.COMMA, 0); }
+		public TerminalNode COMMA() { return getToken(MirMashParser.COMMA, 0); }
 		public FunParamListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_funParamList; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterFunParamList(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterFunParamList(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitFunParamList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitFunParamList(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitFunParamList(this);
 		}
 	}
 
@@ -1389,9 +1294,9 @@ public class CPMirMashParser extends Parser {
 		}
 	}
 	public static class FpCallExprContext extends ExprContext {
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode LPAR() { return getToken(CPMirMashParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(CPMirMashParser.RPAR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode LPAR() { return getToken(MirMashParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(MirMashParser.RPAR, 0); }
 		public List<KeyAccessContext> keyAccess() {
 			return getRuleContexts(KeyAccessContext.class);
 		}
@@ -1404,16 +1309,11 @@ public class CPMirMashParser extends Parser {
 		public FpCallExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterFpCallExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterFpCallExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitFpCallExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitFpCallExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitFpCallExpr(this);
 		}
 	}
 	public static class ModExprContext extends ExprContext {
@@ -1423,24 +1323,19 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode MOD() { return getToken(CPMirMashParser.MOD, 0); }
+		public TerminalNode MOD() { return getToken(MirMashParser.MOD, 0); }
 		public ModExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterModExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterModExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitModExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitModExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitModExpr(this);
 		}
 	}
 	public static class VarAccessExprContext extends ExprContext {
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
 		public List<KeyAccessContext> keyAccess() {
 			return getRuleContexts(KeyAccessContext.class);
 		}
@@ -1450,16 +1345,11 @@ public class CPMirMashParser extends Parser {
 		public VarAccessExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterVarAccessExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterVarAccessExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitVarAccessExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitVarAccessExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitVarAccessExpr(this);
 		}
 	}
 	public static class PlusMinusExprContext extends ExprContext {
@@ -1470,49 +1360,39 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode PLUS() { return getToken(CPMirMashParser.PLUS, 0); }
-		public TerminalNode MINUS() { return getToken(CPMirMashParser.MINUS, 0); }
+		public TerminalNode PLUS() { return getToken(MirMashParser.PLUS, 0); }
+		public TerminalNode MINUS() { return getToken(MirMashParser.MINUS, 0); }
 		public PlusMinusExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterPlusMinusExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterPlusMinusExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitPlusMinusExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitPlusMinusExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitPlusMinusExpr(this);
 		}
 	}
 	public static class MapExprContext extends ExprContext {
-		public TerminalNode TILDA() { return getToken(CPMirMashParser.TILDA, 0); }
-		public TerminalNode LPAR() { return getToken(CPMirMashParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(CPMirMashParser.RPAR, 0); }
+		public TerminalNode TILDA() { return getToken(MirMashParser.TILDA, 0); }
+		public TerminalNode LPAR() { return getToken(MirMashParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(MirMashParser.RPAR, 0); }
 		public MapItemsContext mapItems() {
 			return getRuleContext(MapItemsContext.class,0);
 		}
 		public MapExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterMapExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterMapExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitMapExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitMapExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitMapExpr(this);
 		}
 	}
 	public static class PipelineExecExprContext extends ExprContext {
-		public List<TerminalNode> BQUOTE() { return getTokens(CPMirMashParser.BQUOTE); }
+		public List<TerminalNode> BQUOTE() { return getTokens(MirMashParser.BQUOTE); }
 		public TerminalNode BQUOTE(int i) {
-			return getToken(CPMirMashParser.BQUOTE, i);
+			return getToken(MirMashParser.BQUOTE, i);
 		}
 		public PipelineDeclContext pipelineDecl() {
 			return getRuleContext(PipelineDeclContext.class,0);
@@ -1520,16 +1400,11 @@ public class CPMirMashParser extends Parser {
 		public PipelineExecExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterPipelineExecExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterPipelineExecExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitPipelineExecExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitPipelineExecExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitPipelineExecExpr(this);
 		}
 	}
 	public static class AtomExprContext extends ExprContext {
@@ -1539,22 +1414,17 @@ public class CPMirMashParser extends Parser {
 		public AtomExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterAtomExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterAtomExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitAtomExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitAtomExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitAtomExpr(this);
 		}
 	}
 	public static class AnonDefExprContext extends ExprContext {
-		public TerminalNode LPAR() { return getToken(CPMirMashParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(CPMirMashParser.RPAR, 0); }
-		public TerminalNode ANON_DEF() { return getToken(CPMirMashParser.ANON_DEF, 0); }
+		public TerminalNode LPAR() { return getToken(MirMashParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(MirMashParser.RPAR, 0); }
+		public TerminalNode ANON_DEF() { return getToken(MirMashParser.ANON_DEF, 0); }
 		public CompoundExprContext compoundExpr() {
 			return getRuleContext(CompoundExprContext.class,0);
 		}
@@ -1564,37 +1434,27 @@ public class CPMirMashParser extends Parser {
 		public AnonDefExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterAnonDefExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterAnonDefExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitAnonDefExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitAnonDefExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitAnonDefExpr(this);
 		}
 	}
 	public static class ParExprContext extends ExprContext {
-		public TerminalNode LPAR() { return getToken(CPMirMashParser.LPAR, 0); }
+		public TerminalNode LPAR() { return getToken(MirMashParser.LPAR, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode RPAR() { return getToken(CPMirMashParser.RPAR, 0); }
+		public TerminalNode RPAR() { return getToken(MirMashParser.RPAR, 0); }
 		public ParExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterParExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterParExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitParExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitParExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitParExpr(this);
 		}
 	}
 	public static class UnaryExprContext extends ExprContext {
@@ -1602,47 +1462,37 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode MINUS() { return getToken(CPMirMashParser.MINUS, 0); }
-		public TerminalNode NOT() { return getToken(CPMirMashParser.NOT, 0); }
+		public TerminalNode MINUS() { return getToken(MirMashParser.MINUS, 0); }
+		public TerminalNode NOT() { return getToken(MirMashParser.NOT, 0); }
 		public UnaryExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterUnaryExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterUnaryExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitUnaryExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitUnaryExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitUnaryExpr(this);
 		}
 	}
 	public static class ForYieldExprContext extends ExprContext {
-		public TerminalNode FOR() { return getToken(CPMirMashParser.FOR, 0); }
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode IN() { return getToken(CPMirMashParser.IN, 0); }
+		public TerminalNode FOR() { return getToken(MirMashParser.FOR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode IN() { return getToken(MirMashParser.IN, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode YIELD() { return getToken(CPMirMashParser.YIELD, 0); }
+		public TerminalNode YIELD() { return getToken(MirMashParser.YIELD, 0); }
 		public CompoundExprContext compoundExpr() {
 			return getRuleContext(CompoundExprContext.class,0);
 		}
 		public ForYieldExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterForYieldExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterForYieldExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitForYieldExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitForYieldExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitForYieldExpr(this);
 		}
 	}
 	public static class CompExprContext extends ExprContext {
@@ -1653,51 +1503,41 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode LTEQ() { return getToken(CPMirMashParser.LTEQ, 0); }
-		public TerminalNode GTEQ() { return getToken(CPMirMashParser.GTEQ, 0); }
-		public TerminalNode LT() { return getToken(CPMirMashParser.LT, 0); }
-		public TerminalNode GT() { return getToken(CPMirMashParser.GT, 0); }
+		public TerminalNode LTEQ() { return getToken(MirMashParser.LTEQ, 0); }
+		public TerminalNode GTEQ() { return getToken(MirMashParser.GTEQ, 0); }
+		public TerminalNode LT() { return getToken(MirMashParser.LT, 0); }
+		public TerminalNode GT() { return getToken(MirMashParser.GT, 0); }
 		public CompExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterCompExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterCompExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitCompExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitCompExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitCompExpr(this);
 		}
 	}
 	public static class IfExprContext extends ExprContext {
-		public TerminalNode IF() { return getToken(CPMirMashParser.IF, 0); }
+		public TerminalNode IF() { return getToken(MirMashParser.IF, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode THEN() { return getToken(CPMirMashParser.THEN, 0); }
+		public TerminalNode THEN() { return getToken(MirMashParser.THEN, 0); }
 		public List<CompoundExprContext> compoundExpr() {
 			return getRuleContexts(CompoundExprContext.class);
 		}
 		public CompoundExprContext compoundExpr(int i) {
 			return getRuleContext(CompoundExprContext.class,i);
 		}
-		public TerminalNode ELSE() { return getToken(CPMirMashParser.ELSE, 0); }
+		public TerminalNode ELSE() { return getToken(MirMashParser.ELSE, 0); }
 		public IfExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterIfExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterIfExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitIfExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitIfExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitIfExpr(this);
 		}
 	}
 	public static class MultDivModExprContext extends ExprContext {
@@ -1708,22 +1548,17 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode MULT() { return getToken(CPMirMashParser.MULT, 0); }
-		public TerminalNode DIV() { return getToken(CPMirMashParser.DIV, 0); }
-		public TerminalNode MOD() { return getToken(CPMirMashParser.MOD, 0); }
+		public TerminalNode MULT() { return getToken(MirMashParser.MULT, 0); }
+		public TerminalNode DIV() { return getToken(MirMashParser.DIV, 0); }
+		public TerminalNode MOD() { return getToken(MirMashParser.MOD, 0); }
 		public MultDivModExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterMultDivModExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterMultDivModExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitMultDivModExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitMultDivModExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitMultDivModExpr(this);
 		}
 	}
 	public static class AndOrExprContext extends ExprContext {
@@ -1734,64 +1569,49 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode AND() { return getToken(CPMirMashParser.AND, 0); }
-		public TerminalNode OR() { return getToken(CPMirMashParser.OR, 0); }
+		public TerminalNode AND() { return getToken(MirMashParser.AND, 0); }
+		public TerminalNode OR() { return getToken(MirMashParser.OR, 0); }
 		public AndOrExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterAndOrExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterAndOrExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitAndOrExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitAndOrExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitAndOrExpr(this);
 		}
 	}
 	public static class CallExprContext extends ExprContext {
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
-		public TerminalNode LPAR() { return getToken(CPMirMashParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(CPMirMashParser.RPAR, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
+		public TerminalNode LPAR() { return getToken(MirMashParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(MirMashParser.RPAR, 0); }
 		public CallParamListContext callParamList() {
 			return getRuleContext(CallParamListContext.class,0);
 		}
 		public CallExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterCallExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterCallExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitCallExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitCallExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitCallExpr(this);
 		}
 	}
 	public static class ListExprContext extends ExprContext {
-		public TerminalNode LPAR() { return getToken(CPMirMashParser.LPAR, 0); }
-		public TerminalNode RPAR() { return getToken(CPMirMashParser.RPAR, 0); }
+		public TerminalNode LPAR() { return getToken(MirMashParser.LPAR, 0); }
+		public TerminalNode RPAR() { return getToken(MirMashParser.RPAR, 0); }
 		public ListItemsContext listItems() {
 			return getRuleContext(ListItemsContext.class,0);
 		}
 		public ListExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterListExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterListExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitListExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitListExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitListExpr(this);
 		}
 	}
 	public static class EqNeqExprContext extends ExprContext {
@@ -1802,21 +1622,16 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode EQ() { return getToken(CPMirMashParser.EQ, 0); }
-		public TerminalNode NEQ() { return getToken(CPMirMashParser.NEQ, 0); }
+		public TerminalNode EQ() { return getToken(MirMashParser.EQ, 0); }
+		public TerminalNode NEQ() { return getToken(MirMashParser.NEQ, 0); }
 		public EqNeqExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterEqNeqExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterEqNeqExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitEqNeqExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitEqNeqExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitEqNeqExpr(this);
 		}
 	}
 
@@ -2252,23 +2067,18 @@ public class CPMirMashParser extends Parser {
 		public ListItemsContext listItems() {
 			return getRuleContext(ListItemsContext.class,0);
 		}
-		public TerminalNode COMMA() { return getToken(CPMirMashParser.COMMA, 0); }
+		public TerminalNode COMMA() { return getToken(MirMashParser.COMMA, 0); }
 		public ListItemsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_listItems; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterListItems(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterListItems(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitListItems(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitListItems(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitListItems(this);
 		}
 	}
 
@@ -2336,23 +2146,18 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode ASSOC() { return getToken(CPMirMashParser.ASSOC, 0); }
+		public TerminalNode ASSOC() { return getToken(MirMashParser.ASSOC, 0); }
 		public MapItemContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_mapItem; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterMapItem(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterMapItem(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitMapItem(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitMapItem(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitMapItem(this);
 		}
 	}
 
@@ -2388,23 +2193,18 @@ public class CPMirMashParser extends Parser {
 		public MapItemsContext mapItems() {
 			return getRuleContext(MapItemsContext.class,0);
 		}
-		public TerminalNode COMMA() { return getToken(CPMirMashParser.COMMA, 0); }
+		public TerminalNode COMMA() { return getToken(MirMashParser.COMMA, 0); }
 		public MapItemsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_mapItems; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterMapItems(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterMapItems(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitMapItems(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitMapItems(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitMapItems(this);
 		}
 	}
 
@@ -2472,8 +2272,8 @@ public class CPMirMashParser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public TerminalNode LBRACE() { return getToken(CPMirMashParser.LBRACE, 0); }
-		public TerminalNode RBRACE() { return getToken(CPMirMashParser.RBRACE, 0); }
+		public TerminalNode LBRACE() { return getToken(MirMashParser.LBRACE, 0); }
+		public TerminalNode RBRACE() { return getToken(MirMashParser.RBRACE, 0); }
 		public List<DeclContext> decl() {
 			return getRuleContexts(DeclContext.class);
 		}
@@ -2486,16 +2286,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_compoundExpr; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterCompoundExpr(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterCompoundExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitCompoundExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitCompoundExpr(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitCompoundExpr(this);
 		}
 	}
 
@@ -2582,23 +2377,18 @@ public class CPMirMashParser extends Parser {
 		public CallParamListContext callParamList() {
 			return getRuleContext(CallParamListContext.class,0);
 		}
-		public TerminalNode COMMA() { return getToken(CPMirMashParser.COMMA, 0); }
+		public TerminalNode COMMA() { return getToken(MirMashParser.COMMA, 0); }
 		public CallParamListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_callParamList; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterCallParamList(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterCallParamList(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitCallParamList(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitCallParamList(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitCallParamList(this);
 		}
 	}
 
@@ -2660,27 +2450,22 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class KeyAccessContext extends ParserRuleContext {
-		public TerminalNode LBR() { return getToken(CPMirMashParser.LBR, 0); }
+		public TerminalNode LBR() { return getToken(MirMashParser.LBR, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode RBR() { return getToken(CPMirMashParser.RBR, 0); }
+		public TerminalNode RBR() { return getToken(MirMashParser.RBR, 0); }
 		public KeyAccessContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_keyAccess; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterKeyAccess(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterKeyAccess(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitKeyAccess(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitKeyAccess(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitKeyAccess(this);
 		}
 	}
 
@@ -2710,9 +2495,9 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class AtomContext extends ParserRuleContext {
-		public TerminalNode NULL() { return getToken(CPMirMashParser.NULL, 0); }
-		public TerminalNode BOOL() { return getToken(CPMirMashParser.BOOL, 0); }
-		public TerminalNode STR() { return getToken(CPMirMashParser.STR, 0); }
+		public TerminalNode NULL() { return getToken(MirMashParser.NULL, 0); }
+		public TerminalNode BOOL() { return getToken(MirMashParser.BOOL, 0); }
+		public TerminalNode STR() { return getToken(MirMashParser.STR, 0); }
 		public QstringContext qstring() {
 			return getRuleContext(QstringContext.class,0);
 		}
@@ -2722,16 +2507,11 @@ public class CPMirMashParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_atom; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterAtom(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterAtom(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitAtom(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitAtom(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitAtom(this);
 		}
 	}
 
@@ -2787,24 +2567,19 @@ public class CPMirMashParser extends Parser {
 	}
 
 	public static class QstringContext extends ParserRuleContext {
-		public TerminalNode SQSTRING() { return getToken(CPMirMashParser.SQSTRING, 0); }
-		public TerminalNode DQSTRING() { return getToken(CPMirMashParser.DQSTRING, 0); }
+		public TerminalNode SQSTRING() { return getToken(MirMashParser.SQSTRING, 0); }
+		public TerminalNode DQSTRING() { return getToken(MirMashParser.DQSTRING, 0); }
 		public QstringContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_qstring; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).enterQstring(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).enterQstring(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPMirMashListener ) ((CPMirMashListener)listener).exitQstring(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CPMirMashVisitor ) return ((CPMirMashVisitor<? extends T>)visitor).visitQstring(this);
-			else return visitor.visitChildren(this);
+			if ( listener instanceof MirMashListener ) ((MirMashListener)listener).exitQstring(this);
 		}
 	}
 
