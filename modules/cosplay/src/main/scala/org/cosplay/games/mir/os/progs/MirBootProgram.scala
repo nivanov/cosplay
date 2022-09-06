@@ -33,13 +33,13 @@ package org.cosplay.games.mir.os.progs
 import org.cosplay.*
 import games.mir.*
 import os.*
-import CPMirConsole.*
+import MirConsole.*
 
 /**
   *
   */
-class MirBootProgram extends CPMirExecutable:
-    override def mainEntry(ctx: CPMirExecutableContext): Int =
+class MirBootProgram extends MirExecutable:
+    override def mainEntry(ctx: MirExecutableContext): Int =
         val boot =
             s"""Award Modular BIOS v4.50G, An Energy Star Ally
             |Copyright (C) 1984-92, Award Software, Inc.
@@ -48,8 +48,8 @@ class MirBootProgram extends CPMirExecutable:
             |64MB memory
             |
             |Starting MirX...
-            |Runtime system initialized: ${CPMirRuntime.THREAD_POOL_SIZE} threads
-            |System clock synchronized: ${CPMirClock.formatNowTimeDate()}
+            |Runtime system initialized: ${MirRuntime.THREAD_POOL_SIZE} threads
+            |System clock synchronized: ${MirClock.formatNowTimeDate()}
             |""".stripMargin
 
         val logo = s"""
@@ -62,7 +62,7 @@ class MirBootProgram extends CPMirExecutable:
             || 88 \\/  | 88| 88| 88     | 88  \\ 88
             ||__/     |__/|__/|__/     |__/  |__/
             |
-            |ver ${CPMirOs.VERSION}, Dec 12, 1993
+            |ver ${MirOs.VERSION}, Dec 12, 1993
             |Copyright (C) 1991-94, RCS "Energia", Russia
             |""".
         stripMargin

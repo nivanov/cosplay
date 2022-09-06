@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -32,8 +30,32 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
                ALl rights reserved.
 */
 
+import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.*
+import org.cosplay.games.mir.os.MirFileType.*
+
 /**
   *
+  * @param name Name of file (not including its path).
+  * @param owner User owner of this file.
+  * @param exe Executable program.
+  * @param otherAcs Can others read or execute. Owner can do anything.
+  * @param otherMod Can others change or delete. Owner can do anything.
+  * @param initMs Initial creation and update timestamp. Defaults to the current time.
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+class MirExecutableFile(
+    name: String,
+    owner: MirUser,
+    parent: MirDirectoryFile,
+    exe: MirExecutable,
+    otherAcs: Boolean,
+    otherMod: Boolean,
+    initMs: Long = MirClock.now()
+) extends MirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod, initMs):
+    setSize(exe.getSizeOnDisk)
+
+    /**
+      *
+      */
+    def getExec: MirExecutable = exe
 

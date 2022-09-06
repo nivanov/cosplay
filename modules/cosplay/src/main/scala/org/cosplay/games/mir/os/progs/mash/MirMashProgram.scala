@@ -37,11 +37,11 @@ import games.mir.os.*
 /**
   *
   */
-class MirMashProgram extends CPMirExecutable:
+class MirMashProgram extends MirExecutable:
     private val sz = CPRand.between(3000.kb, 10000.kb)
 
     override def getSizeOnDisk: Long = sz
-    override def mainEntry(ctx: CPMirExecutableContext): Int =
+    override def mainEntry(ctx: MirExecutableContext): Int =
         val state = initState(ctx)
 
         0
@@ -50,7 +50,7 @@ class MirMashProgram extends CPMirExecutable:
       *
       * @param ctx
       */
-    private def initState(ctx: CPMirExecutableContext): MirMashState =
+    private def initState(ctx: MirExecutableContext): MirMashState =
         val state = new MirMashState()
 
         // Default & well-known Unix environment variables.

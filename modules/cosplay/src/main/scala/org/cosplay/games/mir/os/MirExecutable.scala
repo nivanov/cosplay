@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
+package org.cosplay.games.mir.os
 
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+import org.cosplay.CPRand
 
 /*
    _________            ______________
@@ -32,8 +32,23 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
                ALl rights reserved.
 */
 
+import org.cosplay.*
+import games.mir.*
+
 /**
   *
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+abstract class MirExecutable extends Serializable:
+    private val sz = CPRand.between(10.kb, 50.kb)
+
+    /**
+      *
+      * @param ctx
+      */
+    def mainEntry(ctx: MirExecutableContext): Int
+
+    /**
+      *
+      */
+    def getSizeOnDisk: Long = sz
 

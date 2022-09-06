@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -32,8 +30,82 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
                ALl rights reserved.
 */
 
-/**
-  *
-  */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+trait MirProcess:
+    /**
+      *
+      */
+    def getOwner: MirUser
+
+    /**
+      *
+      */
+    def getPid: Long
+
+    /**
+      *
+      */
+    def getParent: Option[MirProcess]
+
+    /**
+      *
+      */
+    def getProgramFile: MirExecutableFile
+
+    /**
+      *
+      */
+    def getWorkingDirectory: MirDirectoryFile
+
+    /**
+      *
+      */
+    def getArguments: Seq[String]
+
+    /**
+      *
+      */
+    def getSubmitTime: Long
+
+    /**
+      *
+      */
+    def getStartTime: Long
+
+    /**
+      *
+      * @return
+      */
+    def getFinishTime: Long
+
+    /**
+      *
+      */
+    def isRunning: Boolean = !isQueued && !isDone
+
+    /**
+      *
+      */
+    def isQueued: Boolean
+
+    /**
+      *
+      */
+    def isDone: Boolean
+
+    /**
+      *
+      */
+    def isKilled: Boolean
+
+    /**
+      * Gets exit code.
+      *
+      * @param ms
+      */
+    def exitCode(ms: Long = Long.MaxValue): Option[Int]
+
+    /**
+      *
+      */
+    def kill(): Boolean
 

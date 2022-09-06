@@ -15,9 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
+package org.cosplay.games.mir.scenes
 
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+import org.cosplay.*
+import games.mir.*
+import os.*
+import sprites.*
 
 /*
    _________            ______________
@@ -35,5 +38,21 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
 /**
   *
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+object MirMainScene extends MirCrtSceneBase("main", "bg5.wav"):
+    private val conSpr = MirConsoleSprite()
+    private val bootupSnd = CPSound(s"$SND_HOME/bootup.wav")
+
+    addObjects(
+        conSpr,
+        // Add full-screen shaders - order is important.
+        new CPOffScreenSprite(shaders = Seq(crtShdr, fadeInShdr, fadeOutShdr))
+    )
+
+    override def onStart(): Unit =
+        super.onStart()
+        bootupSnd.play()
+        stateMgr.state.os.bootUp(conSpr)
+
+
+
 

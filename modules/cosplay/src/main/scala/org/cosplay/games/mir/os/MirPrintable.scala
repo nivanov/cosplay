@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -32,8 +30,24 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
                ALl rights reserved.
 */
 
-/**
-  *
-  */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+trait MirPrintable:
+    /**
+      *
+      * @param x
+      */
+    def println(x: Any = ""): Unit = print(s"$x\n")
+
+    /**
+      *
+      * @param x
+      */
+    def print(x: Any): Unit
+
+    /**
+      *
+      * @param text
+      * @param args
+      */
+    def printf(text: String, args: Any*): Unit = print(text.format(args))
+
 

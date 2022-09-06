@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -32,8 +30,28 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
                ALl rights reserved.
 */
 
+import MirFileType.*
+import org.cosplay.*
+
+/**
+  *
+  * @param root Root directory.
+  */
+@SerialVersionUID(1_0_0L)
+class MirFileSystem(val root: MirDirectoryFile) extends MirFileDirectory with Serializable:
+    require(root.getOwner.isRoot)
+    require(root.getName.isBlank)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def file[T <: MirFile](path: String): Option[T] = root.file(path)
+
 /**
   *
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+object MirFileSystem:
+    final val PATH_SEP = "/"
+    final val PATH_SEP_CHAR = '/'
 

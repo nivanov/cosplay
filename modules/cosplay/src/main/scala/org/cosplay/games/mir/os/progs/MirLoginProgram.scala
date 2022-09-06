@@ -18,7 +18,7 @@
 package org.cosplay.games.mir.os.progs
 
 import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.progs.CPMirLoginProgram.MIN_PWD_LEN
+import org.cosplay.games.mir.os.progs.MirLoginProgram.MIN_PWD_LEN
 import os.*
 
 /*
@@ -37,18 +37,18 @@ import os.*
 /**
   *
   */
-object CPMirLoginProgram:
+object MirLoginProgram:
     private final val MIN_PWD_LEN = 4
     private final val ERR_PREFIX = "  |-"
 
 /**
   *
   */
-class CPMirLoginProgram extends CPMirExecutable:
-    import CPMirLoginProgram.*
-    import CPMirConsole.*
+class MirLoginProgram extends MirExecutable:
+    import MirLoginProgram.*
+    import MirConsole.*
 
-    override def mainEntry(ctx: CPMirExecutableContext): Int =
+    override def mainEntry(ctx: MirExecutableContext): Int =
         val out = ctx.out
         val con = ctx.con
 
@@ -86,9 +86,9 @@ class CPMirLoginProgram extends CPMirExecutable:
 
         val lastLoginTstamp = stateMgr.state.lastLoginTstamp
 
-        stateMgr.state.lastLoginTstamp = CPMirClock.now()
+        stateMgr.state.lastLoginTstamp = MirClock.now()
 
-        con.println(s"Last login ${CPMirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
+        con.println(s"Last login ${MirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
         con.println(s"Welcome back, ${ply.crew.camelFirstName}.")
 
         0

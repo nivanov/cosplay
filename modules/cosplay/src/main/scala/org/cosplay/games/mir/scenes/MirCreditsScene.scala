@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
+package org.cosplay.games.mir.scenes
 
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+import org.cosplay.*
+import games.mir.*
 
 /*
    _________            ______________
@@ -33,7 +34,11 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
 */
 
 /**
-  *
+  * 
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+object MirCreditsScene  extends MirStarStreakSceneBase("credits", "bg1.wav"):
+    addObjects(
+        // Add full-screen shaders - order is important.
+        new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
+    )
 

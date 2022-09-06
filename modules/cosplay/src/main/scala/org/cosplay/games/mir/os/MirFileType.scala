@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -35,5 +33,17 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
 /**
   *
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+@SerialVersionUID(1_0_0L)
+enum MirFileType extends Serializable:
+    /** */
+    case FT_DIR
+
+    /** */
+    case FT_EXE
+
+    /** */
+    case FT_REG
+
+    /** */
+    case FT_DEV
 

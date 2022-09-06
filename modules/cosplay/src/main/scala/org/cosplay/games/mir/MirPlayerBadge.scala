@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+package org.cosplay.games.mir
 
 /*
    _________            ______________
@@ -33,7 +31,29 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
 */
 
 /**
-  *
+  * 
+  * @param name
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+@SerialVersionUID(1_0_0L)
+case class MirPlayerBadge(name: String) extends Serializable:
+    private var earnedMs = 0L
+    private var earned = false
+
+    /**
+      *
+      * @param earnedMs
+      */
+    def earn(earnedMs: Long): Unit =
+        earned = true
+        this.earnedMs = earnedMs
+
+    /**
+      *
+      */
+    def isEarned: Boolean = earned
+
+    /**
+      *
+      */
+    def getEarnedMs: Long = earnedMs
 

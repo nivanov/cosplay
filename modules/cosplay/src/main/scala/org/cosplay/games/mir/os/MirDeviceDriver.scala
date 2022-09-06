@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -32,8 +30,9 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
                ALl rights reserved.
 */
 
-/**
-  *
-  */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+trait MirDeviceDriver:
+    /**
+      *
+      */
+    def init(): Unit
 

@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
+package org.cosplay.games.mir
 
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+import org.cosplay.*
+import prefabs.scenes.*
+import games.mir.scenes.*
 
 /*
    _________            ______________
@@ -35,5 +37,31 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
 /**
   *
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+object MirGame:
+    /**
+      * Entry point for JVM runtime.
+      *
+      * @param args Ignored.
+      */
+    def main(args: Array[String]): Unit =
+        val gameInfo = CPGameInfo(name = GAME_NAME, semVer = GAME_VER, termBg = BG)
 
+        // Initialize the engine.
+        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
+
+        // Start the game & wait for exit.
+        try
+            CPEngine.startGame(
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"main", fadeInMs = 3000),
+                MirTitleScene,
+                MirLoadScene,
+                MirNewGameScene,
+                MirMenuScene,
+                MirMainScene,
+                MirOptionsScene,
+                MirTutorialScene,
+                MirCreditsScene,
+            )
+        finally CPEngine.dispose()
+
+        sys.exit(0)

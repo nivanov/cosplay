@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -32,8 +30,23 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
                ALl rights reserved.
 */
 
+import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.*
+import org.cosplay.games.mir.os.MirFileType.*
+
 /**
   *
+  * @param name Name of file (not including its path).
+  * @param owner User owner of this file.
+  * @param parent Parent directory of this file.
+  * @param drv Device driver.
+  * @param initMs Initial creation and update timestamp. Defaults to the current time.
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+class MirDeviceFile(
+    name: String,
+    owner: MirUser,
+    parent: MirDirectoryFile,
+    drv: MirDeviceDriver,
+    initMs: Long = MirClock.now()
+) extends MirFile(FT_DEV, name, owner, Option(parent), true, false, initMs)
 

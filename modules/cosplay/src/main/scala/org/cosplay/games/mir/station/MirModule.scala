@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
+package org.cosplay.games.mir.station
 
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+import java.util.Date
 
 /*
    _________            ______________
@@ -34,6 +34,22 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
 
 /**
   *
+  * @param name
+  * @param abbreviation
+  * @param launchDate
+  * @param powerSupplyDevice
+  * @param oxygenDetectorDevice
+  * @param fireDetectorDevice
+  * @param fireSuppressionDevice
+  * @param airPressureDevice
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
-
+case class MirModule(
+    name: String,
+    abbreviation: String,
+    launchDate: Date,
+    powerSupplyDevice: MirModuleDevice,
+    oxygenDetectorDevice: MirModuleDevice,
+    fireDetectorDevice: MirModuleDevice,
+    fireSuppressionDevice: MirModuleDevice,
+    airPressureDevice: MirModuleDevice
+) extends Serializable

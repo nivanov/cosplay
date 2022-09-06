@@ -38,18 +38,18 @@ import scala.collection.mutable
   */
 class MirMashState:
     private val aliases = mutable.HashMap.empty[String, String]
-    private var workDir: CPMirDirectoryFile = _
+    private var workDir: MirDirectoryFile = _
 
     /**
       *
       */
-    def getWorkingDirectory: CPMirDirectoryFile = workDir
+    def getWorkingDirectory: MirDirectoryFile = workDir
 
     /**
       *
       * @param workDir
       */
-    def setWorkingDirectory(workDir: CPMirDirectoryFile): Unit = this.workDir = workDir
+    def setWorkingDirectory(workDir: MirDirectoryFile): Unit = this.workDir = workDir
 
     /**
       *

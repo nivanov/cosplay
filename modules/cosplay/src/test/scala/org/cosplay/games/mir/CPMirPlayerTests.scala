@@ -38,7 +38,7 @@ import org.cosplay.games.mir.station.*
 /**
   *
   */
-object CPMirPlayerTests:
+object MirPlayerTests:
     @Test
     def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(CPMirCrewMember.newPlayer.debugString))
+        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))

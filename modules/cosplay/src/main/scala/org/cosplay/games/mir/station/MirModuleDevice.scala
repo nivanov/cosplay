@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
+package org.cosplay.games.mir.station
 
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+import org.cosplay.games.mir.os.*
 
 /*
    _________            ______________
@@ -35,5 +35,27 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
 /**
   *
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+object MirModuleDevice:
+    /**
+      *
+      * @param drv
+      * @param abbr
+      */
+    def apply(drv: MirDeviceDriver, abbr: String): MirModuleDevice =
+        new MirModuleDevice:
+            override def getDriver: MirDeviceDriver = drv
+            override def getAbbreviation: String = abbr
+/**
+  *
+  */
+trait MirModuleDevice extends Serializable:
+    /**
+      *
+      */
+    def getDriver: MirDeviceDriver
+
+    /**
+      *
+      */
+    def getAbbreviation: String
 
