@@ -38,13 +38,12 @@ import scala.collection.mutable
 object MirMashStack:
     private final val UUID = java.util.UUID.randomUUID()
 
+    // Special marker for stack frames.
+    final val FRAME_MARKER: () => Any = () => UUID
+
 /**
   *
   */
-class MirMashStack extends mutable.Stack[() => Any]:
-    import MirMashStack.*
-
-    // Special marker for stack frames.
-    final val FRAME_MARKER: () => Any = () => UUID
+class MirMashStack extends mutable.Stack[() => Any]
 
 
