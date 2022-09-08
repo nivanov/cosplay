@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs
+package org.cosplay.games.mir.os.progs.login
 
 import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.progs.MirLoginProgram.MIN_PWD_LEN
-import os.*
+import org.cosplay.games.mir.os.*
 
 /*
    _________            ______________
@@ -45,8 +44,8 @@ object MirLoginProgram:
   *
   */
 class MirLoginProgram extends MirExecutable:
-    import MirLoginProgram.*
     import MirConsole.*
+    import MirLoginProgram.*
 
     override def mainEntry(ctx: MirExecutableContext): Int =
         val out = ctx.out

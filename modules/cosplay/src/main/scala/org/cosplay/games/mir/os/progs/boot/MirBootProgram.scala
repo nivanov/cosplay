@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs
+package org.cosplay.games.mir.os.progs.boot
 
 /*
    _________            ______________
@@ -31,9 +31,9 @@ package org.cosplay.games.mir.os.progs
 */
 
 import org.cosplay.*
-import games.mir.*
-import os.*
-import MirConsole.*
+import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.*
+import org.cosplay.games.mir.os.MirConsole.*
 
 /**
   *

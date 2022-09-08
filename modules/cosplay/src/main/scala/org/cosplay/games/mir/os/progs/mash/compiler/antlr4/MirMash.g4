@@ -33,7 +33,7 @@ grammar MirMash;
 // Parser.
 // =======
 
-mash: decls EOF; // Mash enty point.
+mash: decls EOF; // Mash entry point.
 decls
     : decl
     | decls decl

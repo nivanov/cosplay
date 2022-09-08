@@ -37,6 +37,9 @@ import progs.*
 import progs.mash.*
 import games.mir.station.*
 import org.apache.commons.lang3.SystemUtils
+import org.cosplay.games.mir.os.progs.boot.MirBootProgram
+import org.cosplay.games.mir.os.progs.login.MirLoginProgram
+import org.cosplay.games.mir.os.progs.ls.MirLsProgram
 
 import java.io.*
 import scala.collection.mutable
