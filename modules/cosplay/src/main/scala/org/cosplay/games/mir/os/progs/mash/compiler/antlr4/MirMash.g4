@@ -49,8 +49,10 @@ decl
     | aliasDecl
     | assignDecl
     | pipelineDecl
+    | includeDecl
     | expr
     ;
+includeDecl: INCLUDE qstring;
 delDecl: SCOL;
 assignDecl: STR ASSIGN compoundExpr;
 pipelineDecl: prgList AMP?;
@@ -130,6 +132,7 @@ qstring
 // ======
 
 ALIAS: 'alias';
+INCLUDE: 'include';
 VAL: 'val';
 VAR: 'var';
 DEF: 'def';

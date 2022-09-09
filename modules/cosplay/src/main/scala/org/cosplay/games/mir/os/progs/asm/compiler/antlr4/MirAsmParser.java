@@ -1,4 +1,4 @@
-// Generated from C:/Users/Nikita Ivanov/Documents/GitHub/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/asm/compiler/antlr4\MirAsm.g4 by ANTLR 4.10.1
+// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/asm/compiler/antlr4/MirAsm.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.asm.compiler.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -17,8 +17,8 @@ public class MirAsmParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		NAME=1, SQSTRING=2, DQSTRING=3, BOOL=4, NULL=5, SQUOTE=6, DQUOTE=7, COLON=8, 
-		DOT=9, INT=10, REAL=11, EXP=12, ID=13, COMMENT=14, WS=15, ErrorChar=16;
+		NAME=1, SQSTRING=2, DQSTRING=3, NULL=4, SQUOTE=5, DQUOTE=6, COLON=7, DOT=8, 
+		INT=9, REAL=10, EXP=11, ID=12, COMMENT=13, WS=14, ErrorChar=15;
 	public static final int
 		RULE_asm = 0, RULE_code = 1, RULE_inst = 2, RULE_label = 3, RULE_plist = 4, 
 		RULE_param = 5, RULE_qstring = 6;
@@ -31,14 +31,14 @@ public class MirAsmParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, null, null, "'null'", "'''", "'\"'", "':'", "'.'"
+			null, null, null, null, "'null'", "'''", "'\"'", "':'", "'.'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "NAME", "SQSTRING", "DQSTRING", "BOOL", "NULL", "SQUOTE", "DQUOTE", 
-			"COLON", "DOT", "INT", "REAL", "EXP", "ID", "COMMENT", "WS", "ErrorChar"
+			null, "NAME", "SQSTRING", "DQSTRING", "NULL", "SQUOTE", "DQUOTE", "COLON", 
+			"DOT", "INT", "REAL", "EXP", "ID", "COMMENT", "WS", "ErrorChar"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -387,7 +387,6 @@ public class MirAsmParser extends Parser {
 		public QstringContext qstring() {
 			return getRuleContext(QstringContext.class,0);
 		}
-		public TerminalNode BOOL() { return getToken(MirAsmParser.BOOL, 0); }
 		public TerminalNode NULL() { return getToken(MirAsmParser.NULL, 0); }
 		public TerminalNode ID() { return getToken(MirAsmParser.ID, 0); }
 		public TerminalNode INT() { return getToken(MirAsmParser.INT, 0); }
@@ -411,7 +410,7 @@ public class MirAsmParser extends Parser {
 		ParamContext _localctx = new ParamContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_param);
 		try {
-			setState(57);
+			setState(56);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SQSTRING:
@@ -422,48 +421,41 @@ public class MirAsmParser extends Parser {
 				qstring();
 				}
 				break;
-			case BOOL:
+			case NULL:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(47);
-				match(BOOL);
-				}
-				break;
-			case NULL:
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(48);
 				match(NULL);
 				}
 				break;
 			case ID:
-				enterOuterAlt(_localctx, 4);
+				enterOuterAlt(_localctx, 3);
 				{
-				setState(49);
+				setState(48);
 				match(ID);
 				}
 				break;
 			case INT:
-				enterOuterAlt(_localctx, 5);
+				enterOuterAlt(_localctx, 4);
 				{
-				setState(50);
+				setState(49);
 				match(INT);
-				setState(52);
+				setState(51);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
 				case 1:
 					{
-					setState(51);
+					setState(50);
 					match(REAL);
 					}
 					break;
 				}
-				setState(55);
+				setState(54);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 				case 1:
 					{
-					setState(54);
+					setState(53);
 					match(EXP);
 					}
 					break;
@@ -509,7 +501,7 @@ public class MirAsmParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(59);
+			setState(58);
 			_la = _input.LA(1);
 			if ( !(_la==SQSTRING || _la==DQSTRING) ) {
 			_errHandler.recoverInline(this);
@@ -557,7 +549,7 @@ public class MirAsmParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0010>\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u000f=\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0001\u0000\u0001\u0000\u0001"+
 		"\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0005"+
@@ -565,36 +557,35 @@ public class MirAsmParser extends Parser {
 		"\u001d\b\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003"+
 		"\u0001\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004"+
 		"\u0005\u0004*\b\u0004\n\u0004\f\u0004-\t\u0004\u0001\u0005\u0001\u0005"+
-		"\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0003\u00055\b\u0005"+
-		"\u0001\u0005\u0003\u00058\b\u0005\u0003\u0005:\b\u0005\u0001\u0006\u0001"+
-		"\u0006\u0001\u0006\u0000\u0002\u0002\b\u0007\u0000\u0002\u0004\u0006\b"+
-		"\n\f\u0000\u0001\u0001\u0000\u0002\u0003?\u0000\u000e\u0001\u0000\u0000"+
-		"\u0000\u0002\u0011\u0001\u0000\u0000\u0000\u0004\u001c\u0001\u0000\u0000"+
-		"\u0000\u0006!\u0001\u0000\u0000\u0000\b$\u0001\u0000\u0000\u0000\n9\u0001"+
-		"\u0000\u0000\u0000\f;\u0001\u0000\u0000\u0000\u000e\u000f\u0003\u0002"+
-		"\u0001\u0000\u000f\u0010\u0005\u0000\u0000\u0001\u0010\u0001\u0001\u0000"+
-		"\u0000\u0000\u0011\u0012\u0006\u0001\uffff\uffff\u0000\u0012\u0013\u0003"+
-		"\u0004\u0002\u0000\u0013\u0018\u0001\u0000\u0000\u0000\u0014\u0015\n\u0001"+
-		"\u0000\u0000\u0015\u0017\u0003\u0004\u0002\u0000\u0016\u0014\u0001\u0000"+
-		"\u0000\u0000\u0017\u001a\u0001\u0000\u0000\u0000\u0018\u0016\u0001\u0000"+
-		"\u0000\u0000\u0018\u0019\u0001\u0000\u0000\u0000\u0019\u0003\u0001\u0000"+
-		"\u0000\u0000\u001a\u0018\u0001\u0000\u0000\u0000\u001b\u001d\u0003\u0006"+
-		"\u0003\u0000\u001c\u001b\u0001\u0000\u0000\u0000\u001c\u001d\u0001\u0000"+
-		"\u0000\u0000\u001d\u001e\u0001\u0000\u0000\u0000\u001e\u001f\u0005\u0001"+
-		"\u0000\u0000\u001f \u0003\b\u0004\u0000 \u0005\u0001\u0000\u0000\u0000"+
-		"!\"\u0005\r\u0000\u0000\"#\u0005\b\u0000\u0000#\u0007\u0001\u0000\u0000"+
-		"\u0000$%\u0006\u0004\uffff\uffff\u0000%&\u0003\n\u0005\u0000&+\u0001\u0000"+
-		"\u0000\u0000\'(\n\u0001\u0000\u0000(*\u0003\n\u0005\u0000)\'\u0001\u0000"+
-		"\u0000\u0000*-\u0001\u0000\u0000\u0000+)\u0001\u0000\u0000\u0000+,\u0001"+
-		"\u0000\u0000\u0000,\t\u0001\u0000\u0000\u0000-+\u0001\u0000\u0000\u0000"+
-		".:\u0003\f\u0006\u0000/:\u0005\u0004\u0000\u00000:\u0005\u0005\u0000\u0000"+
-		"1:\u0005\r\u0000\u000024\u0005\n\u0000\u000035\u0005\u000b\u0000\u0000"+
-		"43\u0001\u0000\u0000\u000045\u0001\u0000\u0000\u000057\u0001\u0000\u0000"+
-		"\u000068\u0005\f\u0000\u000076\u0001\u0000\u0000\u000078\u0001\u0000\u0000"+
-		"\u00008:\u0001\u0000\u0000\u00009.\u0001\u0000\u0000\u00009/\u0001\u0000"+
-		"\u0000\u000090\u0001\u0000\u0000\u000091\u0001\u0000\u0000\u000092\u0001"+
-		"\u0000\u0000\u0000:\u000b\u0001\u0000\u0000\u0000;<\u0007\u0000\u0000"+
-		"\u0000<\r\u0001\u0000\u0000\u0000\u0006\u0018\u001c+479";
+		"\u0001\u0005\u0001\u0005\u0001\u0005\u0003\u00054\b\u0005\u0001\u0005"+
+		"\u0003\u00057\b\u0005\u0003\u00059\b\u0005\u0001\u0006\u0001\u0006\u0001"+
+		"\u0006\u0000\u0002\u0002\b\u0007\u0000\u0002\u0004\u0006\b\n\f\u0000\u0001"+
+		"\u0001\u0000\u0002\u0003=\u0000\u000e\u0001\u0000\u0000\u0000\u0002\u0011"+
+		"\u0001\u0000\u0000\u0000\u0004\u001c\u0001\u0000\u0000\u0000\u0006!\u0001"+
+		"\u0000\u0000\u0000\b$\u0001\u0000\u0000\u0000\n8\u0001\u0000\u0000\u0000"+
+		"\f:\u0001\u0000\u0000\u0000\u000e\u000f\u0003\u0002\u0001\u0000\u000f"+
+		"\u0010\u0005\u0000\u0000\u0001\u0010\u0001\u0001\u0000\u0000\u0000\u0011"+
+		"\u0012\u0006\u0001\uffff\uffff\u0000\u0012\u0013\u0003\u0004\u0002\u0000"+
+		"\u0013\u0018\u0001\u0000\u0000\u0000\u0014\u0015\n\u0001\u0000\u0000\u0015"+
+		"\u0017\u0003\u0004\u0002\u0000\u0016\u0014\u0001\u0000\u0000\u0000\u0017"+
+		"\u001a\u0001\u0000\u0000\u0000\u0018\u0016\u0001\u0000\u0000\u0000\u0018"+
+		"\u0019\u0001\u0000\u0000\u0000\u0019\u0003\u0001\u0000\u0000\u0000\u001a"+
+		"\u0018\u0001\u0000\u0000\u0000\u001b\u001d\u0003\u0006\u0003\u0000\u001c"+
+		"\u001b\u0001\u0000\u0000\u0000\u001c\u001d\u0001\u0000\u0000\u0000\u001d"+
+		"\u001e\u0001\u0000\u0000\u0000\u001e\u001f\u0005\u0001\u0000\u0000\u001f"+
+		" \u0003\b\u0004\u0000 \u0005\u0001\u0000\u0000\u0000!\"\u0005\f\u0000"+
+		"\u0000\"#\u0005\u0007\u0000\u0000#\u0007\u0001\u0000\u0000\u0000$%\u0006"+
+		"\u0004\uffff\uffff\u0000%&\u0003\n\u0005\u0000&+\u0001\u0000\u0000\u0000"+
+		"\'(\n\u0001\u0000\u0000(*\u0003\n\u0005\u0000)\'\u0001\u0000\u0000\u0000"+
+		"*-\u0001\u0000\u0000\u0000+)\u0001\u0000\u0000\u0000+,\u0001\u0000\u0000"+
+		"\u0000,\t\u0001\u0000\u0000\u0000-+\u0001\u0000\u0000\u0000.9\u0003\f"+
+		"\u0006\u0000/9\u0005\u0004\u0000\u000009\u0005\f\u0000\u000013\u0005\t"+
+		"\u0000\u000024\u0005\n\u0000\u000032\u0001\u0000\u0000\u000034\u0001\u0000"+
+		"\u0000\u000046\u0001\u0000\u0000\u000057\u0005\u000b\u0000\u000065\u0001"+
+		"\u0000\u0000\u000067\u0001\u0000\u0000\u000079\u0001\u0000\u0000\u0000"+
+		"8.\u0001\u0000\u0000\u00008/\u0001\u0000\u0000\u000080\u0001\u0000\u0000"+
+		"\u000081\u0001\u0000\u0000\u00009\u000b\u0001\u0000\u0000\u0000:;\u0007"+
+		"\u0000\u0000\u0000;\r\u0001\u0000\u0000\u0000\u0006\u0018\u001c+368";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

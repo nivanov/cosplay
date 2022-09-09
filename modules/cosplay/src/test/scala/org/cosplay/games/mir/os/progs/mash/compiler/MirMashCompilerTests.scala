@@ -51,6 +51,8 @@ object MirMashCompilerTests:
         compile("val x = 10; val y = 'abc'")
         compile(
             """
+              |include "/etc/mash/natives.mash"
+              |
               |native def listOf(fromIncl, toExcl)
               |
               |val x = null
