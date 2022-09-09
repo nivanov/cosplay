@@ -37,7 +37,7 @@ import org.junit.jupiter.api.*
 /**
   *
   */
-object MirMashCompilerTests$:
+object MirMashCompilerTests:
     @Test
     def baseTest(): Unit =
         val comp = new MirMashCompiler

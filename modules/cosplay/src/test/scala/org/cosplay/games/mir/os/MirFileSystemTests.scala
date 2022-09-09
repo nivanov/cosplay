@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test
 /**
   *
   */
-object MirFileSystemTests$:
+object MirFileSystemTests:
     private def initFs(): MirFileSystem =
         MirClock.init(0)
 

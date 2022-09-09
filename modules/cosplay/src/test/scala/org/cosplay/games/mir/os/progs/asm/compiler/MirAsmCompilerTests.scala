@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir.os.progs.asm.compiler
 
-import org.cosplay.games.mir.MirClock
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-import java.text.*
-import java.util.*
+import scala.util.{Failure, Success, Try}
 
 /*
    _________            ______________
@@ -31,29 +30,30 @@ import java.util.*
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII GAME ENGINE FOR SCALA3
-            (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+          2D ASCII JVM GAME ENGINE FOR SCALA3
+              (C) 2021 Rowan Games, Inc.
+                ALl rights reserved.
 */
 
 /**
   *
   */
-object MirClockTests$:
-    MirClock.init(0)
-
+object MirAsmCompilerTests:
     @Test
-    def nowTest(): Unit =
-        val t1 = MirClock.now()
-        val t2 = System.currentTimeMillis()
-        println(s"Elapsed years since crash: ${(t2 - t1) / 365 / 24 / 60 / 60 / 1000}")
+    def baseTest(): Unit =
+        val comp = new MirAsmCompiler
 
-    @Test
-    def sysAndCrewTimeTest(): Unit =
-        val fmt = SimpleDateFormat("yyyy MMMM dd HH:mm z")
-        (0 until 10).foreach {
-            _ => println(s"System timestamp: ${fmt.format(new Date(MirClock.randSysTime()))}")
-        }
-        (0 until 10).foreach {
-            _ => println(s"Crew timestamp: ${fmt.format(new Date(MirClock.randCrewTime()))}")
-        }
+        def compile(code: String): Unit =
+            Try(comp.compile(code, "test")).match
+                case Success(_) => ()
+                case Failure(e) => assertTrue(false, e.getMessage)
+
+        compile(
+            """
+              |; Testing assembler
+              |; Comments
+              |
+              |add s 2
+              |
+              |mov "test" 'test' null ; Inline comments.
+              |""".stripMargin)
