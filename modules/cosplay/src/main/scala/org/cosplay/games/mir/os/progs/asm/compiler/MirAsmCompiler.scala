@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
+package org.cosplay.games.mir.os.progs.asm.compiler
 
 /*
    _________            ______________
@@ -32,15 +32,14 @@ package org.cosplay.games.mir.os.progs.mash.compiler
 
 import org.cosplay.impl.CPUtils
 import org.cosplay.*
-import org.cosplay.games.mir.os.progs.mash.compiler.antlr4.*
+import org.cosplay.games.mir.os.progs.asm.compiler.antlr4.*
 import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
-import org.cosplay.games.mir.os.progs.mash.MirMashState
 
 /**
   *
   */
-class MirMashCompiler:
+class MirAsmCompiler:
     /**
       *
       */
@@ -54,7 +53,7 @@ class MirMashCompiler:
       * @param code
       * @param origin
       */
-    private class FiniteStateMachine(code: String, origin: String) extends MirMashBaseListener
+    private class FiniteStateMachine(code: String, origin: String) extends MirAsmBaseListener
 
     /**
       *
@@ -102,9 +101,9 @@ class MirMashCompiler:
             case _ => aMsg
 
         s"""# Mash $kind error in '$origin' at line $line - $aMsg
-            #   |-- Line:  ${hold.origStr}
-            #   +-- Error: ${hold.ptrStr}
-            #""".stripMargin('#')
+           #   |-- Line:  ${hold.origStr}
+           #   +-- Error: ${hold.ptrStr}
+           #""".stripMargin('#')
 
     /**
       *
@@ -167,9 +166,9 @@ class MirMashCompiler:
       * @param code
       * @param origin
       */
-    private def antlr4Setup(code: String, origin: String): (FiniteStateMachine, MirMashParser) =
-        val lexer = new MirMashLexer(CharStreams.fromString(code, origin))
-        val parser = new MirMashParser(new CommonTokenStream(lexer))
+    private def antlr4Setup(code: String, origin: String): (FiniteStateMachine, MirAsmParser) =
+        val lexer = new MirAsmLexer(CharStreams.fromString(code, origin))
+        val parser = new MirAsmParser(new CommonTokenStream(lexer))
 
         // Set custom error handlers.
         lexer.removeErrorListeners()
@@ -185,11 +184,11 @@ class MirMashCompiler:
       * @param code
       * @param origin
       */
-    def compile(code: String, origin: String): MirMashExecutable =
+    def compile(code: String, origin: String): MirAsmExecutable =
         val (fsm, parser) = antlr4Setup(code, origin)
 
         // Parse the input IDL and walk the built AST.
-        (new ParseTreeWalker).walk(fsm, parser.mash())
+        (new ParseTreeWalker).walk(fsm, parser.asm())
 
         null // TODO
 

@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import org.cosplay.games.mir.os.progs.mash.*
+package org.cosplay.games.mir.os.progs.asm.compiler
 
 /*
    _________            ______________
@@ -27,17 +25,26 @@ import org.cosplay.games.mir.os.progs.mash.*
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
+
+import scala.collection.mutable
 
 /**
   *
   */
-trait MirMashObjectCode:
-    /**
-      *
-      * @param state
-      */
-    def execute(state: MirMashState): Unit
+object MirAsmStack:
+    private final val UUID = java.util.UUID.randomUUID()
+
+    // Special marker for stack frames.
+    final val FRAME_MARKER: () => Any = () => UUID
+
+/**
+  *
+  */
+class MirAsmStack extends mutable.Stack[() => Any]
+
+
+
