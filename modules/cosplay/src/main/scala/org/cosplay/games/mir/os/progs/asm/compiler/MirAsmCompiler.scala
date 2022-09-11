@@ -100,7 +100,7 @@ class MirAsmCompiler:
             case idx if idx >= 0 => s"${aMsg.substring(0, idx).trim}."
             case _ => aMsg
 
-        s"""# Mash $kind error in '$origin' at line $line - $aMsg
+        s"""# Asm $kind error in '$origin' at line $line - $aMsg
            #   |-- Line:  ${hold.origStr}
            #   +-- Error: ${hold.ptrStr}
            #""".stripMargin('#')

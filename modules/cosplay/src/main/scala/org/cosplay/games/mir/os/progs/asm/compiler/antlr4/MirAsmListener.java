@@ -1,4 +1,4 @@
-// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/asm/compiler/antlr4/MirAsm.g4 by ANTLR 4.10.1
+// Generated from C:/Users/Nikita Ivanov/Documents/GitHub/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/asm/compiler/antlr4\MirAsm.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.asm.compiler.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -67,14 +67,4 @@ public interface MirAsmListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParam(MirAsmParser.ParamContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MirAsmParser#qstring}.
-	 * @param ctx the parse tree
-	 */
-	void enterQstring(MirAsmParser.QstringContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MirAsmParser#qstring}.
-	 * @param ctx the parse tree
-	 */
-	void exitQstring(MirAsmParser.QstringContext ctx);
 }

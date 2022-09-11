@@ -53,7 +53,14 @@ object MirAsmCompilerTests:
               |; Testing assembler
               |; Comments
               |
-              |add s 2
+              |;
+              |; Start some code...
+              |;
+              |_label: ; Label.
+              |     add s 2
+              |     push null
+              |     pop
+              |     push "qwerty"
               |
-              |mov "test" 1 null ; Inline comments.
+              |     mov "test" 1 null ; Inline comments.
               |""".stripMargin)

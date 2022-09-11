@@ -35,10 +35,10 @@ grammar MirAsm;
 
 asm: code EOF; // Assembler entry point.
 code
-    : inst
-    | code inst
+    : NL* inst NL+
+    | code inst NL*
     ;
-inst: label? name=NAME plist;
+inst: label? name=NAME plist?;
 label: ID COLON;
 plist
     : param
@@ -55,19 +55,30 @@ param
 // ======
 NAME
     : 'mov'
+    | 'push'
+    | 'pop'
+    | 'inc'
+    | 'dec'
     | 'add'
+    | 'mul'
+    | 'div'
+    | 'sub'
+    | 'calln'
+    | 'call'
+    | 'jmp'
+    | 'ret'
     ;
-SQSTRING: SQUOTE (~'\'')* SQUOTE;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 NULL: 'null';
-SQUOTE: '\'';
 DQUOTE: '"';
+SCOLOR: ';';
+NL: '\n';
 COLON: ':';
 DOT: '.';
 INT: '0' | [1-9] [_0-9]*;
 REAL: DOT [0-9]+;
 EXP: [Ee] [+\-]? INT;
 ID: [0-9a-zA-Z_]+;
-COMMENT: ';' ~[\r\n]* '\r'? ('\n'| EOF) -> skip;
-WS: [ \r\t\u000C\n]+ -> skip;
+COMMENT: SCOLOR ~[\r\n]* '\r'? (NL| EOF) -> skip;
+WS: [ \r\t\u000C]+ -> skip;
 ErrorChar: .;

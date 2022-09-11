@@ -1,4 +1,4 @@
-// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/asm/compiler/antlr4/MirAsm.g4 by ANTLR 4.10.1
+// Generated from C:/Users/Nikita Ivanov/Documents/GitHub/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/asm/compiler/antlr4\MirAsm.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.asm.compiler.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -17,27 +17,27 @@ public class MirAsmParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		NAME=1, SQSTRING=2, DQSTRING=3, NULL=4, SQUOTE=5, DQUOTE=6, COLON=7, DOT=8, 
+		NAME=1, DQSTRING=2, NULL=3, DQUOTE=4, SCOLOR=5, NL=6, COLON=7, DOT=8, 
 		INT=9, REAL=10, EXP=11, ID=12, COMMENT=13, WS=14, ErrorChar=15;
 	public static final int
 		RULE_asm = 0, RULE_code = 1, RULE_inst = 2, RULE_label = 3, RULE_plist = 4, 
-		RULE_param = 5, RULE_qstring = 6;
+		RULE_param = 5;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"asm", "code", "inst", "label", "plist", "param", "qstring"
+			"asm", "code", "inst", "label", "plist", "param"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, null, "'null'", "'''", "'\"'", "':'", "'.'"
+			null, null, null, "'null'", "'\"'", "';'", "'\\n'", "':'", "'.'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "NAME", "SQSTRING", "DQSTRING", "NULL", "SQUOTE", "DQUOTE", "COLON", 
+			null, "NAME", "DQSTRING", "NULL", "DQUOTE", "SCOLOR", "NL", "COLON", 
 			"DOT", "INT", "REAL", "EXP", "ID", "COMMENT", "WS", "ErrorChar"
 		};
 	}
@@ -117,9 +117,9 @@ public class MirAsmParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(14);
+			setState(12);
 			code(0);
-			setState(15);
+			setState(13);
 			match(EOF);
 			}
 		}
@@ -137,6 +137,10 @@ public class MirAsmParser extends Parser {
 	public static class CodeContext extends ParserRuleContext {
 		public InstContext inst() {
 			return getRuleContext(InstContext.class,0);
+		}
+		public List<TerminalNode> NL() { return getTokens(MirAsmParser.NL); }
+		public TerminalNode NL(int i) {
+			return getToken(MirAsmParser.NL, i);
 		}
 		public CodeContext code() {
 			return getRuleContext(CodeContext.class,0);
@@ -166,18 +170,53 @@ public class MirAsmParser extends Parser {
 		CodeContext _prevctx = _localctx;
 		int _startState = 2;
 		enterRecursionRule(_localctx, 2, RULE_code, _p);
+		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(18);
+			setState(19);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==NL) {
+				{
+				{
+				setState(16);
+				match(NL);
+				}
+				}
+				setState(21);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(22);
 			inst();
+			setState(24); 
+			_errHandler.sync(this);
+			_alt = 1;
+			do {
+				switch (_alt) {
+				case 1:
+					{
+					{
+					setState(23);
+					match(NL);
+					}
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(26); 
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
+			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(24);
+			setState(38);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -186,16 +225,32 @@ public class MirAsmParser extends Parser {
 					{
 					_localctx = new CodeContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_code);
-					setState(20);
+					setState(28);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(21);
+					setState(29);
 					inst();
+					setState(33);
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+					while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+						if ( _alt==1 ) {
+							{
+							{
+							setState(30);
+							match(NL);
+							}
+							} 
+						}
+						setState(35);
+						_errHandler.sync(this);
+						_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+					}
 					}
 					} 
 				}
-				setState(26);
+				setState(40);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			}
 			}
 		}
@@ -212,12 +267,12 @@ public class MirAsmParser extends Parser {
 
 	public static class InstContext extends ParserRuleContext {
 		public Token name;
-		public PlistContext plist() {
-			return getRuleContext(PlistContext.class,0);
-		}
 		public TerminalNode NAME() { return getToken(MirAsmParser.NAME, 0); }
 		public LabelContext label() {
 			return getRuleContext(LabelContext.class,0);
+		}
+		public PlistContext plist() {
+			return getRuleContext(PlistContext.class,0);
 		}
 		public InstContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -240,20 +295,28 @@ public class MirAsmParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(28);
+			setState(42);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ID) {
 				{
-				setState(27);
+				setState(41);
 				label();
 				}
 			}
 
-			setState(30);
+			setState(44);
 			((InstContext)_localctx).name = match(NAME);
-			setState(31);
-			plist(0);
+			setState(46);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
+			case 1:
+				{
+				setState(45);
+				plist(0);
+				}
+				break;
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -290,9 +353,9 @@ public class MirAsmParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(33);
+			setState(48);
 			match(ID);
-			setState(34);
+			setState(49);
 			match(COLON);
 			}
 		}
@@ -344,13 +407,13 @@ public class MirAsmParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(37);
+			setState(52);
 			param();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(43);
+			setState(58);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -359,16 +422,16 @@ public class MirAsmParser extends Parser {
 					{
 					_localctx = new PlistContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_plist);
-					setState(39);
+					setState(54);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(40);
+					setState(55);
 					param();
 					}
 					} 
 				}
-				setState(45);
+				setState(60);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			}
 			}
 		}
@@ -384,9 +447,7 @@ public class MirAsmParser extends Parser {
 	}
 
 	public static class ParamContext extends ParserRuleContext {
-		public QstringContext qstring() {
-			return getRuleContext(QstringContext.class,0);
-		}
+		public TerminalNode DQSTRING() { return getToken(MirAsmParser.DQSTRING, 0); }
 		public TerminalNode NULL() { return getToken(MirAsmParser.NULL, 0); }
 		public TerminalNode ID() { return getToken(MirAsmParser.ID, 0); }
 		public TerminalNode INT() { return getToken(MirAsmParser.INT, 0); }
@@ -410,52 +471,51 @@ public class MirAsmParser extends Parser {
 		ParamContext _localctx = new ParamContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_param);
 		try {
-			setState(56);
+			setState(71);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case SQSTRING:
 			case DQSTRING:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(46);
-				qstring();
+				setState(61);
+				match(DQSTRING);
 				}
 				break;
 			case NULL:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(47);
+				setState(62);
 				match(NULL);
 				}
 				break;
 			case ID:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(48);
+				setState(63);
 				match(ID);
 				}
 				break;
 			case INT:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(49);
+				setState(64);
 				match(INT);
-				setState(51);
+				setState(66);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+				switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 				case 1:
 					{
-					setState(50);
+					setState(65);
 					match(REAL);
 					}
 					break;
 				}
-				setState(54);
+				setState(69);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+				switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 				case 1:
 					{
-					setState(53);
+					setState(68);
 					match(EXP);
 					}
 					break;
@@ -464,53 +524,6 @@ public class MirAsmParser extends Parser {
 				break;
 			default:
 				throw new NoViableAltException(this);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class QstringContext extends ParserRuleContext {
-		public TerminalNode SQSTRING() { return getToken(MirAsmParser.SQSTRING, 0); }
-		public TerminalNode DQSTRING() { return getToken(MirAsmParser.DQSTRING, 0); }
-		public QstringContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_qstring; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MirAsmListener ) ((MirAsmListener)listener).enterQstring(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MirAsmListener ) ((MirAsmListener)listener).exitQstring(this);
-		}
-	}
-
-	public final QstringContext qstring() throws RecognitionException {
-		QstringContext _localctx = new QstringContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_qstring);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(58);
-			_la = _input.LA(1);
-			if ( !(_la==SQSTRING || _la==DQSTRING) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -549,43 +562,52 @@ public class MirAsmParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u000f=\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u000fJ\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
-		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0005"+
-		"\u0001\u0017\b\u0001\n\u0001\f\u0001\u001a\t\u0001\u0001\u0002\u0003\u0002"+
-		"\u001d\b\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003"+
-		"\u0001\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004"+
-		"\u0005\u0004*\b\u0004\n\u0004\f\u0004-\t\u0004\u0001\u0005\u0001\u0005"+
-		"\u0001\u0005\u0001\u0005\u0001\u0005\u0003\u00054\b\u0005\u0001\u0005"+
-		"\u0003\u00057\b\u0005\u0003\u00059\b\u0005\u0001\u0006\u0001\u0006\u0001"+
-		"\u0006\u0000\u0002\u0002\b\u0007\u0000\u0002\u0004\u0006\b\n\f\u0000\u0001"+
-		"\u0001\u0000\u0002\u0003=\u0000\u000e\u0001\u0000\u0000\u0000\u0002\u0011"+
-		"\u0001\u0000\u0000\u0000\u0004\u001c\u0001\u0000\u0000\u0000\u0006!\u0001"+
-		"\u0000\u0000\u0000\b$\u0001\u0000\u0000\u0000\n8\u0001\u0000\u0000\u0000"+
-		"\f:\u0001\u0000\u0000\u0000\u000e\u000f\u0003\u0002\u0001\u0000\u000f"+
-		"\u0010\u0005\u0000\u0000\u0001\u0010\u0001\u0001\u0000\u0000\u0000\u0011"+
-		"\u0012\u0006\u0001\uffff\uffff\u0000\u0012\u0013\u0003\u0004\u0002\u0000"+
-		"\u0013\u0018\u0001\u0000\u0000\u0000\u0014\u0015\n\u0001\u0000\u0000\u0015"+
-		"\u0017\u0003\u0004\u0002\u0000\u0016\u0014\u0001\u0000\u0000\u0000\u0017"+
-		"\u001a\u0001\u0000\u0000\u0000\u0018\u0016\u0001\u0000\u0000\u0000\u0018"+
-		"\u0019\u0001\u0000\u0000\u0000\u0019\u0003\u0001\u0000\u0000\u0000\u001a"+
-		"\u0018\u0001\u0000\u0000\u0000\u001b\u001d\u0003\u0006\u0003\u0000\u001c"+
-		"\u001b\u0001\u0000\u0000\u0000\u001c\u001d\u0001\u0000\u0000\u0000\u001d"+
-		"\u001e\u0001\u0000\u0000\u0000\u001e\u001f\u0005\u0001\u0000\u0000\u001f"+
-		" \u0003\b\u0004\u0000 \u0005\u0001\u0000\u0000\u0000!\"\u0005\f\u0000"+
-		"\u0000\"#\u0005\u0007\u0000\u0000#\u0007\u0001\u0000\u0000\u0000$%\u0006"+
-		"\u0004\uffff\uffff\u0000%&\u0003\n\u0005\u0000&+\u0001\u0000\u0000\u0000"+
-		"\'(\n\u0001\u0000\u0000(*\u0003\n\u0005\u0000)\'\u0001\u0000\u0000\u0000"+
-		"*-\u0001\u0000\u0000\u0000+)\u0001\u0000\u0000\u0000+,\u0001\u0000\u0000"+
-		"\u0000,\t\u0001\u0000\u0000\u0000-+\u0001\u0000\u0000\u0000.9\u0003\f"+
-		"\u0006\u0000/9\u0005\u0004\u0000\u000009\u0005\f\u0000\u000013\u0005\t"+
-		"\u0000\u000024\u0005\n\u0000\u000032\u0001\u0000\u0000\u000034\u0001\u0000"+
-		"\u0000\u000046\u0001\u0000\u0000\u000057\u0005\u000b\u0000\u000065\u0001"+
-		"\u0000\u0000\u000067\u0001\u0000\u0000\u000079\u0001\u0000\u0000\u0000"+
-		"8.\u0001\u0000\u0000\u00008/\u0001\u0000\u0000\u000080\u0001\u0000\u0000"+
-		"\u000081\u0001\u0000\u0000\u00009\u000b\u0001\u0000\u0000\u0000:;\u0007"+
-		"\u0000\u0000\u0000;\r\u0001\u0000\u0000\u0000\u0006\u0018\u001c+368";
+		"\u0005\u0007\u0005\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0001"+
+		"\u0001\u0005\u0001\u0012\b\u0001\n\u0001\f\u0001\u0015\t\u0001\u0001\u0001"+
+		"\u0001\u0001\u0004\u0001\u0019\b\u0001\u000b\u0001\f\u0001\u001a\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0005\u0001 \b\u0001\n\u0001\f\u0001#\t"+
+		"\u0001\u0005\u0001%\b\u0001\n\u0001\f\u0001(\t\u0001\u0001\u0002\u0003"+
+		"\u0002+\b\u0002\u0001\u0002\u0001\u0002\u0003\u0002/\b\u0002\u0001\u0003"+
+		"\u0001\u0003\u0001\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004"+
+		"\u0001\u0004\u0005\u00049\b\u0004\n\u0004\f\u0004<\t\u0004\u0001\u0005"+
+		"\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0003\u0005C\b\u0005"+
+		"\u0001\u0005\u0003\u0005F\b\u0005\u0003\u0005H\b\u0005\u0001\u0005\u0000"+
+		"\u0002\u0002\b\u0006\u0000\u0002\u0004\u0006\b\n\u0000\u0000O\u0000\f"+
+		"\u0001\u0000\u0000\u0000\u0002\u000f\u0001\u0000\u0000\u0000\u0004*\u0001"+
+		"\u0000\u0000\u0000\u00060\u0001\u0000\u0000\u0000\b3\u0001\u0000\u0000"+
+		"\u0000\nG\u0001\u0000\u0000\u0000\f\r\u0003\u0002\u0001\u0000\r\u000e"+
+		"\u0005\u0000\u0000\u0001\u000e\u0001\u0001\u0000\u0000\u0000\u000f\u0013"+
+		"\u0006\u0001\uffff\uffff\u0000\u0010\u0012\u0005\u0006\u0000\u0000\u0011"+
+		"\u0010\u0001\u0000\u0000\u0000\u0012\u0015\u0001\u0000\u0000\u0000\u0013"+
+		"\u0011\u0001\u0000\u0000\u0000\u0013\u0014\u0001\u0000\u0000\u0000\u0014"+
+		"\u0016\u0001\u0000\u0000\u0000\u0015\u0013\u0001\u0000\u0000\u0000\u0016"+
+		"\u0018\u0003\u0004\u0002\u0000\u0017\u0019\u0005\u0006\u0000\u0000\u0018"+
+		"\u0017\u0001\u0000\u0000\u0000\u0019\u001a\u0001\u0000\u0000\u0000\u001a"+
+		"\u0018\u0001\u0000\u0000\u0000\u001a\u001b\u0001\u0000\u0000\u0000\u001b"+
+		"&\u0001\u0000\u0000\u0000\u001c\u001d\n\u0001\u0000\u0000\u001d!\u0003"+
+		"\u0004\u0002\u0000\u001e \u0005\u0006\u0000\u0000\u001f\u001e\u0001\u0000"+
+		"\u0000\u0000 #\u0001\u0000\u0000\u0000!\u001f\u0001\u0000\u0000\u0000"+
+		"!\"\u0001\u0000\u0000\u0000\"%\u0001\u0000\u0000\u0000#!\u0001\u0000\u0000"+
+		"\u0000$\u001c\u0001\u0000\u0000\u0000%(\u0001\u0000\u0000\u0000&$\u0001"+
+		"\u0000\u0000\u0000&\'\u0001\u0000\u0000\u0000\'\u0003\u0001\u0000\u0000"+
+		"\u0000(&\u0001\u0000\u0000\u0000)+\u0003\u0006\u0003\u0000*)\u0001\u0000"+
+		"\u0000\u0000*+\u0001\u0000\u0000\u0000+,\u0001\u0000\u0000\u0000,.\u0005"+
+		"\u0001\u0000\u0000-/\u0003\b\u0004\u0000.-\u0001\u0000\u0000\u0000./\u0001"+
+		"\u0000\u0000\u0000/\u0005\u0001\u0000\u0000\u000001\u0005\f\u0000\u0000"+
+		"12\u0005\u0007\u0000\u00002\u0007\u0001\u0000\u0000\u000034\u0006\u0004"+
+		"\uffff\uffff\u000045\u0003\n\u0005\u00005:\u0001\u0000\u0000\u000067\n"+
+		"\u0001\u0000\u000079\u0003\n\u0005\u000086\u0001\u0000\u0000\u00009<\u0001"+
+		"\u0000\u0000\u0000:8\u0001\u0000\u0000\u0000:;\u0001\u0000\u0000\u0000"+
+		";\t\u0001\u0000\u0000\u0000<:\u0001\u0000\u0000\u0000=H\u0005\u0002\u0000"+
+		"\u0000>H\u0005\u0003\u0000\u0000?H\u0005\f\u0000\u0000@B\u0005\t\u0000"+
+		"\u0000AC\u0005\n\u0000\u0000BA\u0001\u0000\u0000\u0000BC\u0001\u0000\u0000"+
+		"\u0000CE\u0001\u0000\u0000\u0000DF\u0005\u000b\u0000\u0000ED\u0001\u0000"+
+		"\u0000\u0000EF\u0001\u0000\u0000\u0000FH\u0001\u0000\u0000\u0000G=\u0001"+
+		"\u0000\u0000\u0000G>\u0001\u0000\u0000\u0000G?\u0001\u0000\u0000\u0000"+
+		"G@\u0001\u0000\u0000\u0000H\u000b\u0001\u0000\u0000\u0000\n\u0013\u001a"+
+		"!&*.:BEG";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
