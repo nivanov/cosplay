@@ -92,7 +92,6 @@ case class MirExecutableContext(
 
     /**
       *
-      * @return
       */
     def isKilled: Boolean = killed
 

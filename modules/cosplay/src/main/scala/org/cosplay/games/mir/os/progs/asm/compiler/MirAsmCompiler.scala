@@ -32,9 +32,11 @@ package org.cosplay.games.mir.os.progs.asm.compiler
 
 import org.cosplay.impl.CPUtils
 import org.cosplay.*
-import org.cosplay.games.mir.os.progs.asm.compiler.antlr4.*
+import games.mir.os.progs.asm.compiler.antlr4.*
 import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
+
+import scala.collection.mutable
 
 /**
   *
@@ -53,7 +55,13 @@ class MirAsmCompiler:
       * @param code
       * @param origin
       */
-    private class FiniteStateMachine(code: String, origin: String) extends MirAsmBaseListener
+    private class FiniteStateMachine(code: String, origin: String) extends MirAsmBaseListener:
+        private val instrs = mutable.ArrayBuffer.empty[MirAsmInstruction]
+
+        /**
+          *
+          */
+        def getInstructions: Seq[MirAsmInstruction] = instrs.toSeq
 
     /**
       *
@@ -80,7 +88,6 @@ class MirAsmCompiler:
       * @param charPos
       * @param code
       * @param origin Code origin (file name, etc.).
-      * @return
       */
     private def mkError(
         kind: String,
@@ -112,7 +119,6 @@ class MirAsmCompiler:
       * @param charPos
       * @param code
       * @param origin Code origin (file name, etc.).
-      * @return
       */
     private def mkSyntaxError(
         msg: String,
@@ -128,7 +134,6 @@ class MirAsmCompiler:
       * @param charPos
       * @param code
       * @param origin Code origin (file name, etc.).
-      * @return
       */
     private def mkRuntimeError(
         msg: String,

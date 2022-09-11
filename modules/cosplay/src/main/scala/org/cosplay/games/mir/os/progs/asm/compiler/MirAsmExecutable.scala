@@ -30,6 +30,14 @@ package org.cosplay.games.mir.os.progs.asm.compiler
                 ALl rights reserved.
 */
 
+object MirAsmExecutable:
+    /**
+      *
+      * @param instrs
+      */
+    def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
+        null
+
 /**
   *
   */

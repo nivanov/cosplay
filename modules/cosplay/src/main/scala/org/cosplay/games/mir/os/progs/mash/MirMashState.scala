@@ -72,20 +72,17 @@ class MirMashState:
     /**
       *
       * @param name
-      * @return
       */
     def hasAlias(name: String): Boolean = aliases.contains(name)
 
     /**
       *
       * @param name
-      * @return
       */
     def removeAlias(name: String): Option[String] = aliases.remove(name)
 
     /**
       *
-      * @return
       */
     def getCurrentFilename: String = ???
 
@@ -155,7 +152,6 @@ class MirMashState:
       *
       * @param name
       * @param scope
-      * @return
       */
     def getVariable(name: String, scope: Option[String] = None): String = ???
 
@@ -163,14 +159,12 @@ class MirMashState:
       *
       * @param name
       * @param scope
-      * @return
       */
     def isVariableReadOnly(name: String, scope: Option[String] = None): Boolean = ???
 
     /**
       *
       * @param scope
-      * @return
       */
     def getAllVariables(scope: String): Seq[String] = ???
 
@@ -178,7 +172,6 @@ class MirMashState:
       *
       * @param name
       * @param scope
-      * @return
       */
     def removeVariable(name: String, scope: Option[String] = None): Boolean = ???
 

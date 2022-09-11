@@ -73,7 +73,6 @@ trait MirProcess:
 
     /**
       *
-      * @return
       */
     def getFinishTime: Long
 

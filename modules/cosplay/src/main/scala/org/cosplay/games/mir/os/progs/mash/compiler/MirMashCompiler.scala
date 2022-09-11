@@ -81,7 +81,6 @@ class MirMashCompiler:
       * @param charPos
       * @param code
       * @param origin Code origin (file name, etc.).
-      * @return
       */
     private def mkError(
         kind: String,
@@ -113,7 +112,6 @@ class MirMashCompiler:
       * @param charPos
       * @param code
       * @param origin Code origin (file name, etc.).
-      * @return
       */
     private def mkSyntaxError(
         msg: String,
@@ -129,7 +127,6 @@ class MirMashCompiler:
       * @param charPos
       * @param code
       * @param origin Code origin (file name, etc.).
-      * @return
       */
     private def mkRuntimeError(
         msg: String,

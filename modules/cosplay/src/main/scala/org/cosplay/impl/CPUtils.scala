@@ -72,7 +72,6 @@ object CPUtils:
       * differences in new line character.
       *
       * @param s String to split.
-      * @return
       */
     def splitByNewLine(s: String): Seq[String] =
         s.replaceAll("\r", "").split("\n").toSeq

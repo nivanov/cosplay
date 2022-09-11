@@ -64,7 +64,6 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
       * @param in
       * @param out
       * @param err
-      * @return
       */
     def exec(
         parent: Option[MirProcess],

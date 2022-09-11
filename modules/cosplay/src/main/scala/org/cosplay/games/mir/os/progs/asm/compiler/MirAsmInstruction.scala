@@ -32,16 +32,30 @@ package org.cosplay.games.mir.os.progs.asm.compiler
 
 /**
   *
-  * @param label
-  * @param line
-  * @param fun
-  * @param src
+  */
+object MirAsmInstruction:
+    trait Param
+    object NullParam extends Param
+    case class VarParam(id: String) extends Param
+    case class StringParam(s: String) extends Param
+    case class LongParam(d: Long) extends Param
+    case class DoubleParam(d: Double) extends Param
+
+import MirAsmInstruction.*
+
+/**
+  *
+  * @param label Optional label for this instruction.
+  * @param line Line number in the original source code.
+  * @param name Instruction name.
+  * @param params Instruction parameter list in the same order they appear in the source code.
+  * @param src Source code for this instruction.
   */
 case class MirAsmInstruction(
     label: Option[String],
     line: Int,
-    fun: (MirAsmStack, MirAsmState) => Unit,
-    params: Seq[Any],
+    name: String,
+    params: Seq[Param],
     src: String
 )
 
