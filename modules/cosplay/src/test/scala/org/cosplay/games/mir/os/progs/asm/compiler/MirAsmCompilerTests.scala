@@ -55,5 +55,5 @@ object MirAsmCompilerTests:
               |
               |add s 2
               |
-              |mov "test" 'test' null ; Inline comments.
+              |mov "test" 1 null ; Inline comments.
               |""".stripMargin)

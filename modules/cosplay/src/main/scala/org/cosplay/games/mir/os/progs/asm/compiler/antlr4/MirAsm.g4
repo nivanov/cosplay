@@ -45,14 +45,10 @@ plist
     | plist param
     ;
 param
-    : qstring
+    : DQSTRING
     | NULL
     | ID
     | INT REAL? EXP?
-    ;
-qstring
-    : SQSTRING
-    | DQSTRING
     ;
 
 // Lexer.

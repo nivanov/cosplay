@@ -30,8 +30,6 @@ package org.cosplay.games.mir.os.progs.asm.compiler
                ALl rights reserved.
 */
 
-import MirAsm.*
-
 /**
   *
   * @param label
@@ -42,7 +40,7 @@ import MirAsm.*
 case class MirAsmInstruction(
     label: Option[String],
     line: Int,
-    fun: INSTRUCTION,
+    fun: (MirAsmStack, MirAsmState) => Unit,
     params: Seq[Any],
     src: String
 )
