@@ -33,6 +33,8 @@ package org.cosplay.games.mir.os.progs.asm.compiler
 import org.cosplay.impl.CPUtils
 import org.cosplay.*
 import games.mir.os.progs.asm.compiler.antlr4.*
+import games.mir.os.progs.asm.compiler.MirAsmInstruction.*
+import MirAsmExecutable.*
 import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
 
@@ -44,60 +46,36 @@ import scala.collection.mutable
 class MirAsmCompiler:
     /**
       *
-      */
-    private case class ErrorHolder(
-        ptrStr: String,
-        origStr: String
-    )
-
-    /**
-      *
-      * @param code
-      * @param origin
-      */
-    private class FiniteStateMachine(code: String, origin: String) extends MirAsmBaseListener:
-        private val instrs = mutable.ArrayBuffer.empty[MirAsmInstruction]
-
-        /**
-          *
-          */
-        def getInstructions: Seq[MirAsmInstruction] = instrs.toSeq
-
-    /**
-      *
-      * @param in
-      * @param charPos
-      */
-    private def mkErrorHolder(in: String, charPos: Int): ErrorHolder =
-        val in0 = in.strip()
-        if in0.isEmpty || charPos < 0 then ErrorHolder("<empty>", "<empty>")
-        else
-            val charPos0 = charPos - (in.length - in.stripLeading().length)
-            val pos = Math.max(0, charPos0)
-            val dash = "-" * in0.length
-            val ptrStr = s"${dash.substring(0, pos)}^${dash.substring(pos + 1)}"
-            val origStr = s"${in0.substring(0, pos)}${in0.charAt(pos)}${in0.substring(pos + 1)}"
-
-            ErrorHolder(ptrStr, origStr)
-
-    /**
-      *
-      * @param kind
       * @param msg
       * @param line
       * @param charPos
       * @param code
-      * @param origin Code origin (file name, etc.).
+      * @param origin
       */
-    private def mkError(
-        kind: String,
+    private def mkErrorMessage(
         msg: String,
         line: Int, // 1, 2, ...
         charPos: Int, // 0, 1, 2, ...
         code: String,
-        origin: String): String =
+        origin: String
+    ): String =
+        def errorPointer(in: String, charPos: Int): (String, String) =
+            val in0 = in.strip()
+            if in0.isEmpty || charPos < 0 then "<empty>" -> "<empty>"
+            else
+                val charPos0 = charPos - (in.length - in.stripLeading().length)
+                val len = in0.length
+                val pos = Math.min(Math.max(0, charPos0), len)
+
+                if pos == len then
+                    s"${"-" * len}^" -> in0
+                else
+                    val dash = "-" * len
+                    val ptrStr = s"${dash.substring(0, pos)}^${dash.substring(pos + 1)}"
+                    ptrStr -> in0
+
         val codeLine = code.split("\n")(line - 1)
-        val hold = mkErrorHolder(codeLine, charPos)
+        val (ptrStr, origStr) = errorPointer(codeLine, charPos)
         var aMsg = CPUtils.decapitalize(msg) match
             case s: String if s.last == '.' => s
             case s: String => s"$s."
@@ -107,40 +85,69 @@ class MirAsmCompiler:
             case idx if idx >= 0 => s"${aMsg.substring(0, idx).trim}."
             case _ => aMsg
 
-        s"""# Asm $kind error in '$origin' at line $line - $aMsg
-           #   |-- Line:  ${hold.origStr}
-           #   +-- Error: ${hold.ptrStr}
+        s"""# Assembler error in '$origin' at line $line - $aMsg
+           #   |-- Line:  $origStr
+           #   +-- Error: $ptrStr
            #""".stripMargin('#')
-
     /**
       *
-      * @param msg
-      * @param line
-      * @param charPos
       * @param code
-      * @param origin Code origin (file name, etc.).
+      * @param origin
       */
-    private def mkSyntaxError(
-        msg: String,
-        line: Int, // 1, 2, ...
-        charPos: Int, // 0, 1, 2, ...
-        code: String,
-        origin: String): String = mkError("syntax", msg, line, charPos, code, origin)
+    private class FiniteStateMachine(code: String, origin: String) extends MirAsmBaseListener:
+        private val instrs = mutable.ArrayBuffer.empty[MirAsmInstruction]
+        private val labels = mutable.HashSet.empty[String]
+        private var params: mutable.ArrayBuffer[Param] = _
 
-    /**
-      *
-      * @param msg
-      * @param line
-      * @param charPos
-      * @param code
-      * @param origin Code origin (file name, etc.).
-      */
-    private def mkRuntimeError(
-        msg: String,
-        line: Int, // 1, 2, ...
-        charPos: Int, // 0, 1, 2, ...
-        code: String,
-        origin: String): String = mkError("runtime", msg, line, charPos, code, origin)
+        override def enterInst(ctx: MirAsmParser.InstContext): Unit =
+            params = mutable.ArrayBuffer.empty[Param]
+        override def exitInst(ctx: MirAsmParser.InstContext): Unit =
+            given ParserRuleContext = ctx
+            val name = ctx.NAME().getSymbol.getText
+            val label =
+                if ctx.label() == null
+                then
+                    None
+                else
+                    val txt = ctx.label().ID().getText
+                    if labels.contains(txt) then
+                        throw error(s"Duplicate label: $txt")
+                    else
+                        labels += txt
+                        Option(txt)
+            val src = ctx.getText
+            val line = ctx.start.getLine
+
+            instrs += new MirAsmInstruction(label, line, name, params.toSeq, src)
+
+        override def exitParam(ctx: MirAsmParser.ParamContext): Unit =
+            require(params != null)
+            given ParserRuleContext = ctx
+            val txt = ctx.getText
+            if ctx.NULL() != null then params += NullParam
+            else if ctx.DQSTRING() != null then params += StringParam(txt.substring(1, txt.length - 1))
+            else if ctx.ID() != null then params += VarParam(txt)
+            else // Integer or real.
+                val num = txt.replaceAll("_", "")
+
+                try LongParam(java.lang.Long.parseLong(num)) // Try 'long'.
+                catch case _: NumberFormatException =>
+                    try DoubleParam(java.lang.Double.parseDouble(num)) // Try 'double'.
+                    catch case _: NumberFormatException => throw error("Invalid numeric value: $txt")
+
+        /**
+          *
+          */
+        def getInstructions: Seq[MirAsmInstruction] = instrs.toSeq
+
+        /**
+          *
+          * @param errMsg
+          * @param ctx
+          */
+        private def error(errMsg: String)(using ctx: ParserRuleContext): CPException =
+            val tok = ctx.start
+            new CPException(mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin))
 
     /**
       * Custom error handler.
@@ -164,7 +171,7 @@ class MirAsmCompiler:
             charPos: Int, // 1, 2, ...
             msg: String,
             e: RecognitionException): Unit =
-            throw new CPException(mkSyntaxError(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
+            throw new CPException(mkErrorMessage(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
 
     /**
       *
@@ -192,8 +199,8 @@ class MirAsmCompiler:
     def compile(code: String, origin: String): MirAsmExecutable =
         val (fsm, parser) = antlr4Setup(code, origin)
 
-        // Parse the input IDL and walk the built AST.
+        // Parse the input assembler and walk the built AST.
         (new ParseTreeWalker).walk(fsm, parser.asm())
 
-        null // TODO
+        MirAsmExecutable(fsm.getInstructions)
 

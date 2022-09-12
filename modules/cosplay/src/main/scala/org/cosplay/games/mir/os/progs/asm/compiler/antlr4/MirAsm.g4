@@ -39,7 +39,7 @@ code
     | code inst NL*
     ;
 inst: label? name=NAME plist?;
-label: ID COLON;
+label: ID COLON NL*;
 plist
     : param
     | plist param

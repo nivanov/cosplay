@@ -40,6 +40,31 @@ import scala.util.{Failure, Success, Try}
   */
 object MirAsmCompilerTests:
     @Test
+    def dupLabelTest(): Unit =
+        val comp = new MirAsmCompiler
+
+        def compile(code: String): Unit =
+            Try(comp.compile(code, "test")).match
+                case Success(_) => assertTrue(false)
+                case Failure(e) =>
+                    println(s"Expected error.")
+                    e.printStackTrace()
+
+        compile(
+            """
+              |_label: ; Label.
+              |     add s 2
+              |
+              |_label: ; Should be an error...
+              |
+              |     push null
+              |     pop
+              |     push "qwerty"
+              |
+              |     mov "test" 1 null ; Inline comments.
+              |""".stripMargin)
+
+    @Test
     def baseTest(): Unit =
         val comp = new MirAsmCompiler
 

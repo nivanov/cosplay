@@ -36,6 +36,7 @@ object MirAsmExecutable:
       * @param instrs
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
+        // TODO
         null
 
 /**
