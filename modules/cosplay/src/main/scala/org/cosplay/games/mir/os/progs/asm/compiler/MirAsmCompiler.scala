@@ -111,7 +111,7 @@ class MirAsmCompiler:
                 then
                     None
                 else
-                    val txt = ctx.label().ID().getText
+                    val txt = ctx.label().USR_ID().getText
                     if labels.contains(txt) then
                         throw error(s"Duplicate label: $txt")
                     else
@@ -127,7 +127,7 @@ class MirAsmCompiler:
             val txt = ctx.getText
             if ctx.NULL() != null then params += NullParam
             else if ctx.DQSTRING() != null then params += StringParam(txt.substring(1, txt.length - 1))
-            else if ctx.ID() != null then params += VarParam(txt)
+            else if ctx.USR_ID() != null || ctx.SYS_ID() != null then params += VarParam(txt)
             else // Integer or real.
                 val num = txt.replaceAll("_", "")
 

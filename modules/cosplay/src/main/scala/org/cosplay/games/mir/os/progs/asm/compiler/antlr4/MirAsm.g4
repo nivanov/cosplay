@@ -35,11 +35,11 @@ grammar MirAsm;
 
 asm: code EOF; // Assembler entry point.
 code
-    : NL* inst (NL+|EOF)
+    : NL* inst (NL*|EOF)
     | code inst (NL*|EOF)
     ;
 inst: label? INSRT_NAME plist?;
-label: ID COLON NL*;
+label: USR_ID COLON NL*;
 plist
     : param
     | plist COMMA param
@@ -47,7 +47,8 @@ plist
 param
     : DQSTRING
     | NULL
-    | ID
+    | USR_ID
+    | SYS_ID
     | INT REAL? EXP?
     ;
 
@@ -74,12 +75,14 @@ DQUOTE: '"';
 SCOLOR: ';';
 COMMA: ',';
 NL: '\n';
+DOLLAR: '$';
 COLON: ':';
 DOT: '.';
 INT: '0' | [1-9] [_0-9]*;
 REAL: DOT [0-9]+;
 EXP: [Ee] [+\-]? INT;
-ID: [0-9a-zA-Z_]+;
+USR_ID: [0-9a-zA-Z_]+;
+SYS_ID: '$'USR_ID;
 COMMENT: SCOLOR ~[\r\n]* '\r'? (NL| EOF) -> skip;
 WS: [ \r\t\u000C]+ -> skip;
 ErrorChar: .;

@@ -36,9 +36,13 @@ object MirAsmExecutable:
       * @param instrs
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
-        // TODO
-        for (instr <- instrs) println(s"${instr.line}:\t${instr.getSourceCode}")
-        null
+        new MirAsmExecutable:
+            /**
+              *
+              * @param state
+              */
+            override def execute(state: MirAsmState): Unit =
+                val stack = new MirAsmStack                
 
 /**
   *
