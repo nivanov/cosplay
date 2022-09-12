@@ -39,6 +39,7 @@ import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
 
 import scala.collection.mutable
+import scala.jdk.CollectionConverters.*
 
 /**
   *
@@ -63,7 +64,8 @@ class MirAsmCompiler:
             val in0 = in.strip()
             if in0.isEmpty || charPos < 0 then "<empty>" -> "<empty>"
             else
-                val charPos0 = charPos - (in.length - in.stripLeading().length)
+                var charPos0 = charPos - (in.length - in.stripLeading().length)
+                if msg.contains("extraneous input") || msg.contains("mismatched input") then charPos0 += 1
                 val len = in0.length
                 val pos = Math.min(Math.max(0, charPos0), len)
 
@@ -85,10 +87,10 @@ class MirAsmCompiler:
             case idx if idx >= 0 => s"${aMsg.substring(0, idx).trim}."
             case _ => aMsg
 
-        s"""# Assembler error in '$origin' at line $line - $aMsg
-           #   |-- Line:  $origStr
-           #   +-- Error: $ptrStr
-           #""".stripMargin('#')
+        s"""#Assembler error in '$origin' at line $line - $aMsg
+            #  |-- Line:  $origStr
+            #  +-- Error: $ptrStr
+            #""".stripMargin('#')
     /**
       *
       * @param code
@@ -103,7 +105,7 @@ class MirAsmCompiler:
             params = mutable.ArrayBuffer.empty[Param]
         override def exitInst(ctx: MirAsmParser.InstContext): Unit =
             given ParserRuleContext = ctx
-            val name = ctx.NAME().getSymbol.getText
+            val name = ctx.INSRT_NAME().getSymbol.getText
             val label =
                 if ctx.label() == null
                 then
@@ -115,10 +117,9 @@ class MirAsmCompiler:
                     else
                         labels += txt
                         Option(txt)
-            val src = ctx.getText
             val line = ctx.start.getLine
 
-            instrs += new MirAsmInstruction(label, line, name, params.toSeq, src)
+            instrs += new MirAsmInstruction(label, line, name, params.toSeq)
 
         override def exitParam(ctx: MirAsmParser.ParamContext): Unit =
             require(params != null)
@@ -130,9 +131,9 @@ class MirAsmCompiler:
             else // Integer or real.
                 val num = txt.replaceAll("_", "")
 
-                try LongParam(java.lang.Long.parseLong(num)) // Try 'long'.
+                try params += LongParam(java.lang.Long.parseLong(num)) // Try 'long'.
                 catch case _: NumberFormatException =>
-                    try DoubleParam(java.lang.Double.parseDouble(num)) // Try 'double'.
+                    try params += DoubleParam(java.lang.Double.parseDouble(num)) // Try 'double'.
                     catch case _: NumberFormatException => throw error("Invalid numeric value: $txt")
 
         /**

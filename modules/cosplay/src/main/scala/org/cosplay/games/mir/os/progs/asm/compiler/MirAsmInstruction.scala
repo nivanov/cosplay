@@ -35,11 +35,16 @@ package org.cosplay.games.mir.os.progs.asm.compiler
   */
 object MirAsmInstruction:
     trait Param
-    object NullParam extends Param
-    case class VarParam(id: String) extends Param
-    case class StringParam(s: String) extends Param
-    case class LongParam(d: Long) extends Param
-    case class DoubleParam(d: Double) extends Param
+    object NullParam extends Param:
+        override def toString: String = "null"
+    case class VarParam(id: String) extends Param:
+        override def toString: String = id
+    case class StringParam(s: String) extends Param:
+        override def toString: String = s"\"$s\""
+    case class LongParam(d: Long) extends Param:
+        override def toString: String = d.toString
+    case class DoubleParam(d: Double) extends Param:
+        override def toString: String = d.toString
 
 import MirAsmInstruction.*
 
@@ -49,13 +54,19 @@ import MirAsmInstruction.*
   * @param line Line number in the original source code.
   * @param name Instruction name.
   * @param params Instruction parameter list in the same order they appear in the source code.
-  * @param src Source code for this instruction.
   */
 case class MirAsmInstruction(
     label: Option[String],
     line: Int,
     name: String,
-    params: Seq[Param],
-    src: String
-)
+    params: Seq[Param]
+):
+    /**
+      *
+      */
+    def getSourceCode: String =
+        val lbl = label match
+            case Some(s) => s"$s: "
+            case None => ""
+        s"$lbl$name ${params.mkString(", ")}"
 

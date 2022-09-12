@@ -37,6 +37,7 @@ object MirAsmExecutable:
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
         // TODO
+        for (instr <- instrs) println(s"${instr.line}:\t${instr.getSourceCode}")
         null
 
 /**

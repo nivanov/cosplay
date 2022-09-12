@@ -35,14 +35,14 @@ grammar MirAsm;
 
 asm: code EOF; // Assembler entry point.
 code
-    : NL* inst NL+
-    | code inst NL*
+    : NL* inst (NL+|EOF)
+    | code inst (NL*|EOF)
     ;
-inst: label? name=NAME plist?;
+inst: label? INSRT_NAME plist?;
 label: ID COLON NL*;
 plist
     : param
-    | plist param
+    | plist COMMA param
     ;
 param
     : DQSTRING
@@ -53,7 +53,7 @@ param
 
 // Lexer.
 // ======
-NAME
+INSRT_NAME
     : 'mov'
     | 'push'
     | 'pop'
@@ -72,6 +72,7 @@ DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double qu
 NULL: 'null';
 DQUOTE: '"';
 SCOLOR: ';';
+COMMA: ',';
 NL: '\n';
 COLON: ':';
 DOT: '.';

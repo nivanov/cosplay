@@ -39,53 +39,63 @@ import scala.util.{Failure, Success, Try}
   *
   */
 object MirAsmCompilerTests:
-    @Test
-    def dupLabelTest(): Unit =
-        val comp = new MirAsmCompiler
+    /**
+      *
+      * @param code
+      */
+    def compileOk(code: String): Unit =
+        Try((new MirAsmCompiler).compile(code, "test")).match
+            case Success(_) => ()
+            case Failure(e) => assertTrue(false, e.getMessage)
 
-        def compile(code: String): Unit =
-            Try(comp.compile(code, "test")).match
-                case Success(_) => assertTrue(false)
-                case Failure(e) =>
-                    println(s"Expected error.")
-                    e.printStackTrace()
-
-        compile(
-            """
-              |_label: ; Label.
-              |     add s 2
-              |
-              |_label: ; Should be an error...
-              |
-              |     push null
-              |     pop
-              |     push "qwerty"
-              |
-              |     mov "test" 1 null ; Inline comments.
-              |""".stripMargin)
+    /**
+      *
+      * @param code
+      */
+    def compileFail(code: String): Unit =
+        Try((new MirAsmCompiler).compile(code, "test")).match
+            case Success(_) => assertTrue(false)
+            case Failure(e) =>
+                println(s"<< Expected error below >>")
+                e.printStackTrace()
 
     @Test
-    def baseTest(): Unit =
-        val comp = new MirAsmCompiler
+    def dupLabelTest(): Unit = compileFail(
+        """
+          |_label: ; Label.
+          |     add s, 2
+          |
+          |_label: ; Should be an error...
+          |
+          |     push null
+          |     pop
+          |     push "qwerty"
+          |
+          |     mov "test", 1, null ; Inline comments.
+          |""".stripMargin
+    )
 
-        def compile(code: String): Unit =
-            Try(comp.compile(code, "test")).match
-                case Success(_) => ()
-                case Failure(e) => assertTrue(false, e.getMessage)
+    @Test
+    def syntaxTest(): Unit =
+        compileFail("xyz s, 2 ; Unknown command.")
+        compileFail("add s,, 2 ; Extra comma.")
+        compileFail("add s, 2_00.12Ea34 ; Bad number.")
 
-        compile(
-            """
-              |; Testing assembler
-              |; Comments
-              |
-              |;
-              |; Start some code...
-              |;
-              |_label: ; Label.
-              |     add s 2
-              |     push null
-              |     pop
-              |     push "qwerty"
-              |
-              |     mov "test" 1 null ; Inline comments.
-              |""".stripMargin)
+    @Test
+    def baseTest(): Unit = compileOk(
+        """
+          |; Testing assembler
+          |; Comments
+          |
+          |;
+          |; Start some code...
+          |;
+          |_label: ; Label.
+          |     add s, 2_00.12E34
+          |     push null
+          |     pop
+          |     push "qwerty", ""
+          |
+          |     mov "test", 1, null ; Inline comments.
+          |""".stripMargin
+    )
