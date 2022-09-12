@@ -17,6 +17,11 @@
 
 package org.cosplay.games.mir.os.progs.asm.compiler
 
+import org.cosplay.*
+import scala.collection.*
+import scala.collection.immutable
+import scala.collection.mutable
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -30,19 +35,44 @@ package org.cosplay.games.mir.os.progs.asm.compiler
                 ALl rights reserved.
 */
 
+/**
+  *
+  */
 object MirAsmExecutable:
+    /**
+      *
+      * @param errMsg
+      */
+    class AsmRuntimeException(errMsg: String) extends CPException(errMsg)
+
+    /**
+      *
+      * @param errMsg
+      * @param instr
+      */
+    private def error(errMsg: String)(using instr: MirAsmInstruction): AsmRuntimeException =
+        new AsmRuntimeException(errMsg)
+
     /**
       *
       * @param instrs
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
-        new MirAsmExecutable:
-            /**
-              *
-              * @param state
-              */
-            override def execute(state: MirAsmState): Unit =
-                val stack = new MirAsmStack                
+        (state: MirAsmState) =>
+            val stack = new MirAsmStack
+
+            // Ensure instructions are sorted & indexed.
+            val code = instrs.sortBy(_.line)
+            // Create labels LUT.
+            val labelLut = immutable.HashMap.from(
+                code.zipWithIndex.filter((instr, _) => instr.label.isDefined).map((instr, idx) => instr.label.get -> idx)
+            )
+
+            for (instr <- instrs)
+                given MirAsmInstruction = instr
+                instr.name match
+                    case "push" =>
+                    case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 
 /**
   *
