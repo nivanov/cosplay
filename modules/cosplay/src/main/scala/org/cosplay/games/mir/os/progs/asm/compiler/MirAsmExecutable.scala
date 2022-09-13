@@ -22,6 +22,8 @@ import scala.collection.*
 import scala.collection.immutable
 import scala.collection.mutable
 
+import MirAsmInstruction.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -51,7 +53,7 @@ object MirAsmExecutable:
       * @param instr
       */
     private def error(errMsg: String)(using instr: MirAsmInstruction): AsmRuntimeException =
-        new AsmRuntimeException(errMsg)
+        new AsmRuntimeException(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.")
 
     /**
       *
@@ -64,14 +66,34 @@ object MirAsmExecutable:
             // Ensure instructions are sorted & indexed.
             val code = instrs.sortBy(_.line)
             // Create labels LUT.
-            val labelLut = immutable.HashMap.from(
+            val lblLut = immutable.HashMap.from(
                 code.zipWithIndex.filter((instr, _) => instr.label.isDefined).map((instr, idx) => instr.label.get -> idx)
             )
 
             for (instr <- instrs)
                 given MirAsmInstruction = instr
-                instr.name match
+                val name = instr.name
+                val params = instr.params
+                val paramsCnt = params.length
+
+                def ensureParams(min: Int, max: Int): Unit =
+                    if paramsCnt < min then throw error("Insufficient instruction parameters")
+                    if paramsCnt > max then throw error("Too many instruction parameters")
+
+                def getVar(id: String): Any =
+                    state.getVar(id) match
+                        case Some(v) => v
+                        case None => throw error(s"Trying to access undefined variable: $id")
+
+                name match
                     case "push" =>
+                        ensureParams(1, 1)
+                        params.head match
+                            case NullParam => stack.push(null)
+                            case StringParam(s) => stack.push(s)
+                            case LongParam(d) => stack.push(d)
+                            case DoubleParam(d) => stack.push(d)
+                            case VarParam(id) => stack.push(getVar(id))
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 
 /**

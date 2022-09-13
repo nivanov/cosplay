@@ -20,7 +20,7 @@ package org.cosplay.games.mir.os.progs.asm.compiler
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-import scala.util.{Failure, Success, Try}
+import scala.util.*
 
 /*
    _________            ______________
@@ -59,6 +59,9 @@ object MirAsmCompilerTests:
                 println(s"<< Expected error below >>")
                 e.printStackTrace()
 
+    /**
+      * 
+      */
     @Test
     def dupLabelTest(): Unit = compileFail(
         """
@@ -75,6 +78,9 @@ object MirAsmCompilerTests:
           |""".stripMargin
     )
 
+    /**
+      *
+      */
     @Test
     def syntaxTest(): Unit =
         compileFail("xyz s, 2 ; Unknown command.")
@@ -82,6 +88,9 @@ object MirAsmCompilerTests:
         compileFail("add s, 2_00.12Ea34 ; Bad number.")
         compileFail("add 'bad string' ; Bad string.")
 
+    /**
+      *
+      */
     @Test
     def baseTest(): Unit = compileOk(
         """

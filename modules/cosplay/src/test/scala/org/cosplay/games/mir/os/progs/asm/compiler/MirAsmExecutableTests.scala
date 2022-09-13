@@ -17,6 +17,11 @@
 
 package org.cosplay.games.mir.os.progs.asm.compiler
 
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+
+import scala.util.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -33,6 +38,38 @@ package org.cosplay.games.mir.os.progs.asm.compiler
 /**
   *
   */
-class MirAsmState:
-    def getVar(id: String): Option[Any] = ???
-    def setVar(id: String, v: Any): Unit = ???
+object MirAsmExecutableTests:
+    /**
+      *
+      * @param code
+      */
+    def executeOk(code: String): Unit =
+        Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmState())).match
+            case Success(_) => ()
+            case Failure(e) => assertTrue(false, e.getMessage)
+
+    /**
+      *
+      * @param code
+      */
+    def executeFail(code: String): Unit =
+        Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmState())).match
+            case Success(_) => assertTrue(false)
+            case Failure(e) =>
+                println(s"<< Expected error below >>")
+                e.printStackTrace()
+
+    /**
+      *
+      */
+    @Test
+    def executeFailTests(): Unit =
+        executeFail("push ; Missing parameter.")
+        executeFail("push null, 1, 2, \"asdas\"; Too many parameter.")
+
+    /**
+      *
+      */
+    @Test
+    def executeOkTests(): Unit =
+        executeOk("push 1")
