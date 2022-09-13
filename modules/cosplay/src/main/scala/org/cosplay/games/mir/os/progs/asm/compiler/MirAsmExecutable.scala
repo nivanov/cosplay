@@ -49,14 +49,6 @@ object MirAsmExecutable:
 
     /**
       *
-      * @param errMsg
-      * @param instr
-      */
-    private def error(errMsg: String)(using instr: MirAsmInstruction): AsmRuntimeException =
-        new AsmRuntimeException(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.")
-
-    /**
-      *
       * @param instrs
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
@@ -64,17 +56,19 @@ object MirAsmExecutable:
             val stack = new MirAsmStack
 
             // Ensure instructions are sorted & indexed.
-            val code = instrs.sortBy(_.line)
+            val code = instrs.sortBy(_.line).zipWithIndex
             // Create labels LUT.
             val lblLut = immutable.HashMap.from(
-                code.zipWithIndex.filter((instr, _) => instr.label.isDefined).map((instr, idx) => instr.label.get -> idx)
+                code.filter((instr, _) => instr.label.isDefined).map((instr, idx) => instr.label.get -> idx)
             )
 
-            for (instr <- instrs)
-                given MirAsmInstruction = instr
+            for ((instr, idx) <- code)
                 val name = instr.name
                 val params = instr.params
                 val paramsCnt = params.length
+
+                def error(errMsg: String): AsmRuntimeException =
+                    new AsmRuntimeException(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.")
 
                 def ensureParams(min: Int, max: Int): Unit =
                     if paramsCnt < min then throw error("Insufficient instruction parameters")
@@ -85,6 +79,10 @@ object MirAsmExecutable:
                         case Some(v) => v
                         case None => throw error(s"Trying to access undefined variable: $id")
 
+                def pop(): Any =
+                    try stack.pop()
+                    catch case e: NoSuchElementException => throw error(s"Stack is empty")
+
                 name match
                     case "push" =>
                         ensureParams(1, 1)
@@ -94,6 +92,26 @@ object MirAsmExecutable:
                             case LongParam(d) => stack.push(d)
                             case DoubleParam(d) => stack.push(d)
                             case VarParam(id) => stack.push(getVar(id))
+                    case "pop" =>
+                        ensureParams(0, 1)
+                        if params.isEmpty then pop()
+                        else
+                            params.head match
+                                case VarParam(id) => state.setVar(id, pop())
+                                case _ => throw error(s"Invalid parameter - expecting variable")
+                    case "add" =>
+                        ensureParams(1, 1)
+                    case "sub" =>
+                        ensureParams(1, 1)
+                    case "calln" =>
+                        ensureParams(1, 1)
+                    case "let" =>
+                        ensureParams(2, 2)
+                    case "jmp" => ()
+                    case "cjmp" => ()
+                    case "call" => ()
+                    case "ret" => ()
+                    case "exit" => ()
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 
 /**
