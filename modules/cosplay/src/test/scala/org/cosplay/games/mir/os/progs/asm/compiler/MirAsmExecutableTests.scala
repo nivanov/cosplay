@@ -44,7 +44,7 @@ object MirAsmExecutableTests:
       * @param code
       */
     def executeOk(code: String): Unit =
-        Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmState())).match
+        Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmContext())).match
             case Success(_) => ()
             case Failure(e) => assertTrue(false, e.getMessage)
 
@@ -53,7 +53,7 @@ object MirAsmExecutableTests:
       * @param code
       */
     def executeFail(code: String): Unit =
-        Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmState())).match
+        Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmContext())).match
             case Success(_) => assertTrue(false)
             case Failure(e) =>
                 println(s"<< Expected error below >>")

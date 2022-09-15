@@ -52,7 +52,7 @@ object MirAsmExecutable:
       * @param instrs
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
-        (state: MirAsmState) =>
+        (ctx: MirAsmContext) =>
             val stack = new MirAsmStack
 
             // Ensure instructions are sorted & indexed.
@@ -75,13 +75,18 @@ object MirAsmExecutable:
                     if paramsCnt > max then throw error("Too many instruction parameters")
 
                 def getVar(id: String): Any =
-                    state.getVar(id) match
+                    ctx.getVar(id) match
                         case Some(v) => v
                         case None => throw error(s"Trying to access undefined variable: $id")
 
                 def pop(): Any =
                     try stack.pop()
-                    catch case e: NoSuchElementException => throw error(s"Stack is empty")
+                    catch case _: NoSuchElementException => throw error(s"Stack is empty")
+
+                def varParam(idx: Int): String =
+                    params(idx) match
+                        case VarParam(id) => id
+                        case _ => throw error(s"Invalid parameter - expecting variable")
 
                 name match
                     case "push" =>
@@ -94,11 +99,7 @@ object MirAsmExecutable:
                             case VarParam(id) => stack.push(getVar(id))
                     case "pop" =>
                         ensureParams(0, 1)
-                        if params.isEmpty then pop()
-                        else
-                            params.head match
-                                case VarParam(id) => state.setVar(id, pop())
-                                case _ => throw error(s"Invalid parameter - expecting variable")
+                        if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
                     case "add" =>
                         ensureParams(1, 1)
                     case "sub" =>
@@ -107,6 +108,7 @@ object MirAsmExecutable:
                         ensureParams(1, 1)
                     case "let" =>
                         ensureParams(2, 2)
+                        val varId = varParam(0)
                     case "jmp" => ()
                     case "cjmp" => ()
                     case "call" => ()
@@ -120,6 +122,6 @@ object MirAsmExecutable:
 trait MirAsmExecutable:
     /**
       *
-      * @param state
+      * @param ctx
       */
-    def execute(state: MirAsmState): Unit
+    def execute(ctx: MirAsmContext): Unit

@@ -58,8 +58,6 @@ INSRT_NAME
     : 'mov'
     | 'push'
     | 'pop'
-    | 'inc'
-    | 'dec'
     | 'add'
     | 'mul'
     | 'div'
@@ -68,6 +66,7 @@ INSRT_NAME
     | 'call'
     | 'jmp'
     | 'ret'
+    | 'let'
     ;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 NULL: 'null';

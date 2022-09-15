@@ -33,6 +33,22 @@ package org.cosplay.games.mir.os.progs.asm.compiler
 /**
   *
   */
-class MirAsmState:
+class MirAsmContext:
+    /**
+      *
+      * @param id
+      */
     def getVar(id: String): Option[Any] = ???
+
+    /**
+      *
+      * @param id
+      * @param v
+      */
     def setVar(id: String, v: Any): Unit = ???
+
+    /**
+      *
+      * @param id
+      */
+    def hasVar(id: String): Boolean = getVar(id).isDefined
