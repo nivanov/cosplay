@@ -17,8 +17,6 @@
 
 package org.cosplay.games.mir.os.progs.asm.compiler
 
-import org.cosplay.games.mir.os.*
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -32,11 +30,16 @@ import org.cosplay.games.mir.os.*
                 ALl rights reserved.
 */
 
+import org.cosplay.games.mir.os.*
+import scala.collection.mutable
+
 /**
   *
   * @param execCtx
   */
 class MirAsmContext(execCtx: MirExecutableContext):
+    private val vars = mutable.HashMap.empty[String, Any]
+
     /**
       *
       */
@@ -46,14 +49,14 @@ class MirAsmContext(execCtx: MirExecutableContext):
       *
       * @param id
       */
-    def getVar(id: String): Option[Any] = ???
+    def getVar(id: String): Option[Any] = vars.get(id)
 
     /**
       *
       * @param id
       * @param v
       */
-    def setVar(id: String, v: Any): Unit = ???
+    def setVar(id: String, v: Any): Unit = vars.put(id, v)
 
     /**
       *

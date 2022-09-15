@@ -66,10 +66,55 @@ object MirAsmExecutableTests:
     def executeFailTests(): Unit =
         executeFail("push ; Missing parameter.")
         executeFail("push null, 1, 2, \"asdas\"; Too many parameter.")
+        executeFail(
+            """
+              |push "############"
+              |calln "_print"
+              |let x, 10
+              |let y, 2
+              |let s, "cosplay"
+              |push x
+              |sub s
+              |calln "_print"
+              |""".stripMargin
+        )
 
-    /**
+/**
       *
       */
     @Test
     def executeOkTests(): Unit =
         executeOk("push 1")
+        executeOk(
+            """
+              |push "----------"
+              |calln "_print"
+              |let x, 1
+              |push x
+              |add 2
+              |calln "_print"
+              |""".stripMargin
+        )
+
+        executeOk(
+            """
+              |push "**********"
+              |calln "_print"
+              |push "one "
+              |push "two"
+              |calln "concat"
+              |calln "_print"
+              |""".stripMargin
+        )
+
+        executeOk(
+            """
+              |push "############"
+              |calln "_print"
+              |let x, 10
+              |let y, 2
+              |push x
+              |sub y
+              |calln "_print"
+              |""".stripMargin
+        )

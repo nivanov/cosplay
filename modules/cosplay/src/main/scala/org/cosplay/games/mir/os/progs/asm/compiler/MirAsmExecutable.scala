@@ -80,8 +80,12 @@ object MirAsmExecutable:
                 val params = instr.params
                 val paramsCnt = params.length
 
-                def error(errMsg: String): AsmRuntimeException =
-                    new AsmRuntimeException(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.")
+                type ARE = AsmRuntimeException
+
+                def error(errMsg: String): ARE = new ARE(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.")
+                def wrongStack(act: Any, exp: String): ARE = error(s"Unexpected stack value ($act) - expecting $exp")
+                def wrongParam(idx: Int, exp: String): ARE = error(s"Invalid ${nth(idx)} parameter - expecting $exp")
+                def wrongVar(id: String, exp: String): ARE = error(s"Invalid variable '$id' type - expecting $exp")
 
                 def ensureParams(min: Int, max: Int): Unit =
                     if paramsCnt < min then throw error("Insufficient instruction parameters")
@@ -99,17 +103,17 @@ object MirAsmExecutable:
                 def popStr(): String =
                     pop() match
                         case s: String => s
-                        case x => throw error(s"Unexpected stack value ($x) - expecting string")
+                        case x => throw wrongStack(x, "string")
 
                 def varParam(idx: Int): String =
                     params(idx) match
                         case VarParam(id) => id
-                        case _ => throw error(s"Invalid ${nth(idx)} parameter - expecting variable")
+                        case _ => throw wrongParam(idx, "variable")
 
                 def strParam(idx: Int): String =
                     params(idx) match
                         case StringParam(s) => s
-                        case _ => throw error(s"Invalid ${nth(idx)} parameter - expecting string")
+                        case _ => throw wrongParam(idx, "string")
 
                 def anyParam(idx: Int): Any =
                     params(idx) match
@@ -119,30 +123,47 @@ object MirAsmExecutable:
                         case DoubleParam(d) => d
                         case VarParam(id) => getVar(id)
 
+                def addSub(mul: Int): Unit =
+                    require(mul == 1 || mul == -1)
+                    def addLong(d: Long): Unit = pop() match
+                        case x: Long => stack.push(x + d)
+                        case x: Double => stack.push(x + d)
+                        case x => throw wrongStack(x, "numeric")
+                    def addDouble(d: Double): Unit = pop() match
+                        case x: Long => stack.push(x + d)
+                        case x: Double => stack.push(x + d)
+                        case x => throw wrongStack(x, "numeric")
+
+                    params.head match
+                        case x: LongParam => addLong(x.d * mul)
+                        case x: DoubleParam => addDouble(x.d * mul)
+                        case VarParam(id) => getVar(id) match
+                            case x: Long => addLong(x * mul)
+                            case x: Double => addDouble(x * mul)
+                            case x => throw wrongVar(id, "numeric")
+                        case _ => throw wrongParam(0, "numeric")
+
                 object NativeFunctions:
-                    def print(): Unit = ctx.getExecContext.out.print(popStr())
+                    def print(): Unit = ctx.getExecContext.out.print(pop().toString)
+                    def concat(): Unit =
+                        val s1 = popStr()
+                        val s2 = popStr()
+                        stack.push(s"$s2$s1") // Note reverse order...
 
                 name match
-                    case "push" =>
-                        ensureParams(1, 1)
-                        stack.push(anyParam(0))
-                    case "pop" =>
-                        ensureParams(0, 1)
-                        if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
-                    case "add" =>
-                        ensureParams(1, 1)
-                    case "sub" =>
-                        ensureParams(1, 1)
+                    case "push" => ensureParams(1, 1); stack.push(anyParam(0))
+                    case "pop" => ensureParams(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
+                    case "add" => ensureParams(1, 1); addSub(1)
+                    case "sub" => ensureParams(1, 1); addSub(-1)
                     case "calln" =>
                         ensureParams(1, 1)
                         val fn = strParam(0)
                         fn match
                             case "print" => NativeFunctions.print()
-                            case "_print" => println(popStr()) // Debug only.
+                            case "concat" => NativeFunctions.concat()
+                            case "_print" => println(pop().toString) // Debug only.
                             case s => throw error(s"Unknown native function: $s")
-                    case "let" =>
-                        ensureParams(2, 2)
-                        ctx.setVar(varParam(0), anyParam(1))
+                    case "let" => ensureParams(2, 2); ctx.setVar(varParam(0), anyParam(1))
                     case "jmp" => ()
                     case "cjmp" => ()
                     case "call" => ()
