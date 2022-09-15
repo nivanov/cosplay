@@ -42,14 +42,27 @@ import MirAsmInstruction.*
   */
 object MirAsmExecutable:
     /**
+      * Special type for assembler runtime exceptions.
       *
-      * @param errMsg
+      * @param errMsg Error message.
       */
     class AsmRuntimeException(errMsg: String) extends CPException(errMsg)
 
     /**
       *
-      * @param instrs
+      * @param idx
+      */
+    def nth(idx: Int): String =
+        require(idx >= 0)
+        idx match
+            case 0 => "1st"
+            case 1 => "2nd"
+            case 2 => "3rd"
+            case i => s"${i + 1}th"
+
+    /**
+      *
+      * @param instrs Sequence of assembler instructions to build an executable from.
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
         (ctx: MirAsmContext) =>
@@ -77,26 +90,42 @@ object MirAsmExecutable:
                 def getVar(id: String): Any =
                     ctx.getVar(id) match
                         case Some(v) => v
-                        case None => throw error(s"Trying to access undefined variable: $id")
+                        case None => throw error(s"Undefined variable: $id")
 
                 def pop(): Any =
                     try stack.pop()
                     catch case _: NoSuchElementException => throw error(s"Stack is empty")
 
+                def popStr(): String =
+                    pop() match
+                        case s: String => s
+                        case x => throw error(s"Unexpected stack value ($x) - expecting string")
+
                 def varParam(idx: Int): String =
                     params(idx) match
                         case VarParam(id) => id
-                        case _ => throw error(s"Invalid parameter - expecting variable")
+                        case _ => throw error(s"Invalid ${nth(idx)} parameter - expecting variable")
+
+                def strParam(idx: Int): String =
+                    params(idx) match
+                        case StringParam(s) => s
+                        case _ => throw error(s"Invalid ${nth(idx)} parameter - expecting string")
+
+                def anyParam(idx: Int): Any =
+                    params(idx) match
+                        case NullParam => null
+                        case StringParam(s) => s
+                        case LongParam(d) => d
+                        case DoubleParam(d) => d
+                        case VarParam(id) => getVar(id)
+
+                object NativeFunctions:
+                    def print(): Unit = ctx.getExecContext.out.print(popStr())
 
                 name match
                     case "push" =>
                         ensureParams(1, 1)
-                        params.head match
-                            case NullParam => stack.push(null)
-                            case StringParam(s) => stack.push(s)
-                            case LongParam(d) => stack.push(d)
-                            case DoubleParam(d) => stack.push(d)
-                            case VarParam(id) => stack.push(getVar(id))
+                        stack.push(anyParam(0))
                     case "pop" =>
                         ensureParams(0, 1)
                         if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
@@ -106,9 +135,14 @@ object MirAsmExecutable:
                         ensureParams(1, 1)
                     case "calln" =>
                         ensureParams(1, 1)
+                        val fn = strParam(0)
+                        fn match
+                            case "print" => NativeFunctions.print()
+                            case "_print" => println(popStr()) // Debug only.
+                            case s => throw error(s"Unknown native function: $s")
                     case "let" =>
                         ensureParams(2, 2)
-                        val varId = varParam(0)
+                        ctx.setVar(varParam(0), anyParam(1))
                     case "jmp" => ()
                     case "cjmp" => ()
                     case "call" => ()

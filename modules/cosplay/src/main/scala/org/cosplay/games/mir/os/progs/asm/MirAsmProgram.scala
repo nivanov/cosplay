@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.asm.compiler
+package org.cosplay.games.mir.os.progs.asm
 
+import org.cosplay.*
+import org.cosplay.games.mir.*
 import org.cosplay.games.mir.os.*
 
 /*
@@ -34,29 +36,10 @@ import org.cosplay.games.mir.os.*
 
 /**
   *
-  * @param execCtx
   */
-class MirAsmContext(execCtx: MirExecutableContext):
-    /**
-      *
-      */
-    def getExecContext: MirExecutableContext = execCtx
+class MirAsmProgram extends MirExecutable:
+    private val sz = CPRand.between(3000.kb, 10000.kb)
 
-    /**
-      *
-      * @param id
-      */
-    def getVar(id: String): Option[Any] = ???
-
-    /**
-      *
-      * @param id
-      * @param v
-      */
-    def setVar(id: String, v: Any): Unit = ???
-
-    /**
-      *
-      * @param id
-      */
-    def hasVar(id: String): Boolean = getVar(id).isDefined
+    override def getSizeOnDisk: Long = sz
+    override def mainEntry(ctx: MirExecutableContext): Int =
+        0
