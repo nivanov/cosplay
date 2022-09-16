@@ -105,6 +105,11 @@ object MirAsmExecutable:
                         case s: String => s
                         case x => throw wrongStack(x, "string")
 
+                def popLong(): Long =
+                    pop() match
+                        case d: Long => d
+                        case x => throw wrongStack(x, "integer")
+
                 def varParam(idx: Int): String =
                     params(idx) match
                         case VarParam(id) => id
@@ -161,6 +166,10 @@ object MirAsmExecutable:
                     case "let" => ensure(2, 2); ctx.setVar(varParam(0), anyParam(1))
                     case "dup" => ensure(0, 0); if stack.nonEmpty then stack.push(stack.head)
                     case "jmp" => ()
+                    case "eq" => ensure(0, 0); stack.push(if pop() == pop() then 1L else 0L)
+                    case "neq" => ensure(0, 0); stack.push(if pop() == pop() then 0L else 1L)
+                    case "brk" => ensure(0, 1); throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
+                    case "cbrk" => ensure(0, 1); if popLong() == 0 then throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
                     case "cjmp" => ()
                     case "call" => ()
                     case "ret" => ()

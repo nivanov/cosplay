@@ -87,7 +87,7 @@ class MirAsmCompiler:
             case idx if idx >= 0 => s"${aMsg.substring(0, idx).trim}."
             case _ => aMsg
 
-        s"""#Assembler error in '$origin' at line $line - $aMsg
+        s"""#Syntax error in '$origin' at line $line - $aMsg
             #  |-- Line:  $origStr
             #  +-- Error: $ptrStr
             #""".stripMargin('#')

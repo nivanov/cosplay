@@ -56,6 +56,10 @@ param
 // ======
 INSRT_NAME
     : 'mov'
+    | 'eq'
+    | 'neq'
+    | 'brk'
+    | 'cbrk'
     | 'push'
     | 'pop'
     | 'add'

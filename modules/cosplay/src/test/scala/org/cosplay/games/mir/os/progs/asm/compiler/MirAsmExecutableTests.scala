@@ -68,8 +68,6 @@ object MirAsmExecutableTests:
         executeFail("push null, 1, 2, \"asdas\"; Too many parameter.")
         executeFail(
             """
-              |push "############"
-              |calln "_print"
               |let x, 10
               |let y, 2
               |let s, "cosplay"
@@ -78,6 +76,69 @@ object MirAsmExecutableTests:
               |calln "_print"
               |""".stripMargin
         )
+
+    /**
+      *
+      */
+    @Test
+    def breakOutTests(): Unit =
+        executeOk(
+            """
+              |push "one "
+              |push "two"
+              |calln "concat"
+              |push "one two"
+              |eq
+              |cbrk
+              |""".stripMargin
+        )
+
+        executeOk(
+            """
+              |let x, 10
+              |let y, 2
+              |push x
+              |push y
+              |sub
+              |push 8
+              |eq
+              |cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |let x, 10
+              |let y, 2
+              |push x
+              |push y
+              |sub
+              |push 7 ; Wrong result (should be 8).
+              |neq
+              |cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |let x, 1
+              |push x
+              |push 2
+              |add
+              |push 3
+              |eq
+              |cbrk "Assertion"
+              |""".stripMargin
+        )
+
+        executeFail("brk \"Assertion\"")
+        executeFail(
+            """
+              |push 1
+              |push 2
+              |add
+              |push 0
+              |eq
+              |cbrk "Expected break out"
+              |""".stripMargin)
 
     /**
       *
