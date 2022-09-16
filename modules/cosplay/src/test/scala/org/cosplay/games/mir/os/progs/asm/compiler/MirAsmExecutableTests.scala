@@ -91,7 +91,8 @@ object MirAsmExecutableTests:
               |calln "_print"
               |let x, 1
               |push x
-              |add 2
+              |push 2
+              |add
               |calln "_print"
               |""".stripMargin
         )
@@ -114,18 +115,8 @@ object MirAsmExecutableTests:
               |let x, 10
               |let y, 2
               |push x
-              |sub y
-              |calln "_print"
-              |""".stripMargin
-        )
-
-        executeOk(
-            """
-              |push "**********"
-              |calln "_print"
-              |push 2
-              |push "two"
-              |calln "concat"
+              |push y
+              |sub
               |calln "_print"
               |""".stripMargin
         )

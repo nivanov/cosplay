@@ -125,23 +125,18 @@ object MirAsmExecutable:
 
                 def addSub(mul: Int): Unit =
                     require(mul == 1 || mul == -1)
-                    def addLong(d: Long): Unit = pop() match
-                        case x: Long => stack.push(x + d)
-                        case x: Double => stack.push(x + d)
-                        case x => throw wrongStack(x, "numeric")
-                    def addDouble(d: Double): Unit = pop() match
-                        case x: Long => stack.push(x + d)
-                        case x: Double => stack.push(x + d)
-                        case x => throw wrongStack(x, "numeric")
-
-                    params.head match
-                        case x: LongParam => addLong(x.d * mul)
-                        case x: DoubleParam => addDouble(x.d * mul)
-                        case VarParam(id) => getVar(id) match
-                            case x: Long => addLong(x * mul)
-                            case x: Double => addDouble(x * mul)
-                            case x => throw wrongVar(id, "numeric")
-                        case _ => throw wrongParam(0, "numeric or variable")
+                    val v1 = pop()
+                    val v2 = pop()
+                    v1 match
+                        case d1: Long => v2 match
+                            case d2: Long => stack.push(d2 + d1 * mul)
+                            case d2: Double => stack.push(d2 + d1 * mul)
+                            case _ => throw wrongStack(d1, "numeric")
+                        case d1: Double => v2 match
+                            case d2: Long => stack.push(d2 + d1 * mul)
+                            case d2: Double => stack.push(d2 + d1 * mul)
+                            case _ => throw wrongStack(d1, "numeric")
+                        case _ => throw wrongStack(v1, "numeric")
 
                 object NativeFunctions:
                     def print(): Unit = ctx.getExecContext.out.print(pop().toString)
@@ -153,8 +148,8 @@ object MirAsmExecutable:
                 name match
                     case "push" => ensure(1, 1); stack.push(anyParam(0))
                     case "pop" => ensure(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
-                    case "add" => ensure(1, 1); addSub(1)
-                    case "sub" => ensure(1, 1); addSub(-1)
+                    case "add" => ensure(0, 0); addSub(1)
+                    case "sub" => ensure(0, 0); addSub(-1)
                     case "calln" =>
                         ensure(1, 1)
                         val fn = strParam(0)
