@@ -87,7 +87,7 @@ object MirAsmExecutable:
                 def wrongParam(idx: Int, exp: String): ARE = error(s"Invalid ${nth(idx)} parameter - expecting $exp")
                 def wrongVar(id: String, exp: String): ARE = error(s"Invalid variable '$id' type - expecting $exp")
 
-                def ensureParams(min: Int, max: Int): Unit =
+                def ensure(min: Int, max: Int): Unit =
                     if paramsCnt < min then throw error("Insufficient instruction parameters")
                     if paramsCnt > max then throw error("Too many instruction parameters")
 
@@ -141,7 +141,7 @@ object MirAsmExecutable:
                             case x: Long => addLong(x * mul)
                             case x: Double => addDouble(x * mul)
                             case x => throw wrongVar(id, "numeric")
-                        case _ => throw wrongParam(0, "numeric")
+                        case _ => throw wrongParam(0, "numeric or variable")
 
                 object NativeFunctions:
                     def print(): Unit = ctx.getExecContext.out.print(pop().toString)
@@ -151,19 +151,20 @@ object MirAsmExecutable:
                         stack.push(s"$s2$s1") // Note reverse order...
 
                 name match
-                    case "push" => ensureParams(1, 1); stack.push(anyParam(0))
-                    case "pop" => ensureParams(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
-                    case "add" => ensureParams(1, 1); addSub(1)
-                    case "sub" => ensureParams(1, 1); addSub(-1)
+                    case "push" => ensure(1, 1); stack.push(anyParam(0))
+                    case "pop" => ensure(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
+                    case "add" => ensure(1, 1); addSub(1)
+                    case "sub" => ensure(1, 1); addSub(-1)
                     case "calln" =>
-                        ensureParams(1, 1)
+                        ensure(1, 1)
                         val fn = strParam(0)
                         fn match
                             case "print" => NativeFunctions.print()
                             case "concat" => NativeFunctions.concat()
                             case "_print" => println(pop().toString) // Debug only.
                             case s => throw error(s"Unknown native function: $s")
-                    case "let" => ensureParams(2, 2); ctx.setVar(varParam(0), anyParam(1))
+                    case "let" => ensure(2, 2); ctx.setVar(varParam(0), anyParam(1))
+                    case "dup" => ensure(0, 0); if stack.nonEmpty then stack.push(stack.head)
                     case "jmp" => ()
                     case "cjmp" => ()
                     case "call" => ()

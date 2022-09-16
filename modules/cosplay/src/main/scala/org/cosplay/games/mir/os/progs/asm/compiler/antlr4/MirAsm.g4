@@ -67,6 +67,7 @@ INSRT_NAME
     | 'jmp'
     | 'ret'
     | 'let'
+    | 'dup'
     ;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 NULL: 'null';

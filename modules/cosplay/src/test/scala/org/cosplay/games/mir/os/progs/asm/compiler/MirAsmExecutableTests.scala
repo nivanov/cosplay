@@ -79,7 +79,7 @@ object MirAsmExecutableTests:
               |""".stripMargin
         )
 
-/**
+    /**
       *
       */
     @Test
@@ -115,6 +115,17 @@ object MirAsmExecutableTests:
               |let y, 2
               |push x
               |sub y
+              |calln "_print"
+              |""".stripMargin
+        )
+
+        executeOk(
+            """
+              |push "**********"
+              |calln "_print"
+              |push 2
+              |push "two"
+              |calln "concat"
               |calln "_print"
               |""".stripMargin
         )
