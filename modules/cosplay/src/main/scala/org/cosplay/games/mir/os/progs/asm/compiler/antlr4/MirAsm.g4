@@ -39,7 +39,7 @@ code
     | code inst (NL*|EOF)
     ;
 inst: label? INSRT_NAME plist?;
-label: USR_ID COLON NL*;
+label: ID COLON NL*;
 plist
     : param
     | plist COMMA param
@@ -47,8 +47,7 @@ plist
 param
     : DQSTRING
     | NULL
-    | USR_ID
-    | SYS_ID
+    | ID
     | INT REAL? EXP?
     ;
 
@@ -84,6 +83,10 @@ INSRT_NAME
     | 'ret'
     | 'let'
     | 'dup'
+    | 'not'
+    | 'notv'
+    | 'neg'
+    | 'negv'
     ;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 NULL: 'null';
@@ -94,11 +97,10 @@ NL: '\n';
 DOLLAR: '$';
 COLON: ':';
 DOT: '.';
-INT: '0' | [1-9] [_0-9]*;
+INT: '0' | '-'? [1-9] [_0-9]*;
 REAL: DOT [0-9]+;
 EXP: [Ee] [+\-]? INT;
-USR_ID: [0-9a-zA-Z_]+;
-SYS_ID: '$'USR_ID;
+ID: [0-9a-zA-Z_]+;
 COMMENT: SCOLOR ~[\r\n]* '\r'? (NL| EOF) -> skip;
 WS: [ \r\t\u000C]+ -> skip;
 ErrorChar: .;

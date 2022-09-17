@@ -186,12 +186,15 @@ object MirAsmExecutable:
                             case _ => throw wrongParam(1, "numeric")
                         case _ => throw wrongVar(id, "numeric")
 
+                def longVar(id: String): Long =
+                    getVar(id) match
+                        case d: Long => d
+                        case _ => throw wrongVar(id, "integer")
+
                 def incDecVar(v: Int): Unit =
                     require(v == 1 || v == -1)
                     val id = varParam(0) // 1st parameter (always variable).
-                    getVar(id) match
-                        case d: Long => ctx.setVar(id, d + v)
-                        case _ => throw wrongVar(id, "integer")
+                    ctx.setVar(id, longVar(id) + v)
 
                 def incDec(v: Int): Unit =
                     require(v == 1 || v == -1)
@@ -206,6 +209,23 @@ object MirAsmExecutable:
                         case s: String => stack.push(s)
                         case d: Int => stack.push(d.toLong)
                         case _ => assert(false, s"Invalid stack value type: $v")
+
+                def neg(): Unit =
+                    pop() match
+                        case d: Long => push(-d)
+                        case d: Double => push (-d)
+                        case x => throw wrongStack(x, "numeric")
+
+                def negv(): Unit =
+                    val id = varParam(0)
+                    getVar(id) match
+                        case d: Long => ctx.setVar(id, -d)
+                        case d: Double => ctx.setVar(id, -d)
+                        case x => throw wrongVar(id, "numeric")
+
+                def notv(): Unit =
+                    val id = varParam(0)
+                    ctx.setVar(id, if longVar(id) == 0L then 1 else 0L)
 
                 def addSub(mul: Int): Unit =
                     require(mul == 1 || mul == -1)
@@ -284,6 +304,10 @@ object MirAsmExecutable:
                     case "mulv" => checkParamCount(2, 2); multiplyVar()
                     case "divv" => checkParamCount(2, 2); divideVar()
                     case "subv" => checkParamCount(2, 2); addSubVar(-1)
+                    case "neg" => checkParamCount(0, 0); neg()
+                    case "negv" => checkParamCount(1, 1); negv()
+                    case "not" => checkParamCount(0, 0); push(if popLong() == 0L then 1 else 0L)
+                    case "notv" => checkParamCount(1, 1); notv()
                     case "calln" =>
                         checkParamCount(1, 1)
                         val fn = strParam(0)

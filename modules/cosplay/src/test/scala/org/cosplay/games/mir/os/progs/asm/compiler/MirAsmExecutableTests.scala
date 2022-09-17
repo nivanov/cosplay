@@ -151,6 +151,32 @@ object MirAsmExecutableTests:
         )
         executeOk(
             """
+              |push 1
+              |neg
+              |push -1
+              |eq
+              |cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |push 0
+              |not
+              |push 1
+              |eq
+              |cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |let x, 0
+              |notv x
+              |eqv x, 1
+              |cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
               | let a, 8
               | let b, 4
               | divv a, b
