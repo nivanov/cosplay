@@ -77,7 +77,8 @@ object MirAsmExecutable:
 
             var idx = 0
             val len = code.length
-            while (idx < len)
+            var exit = false
+            while (idx < len && !exit)
                 val instr = code(idx)
                 val name = instr.name
                 val params = instr.params
@@ -157,6 +158,34 @@ object MirAsmExecutable:
                             case _ => throw wrongParam(1, "numeric")
                         case _ => throw wrongVar(id, "numeric")
 
+                def multiplyVar(): Unit =
+                    val id = varParam(0) // 1st parameter (always variable).
+                    val v = anyParam(1) // 2d parameter (anything, including variable).
+                    getVar(id) match
+                        case d1: Long => v match
+                            case d2: Long => ctx.setVar(id, d2 * d1)
+                            case d2: Double => ctx.setVar(id, d2 * d1)
+                            case _ => throw wrongParam(1, "numeric")
+                        case d1: Double => v match
+                            case d2: Long => ctx.setVar(id, d2 * d1)
+                            case d2: Double => ctx.setVar(id, d2 * d1)
+                            case _ => throw wrongParam(1, "numeric")
+                        case _ => throw wrongVar(id, "numeric")
+
+                def divideVar(): Unit =
+                    val id = varParam(0) // Dividend (always variable).
+                    val v = anyParam(1) // Divisor (anything, including variable).
+                    getVar(id) match
+                        case d1: Long => v match
+                            case d2: Long => ctx.setVar(id, d1 / d2)
+                            case d2: Double => ctx.setVar(id, d1 / d2)
+                            case _ => throw wrongParam(1, "numeric")
+                        case d1: Double => v match
+                            case d2: Long => ctx.setVar(id, d1 / d2)
+                            case d2: Double => ctx.setVar(id, d1 / d2)
+                            case _ => throw wrongParam(1, "numeric")
+                        case _ => throw wrongVar(id, "numeric")
+
                 def incDecVar(v: Int): Unit =
                     require(v == 1 || v == -1)
                     val id = varParam(0) // 1st parameter (always variable).
@@ -167,8 +196,16 @@ object MirAsmExecutable:
                 def incDec(v: Int): Unit =
                     require(v == 1 || v == -1)
                     pop() match
-                        case d: Long => stack.push(d + v)
+                        case d: Long => push(d + v)
                         case x => throw wrongStack(x, "integer")
+
+                def push(v: Any): Unit =
+                    v match
+                        case d: Long => stack.push(d)
+                        case d: Double => stack.push(d)
+                        case s: String => stack.push(s)
+                        case d: Int => stack.push(d.toLong)
+                        case _ => assert(false, s"Invalid stack value type: $v")
 
                 def addSub(mul: Int): Unit =
                     require(mul == 1 || mul == -1)
@@ -176,21 +213,51 @@ object MirAsmExecutable:
                     val v2 = pop()
                     v1 match
                         case d1: Long => v2 match
-                            case d2: Long => stack.push(d2 + d1 * mul)
-                            case d2: Double => stack.push(d2 + d1 * mul)
+                            case d2: Long => push(d2 + d1 * mul)
+                            case d2: Double => push(d2 + d1 * mul)
                             case _ => throw wrongStack(d1, "numeric")
                         case d1: Double => v2 match
-                            case d2: Long => stack.push(d2 + d1 * mul)
-                            case d2: Double => stack.push(d2 + d1 * mul)
+                            case d2: Long => push(d2 + d1 * mul)
+                            case d2: Double => push(d2 + d1 * mul)
+                            case _ => throw wrongStack(d1, "numeric")
+                        case _ => throw wrongStack(v1, "numeric")
+
+                def multiply(): Unit =
+                    val v1 = pop()
+                    val v2 = pop()
+                    v1 match
+                        case d1: Long => v2 match
+                            case d2: Long => push(d2 * d1)
+                            case d2: Double => push(d2 * d1)
+                            case _ => throw wrongStack(d1, "numeric")
+                        case d1: Double => v2 match
+                            case d2: Long => push(d2 * d1)
+                            case d2: Double => push(d2 * d1)
+                            case _ => throw wrongStack(d1, "numeric")
+                        case _ => throw wrongStack(v1, "numeric")
+
+                def divide(): Unit =
+                    val v1 = pop() // Divisor.
+                    val v2 = pop() // Dividend.
+                    v1 match
+                        case d1: Long => v2 match
+                            case d2: Long => push(d2 / d1)
+                            case d2: Double => push(d2 / d1)
+                            case _ => throw wrongStack(d1, "numeric")
+                        case d1: Double => v2 match
+                            case d2: Long => push(d2 / d1)
+                            case d2: Double => push(d2 / d1)
                             case _ => throw wrongStack(d1, "numeric")
                         case _ => throw wrongStack(v1, "numeric")
 
                 object NativeFunctions:
                     def print(): Unit = ctx.getExecContext.out.print(pop().toString)
+                    def println(): Unit = ctx.getExecContext.out.println(pop().toString)
+                    def tostr(): Unit = push(pop().toString)
                     def concat(): Unit =
                         val s1 = pop().toString
                         val s2 = pop().toString
-                        stack.push(s"$s2$s1") // Note reverse order...
+                        push(s"$s2$s1") // Note reverse order...
 
                 // Go to the "natural" next instruction... or jump.
                 var nextInstr = true
@@ -203,30 +270,36 @@ object MirAsmExecutable:
                         case None => throw wrongLabel(lbl)
 
                 name match
-                    case "push" => checkParamCount(1, 1); stack.push(anyParam(0))
+                    case "push" => checkParamCount(1, 1); push(anyParam(0))
                     case "pop" => checkParamCount(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
                     case "add" => checkParamCount(0, 0); addSub(1)
                     case "inc" => checkParamCount(0, 0); incDec(1)
                     case "dec" => checkParamCount(0, 0); incDec(-1)
+                    case "mul" => checkParamCount(0, 0); multiply()
+                    case "div" => checkParamCount(0, 0); divide()
                     case "incv" => checkParamCount(1, 1); incDecVar(1)
                     case "decv" => checkParamCount(1, 1); incDecVar(-1)
                     case "sub" => checkParamCount(0, 0); addSub(-1)
                     case "addv" => checkParamCount(2, 2); addSubVar(1)
+                    case "mulv" => checkParamCount(2, 2); multiplyVar()
+                    case "divv" => checkParamCount(2, 2); divideVar()
                     case "subv" => checkParamCount(2, 2); addSubVar(-1)
                     case "calln" =>
                         checkParamCount(1, 1)
                         val fn = strParam(0)
                         fn match
                             case "print" => NativeFunctions.print()
+                            case "println" => NativeFunctions.println()
                             case "concat" => NativeFunctions.concat()
-                            case "_print" => println(pop().toString) // Debug only.
+                            case "tostr" => NativeFunctions.tostr()
+                            case "_println" => println(pop().toString) // Debug only.
                             case s => throw error(s"Unknown native function: $s")
                     case "let" => checkParamCount(2, 2); ctx.setVar(varParam(0), anyParam(1))
-                    case "dup" => checkParamCount(0, 0); if stack.nonEmpty then stack.push(stack.head)
-                    case "eq" => checkParamCount(0, 0); stack.push(if pop() == pop() then 1L else 0L)
-                    case "neq" => checkParamCount(0, 0); stack.push(if pop() == pop() then 0L else 1L)
-                    case "eqv" => checkParamCount(2, 2); stack.push(if getVar(varParam(0)) == anyParam(1) then 1L else 0L)
-                    case "neqv" => checkParamCount(2, 2); stack.push(if getVar(varParam(0)) == anyParam(1) then 0L else 1L)
+                    case "dup" => checkParamCount(0, 0); if stack.nonEmpty then push(stack.head)
+                    case "eq" => checkParamCount(0, 0); push(if pop() == pop() then 1L else 0L)
+                    case "neq" => checkParamCount(0, 0); push(if pop() == pop() then 0L else 1L)
+                    case "eqv" => checkParamCount(2, 2); push(if getVar(varParam(0)) == anyParam(1) then 1L else 0L)
+                    case "neqv" => checkParamCount(2, 2); push(if getVar(varParam(0)) == anyParam(1) then 0L else 1L)
                     case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
                     case "cbrk" => checkParamCount(0, 1); if popLong() == 0L then throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
                     case "cbrkv" => checkParamCount(1, 2); if getVar(varParam(0)) == 0L then throw error(if paramsCnt == 2 then strParam(1) else "Aborted")
@@ -235,7 +308,7 @@ object MirAsmExecutable:
                     case "cjmp" => checkParamCount(1, 1); if popLong() != 0L then jump(labelParam(0))
                     case "call" => ()
                     case "ret" => ()
-                    case "exit" => ()
+                    case "exit" => checkParamCount(0, 0); exit = true
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 
                 if nextInstr then idx += 1

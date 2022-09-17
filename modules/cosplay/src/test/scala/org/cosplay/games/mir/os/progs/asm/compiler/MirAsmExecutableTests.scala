@@ -73,7 +73,7 @@ object MirAsmExecutableTests:
               |let s, "cosplay"
               |push x
               |sub s
-              |calln "_print"
+              |calln "_println"
               |""".stripMargin
         )
 
@@ -130,6 +130,36 @@ object MirAsmExecutableTests:
         )
         executeOk(
             """
+              |push 4
+              |push 2
+              |div
+              |dup
+              |calln "_println"
+              |pop v
+              |eqv v, 2
+              |cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              | let a, 8
+              | let b, 4
+              | mulv a, b
+              | eqv a, 32
+              | cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              | let a, 8
+              | let b, 4
+              | divv a, b
+              | eqv a, 2
+              | cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
               |let x, 1
               |addv x, 2
               |eqv x, 3
@@ -151,6 +181,15 @@ object MirAsmExecutableTests:
               |dup
               |eq
               |cbrk "Assertion"
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |push "1"
+              |push 1
+              |calln "tostr"
+              |eq
+              |cbrk
               |""".stripMargin
         )
 
@@ -179,7 +218,7 @@ object MirAsmExecutableTests:
               |     eq
               |     cjmp end
               |     push "loop iteration"
-              |     calln "_print"
+              |     calln "_println"
               |     push i
               |     push 1
               |     add
@@ -187,7 +226,7 @@ object MirAsmExecutableTests:
               |     jmp loop
               |end:
               |     push "Loop is done."
-              |     calln "_print"
+              |     calln "_println"
               |""".stripMargin
         )
         executeOk(
@@ -198,12 +237,12 @@ object MirAsmExecutableTests:
               |     pop c
               |     cjmpv c, end
               |     push "loop iteration"
-              |     calln "_print"
+              |     calln "_println"
               |     addv i, 1
               |     jmp loop
               |end:
               |     push "Loop is done."
-              |     calln "_print"
+              |     calln "_println"
               |""".stripMargin
         )
         executeOk(
@@ -216,12 +255,12 @@ object MirAsmExecutableTests:
               |     push "loop iteration #"
               |     push i
               |     calln "concat"
-              |     calln "_print"
+              |     calln "_println"
               |     incv i
               |     jmp loop
               |end:
               |     push "Loop is done."
-              |     calln "_print"
+              |     calln "_println"
               |""".stripMargin
         )
         executeOk(
@@ -229,11 +268,12 @@ object MirAsmExecutableTests:
               |push 1
               |jmp label
               |push 2
-              |label: push 3
-              |add
-              |push 4
-              |eq
-              |cbrk "Assertion"
+              |label:
+              |     push 3
+              |     add
+              |     push 4
+              |     eq
+              |     cbrk "Assertion"
               |""".stripMargin
         )
 
@@ -242,15 +282,16 @@ object MirAsmExecutableTests:
               |push 1
               |jmp wrong_label ; Wrong label.
               |push 2
-              |label: push 3
-              |add
-              |push 4
-              |eq
-              |cbrk "Assertion"
+              |label:
+              |     push 3
+              |     add
+              |     push 4
+              |     eq
+              |     cbrk "Assertion"
               |""".stripMargin
         )
 
-/**
+    /**
       *
       */
     @Test
@@ -259,35 +300,35 @@ object MirAsmExecutableTests:
         executeOk(
             """
               |push "----------"
-              |calln "_print"
+              |calln "_println"
               |let x, 1
               |push x
               |push 2
               |add
-              |calln "_print"
+              |calln "_println"
               |""".stripMargin
         )
 
         executeOk(
             """
               |push "**********"
-              |calln "_print"
+              |calln "_println"
               |push "one "
               |push "two"
               |calln "concat"
-              |calln "_print"
+              |calln "_println"
               |""".stripMargin
         )
 
         executeOk(
             """
               |push "############"
-              |calln "_print"
+              |calln "_println"
               |let x, 10
               |let y, 2
               |push x
               |push y
               |sub
-              |calln "_print"
+              |calln "_println"
               |""".stripMargin
         )

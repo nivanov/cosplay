@@ -55,7 +55,10 @@ param
 // Lexer.
 // ======
 INSRT_NAME
-    : 'mov'
+    : 'mulv'
+    | 'divv'
+    | 'mul'
+    | 'div'
     | 'eq'
     | 'neq'
     | 'eqv'
@@ -66,8 +69,6 @@ INSRT_NAME
     | 'push'
     | 'pop'
     | 'add'
-    | 'mul'
-    | 'div'
     | 'sub'
     | 'addv'
     | 'subv'
