@@ -38,7 +38,7 @@ import org.cosplay.games.mir.os.*
   */
 object MirLoginProgram:
     private final val MIN_PWD_LEN = 4
-    private final val ERR_PREFIX = "  |-"
+    private final val ERR_PREFIX = "  +-"
 
 /**
   *
@@ -81,7 +81,7 @@ class MirLoginProgram extends MirExecutable:
             else
                 done = true
                 stateMgr.state.player.setPassword(passwd1)
-                con.println(s"Password reset for '$username'.")
+                con.println(s"Password was successfully reset for '$username'.")
 
         val lastLoginTstamp = stateMgr.state.lastLoginTstamp
 

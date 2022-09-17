@@ -164,12 +164,12 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
 
     override def readLine(repCh: Option[Char], maxLen: Int, hist: Seq[String]): String =
         require(!rlMode)
-        rlMode = true
         rlLatch = CountDownLatch(1)
         rlStartX = curX
         rlStartY = curY
         rlRepCh = repCh
         rlBuf = new ReadLineBuffer(maxLen, hist)
+        rlMode = true
 
         while rlLatch.getCount > 0 do
             try rlLatch.await()
