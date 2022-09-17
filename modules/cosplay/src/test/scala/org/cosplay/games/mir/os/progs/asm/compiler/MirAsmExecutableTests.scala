@@ -262,6 +262,26 @@ object MirAsmExecutableTests:
               |     eqv i, 10
               |     pop c
               |     cjmpv c, end
+              |     call fun
+              |     addv i, 1
+              |     jmp loop
+              |fun:
+              |     push "function body..."
+              |     calln "_println"
+              |     ret
+              |end:
+              |     push "Loop is done."
+              |     calln "_println"
+              |     exit
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |let i, 0
+              |loop:
+              |     eqv i, 10
+              |     pop c
+              |     cjmpv c, end
               |     push "loop iteration"
               |     calln "_println"
               |     addv i, 1

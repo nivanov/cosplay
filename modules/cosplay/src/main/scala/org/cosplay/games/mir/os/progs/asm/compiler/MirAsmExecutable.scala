@@ -66,7 +66,8 @@ object MirAsmExecutable:
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
         (ctx: MirAsmContext) =>
-            val stack = new MirAsmStack
+            val stack = mutable.Stack.empty[Any]
+            val callStack = mutable.Stack.empty[Int]
 
             // Ensure instructions are sorted & indexed.
             val code = instrs.sortBy(_.line)
@@ -330,8 +331,8 @@ object MirAsmExecutable:
                     case "cjmpv" => checkParamCount(2, 2); if getVar(varParam(0)) != 0L then jump(labelParam(1))
                     case "jmp" => checkParamCount(1, 1); jump(labelParam(0))
                     case "cjmp" => checkParamCount(1, 1); if popLong() != 0L then jump(labelParam(0))
-                    case "call" => ()
-                    case "ret" => ()
+                    case "call" => checkParamCount(1, 1); callStack.push(idx + 1); jump(labelParam(0))
+                    case "ret" => checkParamCount(0, 0); idx = callStack.pop(); nextInstr = false
                     case "exit" => checkParamCount(0, 0); exit = true
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 

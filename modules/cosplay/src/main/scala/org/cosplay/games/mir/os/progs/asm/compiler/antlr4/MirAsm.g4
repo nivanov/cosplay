@@ -87,6 +87,7 @@ INSRT_NAME
     | 'notv'
     | 'neg'
     | 'negv'
+    | 'exit'
     ;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 NULL: 'null';
