@@ -144,6 +144,57 @@ object MirAsmExecutableTests:
       *
       */
     @Test
+    def jumpTests(): Unit =
+        executeOk(
+            """
+              |let i, 0
+              |loop:
+              |     push i
+              |     push 10
+              |     eq
+              |     cjmp end
+              |     push "loop iteration"
+              |     calln "_print"
+              |     push i
+              |     push 1
+              |     add
+              |     pop i
+              |     jmp loop
+              |end:
+              |     push "Loop is done."
+              |     calln "_print"
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |push 1
+              |jmp label
+              |push 2
+              |label: push 3
+              |add
+              |push 4
+              |eq
+              |cbrk "Assertion"
+              |""".stripMargin
+        )
+
+        executeFail(
+            """
+              |push 1
+              |jmp wrong_label ; Wrong label.
+              |push 2
+              |label: push 3
+              |add
+              |push 4
+              |eq
+              |cbrk "Assertion"
+              |""".stripMargin
+        )
+
+/**
+      *
+      */
+    @Test
     def executeOkTests(): Unit =
         executeOk("push 1")
         executeOk(

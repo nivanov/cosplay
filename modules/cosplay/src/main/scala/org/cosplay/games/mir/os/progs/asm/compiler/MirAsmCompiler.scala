@@ -127,7 +127,7 @@ class MirAsmCompiler:
             val txt = ctx.getText
             if ctx.NULL() != null then params += NullParam
             else if ctx.DQSTRING() != null then params += StringParam(txt.substring(1, txt.length - 1))
-            else if ctx.USR_ID() != null || ctx.SYS_ID() != null then params += VarParam(txt)
+            else if ctx.USR_ID() != null || ctx.SYS_ID() != null then params += IdParam(txt)
             else // Integer or real.
                 val num = txt.replaceAll("_", "")
 

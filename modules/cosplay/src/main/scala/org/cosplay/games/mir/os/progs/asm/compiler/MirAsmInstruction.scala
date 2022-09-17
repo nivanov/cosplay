@@ -37,7 +37,7 @@ object MirAsmInstruction:
     trait Param
     object NullParam extends Param:
         override def toString: String = "null"
-    case class VarParam(id: String) extends Param:
+    case class IdParam(id: String) extends Param:
         override def toString: String = id
     case class StringParam(s: String) extends Param:
         override def toString: String = s"\"$s\""

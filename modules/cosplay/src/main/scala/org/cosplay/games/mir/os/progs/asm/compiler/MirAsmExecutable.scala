@@ -69,13 +69,16 @@ object MirAsmExecutable:
             val stack = new MirAsmStack
 
             // Ensure instructions are sorted & indexed.
-            val code = instrs.sortBy(_.line).zipWithIndex
+            val code = instrs.sortBy(_.line)
             // Create labels LUT.
-            val lblLut = immutable.HashMap.from(
-                code.filter((instr, _) => instr.label.isDefined).map((instr, idx) => instr.label.get -> idx)
+            val lblLut: immutable.HashMap[String, Int] = immutable.HashMap.from(
+                code.zipWithIndex.filter((instr, _) => instr.label.isDefined).map((instr, idx) => instr.label.get -> idx)
             )
 
-            for ((instr, idx) <- code)
+            var idx = 0
+            val len = code.length
+            while (idx < len)
+                val instr = code(idx)
                 val name = instr.name
                 val params = instr.params
                 val paramsCnt = params.length
@@ -86,6 +89,7 @@ object MirAsmExecutable:
                 def wrongStack(act: Any, exp: String): ARE = error(s"Unexpected stack value ($act) - expecting $exp")
                 def wrongParam(idx: Int, exp: String): ARE = error(s"Invalid ${nth(idx)} parameter - expecting $exp")
                 def wrongVar(id: String, exp: String): ARE = error(s"Invalid variable '$id' type - expecting $exp")
+                def wrongLabel(id: String): ARE = error(s"Undefined label in jump: $id")
 
                 def ensure(min: Int, max: Int): Unit =
                     if paramsCnt < min then throw error("Insufficient instruction parameters")
@@ -112,8 +116,13 @@ object MirAsmExecutable:
 
                 def varParam(idx: Int): String =
                     params(idx) match
-                        case VarParam(id) => id
+                        case IdParam(id) => id
                         case _ => throw wrongParam(idx, "variable")
+
+                def labelParam(idx: Int): String =
+                    params(idx) match
+                        case IdParam(id) => id
+                        case _ => throw wrongParam(idx, "label")
 
                 def strParam(idx: Int): String =
                     params(idx) match
@@ -126,7 +135,7 @@ object MirAsmExecutable:
                         case StringParam(s) => s
                         case LongParam(d) => d
                         case DoubleParam(d) => d
-                        case VarParam(id) => getVar(id)
+                        case IdParam(id) => getVar(id)
 
                 def addSub(mul: Int): Unit =
                     require(mul == 1 || mul == -1)
@@ -150,6 +159,8 @@ object MirAsmExecutable:
                         val s2 = popStr()
                         stack.push(s"$s2$s1") // Note reverse order...
 
+                var nextInstr = true
+
                 name match
                     case "push" => ensure(1, 1); stack.push(anyParam(0))
                     case "pop" => ensure(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
@@ -165,16 +176,35 @@ object MirAsmExecutable:
                             case s => throw error(s"Unknown native function: $s")
                     case "let" => ensure(2, 2); ctx.setVar(varParam(0), anyParam(1))
                     case "dup" => ensure(0, 0); if stack.nonEmpty then stack.push(stack.head)
-                    case "jmp" => ()
+                    case "jmp" =>
+                        ensure(1, 1)
+                        val lbl = labelParam(0)
+                        lblLut.get(lbl) match
+                            case Some(i) =>
+                                idx = i
+                                nextInstr = false
+                            case None => throw wrongLabel(lbl)
+
                     case "eq" => ensure(0, 0); stack.push(if pop() == pop() then 1L else 0L)
                     case "neq" => ensure(0, 0); stack.push(if pop() == pop() then 0L else 1L)
                     case "brk" => ensure(0, 1); throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
                     case "cbrk" => ensure(0, 1); if popLong() == 0 then throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
-                    case "cjmp" => ()
+                    case "cjmp" =>
+                        ensure(0, 1);
+                        if popLong() != 0 then
+                            val lbl = labelParam(0)
+                            lblLut.get(lbl) match
+                                case Some(i) =>
+                                    idx = i
+                                    nextInstr = false
+                                case None => throw wrongLabel(lbl)
+
                     case "call" => ()
                     case "ret" => ()
                     case "exit" => ()
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
+
+                if nextInstr then idx += 1
 
 /**
   *

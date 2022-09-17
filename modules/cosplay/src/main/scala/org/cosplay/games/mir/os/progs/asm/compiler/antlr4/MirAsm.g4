@@ -69,6 +69,7 @@ INSRT_NAME
     | 'calln'
     | 'call'
     | 'jmp'
+    | 'cjmp' // Conditional jump.
     | 'ret'
     | 'let'
     | 'dup'
