@@ -128,6 +128,31 @@ object MirAsmExecutableTests:
               |cbrk "Assertion"
               |""".stripMargin
         )
+        executeOk(
+            """
+              |let x, 1
+              |addv x, 2
+              |eqv x, 3
+              |cbrk "Assertion"
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |let x, 1
+              |addv x, 2
+              |eqv x, 3
+              |pop r
+              |cbrkv r, "Assertion"
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |push 1
+              |dup
+              |eq
+              |cbrk "Assertion"
+              |""".stripMargin
+        )
 
         executeFail("brk \"Assertion\"")
         executeFail(
@@ -159,6 +184,40 @@ object MirAsmExecutableTests:
               |     push 1
               |     add
               |     pop i
+              |     jmp loop
+              |end:
+              |     push "Loop is done."
+              |     calln "_print"
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |let i, 0
+              |loop:
+              |     eqv i, 10
+              |     pop c
+              |     cjmpv c, end
+              |     push "loop iteration"
+              |     calln "_print"
+              |     addv i, 1
+              |     jmp loop
+              |end:
+              |     push "Loop is done."
+              |     calln "_print"
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |let i, 0
+              |let sz, 10
+              |loop:
+              |     eqv i, sz
+              |     cjmp end
+              |     push "loop iteration #"
+              |     push i
+              |     calln "concat"
+              |     calln "_print"
+              |     incv i
               |     jmp loop
               |end:
               |     push "Loop is done."
