@@ -46,7 +46,9 @@ object MirAsmCompilerTests:
     def compileOk(code: String): Unit =
         Try((new MirAsmCompiler).compile(code, "test")).match
             case Success(_) => ()
-            case Failure(e) => assertTrue(false, e.getMessage)
+            case Failure(e) =>
+                e.printStackTrace()
+                assertTrue(false, e.getMessage)
 
     /**
       *
@@ -105,7 +107,5 @@ object MirAsmCompilerTests:
           |     push null
           |     pop
           |     push "qwerty", ""
-          |
-          |     mov "test", 1, null ; Inline comments.
           |""".stripMargin
     )

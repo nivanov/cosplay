@@ -15,11 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.mash.compiler
-
-import scala.util.*
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.*
+package org.cosplay.games.mir
 
 /*
    _________            ______________
@@ -29,26 +25,35 @@ import org.junit.jupiter.api.*
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
 /**
   *
   */
-object MirMashCompilerTests:
-    private def compileOk(code: String): Unit =
-        Try((new MirMashCompiler).compile(code, "test")) match
-            case Success(mdl) =>
-                println("---------------------")
-                mdl.asmCode.foreach(loc => println(loc.toAsmString))
-            case Failure(e) =>
-                e.printStackTrace()
-                assertTrue(false, e.getMessage)
+object MirUtils:
+    /**
+      * Removed paired single or double quotes from given string.
+      *
+      * @param s
+      */
+    def dequote(s: String): String =
+        val ss = s.trim
+        if ss.isEmpty then s
+        else if (ss.head == '\'' && s.last == '\'') || (ss.head == '"' && s.last == '"') then ss.substring(1, ss.length - 1)
+        else s
 
-    @Test
-    def baseTest(): Unit =
-        compileOk("var x = 10")
-        compileOk("val x = 10; val y = 'abc'")
+    /**
+      *
+      * @param s
+      */
+    def decapitalize(s: String): String = s"${s.head.toLower}${s.tail}"
+
+    /**
+      *
+      * @param s
+      */
+    def capitalize(s: String): String = s"${s.head.toUpper}${s.tail}"
 

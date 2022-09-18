@@ -91,22 +91,9 @@ expr
     | expr op=(LTEQ | GTEQ | LT | GT) expr # compExpr
     | expr op=(EQ | NEQ) expr # eqNeqExpr
     | expr op=(AND | OR) expr # andOrExpr
-    | LPAR listItems? RPAR # listExpr
-    | TILDA LPAR mapItems? RPAR # mapExpr
-    | STR keyAccess* LPAR callParamList? RPAR # fpCallExpr
-    | STR keyAccess* # varAccessExpr
     | STR LPAR callParamList? RPAR # callExpr
     | BQUOTE pipelineDecl BQUOTE # pipelineExecExpr
     | atom # atomExpr
-    ;
-listItems
-    : expr
-    | listItems COMMA expr
-    ;
-mapItem: expr ASSOC expr;
-mapItems
-    : mapItem
-    | mapItems COMMA mapItem
     ;
 compoundExpr
     : expr
@@ -116,11 +103,10 @@ callParamList
     : compoundExpr
     | callParamList COMMA compoundExpr
     ;
-keyAccess: LBR expr RBR;
 atom
     : NULL
     | BOOL
-    | STR // Number or variable.
+    | STR // Number or variable access (var or val).
     | qstring
     ;
 qstring
@@ -170,7 +156,6 @@ RBRACE: '}';
 SQUOTE: '\'';
 DQUOTE: '"';
 BQUOTE: '`';
-TILDA: '~';
 LBR: '[';
 RBR: ']';
 POUND: '#';
