@@ -37,60 +37,100 @@ import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
 import org.cosplay.games.mir.os.progs.mash.MirMashState
 
+import java.util.UUID
+import scala.collection.mutable
+
 /**
   *
   */
 class MirMashCompiler:
     /**
       *
+      * @param label
+      * @param instr
+      * @param comment
       */
-    private case class ErrorHolder(
-        ptrStr: String,
-        origStr: String
+    case class AsmCode(
+        label: Option[String],
+        instr: Option[String],
+        comment: Option[String]
     )
+
+    // Not very unique, of course - but readable and good enough.
+    private val lblBase = UUID.randomUUID().hashCode().toString
+    private var lblCnt = 0L
+
+    /**
+      *
+      */
+    private def genLabel(): String =
+        val lbl = s"L$lblBase-$lblCnt"
+        lblCnt += 1
+        lbl
 
     /**
       *
       * @param code
       * @param origin
       */
-    private class FiniteStateMachine(code: String, origin: String) extends MirMashBaseListener
+    private class FiniteStateMachine(code: String, origin: String) extends MirMashBaseListener:
+        private val asmCode = mutable.ArrayBuffer.empty[AsmCode]
+
+        /**
+          *
+          */
+        def getAsmCode: IndexedSeq[AsmCode] = asmCode.toIndexedSeq
+
+        private def addInstr(instr: String): Unit = asmCode += AsmCode(None, Option(instr), None)
+        private def addLabelInstr(label: String, instr: String): Unit = asmCode += AsmCode(Option(label), Option(instr), None)
+
+        override def exitAtom(ctx: MirMashParser.AtomContext): Unit =
+            given ParserRuleContext = ctx
+
+            if ctx.NULL() != null then addInstr("push null")
+            else if ctx.BOOL() != null then addInstr(s"push ${if ctx.getText == "true" then 1 else 0}")
+
+        /**
+          *
+          * @param errMsg
+          * @param ctx
+          */
+        private def error(errMsg: String)(using ctx: ParserRuleContext): CPException =
+            val tok = ctx.start
+            new CPException(mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin))
 
     /**
       *
-      * @param in
-      * @param charPos
-      */
-    private def mkErrorHolder(in: String, charPos: Int): ErrorHolder =
-        val in0 = in.strip()
-        if in0.isEmpty || charPos < 0 then ErrorHolder("<empty>", "<empty>")
-        else
-            val charPos0 = charPos - (in.length - in.stripLeading().length)
-            val pos = Math.max(0, charPos0)
-            val dash = "-" * in0.length
-            val ptrStr = s"${dash.substring(0, pos)}^${dash.substring(pos + 1)}"
-            val origStr = s"${in0.substring(0, pos)}${in0.charAt(pos)}${in0.substring(pos + 1)}"
-
-            ErrorHolder(ptrStr, origStr)
-
-    /**
-      *
-      * @param kind
       * @param msg
       * @param line
       * @param charPos
       * @param code
       * @param origin Code origin (file name, etc.).
       */
-    private def mkError(
-        kind: String,
+    private def mkErrorMessage(
         msg: String,
         line: Int, // 1, 2, ...
         charPos: Int, // 0, 1, 2, ...
         code: String,
         origin: String): String =
+        def errorPointer(in: String, charPos: Int): (String, String) =
+            val in0 = in.strip()
+            if in0.isEmpty || charPos < 0 then "<empty>" -> "<empty>"
+            else
+                var charPos0 = charPos - (in.length - in.stripLeading().length)
+                if msg.contains("extraneous input") || msg.contains("mismatched input") then charPos0 += 1
+                val len = in0.length
+                val pos = Math.min(Math.max(0, charPos0), len)
+
+                if pos == len then
+                    s"${"-" * len}^" -> in0
+                else
+                    val dash = "-" * len
+                    val ptrStr = s"${dash.substring(0, pos)}^${dash.substring(pos + 1)}"
+                    ptrStr -> in0
+
         val codeLine = code.split("\n")(line - 1)
-        val hold = mkErrorHolder(codeLine, charPos)
+        val (ptrStr, origStr) = errorPointer(codeLine, charPos)
         var aMsg = CPUtils.decapitalize(msg) match
             case s: String if s.last == '.' => s
             case s: String => s"$s."
@@ -100,40 +140,10 @@ class MirMashCompiler:
             case idx if idx >= 0 => s"${aMsg.substring(0, idx).trim}."
             case _ => aMsg
 
-        s"""# Mash $kind error in '$origin' at line $line - $aMsg
-            #   |-- Line:  ${hold.origStr}
-            #   +-- Error: ${hold.ptrStr}
+        s"""# Mesh syntax error in '$origin' at line $line - $aMsg
+            #   |-- Line:  $origStr
+            #   +-- Error: $ptrStr
             #""".stripMargin('#')
-
-    /**
-      *
-      * @param msg
-      * @param line
-      * @param charPos
-      * @param code
-      * @param origin Code origin (file name, etc.).
-      */
-    private def mkSyntaxError(
-        msg: String,
-        line: Int, // 1, 2, ...
-        charPos: Int, // 0, 1, 2, ...
-        code: String,
-        origin: String): String = mkError("syntax", msg, line, charPos, code, origin)
-
-    /**
-      *
-      * @param msg
-      * @param line
-      * @param charPos
-      * @param code
-      * @param origin Code origin (file name, etc.).
-      */
-    private def mkRuntimeError(
-        msg: String,
-        line: Int, // 1, 2, ...
-        charPos: Int, // 0, 1, 2, ...
-        code: String,
-        origin: String): String = mkError("runtime", msg, line, charPos, code, origin)
 
     /**
       * Custom error handler.
@@ -157,7 +167,7 @@ class MirMashCompiler:
             charPos: Int, // 1, 2, ...
             msg: String,
             e: RecognitionException): Unit =
-            throw new CPException(mkSyntaxError(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
+            throw new CPException(mkErrorMessage(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
 
     /**
       *
