@@ -120,7 +120,7 @@ keyAccess: LBR expr RBR;
 atom
     : NULL
     | BOOL
-    | STR
+    | STR // Number or variable.
     | qstring
     ;
 qstring
