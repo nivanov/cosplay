@@ -41,9 +41,9 @@ import scala.util.*
 object MirAsmCompilerTests:
     /**
       *
-      * @param code
+      * @param code Asm code to test.
       */
-    def compileOk(code: String): Unit =
+    private def compileOk(code: String): Unit =
         Try((new MirAsmCompiler).compile(code, "test")).match
             case Success(_) => ()
             case Failure(e) =>
@@ -52,9 +52,9 @@ object MirAsmCompilerTests:
 
     /**
       *
-      * @param code
+      * @param code Asm code to test.
       */
-    def compileFail(code: String): Unit =
+    private def compileFail(code: String): Unit =
         Try((new MirAsmCompiler).compile(code, "test")).match
             case Success(_) => assertTrue(false)
             case Failure(e) =>

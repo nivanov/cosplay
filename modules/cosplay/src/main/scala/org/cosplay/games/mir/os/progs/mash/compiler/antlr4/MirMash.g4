@@ -81,7 +81,6 @@ funParamList
 expr
     // NOTE: order of productions defines precedence.
     : op=(MINUS | NOT) expr # unaryExpr
-    | expr MOD expr # modExpr
     | LPAR expr RPAR # parExpr
     | IF expr THEN compoundExpr (ELSE compoundExpr)? # ifExpr
     | FOR STR IN expr YIELD compoundExpr # forYieldExpr

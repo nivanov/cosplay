@@ -42,23 +42,62 @@ import java.util.UUID
 import scala.collection.mutable
 
 /**
+  * A container for translated assembler code and global declarations.
+  */
+case class MirMashModule(asm: IndexedSeq[MirMashAsm], globals: MirMashScope):
+    require(globals.isGlobal)
+
+/**
+  *
+  */
+enum MirMashDeclarationKind:
+    case VAR, DEF, VAL, ALS
+
+/**
+  * A mash declaration of some kind.
+  *
+  * @param kind
+  * @param name
+  */
+case class MirMashDecl(kind: MirMashDeclarationKind, name: String)
+
+/**
+  * A namespace.
+  *
+  * @param parent
+  */
+case class MirMashScope(parent: Option[MirMashScope] = None):
+    private val decls = mutable.HashMap.empty[String, MirMashDecl]
+    def isGlobal: Boolean = parent.isEmpty
+    def hasDecl(name: String): Boolean = decls.contains(name)
+    def addDecl(decl: MirMashDecl): Unit = decls += decl.name -> decl
+    def getDecl(name: String): Option[MirMashDecl] = decls.get(name)
+    def getDecls: Seq[MirMashDecl] = decls.values.toSeq
+
+/**
+  *
+  * @param label
+  * @param instr
+  * @param comment
+  */
+case class MirMashAsm(label: Option[String], instr: Option[String], comment: Option[String]):
+    /**
+      *
+      */
+    def toAsmString: String =
+        val lbl = label match
+            case Some(s) => s"$s:"
+            case None => ""
+        val ins = instr.getOrElse("")
+        val cmt = comment match
+            case Some(s) => s"; $s"
+            case None => ""
+        String.format("%1$-10s %2$-15s %3$s", lbl, ins, cmt)
+
+/**
   *
   */
 class MirMashCompiler:
-    /**
-      *
-      */
-    enum DeclKind:
-        case VAR, DEF, VAL, ALS
-
-    /**
-      * A declaration of some kind.
-      *
-      * @param kind
-      * @param name
-      */
-    case class Decl(kind: DeclKind, name: String)
-
     /**
       *
       */
@@ -71,48 +110,6 @@ class MirMashCompiler:
       * @param str
       */
     case class StrEntity(kind: StrKind, str: String)
-
-    /**
-      * A container for assembler code and global declarations.
-      */
-    case class CompiledModule(asmCode: IndexedSeq[AsmCode], globals: Scope):
-        require(globals.isGlobal)
-
-    /**
-      * A namespace.
-      *
-      * @param parent
-      */
-    case class Scope(parent: Option[Scope] = None):
-        private val decls = mutable.HashMap.empty[String, Decl]
-
-        def isGlobal: Boolean = parent.isEmpty
-        def hasDecl(name: String): Boolean = decls.contains(name)
-        def addDecl(decl: Decl): Unit =
-            require(!decls.contains(decl.name))
-            decls += decl.name -> decl
-        def getDecl(name: String): Option[Decl] = decls.get(name)
-        def getDecls: Seq[Decl] = decls.values.toSeq
-
-    /**
-      *
-      * @param label
-      * @param instr
-      * @param comment
-      */
-    case class AsmCode(label: Option[String], instr: Option[String], comment: Option[String]):
-        /**
-          *
-          */
-        def toAsmString: String =
-            val lbl = label match
-                case Some(s) => s"$s:"
-                case None => ""
-            val ins = instr.getOrElse("")
-            val cmt = comment match
-                case Some(s) => s"; $s"
-                case None => ""
-            String.format("%1$-10s %2$-15s %3$s", lbl, ins, cmt)
 
     // Not very unique, of course - but good enough.
     private val lblBase = UUID.randomUUID().hashCode().toString
@@ -132,25 +129,25 @@ class MirMashCompiler:
       * @param origin
       */
     private class FiniteStateMachine(code: String, origin: String) extends MirMashBaseListener:
-        private val asm = mutable.ArrayBuffer.empty[AsmCode]
-        private val scope = Scope() // Initially global scope.
+        private val asm = mutable.ArrayBuffer.empty[MirMashAsm]
+        private val scope = MirMashScope() // Initially global scope.
 
         /**
           *
           */
-        def getCompileModule: CompiledModule =
+        def getCompileModule: MirMashModule =
             require(scope.isGlobal)
-            CompiledModule(asm.toIndexedSeq, scope)
+            MirMashModule(asm.toIndexedSeq, scope)
 
-        private def addInstr(instr: String): Unit = asm += AsmCode(None, Option(instr), None)
-        private def addLabeledInstr(label: String, instr: String): Unit = asm += AsmCode(Option(label), Option(instr), None)
+        private def addAsm(instr: String): Unit = asm += MirMashAsm(None, Option(instr), None)
         private def parseStr(s: String): StrEntity =
+            import MirMashDeclarationKind.*
             scope.getDecl(s) match
                 case Some(decl) => decl.kind match
-                    case DeclKind.VAL => StrEntity(StrKind.VAL, s)
-                    case DeclKind.VAR => StrEntity(StrKind.VAR, s)
-                    case DeclKind.ALS => StrEntity(StrKind.ALS, s)
-                    case DeclKind.DEF => StrEntity(StrKind.DEF, s)
+                    case VAL => StrEntity(StrKind.VAL, s)
+                    case VAR => StrEntity(StrKind.VAR, s)
+                    case ALS => StrEntity(StrKind.ALS, s)
+                    case DEF => StrEntity(StrKind.DEF, s)
                 case None =>
                     val num = s.replaceAll("_", "")
                     try
@@ -163,42 +160,55 @@ class MirMashCompiler:
                         catch case _: NumberFormatException =>
                             StrEntity(StrKind.ANY, s)
 
+        override def exitUnaryExpr(ctx: MirMashParser.UnaryExprContext): Unit =
+            if ctx.MINUS() != null then addAsm("neg") else addAsm("not")
+        override def exitAndOrExpr(ctx: MirMashParser.AndOrExprContext): Unit =
+            if ctx.AND() != null then addAsm("and") else addAsm("or")
+        override def exitEqNeqExpr(ctx: MirMashParser.EqNeqExprContext): Unit =
+            if ctx.EQ() != null then addAsm("eq") else addAsm("neq")
+        override def exitPlusMinusExpr(ctx: MirMashParser.PlusMinusExprContext): Unit =
+            if ctx.PLUS() != null then addAsm("add") else addAsm("sub")
+        override def exitMultDivModExpr(ctx: MirMashParser.MultDivModExprContext): Unit =
+            if ctx.MOD() != null then addAsm("mod")
+            else if ctx.MULT() != null then addAsm("mul")
+            else addAsm("div")
+
         override def exitAtom(ctx: MirMashParser.AtomContext): Unit =
             given ParserRuleContext = ctx
-            if ctx.NULL() != null then addInstr("push null")
-            else if ctx.BOOL() != null then addInstr(s"push ${if ctx.getText == "true" then 1 else 0}")
+            if ctx.NULL() != null then addAsm("push null")
+            else if ctx.BOOL() != null then addAsm(s"push ${if ctx.getText == "true" then 1 else 0}")
             else if ctx.qstring() != null then
                 val qStr = ctx.qstring()
                 if qStr.SQSTRING() != null then
                     val s = MirUtils.dequote(qStr.SQSTRING().getText)
-                    addInstr(s"push \"$s\"")
+                    addAsm(s"push \"$s\"")
                 else if qStr.DQSTRING() != null then
                     // TODO: handle variable expansion for double-quoted strings.
                     val s = MirUtils.dequote(qStr.DQSTRING().getText)
-                    addInstr(s"push \"$s\"")
+                    addAsm(s"push \"$s\"")
             else
                 require(ctx.STR() != null)
                 val strEnt = parseStr(ctx.STR().getText)
                 strEnt.kind match
-                    case StrKind.VAL | StrKind.VAR | StrKind.NUM => addInstr(s"push ${strEnt.str}")
+                    case StrKind.VAL | StrKind.VAR | StrKind.NUM => addAsm(s"push ${strEnt.str}")
                     case _ => throw error("Unexpected expression")
 
-        private def addVar(kind: DeclKind, s: String)(using ctx: ParserRuleContext): Unit =
+        private def addVar(kind: MirMashDeclarationKind, s: String)(using ctx: ParserRuleContext): Unit =
             val strEnt = parseStr(s)
             val name = strEnt.str
             strEnt.kind match
                 case StrKind.ANY =>
-                    addInstr(s"pop $name")
-                    scope.addDecl(Decl(kind, name))
-                case StrKind.ALS | StrKind.DEF | StrKind.VAL | StrKind.VAR => throw error(s"Duplicate variable declaration: $name")
+                    addAsm(s"pop $name")
+                    scope.addDecl(MirMashDecl(kind, name))
+                case StrKind.ALS | StrKind.DEF | StrKind.VAL | StrKind.VAR => throw error(s"Duplicate variable '$name' declaration.")
                 case StrKind.NUM => throw error("Unexpected expression")
 
         override def exitValDecl(ctx: MirMashParser.ValDeclContext): Unit =
             given ParserRuleContext = ctx
-            addVar(DeclKind.VAL, ctx.STR().getText)
+            addVar(MirMashDeclarationKind.VAL, ctx.STR().getText)
         override def exitVarDecl(ctx: MirMashParser.VarDeclContext): Unit =
             given ParserRuleContext = ctx
-            addVar(DeclKind.VAR, ctx.STR().getText)
+            addVar(MirMashDeclarationKind.VAR, ctx.STR().getText)
 
         /**
           *
@@ -302,11 +312,22 @@ class MirMashCompiler:
       * @param code
       * @param origin
       */
-    def compile(code: String, origin: String): CompiledModule =
+    def translateToAsm(code: String, origin: String): MirMashModule =
         val (fsm, parser) = antlr4Setup(code, origin)
 
         // Parse the input IDL and walk the built AST.
         (new ParseTreeWalker).walk(fsm, parser.mash())
 
         fsm.getCompileModule
+
+    /**
+      *
+      * @param code
+      * @param origin
+      */
+    def compile(code: String, origin: String): MirMashExecutable =
+        val mod = translateToAsm(code, origin)
+
+        // TODO
+        null
 

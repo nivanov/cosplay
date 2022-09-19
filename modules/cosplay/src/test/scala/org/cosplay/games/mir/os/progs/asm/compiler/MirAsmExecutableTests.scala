@@ -41,18 +41,18 @@ import scala.util.*
 object MirAsmExecutableTests:
     /**
       *
-      * @param code
+      * @param code Asm code to test.
       */
-    def executeOk(code: String): Unit =
+    private def executeOk(code: String): Unit =
         Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmContext(null))).match
             case Success(_) => ()
             case Failure(e) => assertTrue(false, e.getMessage)
 
     /**
       *
-      * @param code
+      * @param code Asm code to test.
       */
-    def executeFail(code: String): Unit =
+    private def executeFail(code: String): Unit =
         Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmContext(null))).match
             case Success(_) => assertTrue(false)
             case Failure(e) =>
@@ -82,6 +82,36 @@ object MirAsmExecutableTests:
       */
     @Test
     def breakOutTests(): Unit =
+        executeOk(
+            """
+              |push 1
+              |push 0
+              |and
+              |push 0
+              |eq
+              |cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |push 1
+              |push 0
+              |or
+              |push 1
+              |eq
+              |cbrk
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |push 10
+              |push 3
+              |mod
+              |push 1
+              |eq
+              |cbrk
+              |""".stripMargin
+        )
         executeOk(
             """
               |push "one "
@@ -219,6 +249,12 @@ object MirAsmExecutableTests:
               |""".stripMargin
         )
 
+        executeFail(
+            """
+              |push 1
+              |push "asaa"
+              |add
+              |""".stripMargin)
         executeFail("brk \"Assertion\"")
         executeFail(
             """
@@ -228,7 +264,8 @@ object MirAsmExecutableTests:
               |push 0
               |eq
               |cbrk "Expected break out"
-              |""".stripMargin)
+              |""".stripMargin
+        )
 
     /**
       *

@@ -55,6 +55,9 @@ param
 // ======
 INSRT_NAME
     : 'mulv'
+    | 'and'
+    | 'or'
+    | 'mod'
     | 'divv'
     | 'mul'
     | 'div'

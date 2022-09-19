@@ -38,16 +38,16 @@ import MirAsmInstruction.*
 */
 
 /**
+  * Special type for assembler runtime exceptions.
+  *
+  * @param errMsg Error message.
+  */
+class MirAsmRuntimeException(errMsg: String) extends CPException(errMsg)
+
+/**
   *
   */
 object MirAsmExecutable:
-    /**
-      * Special type for assembler runtime exceptions.
-      *
-      * @param errMsg Error message.
-      */
-    class AsmRuntimeException(errMsg: String) extends CPException(errMsg)
-
     /**
       *
       * @param idx
@@ -85,7 +85,7 @@ object MirAsmExecutable:
                 val params = instr.params
                 val paramsCnt = params.length
 
-                type ARE = AsmRuntimeException
+                type ARE = MirAsmRuntimeException
 
                 def error(errMsg: String): ARE = new ARE(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.")
                 def wrongStack(act: Any, exp: String): ARE = error(s"Unexpected stack value ($act) - expecting $exp")
@@ -116,6 +116,12 @@ object MirAsmExecutable:
                         case d: Long => d
                         case x => throw wrongStack(x, "integer")
 
+                def popBool(): Long =
+                    val b = pop()
+                    b match
+                        case d: Long => if d  == 1 || d == 0 then d else throw wrongStack(b, "1 or 0")
+                        case _ => throw wrongStack(b, "1 or 0")
+
                 def varParam(idx: Int): String =
                     params(idx) match
                         case IdParam(id) => id
@@ -130,11 +136,6 @@ object MirAsmExecutable:
                     params(idx) match
                         case StringParam(s) => s
                         case _ => throw wrongParam(idx, "string")
-
-                def longParam(idx: Int): Long =
-                    params(idx) match
-                        case LongParam(d) => d
-                        case _ => throw wrongParam(idx, "integer")
 
                 def anyParam(idx: Int): Any =
                     params(idx) match
@@ -192,6 +193,11 @@ object MirAsmExecutable:
                         case d: Long => d
                         case _ => throw wrongVar(id, "integer")
 
+                def boolVar(id: String): Long =
+                    getVar(id) match
+                        case d: Long => if d == 1 || d == 0 then d else throw wrongVar(id, "1 or 0")
+                        case _ => throw wrongVar(id, "1 or 0")
+
                 def incDecVar(v: Int): Unit =
                     require(v == 1 || v == -1)
                     val id = varParam(0) // 1st parameter (always variable).
@@ -226,7 +232,12 @@ object MirAsmExecutable:
 
                 def notv(): Unit =
                     val id = varParam(0)
-                    ctx.setVar(id, if longVar(id) == 0L then 1 else 0L)
+                    ctx.setVar(id, if boolVar(id) == 0L then 1 else 0L)
+
+                def mod(): Unit =
+                    val v1 = popLong()
+                    val v2 = popLong()
+                    push(v2 % v1)
 
                 def addSub(mul: Int): Unit =
                     require(mul == 1 || mul == -1)
@@ -242,6 +253,13 @@ object MirAsmExecutable:
                             case d2: Double => push(d2 + d1 * mul)
                             case _ => throw wrongStack(d1, "numeric")
                         case _ => throw wrongStack(v1, "numeric")
+
+                def and(): Unit = push(popBool() * popBool())
+
+                def or(): Unit =
+                    val v1 = popBool()
+                    val v2 = popBool()
+                    push(if v1 == 1 || v2 == 1 then 1L else 0L)
 
                 def multiply(): Unit =
                     val v1 = pop()
@@ -292,8 +310,11 @@ object MirAsmExecutable:
 
                 name match
                     case "push" => checkParamCount(1, 1); push(anyParam(0))
+                    case "and" => checkParamCount(0, 0); and()
+                    case "or" => checkParamCount(0, 0); or()
                     case "pop" => checkParamCount(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
                     case "add" => checkParamCount(0, 0); addSub(1)
+                    case "mod" => checkParamCount(0, 0); mod()
                     case "inc" => checkParamCount(0, 0); incDec(1)
                     case "dec" => checkParamCount(0, 0); incDec(-1)
                     case "mul" => checkParamCount(0, 0); multiply()
@@ -307,7 +328,7 @@ object MirAsmExecutable:
                     case "subv" => checkParamCount(2, 2); addSubVar(-1)
                     case "neg" => checkParamCount(0, 0); neg()
                     case "negv" => checkParamCount(1, 1); negv()
-                    case "not" => checkParamCount(0, 0); push(if popLong() == 0L then 1 else 0L)
+                    case "not" => checkParamCount(0, 0); push(if popBool() == 0L then 1 else 0L)
                     case "notv" => checkParamCount(1, 1); notv()
                     case "calln" =>
                         checkParamCount(1, 1)
@@ -326,11 +347,11 @@ object MirAsmExecutable:
                     case "eqv" => checkParamCount(2, 2); push(if getVar(varParam(0)) == anyParam(1) then 1L else 0L)
                     case "neqv" => checkParamCount(2, 2); push(if getVar(varParam(0)) == anyParam(1) then 0L else 1L)
                     case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
-                    case "cbrk" => checkParamCount(0, 1); if popLong() == 0L then throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
+                    case "cbrk" => checkParamCount(0, 1); if popBool() == 0L then throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
                     case "cbrkv" => checkParamCount(1, 2); if getVar(varParam(0)) == 0L then throw error(if paramsCnt == 2 then strParam(1) else "Aborted")
                     case "cjmpv" => checkParamCount(2, 2); if getVar(varParam(0)) != 0L then jump(labelParam(1))
                     case "jmp" => checkParamCount(1, 1); jump(labelParam(0))
-                    case "cjmp" => checkParamCount(1, 1); if popLong() != 0L then jump(labelParam(0))
+                    case "cjmp" => checkParamCount(1, 1); if popBool() != 0L then jump(labelParam(0))
                     case "call" => checkParamCount(1, 1); callStack.push(idx + 1); jump(labelParam(0))
                     case "ret" => checkParamCount(0, 0); idx = callStack.pop(); nextInstr = false
                     case "exit" => checkParamCount(0, 0); exit = true

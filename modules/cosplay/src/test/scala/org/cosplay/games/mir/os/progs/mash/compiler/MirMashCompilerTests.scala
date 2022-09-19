@@ -38,17 +38,38 @@ import org.junit.jupiter.api.*
   *
   */
 object MirMashCompilerTests:
+    /**
+      *
+      * @param code Mash code to test.
+      */
     private def compileOk(code: String): Unit =
-        Try((new MirMashCompiler).compile(code, "test")) match
+        Try((new MirMashCompiler).translateToAsm(code, "test")) match
             case Success(mdl) =>
                 println("---------------------")
-                mdl.asmCode.foreach(loc => println(loc.toAsmString))
+                mdl.asm.foreach(loc => println(loc.toAsmString))
             case Failure(e) =>
                 e.printStackTrace()
                 assertTrue(false, e.getMessage)
 
+    /**
+      *
+      * @param code Mash code to test.
+      */
+    private def compileFail(code: String): Unit =
+        Try((new MirMashCompiler).translateToAsm(code, "test")).match
+            case Success(_) => assertTrue(false)
+            case Failure(e) =>
+                println(s"<< Expected error below >>")
+                e.printStackTrace()
+
     @Test
     def baseTest(): Unit =
-        compileOk("var x = 10")
+        compileOk("var x = 5 + 2")
+        compileOk("var x = 10_000")
+        compileOk("var x = true; var b = false; var c = null")
+        compileOk("var x = 10; var _long_variable = x")
         compileOk("val x = 10; val y = 'abc'")
+
+        compileFail("var x = d")
+        compileFail("var x = 1as1212")
 
