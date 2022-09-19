@@ -38,7 +38,8 @@ code
     : NL* inst (NL*|EOF)
     | code inst (NL*|EOF)
     ;
-inst: label? INSRT_NAME plist?;
+inst: label? INSRT_NAME plist? dbg?;
+dbg: AT INT COMMA INT COMMA DQSTRING; // Source file information for mash.
 label: ID COLON NL*;
 plist
     : param
@@ -101,6 +102,7 @@ NL: '\n';
 DOLLAR: '$';
 COLON: ':';
 DOT: '.';
+AT: '@';
 INT: '0' | '-'? [1-9] [_0-9]*;
 REAL: DOT [0-9]+;
 EXP: [Ee] [+\-]? INT;

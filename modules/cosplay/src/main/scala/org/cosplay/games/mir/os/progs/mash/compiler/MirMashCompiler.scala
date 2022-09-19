@@ -81,9 +81,6 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
   * @param comment
   */
 case class MirMashAsm(label: Option[String], instr: Option[String], comment: Option[String]):
-    /**
-      *
-      */
     def toAsmString: String =
         val lbl = label match
             case Some(s) => s"$s:"
@@ -98,6 +95,8 @@ case class MirMashAsm(label: Option[String], instr: Option[String], comment: Opt
   *
   */
 class MirMashCompiler:
+    import MirMashDeclarationKind.*
+
     /**
       *
       */
@@ -139,9 +138,13 @@ class MirMashCompiler:
             require(scope.isGlobal)
             MirMashModule(asm.toIndexedSeq, scope)
 
-        private def addAsm(instr: String): Unit = asm += MirMashAsm(None, Option(instr), None)
-        private def parseStr(s: String): StrEntity =
-            import MirMashDeclarationKind.*
+        private def addAsm(instr: String)(using ctx: ParserRuleContext): Unit =
+            val tok = ctx.start
+            val line = tok.getLine
+            val pos = tok.getCharPositionInLine
+            asm += MirMashAsm(None, Option(s"$instr @$line,$pos,\"$origin\""), None)
+
+        private def parseStr(s: String)(using ctx: ParserRuleContext): StrEntity =
             scope.getDecl(s) match
                 case Some(decl) => decl.kind match
                     case VAL => StrEntity(StrKind.VAL, s)
@@ -160,21 +163,20 @@ class MirMashCompiler:
                         catch case _: NumberFormatException =>
                             StrEntity(StrKind.ANY, s)
 
-        override def exitUnaryExpr(ctx: MirMashParser.UnaryExprContext): Unit =
+        override def exitUnaryExpr(using ctx: MirMashParser.UnaryExprContext): Unit =
             if ctx.MINUS() != null then addAsm("neg") else addAsm("not")
-        override def exitAndOrExpr(ctx: MirMashParser.AndOrExprContext): Unit =
+        override def exitAndOrExpr(using ctx: MirMashParser.AndOrExprContext): Unit =
             if ctx.AND() != null then addAsm("and") else addAsm("or")
-        override def exitEqNeqExpr(ctx: MirMashParser.EqNeqExprContext): Unit =
+        override def exitEqNeqExpr(using ctx: MirMashParser.EqNeqExprContext): Unit =
             if ctx.EQ() != null then addAsm("eq") else addAsm("neq")
-        override def exitPlusMinusExpr(ctx: MirMashParser.PlusMinusExprContext): Unit =
+        override def exitPlusMinusExpr(using ctx: MirMashParser.PlusMinusExprContext): Unit =
             if ctx.PLUS() != null then addAsm("add") else addAsm("sub")
-        override def exitMultDivModExpr(ctx: MirMashParser.MultDivModExprContext): Unit =
+        override def exitMultDivModExpr(using ctx: MirMashParser.MultDivModExprContext): Unit =
             if ctx.MOD() != null then addAsm("mod")
             else if ctx.MULT() != null then addAsm("mul")
             else addAsm("div")
 
-        override def exitAtom(ctx: MirMashParser.AtomContext): Unit =
-            given ParserRuleContext = ctx
+        override def exitAtom(using ctx: MirMashParser.AtomContext): Unit =
             if ctx.NULL() != null then addAsm("push null")
             else if ctx.BOOL() != null then addAsm(s"push ${if ctx.getText == "true" then 1 else 0}")
             else if ctx.qstring() != null then
@@ -203,12 +205,8 @@ class MirMashCompiler:
                 case StrKind.ALS | StrKind.DEF | StrKind.VAL | StrKind.VAR => throw error(s"Duplicate variable '$name' declaration.")
                 case StrKind.NUM => throw error("Unexpected expression")
 
-        override def exitValDecl(ctx: MirMashParser.ValDeclContext): Unit =
-            given ParserRuleContext = ctx
-            addVar(MirMashDeclarationKind.VAL, ctx.STR().getText)
-        override def exitVarDecl(ctx: MirMashParser.VarDeclContext): Unit =
-            given ParserRuleContext = ctx
-            addVar(MirMashDeclarationKind.VAR, ctx.STR().getText)
+        override def exitValDecl(using ctx: MirMashParser.ValDeclContext): Unit = addVar(VAL, ctx.STR().getText)
+        override def exitVarDecl(using ctx: MirMashParser.VarDeclContext): Unit = addVar(VAR, ctx.STR().getText)
 
         /**
           *
