@@ -38,13 +38,6 @@ import MirAsmInstruction.*
 */
 
 /**
-  * Special type for assembler runtime exceptions.
-  *
-  * @param errMsg Error message.
-  */
-class MirAsmRuntimeException(errMsg: String) extends CPException(errMsg)
-
-/**
   *
   */
 object MirAsmExecutable:
@@ -85,13 +78,13 @@ object MirAsmExecutable:
                 val params = instr.params
                 val paramsCnt = params.length
 
-                type ARE = MirAsmRuntimeException
+                type MAE = MirAsmException
 
-                def error(errMsg: String): ARE = new ARE(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.")
-                def wrongStack(act: Any, exp: String): ARE = error(s"Unexpected stack value ($act) - expecting $exp")
-                def wrongParam(idx: Int, exp: String): ARE = error(s"Invalid ${nth(idx)} parameter - expecting $exp")
-                def wrongVar(id: String, exp: String): ARE = error(s"Invalid variable '$id' type - expecting $exp")
-                def wrongLabel(id: String): ARE = error(s"Undefined label in jump: $id")
+                def error(errMsg: String): MAE = new MAE(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.", instr.dbg)
+                def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected stack value ($act) - expecting $exp")
+                def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid ${nth(idx)} parameter - expecting $exp")
+                def wrongVar(id: String, exp: String): MAE = error(s"Invalid variable '$id' type - expecting $exp")
+                def wrongLabel(id: String): MAE = error(s"Undefined label in jump: $id")
 
                 def checkParamCount(min: Int, max: Int): Unit =
                     if paramsCnt < min then throw error("Insufficient instruction parameters")

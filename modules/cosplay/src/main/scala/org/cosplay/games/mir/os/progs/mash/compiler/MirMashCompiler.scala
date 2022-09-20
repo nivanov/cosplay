@@ -64,7 +64,7 @@ case class MirMashDecl(kind: MirMashDeclarationKind, name: String)
 /**
   * A namespace.
   *
-  * @param parent
+  * @param parent Optional parent scope (`None` for global scope).
   */
 case class MirMashScope(parent: Option[MirMashScope] = None):
     private val decls = mutable.HashMap.empty[String, MirMashDecl]
@@ -76,16 +76,29 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
 
 /**
   *
-  * @param label
-  * @param instr
-  * @param comment
+  * @param line Original source line name.
+  * @param pos In-line character position.
+  * @param origin Name of the original source (i.e. file name).
   */
-case class MirMashAsm(label: Option[String], instr: Option[String], comment: Option[String]):
-    def toAsmString: String =
+case class MirMashAsmDebug(line: Int, pos: Int, origin: String)
+
+/**
+  *
+  * @param label Optional asm instruction label.
+  * @param instr Optional instruction (if line contains only label and/or comment).
+  * @param comment Optional comment.
+  */
+case class MirMashAsm(
+    label: Option[String],
+    instr: Option[String],
+    comment: Option[String],
+    dbg: MirMashAsmDebug
+):
+    def toAsmString(useDbg: Boolean): String =
         val lbl = label match
             case Some(s) => s"$s:"
             case None => ""
-        val ins = instr.getOrElse("")
+        val ins = instr.getOrElse("") + (if useDbg then s" @${dbg.line},${dbg.pos},\"${dbg.origin}\"" else "")
         val cmt = comment match
             case Some(s) => s"; $s"
             case None => ""
@@ -142,7 +155,8 @@ class MirMashCompiler:
             val tok = ctx.start
             val line = tok.getLine
             val pos = tok.getCharPositionInLine
-            asm += MirMashAsm(None, Option(s"$instr @$line,$pos,\"$origin\""), None)
+            val dbg = MirMashAsmDebug(line, pos, origin)
+            asm += MirMashAsm(None, Option(instr), None, dbg)
 
         private def parseStr(s: String)(using ctx: ParserRuleContext): StrEntity =
             scope.getDecl(s) match
@@ -310,7 +324,7 @@ class MirMashCompiler:
       * @param code
       * @param origin
       */
-    def translateToAsm(code: String, origin: String): MirMashModule =
+    def compileToAsm(code: String, origin: String): MirMashModule =
         val (fsm, parser) = antlr4Setup(code, origin)
 
         // Parse the input IDL and walk the built AST.
@@ -324,7 +338,7 @@ class MirMashCompiler:
       * @param origin
       */
     def compile(code: String, origin: String): MirMashExecutable =
-        val mod = translateToAsm(code, origin)
+        val mod = compileToAsm(code, origin)
 
         // TODO
         null

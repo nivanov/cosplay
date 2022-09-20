@@ -276,17 +276,19 @@ object MirAsmExecutableTests:
             """
               |let i, 0
               |loop:
-              |     push i
-              |     push 10
-              |     eq
-              |     cjmp end
-              |     push "loop iteration"
-              |     calln "_println"
-              |     push i
-              |     push 1
-              |     add
-              |     pop i
-              |     jmp loop
+              |     ; Start of the loop...
+              |     push i @1,2,"test"
+              |     push 10 @1,2,"test"
+              |     eq @1,2,"test"
+              |     cjmp end @1,2,"test"
+              |     push "loop iteration" @1,2,"test"
+              |     calln "_println" @1,2,"test"
+              |     push i @1,2,"test"
+              |     push 1 @1,2,"test"
+              |     add @1,2,"test"
+              |     pop i @1,2,"test"
+              |     jmp loop @1,2,"test" ; Some comments;
+              |     ; End of the loop...
               |end:
               |     push "Loop is done."
               |     calln "_println"

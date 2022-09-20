@@ -32,8 +32,9 @@ package org.cosplay.games.mir.os.progs.asm.compiler
 
 import org.cosplay.impl.CPUtils
 import org.cosplay.*
-import games.mir.os.progs.asm.compiler.antlr4.*
-import games.mir.os.progs.asm.compiler.MirAsmInstruction.*
+import games.mir.*
+import os.progs.asm.compiler.antlr4.*
+import os.progs.asm.compiler.MirAsmInstruction.*
 import MirAsmExecutable.*
 import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
@@ -100,11 +101,21 @@ class MirAsmCompiler:
         private val instrs = mutable.ArrayBuffer.empty[MirAsmInstruction]
         private val labels = mutable.HashSet.empty[String]
         private var params: mutable.ArrayBuffer[Param] = _
+        private var dbg: MirAsmDebug = _
 
         override def enterInst(ctx: MirAsmParser.InstContext): Unit =
             params = mutable.ArrayBuffer.empty[Param]
-        override def exitInst(ctx: MirAsmParser.InstContext): Unit =
-            given ParserRuleContext = ctx
+            dbg = null
+
+        override def exitDbg(using ctx: MirAsmParser.DbgContext): Unit =
+            try
+                val line = java.lang.Integer.parseInt(ctx.INT().get(0).getText)
+                val pos = java.lang.Integer.parseInt(ctx.INT().get(1).getText)
+                val origin = MirUtils.dequote(ctx.DQSTRING().getText)
+                dbg = MirAsmDebug(line, pos, origin)
+            catch case _: NumberFormatException => throw error(s"Invalid debug information format in: ${ctx.getText}")
+
+        override def exitInst(using ctx: MirAsmParser.InstContext): Unit =
             val name = ctx.INSRT_NAME().getSymbol.getText
             val label =
                 if ctx.label() == null
@@ -119,14 +130,14 @@ class MirAsmCompiler:
                         Option(txt)
             val line = ctx.start.getLine
 
-            instrs += new MirAsmInstruction(label, line, name, params.toSeq)
+            instrs += new MirAsmInstruction(label, line, name, params.toSeq, Option(dbg))
 
         override def exitParam(ctx: MirAsmParser.ParamContext): Unit =
             require(params != null)
             given ParserRuleContext = ctx
             val txt = ctx.getText
             if ctx.NULL() != null then params += NullParam
-            else if ctx.DQSTRING() != null then params += StringParam(txt.substring(1, txt.length - 1))
+            else if ctx.DQSTRING() != null then params += StringParam(MirUtils.dequote(txt))
             else if ctx.ID() != null then params += IdParam(txt)
             else // Integer or real.
                 val num = txt.replaceAll("_", "")
@@ -134,7 +145,7 @@ class MirAsmCompiler:
                 try params += LongParam(java.lang.Long.parseLong(num)) // Try 'long'.
                 catch case _: NumberFormatException =>
                     try params += DoubleParam(java.lang.Double.parseDouble(num)) // Try 'double'.
-                    catch case _: NumberFormatException => throw error("Invalid numeric value: $txt")
+                    catch case _: NumberFormatException => throw error(s"Invalid numeric value: $txt")
 
         /**
           *
@@ -146,9 +157,9 @@ class MirAsmCompiler:
           * @param errMsg
           * @param ctx
           */
-        private def error(errMsg: String)(using ctx: ParserRuleContext): CPException =
+        private def error(errMsg: String)(using ctx: ParserRuleContext): MirAsmException =
             val tok = ctx.start
-            new CPException(mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin))
+            new MirAsmException(mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin), Option(dbg))
 
     /**
       * Custom error handler.
@@ -172,7 +183,7 @@ class MirAsmCompiler:
             charPos: Int, // 1, 2, ...
             msg: String,
             e: RecognitionException): Unit =
-            throw new CPException(mkErrorMessage(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
+            throw new MirAsmException(mkErrorMessage(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
 
     /**
       *

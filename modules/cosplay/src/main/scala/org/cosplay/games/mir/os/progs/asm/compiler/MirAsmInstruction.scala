@@ -50,23 +50,39 @@ import MirAsmInstruction.*
 
 /**
   *
+  * @param line Original source line name.
+  * @param pos In-line character position.
+  * @param origin Name of the original source (i.e. file name).
+  */
+case class MirAsmDebug(line: Int, pos: Int, origin: String)
+
+/**
+  *
   * @param label Optional label for this instruction.
   * @param line Line number in the original source code.
   * @param name Instruction name.
   * @param params Instruction parameter list in the same order they appear in the source code.
+  * @param dbg Optional debug information for this instruction.
   */
 case class MirAsmInstruction(
     label: Option[String],
     line: Int,
     name: String,
-    params: Seq[Param]
+    params: Seq[Param],
+    dbg: Option[MirAsmDebug]
 ):
     /**
-      *
+      * @param useDbg Whether or not to include debug information.
       */
-    def getSourceCode: String =
+    def getSourceCode(useDbg: Boolean): String =
         val lbl = label match
             case Some(s) => s"$s: "
             case None => ""
-        s"$lbl$name ${params.mkString(", ")}"
+        val dbgStr =
+            if useDbg && dbg.isDefined then
+                val d = dbg.get
+                s" @${d.line},${d.pos},\"${d.origin}\""
+            else
+                ""
+        s"$lbl$name ${params.mkString(", ")}$dbgStr"
 

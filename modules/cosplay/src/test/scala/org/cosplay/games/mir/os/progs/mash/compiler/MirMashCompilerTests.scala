@@ -43,10 +43,10 @@ object MirMashCompilerTests:
       * @param code Mash code to test.
       */
     private def compileOk(code: String): Unit =
-        Try((new MirMashCompiler).translateToAsm(code, "test")) match
-            case Success(mdl) =>
+        Try((new MirMashCompiler).compileToAsm(code, "test")) match
+            case Success(mod) =>
                 println("---------------------")
-                mdl.asm.foreach(loc => println(loc.toAsmString))
+                mod.asm.foreach(loc => println(loc.toAsmString(false)))
             case Failure(e) =>
                 e.printStackTrace()
                 assertTrue(false, e.getMessage)
@@ -56,7 +56,7 @@ object MirMashCompilerTests:
       * @param code Mash code to test.
       */
     private def compileFail(code: String): Unit =
-        Try((new MirMashCompiler).translateToAsm(code, "test")).match
+        Try((new MirMashCompiler).compileToAsm(code, "test")).match
             case Success(_) => assertTrue(false)
             case Failure(e) =>
                 println(s"<< Expected error below >>")

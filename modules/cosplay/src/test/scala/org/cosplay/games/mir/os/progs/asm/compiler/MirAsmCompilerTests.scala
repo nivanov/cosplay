@@ -89,6 +89,18 @@ object MirAsmCompilerTests:
         compileFail("add s,, 2 ; Extra comma.")
         compileFail("add s, 2_00.12Ea34 ; Bad number.")
         compileFail("add 'bad string' ; Bad string.")
+        compileFail(
+            """
+              |add @2, 300s, "asda"
+              |""".stripMargin)
+        compileFail(
+            """
+              |add @2, -300.23, "asda"
+              |""".stripMargin)
+        compileFail(
+            """
+              |add @2, 300, 'asda'
+              |""".stripMargin)
 
     /**
       *
@@ -104,8 +116,8 @@ object MirAsmCompilerTests:
           |;
           |_label: ; Label.
           |     add s, 2_00.12E34 ; Comment.
-          |     push null
-          |     pop
+          |     push null @1,1,"source"
+          |     pop @2, 300, "asdadasa"
           |     push "qwerty", ""
           |""".stripMargin
     )
