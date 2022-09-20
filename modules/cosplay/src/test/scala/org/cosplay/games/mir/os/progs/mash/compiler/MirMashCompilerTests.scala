@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os.progs.mash.compiler
 
+import org.cosplay.games.mir.MirClock
+
 import scala.util.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.*
@@ -38,6 +40,8 @@ import org.junit.jupiter.api.*
   *
   */
 object MirMashCompilerTests:
+    MirClock.init(0)
+
     /**
       *
       * @param code Mash code to test.

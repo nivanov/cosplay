@@ -17,6 +17,7 @@
 
 package org.cosplay.games.mir.os.progs.asm.compiler
 
+import org.cosplay.games.mir.MirClock
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -39,6 +40,8 @@ import scala.util.*
   *
   */
 object MirAsmCompilerTests:
+    MirClock.init(0)
+
     /**
       *
       * @param code Asm code to test.

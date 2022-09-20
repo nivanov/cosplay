@@ -54,7 +54,7 @@ object MirClock:
 
     /**
       *
-      * @param elapsedMs
+      * @param elapsedMs Elapsed time since the "crash".
       */
     def init(elapsedMs: Long): Unit =
         require(elapsedMs >= 0)
