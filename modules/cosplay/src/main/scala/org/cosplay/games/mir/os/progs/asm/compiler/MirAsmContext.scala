@@ -35,15 +35,15 @@ import scala.collection.mutable
 
 /**
   *
-  * @param execCtx
+  * @param exeCtx
   */
-class MirAsmContext(execCtx: MirExecutableContext):
+class MirAsmContext(exeCtx: MirExecutableContext):
     private val vars = mutable.HashMap.empty[String, Any]
 
     /**
       *
       */
-    def getExecContext: MirExecutableContext = execCtx
+    def getExecContext: MirExecutableContext = exeCtx
 
     /**
       *

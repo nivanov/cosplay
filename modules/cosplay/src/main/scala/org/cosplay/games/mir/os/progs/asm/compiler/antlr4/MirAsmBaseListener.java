@@ -52,6 +52,18 @@ public class MirAsmBaseListener implements MirAsmListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDbg(MirAsmParser.DbgContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDbg(MirAsmParser.DbgContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterLabel(MirAsmParser.LabelContext ctx) { }
 	/**
 	 * {@inheritDoc}

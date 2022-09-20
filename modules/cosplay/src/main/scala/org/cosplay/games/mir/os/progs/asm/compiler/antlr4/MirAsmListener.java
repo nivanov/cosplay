@@ -38,6 +38,16 @@ public interface MirAsmListener extends ParseTreeListener {
 	 */
 	void exitInst(MirAsmParser.InstContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MirAsmParser#dbg}.
+	 * @param ctx the parse tree
+	 */
+	void enterDbg(MirAsmParser.DbgContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirAsmParser#dbg}.
+	 * @param ctx the parse tree
+	 */
+	void exitDbg(MirAsmParser.DbgContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MirAsmParser#label}.
 	 * @param ctx the parse tree
 	 */
