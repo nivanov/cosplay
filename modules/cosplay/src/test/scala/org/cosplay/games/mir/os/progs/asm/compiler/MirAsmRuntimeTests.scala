@@ -39,7 +39,7 @@ import scala.util.*
 /**
   *
   */
-object MirAsmExecutableTests:
+object MirAsmRuntimeTests:
     MirClock.init(0)
     
     /**

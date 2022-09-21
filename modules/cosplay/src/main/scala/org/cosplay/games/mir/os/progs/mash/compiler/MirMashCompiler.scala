@@ -33,10 +33,11 @@ package org.cosplay.games.mir.os.progs.mash.compiler
 import org.cosplay.*
 import games.mir.*
 import os.progs.mash.*
+import os.progs.asm.compiler.*
 import os.progs.mash.compiler.antlr4.*
-
 import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
+import org.cosplay.games.mir.os.progs.asm.compiler.MirAsmException
 
 import java.util.UUID
 import scala.collection.mutable
@@ -246,7 +247,7 @@ class MirMashCompiler:
           */
         private def error(errMsg: String)(using ctx: ParserRuleContext): CPException =
             val tok = ctx.start
-            new CPException(mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin))
+            new MirMashException(mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin))
 
     /**
       *
@@ -316,7 +317,7 @@ class MirMashCompiler:
             charPos: Int, // 1, 2, ...
             msg: String,
             e: RecognitionException): Unit =
-            throw new CPException(mkErrorMessage(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
+            throw new MirMashException(mkErrorMessage(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
 
     /**
       *
@@ -340,6 +341,7 @@ class MirMashCompiler:
       *
       * @param code
       * @param origin
+      * @throws MirMashException
       */
     def compileToAsm(code: String, origin: String): MirMashModule =
         val (fsm, parser) = antlr4Setup(code, origin)
@@ -351,12 +353,9 @@ class MirMashCompiler:
 
     /**
       *
-      * @param code
-      * @param origin
+      * @param code Mash source code to compile.
+      * @param origin Origin of the source code.
+      * @throws MirMashException Thrown in case of syntax or runtime errors.
       */
     def compile(code: String, origin: String): MirMashExecutable =
-        val mod = compileToAsm(code, origin)
-
-        // TODO
-        null
-
+        MirMashExecutable(compileToAsm(code, origin).asm.map(_.toAsmString(true)).mkString("\n"), origin)

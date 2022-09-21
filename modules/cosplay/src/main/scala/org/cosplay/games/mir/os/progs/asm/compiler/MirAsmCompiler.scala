@@ -159,7 +159,11 @@ class MirAsmCompiler:
           */
         private def error(errMsg: String)(using ctx: ParserRuleContext): MirAsmException =
             val tok = ctx.start
-            new MirAsmException(mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin), Option(dbg))
+            new MirAsmException(
+                errMsg,
+                mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin),
+                Option(dbg)
+            )
 
     /**
       * Custom error handler.
@@ -183,7 +187,13 @@ class MirAsmCompiler:
             charPos: Int, // 1, 2, ...
             msg: String,
             e: RecognitionException): Unit =
-            throw new MirAsmException(mkErrorMessage(msg, line, charPos - 1, code, recog.getInputStream.getSourceName))
+            val origin = recog.getInputStream.getSourceName
+            val dbg = MirAsmDebug(line, charPos, origin)
+            throw new MirAsmException(
+                msg,
+                mkErrorMessage(msg, line, charPos - 1, code, origin),
+                None
+            )
 
     /**
       *
@@ -207,6 +217,7 @@ class MirAsmCompiler:
       *
       * @param code
       * @param origin
+      * @throws MirAsmException
       */
     def compile(code: String, origin: String): MirAsmExecutable =
         val (fsm, parser) = antlr4Setup(code, origin)

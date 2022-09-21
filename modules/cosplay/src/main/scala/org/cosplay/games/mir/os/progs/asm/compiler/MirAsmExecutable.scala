@@ -80,20 +80,24 @@ object MirAsmExecutable:
 
                 type MAE = MirAsmException
 
-                def error(errMsg: String): MAE = new MAE(s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.", instr.dbg)
-                def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected stack value ($act) - expecting $exp")
-                def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid ${nth(idx)} parameter - expecting $exp")
-                def wrongVar(id: String, exp: String): MAE = error(s"Invalid variable '$id' type - expecting $exp")
-                def wrongLabel(id: String): MAE = error(s"Undefined label in jump: $id")
+                def formatActual(act: Any): String = act match
+                    case s: String => s"\"$s\""
+                    case _: Any => act.toString
+
+                def error(errMsg: String): MAE = new MAE(errMsg, s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.", instr.dbg)
+                def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected asm stack value (${formatActual(act)}) - expecting $exp")
+                def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid asm ${nth(idx)} parameter - expecting $exp")
+                def wrongVar(id: String, exp: String): MAE = error(s"Invalid asm variable '$id' type - expecting $exp")
+                def wrongLabel(id: String): MAE = error(s"Undefined asm label in jump: $id")
 
                 def checkParamCount(min: Int, max: Int): Unit =
-                    if paramsCnt < min then throw error("Insufficient instruction parameters")
-                    if paramsCnt > max then throw error("Too many instruction parameters")
+                    if paramsCnt < min then throw error("Insufficient asm instruction parameters")
+                    if paramsCnt > max then throw error("Too many asm instruction parameters")
 
                 def getVar(id: String): Any =
                     ctx.getVar(id) match
                         case Some(v) => v
-                        case None => throw error(s"Undefined variable: $id")
+                        case None => throw error(s"Undefined asm variable: $id")
 
                 def pop(): Any =
                     try stack.pop()
@@ -112,8 +116,8 @@ object MirAsmExecutable:
                 def popBool(): Long =
                     val b = pop()
                     b match
-                        case d: Long => if d  == 1 || d == 0 then d else throw wrongStack(b, "1 or 0")
-                        case _ => throw wrongStack(b, "1 or 0")
+                        case d: Long => if d  == 1 || d == 0 then d else throw wrongStack(b, "1(true) or 0(false)")
+                        case _ => throw wrongStack(b, "1(true) or 0(false)")
 
                 def varParam(idx: Int): String =
                     params(idx) match
@@ -188,8 +192,8 @@ object MirAsmExecutable:
 
                 def boolVar(id: String): Long =
                     getVar(id) match
-                        case d: Long => if d == 1 || d == 0 then d else throw wrongVar(id, "1 or 0")
-                        case _ => throw wrongVar(id, "1 or 0")
+                        case d: Long => if d == 1 || d == 0 then d else throw wrongVar(id, "1(true) or 0(false)")
+                        case _ => throw wrongVar(id, "1(true) or 0(false)")
 
                 def incDecVar(v: Int): Unit =
                     require(v == 1 || v == -1)
@@ -208,7 +212,7 @@ object MirAsmExecutable:
                         case d: Double => stack.push(d)
                         case s: String => stack.push(s)
                         case d: Int => stack.push(d.toLong)
-                        case _ => assert(false, s"Invalid stack value type: $v")
+                        case _ => assert(false, s"Invalid asm stack value type: $v")
 
                 def neg(): Unit =
                     pop() match

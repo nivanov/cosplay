@@ -17,12 +17,6 @@
 
 package org.cosplay.games.mir.os.progs.mash.compiler
 
-import org.cosplay.games.mir.*
-
-import scala.util.*
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.*
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -31,26 +25,29 @@ import org.junit.jupiter.api.*
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
+
+import org.cosplay.games.mir.*
+import scala.util.*
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.*
 
 /**
   *
   */
-object MirMashCompilerTests:
+object MirMashRuntimeTests:
     MirClock.init(0)
 
     /**
       *
       * @param code Mash code to test.
       */
-    private def compileOk(code: String): Unit =
-        Try((new MirMashCompiler).compileToAsm(code, "test")) match
-            case Success(mod) =>
-                println("---------------------")
-                mod.asm.foreach(loc => println(loc.toAsmString(false)))
+    private def executeOk(code: String): Unit =
+        Try((new MirMashCompiler).compile(code, "test").execute(null)) match
+            case Success(mod) => ()
             case Failure(e) =>
                 e.printStackTrace()
                 assertTrue(false, e.getMessage)
@@ -59,21 +56,19 @@ object MirMashCompilerTests:
       *
       * @param code Mash code to test.
       */
-    private def compileFail(code: String): Unit =
-        Try((new MirMashCompiler).compileToAsm(code, "test")).match
+    private def executeFail(code: String): Unit =
+        Try((new MirMashCompiler).compile(code, "test").execute(null)).match
             case Success(_) => assertTrue(false)
             case Failure(e) =>
                 println(s"<< Expected error below >>")
                 e.printStackTrace()
 
     @Test
-    def baseTest(): Unit =
-        compileOk("var x = 5 + 2")
-        compileOk("var x = 10_000")
-        compileOk("var x = true; var b = false; var c = null")
-        compileOk("var x = 10; var _long_variable = x")
-        compileOk("val x = 10; val y = 'abc'")
+    def okTest(): Unit =
+        executeOk("var x = 5 + 5")
+        executeOk("var x = (true && false) || true")
 
-        compileFail("var x = d")
-        compileFail("var x = 1as1212")
-
+    @Test
+    def failTest(): Unit =
+        executeFail("var x = 5 + 'fail'")
+        executeFail("var x = (true && false) || 5")

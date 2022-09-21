@@ -50,8 +50,8 @@ class MirMashProgram extends MirExecutable:
       *
       * @param ctx
       */
-    private def initState(ctx: MirExecutableContext): MirMashState =
-        val state = new MirMashState()
+    private def initState(ctx: MirExecutableContext): MirMashContext =
+        val state = new MirMashContext()
 
         // Default & well-known Unix environment variables.
         state.setVariable("PS", """\\u@\\h:\\w\\$""", false)

@@ -32,12 +32,38 @@ import org.cosplay.games.mir.os.progs.mash.*
                 ALl rights reserved.
 */
 
+import org.cosplay.games.mir.os.progs.asm.compiler.*
+
+/**
+  *
+  */
+object MirMashExecutable:
+    /**
+      *
+      * @param asmCode Assembler code.
+      * @param origin Origin of source code.
+      */
+    def apply(asmCode: String, origin: String): MirMashExecutable =
+        (ctx: MirMashContext) =>
+            try
+                (new MirAsmCompiler)
+                    .compile(asmCode, origin)
+                    .execute(new MirAsmContext(null/* TODO */))
+            catch
+                case e: MirAsmException =>
+                    val synopsis = e.getSynopsis.trim
+                    e.getDebug match
+                        case Some(dbg) =>
+                            throw new MirMashException(s"$synopsis - at line ${dbg.line} in ${dbg.origin}.")
+                        case None =>
+                            throw new MirMashException(if synopsis.endsWith(".") then synopsis else s"$synopsis.")
+
 /**
   *
   */
 trait MirMashExecutable:
     /**
       *
-      * @param state
+      * @param ctx
       */
-    def execute(state: MirMashState): Unit
+    def execute(ctx: MirMashContext): Unit

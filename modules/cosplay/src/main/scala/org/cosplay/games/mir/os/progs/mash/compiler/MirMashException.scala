@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.asm.compiler
+package org.cosplay.games.mir.os.progs.mash.compiler
 
 /*
    _________            ______________
@@ -33,22 +33,9 @@ package org.cosplay.games.mir.os.progs.asm.compiler
 import org.cosplay.*
 
 /**
-  * Assembler exceptions.
-  *
-  * @param synopsis Error message synopsis without location.
-  * @param fullMsg Full error message including synopsis and location reference.
-  * @param dbg Optional debug information associated with this exception.
+  * Mash syntax or runtime compiler error.
+  * 
+  * @param errMsg Error message.
   */
-class MirAsmException(synopsis: String, fullMsg: String, dbg: Option[MirAsmDebug] = None) extends CPException(fullMsg):
-    /**
-      * Gets optional debug information.
-      */
-    def getDebug: Option[MirAsmDebug] = dbg
-
-    /**
-      * Gets error's synopsis.
-      */
-    def getSynopsis: String = synopsis
-
-
+class MirMashException(errMsg: String) extends CPException(errMsg)
 
