@@ -68,6 +68,7 @@ object MirMashCompilerTests:
 
     @Test
     def baseTest(): Unit =
+        compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
         compileOk("var x = 5 + 2")
         compileOk("var x = 10_000")
         compileOk("var x = true; var b = false; var c = null")

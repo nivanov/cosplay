@@ -96,7 +96,7 @@ expr
     ;
 compoundExpr
     : expr
-    | LBRACE (decl|expr)* RBRACE
+    | LBRACE (decl|compoundExpr)* compoundExpr RBRACE
     ;
 callParamList
     : compoundExpr

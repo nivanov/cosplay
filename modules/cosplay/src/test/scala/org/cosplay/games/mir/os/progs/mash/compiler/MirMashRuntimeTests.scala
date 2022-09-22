@@ -66,6 +66,7 @@ object MirMashRuntimeTests:
     @Test
     def okTest(): Unit =
         executeOk("var x = 5 + 5")
+        executeOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
         executeOk("var x = (true && false) || true")
 
     @Test
