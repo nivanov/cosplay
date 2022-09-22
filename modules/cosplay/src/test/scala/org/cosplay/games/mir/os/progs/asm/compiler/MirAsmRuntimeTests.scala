@@ -87,6 +87,27 @@ object MirAsmRuntimeTests:
     def breakOutTests(): Unit =
         executeOk(
             """
+              |push 2
+              |push 5
+              |lt
+              |push 5
+              |dup
+              |lte
+              |cbrk
+              |""".stripMargin)
+        executeOk(
+            """
+              |push 5
+              |push 2
+              |gt
+              |cbrk
+              |push 5
+              |push 5
+              |gte
+              |cbrk
+              |""".stripMargin)
+        executeOk(
+            """
               |push 1
               |push 0
               |and
@@ -261,12 +282,20 @@ object MirAsmRuntimeTests:
         executeFail("brk \"Assertion\"")
         executeFail(
             """
+              |push 5
+              |push 2
+              |lt
+              |cbrk
+              |""".stripMargin)
+        executeFail(
+            """
+              |let errMsg "Expected break out"
               |push 1
               |push 2
               |add
               |push 0
               |eq
-              |cbrk "Expected break out"
+              |cbrk errMsg
               |""".stripMargin
         )
 
@@ -278,23 +307,27 @@ object MirAsmRuntimeTests:
         executeOk(
             """
               |let i, 0
+              |let doneStr, "Loop is done!"
+              |let pri, "_println"
               |loop:
               |     ; Start of the loop...
-              |     push i @1,2,"test"
-              |     push 10 @1,2,"test"
-              |     eq @1,2,"test"
-              |     cjmp end @1,2,"test"
-              |     push "loop iteration" @1,2,"test"
-              |     calln "_println" @1,2,"test"
-              |     push i @1,2,"test"
-              |     push 1 @1,2,"test"
-              |     add @1,2,"test"
-              |     pop i @1,2,"test"
-              |     jmp loop @1,2,"test" ; Some comments;
+              |     push i
+              |     push 10
+              |     eq
+              |     cjmp end
+              |     push "loop iteration #"
+              |     push i
+              |     calln "concat"
+              |     calln pri
+              |     push i
+              |     push 1
+              |     add
+              |     pop i
+              |     jmp loop ; Some comments;
               |     ; End of the loop...
               |end:
-              |     push "Loop is done."
-              |     calln "_println"
+              |     push doneStr
+              |     calln pri
               |""".stripMargin
         )
         executeOk(

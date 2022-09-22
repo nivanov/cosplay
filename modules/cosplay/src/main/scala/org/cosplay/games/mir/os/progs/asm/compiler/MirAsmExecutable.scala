@@ -129,12 +129,15 @@ object MirAsmExecutable:
                         case IdParam(id) => id
                         case _ => throw wrongParam(idx, "label")
 
-                def strParam(idx: Int): String =
+                def strOrVarParam(idx: Int): String =
                     params(idx) match
                         case StringParam(s) => s
-                        case _ => throw wrongParam(idx, "string")
+                        case IdParam(id) => getVar(id) match
+                            case s: String => s
+                            case _ => throw wrongParam(idx, "string or string variable")
+                        case _ => throw wrongParam(idx, "string or string variable")
 
-                def anyParam(idx: Int): Any =
+                def anyParam(idx: Int): Any = // Any parameter including variable.
                     params(idx) match
                         case NullParam => null
                         case StringParam(s) => s
@@ -206,6 +209,8 @@ object MirAsmExecutable:
                         case d: Long => push(d + v)
                         case x => throw wrongStack(x, "integer")
 
+                def pushBool(b: Boolean): Unit = push(if b then 1L else 0L)
+
                 def push(v: Any): Unit =
                     v match
                         case d: Long => stack.push(d)
@@ -229,7 +234,7 @@ object MirAsmExecutable:
 
                 def notv(): Unit =
                     val id = varParam(0)
-                    ctx.setVar(id, if boolVar(id) == 0L then 1 else 0L)
+                    ctx.setVar(id, if boolVar(id) == 0L then 1L else 0L)
 
                 def mod(): Unit =
                     val v1 = popLong()
@@ -256,7 +261,7 @@ object MirAsmExecutable:
                 def or(): Unit =
                     val v1 = popBool()
                     val v2 = popBool()
-                    push(if v1 == 1 || v2 == 1 then 1L else 0L)
+                    pushBool(v1 == 1 || v2 == 1)
 
                 def multiply(): Unit =
                     val v1 = pop()
@@ -290,6 +295,7 @@ object MirAsmExecutable:
                     def print(): Unit = ctx.getExecContext.out.print(pop().toString)
                     def println(): Unit = ctx.getExecContext.out.println(pop().toString)
                     def tostr(): Unit = push(pop().toString)
+                    def length(): Unit = push(popStr().length.toLong)
                     def concat(): Unit =
                         val s1 = pop().toString
                         val s2 = pop().toString
@@ -304,6 +310,54 @@ object MirAsmExecutable:
                             idx = i
                             nextInstr = false
                         case None => throw wrongLabel(lbl)
+
+                def lt(v2: Any, v1: Any): Unit =
+                    v2 match
+                        case d2: Long => v1 match
+                            case d1: Long => pushBool(d1 < d2)
+                            case d1: Double => pushBool(d1 < d2)
+                            case _ => wrongStack(v1, "numeric")
+                        case d2: Double => v1 match
+                            case d1: Long => pushBool(d1 < d2)
+                            case d1: Double => pushBool(d1 < d2)
+                            case _ => wrongStack(v1, "numeric")
+                        case _ => wrongStack(v2, "numeric")
+
+                def gt(v2: Any, v1: Any): Unit =
+                    v2 match
+                        case d2: Long => v1 match
+                            case d1: Long => pushBool(d1 > d2)
+                            case d1: Double => pushBool(d1 > d2)
+                            case _ => wrongStack(v1, "numeric")
+                        case d2: Double => v1 match
+                            case d1: Long => pushBool(d1 > d2)
+                            case d1: Double => pushBool(d1 > d2)
+                            case _ => wrongStack(v1, "numeric")
+                        case _ => wrongStack(v2, "numeric")
+
+                def gte(v2: Any, v1: Any): Unit =
+                    v2 match
+                        case d2: Long => v1 match
+                            case d1: Long => pushBool(d1 >= d2)
+                            case d1: Double => pushBool(d1 >= d2)
+                            case _ => wrongStack(v1, "numeric")
+                        case d2: Double => v1 match
+                            case d1: Long => pushBool(d1 >= d2)
+                            case d1: Double => pushBool(d1 >= d2)
+                            case _ => wrongStack(v1, "numeric")
+                        case _ => wrongStack(v2, "numeric")
+
+                def lte(v2: Any, v1: Any): Unit =
+                    v2 match
+                        case d2: Long => v1 match
+                            case d1: Long => pushBool(d1 <= d2)
+                            case d1: Double => pushBool(d1 <= d2)
+                            case _ => wrongStack(v1, "numeric")
+                        case d2: Double => v1 match
+                            case d1: Long => pushBool(d1 <= d2)
+                            case d1: Double => pushBool(d1 <= d2)
+                            case _ => wrongStack(v1, "numeric")
+                        case _ => wrongStack(v2, "numeric")
 
                 name match
                     case "push" => checkParamCount(1, 1); push(anyParam(0))
@@ -325,27 +379,38 @@ object MirAsmExecutable:
                     case "subv" => checkParamCount(2, 2); addSubVar(-1)
                     case "neg" => checkParamCount(0, 0); neg()
                     case "negv" => checkParamCount(1, 1); negv()
-                    case "not" => checkParamCount(0, 0); push(if popBool() == 0L then 1 else 0L)
+                    case "not" => checkParamCount(0, 0); pushBool(popBool() != 1L)
                     case "notv" => checkParamCount(1, 1); notv()
                     case "calln" =>
                         checkParamCount(1, 1)
-                        val fn = strParam(0)
+                        val fn = strOrVarParam(0)
                         fn match
                             case "print" => NativeFunctions.print()
                             case "println" => NativeFunctions.println()
                             case "concat" => NativeFunctions.concat()
                             case "tostr" => NativeFunctions.tostr()
+                            case "length" => NativeFunctions.length()
                             case "_println" => println(pop().toString) // Debug only.
                             case s => throw error(s"Unknown native function: $s")
                     case "let" => checkParamCount(2, 2); ctx.setVar(varParam(0), anyParam(1))
                     case "dup" => checkParamCount(0, 0); if stack.nonEmpty then push(stack.head)
-                    case "eq" => checkParamCount(0, 0); push(if pop() == pop() then 1L else 0L)
-                    case "neq" => checkParamCount(0, 0); push(if pop() == pop() then 0L else 1L)
-                    case "eqv" => checkParamCount(2, 2); push(if getVar(varParam(0)) == anyParam(1) then 1L else 0L)
-                    case "neqv" => checkParamCount(2, 2); push(if getVar(varParam(0)) == anyParam(1) then 0L else 1L)
-                    case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
-                    case "cbrk" => checkParamCount(0, 1); if popBool() == 0L then throw error(if paramsCnt == 1 then strParam(0) else "Aborted")
-                    case "cbrkv" => checkParamCount(1, 2); if getVar(varParam(0)) == 0L then throw error(if paramsCnt == 2 then strParam(1) else "Aborted")
+                    case "eq" => checkParamCount(0, 0); pushBool(pop() == pop())
+                    case "neq" => checkParamCount(0, 0); pushBool(pop() != pop())
+                    case "lt" => checkParamCount(0, 0); lt(pop(), pop())
+                    case "lte" => checkParamCount(0, 0); lte(pop(), pop())
+                    case "gt" => checkParamCount(0, 0); gt(pop(), pop())
+                    case "gte" => checkParamCount(0, 0); gte(pop(), pop())
+//
+//                    case "ltv" => checkParamCount(2, 2);
+//                    case "ltev" => checkParamCount(2, 2);
+//                    case "gtv" => checkParamCount(2, 2);
+//                    case "gtev" => checkParamCount(2, 2);
+
+                    case "eqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) == anyParam(1))
+                    case "neqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) == anyParam(1))
+                    case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
+                    case "cbrk" => checkParamCount(0, 1); if popBool() == 0L then throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
+                    case "cbrkv" => checkParamCount(1, 2); if getVar(varParam(0)) == 0L then throw error(if paramsCnt == 2 then strOrVarParam(1) else "Aborted")
                     case "cjmpv" => checkParamCount(2, 2); if getVar(varParam(0)) != 0L then jump(labelParam(1))
                     case "jmp" => checkParamCount(1, 1); jump(labelParam(0))
                     case "cjmp" => checkParamCount(1, 1); if popBool() != 0L then jump(labelParam(0))
