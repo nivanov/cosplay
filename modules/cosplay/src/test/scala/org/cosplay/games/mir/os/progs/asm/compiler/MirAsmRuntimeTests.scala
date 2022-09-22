@@ -88,7 +88,25 @@ object MirAsmRuntimeTests:
         executeOk(
             """
               |push 2
-              |push 5
+              |ltp 5
+              |cbrk
+              |push 2
+              |let y, 5
+              |ltp y
+              |""".stripMargin)
+        executeOk(
+            """
+              |let x, 2
+              |ltv x, 5
+              |cbrk
+              |let x, 5
+              |let y, 10
+              |ltv x, y
+              |cbrk
+              |""".stripMargin)
+        executeOk(
+            """
+              |pushn 2, 5
               |lt
               |push 5
               |dup
@@ -97,19 +115,21 @@ object MirAsmRuntimeTests:
               |""".stripMargin)
         executeOk(
             """
-              |push 5
-              |push 2
+              |pushn 5, 2
               |gt
               |cbrk
-              |push 5
-              |push 5
+              |let x, 5
+              |gtv x, 2
+              |cbrk
+              |gtev x, x
+              |cbrk
+              |pushn 5, 5
               |gte
               |cbrk
               |""".stripMargin)
         executeOk(
             """
-              |push 1
-              |push 0
+              |pushn 1, 0
               |and
               |push 0
               |eq
@@ -118,8 +138,7 @@ object MirAsmRuntimeTests:
         )
         executeOk(
             """
-              |push 1
-              |push 0
+              |pushn 1, 0
               |or
               |push 1
               |eq
@@ -128,8 +147,7 @@ object MirAsmRuntimeTests:
         )
         executeOk(
             """
-              |push 10
-              |push 3
+              |pushn 10, 3
               |mod
               |push 1
               |eq
@@ -138,11 +156,14 @@ object MirAsmRuntimeTests:
         )
         executeOk(
             """
-              |push "one "
-              |push "two"
+              |pushn "one ", "two"
               |calln "concat"
-              |push "one two"
-              |eq
+              |eqp "one two"
+              |cbrk
+              |let correctRes, "one two"
+              |pushn "one ", "two"
+              |calln "concat"
+              |eqp correctRes
               |cbrk
               |""".stripMargin
         )
@@ -151,8 +172,7 @@ object MirAsmRuntimeTests:
             """
               |let x, 10
               |let y, 2
-              |push x
-              |push y
+              |pushn x, y
               |sub
               |push 8
               |eq
@@ -163,29 +183,24 @@ object MirAsmRuntimeTests:
             """
               |let x, 10
               |let y, 2
-              |push x
-              |push y
+              |pushn x, y
               |sub
-              |push 7 ; Wrong result (should be 8).
-              |neq
+              |neqp 7 ; Wrong result (should be 8).
               |cbrk
               |""".stripMargin
         )
         executeOk(
             """
               |let x, 1
-              |push x
-              |push 2
+              |pushn x, 2
               |add
-              |push 3
-              |eq
+              |eqp 3
               |cbrk "Assertion"
               |""".stripMargin
         )
         executeOk(
             """
-              |push 4
-              |push 2
+              |pushn 4, 2
               |div
               |dup
               |calln "_println"
@@ -265,8 +280,7 @@ object MirAsmRuntimeTests:
         )
         executeOk(
             """
-              |push "1"
-              |push 1
+              |pushn "1", 1
               |calln "tostr"
               |eq
               |cbrk
@@ -275,23 +289,20 @@ object MirAsmRuntimeTests:
 
         executeFail(
             """
-              |push 1
-              |push "asaa"
+              |pushn 1, "asaa"
               |add
               |""".stripMargin)
         executeFail("brk \"Assertion\"")
         executeFail(
             """
-              |push 5
-              |push 2
+              |pushn 5, 2
               |lt
               |cbrk
               |""".stripMargin)
         executeFail(
             """
               |let errMsg "Expected break out"
-              |push 1
-              |push 2
+              |pushn 1, 2
               |add
               |push 0
               |eq
@@ -311,16 +322,13 @@ object MirAsmRuntimeTests:
               |let pri, "_println"
               |loop:
               |     ; Start of the loop...
-              |     push i
-              |     push 10
+              |     pushn i, 10
               |     eq
               |     cjmp end
-              |     push "loop iteration #"
-              |     push i
+              |     pushn "loop iteration #", i
               |     calln "concat"
               |     calln pri
-              |     push i
-              |     push 1
+              |     pushn i, 1
               |     add
               |     pop i
               |     jmp loop ; Some comments;
@@ -373,8 +381,7 @@ object MirAsmRuntimeTests:
               |loop:
               |     eqv i, sz
               |     cjmp end
-              |     push "loop iteration #"
-              |     push i
+              |     pushn "loop iteration #", i
               |     calln "concat"
               |     calln "_println"
               |     incv i
@@ -423,8 +430,7 @@ object MirAsmRuntimeTests:
               |push "----------"
               |calln "_println"
               |let x, 1
-              |push x
-              |push 2
+              |pushn x, 2
               |add
               |calln "_println"
               |""".stripMargin
@@ -434,8 +440,7 @@ object MirAsmRuntimeTests:
             """
               |push "**********"
               |calln "_println"
-              |push "one "
-              |push "two"
+              |pushn "one ", "two"
               |calln "concat"
               |calln "_println"
               |""".stripMargin

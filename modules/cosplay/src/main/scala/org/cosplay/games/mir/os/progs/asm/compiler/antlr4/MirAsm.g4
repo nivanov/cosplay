@@ -56,6 +56,8 @@ param
 // ======
 INSRT_NAME
     : 'mulv'
+    | 'eqp'
+    | 'neqp'
     | 'and'
     | 'or'
     | 'mod'
@@ -66,6 +68,10 @@ INSRT_NAME
     | 'neq'
     | 'eqv'
     | 'neqv'
+    | 'ltp'
+    | 'ltep'
+    | 'gtp'
+    | 'gtep'
     | 'lt'
     | 'lte'
     | 'gt'
@@ -78,6 +84,7 @@ INSRT_NAME
     | 'cbrk'
     | 'cbrkv'
     | 'push'
+    | 'pushn'
     | 'pop'
     | 'add'
     | 'sub'

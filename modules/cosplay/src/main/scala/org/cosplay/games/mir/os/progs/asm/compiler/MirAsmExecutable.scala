@@ -84,7 +84,7 @@ object MirAsmExecutable:
                     case s: String => s"\"$s\""
                     case _: Any => act.toString
 
-                def error(errMsg: String): MAE = new MAE(errMsg, s"$errMsg - at line ${instr.line} in '${instr.getSourceCode}'.", instr.dbg)
+                def error(errMsg: String): MAE = new MAE(errMsg, s"$errMsg - at line ${instr.line} in '${instr.getSourceCode(false)}'.", instr.dbg)
                 def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected asm stack value (${formatActual(act)}) - expecting $exp")
                 def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid asm ${nth(idx)} parameter - expecting $exp")
                 def wrongVar(id: String, exp: String): MAE = error(s"Invalid asm variable '$id' type - expecting $exp")
@@ -311,6 +311,54 @@ object MirAsmExecutable:
                             nextInstr = false
                         case None => throw wrongLabel(lbl)
 
+                def ltv(id: String, v: Any): Unit =
+                    getVar(id) match
+                        case d2: Long => v match
+                            case d1: Long => pushBool(d2 < d1)
+                            case d1: Double => pushBool(d2 < d1)
+                            case _ => wrongParam(1, "numeric")
+                        case d2: Double => v match
+                            case d1: Long => pushBool(d2 < d1)
+                            case d1: Double => pushBool(d2 < d1)
+                            case _ => wrongParam(1, "numeric")
+                        case _ => wrongVar(id, "numeric")
+
+                def ltev(id: String, v: Any): Unit =
+                    getVar(id) match
+                        case d2: Long => v match
+                            case d1: Long => pushBool(d2 <= d1)
+                            case d1: Double => pushBool(d2 <= d1)
+                            case _ => wrongParam(1, "numeric")
+                        case d2: Double => v match
+                            case d1: Long => pushBool(d2 <= d1)
+                            case d1: Double => pushBool(d2 <= d1)
+                            case _ => wrongParam(1, "numeric")
+                        case _ => wrongVar(id, "numeric")
+
+                def gtv(id: String, v: Any): Unit =
+                    getVar(id) match
+                        case d2: Long => v match
+                            case d1: Long => pushBool(d2 > d1)
+                            case d1: Double => pushBool(d2 > d1)
+                            case _ => wrongParam(1, "numeric")
+                        case d2: Double => v match
+                            case d1: Long => pushBool(d2 > d1)
+                            case d1: Double => pushBool(d2 > d1)
+                            case _ => wrongParam(1, "numeric")
+                        case _ => wrongVar(id, "numeric")
+
+                def gtev(id: String, v: Any): Unit =
+                    getVar(id) match
+                        case d2: Long => v match
+                            case d1: Long => pushBool(d2 >= d1)
+                            case d1: Double => pushBool(d2 >= d1)
+                            case _ => wrongParam(1, "numeric")
+                        case d2: Double => v match
+                            case d1: Long => pushBool(d2 >= d1)
+                            case d1: Double => pushBool(d2 >= d1)
+                            case _ => wrongParam(1, "numeric")
+                        case _ => wrongVar(id, "numeric")
+
                 def lt(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
@@ -361,6 +409,7 @@ object MirAsmExecutable:
 
                 name match
                     case "push" => checkParamCount(1, 1); push(anyParam(0))
+                    case "pushn" => checkParamCount(1, Int.MaxValue); for (i <- 0 until paramsCnt) push(anyParam(i))
                     case "and" => checkParamCount(0, 0); and()
                     case "or" => checkParamCount(0, 0); or()
                     case "pop" => checkParamCount(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
@@ -400,14 +449,18 @@ object MirAsmExecutable:
                     case "lte" => checkParamCount(0, 0); lte(pop(), pop())
                     case "gt" => checkParamCount(0, 0); gt(pop(), pop())
                     case "gte" => checkParamCount(0, 0); gte(pop(), pop())
-//
-//                    case "ltv" => checkParamCount(2, 2);
-//                    case "ltev" => checkParamCount(2, 2);
-//                    case "gtv" => checkParamCount(2, 2);
-//                    case "gtev" => checkParamCount(2, 2);
-
+                    case "ltp" => checkParamCount(1, 1); lt(anyParam(0), pop())
+                    case "ltep" => checkParamCount(1, 1); lte(anyParam(0), pop())
+                    case "gtp" => checkParamCount(1, 1); gt(anyParam(0), pop())
+                    case "gtep" => checkParamCount(1, 1); gte(anyParam(0), pop())
+                    case "ltv" => checkParamCount(2, 2); ltv(varParam(0), anyParam(1))
+                    case "ltev" => checkParamCount(2, 2); ltev(varParam(0), anyParam(1))
+                    case "gtv" => checkParamCount(2, 2); gtv(varParam(0), anyParam(1))
+                    case "gtev" => checkParamCount(2, 2); gtev(varParam(0), anyParam(1))
                     case "eqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) == anyParam(1))
                     case "neqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) == anyParam(1))
+                    case "eqp" => checkParamCount(1, 1); pushBool(anyParam(0) == pop())
+                    case "neqp" => checkParamCount(1, 1); pushBool(anyParam(0) != pop())
                     case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
                     case "cbrk" => checkParamCount(0, 1); if popBool() == 0L then throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
                     case "cbrkv" => checkParamCount(1, 2); if getVar(varParam(0)) == 0L then throw error(if paramsCnt == 2 then strOrVarParam(1) else "Aborted")

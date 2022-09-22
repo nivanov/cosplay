@@ -84,5 +84,5 @@ case class MirAsmInstruction(
                 s" @${d.line},${d.pos},\"${d.origin}\""
             else
                 ""
-        s"$lbl$name ${params.mkString(", ")}$dbgStr"
+        s"$lbl$name ${params.mkString(", ")}$dbgStr".trim
 
