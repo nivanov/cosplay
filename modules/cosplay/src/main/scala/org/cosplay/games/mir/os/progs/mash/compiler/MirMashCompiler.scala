@@ -223,7 +223,6 @@ class MirMashCompiler:
             if ctx.MOD() != null then addAsm("mod")
             else if ctx.MULT() != null then addAsm("mul")
             else addAsm("div")
-
         override def exitAtom(using ctx: MirMashParser.AtomContext): Unit =
             if ctx.NULL() != null then addAsm("push null")
             else if ctx.BOOL() != null then addAsm(s"push ${if ctx.getText == "true" then 1 else 0}")
@@ -241,7 +240,7 @@ class MirMashCompiler:
                 val strEnt = parseStr(ctx.STR().getText)
                 strEnt.kind match
                     case StrKind.VAL | StrKind.VAR | StrKind.NUM => addAsm(s"push ${strEnt.str}")
-                    case _ => throw error("Undefined identificator")
+                    case _ => throw error("Undefined identifier")
 
         private def addVar(kind: MirMashDeclarationKind, s: String)(using ctx: ParserRuleContext): Unit =
             val strEnt = parseStr(s)
