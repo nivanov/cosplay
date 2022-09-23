@@ -70,6 +70,23 @@ object MirMashRuntimeTests:
         executeOk("var x = (true && false) || true")
         executeOk(
             """
+              |native def empty()
+              |native def foo(a, b, c)
+              |native def bar(a, b, c)
+              |""".stripMargin)
+        executeOk(
+            """
+              |val a = {
+              |    native def x()
+              |    3
+              |}
+              |val b = {
+              |    native def x() // Not a dup since it is from the different scope.
+              |    3
+              |}
+              |""".stripMargin)
+        executeOk(
+            """
               |var x = {
               |    var z = 3
               |    var y = (z + 5) * (z + 3)
@@ -81,6 +98,16 @@ object MirMashRuntimeTests:
     def failTest(): Unit =
         executeFail("var x = 5 + 'fail'")
         executeFail("var x = (true && false) || 5")
+        executeFail(
+            """
+              |native def foo(a, b, c)
+              |native def foo(a, b, c)
+              |""".stripMargin)
+        executeFail(
+            """
+              |var a = { 7 * 7 }
+              |native def foo(a, b, c)
+              |""".stripMargin)
         executeFail(
             """
               |var x = {

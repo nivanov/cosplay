@@ -64,13 +64,13 @@ public class MirMashBaseListener implements MirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDelDecl(MirMashParser.DelDeclContext ctx) { }
+	@Override public void enterDelimDecl(MirMashParser.DelimDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDelDecl(MirMashParser.DelDeclContext ctx) { }
+	@Override public void exitDelimDecl(MirMashParser.DelimDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -208,13 +208,13 @@ public class MirMashBaseListener implements MirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNativeDefDecl(MirMashParser.NativeDefDeclContext ctx) { }
+	@Override public void enterNatDefDecl(MirMashParser.NatDefDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNativeDefDecl(MirMashParser.NativeDefDeclContext ctx) { }
+	@Override public void exitNatDefDecl(MirMashParser.NatDefDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -251,18 +251,6 @@ public class MirMashBaseListener implements MirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunParamList(MirMashParser.FunParamListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterModExpr(MirMashParser.ModExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitModExpr(MirMashParser.ModExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

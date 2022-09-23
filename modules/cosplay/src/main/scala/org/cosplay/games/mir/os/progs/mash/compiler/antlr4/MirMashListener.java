@@ -48,15 +48,15 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitIncludeDecl(MirMashParser.IncludeDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MirMashParser#delDecl}.
+	 * Enter a parse tree produced by {@link MirMashParser#delimDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterDelDecl(MirMashParser.DelDeclContext ctx);
+	void enterDelimDecl(MirMashParser.DelimDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MirMashParser#delDecl}.
+	 * Exit a parse tree produced by {@link MirMashParser#delimDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitDelDecl(MirMashParser.DelDeclContext ctx);
+	void exitDelimDecl(MirMashParser.DelimDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#assignDecl}.
 	 * @param ctx the parse tree
@@ -168,15 +168,15 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitDefDecl(MirMashParser.DefDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MirMashParser#nativeDefDecl}.
+	 * Enter a parse tree produced by {@link MirMashParser#natDefDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterNativeDefDecl(MirMashParser.NativeDefDeclContext ctx);
+	void enterNatDefDecl(MirMashParser.NatDefDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MirMashParser#nativeDefDecl}.
+	 * Exit a parse tree produced by {@link MirMashParser#natDefDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitNativeDefDecl(MirMashParser.NativeDefDeclContext ctx);
+	void exitNatDefDecl(MirMashParser.NatDefDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#whileDecl}.
 	 * @param ctx the parse tree
@@ -207,18 +207,6 @@ public interface MirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunParamList(MirMashParser.FunParamListContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code modExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterModExpr(MirMashParser.ModExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code modExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitModExpr(MirMashParser.ModExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code plusMinusExpr}
 	 * labeled alternative in {@link MirMashParser#expr}.

@@ -41,9 +41,9 @@ decls
 decl
     : varDecl
     | valDecl
-    | delDecl
+    | delimDecl
     | defDecl
-    | nativeDefDecl
+    | natDefDecl
     | whileDecl
     | forDecl
     | aliasDecl
@@ -53,7 +53,7 @@ decl
     | expr
     ;
 includeDecl: INCLUDE qstring;
-delDecl: SCOL;
+delimDecl: SCOL;
 assignDecl: STR ASSIGN compoundExpr;
 pipelineDecl: prgList AMP?;
 prgList
@@ -71,7 +71,7 @@ aliasDecl: ALIAS STR ASSIGN qstring;
 valDecl: VAL STR ASSIGN compoundExpr;
 varDecl: VAR STR ASSIGN compoundExpr;
 defDecl: DEF STR LPAR funParamList? RPAR ASSIGN compoundExpr;
-nativeDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
+natDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
 whileDecl: WHILE expr DO compoundExpr;
 forDecl: FOR STR IN expr DO compoundExpr;
 funParamList
