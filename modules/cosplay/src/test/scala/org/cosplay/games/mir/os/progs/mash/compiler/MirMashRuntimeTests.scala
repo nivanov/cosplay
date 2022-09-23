@@ -68,8 +68,25 @@ object MirMashRuntimeTests:
         executeOk("var x = 5 + 5")
         executeOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
         executeOk("var x = (true && false) || true")
+        executeOk(
+            """
+              |var x = {
+              |    var z = 3
+              |    var y = (z + 5) * (z + 3)
+              |    y * 8
+              |}
+              |""".stripMargin)
 
     @Test
     def failTest(): Unit =
         executeFail("var x = 5 + 'fail'")
         executeFail("var x = (true && false) || 5")
+        executeFail(
+            """
+              |var x = {
+              |    var z = 3
+              |    var y = (z + 5) * (z + 3)
+              |    y * 8
+              |}
+              |var w = z * 8
+              |""".stripMargin)
