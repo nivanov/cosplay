@@ -87,6 +87,35 @@ object MirAsmRuntimeTests:
     def breakOutTests(): Unit =
         executeOk(
             """
+              |start: nop ; Just a start marker.
+              |pushn 2, 3
+              |eq
+              |ifjmp true_label, false_label
+              |true_label:
+              |     brk
+              |false_label:
+              |     push "ok"
+              |     calln "_println"
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |start: nop ; Just a start marker.
+              |let lbl1, "true_label"
+              |let lbl2, "false_label"
+              |pushn 2, 3
+              |neq
+              |ifjmpv lbl2, lbl1
+              |true_label:
+              |     brk
+              |false_label:
+              |     push "ok"
+              |     calln "_println"
+              |""".stripMargin
+        )
+        executeOk(
+            """
+              |start: nop ; Just a start marker.
               |push 2
               |ltp 5
               |cbrk

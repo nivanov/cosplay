@@ -56,6 +56,9 @@ param
 // ======
 INSRT_NAME
     : 'mulv'
+    | 'ifjmp'
+    | 'ifjmpv'
+    | 'nop'
     | 'eqp'
     | 'neqp'
     | 'and'

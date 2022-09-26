@@ -116,8 +116,11 @@ object MirAsmExecutable:
                 def popBool(): Long =
                     val b = pop()
                     b match
-                        case d: Long => if d  == 1 || d == 0 then d else throw wrongStack(b, "1(true) or 0(false)")
+                        case d: Long => if d  == 1L || d == 0L then d else throw wrongStack(b, "1(true) or 0(false)")
                         case _ => throw wrongStack(b, "1(true) or 0(false)")
+
+                def popTrue(): Boolean = popBool() == 1L
+                def popFalse(): Boolean = popBool() == 0L
 
                 def varParam(idx: Int): String =
                     params(idx) match
@@ -193,6 +196,11 @@ object MirAsmExecutable:
                         case d: Long => d
                         case _ => throw wrongVar(id, "integer")
 
+                def strVar(id: String): String =
+                    getVar(id) match
+                        case s: String  => s
+                        case _ => throw wrongVar(id, "string")
+
                 def boolVar(id: String): Long =
                     getVar(id) match
                         case d: Long => if d == 1 || d == 0 then d else throw wrongVar(id, "1(true) or 0(false)")
@@ -256,12 +264,8 @@ object MirAsmExecutable:
                             case _ => throw wrongStack(d1, "numeric")
                         case _ => throw wrongStack(v1, "numeric")
 
-                def and(): Unit = push(popBool() * popBool())
-
-                def or(): Unit =
-                    val v1 = popBool()
-                    val v2 = popBool()
-                    pushBool(v1 == 1 || v2 == 1)
+                def and(): Unit = pushBool(popTrue() && popTrue())
+                def or(): Unit = pushBool(popTrue() || popTrue())
 
                 def multiply(): Unit =
                     val v1 = pop()
@@ -428,7 +432,7 @@ object MirAsmExecutable:
                     case "subv" => checkParamCount(2, 2); addSubVar(-1)
                     case "neg" => checkParamCount(0, 0); neg()
                     case "negv" => checkParamCount(1, 1); negv()
-                    case "not" => checkParamCount(0, 0); pushBool(popBool() != 1L)
+                    case "not" => checkParamCount(0, 0); pushBool(!popTrue())
                     case "notv" => checkParamCount(1, 1); notv()
                     case "calln" =>
                         checkParamCount(1, 1)
@@ -462,14 +466,17 @@ object MirAsmExecutable:
                     case "eqp" => checkParamCount(1, 1); pushBool(anyParam(0) == pop())
                     case "neqp" => checkParamCount(1, 1); pushBool(anyParam(0) != pop())
                     case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
-                    case "cbrk" => checkParamCount(0, 1); if popBool() == 0L then throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
+                    case "cbrk" => checkParamCount(0, 1); if popFalse() then throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
                     case "cbrkv" => checkParamCount(1, 2); if getVar(varParam(0)) == 0L then throw error(if paramsCnt == 2 then strOrVarParam(1) else "Aborted")
                     case "cjmpv" => checkParamCount(2, 2); if getVar(varParam(0)) != 0L then jump(labelParam(1))
                     case "jmp" => checkParamCount(1, 1); jump(labelParam(0))
-                    case "cjmp" => checkParamCount(1, 1); if popBool() != 0L then jump(labelParam(0))
+                    case "cjmp" => checkParamCount(1, 1); if popTrue() then jump(labelParam(0))
+                    case "ifjmp" => checkParamCount(2, 2); if popTrue() then jump(labelParam(0)) else jump(labelParam(1))
+                    case "ifjmpv" => checkParamCount(2, 2); if popTrue() then jump(strVar(varParam(0))) else jump(strVar(varParam(1)))
                     case "call" => checkParamCount(1, 1); callStack.push(idx + 1); jump(labelParam(0))
                     case "ret" => checkParamCount(0, 0); idx = callStack.pop(); nextInstr = false
                     case "exit" => checkParamCount(0, 0); exit = true
+                    case "nop" => checkParamCount(0, 0) // No-op instruction.
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 
                 if nextInstr then idx += 1
