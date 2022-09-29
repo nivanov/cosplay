@@ -17,9 +17,8 @@ public class MirAsmParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		INSRT_NAME=1, DQSTRING=2, NULL=3, DQUOTE=4, SCOLOR=5, COMMA=6, NL=7, DOLLAR=8, 
-		COLON=9, DOT=10, AT=11, INT=12, REAL=13, EXP=14, ID=15, COMMENT=16, WS=17, 
-		ErrorChar=18;
+		INSRT_NAME=1, DQSTRING=2, NULL=3, DQUOTE=4, SCOLOR=5, COMMA=6, NL=7, COLON=8, 
+		DOT=9, AT=10, INT=11, REAL=12, EXP=13, ID=14, COMMENT=15, WS=16, ErrorChar=17;
 	public static final int
 		RULE_asm = 0, RULE_code = 1, RULE_inst = 2, RULE_dbg = 3, RULE_label = 4, 
 		RULE_plist = 5, RULE_param = 6;
@@ -32,16 +31,16 @@ public class MirAsmParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, "'null'", "'\"'", "';'", "','", "'\\n'", "'$'", "':'", 
-			"'.'", "'@'"
+			null, null, null, "'null'", "'\"'", "';'", "','", "'\\n'", "':'", "'.'", 
+			"'@'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, "INSRT_NAME", "DQSTRING", "NULL", "DQUOTE", "SCOLOR", "COMMA", 
-			"NL", "DOLLAR", "COLON", "DOT", "AT", "INT", "REAL", "EXP", "ID", "COMMENT", 
-			"WS", "ErrorChar"
+			"NL", "COLON", "DOT", "AT", "INT", "REAL", "EXP", "ID", "COMMENT", "WS", 
+			"ErrorChar"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -680,7 +679,7 @@ public class MirAsmParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0012c\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u0011c\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0001\u0000\u0001\u0000\u0001"+
 		"\u0000\u0001\u0001\u0001\u0001\u0005\u0001\u0014\b\u0001\n\u0001\f\u0001"+
@@ -722,23 +721,23 @@ public class MirAsmParser extends Parser {
 		"57\u0005\u0001\u0000\u000068\u0003\n\u0005\u000076\u0001\u0000\u0000\u0000"+
 		"78\u0001\u0000\u0000\u00008:\u0001\u0000\u0000\u00009;\u0003\u0006\u0003"+
 		"\u0000:9\u0001\u0000\u0000\u0000:;\u0001\u0000\u0000\u0000;\u0005\u0001"+
-		"\u0000\u0000\u0000<=\u0005\u000b\u0000\u0000=>\u0005\f\u0000\u0000>?\u0005"+
-		"\u0006\u0000\u0000?@\u0005\f\u0000\u0000@A\u0005\u0006\u0000\u0000AB\u0005"+
-		"\u0002\u0000\u0000B\u0007\u0001\u0000\u0000\u0000CD\u0005\u000f\u0000"+
-		"\u0000DH\u0005\t\u0000\u0000EG\u0005\u0007\u0000\u0000FE\u0001\u0000\u0000"+
-		"\u0000GJ\u0001\u0000\u0000\u0000HF\u0001\u0000\u0000\u0000HI\u0001\u0000"+
-		"\u0000\u0000I\t\u0001\u0000\u0000\u0000JH\u0001\u0000\u0000\u0000KL\u0006"+
-		"\u0005\uffff\uffff\u0000LM\u0003\f\u0006\u0000MS\u0001\u0000\u0000\u0000"+
-		"NO\n\u0001\u0000\u0000OP\u0005\u0006\u0000\u0000PR\u0003\f\u0006\u0000"+
-		"QN\u0001\u0000\u0000\u0000RU\u0001\u0000\u0000\u0000SQ\u0001\u0000\u0000"+
-		"\u0000ST\u0001\u0000\u0000\u0000T\u000b\u0001\u0000\u0000\u0000US\u0001"+
-		"\u0000\u0000\u0000Va\u0005\u0002\u0000\u0000Wa\u0005\u0003\u0000\u0000"+
-		"Xa\u0005\u000f\u0000\u0000Y[\u0005\f\u0000\u0000Z\\\u0005\r\u0000\u0000"+
-		"[Z\u0001\u0000\u0000\u0000[\\\u0001\u0000\u0000\u0000\\^\u0001\u0000\u0000"+
-		"\u0000]_\u0005\u000e\u0000\u0000^]\u0001\u0000\u0000\u0000^_\u0001\u0000"+
-		"\u0000\u0000_a\u0001\u0000\u0000\u0000`V\u0001\u0000\u0000\u0000`W\u0001"+
-		"\u0000\u0000\u0000`X\u0001\u0000\u0000\u0000`Y\u0001\u0000\u0000\u0000"+
-		"a\r\u0001\u0000\u0000\u0000\u000e\u0015\u001c \'+/37:HS[^`";
+		"\u0000\u0000\u0000<=\u0005\n\u0000\u0000=>\u0005\u000b\u0000\u0000>?\u0005"+
+		"\u0006\u0000\u0000?@\u0005\u000b\u0000\u0000@A\u0005\u0006\u0000\u0000"+
+		"AB\u0005\u0002\u0000\u0000B\u0007\u0001\u0000\u0000\u0000CD\u0005\u000e"+
+		"\u0000\u0000DH\u0005\b\u0000\u0000EG\u0005\u0007\u0000\u0000FE\u0001\u0000"+
+		"\u0000\u0000GJ\u0001\u0000\u0000\u0000HF\u0001\u0000\u0000\u0000HI\u0001"+
+		"\u0000\u0000\u0000I\t\u0001\u0000\u0000\u0000JH\u0001\u0000\u0000\u0000"+
+		"KL\u0006\u0005\uffff\uffff\u0000LM\u0003\f\u0006\u0000MS\u0001\u0000\u0000"+
+		"\u0000NO\n\u0001\u0000\u0000OP\u0005\u0006\u0000\u0000PR\u0003\f\u0006"+
+		"\u0000QN\u0001\u0000\u0000\u0000RU\u0001\u0000\u0000\u0000SQ\u0001\u0000"+
+		"\u0000\u0000ST\u0001\u0000\u0000\u0000T\u000b\u0001\u0000\u0000\u0000"+
+		"US\u0001\u0000\u0000\u0000Va\u0005\u0002\u0000\u0000Wa\u0005\u0003\u0000"+
+		"\u0000Xa\u0005\u000e\u0000\u0000Y[\u0005\u000b\u0000\u0000Z\\\u0005\f"+
+		"\u0000\u0000[Z\u0001\u0000\u0000\u0000[\\\u0001\u0000\u0000\u0000\\^\u0001"+
+		"\u0000\u0000\u0000]_\u0005\r\u0000\u0000^]\u0001\u0000\u0000\u0000^_\u0001"+
+		"\u0000\u0000\u0000_a\u0001\u0000\u0000\u0000`V\u0001\u0000\u0000\u0000"+
+		"`W\u0001\u0000\u0000\u0000`X\u0001\u0000\u0000\u0000`Y\u0001\u0000\u0000"+
+		"\u0000a\r\u0001\u0000\u0000\u0000\u000e\u0015\u001c \'+/37:HS[^`";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

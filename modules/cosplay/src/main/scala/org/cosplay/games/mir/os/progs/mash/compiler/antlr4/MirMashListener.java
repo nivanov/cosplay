@@ -208,6 +208,26 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitFunParamList(MirMashParser.FunParamListContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MirMashParser#ifThen}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfThen(MirMashParser.IfThenContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#ifThen}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfThen(MirMashParser.IfThenContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#ifElse}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfElse(MirMashParser.IfElseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#ifElse}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfElse(MirMashParser.IfElseContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code plusMinusExpr}
 	 * labeled alternative in {@link MirMashParser#expr}.
 	 * @param ctx the parse tree

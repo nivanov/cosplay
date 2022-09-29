@@ -71,7 +71,7 @@ object MirAsmCompilerTests:
     def dupLabelTest(): Unit = compileFail(
         """
           |_label: ; Label.
-          |     add s, 2
+          |     add $_s, 2
           |
           |_label: ; Should be an error...
           |
@@ -118,7 +118,7 @@ object MirAsmCompilerTests:
           |; Start some code...
           |;
           |_label: ; Label.
-          |     add s, 2_00.12E34 ; Comment.
+          |     add $_s, 2_00.12E34 ; Comment.
           |     push null @1,1,"source"
           |     pop @2, 300, "asdadasa"
           |     push "qwerty", ""

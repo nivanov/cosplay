@@ -78,11 +78,13 @@ funParamList
     : STR
     | funParamList COMMA STR
     ;
+ifThen: THEN compoundExpr;
+ifElse: ELSE compoundExpr;
 expr
     // NOTE: order of productions defines precedence.
     : op=(MINUS | NOT) expr # unaryExpr
     | LPAR expr RPAR # parExpr
-    | IF expr THEN compoundExpr (ELSE compoundExpr)? # ifExpr
+    | IF expr ifThen ifElse? # ifExpr
     | FOR STR IN expr YIELD compoundExpr # forYieldExpr
     | LPAR funParamList? RPAR ANON_DEF compoundExpr # anonDefExpr
     | expr op=(MULT | DIV | MOD) expr # multDivModExpr

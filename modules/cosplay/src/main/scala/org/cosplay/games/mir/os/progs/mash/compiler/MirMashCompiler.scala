@@ -85,6 +85,15 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
     private val decls = mutable.HashMap.empty[String, MirMashDecl]
     private val children = mutable.ArrayBuffer.empty[MirMashScope]
 
+    val prefix: String = {
+        var x = parent
+        var p = ""
+        while (x.isDefined)
+            p += "$_"
+            x = x.get.parent
+        p
+    }
+
     def isGlobal: Boolean = parent.isEmpty
     def hasDecl(name: String): Boolean = decls.contains(name)
     def addDecl(decl: MirMashDecl): Unit = decls += decl.name -> decl
@@ -101,17 +110,18 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
   * Portable assembler block.
   *
   * @param origin Name of the original source (i.e. file name).
-  * @param startLbl Block start ASM label.
   * @param parent Optional parent of this compilation block.
   */
-case class AsmBlock(origin: String, startLbl: String, parent: Option[AsmBlock]):
+case class AsmBlock(origin: String, parent: Option[AsmBlock]):
     private val asm = mutable.ArrayBuffer.empty[MirMashAsm]
     private val children = mutable.ArrayBuffer.empty[AsmBlock]
 
-    /**
-      *
-      */
     def getChildren: Seq[AsmBlock] = children.toSeq
+    def getAsm: Seq[MirMashAsm] = asm.toSeq
+    def mkSubBlock: AsmBlock =
+        val block = AsmBlock(origin, Option(this))
+        children += block
+        block
 
     /**
       *
@@ -125,7 +135,7 @@ case class AsmBlock(origin: String, startLbl: String, parent: Option[AsmBlock]):
         val line = tok.getLine
         val pos = tok.getCharPositionInLine
         val dbg = MirMashAsmDebug(line, pos, origin)
-        asm += MirMashAsm(lbl, instr, cmt, dbg)
+        asm += MirMashAsm(lbl, instr, cmt, Option(dbg))
 
 /**
   *
@@ -145,7 +155,7 @@ case class MirMashAsm(
     label: Option[String],
     instr: Option[String],
     comment: Option[String], // Without leading ';'.
-    dbg: MirMashAsmDebug
+    dbg: Option[MirMashAsmDebug]
 ):
     def toAsmString(useDbg: Boolean): String =
         val lbl = label match
@@ -157,7 +167,7 @@ case class MirMashAsm(
         if instr.isEmpty then
             s"$lbl $cmt"
         else
-            val ins = s"${instr.getOrElse("")}${if useDbg then s" @${dbg.line},${dbg.pos},\"${dbg.origin}\"" else ""}"
+            val ins = s"${instr.getOrElse("")}${if useDbg && dbg.isDefined then s" @${dbg.get.line},${dbg.get.pos},\"${dbg.get.origin}\"" else ""}"
             f"$lbl%-10s $ins%-15s $cmt"
 
 /**
@@ -185,7 +195,7 @@ object MirMashCompiler:
 class MirMashCompiler:
     import MirMashDeclarationKind.*
     import MirMashCompiler.*
-    
+
     // Not very unique, of course - but good enough.
     private val lblBase = UUID.randomUUID().hashCode().toString
     private var lblCnt = 0L
@@ -204,7 +214,7 @@ class MirMashCompiler:
       * @param origin
       */
     private class FiniteStateMachine(code: String, origin: String) extends MirMashBaseListener:
-        private val asm = mutable.ArrayBuffer.empty[MirMashAsm]
+        private val block = AsmBlock(origin, None)
         private var scope = MirMashScope() // Initially global scope.
         private var funParams: mutable.ArrayBuffer[String] = _
 
@@ -213,10 +223,10 @@ class MirMashCompiler:
           */
         def getCompileModule: MirMashModule =
             require(scope.isGlobal)
-            MirMashModule(asm.toIndexedSeq, scope)
+            MirMashModule(block.getAsm.toIndexedSeq, scope)
 
-        private def addAsm(instr: String)(using ctx: PRC): Unit = addAsmLoC(None, Option(instr), None)
-        private def addAsmComment(cmt: String)(using ctx: PRC): Unit = addAsmLoC(None, None, Option(cmt)) // NOTE: comment without leading ';'.
+        private def addAsm(instr: String)(using ctx: PRC): Unit = block.addAsm(None, Option(instr), None)
+        private def addAsmComment(cmt: String)(using ctx: PRC): Unit = block.addAsm(None, None, Option(cmt)) // NOTE: comment without leading ';'.
 
         private def parseStr(s: String)(using ctx: PRC): StrEntity =
             scope.getDecl(s) match
@@ -240,9 +250,10 @@ class MirMashCompiler:
 
         override def exitNatDefDecl(using ctx: MMP.NatDefDeclContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
+            val id = strEnt.str
             strEnt.kind match
-                case StrKind.UNDEF => scope.addDecl(new MirMashDefDecl(funParams.toSeq, NAT, strEnt.str))
-                case _ => throw error(s"Non-unique native function name (${strEnt.str})")
+                case StrKind.UNDEF => scope.addDecl(new MirMashDefDecl(funParams.toSeq, NAT, id))
+                case _ => throw error(s"Non-unique native function name: $id")
         override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit =
             funParams = mutable.ArrayBuffer.empty[String]
         override def enterDefDecl(ctx: MMP.DefDeclContext): Unit =
@@ -252,9 +263,9 @@ class MirMashCompiler:
             strEnt.kind match
                 case StrKind.UNDEF =>
                     val param = strEnt.str
-                    if funParams.contains(param) then throw error(s"Duplicate function parameter ($param)")
+                    if funParams.contains(param) then throw error(s"Duplicate function parameter: $param")
                     else funParams += param
-                case _ => throw error(s"Function parameter (${strEnt.str}) overrides existing identifier")
+                case _ => throw error(s"Function parameter overrides existing identifier: ${strEnt.str}")
         override def enterCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.mkSubScope
         override def exitCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
@@ -297,18 +308,20 @@ class MirMashCompiler:
             else
                 require(ctx.STR() != null)
                 val strEnt = parseStr(ctx.STR().getText)
+                val id = strEnt.str
                 strEnt.kind match
-                    case StrKind.VAL | StrKind.VAR | StrKind.NUM => addAsm(s"push ${strEnt.str}")
-                    case _ => throw error("Undefined identifier")
+                    case StrKind.VAL | StrKind.VAR => addAsm(s"push ${scope.prefix}$id")
+                    case StrKind.NUM => addAsm(s"push $id")
+                    case _ => throw error(s"Undefined identifier: $id")
 
         private def addVar(kind: MirMashDeclarationKind, s: String)(using ctx: PRC): Unit =
             val strEnt = parseStr(s)
             val name = strEnt.str
             strEnt.kind match
                 case StrKind.UNDEF =>
-                    addAsm(s"pop $name")
+                    addAsm(s"pop ${scope.prefix}$name")
                     scope.addDecl(MirMashDecl(kind, name))
-                case StrKind.NAT | StrKind.ALS | StrKind.FUN | StrKind.VAL | StrKind.VAR => throw error(s"Duplicate '$name' declaration.")
+                case StrKind.NAT | StrKind.ALS | StrKind.FUN | StrKind.VAL | StrKind.VAR => throw error(s"Duplicate declaration: $name")
                 case _ => throw error("Unexpected expression")
 
         override def exitValDecl(using ctx: MMP.ValDeclContext): Unit = addVar(VAL, ctx.STR().getText)
