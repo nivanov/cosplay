@@ -71,26 +71,32 @@ object MirMashRuntimeTests:
         executeOk(
             """
               |native def empty()
-              |native def foo(a, b, c)
-              |native def bar(a, b, c)
+              |native def foo(
+              |     a,
+              |     b,
+              |     c
+              |)
+              |/*
+              | * Function bar.
+              | */
+              |native def bar(
+              |     a,
+              |     /* Parameter b. */
+              |     b,
+              |     // Parameter c.
+              |     c
+              |)
               |""".stripMargin)
         executeOk(
             """
-              |val a = {
+              |var list = ""
+              |for a <- list do {
               |    native def x()
               |    3
               |}
-              |val b = {
+              |for a <- list do {
               |    native def x() // Not a dup since it is from the different scope.
               |    3
-              |}
-              |""".stripMargin)
-        executeOk(
-            """
-              |var x = {
-              |    var z = 3
-              |    var y = (z + 5) * (z + 3)
-              |    y * 8
               |}
               |""".stripMargin)
 
@@ -105,12 +111,13 @@ object MirMashRuntimeTests:
               |""".stripMargin)
         executeFail(
             """
-              |var a = { 7 * 7 }
+              |var a = 7 * 7
               |native def foo(a, b, c)
               |""".stripMargin)
         executeFail(
             """
-              |var x = {
+              |var list = ""
+              |for a <- list do {
               |    var z = 3
               |    var y = (z + 5) * (z + 3)
               |    y * 8
