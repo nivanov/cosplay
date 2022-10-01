@@ -120,6 +120,9 @@ object MirAsmCompilerTests:
           |_label: ; Label.
           |     add $_s, 2_00.12E34 ; Comment.
           |     push null @1,1,"source"
+          |     
+          |     
+          |     
           |     pop @2, 300, "asdadasa"
           |     push "qwerty", ""
           |""".stripMargin

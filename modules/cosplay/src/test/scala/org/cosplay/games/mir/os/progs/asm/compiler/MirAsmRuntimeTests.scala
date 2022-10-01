@@ -105,12 +105,13 @@ object MirAsmRuntimeTests:
               |let lbl2, "false_label"
               |pushn 2, 3
               |neq
-              |ifjmpv lbl2, lbl1
+              |ifjmpv lbl2,                    lbl1
               |true_label:
               |     brk
-              |false_label:
-              |     push "ok"
-              |     calln "_println"
+              |
+              |     false_label:
+              |                  push "ok"
+              |                  calln "_println"
               |""".stripMargin
         )
         executeOk(
@@ -120,8 +121,9 @@ object MirAsmRuntimeTests:
               |ltp 5
               |cbrk
               |push 2
-              |let y, 5
-              |ltp y
+              |
+              |         let y, 5
+              |    ltp      y
               |""".stripMargin)
         executeOk(
             """

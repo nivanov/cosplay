@@ -68,6 +68,13 @@ object MirMashCompilerTests:
 
     @Test
     def baseTest(): Unit =
+        compileOk(
+            """
+              |var x = 2
+              |val w = 20
+              |var z = x - (w * 10)
+              |var q = (x + 5) * (x + 3)
+              |""".stripMargin)
         compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
         compileOk("var x = 5 + 2")
         compileOk("var x = 10_000")

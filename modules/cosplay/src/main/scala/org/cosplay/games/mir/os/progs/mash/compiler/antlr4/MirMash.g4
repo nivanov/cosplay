@@ -48,8 +48,10 @@ decl
     | forDecl
     | aliasDecl
     | assignDecl
-    | pipelineDecl
     | includeDecl
+    | ifDecl
+    | returnDecl
+    | pipelineDecl
     | expr
     ;
 includeDecl: INCLUDE qstring;
@@ -60,16 +62,17 @@ prgList
     : prg
     | prgList pipeOp prg
     ;
-prg: STR argList?;
-arg: (STR | qstring);
+prg: (STR | qstring) argList?;
+arg: STR | qstring;
 argList
     : arg
     | argList arg
     ;
+returnDecl: RETURN expr;
 pipeOp: VERT | GT | APPEND_FILE;
 aliasDecl: ALIAS STR ASSIGN qstring;
-valDecl: VAL STR ASSIGN compoundExpr;
-varDecl: VAR STR ASSIGN compoundExpr;
+valDecl: VAL STR ASSIGN expr;
+varDecl: VAR STR ASSIGN expr;
 defDecl: DEF STR LPAR funParamList? RPAR ASSIGN compoundExpr;
 natDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
 whileDecl: WHILE expr DO compoundExpr;
@@ -80,12 +83,11 @@ funParamList
     ;
 ifThen: THEN compoundExpr;
 ifElse: ELSE compoundExpr;
+ifDecl: IF expr ifThen ifElse?;
 expr
     // NOTE: order of productions defines precedence.
     : op=(MINUS | NOT) expr # unaryExpr
     | LPAR expr RPAR # parExpr
-    | IF expr ifThen ifElse? # ifExpr
-    | FOR STR IN expr YIELD compoundExpr # forYieldExpr
     | LPAR funParamList? RPAR ANON_DEF compoundExpr # anonDefExpr
     | expr op=(MULT | DIV | MOD) expr # multDivModExpr
     | expr op=(PLUS | MINUS) expr # plusMinusExpr
@@ -98,11 +100,11 @@ expr
     ;
 compoundExpr
     : expr
-    | LBRACE (decl|compoundExpr)* compoundExpr RBRACE
+    | LBRACE (decl|expr)* RBRACE
     ;
 callParamList
-    : compoundExpr
-    | callParamList COMMA compoundExpr
+    : expr
+    | callParamList COMMA expr
     ;
 atom
     : NULL
@@ -126,6 +128,7 @@ DEF: 'def';
 ANON_DEF: '=>';
 ASSOC: '->';
 NATIVE: 'native';
+RETURN: 'return';
 IF: 'if';
 THEN: 'then';
 ELSE: 'else';
@@ -171,7 +174,7 @@ SCOL: ';';
 DIV: '/';
 MOD: '%';
 DOLLAR: '$';
-STR: [0-9a-zA-Z${}/._-]+; // Path, argument, identificator or number.
+STR: [0-9a-zA-Z_./-]+;
 COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
-WS: [ \r\t\u000C\n]+ -> skip;
+WS: [ \r\t\n\u000C]+ -> skip;
 ErrorChar: .;

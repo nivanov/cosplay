@@ -63,29 +63,32 @@ enum MirMashDeclarationKind:
 /**
   * A mash declaration of some kind.
   *
-  * @param kind
-  * @param name Identifier of the declaration.
+  * @param kind Type of the declaration.
+  * @param scope Declaration scope.
+  * @param name Declaration short name.
   */
-class MirMashDecl(val kind: MirMashDeclarationKind, val name: String)
+class MirMashDecl(val kind: MirMashDeclarationKind, val scope: MirMashScope, val name: String):
+    /** Fully qualified name. */
+    val fqName: String = s"${scope.namespace}$name"
 
 /**
   *
   * @param params Function declaration site parameters.
-  * @param kind
-  * @param name Identifier of the function.
+  * @param kind Type of the declaration.
+  * @param scope Declaration scope.
+  * @param name Declaration name.
   */
-class MirMashDefDecl(val params: Seq[String], kind: MirMashDeclarationKind, name: String) extends MirMashDecl(kind, name)
+class MirMashDefDecl(val params: Seq[String], kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name)
 
 /**
-  * A namespace.
+  * A namespace container.
   *
   * @param parent Optional parent scope (`None` for global scope).
   */
 case class MirMashScope(parent: Option[MirMashScope] = None):
     private val decls = mutable.HashMap.empty[String, MirMashDecl]
-    private val children = mutable.ArrayBuffer.empty[MirMashScope]
 
-    val prefix: String = {
+    val namespace: String = {
         var x = parent
         var p = ""
         while (x.isDefined)
@@ -99,11 +102,9 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
     def addDecl(decl: MirMashDecl): Unit = decls += decl.name -> decl
     def getDecl(name: String): Option[MirMashDecl] = decls.get(name)
     def getDecls: Seq[MirMashDecl] = decls.values.toSeq
-    def getChildren: Seq[MirMashScope] = children.toSeq
     def mkSubScope: MirMashScope =
         val scope = MirMashScope(Option(this))
         decls.values.foreach(scope.addDecl)
-        children += scope
         scope
 
 /**
@@ -180,14 +181,16 @@ object MirMashCompiler:
       *
       */
     enum StrKind:
-        case NUM, VAR, VAL, ALS, FUN, NAT, UNDEF
+        case NUM, UNDEF
+        case VAR, VAL, ALS, FUN, NAT // Same as declaration type.
 
     /**
       *
       * @param kind
       * @param str
+      * @param decl
       */
-    case class StrEntity(kind: StrKind, str: String)
+    case class StrEntity(kind: StrKind, str: String, decl: Option[MirMashDecl] = None)
 
 /**
   *
@@ -231,11 +234,11 @@ class MirMashCompiler:
         private def parseStr(s: String)(using ctx: PRC): StrEntity =
             scope.getDecl(s) match
                 case Some(decl) => decl.kind match
-                    case VAL => StrEntity(StrKind.VAL, s)
-                    case VAR => StrEntity(StrKind.VAR, s)
-                    case ALS => StrEntity(StrKind.ALS, s)
-                    case FUN => StrEntity(StrKind.FUN, s)
-                    case NAT => StrEntity(StrKind.NAT, s)
+                    case VAL => StrEntity(StrKind.VAL, s, Option(decl))
+                    case VAR => StrEntity(StrKind.VAR, s, Option(decl))
+                    case ALS => StrEntity(StrKind.ALS, s, Option(decl))
+                    case FUN => StrEntity(StrKind.FUN, s, Option(decl))
+                    case NAT => StrEntity(StrKind.NAT, s, Option(decl))
                 case None =>
                     val num = s.replaceAll("_", "")
                     try
@@ -250,10 +253,10 @@ class MirMashCompiler:
 
         override def exitNatDefDecl(using ctx: MMP.NatDefDeclContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
-            val id = strEnt.str
+            val name = strEnt.str
             strEnt.kind match
-                case StrKind.UNDEF => scope.addDecl(new MirMashDefDecl(funParams.toSeq, NAT, id))
-                case _ => throw error(s"Non-unique native function name: $id")
+                case StrKind.UNDEF => scope.addDecl(new MirMashDefDecl(funParams.toSeq, NAT, scope, name))
+                case _ => throw error(s"Duplicate native function name: $name")
         override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit =
             funParams = mutable.ArrayBuffer.empty[String]
         override def enterDefDecl(ctx: MMP.DefDeclContext): Unit =
@@ -308,21 +311,21 @@ class MirMashCompiler:
             else
                 require(ctx.STR() != null)
                 val strEnt = parseStr(ctx.STR().getText)
-                val id = strEnt.str
+                val str = strEnt.str
                 strEnt.kind match
-                    case StrKind.VAL | StrKind.VAR => addAsm(s"push ${scope.prefix}$id")
-                    case StrKind.NUM => addAsm(s"push $id")
-                    case _ => throw error(s"Undefined identifier: $id")
+                    case StrKind.VAL | StrKind.VAR => addAsm(s"push ${strEnt.decl.get.fqName}")
+                    case StrKind.NUM => addAsm(s"push $str")
+                    case _ => throw error(s"Undefined identifier: $str")
 
         private def addVar(kind: MirMashDeclarationKind, s: String)(using ctx: PRC): Unit =
             val strEnt = parseStr(s)
             val name = strEnt.str
             strEnt.kind match
                 case StrKind.UNDEF =>
-                    addAsm(s"pop ${scope.prefix}$name")
-                    scope.addDecl(MirMashDecl(kind, name))
-                case StrKind.NAT | StrKind.ALS | StrKind.FUN | StrKind.VAL | StrKind.VAR => throw error(s"Duplicate declaration: $name")
-                case _ => throw error("Unexpected expression")
+                    val decl = MirMashDecl(kind, scope, name)
+                    addAsm(s"pop ${decl.fqName}")
+                    scope.addDecl(decl)
+                case _ => throw error(s"Duplicate declaration: $name")
 
         override def exitValDecl(using ctx: MMP.ValDeclContext): Unit = addVar(VAL, ctx.STR().getText)
         override def exitVarDecl(using ctx: MMP.VarDeclContext): Unit = addVar(VAR, ctx.STR().getText)
