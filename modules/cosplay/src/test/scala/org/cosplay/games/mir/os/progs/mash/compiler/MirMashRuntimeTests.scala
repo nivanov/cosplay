@@ -117,10 +117,11 @@ object MirMashRuntimeTests:
         executeFail(
             """
               |var list = ""
+              |native def f(x)
               |for a <- list do {
               |    var z = 3
               |    var y = (z + 5) * (z + 3)
-              |    y * 8
+              |    f(y * 8)
               |}
               |var w = z * 8
               |""".stripMargin)

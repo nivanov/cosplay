@@ -148,18 +148,6 @@ public class MirMashBaseListener implements MirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReturnDecl(MirMashParser.ReturnDeclContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitReturnDecl(MirMashParser.ReturnDeclContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterPipeOp(MirMashParser.PipeOpContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -167,6 +155,30 @@ public class MirMashBaseListener implements MirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPipeOp(MirMashParser.PipeOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDefCall(MirMashParser.DefCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDefCall(MirMashParser.DefCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReturnDecl(MirMashParser.ReturnDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReturnDecl(MirMashParser.ReturnDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

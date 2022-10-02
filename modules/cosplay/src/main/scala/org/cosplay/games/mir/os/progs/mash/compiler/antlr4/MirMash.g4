@@ -52,11 +52,11 @@ decl
     | ifDecl
     | returnDecl
     | pipelineDecl
-    | expr
+    | defCall
     ;
 includeDecl: INCLUDE qstring;
 delimDecl: SCOL;
-assignDecl: STR ASSIGN compoundExpr;
+assignDecl: STR ASSIGN expr;
 pipelineDecl: prgList AMP?;
 prgList
     : prg
@@ -68,8 +68,9 @@ argList
     : arg
     | argList arg
     ;
-returnDecl: RETURN expr;
 pipeOp: VERT | GT | APPEND_FILE;
+defCall: STR LPAR callParamList? RPAR;
+returnDecl: RETURN expr?;
 aliasDecl: ALIAS STR ASSIGN qstring;
 valDecl: VAL STR ASSIGN expr;
 varDecl: VAR STR ASSIGN expr;
@@ -94,13 +95,13 @@ expr
     | expr op=(LTEQ | GTEQ | LT | GT) expr # compExpr
     | expr op=(EQ | NEQ) expr # eqNeqExpr
     | expr op=(AND | OR) expr # andOrExpr
-    | STR LPAR callParamList? RPAR # callExpr
+    | defCall # callExpr
     | BQUOTE pipelineDecl BQUOTE # pipelineExecExpr
     | atom # atomExpr
     ;
 compoundExpr
-    : expr
-    | LBRACE (decl|expr)* RBRACE
+    : decl
+    | LBRACE decl* RBRACE
     ;
 callParamList
     : expr

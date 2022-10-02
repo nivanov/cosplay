@@ -118,16 +118,6 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitArgList(MirMashParser.ArgListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MirMashParser#returnDecl}.
-	 * @param ctx the parse tree
-	 */
-	void enterReturnDecl(MirMashParser.ReturnDeclContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MirMashParser#returnDecl}.
-	 * @param ctx the parse tree
-	 */
-	void exitReturnDecl(MirMashParser.ReturnDeclContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MirMashParser#pipeOp}.
 	 * @param ctx the parse tree
 	 */
@@ -137,6 +127,26 @@ public interface MirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPipeOp(MirMashParser.PipeOpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#defCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterDefCall(MirMashParser.DefCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#defCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitDefCall(MirMashParser.DefCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#returnDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnDecl(MirMashParser.ReturnDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#returnDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnDecl(MirMashParser.ReturnDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#aliasDecl}.
 	 * @param ctx the parse tree
