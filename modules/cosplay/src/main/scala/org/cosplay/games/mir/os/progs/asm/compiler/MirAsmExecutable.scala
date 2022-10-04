@@ -412,6 +412,10 @@ object MirAsmExecutable:
                         case _ => wrongStack(v2, "numeric")
 
                 name match
+                    case "cpop" =>
+                        checkParamCount(0, 1)
+                        if stack.nonEmpty then
+                            if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
                     case "push" => checkParamCount(1, 1); push(anyParam(0))
                     case "pushn" => checkParamCount(1, Int.MaxValue); for (i <- 0 until paramsCnt) push(anyParam(i))
                     case "and" => checkParamCount(0, 0); and()
@@ -462,7 +466,7 @@ object MirAsmExecutable:
                     case "gtv" => checkParamCount(2, 2); gtv(varParam(0), anyParam(1))
                     case "gtev" => checkParamCount(2, 2); gtev(varParam(0), anyParam(1))
                     case "eqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) == anyParam(1))
-                    case "neqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) == anyParam(1))
+                    case "neqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) != anyParam(1))
                     case "eqp" => checkParamCount(1, 1); pushBool(anyParam(0) == pop())
                     case "neqp" => checkParamCount(1, 1); pushBool(anyParam(0) != pop())
                     case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")

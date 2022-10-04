@@ -89,6 +89,7 @@ INSRT_NAME
     | 'push'
     | 'pushn'
     | 'pop'
+    | 'cpop'
     | 'add'
     | 'sub'
     | 'addv'

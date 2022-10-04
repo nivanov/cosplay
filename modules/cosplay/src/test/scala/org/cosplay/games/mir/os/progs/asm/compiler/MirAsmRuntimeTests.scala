@@ -71,11 +71,19 @@ object MirAsmRuntimeTests:
         executeFail("push null, 1, 2, \"asdas\"; Too many parameter.")
         executeFail(
             """
+              |let c, 5
+              |push 1
+              |pop b
+              |pop c ; Stack is empty!
+              |""".stripMargin)
+
+        executeFail(
+            """
               |let x, 10
               |let y, 2
               |let s, "cosplay"
               |push x
-              |sub s
+              |sub s ; Wrong operand type.
               |calln "_println"
               |""".stripMargin
         )
@@ -84,7 +92,7 @@ object MirAsmRuntimeTests:
       *
       */
     @Test
-    def breakOutTests(): Unit =
+    def breakTests(): Unit =
         executeOk(
             """
               |start: nop ; Just a start marker.
@@ -455,6 +463,17 @@ object MirAsmRuntimeTests:
       */
     @Test
     def executeOkTests(): Unit =
+        executeOk(
+            """
+              |let c, 5
+              |push 1
+              |cpop b
+              |cpop c ; Stack is empty - no change.
+              |eqv b, 1
+              |cbrk
+              |neqv c, 1
+              |cbrk
+              |""".stripMargin)
         executeOk("push 1")
         executeOk(
             """
