@@ -126,8 +126,8 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
     private val asm = mutable.ArrayBuffer.empty[MirMashAsm]
     private val children = mutable.ArrayBuffer.empty[AsmBlock]
 
-    // Add initial label marker.
-    asm += MirMashAsm(Option(startLabel), Option("nop"), None, None)
+    // Add initial label marker to all nested blocks.
+    if parent.isDefined then asm += MirMashAsm(Option(startLabel), Option("nop"), None, None)
 
     def getChildren: Seq[AsmBlock] = children.toSeq
     def getAsm: Seq[MirMashAsm] = asm.toSeq
@@ -136,9 +136,10 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
         children += block
         block
 
-    def addAsmInstr(instr: String)(using ctx: PRC): Unit = addAsm(None, Option(instr), None)
-    def addAsmLabel(lbl: String)(using ctx: PRC): Unit = addAsm(Option(lbl), Option("nop"), None)
-    def addAsmComment(cmt: String)(using ctx: PRC): Unit = addAsm(None, None, Option(cmt)) // NOTE: comment without leading ';'.
+    def addInstruction(instr: String)(using ctx: PRC): Unit = asm += mkAsm(None, Option(instr), None)
+    def addLabel(lbl: String)(using ctx: PRC): Unit = asm += mkAsm(Option(lbl), Option("nop"), None)
+    def addComment(cmt: String)(using ctx: PRC): Unit = asm += mkAsm(None, None, Option(cmt)) // NOTE: comment without leading ';'.
+    def prependComment(cmt: String)(using ctx: PRC): Unit = asm.insert(0, mkAsm(None, None, Option(cmt))) // NOTE: comment without leading ';'.
 
     /**
       *
@@ -147,12 +148,12 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
       * @param cmt
       * @param ctx
       */
-    def addAsm(lbl: Option[String], instr: Option[String], cmt: Option[String])(using ctx: PRC): Unit =
+    private def mkAsm(lbl: Option[String], instr: Option[String], cmt: Option[String])(using ctx: PRC): MirMashAsm =
         val tok = ctx.start
         val line = tok.getLine
         val pos = tok.getCharPositionInLine
         val dbg = MirMashAsmDebug(line, pos, origin)
-        asm += MirMashAsm(lbl, instr, cmt, Option(dbg))
+        MirMashAsm(lbl, instr, cmt, Option(dbg))
 
 /**
   *
@@ -182,10 +183,11 @@ case class MirMashAsm(
             case Some(s) => s"; $s"
             case None => ""
         if instr.isEmpty then
-            s"$lbl $cmt"
+            s"$lbl$cmt"
         else
-            val ins = s"${instr.getOrElse("")}${if useDbg && dbg.isDefined then s" @${dbg.get.line},${dbg.get.pos},\"${dbg.get.origin}\"" else ""}"
-            f"$lbl%-10s $ins%-15s $cmt"
+            var ins = s"${instr.getOrElse("")}${if useDbg && dbg.isDefined then s" @${dbg.get.line},${dbg.get.pos},\"${dbg.get.origin}\"" else ""}"
+            if ins.nonEmpty then ins += " "
+            f"$lbl%-10s$ins%-15s$cmt"
 
 /**
   *
@@ -238,7 +240,7 @@ class MirMashCompiler:
         private var lastBlock: Option[AsmBlock] = None
         private var scope = MirMashScope() // Initially global scope.
         private var funParams: mutable.ArrayBuffer[String] = _
-        private val funLut = mutable.HashMap.empty[String/* Fully qualified name.*/, String/* Asm label..*/]
+        private val funLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
 
         /**
           *
@@ -247,9 +249,9 @@ class MirMashCompiler:
             require(scope.isGlobal)
             MirMashModule(block.getAsm.toIndexedSeq, scope)
 
-        private def addAsm(instr: String)(using ctx: PRC): Unit = block.addAsmInstr(instr)
-        private def addAsmLabel(lbl: String)(using ctx: PRC): Unit = block.addAsmLabel(lbl)
-        private def addAsmComment(cmt: String)(using ctx: PRC): Unit = block.addAsmComment(cmt) // NOTE: comment without leading ';'.
+        private def addAsm(instr: String)(using ctx: PRC): Unit = block.addInstruction(instr)
+        private def addAsmLabel(lbl: String)(using ctx: PRC): Unit = block.addLabel(lbl)
+        private def addAsmComment(cmt: String)(using ctx: PRC): Unit = block.addComment(cmt) // NOTE: comment without leading ';'.
 
         private def parseStr(s: String)(using ctx: PRC): StrEntity =
             scope.getDecl(s) match
@@ -279,11 +281,11 @@ class MirMashCompiler:
                     val decl = new MirMashDefDecl(funParams.toSeq, NAT, scope, str)
                     scope.addDecl(decl)
                     require(lastBlock.isDefined)
-                    val lb = lastBlock.get
-                    funLut += decl.fqName -> lb.startLabel
-                    lb.getAsm.last.instr match
-                        case Some(instr) => if instr != "ret" then lb.addAsmInstr("ret")
-                        case None => lb.addAsmInstr("ret")
+                    val body = lastBlock.get
+                    body.prependComment(s"Function: ${decl.fqName}")
+                    funLut += decl.fqName -> body.startLabel
+                    val lastInstr = body.getAsm.last.instr
+                    if lastInstr.isEmpty || lastInstr.get != "ret" then body.addInstruction("ret")
                 case StrKind.NUM => throw error(s"Numeric cannot be a function name: $str")
                 case _ =>
                     require(strEnt.decl.isDefined)
