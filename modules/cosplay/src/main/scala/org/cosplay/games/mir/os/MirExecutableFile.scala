@@ -51,7 +51,7 @@ class MirExecutableFile(
     otherAcs: Boolean,
     otherMod: Boolean,
     initMs: Long = MirClock.now()
-) extends MirFile(FT_EXE, name, owner, Option(parent), otherAcs, otherMod, initMs):
+) extends MirFile(FT_EXE, name, owner, parent.?, otherAcs, otherMod, initMs):
     setSize(exe.getSizeOnDisk)
 
     /**

@@ -70,6 +70,14 @@ object MirMashCompilerTests:
     def baseTest(): Unit =
         compileOk(
             """
+              |val g = "nikita"
+              |native def println(s)
+              |def fun(s) = {
+              |     println(s)
+              |}
+              |""".stripMargin)
+        compileOk(
+            """
               |var x = 2
               |val w = 20
               |var z = x - (w * 10)

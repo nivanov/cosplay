@@ -73,8 +73,8 @@ class MirLoginProgram extends MirExecutable:
 
         done = false
         while !done do
-            val passwd1 = con.promptReadLine("Password: ", Option('*'))
-            val passwd2 = con.promptReadLine("\nConfirm password: ", Option('*'))
+            val passwd1 = con.promptReadLine("Password: ", '*'.?)
+            val passwd2 = con.promptReadLine("\nConfirm password: ", '*'.?)
             con.println()
             if passwd1 != passwd2 then err(s"passwords do not match.")
             else if passwd1.length < MIN_PWD_LEN then err(s"password is too short (must be at least $MIN_PWD_LEN characters).")

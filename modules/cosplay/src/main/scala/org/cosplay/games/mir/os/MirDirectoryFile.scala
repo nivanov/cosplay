@@ -174,7 +174,7 @@ class MirDirectoryFile(
         otherAcs: Boolean = true,
         otherMod: Boolean = false,
         initMs: Long = MirClock.now()): MirDirectoryFile =
-        val d = new MirDirectoryFile(name, owner, Option(this), otherAcs, otherMod, initMs)
+        val d = new MirDirectoryFile(name, owner, this.?, otherAcs, otherMod, initMs)
         addFile(d)
         d
 

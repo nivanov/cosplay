@@ -48,5 +48,5 @@ class MirDeviceFile(
     parent: MirDirectoryFile,
     drv: MirDeviceDriver,
     initMs: Long = MirClock.now()
-) extends MirFile(FT_DEV, name, owner, Option(parent), true, false, initMs)
+) extends MirFile(FT_DEV, name, owner, parent.?, true, false, initMs)
 

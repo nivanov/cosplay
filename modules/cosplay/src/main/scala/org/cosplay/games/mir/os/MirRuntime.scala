@@ -104,7 +104,7 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
                 queued = false
                 startTs = MirClock.now()
                 try
-                    code = Option(file.getExec.mainEntry(ctx))
+                    code = file.getExec.mainEntry(ctx).?
                 catch
                     case _: InterruptedException => ()
                     case e: Exception => err.println(e.getLocalizedMessage)
@@ -125,7 +125,7 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
             override def isDone: Boolean = fut.isDone
             override def kill(): Boolean = fut.cancel(true)
             override def isKilled: Boolean = fut.isCancelled
-            override def exitCode(ms: Long = Long.MaxValue): Option[Int] = Option(fut.get(ms, TimeUnit.MILLISECONDS))
+            override def exitCode(ms: Long = Long.MaxValue): Option[Int] = fut.get(ms, TimeUnit.MILLISECONDS).?
             override def getFinishTime: Long = finishTs
 
         procs.synchronized {

@@ -134,11 +134,11 @@ class MirStateManager:
         // NOTE: root password is not guessable in the game - but can be obtained.
         val crew = station.getCrew
         val head = crew.head
-        player = MirUser(head.username, CPRand.rand(head.passwords), Option(head))
+        player = MirUser(head.username, CPRand.rand(head.passwords), head.?)
         val playerCrew = player.getCrewMember.get
         val rootUsr = MirUser.mkRoot()
         val usrs = mutable.ArrayBuffer(player, rootUsr)
-        crew.tail.foreach(p => usrs += MirUser(p.username, CPRand.rand(p.passwords), Option(p)))
+        crew.tail.foreach(p => usrs += MirUser(p.username, CPRand.rand(p.passwords), p.?))
 
         // Init file system.
         val root = MirDirectoryFile.mkRoot(rootUsr)

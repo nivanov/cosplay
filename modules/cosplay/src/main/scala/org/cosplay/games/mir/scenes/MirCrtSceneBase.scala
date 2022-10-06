@@ -68,7 +68,7 @@ abstract class MirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(id
         overscanEffProb = stateMgr.state.crtOverscanProb,
         overscanFactor = stateMgr.state.crtOverscanFactor,
         tearEffProb = stateMgr.state.crtTearProb,
-        tearSnd = if stateMgr.state.crtAudio then Option(tearSnd) else None
+        tearSnd = if stateMgr.state.crtAudio then tearSnd.? else None
     )
 
     // Make sure to call 'super(...)'.
@@ -79,7 +79,7 @@ abstract class MirCrtSceneBase(id: String, bgSndFile: String) extends CPScene(id
         turnOnSnd.play()
         bgSnd.loop(2000)
         if stateMgr.state.crtAudio then
-            crtShdr.setTearSound(Option(tearSnd))
+            crtShdr.setTearSound(tearSnd.?)
             knockSnd.play()
             crtNoiseSnd.loop(1000, _ => knockSnd.play())
             whiteNoiseSnd.loop(1000)

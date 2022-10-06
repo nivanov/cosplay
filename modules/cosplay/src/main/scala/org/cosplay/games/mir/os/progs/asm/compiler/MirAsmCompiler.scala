@@ -127,10 +127,10 @@ class MirAsmCompiler:
                         throw error(s"Duplicate label: $txt")
                     else
                         labels += txt
-                        Option(txt)
+                        txt.?
             val line = ctx.start.getLine
 
-            instrs += new MirAsmInstruction(label, line, name, params.toSeq, Option(dbg))
+            instrs += new MirAsmInstruction(label, line, name, params.toSeq, dbg.?)
 
         override def exitParam(ctx: MirAsmParser.ParamContext): Unit =
             require(params != null)
@@ -162,7 +162,7 @@ class MirAsmCompiler:
             new MirAsmException(
                 errMsg,
                 mkErrorMessage(errMsg, tok.getLine, tok.getCharPositionInLine, code, origin),
-                Option(dbg)
+                dbg.?
             )
 
     /**

@@ -110,8 +110,8 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
     def addDecl(decl: MirMashDecl): Unit = decls += decl.name -> decl
     def getDecl(name: String): Option[MirMashDecl] = decls.get(name)
     def getDecls: Seq[MirMashDecl] = decls.values.toSeq
-    def mkSubScope: MirMashScope =
-        val scope = MirMashScope(Option(this))
+    def subScope: MirMashScope =
+        val scope = MirMashScope(this.?)
         decls.values.foreach(scope.addDecl)
         scope
 
@@ -126,20 +126,21 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
     private val asm = mutable.ArrayBuffer.empty[MirMashAsm]
     private val children = mutable.ArrayBuffer.empty[AsmBlock]
 
-    // Add initial label marker to all nested blocks.
-    if parent.isDefined then asm += MirMashAsm(Option(startLabel), Option("nop"), None, None)
+    // Add initial label marker to all blocks (i.e. block is never empty).
+    asm += MirMashAsm(startLabel.?, "nop".?, None, None)
 
-    def getChildren: Seq[AsmBlock] = children.toSeq
-    def getAsm: Seq[MirMashAsm] = asm.toSeq
-    def mkSubBlock(startLbl: String): AsmBlock =
-        val block = AsmBlock(origin, startLbl, Option(this))
+    def getAsm: Seq[MirMashAsm] =
+        val code = mutable.ArrayBuffer.empty[MirMashAsm]
+        code.addAll(asm) // Add itself.
+        children.foreach(child => code.addAll(child.getAsm)) // Add all of its children recursively.
+        code.toSeq
+    def subBlock(startLbl: String): AsmBlock =
+        val block = AsmBlock(origin, startLbl, this.?)
         children += block
         block
-
-    def addInstruction(instr: String)(using ctx: PRC): Unit = asm += mkAsm(None, Option(instr), None)
-    def addLabel(lbl: String)(using ctx: PRC): Unit = asm += mkAsm(Option(lbl), Option("nop"), None)
-    def addComment(cmt: String)(using ctx: PRC): Unit = asm += mkAsm(None, None, Option(cmt)) // NOTE: comment without leading ';'.
-    def prependComment(cmt: String)(using ctx: PRC): Unit = asm.insert(0, mkAsm(None, None, Option(cmt))) // NOTE: comment without leading ';'.
+    def head: MirMashAsm = asm.apply(0)
+    // NOTE: comment without leading ';'.
+    def add(instr: String, lbl: String = null, cmt: String = null)(using ctx: PRC): Unit = asm.append(mkAsm(lbl.?, instr.?, cmt.?))
 
     /**
       *
@@ -153,7 +154,7 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
         val line = tok.getLine
         val pos = tok.getCharPositionInLine
         val dbg = MirMashAsmDebug(line, pos, origin)
-        MirMashAsm(lbl, instr, cmt, Option(dbg))
+        MirMashAsm(lbl, instr, cmt, dbg.?)
 
 /**
   *
@@ -166,13 +167,13 @@ case class MirMashAsmDebug(line: Int, pos: Int, origin: String)
 /**
   *
   * @param label Optional asm instruction label.
-  * @param instr Optional instruction (if line contains only label and/or comment).
+  * @param instruction Optional instruction (if line contains only label and/or comment).
   * @param comment Optional comment.
   */
 case class MirMashAsm(
     label: Option[String],
-    instr: Option[String],
-    comment: Option[String], // Without leading ';'.
+    instruction: Option[String],
+    var comment: Option[String], // Without leading ';'.
     dbg: Option[MirMashAsmDebug]
 ):
     def toAsmString(useDbg: Boolean): String =
@@ -182,10 +183,10 @@ case class MirMashAsm(
         val cmt = comment match
             case Some(s) => s"; $s"
             case None => ""
-        if instr.isEmpty then
+        if instruction.isEmpty then
             s"$lbl$cmt"
         else
-            var ins = s"${instr.getOrElse("")}${if useDbg && dbg.isDefined then s" @${dbg.get.line},${dbg.get.pos},\"${dbg.get.origin}\"" else ""}"
+            var ins = s"${instruction.getOrElse("")}${if useDbg && dbg.isDefined then s" @${dbg.get.line},${dbg.get.pos},\"${dbg.get.origin}\"" else ""}"
             if ins.nonEmpty then ins += " "
             f"$lbl%-10s$ins%-15s$cmt"
 
@@ -242,6 +243,8 @@ class MirMashCompiler:
         private var funParams: mutable.ArrayBuffer[String] = _
         private val funLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
 
+        def clearFunParams(): Unit = funParams = mutable.ArrayBuffer.empty[String]
+
         /**
           *
           */
@@ -249,18 +252,14 @@ class MirMashCompiler:
             require(scope.isGlobal)
             MirMashModule(block.getAsm.toIndexedSeq, scope)
 
-        private def addAsm(instr: String)(using ctx: PRC): Unit = block.addInstruction(instr)
-        private def addAsmLabel(lbl: String)(using ctx: PRC): Unit = block.addLabel(lbl)
-        private def addAsmComment(cmt: String)(using ctx: PRC): Unit = block.addComment(cmt) // NOTE: comment without leading ';'.
-
         private def parseStr(s: String)(using ctx: PRC): StrEntity =
             scope.getDecl(s) match
                 case Some(decl) => decl.kind match
-                    case VAL => StrEntity(StrKind.VAL, s, Option(decl))
-                    case VAR => StrEntity(StrKind.VAR, s, Option(decl))
-                    case ALS => StrEntity(StrKind.ALS, s, Option(decl))
-                    case FUN => StrEntity(StrKind.FUN, s, Option(decl))
-                    case NAT => StrEntity(StrKind.NAT, s, Option(decl))
+                    case VAL => StrEntity(StrKind.VAL, s, decl.?)
+                    case VAR => StrEntity(StrKind.VAR, s, decl.?)
+                    case ALS => StrEntity(StrKind.ALS, s, decl.?)
+                    case FUN => StrEntity(StrKind.FUN, s, decl.?)
+                    case NAT => StrEntity(StrKind.NAT, s, decl.?)
                 case None =>
                     val num = s.replaceAll("_", "")
                     try
@@ -282,15 +281,35 @@ class MirMashCompiler:
                     scope.addDecl(decl)
                     require(lastBlock.isDefined)
                     val body = lastBlock.get
-                    body.prependComment(s"Function: ${decl.fqName}")
+                    // Update the comment for the 1st instruction in the block.
+                    body.head.comment = s"Function: ${decl.fqName}".?
+                    // Add the function to the function LUT.
                     funLut += decl.fqName -> body.startLabel
-                    val lastInstr = body.getAsm.last.instr
-                    if lastInstr.isEmpty || lastInstr.get != "ret" then body.addInstruction("ret")
+                    // Make sure the last instruction is 'ret'.
+                    val lastInstr = body.getAsm.last.instruction
+                    if lastInstr.isEmpty || lastInstr.get != "ret" then body.add("ret")
                 case StrKind.NUM => throw error(s"Numeric cannot be a function name: $str")
                 case _ =>
                     require(strEnt.decl.isDefined)
                     val decl = strEnt.decl.get
                     throw error(s"Function name ($str) conflicts with existing ${decl.kindStr}.")
+
+        private def call(name: String, isExpr: Boolean)(using ctx: PRC): Unit =
+            val strEnt = parseStr(name)
+            val str = strEnt.str
+            strEnt.kind match
+                case StrKind.FUN =>
+                    val decl = strEnt.decl.get
+                    funLut.get(str) match
+                        case Some(lbl) =>
+                            block.add(s"call $lbl", null, s"Calling '${decl.fqName}' function.")
+                            if !isExpr then block.add("cpop")
+                        case None => throw error(s"Calling unknown function: $str")
+                case StrKind.NAT =>
+                    block.add(s"calln \"$str\"", null, s"Calling native '$str' function.")
+                    if !isExpr then block.add("cpop")
+        override def exitDefCall(using ctx: MMP.DefCallContext): Unit = call(ctx.STR().getText, false)
+        override def exitCallExpr(using ctx: MMP.CallExprContext): Unit = call(ctx.defCall().STR().getText, true)
 
         override def exitNatDefDecl(using ctx: MMP.NatDefDeclContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
@@ -302,10 +321,8 @@ class MirMashCompiler:
                     require(strEnt.decl.isDefined)
                     val decl = strEnt.decl.get
                     throw error(s"Native function name ($str) conflicts with existing ${decl.kindStr}.")
-        override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit =
-            funParams = mutable.ArrayBuffer.empty[String]
-        override def enterDefDecl(ctx: MMP.DefDeclContext): Unit =
-            funParams = mutable.ArrayBuffer.empty[String]
+        override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit = clearFunParams()
+        override def enterDefDecl(ctx: MMP.DefDeclContext): Unit = clearFunParams()
         override def exitFunParamList(using ctx: MMP.FunParamListContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
             val str = strEnt.str
@@ -320,56 +337,55 @@ class MirMashCompiler:
                     throw error(s"Function parameter ($str) overrides existing ${decl.kindStr}.")
 
         override def enterCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
-            scope = scope.mkSubScope
-            block = block.mkSubBlock(genLabel())
+            scope = scope.subScope
+            funParams.foreach(v => scope.addDecl(MirMashDecl(VAL, scope, v)))
+            block = block.subBlock(genLabel())
         override def exitCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.parent match
                 case Some(s) => s
                 case None => assert(false, "Exit global scope.")
-            lastBlock = Option(block)
+            lastBlock = block.?
             block = block.parent match
                 case Some(p) => p
                 case None => assert(false, "Exit global block.")
+            clearFunParams()
 
-        override def exitMash(using ctx: MMP.MashContext): Unit =
-            addAsm("exit")
-        override def enterMash(using ctx: MMP.MashContext): Unit =
-            addAsmComment(s"Generated by mash compiler ver. $VER on ${MirClock.formatNowTimeDate()}")
-            addAsmLabel(startLbl)
+        override def exitMash(using ctx: MMP.MashContext): Unit = block.add("exit")
+        override def enterMash(using ctx: MMP.MashContext): Unit = block.add(null, startLbl, s"Generated by mash compiler ver. $VER on ${MirClock.formatNowTimeDate()}")
 
-        override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit = addAsm("ret")
-        override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit = addAsm(if ctx.MINUS() != null then "neg" else "not")
-        override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit = addAsm(if ctx.AND() != null then "and" else "or")
-        override def exitEqNeqExpr(using ctx: MMP.EqNeqExprContext): Unit = addAsm(if ctx.EQ() != null then "eq" else "neq")
-        override def exitPlusMinusExpr(using ctx: MMP.PlusMinusExprContext): Unit = addAsm(if ctx.PLUS() != null then "add" else "sub")
+        override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit = block.add("ret")
+        override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit = block.add(if ctx.MINUS() != null then "neg" else "not")
+        override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit = block.add(if ctx.AND() != null then "and" else "or")
+        override def exitEqNeqExpr(using ctx: MMP.EqNeqExprContext): Unit = block.add(if ctx.EQ() != null then "eq" else "neq")
+        override def exitPlusMinusExpr(using ctx: MMP.PlusMinusExprContext): Unit = block.add(if ctx.PLUS() != null then "add" else "sub")
         override def exitCompExpr(using ctx: MMP.CompExprContext): Unit =
-            if ctx.LT() != null then addAsm("lt")
-            else if ctx.LTEQ() != null then addAsm("lte")
-            else if ctx.GT() != null then addAsm("gt")
-            else addAsm("gte")
+            if ctx.LT() != null then block.add("lt")
+            else if ctx.LTEQ() != null then block.add("lte")
+            else if ctx.GT() != null then block.add("gt")
+            else block.add("gte")
         override def exitMultDivModExpr(using ctx: MMP.MultDivModExprContext): Unit =
-            if ctx.MOD() != null then addAsm("mod")
-            else if ctx.MULT() != null then addAsm("mul")
-            else addAsm("div")
+            if ctx.MOD() != null then block.add("mod")
+            else if ctx.MULT() != null then block.add("mul")
+            else block.add("div")
         override def exitAtom(using ctx: MMP.AtomContext): Unit =
-            if ctx.NULL() != null then addAsm("push null")
-            else if ctx.BOOL() != null then addAsm(s"push ${if ctx.getText == "true" then 1 else 0}")
+            if ctx.NULL() != null then block.add("push null")
+            else if ctx.BOOL() != null then block.add(s"push ${if ctx.getText == "true" then 1 else 0}")
             else if ctx.qstring() != null then
                 val qStr = ctx.qstring()
                 if qStr.SQSTRING() != null then
                     val s = MirUtils.dequote(qStr.SQSTRING().getText)
-                    addAsm(s"push \"$s\"")
+                    block.add(s"push \"$s\"")
                 else if qStr.DQSTRING() != null then
                     // TODO: handle variable expansion for double-quoted strings.
                     val s = MirUtils.dequote(qStr.DQSTRING().getText)
-                    addAsm(s"push \"$s\"")
+                    block.add(s"push \"$s\"")
             else
                 require(ctx.STR() != null)
                 val strEnt = parseStr(ctx.STR().getText)
                 val str = strEnt.str
                 strEnt.kind match
-                    case StrKind.VAL | StrKind.VAR => addAsm(s"push ${strEnt.decl.get.fqName}")
-                    case StrKind.NUM => addAsm(s"push $str")
+                    case StrKind.VAL | StrKind.VAR => block.add(s"push ${strEnt.decl.get.fqName}")
+                    case StrKind.NUM => block.add(s"push $str")
                     case _ => throw error(s"Unknown identifier: $str")
 
         private def addVar(kind: MirMashDeclarationKind, s: String)(using ctx: PRC): Unit =
@@ -378,7 +394,7 @@ class MirMashCompiler:
             strEnt.kind match
                 case StrKind.UNDEF =>
                     val decl = MirMashDecl(kind, scope, name)
-                    addAsm(s"pop ${decl.fqName}")
+                    block.add(s"pop ${decl.fqName}")
                     scope.addDecl(decl)
                 case _ => throw error(s"Duplicate declaration: $name")
 
