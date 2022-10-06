@@ -71,10 +71,12 @@ object MirMashCompilerTests:
         compileOk(
             """
               |native def println(s)
-              |def fun(s) = {
-              |     println(s)
+              |def fun(a, b, c) = {
+              |     val x = b + c
+              |     println(a)
+              |     println(x)
               |}
-              |fun("test")
+              |fun(1, 2, 3)
               |""".stripMargin)
 //        compileOk(
 //            """

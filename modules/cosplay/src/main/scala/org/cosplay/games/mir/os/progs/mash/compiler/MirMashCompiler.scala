@@ -71,7 +71,7 @@ class MirMashDecl(val kind: MirMashDeclarationKind, val scope: MirMashScope, val
     import MirMashDeclarationKind.*
 
     /** Fully qualified name. */
-    val fqName: String = s"${scope.namespace}_$name"
+    val fqName: String = s"${name}_${scope.namespace}"
     val kindStr: String = kind match
         case VAR => "variable"
         case VAL => "value"
@@ -116,12 +116,11 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
     private final val id = guid()
 
     val namespace: String = {
-        def z(s: String): String = "$" + s + "_"
         var x = parent
-        var p = z(id)
+        var p = "$" + id
         while (x.isDefined)
             val xx = x.get
-            p += z(xx.id)
+            p += "$" + xx.id
             x = xx.parent
         p
     }
