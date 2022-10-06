@@ -75,21 +75,22 @@ object MirMashCompilerTests:
               |def fun(s) = {
               |     println(s)
               |}
+              |fun("test")
               |""".stripMargin)
-        compileOk(
-            """
-              |var x = 2
-              |val w = 20
-              |var z = x - (w * 10)
-              |var q = (x + 5) * (x + 3)
-              |""".stripMargin)
-        compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
-        compileOk("var x = 5 + 2")
-        compileOk("var x = 10_000")
-        compileOk("var x = true; var b = false; var c = null")
-        compileOk("var x = 10; var _long_variable = x")
-        compileOk("val x = 10; val y = 'abc'")
-
-        compileFail("var x = d")
-        compileFail("var x = 1as1212")
+//        compileOk(
+//            """
+//              |var x = 2
+//              |val w = 20
+//              |var z = x - (w * 10)
+//              |var q = (x + 5) * (x + 3)
+//              |""".stripMargin)
+//        compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
+//        compileOk("var x = 5 + 2")
+//        compileOk("var x = 10_000")
+//        compileOk("var x = true; var b = false; var c = null")
+//        compileOk("var x = 10; var _long_variable = x")
+//        compileOk("val x = 10; val y = 'abc'")
+//
+//        compileFail("var x = d")
+//        compileFail("var x = 1as1212")
 
