@@ -71,7 +71,7 @@ class MirMashDecl(val kind: MirMashDeclarationKind, val scope: MirMashScope, val
     import MirMashDeclarationKind.*
 
     /** Fully qualified name. */
-    val fqName: String = s"${scope.namespace}$name"
+    val fqName: String = s"${scope.namespace}_$name"
     val kindStr: String = kind match
         case VAR => "variable"
         case VAL => "value"
@@ -89,19 +89,40 @@ class MirMashDecl(val kind: MirMashDeclarationKind, val scope: MirMashScope, val
 class MirMashDefDecl(val params: Seq[String], kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name)
 
 /**
+  *
+  */
+object MirMashScope:
+    // Not very unique, of course - but good enough.
+    private val base = UUID.randomUUID().hashCode().abs.toString
+    private var cnt = 0L
+
+    /**
+      *
+      */
+    private def guid(): String =
+        val id = s"S${base}_$cnt"
+        cnt += 1
+        id
+
+/**
   * A namespace container.
   *
   * @param parent Optional parent scope (`None` for global scope).
   */
 case class MirMashScope(parent: Option[MirMashScope] = None):
+    import MirMashScope.*
+
     private val decls = mutable.HashMap.empty[String, MirMashDecl]
+    private final val id = guid()
 
     val namespace: String = {
+        def z(s: String): String = "$" + s + "_"
         var x = parent
-        var p = ""
+        var p = z(id)
         while (x.isDefined)
-            p += "$_"
-            x = x.get.parent
+            val xx = x.get
+            p += z(xx.id)
+            x = xx.parent
         p
     }
 
@@ -127,7 +148,7 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
     private val children = mutable.ArrayBuffer.empty[AsmBlock]
 
     // Add initial label marker to all nested blocks.
-    if parent.isDefined then asm += MirMashAsm(startLabel.?, "nop".?, None, None)
+    if parent.isDefined then asm += MirMashAsm(startLabel.?, None, None, None)
 
     def getAsm: Seq[MirMashAsm] =
         val code = mutable.ArrayBuffer.empty[MirMashAsm]
@@ -141,14 +162,9 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
     // NOTE: comment without leading ';'.
     def add(instr: String, lbl: String = null, cmt: String = null)(using ctx: PRC): Unit = asm.append(mkAsm(lbl.?, instr.?, cmt.?))
 
-    /**
-      *
-      * @param lbl
-      * @param instr
-      * @param cmt
-      * @param ctx
-      */
     private def mkAsm(lbl: Option[String], instr: Option[String], cmt: Option[String])(using ctx: PRC): MirMashAsm =
+        require(lbl.isDefined || instr.isDefined || cmt.isDefined)
+
         val tok = ctx.start
         val line = tok.getLine
         val pos = tok.getCharPositionInLine
@@ -172,9 +188,11 @@ case class MirMashAsmDebug(line: Int, pos: Int, origin: String)
 case class MirMashAsm(
     label: Option[String],
     instruction: Option[String],
-    var comment: Option[String], // Without leading ';'.
+    comment: Option[String], // Without leading ';'.
     dbg: Option[MirMashAsmDebug]
 ):
+    require(label.isDefined || instruction.isDefined || comment.isDefined)
+
     def toAsmString(useDbg: Boolean): String =
         val lbl = label match
             case Some(s) => s"$s: "
@@ -187,7 +205,7 @@ case class MirMashAsm(
         else
             var ins = s"${instruction.getOrElse("")}${if useDbg && dbg.isDefined then s" @${dbg.get.line},${dbg.get.pos},\"${dbg.get.origin}\"" else ""}"
             if ins.nonEmpty then ins += " "
-            f"$lbl%-10s$ins%-15s$cmt"
+            f"$lbl%-5s$ins$cmt"
 
 /**
   *
@@ -235,7 +253,6 @@ class MirMashCompiler:
       * @param origin
       */
     private class FiniteStateMachine(code: String, origin: String) extends MirMashBaseListener:
-        private val startLbl = genLabel()
         private var block = AsmBlock(origin, genLabel())
         private var lastBlock: Option[AsmBlock] = None
         private var scope = MirMashScope() // Initially global scope.
@@ -276,7 +293,7 @@ class MirMashCompiler:
             val str = strEnt.str
             strEnt.kind match
                 case StrKind.UNDEF =>
-                    val decl = new MirMashDefDecl(funParams.toSeq, NAT, scope, str)
+                    val decl = new MirMashDefDecl(funParams.toSeq, FUN, scope, str)
                     scope.addDecl(decl)
                     require(lastBlock.isDefined)
                     val body = lastBlock.get
@@ -297,13 +314,13 @@ class MirMashCompiler:
             strEnt.kind match
                 case StrKind.FUN =>
                     val decl = strEnt.decl.get
-                    funLut.get(str) match
+                    funLut.get(decl.fqName) match
                         case Some(lbl) =>
-                            block.add(s"call $lbl", null, s"Calling '${decl.fqName}' function.")
+                            block.add(s"call $lbl", null, s"Calling '$str' function.")
                             if !isExpr then block.add("cpop")
-                        case None => throw error(s"Calling unknown function: $str")
+                        case None => throw error(s"Calling undefined function: $str")
                 case StrKind.NAT =>
-                    block.add(s"calln \"$str\"", null, s"Calling native function.")
+                    block.add(s"calln \"$str\"")
                     if !isExpr then block.add("cpop")
                 case _ => throw error(s"Calling unknown function: $str")
         override def exitDefCall(using ctx: MMP.DefCallContext): Unit = call(ctx.STR().getText, false)
@@ -336,8 +353,12 @@ class MirMashCompiler:
 
         override def enterCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.subScope
-            funParams.foreach(v => scope.addDecl(MirMashDecl(VAL, scope, v)))
             block = block.subBlock(genLabel())
+            val decls = funParams.map(MirMashDecl(VAL, scope, _))
+            // Add parameters to the function scope.
+            decls.foreach(scope.addDecl)
+            // Pop local variables for each parameter.
+            decls.reverse.foreach(decl => block.add(s"pop ${decl.fqName}"))
         override def exitCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.parent match
                 case Some(s) => s
@@ -350,8 +371,9 @@ class MirMashCompiler:
 
         override def exitMash(using ctx: MMP.MashContext): Unit = block.add("exit")
         override def enterMash(using ctx: MMP.MashContext): Unit =
-            block.add(null, null, s"Generated by mash compiler ver. $VER on ${MirClock.formatNowTimeDate()}")
-            block.add(null, startLbl)
+            val hdr = s"Generated by mash compiler ver. $VER on ${MirClock.formatNowTimeDate()}"
+            block.add(null, null, hdr)
+            block.add(null, null, "-" * hdr.length)
 
         override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit = block.add("ret")
         override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit = block.add(if ctx.MINUS() != null then "neg" else "not")

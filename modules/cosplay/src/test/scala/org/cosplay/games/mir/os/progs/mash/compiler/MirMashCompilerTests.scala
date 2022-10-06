@@ -70,7 +70,6 @@ object MirMashCompilerTests:
     def baseTest(): Unit =
         compileOk(
             """
-              |val g = "nikita"
               |native def println(s)
               |def fun(s) = {
               |     println(s)
