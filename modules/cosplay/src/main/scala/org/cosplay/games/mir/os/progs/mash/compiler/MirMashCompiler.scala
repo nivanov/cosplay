@@ -80,13 +80,15 @@ class MirMashDecl(val kind: MirMashDeclarationKind, val scope: MirMashScope, val
         case NAT => "native function"
 
 /**
+  * Native or regular function declaration.
   *
-  * @param params Function declaration site parameters.
+  * @param paramCnt Number of function parameters.
   * @param kind Type of the declaration.
   * @param scope Declaration scope.
   * @param name Declaration name.
   */
-class MirMashDefDecl(val params: Seq[String], kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name)
+class MirMashDefDecl(paramCnt: Int, kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name):
+    require(kind == MirMashDeclarationKind.NAT || kind == MirMashDeclarationKind.FUN)
 
 /**
   *
@@ -256,9 +258,12 @@ class MirMashCompiler:
         private var lastBlock: Option[AsmBlock] = None
         private var scope = MirMashScope() // Initially global scope.
         private var funParams: mutable.ArrayBuffer[String] = _
+        private var funName: Option[String] = None
         private val funLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
 
-        def clearFunParams(): Unit = funParams = mutable.ArrayBuffer.empty[String]
+        def clearFun(): Unit =
+            funParams = mutable.ArrayBuffer.empty[String]
+            funName = None
 
         /**
           *
@@ -288,11 +293,12 @@ class MirMashCompiler:
                             StrEntity(StrKind.UNDEF, s)
 
         override def exitDefDecl(using ctx: MirMashParser.DefDeclContext): Unit =
-            val strEnt = parseStr(ctx.STR().getText)
+            require(funName.isDefined)
+            val strEnt = parseStr(funName.get)
             val str = strEnt.str
             strEnt.kind match
                 case StrKind.UNDEF =>
-                    val decl = new MirMashDefDecl(funParams.toSeq, FUN, scope, str)
+                    val decl = new MirMashDefDecl(funParams.length, FUN, scope, str)
                     scope.addDecl(decl)
                     require(lastBlock.isDefined)
                     val body = lastBlock.get
@@ -306,6 +312,7 @@ class MirMashCompiler:
                     require(strEnt.decl.isDefined)
                     val decl = strEnt.decl.get
                     throw error(s"Function name ($str) conflicts with existing ${decl.kindStr}.")
+            clearFun()
 
         private def call(name: String, isExpr: Boolean)(using ctx: PRC): Unit =
             val strEnt = parseStr(name)
@@ -324,19 +331,19 @@ class MirMashCompiler:
                 case _ => throw error(s"Calling unknown function: $str")
         override def exitDefCall(using ctx: MMP.DefCallContext): Unit = call(ctx.STR().getText, false)
         override def exitCallExpr(using ctx: MMP.CallExprContext): Unit = call(ctx.defCall().STR().getText, true)
-
+        override def exitDefNameDecl(using ctx: MMP.DefNameDeclContext): Unit = funName = ctx.STR().getText.?
         override def exitNatDefDecl(using ctx: MMP.NatDefDeclContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
             val str = strEnt.str
             strEnt.kind match
-                case StrKind.UNDEF => scope.addDecl(new MirMashDefDecl(funParams.toSeq, NAT, scope, str))
+                case StrKind.UNDEF => scope.addDecl(new MirMashDefDecl(funParams.length, NAT, scope, str))
                 case StrKind.NUM => throw error(s"Numeric cannot be a native function name: $str")
                 case _ =>
-                    require(strEnt.decl.isDefined)
-                    val decl = strEnt.decl.get
-                    throw error(s"Native function name ($str) conflicts with existing ${decl.kindStr}.")
-        override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit = clearFunParams()
-        override def enterDefDecl(ctx: MMP.DefDeclContext): Unit = clearFunParams()
+                    val decl = strEnt.decl
+                    require(decl.isDefined)
+                    throw error(s"Native function name ($str) conflicts with existing ${decl.get.kindStr}.")
+        override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit = clearFun()
+        override def enterDefDecl(ctx: MMP.DefDeclContext): Unit = clearFun()
         override def exitFunParamList(using ctx: MMP.FunParamListContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
             val str = strEnt.str
@@ -353,11 +360,13 @@ class MirMashCompiler:
         override def enterCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.subScope
             block = block.subBlock(genLabel())
-            val decls = funParams.map(MirMashDecl(VAL, scope, _))
-            // Add parameters to the function scope.
-            decls.foreach(scope.addDecl)
-            // Pop local variables for each parameter.
-            decls.reverse.foreach(decl => block.add(s"pop ${decl.fqName}"))
+            if funName.isDefined then
+                block.add(null, null, s"Function '${funName.get}'.")
+                val decls = funParams.map(MirMashDecl(VAL, scope, _))
+                // Add parameters to the function scope.
+                decls.foreach(scope.addDecl)
+                // Pop local variables for each parameter.
+                decls.reverse.foreach(decl => block.add(s"pop ${decl.fqName}"))
         override def exitCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.parent match
                 case Some(s) => s
@@ -366,7 +375,6 @@ class MirMashCompiler:
             block = block.parent match
                 case Some(p) => p
                 case None => assert(false, "Exit global block.")
-            clearFunParams()
 
         override def exitMash(using ctx: MMP.MashContext): Unit = block.add("exit")
         override def enterMash(using ctx: MMP.MashContext): Unit =

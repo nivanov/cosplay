@@ -73,7 +73,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
 
         // Scaladoc config.
         Compile / doc / scalacOptions ++= Seq(
-            "-project-footer", "(C) 2021 Rowan Games, Inc.",
+            "-project-footer", "(C) 2022 Rowan Games, Inc.",
             "-project-version", cosPlayVer,
             "-siteroot", ".",
             "-skip-by-regex:org.cosplay.impl",
