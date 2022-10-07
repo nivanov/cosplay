@@ -72,7 +72,10 @@ object MirMashCompilerTests:
             """
               |native def println(s)
               |def fun(a, b, c) = {
-              |     val x = b + c
+              |     def another_fun(x, y) = return x + y
+              |
+              |     val x = b + another_fun(c, 1)
+              |
               |     println(a)
               |     println(x)
               |}
