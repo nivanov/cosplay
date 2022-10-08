@@ -370,11 +370,11 @@ class MirMashCompiler:
         override def exitCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.parent match
                 case Some(s) => s
-                case None => assert(false, "Attemp to exit global scope.")
+                case None => assert(false, "Attempt to exit global scope.")
             lastBlock = block.?
             block = block.parent match
                 case Some(p) => p
-                case None => assert(false, "Attemp to exit global block.")
+                case None => assert(false, "Attempt to exit global block.")
 
         override def exitMash(using ctx: MMP.MashContext): Unit = block.add("exit")
         override def enterMash(using ctx: MMP.MashContext): Unit =

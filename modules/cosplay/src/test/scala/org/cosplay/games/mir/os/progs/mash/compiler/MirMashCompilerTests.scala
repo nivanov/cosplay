@@ -70,16 +70,9 @@ object MirMashCompilerTests:
     def baseTest(): Unit =
         compileOk(
             """
-              |native def println(s)
               |def fun(a, b, c) = {
               |     def another_fun(x, y) = return x + y
-              |
-              |     val x = b + another_fun(c, 1)
-              |
-              |     println(a)
-              |     println(x)
               |}
-              |fun(1, 2, 3)
               |""".stripMargin)
 //        compileOk(
 //            """
