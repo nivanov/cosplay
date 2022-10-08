@@ -73,6 +73,7 @@ object MirMashCompilerTests:
               |def fun(a, b, c) = {
               |     def another_fun(x, y) = return x + y
               |}
+              |fun(1, 2, 3)
               |""".stripMargin)
 //        compileOk(
 //            """
