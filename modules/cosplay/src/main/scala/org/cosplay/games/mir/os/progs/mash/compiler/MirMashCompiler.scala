@@ -151,7 +151,6 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
     // Add initial label marker to all nested blocks.
     if parent.isDefined then asm += MirMashAsm(startLabel.?, None, None, None)
 
-    def getAsm: Seq[MirMashAsm] = asm.toSeq
     def linkAsm: Seq[MirMashAsm] =
         val code = mutable.ArrayBuffer.empty[MirMashAsm]
         code.addAll(asm) // Add itself.
@@ -163,6 +162,8 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
         block
     // NOTE: comment without leading ';'.
     def add(instr: String, lbl: String = null, cmt: String = null)(using ctx: PRC): Unit = asm.append(mkAsm(lbl.?, instr.?, cmt.?))
+    def last(): Option[MirMashAsm] = asm.lastOption
+    def removeLast(): Unit = if asm.nonEmpty then asm.remove(asm.length - 1)
 
     private def mkAsm(lbl: Option[String], instr: Option[String], cmt: Option[String])(using ctx: PRC): MirMashAsm =
         require(lbl.isDefined || instr.isDefined || cmt.isDefined)
@@ -320,10 +321,9 @@ class MirMashCompiler:
                     // Add the function to the function LUT.
                     funLut += decl.fqName -> body.startLabel
                     // Make sure the last instruction is 'ret'.
-                    val asm = body.getAsm
-                    var addRet = true
-                    if asm.nonEmpty && asm.last.instruction.getOrElse("") == "ret" then addRet = false
-                    if addRet then body.add("ret")
+                    body.last() match
+                        case Some(asm) if asm.instruction.isDefined && asm.instruction.get == "ret" => ()
+                        case _ => body.add("ret")
                 case StrKind.NUM => throw error(s"Numeric cannot be a function name: $str")
                 case _ =>
                     require(strEnt.decl.isDefined)
@@ -347,10 +347,24 @@ class MirMashCompiler:
                 case _ => throw error(s"Calling unknown function: $str")
 
         override def exitDefCall(using ctx: MMP.DefCallContext): Unit =
-            call(ctx.STR().getText, false)
+            val strEnt = parseStr(ctx.STR().getText)
+            val str = strEnt.str
+            strEnt.kind match
+                case StrKind.FUN =>
+                    val decl = strEnt.decl.get
+                    funLut.get(decl.fqName) match
+                        case Some(lbl) =>
+                            block.add(s"call $lbl", null, s"Calling '$str(...)' function.")
+                            block.add("cpop")
+                        case None => throw error(s"Calling undefined function: $str")
+                case StrKind.NAT =>
+                    block.add(s"calln \"$str\"")
+                    block.add("cpop")
+                case _ => throw error(s"Calling unknown function: $str")
 
         override def exitCallExpr(using ctx: MMP.CallExprContext): Unit =
-            call(ctx.defCall().STR().getText, true)
+            require(block.last().get.instruction.get == "cpop")
+            block.removeLast() // Removing last 'cpop'
 
         override def exitDefNameDecl(using ctx: MMP.DefNameDeclContext): Unit =
             funStackHead().setName(ctx.STR().getText)

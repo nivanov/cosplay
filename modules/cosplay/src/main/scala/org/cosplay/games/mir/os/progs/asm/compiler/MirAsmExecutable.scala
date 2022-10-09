@@ -101,7 +101,7 @@ object MirAsmExecutable:
 
                 def pop(): Any =
                     try stack.pop()
-                    catch case _: NoSuchElementException => throw error(s"Stack is empty")
+                    catch case _: NoSuchElementException => throw error(s"Stack is empty (missing return value?)")
 
                 def popStr(): String =
                     pop() match
