@@ -68,6 +68,40 @@ object MirMashCompilerTests:
 
     @Test
     def baseTest(): Unit =
+        compileOk("var x = 5 + 5")
+        compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
+        compileOk("var x = (true && false) || true")
+        compileOk(
+            """
+              |native def empty()
+              |native def foo(
+              |     a,
+              |     b,
+              |     c
+              |)
+              |/*
+              | * Function bar.
+              | */
+              |native def bar(
+              |     a,
+              |     /* Parameter b. */
+              |     b,
+              |     // Parameter c.
+              |     c
+              |)
+              |""".stripMargin)
+        compileOk(
+            """
+              |var list = ""
+              |for a <- list do {
+              |    native def x()
+              |    3
+              |}
+              |for a <- list do {
+              |    native def x() // Not a dup since it is from the different scope.
+              |    3
+              |}
+              |""".stripMargin)
         compileOk(
             """
               |def z() = {
@@ -97,4 +131,22 @@ object MirMashCompilerTests:
 
         compileFail("var x = d")
         compileFail("var x = 1as1212")
+        compileFail(
+            """
+              |def z() = {
+              |     def q() = {}
+              |     def q1() = {}
+              |     def q1() = {}
+              |}
+              |""".stripMargin)
+        compileFail(
+            """
+              |def fun(a, b, c) = {
+              |     def another_fun(x, y) = return x + y
+              |     return another_fun_(1, "cosplay")
+              |}
+              |fun(1, 2, 3)
+              |""".stripMargin)
+
+
 

@@ -85,7 +85,7 @@ object MirAsmExecutable:
                     case _: Any => act.toString
 
                 def error(errMsg: String): MAE = new MAE(errMsg, s"$errMsg - at line ${instr.line} in '${instr.getSourceCode(false)}'.", instr.dbg)
-                def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected asm stack value (${formatActual(act)}) - expecting $exp")
+                def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected asm stack value '${formatActual(act)}' - expecting $exp")
                 def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid asm ${nth(idx)} parameter - expecting $exp")
                 def wrongVar(id: String, exp: String): MAE = error(s"Invalid asm variable '$id' type - expecting $exp")
                 def wrongLabel(id: String): MAE = error(s"Undefined asm label in jump: $id")

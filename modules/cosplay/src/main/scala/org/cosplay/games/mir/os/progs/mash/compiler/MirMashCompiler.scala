@@ -328,7 +328,7 @@ class MirMashCompiler:
                 case _ =>
                     require(strEnt.decl.isDefined)
                     val decl = strEnt.decl.get
-                    throw error(s"Function name ($str) conflicts with existing ${decl.kindStr}.")
+                    throw error(s"Function name '$str' conflicts with existing ${decl.kindStr}.")
 
         private def call(name: String, isExpr: Boolean)(using ctx: PRC): Unit =
             val strEnt = parseStr(name)
@@ -381,7 +381,7 @@ class MirMashCompiler:
                 case _ =>
                     val decl = strEnt.decl
                     require(decl.isDefined)
-                    throw error(s"Native function name ($str) conflicts with existing ${decl.get.kindStr}.")
+                    throw error(s"Native function name '$str' conflicts with existing ${decl.get.kindStr}.")
 
         override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit =
             funStack.push(new FunDecl)
@@ -406,7 +406,7 @@ class MirMashCompiler:
                 case _ =>
                     require(strEnt.decl.isDefined)
                     val decl = strEnt.decl.get
-                    throw error(s"Function parameter ($str) overrides existing ${decl.kindStr}.")
+                    throw error(s"Function parameter '$str' overrides existing ${decl.kindStr}.")
 
         override def enterCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.subScope
