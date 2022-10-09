@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -25,20 +25,33 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
+import MirFileType.*
+import org.cosplay.*
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
+/**
+  *
+  * @param root Root directory.
+  */
+@SerialVersionUID(1_0_0L)
+class MirFileSystem(val root: MirDirectoryFile) extends MirFileDirectory with Serializable:
+    require(root.getOwner.isRoot)
+    require(root.getName.isBlank)
+
+    /**
+      *
+      * @param path Relative to root or fully qualified path.
+      */
+    def file[T <: MirFile](path: String): Option[T] = root.file(path)
 
 /**
   *
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+object MirFileSystem:
+    final val PATH_SEP = "/"
+    final val PATH_SEP_CHAR = '/'
+

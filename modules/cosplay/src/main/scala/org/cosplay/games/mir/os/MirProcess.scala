@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -25,20 +25,86 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
+trait MirProcess:
+    /**
+      *
+      */
+    def getOwner: MirUser
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
+    /**
+      *
+      */
+    def getPid: Long
 
-/**
-  *
-  */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+    /**
+      *
+      */
+    def getParent: Option[MirProcess]
+
+    /**
+      *
+      */
+    def getProgramFile: MirExecutableFile
+
+    /**
+      *
+      */
+    def getWorkingDirectory: MirDirectoryFile
+
+    /**
+      *
+      */
+    def getArguments: Seq[String]
+
+    /**
+      *
+      */
+    def getSubmitTime: Long
+
+    /**
+      *
+      */
+    def getStartTime: Long
+
+    /**
+      *
+      */
+    def getFinishTime: Long
+
+    /**
+      *
+      */
+    def isRunning: Boolean = !isQueued && !isDone
+
+    /**
+      *
+      */
+    def isQueued: Boolean
+
+    /**
+      *
+      */
+    def isDone: Boolean
+
+    /**
+      *
+      */
+    def isKilled: Boolean
+
+    /**
+      * Gets exit code.
+      *
+      * @param ms
+      */
+    def exitCode(ms: Long = Long.MaxValue): Option[Int]
+
+    /**
+      *
+      */
+    def kill(): Boolean
+

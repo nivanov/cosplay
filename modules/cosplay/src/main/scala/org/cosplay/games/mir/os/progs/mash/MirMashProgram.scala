@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os.progs.mash
+
+import org.cosplay.*
+import games.mir.*
+import games.mir.os.*
 
 /*
    _________            ______________
@@ -30,15 +34,34 @@ package org.cosplay.games.mir
                 ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
-
 /**
   *
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+class MirMashProgram extends MirExecutable:
+    private val sz = CPRand.between(3000.kb, 10000.kb)
+
+    override def getSizeOnDisk: Long = sz
+    override def mainEntry(ctx: MirExecutableContext): Int =
+        val state = initState(ctx)
+
+        0
+
+    /**
+      *
+      * @param ctx
+      */
+    private def initState(ctx: MirExecutableContext): MirMashContext =
+        val state = new MirMashContext()
+
+        // Default & well-known Unix environment variables.
+        state.setVariable("PS", """\\u@\\h:\\w\\$""", false)
+        state.setVariable("HOST", ctx.host, false)
+        state.setVariable("PWD", ctx.workDir.getAbsolutePath, false)
+        state.setVariable("HOME", ctx.usr.getHomeDirectory, false)
+        state.setVariable("UID", ctx.usr.getUid.toString, false)
+        state.setVariable("USER", ctx.usr.getUsername, false)
+        state.setVariable("LANG", "en_US", false)
+        state.setVariable("SHELL", ctx.file.getAbsolutePath, false)
+        state.setVariable("MAIL", s"${ctx.usr.getHomeDirectory}/inbox", false)
+
+        state

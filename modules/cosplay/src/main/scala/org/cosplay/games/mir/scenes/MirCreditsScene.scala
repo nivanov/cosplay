@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.scenes
+
+import org.cosplay.*
+import games.mir.*
 
 /*
    _________            ______________
@@ -25,20 +28,17 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
-
 /**
-  *
+  * 
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+object MirCreditsScene  extends MirStarStreakSceneBase("credits", "bg1.wav"):
+    addObjects(
+        // Add full-screen shaders - order is important.
+        new CPOffScreenSprite(shaders = Seq(starStreakShdr, crtShdr, fadeInShdr, fadeOutShdr))
+    )
+

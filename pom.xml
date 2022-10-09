@@ -127,7 +127,7 @@
         <exec.maven.ver>3.1.0</exec.maven.ver>
         <jna.ver>5.12.1</jna.ver>
         <mixpanel.ver>1.5.1</mixpanel.ver>
-        <org.antlr4.ver>4.10.1</org.antlr4.ver>
+        <org.antlr4.ver>4.11.1</org.antlr4.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
 

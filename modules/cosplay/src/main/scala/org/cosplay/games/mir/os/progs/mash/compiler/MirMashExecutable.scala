@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os.progs.mash.compiler
+
+import org.cosplay.games.mir.os.progs.mash.*
 
 /*
    _________            ______________
@@ -30,15 +32,38 @@ package org.cosplay.games.mir
                 ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
+import org.cosplay.games.mir.os.progs.asm.compiler.*
 
 /**
   *
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+object MirMashExecutable:
+    /**
+      *
+      * @param asmCode Assembler code.
+      * @param origin Origin of source code.
+      */
+    def apply(asmCode: String, origin: String): MirMashExecutable =
+        (ctx: MirMashContext) =>
+            try
+                (new MirAsmCompiler)
+                    .compile(asmCode, origin)
+                    .execute(new MirAsmContext(null/* TODO */))
+            catch
+                case e: MirAsmException =>
+                    val synopsis = e.getSynopsis.trim
+                    e.getDebug match
+                        case Some(dbg) =>
+                            throw new MirMashException(s"$synopsis - at line ${dbg.line} in ${dbg.origin}.")
+                        case None =>
+                            throw new MirMashException(if synopsis.endsWith(".") then synopsis else s"$synopsis.")
+
+/**
+  *
+  */
+trait MirMashExecutable:
+    /**
+      *
+      * @param ctx
+      */
+    def execute(ctx: MirMashContext): Unit

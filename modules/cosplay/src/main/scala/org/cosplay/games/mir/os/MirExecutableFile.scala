@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -25,20 +25,37 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
-
 import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
+import org.cosplay.games.mir.os.*
+import org.cosplay.games.mir.os.MirFileType.*
 
 /**
   *
+  * @param name Name of file (not including its path).
+  * @param owner User owner of this file.
+  * @param exe Executable program.
+  * @param otherAcs Can others read or execute. Owner can do anything.
+  * @param otherMod Can others change or delete. Owner can do anything.
+  * @param initMs Initial creation and update timestamp. Defaults to the current time.
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+class MirExecutableFile(
+    name: String,
+    owner: MirUser,
+    parent: MirDirectoryFile,
+    exe: MirExecutable,
+    otherAcs: Boolean,
+    otherMod: Boolean,
+    initMs: Long = MirClock.now()
+) extends MirFile(FT_EXE, name, owner, parent.?, otherAcs, otherMod, initMs):
+    setSize(exe.getSizeOnDisk)
+
+    /**
+      *
+      */
+    def getExec: MirExecutable = exe
+

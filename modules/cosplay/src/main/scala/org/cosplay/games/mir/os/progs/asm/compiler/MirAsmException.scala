@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os.progs.asm.compiler
 
 /*
    _________            ______________
@@ -25,20 +25,30 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
+import org.cosplay.*
 
 /**
+  * Assembler exceptions.
   *
+  * @param synopsis Error message synopsis without location.
+  * @param fullMsg Full error message including synopsis and location reference.
+  * @param dbg Optional debug information associated with this exception.
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+class MirAsmException(synopsis: String, fullMsg: String, dbg: Option[MirAsmDebug] = None) extends CPException(fullMsg):
+    /**
+      * Gets optional debug information.
+      */
+    def getDebug: Option[MirAsmDebug] = dbg
+
+    /**
+      * Gets error's synopsis.
+      */
+    def getSynopsis: String = synopsis
+
+
+

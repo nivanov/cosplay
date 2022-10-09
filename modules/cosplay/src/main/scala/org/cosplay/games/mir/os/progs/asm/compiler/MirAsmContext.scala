@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os.progs.asm.compiler
 
 /*
    _________            ______________
@@ -30,15 +30,36 @@ package org.cosplay.games.mir
                 ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
+import org.cosplay.games.mir.os.*
+import scala.collection.mutable
 
 /**
   *
+  * @param exeCtx
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+class MirAsmContext(exeCtx: MirExecutableContext):
+    private val vars = mutable.HashMap.empty[String, Any]
+
+    /**
+      *
+      */
+    def getExecContext: MirExecutableContext = exeCtx
+
+    /**
+      *
+      * @param id
+      */
+    def getVar(id: String): Option[Any] = vars.get(id)
+
+    /**
+      *
+      * @param id
+      * @param v
+      */
+    def setVar(id: String, v: Any): Unit = vars.put(id, v)
+
+    /**
+      *
+      * @param id
+      */
+    def hasVar(id: String): Boolean = getVar(id).isDefined

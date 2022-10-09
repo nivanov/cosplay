@@ -25,20 +25,35 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
-
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
 
 /**
   *
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+object MirUtils:
+    /**
+      * Removed paired single or double quotes from given string.
+      *
+      * @param s
+      */
+    def dequote(s: String): String =
+        val ss = s.trim
+        if ss.isEmpty then s
+        else if (ss.head == '\'' && s.last == '\'') || (ss.head == '"' && s.last == '"') then ss.substring(1, ss.length - 1)
+        else s
+
+    /**
+      *
+      * @param s
+      */
+    def decapitalize(s: String): String = s"${s.head.toLower}${s.tail}"
+
+    /**
+      *
+      * @param s
+      */
+    def capitalize(s: String): String = s"${s.head.toUpper}${s.tail}"
+

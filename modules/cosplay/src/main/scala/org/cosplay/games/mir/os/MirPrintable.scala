@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os
 
 /*
    _________            ______________
@@ -25,20 +25,29 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
+trait MirPrintable:
+    /**
+      *
+      * @param x
+      */
+    def println(x: Any = ""): Unit = print(s"$x\n")
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
+    /**
+      *
+      * @param x
+      */
+    def print(x: Any): Unit
 
-/**
-  *
-  */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+    /**
+      *
+      * @param text
+      * @param args
+      */
+    def printf(text: String, args: Any*): Unit = print(text.format(args))
+
+

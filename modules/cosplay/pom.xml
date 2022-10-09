@@ -203,7 +203,7 @@
                         <executions><execution><goals><goal>java</goal></goals></execution></executions>
                         <configuration>
                             <skip>false</skip>
-                            <mainClass>org.cosplay.games.mir.CPMirGame</mainClass>
+                            <mainClass>org.cosplay.games.mir.MirGame</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
                                 <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>

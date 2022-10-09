@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.os.progs.asm
+
+import org.cosplay.*
+import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.*
 
 /*
    _________            ______________
@@ -30,15 +34,12 @@ package org.cosplay.games.mir
                 ALl rights reserved.
 */
 
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
-
 /**
   *
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+class MirAsmProgram extends MirExecutable:
+    private val sz = CPRand.between(3000.kb, 10000.kb)
+
+    override def getSizeOnDisk: Long = sz
+    override def mainEntry(ctx: MirExecutableContext): Int =
+        0

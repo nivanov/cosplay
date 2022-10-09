@@ -17,6 +17,10 @@
 
 package org.cosplay.games.mir
 
+import org.cosplay.*
+import prefabs.scenes.*
+import games.mir.scenes.*
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -25,20 +29,39 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
-
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
 
 /**
   *
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+object MirGame:
+    /**
+      * Entry point for JVM runtime.
+      *
+      * @param args Ignored.
+      */
+    def main(args: Array[String]): Unit =
+        val gameInfo = CPGameInfo(name = GAME_NAME, semVer = GAME_VER, termBg = BG)
+
+        // Initialize the engine.
+        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
+
+        // Start the game & wait for exit.
+        try
+            CPEngine.startGame(
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"main", fadeInMs = 3000),
+                MirTitleScene,
+                MirLoadScene,
+                MirNewGameScene,
+                MirMenuScene,
+                MirMainScene,
+                MirOptionsScene,
+                MirTutorialScene,
+                MirCreditsScene,
+            )
+        finally CPEngine.dispose()
+
+        sys.exit(0)

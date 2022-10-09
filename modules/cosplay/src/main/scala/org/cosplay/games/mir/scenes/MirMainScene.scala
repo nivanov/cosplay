@@ -15,7 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir
+package org.cosplay.games.mir.scenes
+
+import org.cosplay.*
+import games.mir.*
+import os.*
+import sprites.*
 
 /*
    _________            ______________
@@ -25,20 +30,29 @@ package org.cosplay.games.mir
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
-
-import org.junit.jupiter.api.*
-
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.station.*
 
 /**
   *
   */
-object MirPlayerTests:
-    @Test
-    def newPlayerGenTest(): Unit =
-        (0 to 100).foreach(_ => println(MirCrewMember.newPlayer.debugString))
+object MirMainScene extends MirCrtSceneBase("main", "bg5.wav"):
+    private val conSpr = MirConsoleSprite()
+    private val bootupSnd = CPSound(s"$SND_HOME/bootup.wav")
+
+    addObjects(
+        conSpr,
+        // Add full-screen shaders - order is important.
+        new CPOffScreenSprite(shaders = Seq(crtShdr, fadeInShdr, fadeOutShdr))
+    )
+
+    override def onStart(): Unit =
+        super.onStart()
+        bootupSnd.play()
+        stateMgr.state.os.bootUp(conSpr)
+
+
+
+

@@ -49,7 +49,7 @@ val miglayoutVer = "11.0"
 val jlineVer = "3.21.0"
 val jnaVer = "5.10.0"
 val mixPanelVer = "1.5.1"
-val antlr4Ver = "4.10.1"
+val antlr4Ver = "4.11.1"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
 ThisBuild / version := cosPlayVer
@@ -74,7 +74,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
 
         // Scaladoc config.
         Compile / doc / scalacOptions ++= Seq(
-            "-project-footer", "(C) 2021 Rowan Games, Inc.",
+            "-project-footer", "(C) 2022 Rowan Games, Inc.",
             "-project-version", cosPlayVer,
             "-siteroot", ".",
             "-skip-by-regex:org.cosplay.impl",
