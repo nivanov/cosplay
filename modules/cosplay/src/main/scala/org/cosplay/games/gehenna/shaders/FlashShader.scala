@@ -73,10 +73,12 @@ class FlashShader extends CPShader:
 
     def changeBPM(newBPM: Int): Unit =
         bpm = newBPM
+        rate = ((60/bpm.toFloat) * 1000).round
+        //println(s"Rate is : $rate")
 
     def changeRadius: Int = radius
 
-    private val rate = (60/bpm) * 1000
+    private var rate = (60/bpm) * 1000
     private var lastMs = 0f
 
     private var currFade = 0f

@@ -53,12 +53,10 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val settingsImg = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
     private val helpImg = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
 
-    private var menuSong = CPSound("sounds/games/gehenna/intro song.wav")
+    //private var menuSong = CPSound("sounds/games/gehenna/intro song.wav")
     private var introSong = CPSound("sounds/games/gehenna/intro song.wav")
-    private var changeSong = false
-    private var playSong = false
 
-    private var curBpm = 50
+    private var curBpm = 55
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -126,7 +124,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val flashShdr = new FlashShader()
 
     private val titleSpr = new CPImageSprite("title", 0, 0, 1, titleImage(), shaders = Seq(fadeInShdr, TextDripShader, flashShdr)):
-        introSong = menuSong
+        //introSong = menuSong
 
         override def update(ctx: CPSceneObjectContext): Unit =
 
@@ -134,22 +132,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
-            if playSong then
-                introSong = menuSong
-                introSong.play(3000)
-                playSong = false
-                println("Playing")
-
-            if !introSong.isPlaying && !changeSong && ctx.getFrameCount % 20 == 0 then
-                changeSong = true
-                println("Not Playing")
-
-        override def onStart(): Unit =
-            super.onStart()
-            if introSong != menuSong then
-                introSong.stop(0)
-                introSong = menuSong
-                println("Fade out")
+            //introSong = menuSong
 
     private val startSpr = new CPImageSprite("start", 0, 43, 1, startImg, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -228,9 +211,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         private val fadeSpeed = 0.03f
 
-//        private def readLines(res: String): Seq[String] =
-//            IOUtils.readLines(getClass.getClassLoader().getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
-
         override def onStart(): Unit =
             super.onStart()
             menuSongChange()
@@ -259,10 +239,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
 
-            if changeSong then
-                menuSongChange()
-
     private def menuSongChange(): Unit =
+        println("Choosing next song")
         val lvlDir ="gehenna/levels"
         val lvlDirFile = new File(lvlDir)
 
@@ -272,15 +250,27 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         val dirs = readLines(lvlDir)
         val rndDir = CPRand.rand(dirs.toSeq)
         val lvlTxt = readLines(s"$lvlDir/$rndDir/level.txt")
-        menuSong = CPSound(s"$lvlDir/$rndDir/song.wav")
+        //introSong.stop()
+        introSong = CPSound(s"$lvlDir/$rndDir/song.wav")
         lvlTxt.foreach(println)
 
         val songName = lvlTxt(1).replace(".LevelSongName:", "")
         println(songName)
         curBpm = (lvlTxt(2).replace(".LevelBPM:", "")).toInt
 
-        changeSong = false
-        playSong = true
+        println(curBpm)
+
+        songPlay()
+        println("EE")
+
+//        introSong = menuSong
+//        introSong.play(3000, menuSongChange())
+//        println("Playing Song :)")
+
+    private def songPlay(): Unit =
+        introSong.play(30, CPSound => menuSongChange())
+        println("Playing Song :)")
+        println(curBpm)
 
     addObjects(
         titleSpr,
