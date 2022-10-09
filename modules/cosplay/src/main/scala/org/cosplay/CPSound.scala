@@ -23,6 +23,7 @@ import javafx.scene.media.MediaPlayer.Status
 import javafx.util.*
 import CPSound.*
 import impl.{CPContainer, CPUtils}
+import javafx.event.{ActionEvent, EventHandler}
 
 import java.io.File
 import java.net.URL
@@ -75,8 +76,9 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
             try
                 val impl = new MediaPlayer(new Media(getUri))
                 // Wait & load the sounds media.
-                impl.setOnReady(new Runnable():
-                    override def run(): Unit = latch.countDown()
+                impl.setOnReady(
+                    new Runnable():
+                        override def run(): Unit = latch.countDown()
                 )
                 latch.await()
                 impl
@@ -131,11 +133,14 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       */
     def play(fadeInMs: Long = 0, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
-        player.setOnEndOfMedia(() => {
-            seek(0) // Force rewind.
-            player.stop()
-            endFun(this)
-        })
+        val it = this
+        player.setOnEndOfMedia(
+            new Runnable():
+                override def run(): Unit =
+                    seek(0) // Force rewind.
+                    player.stop()
+                    CPUtils.par(() => endFun(it))
+        )
         if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
 
     /**
@@ -186,11 +191,14 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       */
     def loop(fadeInMs: Long, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
-        player.setOnEndOfMedia(() => {
-            endFun(this)
-            seek(0)
-            player.play()
-        })
+        val it = this
+        player.setOnEndOfMedia(
+            new Runnable():
+                override def run(): Unit =
+                    endFun(it)
+                    seek(0)
+                    player.play()
+        )
         if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
 
     /**
@@ -264,7 +272,9 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
                     new KeyValue(player.volumeProperty(), 0)
                 )
             )
-            timeline.setOnFinished(_ => end())
+            timeline.setOnFinished(new EventHandler[ActionEvent] {
+                override def handle(t: ActionEvent): Unit = end()
+            })
             timeline.play()
 
     /**
