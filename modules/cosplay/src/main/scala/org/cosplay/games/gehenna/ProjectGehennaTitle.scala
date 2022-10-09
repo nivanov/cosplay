@@ -53,7 +53,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val settingsImg = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
     private val helpImg = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
 
-    //private var menuSong = CPSound("sounds/games/gehenna/intro song.wav")
+    //private var menuSong = CPSound("sounds/games/gehenna/intro newsong.wav")
     private var introSong = CPSound("sounds/games/gehenna/intro song.wav")
 
     private var curBpm = 55
