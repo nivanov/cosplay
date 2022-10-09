@@ -259,7 +259,9 @@ class MirMashCompiler:
         def addParam(param: String): Unit = params += param
         def containsParam(param: String): Boolean = params.contains(param)
         def setName(name: String): Unit = this.name = name.?
-
+        def mkFullName: String =
+            require(name.isDefined)
+            s"${name.get}(${params.mkString(",")})"
         def getName: Option[String] = name
         def getParams: Seq[String] = params.toSeq
 
@@ -336,7 +338,7 @@ class MirMashCompiler:
                     val decl = strEnt.decl.get
                     funLut.get(decl.fqName) match
                         case Some(lbl) =>
-                            block.add(s"call $lbl", null, s"Calling '$str' function.")
+                            block.add(s"call $lbl", null, s"Calling '$str(...)' function.")
                             if !isExpr then block.add("cpop")
                         case None => throw error(s"Calling undefined function: $str")
                 case StrKind.NAT =>
@@ -398,7 +400,7 @@ class MirMashCompiler:
             funStack.headOption match
                 case Some(funDeclHldr) =>
                     require(funDeclHldr.getName.isDefined)
-                    block.add(null, null, s"Function '${funDeclHldr.getName.get}'.")
+                    block.add(null, null, s"Function '${funDeclHldr.mkFullName}'.")
                     val decls = funDeclHldr.getParams.map(MirMashDecl(VAL, scope, _))
                     // Add parameters to the function scope.
                     decls.foreach(scope.addDecl)
