@@ -70,6 +70,11 @@ object MirMashCompilerTests:
     def baseTest(): Unit =
         compileOk(
             """
+              |def z() = {
+              |     def q() = {}
+              |     def q1() = {}
+              |     def q2() = {}
+              |}
               |def fun(a, b, c) = {
               |     def another_fun(x, y) = return x + y
               |}

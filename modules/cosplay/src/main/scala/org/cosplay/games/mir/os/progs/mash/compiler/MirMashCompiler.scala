@@ -151,10 +151,11 @@ case class AsmBlock(origin: String, startLabel: String, parent: Option[AsmBlock]
     // Add initial label marker to all nested blocks.
     if parent.isDefined then asm += MirMashAsm(startLabel.?, None, None, None)
 
-    def getAsm: Seq[MirMashAsm] =
+    def getAsm: Seq[MirMashAsm] = asm.toSeq
+    def linkAsm: Seq[MirMashAsm] =
         val code = mutable.ArrayBuffer.empty[MirMashAsm]
         code.addAll(asm) // Add itself.
-        children.foreach(child => code.addAll(child.getAsm)) // Add all of its children recursively.
+        children.foreach(child => code.addAll(child.linkAsm)) // Add all of its children recursively.
         code.toSeq
     def subBlock(startLbl: String): AsmBlock =
         val block = AsmBlock(origin, startLbl, this.?)
@@ -271,7 +272,6 @@ class MirMashCompiler:
         private var block = AsmBlock(origin, genLabel())
         private var lastBlock: Option[AsmBlock] = None
         private var scope = MirMashScope() // Initially global scope.
-        private var funName: Option[String] = None
         private val funLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
         private val funStack = mutable.Stack.empty[FunDecl]
 
@@ -280,7 +280,7 @@ class MirMashCompiler:
           */
         def getCompileModule: MirMashModule =
             require(scope.isGlobal)
-            MirMashModule(block.getAsm.toIndexedSeq, scope)
+            MirMashModule(block.linkAsm.toIndexedSeq, scope)
 
         private def parseStr(s: String)(using ctx: PRC): StrEntity =
             scope.getDecl(s) match
@@ -303,8 +303,9 @@ class MirMashCompiler:
                             StrEntity(StrKind.UNDEF, s)
 
         override def exitDefDecl(using ctx: MirMashParser.DefDeclContext): Unit =
-            require(funName.isDefined)
-            val strEnt = parseStr(funName.get)
+            val funDeclHldr = funStackHead()
+            require(funDeclHldr.getName.isDefined)
+            val strEnt = parseStr(funDeclHldr.getName.get)
             val str = strEnt.str
             strEnt.kind match
                 case StrKind.UNDEF =>
@@ -317,8 +318,10 @@ class MirMashCompiler:
                     // Add the function to the function LUT.
                     funLut += decl.fqName -> body.startLabel
                     // Make sure the last instruction is 'ret'.
-                    val lastInstr = body.getAsm.last.instruction
-                    if lastInstr.isEmpty || lastInstr.get != "ret" then body.add("ret")
+                    val asm = body.getAsm
+                    var addRet = true
+                    if asm.nonEmpty && asm.last.instruction.getOrElse("") == "ret" then addRet = false
+                    if addRet then body.add("ret")
                 case StrKind.NUM => throw error(s"Numeric cannot be a function name: $str")
                 case _ =>
                     require(strEnt.decl.isDefined)
@@ -341,11 +344,14 @@ class MirMashCompiler:
                     if !isExpr then block.add("cpop")
                 case _ => throw error(s"Calling unknown function: $str")
 
-        override def exitDefCall(using ctx: MMP.DefCallContext): Unit = call(ctx.STR().getText, false)
+        override def exitDefCall(using ctx: MMP.DefCallContext): Unit =
+            call(ctx.STR().getText, false)
 
-        override def exitCallExpr(using ctx: MMP.CallExprContext): Unit = call(ctx.defCall().STR().getText, true)
+        override def exitCallExpr(using ctx: MMP.CallExprContext): Unit =
+            call(ctx.defCall().STR().getText, true)
 
-        override def exitDefNameDecl(using ctx: MMP.DefNameDeclContext): Unit = funName = ctx.STR().getText.?
+        override def exitDefNameDecl(using ctx: MMP.DefNameDeclContext): Unit =
+            funStackHead().setName(ctx.STR().getText)
 
         override def exitNatDefDecl(using ctx: MMP.NatDefDeclContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
@@ -361,13 +367,16 @@ class MirMashCompiler:
                     require(decl.isDefined)
                     throw error(s"Native function name ($str) conflicts with existing ${decl.get.kindStr}.")
 
-        override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit = funStack.push(new FunDecl)
+        override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit =
+            funStack.push(new FunDecl)
 
-        override def enterDefDecl(ctx: MMP.DefDeclContext): Unit = funStack.push(new FunDecl)
+        override def enterDefDecl(ctx: MMP.DefDeclContext): Unit =
+            funStack.push(new FunDecl)
 
-        private def funStackHead(): FunDecl = funStack.headOption match
-            case Some(x) => x
-            case None => assert(false, "Empty function decl stack.")
+        private def funStackHead(): FunDecl =
+            funStack.headOption match
+                case Some(x) => x
+                case None => assert(false, "Empty function decl stack.")
 
         override def exitFunParamList(using ctx: MMP.FunParamListContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
@@ -388,7 +397,8 @@ class MirMashCompiler:
             block = block.subBlock(genLabel())
             funStack.headOption match
                 case Some(funDeclHldr) =>
-                    block.add(null, null, s"Function '${funName.get}'.")
+                    require(funDeclHldr.getName.isDefined)
+                    block.add(null, null, s"Function '${funDeclHldr.getName.get}'.")
                     val decls = funDeclHldr.getParams.map(MirMashDecl(VAL, scope, _))
                     // Add parameters to the function scope.
                     decls.foreach(scope.addDecl)
@@ -405,22 +415,28 @@ class MirMashCompiler:
                 case Some(p) => p
                 case None => assert(false, "Attempt to exit global block.")
 
-        override def exitMash(using ctx: MMP.MashContext): Unit = block.add("exit")
+        override def exitMash(using ctx: MMP.MashContext): Unit =
+            block.add("exit")
 
         override def enterMash(using ctx: MMP.MashContext): Unit =
             val hdr = s"Generated by mash compiler ver. $VER on ${MirClock.formatNowTimeDate()}"
             block.add(null, null, hdr)
             block.add(null, null, "-" * hdr.length)
 
-        override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit = block.add("ret")
+        override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit =
+            block.add("ret")
 
-        override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit = block.add(if ctx.MINUS() != null then "neg" else "not")
+        override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit =
+            block.add(if ctx.MINUS() != null then "neg" else "not")
 
-        override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit = block.add(if ctx.AND() != null then "and" else "or")
+        override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit =
+            block.add(if ctx.AND() != null then "and" else "or")
 
-        override def exitEqNeqExpr(using ctx: MMP.EqNeqExprContext): Unit = block.add(if ctx.EQ() != null then "eq" else "neq")
+        override def exitEqNeqExpr(using ctx: MMP.EqNeqExprContext): Unit =
+            block.add(if ctx.EQ() != null then "eq" else "neq")
 
-        override def exitPlusMinusExpr(using ctx: MMP.PlusMinusExprContext): Unit = block.add(if ctx.PLUS() != null then "add" else "sub")
+        override def exitPlusMinusExpr(using ctx: MMP.PlusMinusExprContext): Unit =
+            block.add(if ctx.PLUS() != null then "add" else "sub")
 
         override def exitCompExpr(using ctx: MMP.CompExprContext): Unit =
             if ctx.LT() != null then block.add("lt")
@@ -464,9 +480,11 @@ class MirMashCompiler:
                     scope.addDecl(decl)
                 case _ => throw error(s"Duplicate declaration: $name")
 
-        override def exitValDecl(using ctx: MMP.ValDeclContext): Unit = addVar(VAL, ctx.STR().getText)
+        override def exitValDecl(using ctx: MMP.ValDeclContext): Unit =
+            addVar(VAL, ctx.STR().getText)
 
-        override def exitVarDecl(using ctx: MMP.VarDeclContext): Unit = addVar(VAR, ctx.STR().getText)
+        override def exitVarDecl(using ctx: MMP.VarDeclContext): Unit =
+            addVar(VAR, ctx.STR().getText)
 
         /**
           *
