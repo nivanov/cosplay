@@ -91,6 +91,17 @@ class MirMashDefDecl(paramCnt: Int, kind: MirMashDeclarationKind, scope: MirMash
     require(kind == MirMashDeclarationKind.NAT || kind == MirMashDeclarationKind.FUN)
 
 /**
+  * Alias declaration.
+  *
+  * @param alias Alias value.
+  * @param kind Type of the declaration.
+  * @param scope Declaration scope.
+  * @param name Declaration name.
+  */
+class MirMashAliasDecl(alias: String, kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name):
+    require(kind == MirMashDeclarationKind.ALS)
+
+/**
   *
   */
 object MirMashScope:
@@ -394,6 +405,14 @@ class MirMashCompiler:
                 case Some(x) => x
                 case None => assert(false, "Empty function decl stack.")
 
+        override def exitAliasDecl(using ctx: MirMashParser.AliasDeclContext): Unit =
+            val strEnt = parseStr(ctx.STR().getText)
+            val str = strEnt.str
+            strEnt.kind match
+                case StrKind.ALS => throw error(s"Duplicate alias declaration: $str")
+                case StrKind.NUM => throw error(s"Invalid alias declaration: $str")
+                case _ => scope.addDecl(new MirMashAliasDecl(MirUtils.dequote(MirUtils.dequote(ctx.qstring().getText)), ALS, scope, str))
+
         override def exitFunParamList(using ctx: MMP.FunParamListContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
             val str = strEnt.str
@@ -465,18 +484,19 @@ class MirMashCompiler:
             else if ctx.MULT() != null then block.add("mul")
             else block.add("div")
 
+        /**
+          * Gets dequoted string processing variable expansion for double-quoted strings.
+          *
+          * @param qs Double or single quoted string.
+          */
+        private def quotedString(qs: String): String =
+            // TODO: handle variable expansion for double-quoted strings.
+            MirUtils.dequote(if qs.startsWith("\"") then qs else qs)
+
         override def exitAtom(using ctx: MMP.AtomContext): Unit =
             if ctx.NULL() != null then block.add("push null")
             else if ctx.BOOL() != null then block.add(s"push ${if ctx.getText == "true" then 1 else 0}")
-            else if ctx.qstring() != null then
-                val qStr = ctx.qstring()
-                if qStr.SQSTRING() != null then
-                    val s = MirUtils.dequote(qStr.SQSTRING().getText)
-                    block.add(s"push \"$s\"")
-                else if qStr.DQSTRING() != null then
-                    // TODO: handle variable expansion for double-quoted strings.
-                    val s = MirUtils.dequote(qStr.DQSTRING().getText)
-                    block.add(s"push \"$s\"")
+            else if ctx.qstring() != null then block.add(s"push \"${quotedString(ctx.qstring().getText)}\"")
             else
                 require(ctx.STR() != null)
                 val strEnt = parseStr(ctx.STR().getText)

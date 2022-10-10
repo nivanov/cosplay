@@ -73,6 +73,11 @@ object MirMashCompilerTests:
         compileOk("var x = (true && false) || true")
         compileOk(
             """
+              |alias x = "ls -la"
+              |alias y = 'pwd -c'
+              |""".stripMargin)
+        compileOk(
+            """
               |native def empty()
               |native def foo(
               |     a,
@@ -129,7 +134,15 @@ object MirMashCompilerTests:
         compileOk("var x = 10; var _long_variable = x")
         compileOk("val x = 10; val y = 'abc'")
 
+        compileFail(
+            """
+              |alias x = "ls -l"
+              |alias x = 'pwd'
+              |""".stripMargin)
         compileFail("var x = d")
+        compileFail("var x = 'wrong quote\"")
+        compileFail("var x = \"\"wrong quote\"")
+        compileFail("var x = \"wrong quote'")
         compileFail("var x = 1as1212")
         compileFail(
             """
