@@ -94,9 +94,14 @@ object MirMashRuntimeTests:
               |while x < 10 do x = x + 1
               |assert(x == 10, "Invalid loop implementation.")
               |""".stripMargin)
-//        executeOk(
-//            """
-//              |""".stripMargin)
+        executeOk("")
+        executeOk(
+            """
+              |
+              |
+              |
+              |
+              |""".stripMargin)
 
     @Test
     def failTest(): Unit =

@@ -71,6 +71,7 @@ object MirMashCompilerTests:
       */
     @Test
     def baseOkTest(): Unit =
+        compileOk("")
         compileOk(
             """
               |var x  = 0
