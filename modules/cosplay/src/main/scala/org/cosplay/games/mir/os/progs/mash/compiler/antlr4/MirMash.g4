@@ -92,7 +92,6 @@ expr
     // NOTE: order of productions defines precedence.
     : op=(MINUS | NOT) expr # unaryExpr
     | LPAR expr RPAR # parExpr
-    | LPAR funParamList? RPAR ANON_DEF compoundExpr # anonDefExpr
     | expr op=(MULT | DIV | MOD) expr # multDivModExpr
     | expr op=(PLUS | MINUS) expr # plusMinusExpr
     | expr op=(LTEQ | GTEQ | LT | GT) expr # compExpr
@@ -129,7 +128,6 @@ INCLUDE: 'include';
 VAL: 'val';
 VAR: 'var';
 DEF: 'def';
-ANON_DEF: '=>';
 ASSOC: '->';
 NATIVE: 'native';
 RETURN: 'return';
@@ -164,20 +162,15 @@ RBRACE: '}';
 SQUOTE: '\'';
 DQUOTE: '"';
 BQUOTE: '`';
-LBR: '[';
-RBR: ']';
-POUND: '#';
 COMMA: ',';
 MINUS: '-';
 DOT: '.';
 ASSIGN: '=';
 PLUS: '+';
-QUESTION: '?';
 MULT: '*';
 SCOL: ';';
 DIV: '/';
 MOD: '%';
-DOLLAR: '$';
 STR: [0-9a-zA-Z_./-]+;
 COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
 WS: [ \r\t\n\u000C]+ -> skip;

@@ -460,18 +460,6 @@ public class MirMashBaseListener implements MirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAnonDefExpr(MirMashParser.AnonDefExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAnonDefExpr(MirMashParser.AnonDefExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterEqNeqExpr(MirMashParser.EqNeqExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
