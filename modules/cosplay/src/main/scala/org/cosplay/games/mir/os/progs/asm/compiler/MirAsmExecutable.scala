@@ -18,11 +18,12 @@
 package org.cosplay.games.mir.os.progs.asm.compiler
 
 import org.cosplay.*
+
 import scala.collection.*
 import scala.collection.immutable
 import scala.collection.mutable
-
 import MirAsmInstruction.*
+import org.cosplay.games.mir.*
 
 /*
    _________            ______________
@@ -300,6 +301,11 @@ object MirAsmExecutable:
                     def println(): Unit = ctx.getExecContext.out.println(pop().toString)
                     def tostr(): Unit = push(pop().toString)
                     def length(): Unit = push(popStr().length.toLong)
+                    def assert(): Unit =
+                        // Note the reverse order of popping.
+                        val msg = MirUtils.decapitalize(popStr())
+                        val cond = popBool() == 0
+                        if cond then throw error(s"Assertion - $msg")
                     def concat(): Unit =
                         val s1 = pop().toString
                         val s2 = pop().toString
@@ -447,6 +453,7 @@ object MirAsmExecutable:
                             case "concat" => NativeFunctions.concat()
                             case "tostr" => NativeFunctions.tostr()
                             case "length" => NativeFunctions.length()
+                            case "assert" => NativeFunctions.assert()
                             case "_println" => println(pop().toString) // Debug only.
                             case s => throw error(s"Unknown native function: $s")
                     case "let" => checkParamCount(2, 2); ctx.setVar(varParam(0), anyParam(1))

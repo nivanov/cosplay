@@ -77,8 +77,10 @@ varDecl: VAR STR ASSIGN expr;
 defDecl: defNameDecl LPAR funParamList? RPAR ASSIGN compoundExpr;
 defNameDecl: DEF STR;
 natDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
-whileDecl: WHILE expr DO compoundExpr;
-forDecl: FOR STR IN expr DO compoundExpr;
+whileDecl: whileExprDecl DO compoundExpr;
+whileExprDecl: WHILE expr;
+forDecl: forExprDecl DO compoundExpr;
+forExprDecl: FOR STR IN expr;
 funParamList
     : STR
     | funParamList COMMA STR

@@ -218,6 +218,16 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitWhileDecl(MirMashParser.WhileDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MirMashParser#whileExprDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileExprDecl(MirMashParser.WhileExprDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#whileExprDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileExprDecl(MirMashParser.WhileExprDeclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MirMashParser#forDecl}.
 	 * @param ctx the parse tree
 	 */
@@ -227,6 +237,16 @@ public interface MirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitForDecl(MirMashParser.ForDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#forExprDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterForExprDecl(MirMashParser.ForExprDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#forExprDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitForExprDecl(MirMashParser.ForExprDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#funParamList}.
 	 * @param ctx the parse tree

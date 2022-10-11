@@ -66,8 +66,18 @@ object MirMashCompilerTests:
                 println(s"<< Expected error below >>")
                 e.printStackTrace()
 
+    /**
+      *
+      */
     @Test
-    def baseTest(): Unit =
+    def baseOkTest(): Unit =
+        compileOk(
+            """
+              |var x  = 0
+              |while x < 10 do {
+              |     x = x + 1
+              |}
+              |""".stripMargin)
         compileOk("var x = 5 + 5")
         compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
         compileOk("var x = (true && false) || true")
@@ -134,6 +144,23 @@ object MirMashCompilerTests:
         compileOk("var x = 10; var _long_variable = x")
         compileOk("val x = 10; val y = 'abc'")
 
+    /**
+      *
+      */
+    @Test
+    def baseFailTest(): Unit =
+        compileFail(
+            """
+              |val x = 0
+              |x = x + 1 // Can't modify immutable variable.
+              |""".stripMargin)
+        compileFail(
+            """
+              |val list = "" // Just for compilation.
+              |for a <- list do {
+              |     return 2; // Can't use return here.
+              |}
+              |""".stripMargin)
         compileFail(
             """
               |alias x = "ls -l"

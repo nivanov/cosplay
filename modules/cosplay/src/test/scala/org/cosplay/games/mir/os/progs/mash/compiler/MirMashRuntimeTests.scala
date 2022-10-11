@@ -89,19 +89,24 @@ object MirMashRuntimeTests:
               |""".stripMargin)
         executeOk(
             """
-              |var list = ""
-              |for a <- list do {
-              |    native def x()
-              |    3
-              |}
-              |for a <- list do {
-              |    native def x() // Not a dup since it is from the different scope.
-              |    3
-              |}
+              |native def assert(cond, msg)
+              |var x = 0
+              |while x < 10 do x = x + 1
+              |assert(x == 10, "Invalid loop implementation.")
               |""".stripMargin)
+//        executeOk(
+//            """
+//              |""".stripMargin)
 
     @Test
     def failTest(): Unit =
+        executeFail(
+            """
+              |native def assert(cond, msg)
+              |var x = 0
+              |while x < 10 do x = x + 1
+              |assert(x < 10, "Invalid assertion.")
+              |""".stripMargin)
         executeFail("var x = 5 + 'fail'")
         executeFail("var x = (true && false) || 5")
         executeFail(

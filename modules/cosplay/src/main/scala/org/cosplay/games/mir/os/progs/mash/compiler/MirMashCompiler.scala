@@ -288,6 +288,7 @@ class MirMashCompiler:
         private var scope = MirMashScope() // Initially global scope.
         private val funLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
         private val funStack = mutable.Stack.empty[FunDecl]
+        private val loopStack = mutable.Stack.empty[String]
 
         /**
           *
@@ -316,7 +317,29 @@ class MirMashCompiler:
                         catch case _: NumberFormatException =>
                             StrEntity(StrKind.UNDEF, s)
 
-        override def exitDefDecl(using ctx: MirMashParser.DefDeclContext): Unit =
+        override def exitAssignDecl(using ctx: MMP.AssignDeclContext): Unit =
+            val strEnt = parseStr(ctx.STR().getText)
+            val str = strEnt.str
+            strEnt.kind match
+                case StrKind.VAR => block.add(s"pop ${strEnt.decl.get.fqName}")
+                case StrKind.UNDEF => throw error(s"Undefined variable: $str")
+                case StrKind.NUM => throw error(s"Invalid assigment to: $str")
+                case StrKind.VAL => throw error(s"Can't reassign immutable variable: $str")
+                case _ => throw error(s"Can't assign to ${strEnt.decl.get.kindStr}: $str")
+
+        override def enterWhileExprDecl(using ctx: MMP.WhileExprDeclContext): Unit =
+            val lbl = genLabel()
+            block.add(null, lbl)
+            loopStack.push(lbl)
+
+        override def exitWhileDecl(using ctx: MMP.WhileDeclContext): Unit =
+            require(lastBlock.isDefined)
+            require(loopStack.nonEmpty)
+            val body = lastBlock.get
+            body.add(s"jmp ${loopStack.pop}", null, "End of the loop body.")
+            block.add(s"cjmp ${body.startLabel}")
+
+        override def exitDefDecl(using ctx: MMP.DefDeclContext): Unit =
             val funDeclHldr = funStackHead()
             require(funDeclHldr.getName.isDefined)
             val strEnt = parseStr(funDeclHldr.getName.get)
@@ -459,6 +482,7 @@ class MirMashCompiler:
             block.add(null, null, "-" * hdr.length)
 
         override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit =
+            if funStack.isEmpty then throw error(s"'return' can only be used in function body.")
             block.add("ret")
 
         override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit =

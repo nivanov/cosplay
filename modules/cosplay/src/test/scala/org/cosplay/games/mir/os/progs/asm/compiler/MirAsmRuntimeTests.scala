@@ -328,6 +328,12 @@ object MirAsmRuntimeTests:
 
         executeFail(
             """
+              |push 0
+              |push "Test assertion"
+              |calln "assert"
+              |""".stripMargin)
+        executeFail(
+            """
               |pushn 1, "asaa"
               |add
               |""".stripMargin)
