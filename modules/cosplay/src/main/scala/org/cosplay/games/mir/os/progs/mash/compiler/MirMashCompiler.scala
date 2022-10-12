@@ -599,6 +599,7 @@ class MirMashCompiler:
       * @param code
       * @param origin Code origin (file name, etc.).
       */
+    //noinspection DuplicatedCode
     private def mkErrorMessage(
         msg: String,
         line: Int, // 1, 2, ...
@@ -666,6 +667,7 @@ class MirMashCompiler:
       * @param code
       * @param origin
       */
+    //noinspection DuplicatedCode
     private def antlr4Setup(code: String, origin: String): (FiniteStateMachine, MirMashParser) =
         val lexer = new MirMashLexer(CharStreams.fromString(code, origin))
         val parser = new MirMashParser(new CommonTokenStream(lexer))

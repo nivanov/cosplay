@@ -42,7 +42,8 @@ import org.cosplay.games.mir.*
   *
   */
 object MirAsmExecutable:
-    final val FRAME: AnyRef = new Object
+    object FRM_MRK:
+        override def toString: String = "<<stack frame marker>>"
 
     /**
       *
@@ -58,12 +59,19 @@ object MirAsmExecutable:
 
     /**
       *
+      * @param isX
+      * @param index
+      */
+    case class Call(isX: Boolean, index: Int)
+
+    /**
+      *
       * @param instrs Sequence of assembler instructions to build an executable from.
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
         (ctx: MirAsmContext) =>
             val stack = mutable.Stack.empty[Any]
-            val callStack = mutable.Stack.empty[Int]
+            val callStack = mutable.Stack.empty[Call]
 
             // Ensure instructions are sorted & indexed.
             val code = instrs.sortBy(_.line)
@@ -137,6 +145,11 @@ object MirAsmExecutable:
                         case IdParam(id) => id
                         case _ => throw wrongParam(idx, "label")
 
+                def longParam(idx: Int): Long =
+                    params(idx) match
+                        case LongParam(d) => d
+                        case _ => throw wrongParam(idx, "numeric")
+
                 def strOrVarParam(idx: Int): String =
                     params(idx) match
                         case StringParam(s) => s
@@ -153,6 +166,7 @@ object MirAsmExecutable:
                         case DoubleParam(d) => d
                         case IdParam(id) => getVar(id) // Returning variable's value (NOT its ID).
 
+                //noinspection DuplicatedCode
                 def addSubVar(mul: Int): Unit =
                     require(mul == 1 || mul == -1)
                     val id = varParam(0) // 1st parameter (always variable).
@@ -170,6 +184,7 @@ object MirAsmExecutable:
                         case s: String => ctx.setVar(id, s"$s${v.toString}")
                         case _ => throw wrongVar(id, "numeric")
 
+                //noinspection DuplicatedCode
                 def multiplyVar(): Unit =
                     val id = varParam(0) // 1st parameter (always variable).
                     val v = anyParam(1) // 2d parameter (anything, including variable).
@@ -184,6 +199,7 @@ object MirAsmExecutable:
                             case _ => throw wrongParam(1, "numeric")
                         case _ => throw wrongVar(id, "numeric")
 
+                //noinspection DuplicatedCode
                 def divideVar(): Unit =
                     val id = varParam(0) // Dividend (always variable).
                     val v = anyParam(1) // Divisor (anything, including variable).
@@ -232,6 +248,7 @@ object MirAsmExecutable:
                         case d: Double => stack.push(d)
                         case s: String => stack.push(s)
                         case d: Int => stack.push(d.toLong)
+                        case FRM_MRK => stack.push(v)
                         case _ => assert(false, s"Invalid asm stack value type: $v")
 
                 def neg(): Unit =
@@ -245,7 +262,7 @@ object MirAsmExecutable:
                     getVar(id) match
                         case d: Long => ctx.setVar(id, -d)
                         case d: Double => ctx.setVar(id, -d)
-                        case x => throw wrongVar(id, "numeric")
+                        case _ => throw wrongVar(id, "numeric")
 
                 def notv(): Unit =
                     val id = varParam(0)
@@ -256,6 +273,7 @@ object MirAsmExecutable:
                     val v2 = popLong()
                     push(v2 % v1)
 
+                //noinspection DuplicatedCode
                 def addSub(mul: Int): Unit =
                     require(mul == 1 || mul == -1)
                     val right = pop()
@@ -276,6 +294,7 @@ object MirAsmExecutable:
                 def and(): Unit = pushBool(popTrue() && popTrue())
                 def or(): Unit = pushBool(popTrue() || popTrue())
 
+                //noinspection DuplicatedCode
                 def multiply(): Unit =
                     val v1 = pop()
                     val v2 = pop()
@@ -290,6 +309,7 @@ object MirAsmExecutable:
                             case _ => throw wrongStack(d1, "numeric")
                         case _ => throw wrongStack(v1, "numeric")
 
+                //noinspection DuplicatedCode
                 def divide(): Unit =
                     val v1 = pop() // Divisor.
                     val v2 = pop() // Dividend.
@@ -329,6 +349,7 @@ object MirAsmExecutable:
                             nextInstr = false
                         case None => throw wrongLabel(lbl)
 
+                //noinspection DuplicatedCode
                 def ltv(id: String, v: Any): Unit =
                     getVar(id) match
                         case d2: Long => v match
@@ -341,6 +362,7 @@ object MirAsmExecutable:
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
+                //noinspection DuplicatedCode
                 def ltev(id: String, v: Any): Unit =
                     getVar(id) match
                         case d2: Long => v match
@@ -353,6 +375,7 @@ object MirAsmExecutable:
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
+                //noinspection DuplicatedCode
                 def gtv(id: String, v: Any): Unit =
                     getVar(id) match
                         case d2: Long => v match
@@ -365,6 +388,7 @@ object MirAsmExecutable:
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
+                //noinspection DuplicatedCode
                 def gtev(id: String, v: Any): Unit =
                     getVar(id) match
                         case d2: Long => v match
@@ -377,6 +401,7 @@ object MirAsmExecutable:
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
+                //noinspection DuplicatedCode
                 def lt(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
@@ -389,6 +414,7 @@ object MirAsmExecutable:
                             case _ => wrongStack(v1, "numeric")
                         case _ => wrongStack(v2, "numeric")
 
+                //noinspection DuplicatedCode
                 def gt(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
@@ -401,6 +427,7 @@ object MirAsmExecutable:
                             case _ => wrongStack(v1, "numeric")
                         case _ => wrongStack(v2, "numeric")
 
+                //noinspection DuplicatedCode
                 def gte(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
@@ -413,6 +440,7 @@ object MirAsmExecutable:
                             case _ => wrongStack(v1, "numeric")
                         case _ => wrongStack(v2, "numeric")
 
+                //noinspection DuplicatedCode
                 def lte(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
@@ -492,13 +520,37 @@ object MirAsmExecutable:
                     case "cjmp" => checkParamCount(1, 1); if popTrue() then jump(labelParam(0))
                     case "ifjmp" => checkParamCount(2, 2); if popTrue() then jump(labelParam(0)) else jump(labelParam(1))
                     case "ifjmpv" => checkParamCount(2, 2); if popTrue() then jump(strVar(varParam(0))) else jump(strVar(varParam(1)))
-                    case "call" => checkParamCount(1, 1); callStack.push(idx + 1); jump(labelParam(0))
                     case "exit" => checkParamCount(0, 0); exit = true
                     case "nop" => checkParamCount(0, 0) // No-op instruction.
+                    case "clr" => checkParamCount(0, 0); for _ <- 0 until popLong().toInt do stack.pop()
+                    case "clrp" => checkParamCount(1, 1); for _ <- 0 until longParam(0).toInt do stack.pop()
+                    case "clrv" => checkParamCount(1, 1); for _ <- 0 until longVar(varParam(0)).toInt do stack.pop()
+                    case "ssz" =>
+                        val buf = mutable.ArrayBuffer.empty[Any]
+                        while stack.nonEmpty && stack.head != FRM_MRK do buf += stack.pop()
+                        buf.reverse.foreach(stack.push)
+                        push(buf.size)
+                    case "callx" =>
+                        checkParamCount(1, 1)
+                        push(FRM_MRK) // Add frame marker.
+                        callStack.push(Call(true, idx + 1))
+                        jump(labelParam(0))
+                    case "call" =>
+                        checkParamCount(1, 1)
+                        push(FRM_MRK) // Add frame marker.
+                        callStack.push(Call(false, idx + 1))
+                        jump(labelParam(0))
                     case "ret" =>
                         checkParamCount(0, 0)
                         if callStack.isEmpty then throw error(s"'ret' outside of function body.")
-                        idx = callStack.pop(); nextInstr = false
+                        val call = callStack.pop()
+                        idx = call.index
+                        val buf = mutable.ArrayBuffer.empty[Any]
+                        while stack.head != FRM_MRK do buf += stack.pop()
+                        stack.pop() // Remove frame marker.
+                        buf.reverse.foreach(stack.push)
+                        if call.isX then push(buf.size)
+                        nextInstr = false
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 
                 if nextInstr then idx += 1

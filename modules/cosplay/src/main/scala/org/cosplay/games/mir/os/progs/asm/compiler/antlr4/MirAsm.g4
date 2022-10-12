@@ -56,6 +56,11 @@ param
 // ======
 INSRT_NAME
     : 'mulv'
+    | 'ssz'
+    | 'cpop'
+    | 'clr'
+    | 'clrv'
+    | 'clrp'
     | 'ifjmp'
     | 'ifjmpv'
     | 'nop'
@@ -89,13 +94,13 @@ INSRT_NAME
     | 'push'
     | 'pushn'
     | 'pop'
-    | 'cpop'
     | 'add'
     | 'sub'
     | 'addv'
     | 'subv'
     | 'calln'
     | 'call'
+    | 'callx'
     | 'jmp'
     | 'cjmp' // Conditional jump over stack value.
     | 'cjmpv' // Conditional jump over variable value.
