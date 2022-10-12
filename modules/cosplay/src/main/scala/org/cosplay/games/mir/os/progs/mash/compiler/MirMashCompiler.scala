@@ -39,11 +39,12 @@ import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
 import org.cosplay.games.mir.os.progs.asm.compiler.MirAsmException
 
+import java.util.UUID
+import java.util.regex.*
+import scala.collection.mutable
+
 import MirMashParser as MMP
 import ParserRuleContext as PRC
-
-import java.util.UUID
-import scala.collection.mutable
 
 /**
   * A container for translated assembler code and global declarations.
@@ -226,6 +227,7 @@ case class MirMashAsm(
   */
 object MirMashCompiler:
     final val VER = "1.0.1"
+    final val VAR_REGEX = Pattern.compile("^[a-zA-Z_][a-zA-Z0-9_]*$");
 
     /**
       *
@@ -296,6 +298,15 @@ class MirMashCompiler:
         def getCompileModule: MirMashModule =
             require(scope.isGlobal)
             MirMashModule(block.linkAsm.toIndexedSeq, scope)
+
+        /**
+          *
+          * @param s
+          * @param kind
+          */
+        private def checkIdRegex(s: String, kind: String)(using ctx: PRC): Unit =
+            if !VAR_REGEX.matcher(s).find() then
+                throw error(s"${MirUtils.capitalize(kind)} name '$s' does not match regex: ${VAR_REGEX.pattern()}")
 
         private def parseStr(s: String)(using ctx: PRC): StrEntity =
             scope.getDecl(s) match
@@ -401,10 +412,14 @@ class MirMashCompiler:
             block.removeLast() // Removing last 'cpop'
 
         override def exitDefNameDecl(using ctx: MMP.DefNameDeclContext): Unit =
-            funStackHead().setName(ctx.STR().getText)
+            val s = ctx.STR().getText
+            checkIdRegex(s, "function")
+            funStackHead().setName(s)
 
         override def exitNatDefDecl(using ctx: MMP.NatDefDeclContext): Unit =
-            val strEnt = parseStr(ctx.STR().getText)
+            val s = ctx.STR().getText
+            checkIdRegex(s, "native function")
+            val strEnt = parseStr(s)
             val str = strEnt.str
             strEnt.kind match
                 case StrKind.UNDEF =>
@@ -429,7 +444,9 @@ class MirMashCompiler:
                 case None => assert(false, "Empty function decl stack.")
 
         override def exitAliasDecl(using ctx: MirMashParser.AliasDeclContext): Unit =
-            val strEnt = parseStr(ctx.STR().getText)
+            val s = ctx.STR().getText
+            checkIdRegex(s, "alias")
+            val strEnt = parseStr(s)
             val str = strEnt.str
             strEnt.kind match
                 case StrKind.ALS => throw error(s"Duplicate alias declaration: $str")
@@ -437,7 +454,9 @@ class MirMashCompiler:
                 case _ => scope.addDecl(new MirMashAliasDecl(MirUtils.dequote(MirUtils.dequote(ctx.qstring().getText)), ALS, scope, str))
 
         override def exitFunParamList(using ctx: MMP.FunParamListContext): Unit =
-            val strEnt = parseStr(ctx.STR().getText)
+            val s = ctx.STR().getText
+            checkIdRegex(s, "function parameter")
+            val strEnt = parseStr(s)
             val str = strEnt.str
             strEnt.kind match
                 case StrKind.UNDEF =>
@@ -531,6 +550,7 @@ class MirMashCompiler:
                     case _ => throw error(s"Unknown identifier: $str")
 
         private def addVar(kind: MirMashDeclarationKind, s: String)(using ctx: PRC): Unit =
+            checkIdRegex(s, "variable")
             val strEnt = parseStr(s)
             val name = strEnt.str
             strEnt.kind match

@@ -150,6 +150,8 @@ object MirMashCompilerTests:
       */
     @Test
     def baseFailTest(): Unit =
+        compileFail("val 0x = 1 // Invalid variable name.")
+        compileFail("val .x = 1 // Invalid variable name.")
         compileFail(
             """
               |val x = 0
