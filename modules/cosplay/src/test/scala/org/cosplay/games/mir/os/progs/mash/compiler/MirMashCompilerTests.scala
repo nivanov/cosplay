@@ -77,7 +77,7 @@ object MirMashCompilerTests:
               |var x  = 0
               |while x < 10 do {
               |     x = x + 1
-              |     if x % 2 == 0 then _println("Even") else _println("Odd")
+              |     if x % 2 == 0 then _println("Even: " + x) else _println("Odd: " + x)
               |}
               |""".stripMargin)
         compileOk("")

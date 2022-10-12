@@ -42,6 +42,8 @@ import org.cosplay.games.mir.*
   *
   */
 object MirAsmExecutable:
+    final val FRAME: AnyRef = new Object
+
     /**
       *
       * @param idx
@@ -164,6 +166,8 @@ object MirAsmExecutable:
                             case d2: Long => ctx.setVar(id, d2 + d1 * mul)
                             case d2: Double => ctx.setVar(id, d2 + d1 * mul)
                             case _ => throw wrongParam(1, "numeric")
+                        // String concatenation.
+                        case s: String => ctx.setVar(id, s"$s${v.toString}")
                         case _ => throw wrongVar(id, "numeric")
 
                 def multiplyVar(): Unit =
@@ -254,18 +258,20 @@ object MirAsmExecutable:
 
                 def addSub(mul: Int): Unit =
                     require(mul == 1 || mul == -1)
-                    val v1 = pop()
-                    val v2 = pop()
-                    v1 match
-                        case d1: Long => v2 match
-                            case d2: Long => push(d2 + d1 * mul)
-                            case d2: Double => push(d2 + d1 * mul)
+                    val right = pop()
+                    val left = pop()
+                    left match
+                        case d1: Long => right match
+                            case d2: Long => push(d1 + d2 * mul)
+                            case d2: Double => push(d1 + d2 * mul)
                             case _ => throw wrongStack(d1, "numeric")
-                        case d1: Double => v2 match
-                            case d2: Long => push(d2 + d1 * mul)
-                            case d2: Double => push(d2 + d1 * mul)
+                        case d1: Double => right match
+                            case d2: Long => push(d1 + d2 * mul)
+                            case d2: Double => push(d1 + d2 * mul)
                             case _ => throw wrongStack(d1, "numeric")
-                        case _ => throw wrongStack(v1, "numeric")
+                        // String concatenation.
+                        case s: String => push(s"$s${right.toString}")
+                        case _ => throw wrongStack(left, "numeric or string")
 
                 def and(): Unit = pushBool(popTrue() && popTrue())
                 def or(): Unit = pushBool(popTrue() || popTrue())
@@ -487,9 +493,12 @@ object MirAsmExecutable:
                     case "ifjmp" => checkParamCount(2, 2); if popTrue() then jump(labelParam(0)) else jump(labelParam(1))
                     case "ifjmpv" => checkParamCount(2, 2); if popTrue() then jump(strVar(varParam(0))) else jump(strVar(varParam(1)))
                     case "call" => checkParamCount(1, 1); callStack.push(idx + 1); jump(labelParam(0))
-                    case "ret" => checkParamCount(0, 0); idx = callStack.pop(); nextInstr = false
                     case "exit" => checkParamCount(0, 0); exit = true
                     case "nop" => checkParamCount(0, 0) // No-op instruction.
+                    case "ret" =>
+                        checkParamCount(0, 0)
+                        if callStack.isEmpty then throw error(s"'ret' outside of function body.")
+                        idx = callStack.pop(); nextInstr = false
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 
                 if nextInstr then idx += 1

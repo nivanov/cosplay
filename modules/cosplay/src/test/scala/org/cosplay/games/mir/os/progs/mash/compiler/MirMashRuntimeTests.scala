@@ -71,13 +71,13 @@ object MirMashRuntimeTests:
               |var x  = 0
               |var odd = "odd"
               |var even = "even"
-              |while x < 10 do {
+              |while (x < 10) do {
               |     x = x + 1
               |     if x % 2 == 0 then _println(even)
-              |     else if x == 3 then { _println(odd); _println("It is 3") }
+              |     else if x == 3 then { _println(odd); _println("It is: " + x) }
               |     else {
               |         _println(odd)
-              |         if x == 7 then _println("It is 7")
+              |         if x == 7 then _println("It is: " + x)
               |     }
               |}
               |""".stripMargin)

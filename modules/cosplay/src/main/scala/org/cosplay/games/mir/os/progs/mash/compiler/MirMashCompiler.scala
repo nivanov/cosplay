@@ -524,6 +524,7 @@ class MirMashCompiler:
             block.add(null, null, "-" * hdr.length)
 
         override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit =
+            // TODO: ensure that functions have return value when used in expressions.
             if defStack.isEmpty then throw error(s"'return' can only be used in function body.")
             block.add("ret")
 
