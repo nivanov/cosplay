@@ -65,6 +65,22 @@ object MirMashRuntimeTests:
 
     @Test
     def okTest(): Unit =
+        executeOk(
+            """
+              |native def _println(s)
+              |var x  = 0
+              |var odd = "odd"
+              |var even = "even"
+              |while x < 10 do {
+              |     x = x + 1
+              |     if x % 2 == 0 then _println(even)
+              |     else if x == 3 then { _println(odd); _println("It is 3") }
+              |     else {
+              |         _println(odd)
+              |         if x == 7 then _println("It is 7")
+              |     }
+              |}
+              |""".stripMargin)
         executeOk("var x = 5 + 5")
         executeOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
         executeOk("var x = (true && false) || true")

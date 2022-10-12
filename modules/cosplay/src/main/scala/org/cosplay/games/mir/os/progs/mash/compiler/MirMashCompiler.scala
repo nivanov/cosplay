@@ -266,7 +266,7 @@ class MirMashCompiler:
     /**
       *
       */
-    class FunDecl:
+    class DefDecl:
         private var params = mutable.ArrayBuffer.empty[String]
         private var name: Option[String] = None
 
@@ -281,6 +281,13 @@ class MirMashCompiler:
 
     /**
       *
+      * @param thenBlock Mandatory 'then' block.
+      * @param elseBlock Optional 'else' block.
+      */
+    case class IfDecl(var thenBlock: AsmBlock, var elseBlock: Option[AsmBlock] = None)
+
+    /**
+      *
       * @param code
       * @param origin
       */
@@ -288,9 +295,10 @@ class MirMashCompiler:
         private var block = AsmBlock(origin, genLabel())
         private var lastBlock: Option[AsmBlock] = None
         private var scope = MirMashScope() // Initially global scope.
-        private val funLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
-        private val funStack = mutable.Stack.empty[FunDecl]
+        private val defLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
+        private val defStack = mutable.Stack.empty[DefDecl]
         private val loopStack = mutable.Stack.empty[String]
+        private val ifStack = mutable.Stack.empty[IfDecl]
 
         /**
           *
@@ -328,6 +336,21 @@ class MirMashCompiler:
                         catch case _: NumberFormatException =>
                             StrEntity(StrKind.UNDEF, s)
 
+        override def exitIfThen(using ctx: MMP.IfThenContext): Unit = ifStack.push(IfDecl(lastBlock.get))
+        override def exitIfElse(using ctx: MMP.IfElseContext): Unit = ifStack.head.elseBlock = lastBlock
+        override def exitIfDecl(using ctx: MMP.IfDeclContext): Unit =
+            val ifDecl = ifStack.pop()
+            val lbl = genLabel()
+            val thenBlk = ifDecl.thenBlock
+            thenBlk.add(s"jmp $lbl", null, "End of the 'then' branch.")
+            ifDecl.elseBlock match
+                case Some(elseBlk) =>
+                    elseBlk.add(s"jmp $lbl", null, "End of the 'else' branch.")
+                    block.add(s"ifjmp ${thenBlk.startLabel}, ${elseBlk.startLabel}")
+                case None =>
+                    block.add(s"ifjmp ${thenBlk.startLabel}, $lbl")
+            block.add(null, lbl, null)
+
         override def exitAssignDecl(using ctx: MMP.AssignDeclContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
             val str = strEnt.str
@@ -359,12 +382,12 @@ class MirMashCompiler:
                 case StrKind.UNDEF =>
                     val funDeclHldr = funStackHead()
                     val decl = new MirMashDefDecl(funDeclHldr.getParams.length, FUN, scope, str)
-                    funStack.pop()
+                    defStack.pop()
                     scope.addDecl(decl)
                     require(lastBlock.isDefined)
                     val body = lastBlock.get
                     // Add the function to the function LUT.
-                    funLut += decl.fqName -> body.startLabel
+                    defLut += decl.fqName -> body.startLabel
                     // Make sure the last instruction is 'ret'.
                     body.last() match
                         case Some(asm) if asm.instruction.isDefined && asm.instruction.get == "ret" => ()
@@ -381,7 +404,7 @@ class MirMashCompiler:
             strEnt.kind match
                 case StrKind.FUN =>
                     val decl = strEnt.decl.get
-                    funLut.get(decl.fqName) match
+                    defLut.get(decl.fqName) match
                         case Some(lbl) =>
                             block.add(s"call $lbl", null, s"Calling '$str(...)' function.")
                             if !isExpr then block.add("cpop")
@@ -397,7 +420,7 @@ class MirMashCompiler:
             strEnt.kind match
                 case StrKind.FUN =>
                     val decl = strEnt.decl.get
-                    funLut.get(decl.fqName) match
+                    defLut.get(decl.fqName) match
                         case Some(lbl) =>
                             block.add(s"call $lbl", null, s"Calling '$str(...)' function.")
                             block.add("cpop")
@@ -425,21 +448,18 @@ class MirMashCompiler:
                 case StrKind.UNDEF =>
                     val funDeclHldr = funStackHead()
                     scope.addDecl(new MirMashDefDecl(funDeclHldr.getParams.length, NAT, scope, str))
-                    funStack.pop()
+                    defStack.pop()
                 case StrKind.NUM => throw error(s"Numeric cannot be a native function name: $str")
                 case _ =>
                     val decl = strEnt.decl
                     require(decl.isDefined)
                     throw error(s"Native function '$str' conflicts with already declared ${decl.get.kindStr}.")
 
-        override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit =
-            funStack.push(new FunDecl)
+        override def enterNatDefDecl(ctx: MMP.NatDefDeclContext): Unit = defStack.push(new DefDecl)
+        override def enterDefDecl(ctx: MMP.DefDeclContext): Unit = defStack.push(new DefDecl)
 
-        override def enterDefDecl(ctx: MMP.DefDeclContext): Unit =
-            funStack.push(new FunDecl)
-
-        private def funStackHead(): FunDecl =
-            funStack.headOption match
+        private def funStackHead(): DefDecl =
+            defStack.headOption match
                 case Some(x) => x
                 case None => assert(false, "Empty function decl stack.")
 
@@ -472,7 +492,7 @@ class MirMashCompiler:
         override def enterCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
             scope = scope.subScope
             block = block.subBlock(genLabel())
-            funStack.headOption match
+            defStack.headOption match
                 case Some(funDeclHldr) =>
                     require(funDeclHldr.getName.isDefined)
                     block.add(null, null, s"Function '${funDeclHldr.mkFullName}'.")
@@ -493,6 +513,9 @@ class MirMashCompiler:
                 case None => assert(false, "Attempt to exit global block.")
 
         override def exitMash(using ctx: MMP.MashContext): Unit =
+            require(defStack.isEmpty, "'def' stack is not empty.")
+            require(loopStack.isEmpty, "'while/for' stack is not empty.")
+            require(ifStack.isEmpty, "'if' stack is not empty.")
             block.add("exit")
 
         override def enterMash(using ctx: MMP.MashContext): Unit =
@@ -501,21 +524,13 @@ class MirMashCompiler:
             block.add(null, null, "-" * hdr.length)
 
         override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit =
-            if funStack.isEmpty then throw error(s"'return' can only be used in function body.")
+            if defStack.isEmpty then throw error(s"'return' can only be used in function body.")
             block.add("ret")
 
-        override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit =
-            block.add(if ctx.MINUS() != null then "neg" else "not")
-
-        override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit =
-            block.add(if ctx.AND() != null then "and" else "or")
-
-        override def exitEqNeqExpr(using ctx: MMP.EqNeqExprContext): Unit =
-            block.add(if ctx.EQ() != null then "eq" else "neq")
-
-        override def exitPlusMinusExpr(using ctx: MMP.PlusMinusExprContext): Unit =
-            block.add(if ctx.PLUS() != null then "add" else "sub")
-
+        override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit = block.add(if ctx.MINUS() != null then "neg" else "not")
+        override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit = block.add(if ctx.AND() != null then "and" else "or")
+        override def exitEqNeqExpr(using ctx: MMP.EqNeqExprContext): Unit = block.add(if ctx.EQ() != null then "eq" else "neq")
+        override def exitPlusMinusExpr(using ctx: MMP.PlusMinusExprContext): Unit = block.add(if ctx.PLUS() != null then "add" else "sub")
         override def exitCompExpr(using ctx: MMP.CompExprContext): Unit =
             if ctx.LT() != null then block.add("lt")
             else if ctx.LTEQ() != null then block.add("lte")
