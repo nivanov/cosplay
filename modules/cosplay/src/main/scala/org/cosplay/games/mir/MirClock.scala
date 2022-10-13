@@ -31,8 +31,6 @@ package org.cosplay.games.mir
 */
 
 import org.cosplay.*
-import mir.*
-
 import java.text.*
 import java.util.Date
 
