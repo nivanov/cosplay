@@ -113,6 +113,7 @@
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
         <commons.math.ver>3.6.1</commons.math.ver>
         <commons.text.ver>1.9</commons.text.ver>
+        <commons.collections.ver>4.4</commons.collections.ver>
         <scala3.reflect.ver>1.1.4</scala3.reflect.ver>
         <scalatest.ver>3.2.13</scalatest.ver>
         <junit.ver>5.9.0</junit.ver>
@@ -164,6 +165,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
                 <version>${commons.text.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons.collections.ver}</version>
             </dependency>
 
             <dependency>

@@ -25,6 +25,9 @@ import scala.collection.mutable
 import MirAsmInstruction.*
 import org.cosplay.games.mir.*
 
+import org.apache.commons.collections4.CollectionUtils
+import org.apache.commons.lang3.StringUtils
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -60,6 +63,9 @@ object MirAsmExecutable:
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
         (ctx: MirAsmContext) =>
+            type StackList = mutable.ArrayBuffer[Any]
+            type StackMap = mutable.HashMap[String, Any]
+
             val stack = mutable.Stack.empty[Any]
             val callStack = mutable.Stack.empty[Int]
 
@@ -97,24 +103,34 @@ object MirAsmExecutable:
                     if paramsCnt < min then throw error("Insufficient asm instruction parameters")
                     if paramsCnt > max then throw error("Too many asm instruction parameters")
 
-                def getVar(id: String): Any =
-                    ctx.getVar(id) match
-                        case Some(v) => v
-                        case None => throw error(s"Undefined asm variable: $id")
+                def getVar(id: String): Any = ctx.getVar(id) match
+                    case Some(v) => v
+                    case None => throw error(s"Undefined asm variable: $id")
 
                 def pop(): Any =
                     try stack.pop()
                     catch case _: NoSuchElementException => throw error(s"Stack is empty (missing return value?)")
 
-                def popStr(): String =
-                    pop() match
-                        case s: String => s
-                        case x => throw wrongStack(x, "string")
+                def popStr(): String = pop() match
+                    case s: String => s
+                    case x => throw wrongStack(x, "string")
 
-                def popLong(): Long =
-                    pop() match
-                        case d: Long => d
-                        case x => throw wrongStack(x, "integer")
+                def popList(): StackList = pop() match
+                    case list: StackList => list
+                    case x => throw wrongStack(x, "list")
+
+                def popMap(): StackMap = pop() match
+                    case map: StackMap => map
+                    case x => throw wrongStack(x, "map")
+
+                def popListOrMap(): StackMap | StackList = pop() match
+                    case list: StackList => list
+                    case map: StackMap => map
+                    case x => throw wrongStack(x, "map or list")
+
+                def popLong(): Long = pop() match
+                    case d: Long => d
+                    case x => throw wrongStack(x, "integer")
 
                 def popBool(): Long =
                     val b = pop()
@@ -125,20 +141,17 @@ object MirAsmExecutable:
                 def popTrue(): Boolean = popBool() == 1L
                 def popFalse(): Boolean = popBool() == 0L
 
-                def varParam(idx: Int): String =
-                    params(idx) match
-                        case IdParam(id) => id
-                        case _ => throw wrongParam(idx, "variable")
+                def varParam(idx: Int): String = params(idx) match
+                    case IdParam(id) => id
+                    case _ => throw wrongParam(idx, "variable")
 
-                def labelParam(idx: Int): String =
-                    params(idx) match
-                        case IdParam(id) => id
-                        case _ => throw wrongParam(idx, "label")
+                def labelParam(idx: Int): String = params(idx) match
+                    case IdParam(id) => id
+                    case _ => throw wrongParam(idx, "label")
 
-                def longParam(idx: Int): Long =
-                    params(idx) match
-                        case LongParam(d) => d
-                        case _ => throw wrongParam(idx, "numeric")
+                def longParam(idx: Int): Long = params(idx) match
+                    case LongParam(d) => d
+                    case _ => throw wrongParam(idx, "numeric")
 
                 def strOrVarParam(idx: Int): String =
                     params(idx) match
@@ -204,20 +217,17 @@ object MirAsmExecutable:
                             case _ => throw wrongParam(1, "numeric")
                         case _ => throw wrongVar(id, "numeric")
 
-                def longVar(id: String): Long =
-                    getVar(id) match
-                        case d: Long => d
-                        case _ => throw wrongVar(id, "integer")
+                def longVar(id: String): Long = getVar(id) match
+                    case d: Long => d
+                    case _ => throw wrongVar(id, "integer")
 
-                def strVar(id: String): String =
-                    getVar(id) match
-                        case s: String  => s
-                        case _ => throw wrongVar(id, "string")
+                def strVar(id: String): String = getVar(id) match
+                    case s: String  => s
+                    case _ => throw wrongVar(id, "string")
 
-                def boolVar(id: String): Long =
-                    getVar(id) match
-                        case d: Long => if d == 1 || d == 0 then d else throw wrongVar(id, "1(true) or 0(false)")
-                        case _ => throw wrongVar(id, "1(true) or 0(false)")
+                def boolVar(id: String): Long = getVar(id) match
+                    case d: Long => if d == 1 || d == 0 then d else throw wrongVar(id, "1(true) or 0(false)")
+                    case _ => throw wrongVar(id, "1(true) or 0(false)")
 
                 def incDecVar(v: Int): Unit =
                     require(v == 1 || v == -1)
@@ -238,13 +248,14 @@ object MirAsmExecutable:
                         case d: Double => stack.push(d)
                         case s: String => stack.push(s)
                         case d: Int => stack.push(d.toLong)
+                        case list: mutable.ArrayBuffer[Any] => stack.push(list)
+                        case map: mutable.HashMap[String, Any] => stack.push(map)
                         case _ => assert(false, s"Invalid asm stack value type: $v")
 
-                def neg(): Unit =
-                    pop() match
-                        case d: Long => push(-d)
-                        case d: Double => push (-d)
-                        case x => throw wrongStack(x, "numeric")
+                def neg(): Unit = pop() match
+                    case d: Long => push(-d)
+                    case d: Double => push (-d)
+                    case x => throw wrongStack(x, "numeric")
 
                 def negv(): Unit =
                     val id = varParam(0)
@@ -313,6 +324,14 @@ object MirAsmExecutable:
                             case _ => throw wrongStack(d1, "numeric")
                         case _ => throw wrongStack(v1, "numeric")
 
+                def listMapOp[T](listOp: StackList => T, mapOp: StackMap => T): T =
+                    val x = popListOrMap()
+                    val res = x match
+                        case list: StackList => listOp(list)
+                        case map: StackMap => mapOp(map)
+                    push(x)
+                    res
+
                 object NativeFunctions:
                     def print(): Unit = ctx.getExecContext.out.print(pop().toString)
                     def println(): Unit = ctx.getExecContext.out.println(pop().toString)
@@ -328,17 +347,18 @@ object MirAsmExecutable:
                         val s2 = pop().toString
                         push(s"$s2$s1") // Note reverse order...
                     def regex(): Unit = ()
-                    def uppercase(): Unit = ()
-                    def lowercase(): Unit = ()
-                    def is_alpha(): Unit = ()
-                    def is_num(): Unit = ()
-                    def is_alphanum(): Unit = ()
-                    def is_whitespace(): Unit = ()
-                    def is_alphaspace(): Unit = ()
-                    def is_numspace(): Unit = ()
-                    def is_alphanumspace(): Unit = ()
+                    def uppercase(): Unit = push(popStr().toUpperCase)
+                    def lowercase(): Unit = push(popStr().toLowerCase)
+                    def is_alpha(): Unit = pushBool(StringUtils.isAlpha(popStr()))
+                    def is_num(): Unit = pushBool(StringUtils.isNumeric(popStr()))
+                    def is_alphanum(): Unit = pushBool(StringUtils.isAlphanumeric(popStr()))
+                    def is_whitespace(): Unit = pushBool(StringUtils.isWhitespace(popStr()))
+                    def is_alphaspace(): Unit = pushBool(StringUtils.isAlphaSpace(popStr()))
+                    def is_numspace(): Unit = pushBool(StringUtils.isNumericSpace(popStr()))
+                    def is_alphanumspace(): Unit = pushBool(StringUtils.isAlphanumericSpace(popStr()))
                     def split(): Unit = ()
                     def split_trim(): Unit = ()
+                    def trim(): Unit = push(popStr().trim())
                     def start_width(): Unit = ()
                     def end_width(): Unit = ()
                     def contains(): Unit = ()
@@ -361,25 +381,25 @@ object MirAsmExecutable:
                     def format_date(): Unit = ()
                     def format_time(): Unit = ()
                     def format_datetime(): Unit = ()
-                    def new_list(): Unit =()
-                    def new_map(): Unit =()
-                    def clear(): Unit =()
+                    def new_list(): Unit = push(mutable.ArrayBuffer.empty[Any])
+                    def new_map(): Unit = push(mutable.HashMap.empty[String, Any])
+                    def clear(): Unit = listMapOp(_.clear(), _.clear())
                     def get(): Unit =()
                     def copy(): Unit =()
                     def key_list(): Unit =()
                     def value_list(): Unit =()
-                    def size(): Unit =()
+                    def size(): Unit = push(listMapOp(_.size, _.size))
                     def drop(): Unit =()
                     def drop_right(): Unit =()
                     def contains_key(): Unit =()
                     def contains_value(): Unit =()
-                    def first(): Unit =()
-                    def last(): Unit =()
+                    def first(): Unit = push(popList().head)
+                    def last(): Unit = push(popList().last)
                     def index_of(): Unit =()
                     def index_of_start(): Unit =()
                     def last_index_of(): Unit =()
-                    def is_empty(): Unit =()
-                    def non_empty(): Unit =()
+                    def is_empty(): Unit = pushBool(listMapOp(_.isEmpty, _.isEmpty))
+                    def non_empty(): Unit = pushBool(listMapOp(_.nonEmpty, _.nonEmpty))
                     def mk_string(): Unit =()
                     def distinct(): Unit =()
                     def add_list(): Unit =()
@@ -675,6 +695,7 @@ object MirAsmExecutable:
                             case "is_numspace" => NativeFunctions.is_numspace()
                             case "is_alphanumspace" => NativeFunctions.is_alphanumspace()
                             case "split" => NativeFunctions.split()
+                            case "trim" => NativeFunctions.trim()
                             case "split_trim" => NativeFunctions.split_trim()
                             case "start_width" => NativeFunctions.start_width()
                             case "end_width" => NativeFunctions.end_width()
