@@ -525,7 +525,7 @@ class MirMashCompiler:
 
         override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit =
             // TODO: ensure that functions have return value when used in expressions.
-            if defStack.isEmpty then throw error(s"'return' can only be used in function body.")
+            if defStack.isEmpty then throw error(s"'return' can only be used inside of function body.")
             block.add("ret")
 
         override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit = block.add(if ctx.MINUS() != null then "neg" else "not")

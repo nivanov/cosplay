@@ -320,7 +320,7 @@ object MirAsmRuntimeTests:
         executeOk(
             """
               |pushn "1", 1
-              |calln "tostr"
+              |calln "to_str"
               |eq
               |cbrk
               |""".stripMargin
