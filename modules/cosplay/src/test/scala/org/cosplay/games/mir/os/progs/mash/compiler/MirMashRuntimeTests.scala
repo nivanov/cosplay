@@ -67,6 +67,14 @@ object MirMashRuntimeTests:
     def okTest(): Unit =
         executeOk(
             """
+              |native def assert(cond, msg)
+              |def fun(x) = return x + 1
+              |assert(fun(2) == 3, "Something is wrong")
+              |assert(fun(4) == 5, "Something is wrong")
+              |assert(fun("text") == "text1", "Something is wrong")
+              |""".stripMargin)
+        executeOk(
+            """
               |def fun(x) = return x
               |val x = fun(1)
               |""".stripMargin)

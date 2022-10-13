@@ -422,8 +422,8 @@ class MirMashCompiler:
                     val decl = strEnt.decl.get
                     defLut.get(decl.fqName) match
                         case Some(lbl) =>
-                            block.add(s"callx $lbl", null, s"Calling '$str(...)' function.")
-                            block.add("clr", null, "Ignore return value.")
+                            block.add(s"call $lbl", null, s"Calling '$str(...)' function.")
+                            block.add("cpop", null, "Ignore return value.")
                         case None => throw error(s"Calling undefined function: $str")
                 case StrKind.NAT =>
                     block.add(s"calln \"$str\"")
@@ -431,11 +431,8 @@ class MirMashCompiler:
                 case _ => throw error(s"Calling unknown function: $str")
 
         override def exitCallExpr(using ctx: MMP.CallExprContext): Unit =
-            val lastInst = block.last().get.instruction.get
+            require(block.last().get.instruction.get == "cpop")
             block.removeLast() // Remove last 'cpop' or 'clr'.
-            if lastInst == "cpop" then block.add("ssz")
-            block.add("eqp 1", null, "Ensure that there is exactly one return value.")
-            block.add(s"cbrk \"Function '${ctx.defCall().STR().getText}()' has no return value in expression.\"")
 
         override def exitDefNameDecl(using ctx: MMP.DefNameDeclContext): Unit =
             val s = ctx.STR().getText
