@@ -50,7 +50,7 @@ object MirMashCompilerTests:
         Try((new MirMashCompiler).compileToAsm(code, "test")) match
             case Success(mod) =>
                 println("---------------------")
-                mod.asm.foreach(loc => println(loc.toAsmString(true)))
+                mod.asm.foreach(loc => println(loc.toAsmString(false)))
             case Failure(e) =>
                 e.printStackTrace()
                 assertTrue(false, e.getMessage)
@@ -71,6 +71,19 @@ object MirMashCompilerTests:
       */
     @Test
     def baseOkTest(): Unit =
+        compileOk(
+            """
+              |def fun(x) = return x
+              |val x = fun(1)
+              |""".stripMargin)
+        compileOk(
+            """
+              |native def assert(cond, msg)
+              |def fun(x) = return x + 1
+              |assert(fun(2) == 3, "Something is wrong")
+              |assert(fun(4) == 5, "Something is wrong")
+              |assert(fun("text") == "text1", "Something is wrong")
+              |""".stripMargin)
         compileOk(
             """
               |native def _println(s)

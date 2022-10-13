@@ -362,16 +362,15 @@ object MirAsmRuntimeTests:
     def jumpTests(): Unit =
         executeOk(
             """
-              |callx fun
+              |call fun
+              |ssz
               |eqp 3
-              |cbrk "Invalid number of return values."
-              |clrp 3
-              |let x, 0
-              |cpop x
-              |eqv x, 0
               |cbrk "Should be zero here."
               |exit
               |fun:
+              |     ssz
+              |     eqp 0
+              |     cbrk "Should be zero here."
               |     pushn 1, 2, 3
               |     ret
               |""".stripMargin)

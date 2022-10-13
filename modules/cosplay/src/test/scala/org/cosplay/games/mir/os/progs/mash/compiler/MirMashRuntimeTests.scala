@@ -67,6 +67,11 @@ object MirMashRuntimeTests:
     def okTest(): Unit =
         executeOk(
             """
+              |def fun(x) = return x
+              |val x = fun(1)
+              |""".stripMargin)
+        executeOk(
+            """
               |native def _println(s)
               |var x  = 0
               |var odd = "odd"
@@ -121,6 +126,11 @@ object MirMashRuntimeTests:
 
     @Test
     def failTest(): Unit =
+        executeFail(
+            """
+              |def fun() = val x = 0
+              |val z = 1 + fun() // No return value in expression.
+              |""".stripMargin)
         executeFail(
             """
               |native def assert(cond, msg)

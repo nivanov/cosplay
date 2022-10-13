@@ -42,9 +42,6 @@ import org.cosplay.games.mir.*
   *
   */
 object MirAsmExecutable:
-    object FRM_MRK:
-        override def toString: String = "<<stack frame marker>>"
-
     /**
       *
       * @param idx
@@ -59,19 +56,12 @@ object MirAsmExecutable:
 
     /**
       *
-      * @param isX
-      * @param index
-      */
-    case class Call(isX: Boolean, index: Int)
-
-    /**
-      *
       * @param instrs Sequence of assembler instructions to build an executable from.
       */
     def apply(instrs: Seq[MirAsmInstruction]): MirAsmExecutable =
         (ctx: MirAsmContext) =>
             val stack = mutable.Stack.empty[Any]
-            val callStack = mutable.Stack.empty[Call]
+            val callStack = mutable.Stack.empty[Int]
 
             // Ensure instructions are sorted & indexed.
             val code = instrs.sortBy(_.line)
@@ -248,7 +238,6 @@ object MirAsmExecutable:
                         case d: Double => stack.push(d)
                         case s: String => stack.push(s)
                         case d: Int => stack.push(d.toLong)
-                        case FRM_MRK => stack.push(v)
                         case _ => assert(false, s"Invalid asm stack value type: $v")
 
                 def neg(): Unit =
@@ -480,18 +469,6 @@ object MirAsmExecutable:
                     case "negv" => checkParamCount(1, 1); negv()
                     case "not" => checkParamCount(0, 0); pushBool(!popTrue())
                     case "notv" => checkParamCount(1, 1); notv()
-                    case "calln" =>
-                        checkParamCount(1, 1)
-                        val fn = strOrVarParam(0)
-                        fn match
-                            case "print" => NativeFunctions.print()
-                            case "println" => NativeFunctions.println()
-                            case "concat" => NativeFunctions.concat()
-                            case "tostr" => NativeFunctions.tostr()
-                            case "length" => NativeFunctions.length()
-                            case "assert" => NativeFunctions.assert()
-                            case "_println" => println(pop().toString) // Debug only.
-                            case s => throw error(s"Unknown native function: $s")
                     case "let" => checkParamCount(2, 2); ctx.setVar(varParam(0), anyParam(1))
                     case "dup" => checkParamCount(0, 0); if stack.nonEmpty then push(stack.head)
                     case "eq" => checkParamCount(0, 0); pushBool(pop() == pop())
@@ -525,31 +502,27 @@ object MirAsmExecutable:
                     case "clr" => checkParamCount(0, 0); for _ <- 0 until popLong().toInt do stack.pop()
                     case "clrp" => checkParamCount(1, 1); for _ <- 0 until longParam(0).toInt do stack.pop()
                     case "clrv" => checkParamCount(1, 1); for _ <- 0 until longVar(varParam(0)).toInt do stack.pop()
-                    case "ssz" =>
-                        val buf = mutable.ArrayBuffer.empty[Any]
-                        while stack.nonEmpty && stack.head != FRM_MRK do buf += stack.pop()
-                        buf.reverse.foreach(stack.push)
-                        push(buf.size)
-                    case "callx" =>
+                    case "ssz" => checkParamCount(0, 0); push(stack.size)
+                    case "calln" =>
                         checkParamCount(1, 1)
-                        push(FRM_MRK) // Add frame marker.
-                        callStack.push(Call(true, idx + 1))
-                        jump(labelParam(0))
+                        val fn = strOrVarParam(0)
+                        fn match
+                            case "print" => NativeFunctions.print()
+                            case "println" => NativeFunctions.println()
+                            case "concat" => NativeFunctions.concat()
+                            case "tostr" => NativeFunctions.tostr()
+                            case "length" => NativeFunctions.length()
+                            case "assert" => NativeFunctions.assert()
+                            case "_println" => println(pop().toString) // Debug only.
+                            case s => throw error(s"Unknown native function: $s")
                     case "call" =>
                         checkParamCount(1, 1)
-                        push(FRM_MRK) // Add frame marker.
-                        callStack.push(Call(false, idx + 1))
+                        callStack.push(idx + 1)
                         jump(labelParam(0))
                     case "ret" =>
                         checkParamCount(0, 0)
                         if callStack.isEmpty then throw error(s"'ret' outside of function body.")
-                        val call = callStack.pop()
-                        idx = call.index
-                        val buf = mutable.ArrayBuffer.empty[Any]
-                        while stack.head != FRM_MRK do buf += stack.pop()
-                        stack.pop() // Remove frame marker.
-                        buf.reverse.foreach(stack.push)
-                        if call.isX then push(buf.size)
+                        idx = callStack.pop()
                         nextInstr = false
                     case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
 

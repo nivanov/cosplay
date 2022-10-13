@@ -100,7 +100,6 @@ INSRT_NAME
     | 'subv'
     | 'calln'
     | 'call'
-    | 'callx'
     | 'jmp'
     | 'cjmp' // Conditional jump over stack value.
     | 'cjmpv' // Conditional jump over variable value.
