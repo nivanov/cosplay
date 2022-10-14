@@ -576,11 +576,8 @@ class MirMashCompiler:
                     scope.addDecl(decl)
                 case _ => throw error(s"Duplicate declaration: $name")
 
-        override def exitValDecl(using ctx: MMP.ValDeclContext): Unit =
-            addVar(VAL, ctx.STR().getText)
-
-        override def exitVarDecl(using ctx: MMP.VarDeclContext): Unit =
-            addVar(VAR, ctx.STR().getText)
+        override def exitValDecl(using ctx: MMP.ValDeclContext): Unit = addVar(VAL, ctx.STR().getText)
+        override def exitVarDecl(using ctx: MMP.VarDeclContext): Unit = addVar(VAR, ctx.STR().getText)
 
         /**
           *

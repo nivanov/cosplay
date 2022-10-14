@@ -64,6 +64,16 @@ object MirMashRuntimeTests:
                 e.printStackTrace()
 
     @Test
+    def nativeFunctionsTest(): Unit =
+        executeOk(
+            """
+              |native def length(s)
+              |native def assert(cond, msg)
+              |val s = "cosplay"
+              |assert(length(s) == 7, "Assertion.")
+              |""".stripMargin)
+
+    @Test
     def okTest(): Unit =
         executeOk(
             """

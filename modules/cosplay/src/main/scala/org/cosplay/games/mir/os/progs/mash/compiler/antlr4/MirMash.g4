@@ -106,15 +106,26 @@ compoundExpr
     | LBRACE decl* RBRACE
     ;
 callParamList
-    : expr
-    | callParamList COMMA expr
+    : callParam
+    | callParamList COMMA callParam
     ;
+callParam: expr;
 atom
     : NULL
     | BOOL
     | STR // Number or variable access (var or val).
+    | list
     | qstring
     ;
+list
+    : LIST_START LIST_END // Empty list.
+    | LIST_START listElems LIST_END
+    ;
+listElems:
+    | listElem
+    | listElems COMMA listElem
+    ;
+listElem: expr;
 qstring
     : SQSTRING
     | DQSTRING
@@ -128,7 +139,6 @@ INCLUDE: 'include';
 VAL: 'val';
 VAR: 'var';
 DEF: 'def';
-ASSOC: '->';
 NATIVE: 'native';
 RETURN: 'return';
 IF: 'if';
@@ -136,9 +146,10 @@ THEN: 'then';
 ELSE: 'else';
 WHILE: 'while';
 DO: 'do';
-YIELD: 'yield';
 FOR: 'for';
 IN: '<-';
+LIST_START: '[';
+LIST_END: ']';
 SQSTRING: SQUOTE (~'\'')* SQUOTE;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BOOL: 'true' | 'false';
