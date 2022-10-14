@@ -41,6 +41,27 @@ import org.junit.jupiter.api.*
 object MirMashRuntimeTests:
     MirClock.init(0)
 
+    private final val NATIVE_DECLS =
+        """
+          | native def new_list()
+          | native def add(list, v)
+          | native def size(list)
+          | native def length(s)
+          | native def uppercase(s)
+          | native def lowercase(s)
+          | native def trim(s)
+          | native def to_str(s)
+          | native def is_alpha(s)
+          | native def is_num(s)
+          | native def ensure(cond)
+          | native def split(str, regex)
+          | native def remove(list, idx)
+          | native def take(list, n)
+          | native def take_right(list, n)
+          | native def get(listOrMap, idxOrKey)
+          | native def _println(s)
+          |""".stripMargin
+
     /**
       *
       * @param code Mash code to test.
@@ -65,28 +86,9 @@ object MirMashRuntimeTests:
 
     @Test
     def nativeFunctionsTest(): Unit =
-        val natives =
-            """
-              | native def new_list()
-              | native def add(list, v)
-              | native def size(list)
-              | native def length(s)
-              | native def uppercase(s)
-              | native def lowercase(s)
-              | native def trim(s)
-              | native def to_str(s)
-              | native def is_alpha(s)
-              | native def is_num(s)
-              | native def ensure(cond)
-              | native def split(str, regex)
-              | native def remove(list, idx)
-              | native def take(list, n)
-              | native def take_right(list, n)
-              |""".stripMargin
-
         executeOk(
             s"""
-              |$natives
+              |$NATIVE_DECLS
               |
               |val list = new_list()
               |add(list, 1)
@@ -95,7 +97,7 @@ object MirMashRuntimeTests:
               |""".stripMargin)
         executeOk(
             s"""
-               |$natives
+               |$NATIVE_DECLS
                |
                |val list = [1, 2]
                |ensure(size(list) == 2)
@@ -104,7 +106,15 @@ object MirMashRuntimeTests:
                |""".stripMargin)
         executeOk(
             s"""
-              |$natives
+               |$NATIVE_DECLS
+               |
+               |val list = [1, 2]
+               |ensure(get(list, 0) == 1)
+               |ensure(get(list, 1) == 2)
+               |""".stripMargin)
+        executeOk(
+            s"""
+              |$NATIVE_DECLS
               |
               |val s = "cosplay"
               |ensure([1, 2, 3] == [1, 2, 3])
@@ -127,6 +137,16 @@ object MirMashRuntimeTests:
 
     @Test
     def okTest(): Unit =
+        executeOk(
+            s"""
+              |$NATIVE_DECLS
+              |
+              |for a <- [1, 2, 3, 4] do _println("List element: " + a)
+              |val list = ["a", "b", "c"]
+              |_println("-----")
+              |for a <- list do _println("List element: " + a)
+              |for a <- [] do ensure(false)
+              |""".stripMargin)
         executeOk(
             """
               |native def ensure(cond) // Check passing order of parameters.
@@ -206,6 +226,50 @@ object MirMashRuntimeTests:
 
     @Test
     def failTest(): Unit =
+        executeFail(
+            s"""
+               |$NATIVE_DECLS
+               |for a <- null do _println("List element: " + a)
+               |""".stripMargin)
+        executeFail(
+            s"""
+               |$NATIVE_DECLS
+               |for a <- true do _println("List element: " + a)
+               |""".stripMargin)
+        executeFail(
+            s"""
+               |$NATIVE_DECLS
+               |for a <- "123" do _println("List element: " + a)
+               |""".stripMargin)
+        executeFail(
+            s"""
+               |$NATIVE_DECLS
+               |for a <- [] do {
+               |    val a = 0
+               |    _println("List element: " + a)
+               |}
+               |""".stripMargin)
+        executeFail(
+            s"""
+               |$NATIVE_DECLS
+               |
+               |val list = null
+               |get(list, 3)
+               |""".stripMargin)
+        executeFail(
+            s"""
+               |$NATIVE_DECLS
+               |
+               |val list = [1, 2]
+               |get(list, 3)
+               |""".stripMargin)
+        executeFail(
+            s"""
+               |$NATIVE_DECLS
+               |
+               |val list = [1, 2]
+               |get(list, "key")
+               |""".stripMargin)
         executeFail(
             """
               |def fun() = val x = 0

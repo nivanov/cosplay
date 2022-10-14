@@ -42,6 +42,27 @@ import org.junit.jupiter.api.*
 object MirMashCompilerTests:
     MirClock.init(0)
 
+    private final val NATIVE_DECLS =
+        """
+          | native def new_list()
+          | native def add(list, v)
+          | native def size(list)
+          | native def length(s)
+          | native def uppercase(s)
+          | native def lowercase(s)
+          | native def trim(s)
+          | native def to_str(s)
+          | native def is_alpha(s)
+          | native def is_num(s)
+          | native def ensure(cond)
+          | native def split(str, regex)
+          | native def remove(list, idx)
+          | native def take(list, n)
+          | native def take_right(list, n)
+          | native def get(listOrMap, idxOrKey)
+          | native def _println(s)
+          |""".stripMargin
+
     /**
       *
       * @param code Mash code to test.
@@ -71,6 +92,11 @@ object MirMashCompilerTests:
       */
     @Test
     def baseOkTest(): Unit =
+        compileOk(
+            s"""
+              |$NATIVE_DECLS
+              |for a <- [1, 2, 3, 4] do _println("List element: " + a)
+              |""".stripMargin)
         compileOk(
             """
               |native def size(list)
