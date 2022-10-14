@@ -132,6 +132,10 @@ object MirAsmExecutable:
                     case d: Long => d
                     case x => throw wrongStack(x, "integer")
 
+                def popInt(): Int = pop() match
+                    case d: Long => d.toInt
+                    case x => throw wrongStack(x, "integer")
+
                 def popBool(): Long =
                     val b = pop()
                     b match
@@ -151,6 +155,10 @@ object MirAsmExecutable:
 
                 def longParam(idx: Int): Long = params(idx) match
                     case LongParam(d) => d
+                    case _ => throw wrongParam(idx, "numeric")
+
+                def intParam(idx: Int): Int  = params(idx) match
+                    case LongParam(d) => d.toInt
                     case _ => throw wrongParam(idx, "numeric")
 
                 def strOrVarParam(idx: Int): String =
@@ -219,6 +227,10 @@ object MirAsmExecutable:
 
                 def longVar(id: String): Long = getVar(id) match
                     case d: Long => d
+                    case _ => throw wrongVar(id, "integer")
+
+                def intVar(id: String): Int = getVar(id) match
+                    case d: Long => d.toInt
                     case _ => throw wrongVar(id, "integer")
 
                 def strVar(id: String): String = getVar(id) match
@@ -356,7 +368,11 @@ object MirAsmExecutable:
                     def is_alphaspace(): Unit = pushBool(StringUtils.isAlphaSpace(popStr()))
                     def is_numspace(): Unit = pushBool(StringUtils.isNumericSpace(popStr()))
                     def is_alphanumspace(): Unit = pushBool(StringUtils.isAlphanumericSpace(popStr()))
-                    def split(): Unit = ()
+                    def split(): Unit =
+                        val sepRegex = popStr()
+                        val str = popStr()
+                        val list = mutable.ArrayBuffer.empty[Any].addAll(str.split(sepRegex))
+                        push(list)
                     def split_trim(): Unit = ()
                     def trim(): Unit = push(popStr().trim())
                     def start_width(): Unit = ()
@@ -410,11 +426,23 @@ object MirAsmExecutable:
                         val v = pop()
                         val list = popList()
                         list += v
-                    def prepend(): Unit =()
+                    def prepend(): Unit =
+                        val v = pop()
+                        val list = popList()
+                        list.prepend(v)
                     def update(): Unit =()
-                    def remove(): Unit =()
-                    def take(): Unit =()
-                    def take_right(): Unit =()
+                    def remove(): Unit =
+                        val idx = popInt()
+                        val list = popList()
+                        list.remove(idx)
+                    def take(): Unit =
+                        val n = popInt()
+                        val list = popList()
+                        push(list.take(n))
+                    def take_right(): Unit =
+                        val n = popInt()
+                        val list = popList()
+                        push(list.takeRight(n))
                     def reverse(): Unit =()
                     def ceil(): Unit =()
                     def floor(): Unit =()
@@ -621,9 +649,9 @@ object MirAsmExecutable:
                     case "ifjmpv" => checkParamCount(2, 2); if popTrue() then jump(strVar(varParam(0))) else jump(strVar(varParam(1)))
                     case "exit" => checkParamCount(0, 0); exit = true
                     case "nop" => checkParamCount(0, 0) // No-op instruction.
-                    case "clr" => checkParamCount(0, 0); for _ <- 0 until popLong().toInt do stack.pop()
-                    case "clrp" => checkParamCount(1, 1); for _ <- 0 until longParam(0).toInt do stack.pop()
-                    case "clrv" => checkParamCount(1, 1); for _ <- 0 until longVar(varParam(0)).toInt do stack.pop()
+                    case "clr" => checkParamCount(0, 0); for _ <- 0 until popInt() do stack.pop()
+                    case "clrp" => checkParamCount(1, 1); for _ <- 0 until intParam(0) do stack.pop()
+                    case "clrv" => checkParamCount(1, 1); for _ <- 0 until intVar(varParam(0)) do stack.pop()
                     case "ssz" => checkParamCount(0, 0); push(stack.size)
                     case "calln" =>
                         checkParamCount(1, 1)

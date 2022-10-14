@@ -76,8 +76,7 @@ object MirMashCompilerTests:
               |native def size(list)
               |native def ensure(cond)
               |
-              |val list = [1, 2]
-              |ensure(size(list) == 2)
+              |ensure(size([1, 2]) == 2)
               |""".stripMargin)
         compileOk(
             """

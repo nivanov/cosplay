@@ -424,7 +424,7 @@ class MirMashCompiler:
             listStack.push(ListDecl(listVar, tmpVar))
             block.add(null, null, "List expression start.")
             block.add("calln \"new_list\"")
-            block.add(s"pop $listVar")
+            block.add(s"pop $listVar", null, "Variable holding the list.")
         override def exitListElem(using ctx: MMP.ListElemContext): Unit =
             val decl = listStack.head
             block.add(s"pop ${decl.tmpVar}")
@@ -432,8 +432,9 @@ class MirMashCompiler:
             block.add(s"push ${decl.tmpVar}")
             block.add(s"calln \"add\"")
         override def exitListExpr(using ctx: MMP.ListExprContext): Unit =
+            val decl = listStack.pop()
+            block.add(s"push ${decl.listVar}")
             block.add(null, null, "List expression stop.")
-            listStack.pop()
 
         override def exitDefCall(using ctx: MMP.DefCallContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)

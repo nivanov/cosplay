@@ -47,7 +47,7 @@ object MirMashRuntimeTests:
       */
     private def executeOk(code: String): Unit =
         Try((new MirMashCompiler).compile(code, "test").execute(null)) match
-            case Success(mod) => ()
+            case Success(_) => ()
             case Failure(e) =>
                 e.printStackTrace()
                 assertTrue(false, e.getMessage)
@@ -65,16 +65,28 @@ object MirMashRuntimeTests:
 
     @Test
     def nativeFunctionsTest(): Unit =
-        val incl =
+        val natives =
             """
-              |native def new_list()
-              |native def add(list, v)
-              |native def size(list)
-              |native def ensure(cond)
+              | native def new_list()
+              | native def add(list, v)
+              | native def size(list)
+              | native def length(s)
+              | native def uppercase(s)
+              | native def lowercase(s)
+              | native def trim(s)
+              | native def to_str(s)
+              | native def is_alpha(s)
+              | native def is_num(s)
+              | native def ensure(cond)
+              | native def split(str, regex)
+              | native def remove(list, idx)
+              | native def take(list, n)
+              | native def take_right(list, n)
               |""".stripMargin
+
         executeOk(
             s"""
-              |$incl
+              |$natives
               |
               |val list = new_list()
               |add(list, 1)
@@ -83,22 +95,19 @@ object MirMashRuntimeTests:
               |""".stripMargin)
         executeOk(
             s"""
-               |$incl
+               |$natives
                |
                |val list = [1, 2]
                |ensure(size(list) == 2)
+               |ensure(size([1, 2, 3, true, false]) == 5)
+               |ensure(size([1, 2, 3, [true, false]]) == 4)
                |""".stripMargin)
         executeOk(
-            """
-              |native def length(s)
-              |native def uppercase(s)
-              |native def lowercase(s)
-              |native def trim(s)
-              |native def to_str(s)
-              |native def is_alpha(s)
-              |native def is_num(s)
-              |native def ensure(cond)
+            s"""
+              |$natives
+              |
               |val s = "cosplay"
+              |ensure([1, 2, 3] == [1, 2, 3])
               |ensure(to_str(123) == "123")
               |ensure(length(s) == 7)
               |ensure(uppercase("cosplay") == "COSPLAY")
@@ -108,6 +117,12 @@ object MirMashRuntimeTests:
               |ensure(is_alpha("cosplay12") == false)
               |ensure(is_num("12") == true)
               |ensure(is_num("122323cosplay") == false)
+              |ensure(size(split("one two three", " ")) == 3)
+              |ensure(split("one two three", " ") == ["one", "two", "three"])
+              |ensure(size(take([1, 2, 3, 4], 2)) == 2)
+              |ensure(take([1, 2, 3, 4], 2) == [1, 2])
+              |ensure(size(take_right([1, 2, 3, 4], 1)) == 1)
+              |ensure(take_right([1, 2, 3, 4], 1) == [4])
               |""".stripMargin)
 
     @Test
