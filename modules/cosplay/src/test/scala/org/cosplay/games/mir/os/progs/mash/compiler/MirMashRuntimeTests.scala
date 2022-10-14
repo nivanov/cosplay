@@ -146,6 +146,16 @@ object MirMashRuntimeTests:
     def failTest(): Unit =
         executeFail(
             """
+              |def f(a, b, c) = return 1
+              |f(1, 2) // Wrong number of parameters.
+              |""".stripMargin)
+        executeFail(
+            """
+              |def f(a, b, c) = return 1
+              |f(1, 2, 3, 4) // Wrong number of parameters.
+              |""".stripMargin)
+        executeFail(
+            """
               |def fun() = val x = 0
               |val z = 1 + fun() // No return value in expression.
               |""".stripMargin)

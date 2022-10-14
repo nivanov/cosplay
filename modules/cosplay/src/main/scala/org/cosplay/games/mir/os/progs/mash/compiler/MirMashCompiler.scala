@@ -88,7 +88,7 @@ class MirMashDecl(val kind: MirMashDeclarationKind, val scope: MirMashScope, val
   * @param scope Declaration scope.
   * @param name Declaration name.
   */
-class MirMashDefDecl(paramCnt: Int, kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name):
+class MirMashDefDecl(val paramCnt: Int, kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name):
     require(kind == MirMashDeclarationKind.NAT || kind == MirMashDeclarationKind.FUN)
 
 /**
@@ -99,7 +99,7 @@ class MirMashDefDecl(paramCnt: Int, kind: MirMashDeclarationKind, scope: MirMash
   * @param scope Declaration scope.
   * @param name Declaration name.
   */
-class MirMashAliasDecl(alias: String, kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name):
+class MirMashAliasDecl(val alias: String, kind: MirMashDeclarationKind, scope: MirMashScope, name: String) extends MirMashDecl(kind, scope, name):
     require(kind == MirMashDeclarationKind.ALS)
 
 /**
@@ -299,6 +299,7 @@ class MirMashCompiler:
         private val defStack = mutable.Stack.empty[DefDecl]
         private val loopStack = mutable.Stack.empty[String]
         private val ifStack = mutable.Stack.empty[IfDecl]
+        private val paramStack = mutable.Stack.empty[Int]
 
         /**
           *
@@ -398,41 +399,35 @@ class MirMashCompiler:
                     val decl = strEnt.decl.get
                     throw error(s"Function '$str' conflicts with already declared ${decl.kindStr}.")
 
-        private def call(name: String, isExpr: Boolean)(using ctx: PRC): Unit =
-            val strEnt = parseStr(name)
-            val str = strEnt.str
-            strEnt.kind match
-                case StrKind.FUN =>
-                    val decl = strEnt.decl.get
-                    defLut.get(decl.fqName) match
-                        case Some(lbl) =>
-                            block.add(s"call $lbl", null, s"Calling '$str(...)' function.")
-                            if !isExpr then block.add("cpop")
-                        case None => throw error(s"Calling undefined function: $str")
-                case StrKind.NAT =>
-                    block.add(s"calln \"$str\"")
-                    if !isExpr then block.add("cpop")
-                case _ => throw error(s"Calling unknown function: $str")
+        override def enterDefCall(using ctx: MMP.DefCallContext): Unit = paramStack.push(0)
+        override def exitCallParam(using ctx: MMP.CallParamContext): Unit = paramStack.push(paramStack.pop() + 1)
 
         override def exitDefCall(using ctx: MMP.DefCallContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
             val str = strEnt.str
+            val paramCnt = paramStack.pop()
+            def checkParams(declCnt: Int): Unit =
+                if paramCnt < declCnt then throw error(s"Insufficient parameters when calling '$str(...)' function.")
+                else if paramCnt > declCnt then throw error(s"Too many parameters when calling '$str(...)' function.")
             strEnt.kind match
                 case StrKind.FUN =>
-                    val decl = strEnt.decl.get
+                    val decl = strEnt.decl.get.asInstanceOf[MirMashDefDecl]
+                    checkParams(decl.paramCnt)
                     defLut.get(decl.fqName) match
                         case Some(lbl) =>
                             block.add(s"call $lbl", null, s"Calling '$str(...)' function.")
                             block.add("cpop", null, "Ignore return value.")
                         case None => throw error(s"Calling undefined function: $str")
                 case StrKind.NAT =>
+                    val decl = strEnt.decl.get.asInstanceOf[MirMashDefDecl]
+                    checkParams(decl.paramCnt)
                     block.add(s"calln \"$str\"")
                     block.add("cpop", null, "Ignore return value.")
                 case _ => throw error(s"Calling unknown function: $str")
 
         override def exitCallExpr(using ctx: MMP.CallExprContext): Unit =
             require(block.last().get.instruction.get == "cpop")
-            block.removeLast() // Remove last 'cpop' or 'clr'.
+            block.removeLast() // Remove last 'cpop'.
 
         override def exitDefNameDecl(using ctx: MMP.DefNameDeclContext): Unit =
             val s = ctx.STR().getText
@@ -516,6 +511,7 @@ class MirMashCompiler:
             require(defStack.isEmpty, "'def' stack is not empty.")
             require(loopStack.isEmpty, "'while/for' stack is not empty.")
             require(ifStack.isEmpty, "'if' stack is not empty.")
+            require(paramStack.isEmpty, "'param' stack is not empty.")
             block.add("exit")
 
         override def enterMash(using ctx: MMP.MashContext): Unit =
