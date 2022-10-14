@@ -396,6 +396,18 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitCallExpr(MirMashParser.CallExprContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code listExpr}
+	 * labeled alternative in {@link MirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterListExpr(MirMashParser.ListExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code listExpr}
+	 * labeled alternative in {@link MirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitListExpr(MirMashParser.ListExprContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code eqNeqExpr}
 	 * labeled alternative in {@link MirMashParser#expr}.
 	 * @param ctx the parse tree

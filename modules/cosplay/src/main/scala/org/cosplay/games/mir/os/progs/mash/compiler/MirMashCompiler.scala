@@ -251,17 +251,25 @@ class MirMashCompiler:
     import MirMashDeclarationKind.*
     import MirMashCompiler.*
 
-    // Not very unique, of course - but good enough.
-    private val lblBase = UUID.randomUUID().hashCode().abs.toString
-    private var lblCnt = 0L
+    // Not totally unique, of course, but good enough.
+    private val rndBase = UUID.randomUUID().hashCode().abs.toString
+    private var rndCnt = 0L
 
     /**
       *
       */
     private def genLabel(): String =
-        val lbl = s"L${lblBase}_$lblCnt"
-        lblCnt += 1
+        val lbl = s"L${rndBase}_$rndCnt"
+        rndCnt += 1
         lbl
+
+    /**
+      *
+      */
+    private def genVar(): String =
+        val v = s"V${rndBase}_$rndCnt"
+        rndCnt += 1
+        v
 
     /**
       *
@@ -288,6 +296,13 @@ class MirMashCompiler:
 
     /**
       *
+      * @param listVar
+      * @param tmpVar
+      */
+    case class ListDecl(listVar: String, tmpVar: String)
+
+    /**
+      *
       * @param code
       * @param origin
       */
@@ -300,6 +315,7 @@ class MirMashCompiler:
         private val loopStack = mutable.Stack.empty[String]
         private val ifStack = mutable.Stack.empty[IfDecl]
         private val paramStack = mutable.Stack.empty[Int]
+        private val listStack = mutable.Stack.empty[ListDecl]
 
         /**
           *
@@ -401,6 +417,23 @@ class MirMashCompiler:
 
         override def enterDefCall(using ctx: MMP.DefCallContext): Unit = paramStack.push(0)
         override def exitCallParam(using ctx: MMP.CallParamContext): Unit = paramStack.push(paramStack.pop() + 1)
+
+        override def enterListExpr(using ctx: MMP.ListExprContext): Unit =
+            val listVar = genVar()
+            val tmpVar = genVar()
+            listStack.push(ListDecl(listVar, tmpVar))
+            block.add(null, null, "List expression start.")
+            block.add("calln \"new_list\"")
+            block.add(s"pop $listVar")
+        override def exitListElem(using ctx: MMP.ListElemContext): Unit =
+            val decl = listStack.head
+            block.add(s"pop ${decl.tmpVar}")
+            block.add(s"push ${decl.listVar}")
+            block.add(s"push ${decl.tmpVar}")
+            block.add(s"calln \"add\"")
+        override def exitListExpr(using ctx: MMP.ListExprContext): Unit =
+            block.add(null, null, "List expression stop.")
+            listStack.pop()
 
         override def exitDefCall(using ctx: MMP.DefCallContext): Unit =
             val strEnt = parseStr(ctx.STR().getText)
@@ -512,6 +545,7 @@ class MirMashCompiler:
             require(loopStack.isEmpty, "'while/for' stack is not empty.")
             require(ifStack.isEmpty, "'if' stack is not empty.")
             require(paramStack.isEmpty, "'param' stack is not empty.")
+            require(listStack.isEmpty, "'list' stack is not empty.")
             block.add("exit")
 
         override def enterMash(using ctx: MMP.MashContext): Unit =

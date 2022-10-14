@@ -65,18 +65,29 @@ object MirMashRuntimeTests:
 
     @Test
     def nativeFunctionsTest(): Unit =
-        executeOk(
+        val incl =
             """
               |native def new_list()
               |native def add(list, v)
               |native def size(list)
               |native def ensure(cond)
+              |""".stripMargin
+        executeOk(
+            s"""
+              |$incl
               |
               |val list = new_list()
               |add(list, 1)
               |add(list, 2)
               |ensure(size(list) == 2)
               |""".stripMargin)
+        executeOk(
+            s"""
+               |$incl
+               |
+               |val list = [1, 2]
+               |ensure(size(list) == 2)
+               |""".stripMargin)
         executeOk(
             """
               |native def length(s)

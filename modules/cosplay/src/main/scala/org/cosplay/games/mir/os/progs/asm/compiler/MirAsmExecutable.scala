@@ -410,7 +410,6 @@ object MirAsmExecutable:
                         val v = pop()
                         val list = popList()
                         list += v
-                        push(list)
                     def prepend(): Unit =()
                     def update(): Unit =()
                     def remove(): Unit =()

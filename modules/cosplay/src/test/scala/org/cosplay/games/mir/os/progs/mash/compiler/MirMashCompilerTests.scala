@@ -73,6 +73,14 @@ object MirMashCompilerTests:
     def baseOkTest(): Unit =
         compileOk(
             """
+              |native def size(list)
+              |native def ensure(cond)
+              |
+              |val list = [1, 2]
+              |ensure(size(list) == 2)
+              |""".stripMargin)
+        compileOk(
+            """
               |def fun(x) = return x
               |val x = fun(1)
               |""".stripMargin)
