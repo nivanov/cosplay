@@ -423,7 +423,7 @@ class MirMashCompiler:
                     checkParams(decl.paramCnt)
                     block.add(s"calln \"$str\"")
                     block.add("cpop", null, "Ignore return value.")
-                case _ => throw error(s"Calling unknown function: $str")
+                case _ => throw error(s"Unknown function: $str")
 
         override def exitCallExpr(using ctx: MMP.CallExprContext): Unit =
             require(block.last().get.instruction.get == "cpop")

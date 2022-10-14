@@ -172,6 +172,16 @@ object MirMashCompilerTests:
       */
     @Test
     def baseFailTest(): Unit =
+        compileFail(
+            """
+              |def f(a, b, c) = return 1
+              |f(1, 2) // Wrong number of parameters.
+              |""".stripMargin)
+        compileFail(
+            """
+              |def f(a, b, c) = return 1
+              |f(1, 2, 3, 4) // Wrong number of parameters.
+              |""".stripMargin)
         compileFail("val 0x = 1 // Invalid variable name.")
         compileFail("val .x = 1 // Invalid variable name.")
         compileFail(

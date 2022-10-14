@@ -329,7 +329,6 @@ object MirAsmExecutable:
                     val res = x match
                         case list: StackList => listOp(list)
                         case map: StackMap => mapOp(map)
-                    push(x)
                     res
 
                 object NativeFunctions:
@@ -342,6 +341,7 @@ object MirAsmExecutable:
                         val msg = MirUtils.decapitalize(popStr())
                         val cond = popBool() == 0
                         if cond then throw error(s"Assertion - $msg")
+                    def ensure(): Unit = if popBool() == 0 then throw error(s"Condition failed.")
                     def concat(): Unit =
                         val s1 = pop().toString
                         val s2 = pop().toString
@@ -406,7 +406,11 @@ object MirAsmExecutable:
                     def add_list(): Unit =()
                     def has_all(): Unit =()
                     def has_any(): Unit =()
-                    def add(): Unit =()
+                    def add(): Unit =
+                        val v = pop()
+                        val list = popList()
+                        list += v
+                        push(list)
                     def prepend(): Unit =()
                     def update(): Unit =()
                     def remove(): Unit =()
@@ -707,6 +711,7 @@ object MirAsmExecutable:
                             case "to_double" => NativeFunctions.to_double()
 
                             case "assert" => NativeFunctions.assert()
+                            case "ensure" => NativeFunctions.ensure()
 
                             // List/Map functions.
                             case "new_list" => NativeFunctions.new_list()

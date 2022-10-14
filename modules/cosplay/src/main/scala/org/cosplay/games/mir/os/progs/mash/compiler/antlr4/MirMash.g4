@@ -99,6 +99,7 @@ expr
     | expr op=(AND | OR) expr # andOrExpr
     | defCall # callExpr
     | BQUOTE pipelineDecl BQUOTE # pipelineExecExpr
+    | list # listExpr
     | atom # atomExpr
     ;
 compoundExpr
@@ -114,7 +115,6 @@ atom
     : NULL
     | BOOL
     | STR // Number or variable access (var or val).
-    | list
     | qstring
     ;
 list

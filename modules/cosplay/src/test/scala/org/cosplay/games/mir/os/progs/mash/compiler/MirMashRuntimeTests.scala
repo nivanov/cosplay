@@ -67,14 +67,50 @@ object MirMashRuntimeTests:
     def nativeFunctionsTest(): Unit =
         executeOk(
             """
+              |native def new_list()
+              |native def add(list, v)
+              |native def size(list)
+              |native def ensure(cond)
+              |
+              |val list = new_list()
+              |add(list, 1)
+              |add(list, 2)
+              |ensure(size(list) == 2)
+              |""".stripMargin)
+        executeOk(
+            """
               |native def length(s)
-              |native def assert(cond, msg)
+              |native def uppercase(s)
+              |native def lowercase(s)
+              |native def trim(s)
+              |native def to_str(s)
+              |native def is_alpha(s)
+              |native def is_num(s)
+              |native def ensure(cond)
               |val s = "cosplay"
-              |assert(length(s) == 7, "Assertion.")
+              |ensure(to_str(123) == "123")
+              |ensure(length(s) == 7)
+              |ensure(uppercase("cosplay") == "COSPLAY")
+              |ensure(lowercase("cOsPlAy") == "cosplay")
+              |ensure(trim("    trim   ") == "trim")
+              |ensure(is_alpha("cosplay") == true)
+              |ensure(is_alpha("cosplay12") == false)
+              |ensure(is_num("12") == true)
+              |ensure(is_num("122323cosplay") == false)
               |""".stripMargin)
 
     @Test
     def okTest(): Unit =
+        executeOk(
+            """
+              |native def ensure(cond) // Check passing order of parameters.
+              |def f(a, b, c) = {
+              |     ensure(a == 1)
+              |     ensure(b == 2)
+              |     ensure(c == 3)
+              |}
+              |f(1, 2, 3)
+              |""".stripMargin)
         executeOk(
             """
               |native def assert(cond, msg)
@@ -144,16 +180,6 @@ object MirMashRuntimeTests:
 
     @Test
     def failTest(): Unit =
-        executeFail(
-            """
-              |def f(a, b, c) = return 1
-              |f(1, 2) // Wrong number of parameters.
-              |""".stripMargin)
-        executeFail(
-            """
-              |def f(a, b, c) = return 1
-              |f(1, 2, 3, 4) // Wrong number of parameters.
-              |""".stripMargin)
         executeFail(
             """
               |def fun() = val x = 0
