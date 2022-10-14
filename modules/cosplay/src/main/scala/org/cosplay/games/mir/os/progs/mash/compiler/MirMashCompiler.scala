@@ -286,19 +286,7 @@ class MirMashCompiler:
             s"${name.get}(${params.mkString(",")})"
         def getName: Option[String] = name
         def getParams: Seq[String] = params.toSeq
-
-    /**
-      *
-      * @param thenBlock Mandatory 'then' block.
-      * @param elseBlock Optional 'else' block.
-      */
     case class IfDecl(var thenBlock: AsmBlock, var elseBlock: Option[AsmBlock] = None)
-
-    /**
-      *
-      * @param listVar
-      * @param tmpVar
-      */
     case class ListDecl(listVar: String, tmpVar: String)
 
     /**
@@ -312,7 +300,8 @@ class MirMashCompiler:
         private var scope = MirMashScope() // Initially global scope.
         private val defLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
         private val defStack = mutable.Stack.empty[DefDecl]
-        private val loopStack = mutable.Stack.empty[String]
+        private val whileStack = mutable.Stack.empty[String]
+        private val forStack = mutable.Stack.empty[String]
         private val ifStack = mutable.Stack.empty[IfDecl]
         private val paramStack = mutable.Stack.empty[Int]
         private val listStack = mutable.Stack.empty[ListDecl]
@@ -381,14 +370,47 @@ class MirMashCompiler:
         override def enterWhileExprDecl(using ctx: MMP.WhileExprDeclContext): Unit =
             val lbl = genLabel()
             block.add(null, lbl)
-            loopStack.push(lbl)
+            whileStack.push(lbl)
 
         override def exitWhileDecl(using ctx: MMP.WhileDeclContext): Unit =
             require(lastBlock.isDefined)
-            require(loopStack.nonEmpty)
+            require(whileStack.nonEmpty)
             val body = lastBlock.get
-            body.add(s"jmp ${loopStack.pop}", null, "End of the loop body.")
+            body.add(s"jmp ${whileStack.pop}", null, "End of the loop body.")
             block.add(s"cjmp ${body.startLabel}")
+
+        override def exitForExprDecl(using ctx: MMP.ForExprDeclContext): Unit =
+            // 'for' loop spawns its own scope since it introduces the variable.
+            scope = scope.subScope
+            forStack.push(addVar(VAR, ctx.STR().getText, false).fqName)
+
+        override def exitForDecl(using ctx: MMP.ForDeclContext): Unit =
+            val loopVar = forStack.pop()
+            val body = lastBlock.get
+            val idxVar = genVar()
+            val listVar = genVar()
+            val startLbl = genLabel()
+            val iterLbl = genLabel()
+            val endLbl = genLabel()
+
+            block.add(s"pop $listVar")
+            block.add(s"let $idxVar, 0")
+            block.add(s"push $idxVar", startLbl, "'for' loop start.")
+            block.add(s"push $listVar")
+            block.add(s"calln \"size\"")
+            block.add(s"eq")
+            block.add(s"cjmp $endLbl")
+            block.add(s"push $listVar")
+            block.add(s"push $idxVar")
+            block.add(s"calln \"get\"")
+            block.add(s"pop $loopVar")
+            block.add(s"jmp ${body.startLabel}")
+            block.add(s"incv $idxVar", iterLbl, null)
+            block.add(s"jmp $startLbl", null, "'for' loop end.")
+            block.add(null, endLbl, null)
+
+            body.add(s"jmp $iterLbl")
+            toParentScope()
 
         override def exitDefDecl(using ctx: MMP.DefDeclContext): Unit =
             val funDeclHldr = funStackHead()
@@ -532,10 +554,12 @@ class MirMashCompiler:
                     decls.reverse.foreach(decl => block.add(s"pop ${decl.fqName}"))
                 case None => () // No-op.
 
+        private def toParentScope(): Unit = scope = scope.parent match
+            case Some(s) => s
+            case None => assert(false, "Attempt to exit global scope.")
+
         override def exitCompoundExpr(using ctx: MMP.CompoundExprContext): Unit =
-            scope = scope.parent match
-                case Some(s) => s
-                case None => assert(false, "Attempt to exit global scope.")
+            toParentScope()
             lastBlock = block.?
             block = block.parent match
                 case Some(p) => p
@@ -543,7 +567,8 @@ class MirMashCompiler:
 
         override def exitMash(using ctx: MMP.MashContext): Unit =
             require(defStack.isEmpty, "'def' stack is not empty.")
-            require(loopStack.isEmpty, "'while/for' stack is not empty.")
+            require(whileStack.isEmpty, "'while' stack is not empty.")
+            require(forStack.isEmpty, "'for' stack is not empty.")
             require(ifStack.isEmpty, "'if' stack is not empty.")
             require(paramStack.isEmpty, "'param' stack is not empty.")
             require(listStack.isEmpty, "'list' stack is not empty.")
@@ -596,15 +621,16 @@ class MirMashCompiler:
                     case StrKind.NUM => block.add(s"push $str")
                     case _ => throw error(s"Unknown identifier: $str")
 
-        private def addVar(kind: MirMashDeclarationKind, s: String)(using ctx: PRC): Unit =
+        private def addVar(kind: MirMashDeclarationKind, s: String, pop: Boolean = true)(using ctx: PRC): MirMashDecl =
             checkIdRegex(s, "variable")
             val strEnt = parseStr(s)
             val name = strEnt.str
             strEnt.kind match
                 case StrKind.UNDEF =>
                     val decl = MirMashDecl(kind, scope, name)
-                    block.add(s"pop ${decl.fqName}")
+                    if pop then block.add(s"pop ${decl.fqName}")
                     scope.addDecl(decl)
+                    decl
                 case _ => throw error(s"Duplicate declaration: $name")
 
         override def exitValDecl(using ctx: MMP.ValDeclContext): Unit = addVar(VAL, ctx.STR().getText)
