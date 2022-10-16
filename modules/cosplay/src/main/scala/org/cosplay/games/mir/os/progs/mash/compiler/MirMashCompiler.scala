@@ -52,7 +52,7 @@ import ParserRuleContext as PRC
   * @param asm Assembler instructions.
   * @param global Global scope.
   */
-case class MirMashModule(asm: IndexedSeq[MirMashAsm], global: MirMashScope):
+case class MirMashModule(asm: Seq[MirMashAsm], global: MirMashScope):
     require(global.isGlobal)
 
 /**
@@ -129,15 +129,14 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
     private val decls = mutable.HashMap.empty[String, MirMashDecl]
     private final val id = guid()
 
-    val namespace: String = {
+    val namespace: String =
         var x = parent
         var p = "$" + id
-        while (x.isDefined)
+        while x.isDefined do
             val xx = x.get
             p += "$" + xx.id
             x = xx.parent
         p
-    }
 
     def isGlobal: Boolean = parent.isEmpty
     def hasDecl(name: String): Boolean = decls.contains(name)
@@ -253,23 +252,10 @@ class MirMashCompiler:
 
     // Not totally unique, of course, but good enough.
     private val rndBase = UUID.randomUUID().hashCode().abs.toString
-    private var rndCnt = 0L
+    private var rndCnt = -1L
 
-    /**
-      *
-      */
-    private def genLabel(): String =
-        val lbl = s"L${rndBase}_$rndCnt"
-        rndCnt += 1
-        lbl
-
-    /**
-      *
-      */
-    private def genVar(): String =
-        val v = s"V${rndBase}_$rndCnt"
-        rndCnt += 1
-        v
+    private def genLabel(): String = { rndCnt += 1; s"L${rndBase}_$rndCnt" }
+    private def genVar(): String = { rndCnt += 1; s"V${rndBase}_$rndCnt" }
 
     /**
       *
@@ -281,9 +267,7 @@ class MirMashCompiler:
         def addParam(param: String): Unit = params += param
         def containsParam(param: String): Boolean = params.contains(param)
         def setName(name: String): Unit = this.name = name.?
-        def mkFullName: String =
-            require(name.isDefined)
-            s"${name.get}(${params.mkString(",")})"
+        def getFullName: String = s"${name.get}(${params.mkString(",")})"
         def getName: Option[String] = name
         def getParams: Seq[String] = params.toSeq
     case class IfDecl(var thenBlock: AsmBlock, var elseBlock: Option[AsmBlock] = None)
@@ -299,6 +283,8 @@ class MirMashCompiler:
         private var lastBlock: Option[AsmBlock] = None
         private var scope = MirMashScope() // Initially global scope.
         private val defLut = mutable.HashMap.empty[String/* Fully qualified name. */, String/* Asm label. */]
+
+        // State stacks.
         private val defStack = mutable.Stack.empty[DefDecl]
         private val whileStack = mutable.Stack.empty[String]
         private val forStack = mutable.Stack.empty[String]
@@ -309,9 +295,7 @@ class MirMashCompiler:
         /**
           *
           */
-        def getCompileModule: MirMashModule =
-            require(scope.isGlobal)
-            MirMashModule(block.linkAsm.toIndexedSeq, scope)
+        def getCompileModule: MirMashModule = MirMashModule(block.linkAsm, scope)
 
         /**
           *
@@ -442,8 +426,7 @@ class MirMashCompiler:
 
         override def enterListExpr(using ctx: MMP.ListExprContext): Unit =
             val listVar = genVar()
-            val tmpVar = genVar()
-            listStack.push(ListDecl(listVar, tmpVar))
+            listStack.push(ListDecl(listVar, genVar()))
             block.add(null, null, "List expression start.")
             block.add("calln \"new_list\"")
             block.add(s"pop $listVar", null, "Variable holding the list.")
@@ -545,12 +528,11 @@ class MirMashCompiler:
             block = block.subBlock(genLabel())
             defStack.headOption match
                 case Some(funDeclHldr) =>
-                    require(funDeclHldr.getName.isDefined)
-                    block.add(null, null, s"Function '${funDeclHldr.mkFullName}'.")
+                    block.add(null, null, s"Function '${funDeclHldr.getFullName}'.")
                     val decls = funDeclHldr.getParams.map(MirMashDecl(VAL, scope, _))
                     // Add parameters to the function scope.
                     decls.foreach(scope.addDecl)
-                    // Pop local variables for each parameter.
+                    // Pop local variables for each parameter (note reverse order).
                     decls.reverse.foreach(decl => block.add(s"pop ${decl.fqName}"))
                 case None => () // No-op.
 
@@ -572,6 +554,7 @@ class MirMashCompiler:
             require(ifStack.isEmpty, "'if' stack is not empty.")
             require(paramStack.isEmpty, "'param' stack is not empty.")
             require(listStack.isEmpty, "'list' stack is not empty.")
+            require(scope.isGlobal)
             block.add("exit")
 
         override def enterMash(using ctx: MMP.MashContext): Unit =
@@ -580,8 +563,7 @@ class MirMashCompiler:
             block.add(null, null, "-" * hdr.length)
 
         override def exitReturnDecl(using ctx: MMP.ReturnDeclContext): Unit =
-            // TODO: ensure that functions have return value when used in expressions.
-            if defStack.isEmpty then throw error(s"'return' can only be used inside of function body.")
+            if defStack.isEmpty then throw error(s"'return' can only be used inside of the function body.")
             block.add("ret")
 
         override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit = block.add(if ctx.MINUS() != null then "neg" else "not")
@@ -593,25 +575,24 @@ class MirMashCompiler:
             else if ctx.LTEQ() != null then block.add("lte")
             else if ctx.GT() != null then block.add("gt")
             else block.add("gte")
-
         override def exitMultDivModExpr(using ctx: MMP.MultDivModExprContext): Unit =
             if ctx.MOD() != null then block.add("mod")
             else if ctx.MULT() != null then block.add("mul")
             else block.add("div")
 
         /**
-          * Gets dequoted string processing variable expansion for double-quoted strings.
+          * Gets dequoted string while processing variable expansion for double-quoted strings.
           *
           * @param qs Double or single quoted string.
           */
-        private def quotedString(qs: String): String =
+        private def dequote(qs: String): String =
             // TODO: handle variable expansion for double-quoted strings.
-            MirUtils.dequote(if qs.startsWith("\"") then qs else qs)
+            MirUtils.dequote(qs)
 
         override def exitAtom(using ctx: MMP.AtomContext): Unit =
             if ctx.NULL() != null then block.add("push null")
             else if ctx.BOOL() != null then block.add(s"push ${if ctx.getText == "true" then 1 else 0}")
-            else if ctx.qstring() != null then block.add(s"push \"${quotedString(ctx.qstring().getText)}\"")
+            else if ctx.qstring() != null then block.add(s"push \"${dequote(ctx.qstring().getText)}\"")
             else
                 require(ctx.STR() != null)
                 val strEnt = parseStr(ctx.STR().getText)

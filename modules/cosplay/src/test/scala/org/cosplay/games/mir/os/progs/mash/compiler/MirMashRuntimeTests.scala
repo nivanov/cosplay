@@ -96,7 +96,7 @@ object MirMashRuntimeTests extends MirMashNatives:
                |sin(0.5)
                |val x = rand()
                |val x1 = rand_int(10, 20)
-               | _println("GUID: " + guid())
+               |_println("GUID: " + guid())
                |
                |val map = map_from([
                |    [1, "1"],
