@@ -83,6 +83,9 @@ object MirMashRuntimeTests extends MirMashNatives:
                |ensure(size([1, 2, 3, true, false]) == 5)
                |ensure(size([1, 2, 3, [true, false]]) == 4)
                |ensure(year() == 1997)
+               |ensure(to_str(1) == "1")
+               |ensure(to_int("123") == 123)
+               |ensure(to_double("1.2") == 1.2)
                |hour()
                |minute()
                |second()
@@ -94,6 +97,15 @@ object MirMashRuntimeTests extends MirMashNatives:
                |val x = rand()
                |val x1 = rand_int(10, 20)
                | _println("GUID: " + guid())
+               |
+               |val map = map_from([
+               |    [1, "1"],
+               |    [2, "2"],
+               |    ["3", 3]
+               |])
+               |ensure(get(map, "1") == "1")
+               |ensure(get(map, "2") == "2")
+               |ensure(get(map, "3") == 3)
                |""".stripMargin)
         executeOk(
             s"""

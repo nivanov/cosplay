@@ -40,7 +40,9 @@ trait MirMashNatives:
           | native def uppercase(s)
           | native def lowercase(s)
           | native def trim(s)
-          | native def to_str(s)
+          | native def to_str(x)
+          | native def to_int(s)
+          | native def to_double(s)
           | native def is_alpha(s)
           | native def is_num(s)
           | native def ensure(cond)
@@ -107,6 +109,7 @@ trait MirMashNatives:
           | native def stddev(d)
           | native def pow(d, i)
           | native def hypot(d)
+          | native def map_from(list)
           |""".stripMargin
 
 

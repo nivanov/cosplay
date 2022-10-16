@@ -31,6 +31,7 @@ import java.time.*
 import java.time.format.*
 import java.time.temporal.*
 import java.util.Locale
+import scala.util.*
 
 /*
    _________            ______________
@@ -266,9 +267,10 @@ object MirAsmExecutable:
                         case x if x == null => stack.push(null)
                         case d: Long => stack.push(d)
                         case d: Double => stack.push(d)
+                        case d: Float => stack.push(d.toDouble) // Convert to 'double'.
                         case s: String => stack.push(s)
                         case b: Boolean => stack.push(if b then 1L else 0L)
-                        case d: Int => stack.push(d.toLong)
+                        case d: Int => stack.push(d.toLong) // Convert to 'long'.
                         case list: StackList => stack.push(list)
                         case map: StackMap => stack.push(map)
                         case _ => assert(false, s"Invalid asm stack value type: $v")
@@ -409,8 +411,12 @@ object MirAsmExecutable:
                     def contains(): Unit = ()
                     def substr(): Unit = ()
                     def replace(): Unit = ()
-                    def to_int(): Unit = ()
-                    def to_double(): Unit = ()
+                    def to_int(): Unit = Try(popStr().toInt).match
+                        case Success(i) => push(i)
+                        case Failure(e) => throw e
+                    def to_double(): Unit = Try(popStr().toDouble).match
+                        case Success(d) => push(d)
+                        case Failure(e) => throw e
                     def now(): Unit = push(MirClock.now())
                     def year(): Unit = push(localDateTime().getYear)
                     def month(): Unit = push(localDateTime().getMonthValue)
@@ -428,6 +434,18 @@ object MirAsmExecutable:
                     def format_datetime(): Unit = push(MirClock.formatDateTime(popLong()))
                     def new_list(): Unit = push(mutable.ArrayBuffer.empty[Any])
                     def new_map(): Unit = push(mutable.HashMap.empty[String, Any])
+                    def map_from(): Unit =
+                        val map = mutable.HashMap.empty[String, Any]
+                        val kvs = popList()
+                        for kv <- kvs do
+                            kv match
+                                case list: StackList =>
+                                    if list.size != 2 then throw error(s"Expecting 2-element list, actual size is ${list.size}.")
+                                    val key = list.head.toString
+                                    val value = list.last
+                                    map.put(key, value)
+                                case x => throw error(s"Expecting 2-element list ([key, value]]): $x")
+                        push(map)
                     def clear(): Unit = listMapOp(_.clear(), _.clear())
                     def get(): Unit =
                         val idxOrKey = pop()
@@ -513,7 +531,7 @@ object MirAsmExecutable:
                     def euler(): Unit = push(math.E)
                     def min(): Unit =()
                     def max(): Unit =()
-                    def abs(): Unit = ()
+                    def abs(): Unit = push(math.abs(popLong()))
                     def stddev(): Unit =()
                     def pow(): Unit =()
                     def hypot(): Unit =()
@@ -795,6 +813,7 @@ object MirAsmExecutable:
                                 // List/Map functions.
                                 case "new_list" => NativeFunctions.new_list()
                                 case "new_map" => NativeFunctions.new_map()
+                                case "map_from" => NativeFunctions.map_from()
                                 case "clear" => NativeFunctions.clear()
                                 case "get" => NativeFunctions.get()
                                 case "copy" => NativeFunctions.copy()
