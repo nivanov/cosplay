@@ -83,6 +83,15 @@ object MirMashRuntimeTests extends MirMashNatives:
                |ensure(size([1, 2, 3, true, false]) == 5)
                |ensure(size([1, 2, 3, [true, false]]) == 4)
                |ensure(year() == 1997)
+               |hour()
+               |minute()
+               |second()
+               |week_of_month()
+               |week_of_year()
+               |quarter()
+               |val x = rand()
+               |val x1 = rand_int(10, 20)
+               | _println("GUID: " + guid())
                |""".stripMargin)
         executeOk(
             s"""
