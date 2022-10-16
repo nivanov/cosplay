@@ -24,9 +24,13 @@ import scala.collection.immutable
 import scala.collection.mutable
 import MirAsmInstruction.*
 import org.cosplay.games.mir.*
-
 import org.apache.commons.collections4.CollectionUtils
 import org.apache.commons.lang3.StringUtils
+
+import java.time.*
+import java.time.format.*
+import java.time.temporal.*
+import java.util.Locale
 
 /*
    _________            ______________
@@ -257,14 +261,13 @@ object MirAsmExecutable:
                         case d: Long => push(d + v)
                         case x => throw wrongStack(x, "integer")
 
-                def pushBool(b: Boolean): Unit = push(if b then 1L else 0L)
-
                 def push(v: Any): Unit =
                     v match
                         case x if x == null => stack.push(null)
                         case d: Long => stack.push(d)
                         case d: Double => stack.push(d)
                         case s: String => stack.push(s)
+                        case b: Boolean => stack.push(if b then 1L else 0L)
                         case d: Int => stack.push(d.toLong)
                         case list: StackList => stack.push(list)
                         case map: StackMap => stack.push(map)
@@ -309,8 +312,8 @@ object MirAsmExecutable:
                         case s: String => push(s"$s${right.toString}")
                         case _ => throw wrongStack(left, "numeric or string")
 
-                def and(): Unit = pushBool(popTrue() && popTrue())
-                def or(): Unit = pushBool(popTrue() || popTrue())
+                def and(): Unit = push(popTrue() && popTrue())
+                def or(): Unit = push(popTrue() || popTrue())
 
                 //noinspection DuplicatedCode
                 def multiply(): Unit =
@@ -350,8 +353,28 @@ object MirAsmExecutable:
                     res
 
                 object NativeFunctions:
+                    private def localDateTime(): LocalDateTime = LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(MirClock.now()), ZoneOffset.UTC
+                    )
+
+                    private final val WEEK_OF_YEAR = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()
+                    private final val WEEK_OF_MONTH = WeekFields.of(Locale.getDefault()).weekOfMonth()
+
                     def print(): Unit = ctx.getExecContext.out.print(pop().toString)
                     def println(): Unit = ctx.getExecContext.out.println(pop().toString)
+                    def guid(): Unit = push(CPRand.guid)
+                    def guid6(): Unit = push(CPRand.guid6)
+                    def rand(): Unit = push(CPRand.randDouble())
+                    def rand_letter(): Unit = push(CPRand.randLetter().toString)
+                    def rand_low_letter(): Unit = push(CPRand.randLoLetter().toString)
+                    def rand_up_letter(): Unit = push(CPRand.randUpLetter().toString)
+                    def rand_digit(): Unit = push(CPRand.randDigit().toString)
+                    def rand_symbol(): Unit = push(CPRand.randSymbol().toString)
+                    def coin_flip(): Unit = push(CPRand.coinFlip())
+                    def rand_int(): Unit =
+                        val from = popLong()
+                        val to = popLong()
+                        push(CPRand.between(from, to))
                     def to_str(): Unit = push(pop().toString)
                     def length(): Unit = push(popStr().length.toLong)
                     def assert(): Unit =
@@ -367,17 +390,17 @@ object MirAsmExecutable:
                     def regex(): Unit = ()
                     def uppercase(): Unit = push(popStr().toUpperCase)
                     def lowercase(): Unit = push(popStr().toLowerCase)
-                    def is_alpha(): Unit = pushBool(StringUtils.isAlpha(popStr()))
-                    def is_num(): Unit = pushBool(StringUtils.isNumeric(popStr()))
-                    def is_alphanum(): Unit = pushBool(StringUtils.isAlphanumeric(popStr()))
-                    def is_whitespace(): Unit = pushBool(StringUtils.isWhitespace(popStr()))
-                    def is_alphaspace(): Unit = pushBool(StringUtils.isAlphaSpace(popStr()))
-                    def is_numspace(): Unit = pushBool(StringUtils.isNumericSpace(popStr()))
-                    def is_alphanumspace(): Unit = pushBool(StringUtils.isAlphanumericSpace(popStr()))
+                    def is_alpha(): Unit = push(StringUtils.isAlpha(popStr()))
+                    def is_num(): Unit = push(StringUtils.isNumeric(popStr()))
+                    def is_alphanum(): Unit = push(StringUtils.isAlphanumeric(popStr()))
+                    def is_whitespace(): Unit = push(StringUtils.isWhitespace(popStr()))
+                    def is_alphaspace(): Unit = push(StringUtils.isAlphaSpace(popStr()))
+                    def is_numspace(): Unit = push(StringUtils.isNumericSpace(popStr()))
+                    def is_alphanumspace(): Unit = push(StringUtils.isAlphanumericSpace(popStr()))
                     def split(): Unit =
                         val sepRegex = popStr()
                         val str = popStr()
-                        val list = mutable.ArrayBuffer.from(str.split(sepRegex))
+                        val list: StackList = mutable.ArrayBuffer.from(str.split(sepRegex))
                         push(list)
                     def split_trim(): Unit = ()
                     def trim(): Unit = push(popStr().trim())
@@ -388,21 +411,21 @@ object MirAsmExecutable:
                     def replace(): Unit = ()
                     def to_int(): Unit = ()
                     def to_double(): Unit = ()
-                    def now(): Unit = ()
-                    def year(): Unit = ()
-                    def month(): Unit = ()
-                    def day_of_month(): Unit = ()
-                    def day_of_week(): Unit = ()
-                    def day_of_year(): Unit = ()
-                    def hour(): Unit = ()
-                    def minute(): Unit = ()
-                    def second(): Unit = ()
-                    def week_of_month(): Unit = ()
-                    def week_of_year(): Unit = ()
-                    def quarter(): Unit = ()
-                    def format_date(): Unit = ()
-                    def format_time(): Unit = ()
-                    def format_datetime(): Unit = ()
+                    def now(): Unit = push(MirClock.now())
+                    def year(): Unit = push(localDateTime().getYear)
+                    def month(): Unit = push(localDateTime().getMonthValue)
+                    def day_of_month(): Unit = push(localDateTime().getDayOfMonth)
+                    def day_of_week(): Unit = push(localDateTime().getDayOfWeek.getValue)
+                    def day_of_year(): Unit = push(localDateTime().getDayOfYear)
+                    def hour(): Unit = push(localDateTime().getHour)
+                    def minute(): Unit = push(localDateTime().getMinute)
+                    def second(): Unit = push(localDateTime().getSecond)
+                    def week_of_month(): Unit = push(localDateTime().get(WEEK_OF_MONTH))
+                    def week_of_year(): Unit = push(localDateTime().get(WEEK_OF_YEAR))
+                    def quarter(): Unit = push(localDateTime().get(IsoFields.QUARTER_OF_YEAR))
+                    def format_date(): Unit = push(MirClock.formatDate(popLong()))
+                    def format_time(): Unit = push(MirClock.formatTime(popLong()))
+                    def format_datetime(): Unit = push(MirClock.formatDateTime(popLong()))
                     def new_list(): Unit = push(mutable.ArrayBuffer.empty[Any])
                     def new_map(): Unit = push(mutable.HashMap.empty[String, Any])
                     def clear(): Unit = listMapOp(_.clear(), _.clear())
@@ -431,12 +454,14 @@ object MirAsmExecutable:
                     def index_of(): Unit =()
                     def index_of_start(): Unit =()
                     def last_index_of(): Unit =()
-                    def is_empty(): Unit = pushBool(listMapOp(_.isEmpty, _.isEmpty))
-                    def non_empty(): Unit = pushBool(listMapOp(_.nonEmpty, _.nonEmpty))
+                    def is_empty(): Unit = push(listMapOp(_.isEmpty, _.isEmpty))
+                    def non_empty(): Unit = push(listMapOp(_.nonEmpty, _.nonEmpty))
                     def mk_string(): Unit =()
                     def distinct(): Unit =()
                     def add_list(): Unit =()
-                    def has_all(): Unit =()
+                    def has_all(): Unit =
+                        val listToFind = popList()
+                        val listToSearch = popList()
                     def has_any(): Unit =()
                     def add(): Unit =
                         val v = pop()
@@ -507,12 +532,12 @@ object MirAsmExecutable:
                 def ltv(id: String, v: Any): Unit =
                     getVar(id) match
                         case d2: Long => v match
-                            case d1: Long => pushBool(d2 < d1)
-                            case d1: Double => pushBool(d2 < d1)
+                            case d1: Long => push(d2 < d1)
+                            case d1: Double => push(d2 < d1)
                             case _ => wrongParam(1, "numeric")
                         case d2: Double => v match
-                            case d1: Long => pushBool(d2 < d1)
-                            case d1: Double => pushBool(d2 < d1)
+                            case d1: Long => push(d2 < d1)
+                            case d1: Double => push(d2 < d1)
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
@@ -520,12 +545,12 @@ object MirAsmExecutable:
                 def ltev(id: String, v: Any): Unit =
                     getVar(id) match
                         case d2: Long => v match
-                            case d1: Long => pushBool(d2 <= d1)
-                            case d1: Double => pushBool(d2 <= d1)
+                            case d1: Long => push(d2 <= d1)
+                            case d1: Double => push(d2 <= d1)
                             case _ => wrongParam(1, "numeric")
                         case d2: Double => v match
-                            case d1: Long => pushBool(d2 <= d1)
-                            case d1: Double => pushBool(d2 <= d1)
+                            case d1: Long => push(d2 <= d1)
+                            case d1: Double => push(d2 <= d1)
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
@@ -533,12 +558,12 @@ object MirAsmExecutable:
                 def gtv(id: String, v: Any): Unit =
                     getVar(id) match
                         case d2: Long => v match
-                            case d1: Long => pushBool(d2 > d1)
-                            case d1: Double => pushBool(d2 > d1)
+                            case d1: Long => push(d2 > d1)
+                            case d1: Double => push(d2 > d1)
                             case _ => wrongParam(1, "numeric")
                         case d2: Double => v match
-                            case d1: Long => pushBool(d2 > d1)
-                            case d1: Double => pushBool(d2 > d1)
+                            case d1: Long => push(d2 > d1)
+                            case d1: Double => push(d2 > d1)
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
@@ -546,12 +571,12 @@ object MirAsmExecutable:
                 def gtev(id: String, v: Any): Unit =
                     getVar(id) match
                         case d2: Long => v match
-                            case d1: Long => pushBool(d2 >= d1)
-                            case d1: Double => pushBool(d2 >= d1)
+                            case d1: Long => push(d2 >= d1)
+                            case d1: Double => push(d2 >= d1)
                             case _ => wrongParam(1, "numeric")
                         case d2: Double => v match
-                            case d1: Long => pushBool(d2 >= d1)
-                            case d1: Double => pushBool(d2 >= d1)
+                            case d1: Long => push(d2 >= d1)
+                            case d1: Double => push(d2 >= d1)
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
@@ -559,12 +584,12 @@ object MirAsmExecutable:
                 def lt(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
-                            case d1: Long => pushBool(d1 < d2)
-                            case d1: Double => pushBool(d1 < d2)
+                            case d1: Long => push(d1 < d2)
+                            case d1: Double => push(d1 < d2)
                             case _ => wrongStack(v1, "numeric")
                         case d2: Double => v1 match
-                            case d1: Long => pushBool(d1 < d2)
-                            case d1: Double => pushBool(d1 < d2)
+                            case d1: Long => push(d1 < d2)
+                            case d1: Double => push(d1 < d2)
                             case _ => wrongStack(v1, "numeric")
                         case _ => wrongStack(v2, "numeric")
 
@@ -572,12 +597,12 @@ object MirAsmExecutable:
                 def gt(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
-                            case d1: Long => pushBool(d1 > d2)
-                            case d1: Double => pushBool(d1 > d2)
+                            case d1: Long => push(d1 > d2)
+                            case d1: Double => push(d1 > d2)
                             case _ => wrongStack(v1, "numeric")
                         case d2: Double => v1 match
-                            case d1: Long => pushBool(d1 > d2)
-                            case d1: Double => pushBool(d1 > d2)
+                            case d1: Long => push(d1 > d2)
+                            case d1: Double => push(d1 > d2)
                             case _ => wrongStack(v1, "numeric")
                         case _ => wrongStack(v2, "numeric")
 
@@ -585,12 +610,12 @@ object MirAsmExecutable:
                 def gte(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
-                            case d1: Long => pushBool(d1 >= d2)
-                            case d1: Double => pushBool(d1 >= d2)
+                            case d1: Long => push(d1 >= d2)
+                            case d1: Double => push(d1 >= d2)
                             case _ => wrongStack(v1, "numeric")
                         case d2: Double => v1 match
-                            case d1: Long => pushBool(d1 >= d2)
-                            case d1: Double => pushBool(d1 >= d2)
+                            case d1: Long => push(d1 >= d2)
+                            case d1: Double => push(d1 >= d2)
                             case _ => wrongStack(v1, "numeric")
                         case _ => wrongStack(v2, "numeric")
 
@@ -598,12 +623,12 @@ object MirAsmExecutable:
                 def lte(v2: Any, v1: Any): Unit =
                     v2 match
                         case d2: Long => v1 match
-                            case d1: Long => pushBool(d1 <= d2)
-                            case d1: Double => pushBool(d1 <= d2)
+                            case d1: Long => push(d1 <= d2)
+                            case d1: Double => push(d1 <= d2)
                             case _ => wrongStack(v1, "numeric")
                         case d2: Double => v1 match
-                            case d1: Long => pushBool(d1 <= d2)
-                            case d1: Double => pushBool(d1 <= d2)
+                            case d1: Long => push(d1 <= d2)
+                            case d1: Double => push(d1 <= d2)
                             case _ => wrongStack(v1, "numeric")
                         case _ => wrongStack(v2, "numeric")
 
@@ -633,12 +658,12 @@ object MirAsmExecutable:
                         case "subv" => checkParamCount(2, 2); addSubVar(-1)
                         case "neg" => checkParamCount(0, 0); neg()
                         case "negv" => checkParamCount(1, 1); negv()
-                        case "not" => checkParamCount(0, 0); pushBool(!popTrue())
+                        case "not" => checkParamCount(0, 0); push(!popTrue())
                         case "notv" => checkParamCount(1, 1); notv()
                         case "let" => checkParamCount(2, 2); ctx.setVar(varParam(0), anyParam(1))
                         case "dup" => checkParamCount(0, 0); if stack.nonEmpty then push(stack.head)
-                        case "eq" => checkParamCount(0, 0); pushBool(pop() == pop())
-                        case "neq" => checkParamCount(0, 0); pushBool(pop() != pop())
+                        case "eq" => checkParamCount(0, 0); push(pop() == pop())
+                        case "neq" => checkParamCount(0, 0); push(pop() != pop())
                         case "lt" => checkParamCount(0, 0); lt(pop(), pop())
                         case "lte" => checkParamCount(0, 0); lte(pop(), pop())
                         case "gt" => checkParamCount(0, 0); gt(pop(), pop())
@@ -651,10 +676,10 @@ object MirAsmExecutable:
                         case "ltev" => checkParamCount(2, 2); ltev(varParam(0), anyParam(1))
                         case "gtv" => checkParamCount(2, 2); gtv(varParam(0), anyParam(1))
                         case "gtev" => checkParamCount(2, 2); gtev(varParam(0), anyParam(1))
-                        case "eqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) == anyParam(1))
-                        case "neqv" => checkParamCount(2, 2); pushBool(getVar(varParam(0)) != anyParam(1))
-                        case "eqp" => checkParamCount(1, 1); pushBool(anyParam(0) == pop())
-                        case "neqp" => checkParamCount(1, 1); pushBool(anyParam(0) != pop())
+                        case "eqv" => checkParamCount(2, 2); push(getVar(varParam(0)) == anyParam(1))
+                        case "neqv" => checkParamCount(2, 2); push(getVar(varParam(0)) != anyParam(1))
+                        case "eqp" => checkParamCount(1, 1); push(anyParam(0) == pop())
+                        case "neqp" => checkParamCount(1, 1); push(anyParam(0) != pop())
                         case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
                         case "cbrk" => checkParamCount(0, 1); if popFalse() then throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
                         case "cbrkv" => checkParamCount(1, 2); if getVar(varParam(0)) == 0L then throw error(if paramsCnt == 2 then strOrVarParam(1) else "Aborted")
@@ -692,6 +717,18 @@ object MirAsmExecutable:
                                 case "format_date" => NativeFunctions.format_date()
                                 case "format_time" => NativeFunctions.format_time()
                                 case "format_datetime" => NativeFunctions.format_datetime()
+
+                                // Misc. functions.
+                                case "rand" => NativeFunctions.rand()
+                                case "rand_int" => NativeFunctions.rand_int()
+                                case "guid" => NativeFunctions.guid()
+                                case "guid6" => NativeFunctions.guid6()
+                                case "rand_letter" => NativeFunctions.rand_letter()
+                                case "rand_low_letter" => NativeFunctions.rand_low_letter()
+                                case "rand_up_letter" => NativeFunctions.rand_up_letter()
+                                case "rand_digit" => NativeFunctions.rand_digit()
+                                case "rand_symbol" => NativeFunctions.rand_symbol()
+                                case "coin_flip" => NativeFunctions.coin_flip()
 
                                 // Math functions.
                                 case "ceil" => NativeFunctions.ceil()

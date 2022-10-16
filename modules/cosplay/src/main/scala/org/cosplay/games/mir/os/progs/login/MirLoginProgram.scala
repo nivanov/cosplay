@@ -87,7 +87,7 @@ class MirLoginProgram extends MirExecutable:
 
         stateMgr.state.lastLoginTstamp = MirClock.now()
 
-        con.println(s"Last login ${MirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
+        con.println(s"Last login ${MirClock.formatDateTime(lastLoginTstamp)} on $tty.")
         con.println(s"Welcome back, ${ply.crew.camelFirstName}.")
 
         0

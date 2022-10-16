@@ -38,29 +38,8 @@ import org.junit.jupiter.api.*
 /**
   *
   */
-object MirMashRuntimeTests:
+object MirMashRuntimeTests extends MirMashNatives:
     MirClock.init(0)
-
-    private final val NATIVE_DECLS =
-        """
-          | native def new_list()
-          | native def add(list, v)
-          | native def size(list)
-          | native def length(s)
-          | native def uppercase(s)
-          | native def lowercase(s)
-          | native def trim(s)
-          | native def to_str(s)
-          | native def is_alpha(s)
-          | native def is_num(s)
-          | native def ensure(cond)
-          | native def split(str, regex)
-          | native def remove(list, idx)
-          | native def take(list, n)
-          | native def take_right(list, n)
-          | native def get(listOrMap, idxOrKey)
-          | native def _println(s)
-          |""".stripMargin
 
     /**
       *
@@ -103,6 +82,7 @@ object MirMashRuntimeTests:
                |ensure(size(list) == 2)
                |ensure(size([1, 2, 3, true, false]) == 5)
                |ensure(size([1, 2, 3, [true, false]]) == 4)
+               |ensure(year() == 1997)
                |""".stripMargin)
         executeOk(
             s"""

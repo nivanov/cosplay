@@ -91,7 +91,7 @@ object MirClock:
     /**
       * @param ms
       */
-    def formatTimeDate(ms: Long): String = DATETIME_FMT.format(new Date(ms))
+    def formatDateTime(ms: Long): String = DATETIME_FMT.format(new Date(ms))
 
     /**
       * @param ms
