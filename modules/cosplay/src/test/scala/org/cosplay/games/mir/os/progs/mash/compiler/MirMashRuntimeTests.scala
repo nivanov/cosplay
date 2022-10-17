@@ -69,7 +69,7 @@ object MirMashRuntimeTests extends MirMashNatives:
             s"""
               |$NATIVE_DECLS
               |
-              |val list = new_list()
+              |set list = new_list()
               |add(list, 1)
               |add(list, 2)
               |ensure(size(list) == 2)
@@ -78,7 +78,7 @@ object MirMashRuntimeTests extends MirMashNatives:
             s"""
                |$NATIVE_DECLS
                |
-               |val list = [1, 2]
+               |set list = [1, 2]
                |ensure(size(list) == 2)
                |ensure(size([1, 2, 3, true, false]) == 5)
                |ensure(size([1, 2, 3, [true, false]]) == 4)
@@ -229,6 +229,12 @@ object MirMashRuntimeTests extends MirMashNatives:
 
     @Test
     def failTest(): Unit =
+        executeFail(
+            """
+              |set x = 10
+              |unset x
+              |_println(x) // Should fail as variable is unset.
+              |""".stripMargin)
         executeFail(
             s"""
                |$NATIVE_DECLS

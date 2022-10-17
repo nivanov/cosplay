@@ -42,6 +42,7 @@ decl
     : varDecl
     | valDecl
     | delimDecl
+    | unsetDecl
     | defDecl
     | natDefDecl
     | whileDecl
@@ -54,6 +55,7 @@ decl
     | pipelineDecl
     | defCall
     ;
+unsetDecl: UNSET STR;
 includeDecl: INCLUDE qstring;
 delimDecl: SCOL;
 assignDecl: STR ASSIGN expr;
@@ -73,7 +75,7 @@ defCall: STR LPAR callParamList? RPAR;
 returnDecl: RETURN expr?;
 aliasDecl: ALIAS STR ASSIGN qstring;
 valDecl: VAL STR ASSIGN expr;
-varDecl: VAR STR ASSIGN expr;
+varDecl: (VAR|SET) STR ASSIGN expr;
 defDecl: defNameDecl LPAR funParamList? RPAR ASSIGN compoundExpr;
 defNameDecl: DEF STR;
 natDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
@@ -138,6 +140,8 @@ ALIAS: 'alias';
 INCLUDE: 'include';
 VAL: 'val';
 VAR: 'var';
+SET: 'set';
+UNSET: 'unset';
 DEF: 'def';
 NATIVE: 'native';
 RETURN: 'return';

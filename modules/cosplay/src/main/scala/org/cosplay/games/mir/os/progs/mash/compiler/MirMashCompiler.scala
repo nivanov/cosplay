@@ -141,6 +141,7 @@ case class MirMashScope(parent: Option[MirMashScope] = None):
     def isGlobal: Boolean = parent.isEmpty
     def hasDecl(name: String): Boolean = decls.contains(name)
     def addDecl(decl: MirMashDecl): Unit = decls += decl.name -> decl
+    def removeDecl(decl: MirMashDecl): Unit = decls -= decl.name
     def getDecl(name: String): Option[MirMashDecl] = decls.get(name)
     def getDecls: Seq[MirMashDecl] = decls.values.toSeq
     def subScope: MirMashScope =
@@ -601,6 +602,13 @@ class MirMashCompiler:
                     case StrKind.VAL | StrKind.VAR => block.add(s"push ${strEnt.decl.get.fqName}")
                     case StrKind.NUM => block.add(s"push $str")
                     case _ => throw error(s"Unknown identifier: $str")
+
+        override def exitUnsetDecl(using ctx: MMP.UnsetDeclContext): Unit =
+            val strEnt = parseStr(ctx.STR().getText)
+            val name = strEnt.str
+            strEnt.kind match
+                case StrKind.VAR | StrKind.VAL | StrKind.ALS => scope.removeDecl(strEnt.decl.get)
+                case _ => throw error(s"Only existing variables or aliases can be unset: $name")
 
         private def addVar(kind: MirMashDeclarationKind, s: String, pop: Boolean = true)(using ctx: PRC): MirMashDecl =
             checkIdRegex(s, "variable")

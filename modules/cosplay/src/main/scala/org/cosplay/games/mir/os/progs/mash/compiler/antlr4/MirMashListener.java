@@ -1,4 +1,4 @@
-// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4/MirMash.g4 by ANTLR 4.10.1
+// Generated from C:/Users/Nikita Ivanov/Documents/GitHub/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/mash/compiler/antlr4\MirMash.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.mash.compiler.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -37,6 +37,16 @@ public interface MirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDecl(MirMashParser.DeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#unsetDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnsetDecl(MirMashParser.UnsetDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#unsetDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnsetDecl(MirMashParser.UnsetDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#includeDecl}.
 	 * @param ctx the parse tree
