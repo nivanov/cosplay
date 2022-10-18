@@ -227,7 +227,8 @@ case class MirMashAsm(
   */
 object MirMashCompiler:
     final val VER = "1.0.1"
-    final val VAR_REGEX = Pattern.compile("^[a-zA-Z_][a-zA-Z0-9_]*$");
+    final val VAR_REGEX = Pattern.compile("^[a-zA-Z_][a-zA-Z0-9_]*$")
+    final val STR_VAR_REGEX = Pattern.compile("[^\\\\]?\\$(\\$|#|!|@|\\*|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)")
 
     /**
       *
@@ -586,9 +587,15 @@ class MirMashCompiler:
           *
           * @param qs Double or single quoted string.
           */
-        private def dequote(qs: String): String =
+        private def dequote(qs: String)(using ctx: PRC): String =
             // TODO: handle variable expansion for double-quoted strings.
-            MirUtils.dequote(qs)
+            if qs.startsWith("'") && qs.endsWith("'") then MirUtils.dequote(qs)
+            else if qs.startsWith("\"") && qs.endsWith("\"") then
+                val s = MirUtils.dequote(qs)
+                val m = STR_VAR_REGEX.matcher(s)
+                s
+            else
+                throw error(s"Uneven quotes in: $qs")
 
         override def exitAtom(using ctx: MMP.AtomContext): Unit =
             if ctx.NULL() != null then block.add("push null")
