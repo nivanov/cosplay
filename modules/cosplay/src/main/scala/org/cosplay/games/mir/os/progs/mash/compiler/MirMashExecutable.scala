@@ -17,6 +17,7 @@
 
 package org.cosplay.games.mir.os.progs.mash.compiler
 
+import org.cosplay.games.mir.MirUtils
 import org.cosplay.games.mir.os.progs.mash.*
 
 /*
@@ -53,12 +54,8 @@ object MirMashExecutable:
                 case e: MirAsmException =>
                     val synopsis = e.getSynopsis.trim
                     e.getDebug match
-                        case Some(dbg) =>
-                            // Remove '.' from enf of synopsis, if any.
-                            val s = if synopsis.endsWith(".") then synopsis.substring(0, synopsis.length - 1) else synopsis
-                            throw new MirMashException(s"$s - at line ${dbg.line} in ${dbg.origin}.")
-                        case None =>
-                            throw new MirMashException(if synopsis.endsWith(".") then synopsis else s"$synopsis.")
+                        case Some(dbg) => throw new MirMashException(s"${MirUtils.removeDot(synopsis)} - at line ${dbg.line} in ${dbg.origin}.")
+                        case None => throw new MirMashException(MirUtils.addDot(synopsis))
 
 /**
   *

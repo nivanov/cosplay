@@ -97,9 +97,7 @@ object MirAsmExecutable:
                     case x if x == null => "null"
                     case _: Any => act.toString
 
-                def removeDot(s: String): String = if s.endsWith(".") then s.substring(0, s.length - 1) else s
-
-                def error(errMsg: String): MAE = new MAE(errMsg, s"${removeDot(errMsg.trim)} - at line ${instr.line} in '${instr.getSourceCode(false)}'.", instr.dbg)
+                def error(errMsg: String): MAE = new MAE(errMsg, s"${MirUtils.removeDot(errMsg.trim)} - at line ${instr.line} in '${instr.getSourceCode(false)}'.", instr.dbg)
                 def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected asm stack value '${formatActual(act)}' - expecting $exp")
                 def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid asm ${nth(idx)} parameter - expecting $exp")
                 def wrongVar(id: String, exp: String): MAE = error(s"Invalid asm variable '$id' type - expecting $exp")

@@ -35,6 +35,20 @@ package org.cosplay.games.mir
   */
 object MirUtils:
     /**
+      * Adds trailing '.', if necessary
+      * 
+      * @param s
+      */
+    def addDot(s: String): String = if s.endsWith(".") then s else s"$s."
+
+    /**
+      * Removes trailing '.', if necessary
+      * 
+      * @param s
+      */
+    def removeDot(s: String): String = if s.endsWith(".") then s.substring(0, s.length - 1) else s
+    
+    /**
       * Removed paired single or double quotes from given string.
       *
       * @param s
