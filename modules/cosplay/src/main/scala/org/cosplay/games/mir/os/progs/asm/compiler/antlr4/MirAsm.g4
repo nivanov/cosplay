@@ -33,6 +33,8 @@ grammar MirAsm;
 // Parser.
 // =======
 
+// TODO: add bit-shift operations support.
+
 asm: code EOF; // Assembler entry point.
 code
     : NL* inst (NL*|EOF)
