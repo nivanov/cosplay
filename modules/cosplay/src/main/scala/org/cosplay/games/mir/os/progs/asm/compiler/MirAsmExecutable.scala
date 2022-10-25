@@ -50,6 +50,8 @@ import scala.util.*
   *
   */
 object MirAsmExecutable:
+    private final val BOOL_ERR_MSG = "1(true) or 0(false)"
+
     /**
       *
       * @param idx
@@ -98,18 +100,18 @@ object MirAsmExecutable:
                     case _: Any => act.toString
 
                 def error(errMsg: String): MAE = new MAE(errMsg, s"${MirUtils.removeDot(errMsg.trim)} - at line ${instr.line} in '${instr.getSourceCode(false)}'.", instr.dbg)
-                def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected asm stack value '${formatActual(act)}' - expecting $exp")
-                def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid asm ${nth(idx)} parameter - expecting $exp")
-                def wrongVar(id: String, exp: String): MAE = error(s"Invalid asm variable '$id' type - expecting $exp")
-                def wrongLabel(id: String): MAE = error(s"Undefined asm label in jump: $id")
+                def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected assembler stack value '${formatActual(act)}' - expecting $exp")
+                def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid assembler ${nth(idx)} parameter - expecting $exp")
+                def wrongVar(id: String, exp: String): MAE = error(s"Invalid assembler variable '$id' type - expecting $exp")
+                def wrongLabel(id: String): MAE = error(s"Undefined assembler label in jump: $id")
 
                 def checkParamCount(min: Int, max: Int): Unit =
-                    if paramsCnt < min then throw error("Insufficient asm instruction parameters")
-                    if paramsCnt > max then throw error("Too many asm instruction parameters")
+                    if paramsCnt < min then throw error("Insufficient assembler instruction parameters")
+                    if paramsCnt > max then throw error("Too many assembler instruction parameters")
 
                 def getVar(id: String): Any = ctx.getVar(id) match
                     case Some(v) => v
-                    case None => throw error(s"Undefined asm variable: $id")
+                    case None => throw error(s"Undefined assembler variable: $id")
 
                 def pop(): Any =
                     try stack.pop()
@@ -136,22 +138,18 @@ object MirAsmExecutable:
                     case d: Long => d
                     case x => throw wrongStack(x, "integer")
 
-                def popInt(): Int = pop() match
-                    case d: Long => d.toInt
-                    case x => throw wrongStack(x, "integer")
-
                 def popDouble(): Double = pop() match
                     case d: Double => d
                     case x => throw wrongStack(x, "double")
 
-                def popBool(): Long =
+                def popBool(): Boolean =
                     val b = pop()
                     b match
-                        case d: Long => if d  == 1L || d == 0L then d else throw wrongStack(b, "1(true) or 0(false)")
-                        case _ => throw wrongStack(b, "1(true) or 0(false)")
-
-                def popTrue(): Boolean = popBool() == 1L
-                def popFalse(): Boolean = popBool() == 0L
+                        case d: Long =>
+                            if d  == 1L then true
+                            else if d == 0L then false
+                            else throw wrongStack(b, BOOL_ERR_MSG)
+                        case _ => throw wrongStack(b, BOOL_ERR_MSG)
 
                 def varParam(idx: Int): String = params(idx) match
                     case IdParam(id) => id
@@ -246,8 +244,8 @@ object MirAsmExecutable:
                     case _ => throw wrongVar(id, "string")
 
                 def boolVar(id: String): Long = getVar(id) match
-                    case d: Long => if d == 1 || d == 0 then d else throw wrongVar(id, "1(true) or 0(false)")
-                    case _ => throw wrongVar(id, "1(true) or 0(false)")
+                    case d: Long => if d == 1 || d == 0 then d else throw wrongVar(id, BOOL_ERR_MSG)
+                    case _ => throw wrongVar(id, BOOL_ERR_MSG)
 
                 def incDecVar(v: Int): Unit =
                     require(v == 1 || v == -1)
@@ -271,7 +269,7 @@ object MirAsmExecutable:
                         case d: Int => stack.push(d.toLong) // Convert to 'long'.
                         case list: StackList => stack.push(list)
                         case map: StackMap => stack.push(map)
-                        case _ => assert(false, s"Invalid asm stack value type: $v")
+                        case _ => assert(false, s"Invalid assembler stack value type: $v")
 
                 def neg(): Unit = pop() match
                     case d: Long => push(-d)
@@ -284,10 +282,6 @@ object MirAsmExecutable:
                         case d: Long => ctx.setVar(id, -d)
                         case d: Double => ctx.setVar(id, -d)
                         case _ => throw wrongVar(id, "numeric")
-
-                def notv(): Unit =
-                    val id = varParam(0)
-                    ctx.setVar(id, if boolVar(id) == 0L then 1L else 0L)
 
                 def mod(): Unit =
                     val v1 = popLong()
@@ -311,9 +305,6 @@ object MirAsmExecutable:
                         // String concatenation.
                         case s: String => push(s"$s${right.toString}")
                         case _ => throw wrongStack(left, "numeric or string")
-
-                def and(): Unit = push(popTrue() && popTrue())
-                def or(): Unit = push(popTrue() || popTrue())
 
                 //noinspection DuplicatedCode
                 def multiply(): Unit =
@@ -380,9 +371,8 @@ object MirAsmExecutable:
                     def assert(): Unit =
                         // Note the reverse order of popping.
                         val msg = MirUtils.capitalize(popStr())
-                        val cond = popBool() == 0
-                        if cond then throw error(msg)
-                    def ensure(): Unit = if popBool() == 0 then throw error(s"Condition failed.")
+                        if !popBool() then throw error(msg)
+                    def ensure(): Unit = if !popBool() then throw error(s"Condition failed.")
                     def concat(): Unit =
                         val s1 = pop().toString
                         val s2 = pop().toString
@@ -489,17 +479,17 @@ object MirAsmExecutable:
                         list.prepend(v)
                     def update(): Unit =()
                     def remove(): Unit =
-                        val idx = popInt()
+                        val idx = popLong()
                         val list = popList()
-                        list.remove(idx)
+                        list.remove(idx.toInt)
                     def take(): Unit =
-                        val n = popInt()
+                        val n = popLong()
                         val list = popList()
-                        push(list.take(n))
+                        push(list.take(n.toInt))
                     def take_right(): Unit =
-                        val n = popInt()
+                        val n = popLong()
                         val list = popList()
-                        push(list.takeRight(n))
+                        push(list.takeRight(n.toInt))
                     def reverse(): Unit =()
                     def ceil(): Unit = push(math.ceil(popDouble()))
                     def floor(): Unit = push(math.floor(popDouble()))
@@ -596,6 +586,13 @@ object MirAsmExecutable:
                             case _ => wrongParam(1, "numeric")
                         case _ => wrongVar(id, "numeric")
 
+                def rol(): Unit =
+                    val n = popLong()
+                    push((n << 1) | (n >> 63))
+                def ror(): Unit =
+                    val n = popLong()
+                    push((n >> 1) | (n << 63))
+
                 //noinspection DuplicatedCode
                 def lt(v2: Any, v1: Any): Unit =
                     v2 match
@@ -648,6 +645,11 @@ object MirAsmExecutable:
                             case _ => wrongStack(v1, "numeric")
                         case _ => wrongStack(v2, "numeric")
 
+                def bitBinOp(f: (Long, Long) => Long): Unit =
+                    val b = popLong()
+                    val a = popLong()
+                    push(f(a, b))
+
                 try
                     name match
                         case "cpop" =>
@@ -656,8 +658,6 @@ object MirAsmExecutable:
                                 if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
                         case "push" => checkParamCount(1, 1); push(anyParam(0))
                         case "pushn" => checkParamCount(1, Int.MaxValue); for (i <- 0 until paramsCnt) push(anyParam(i))
-                        case "and" => checkParamCount(0, 0); and()
-                        case "or" => checkParamCount(0, 0); or()
                         case "pop" => checkParamCount(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
                         case "add" => checkParamCount(0, 0); addSub(1)
                         case "mod" => checkParamCount(0, 0); mod()
@@ -674,8 +674,18 @@ object MirAsmExecutable:
                         case "subv" => checkParamCount(2, 2); addSubVar(-1)
                         case "neg" => checkParamCount(0, 0); neg()
                         case "negv" => checkParamCount(1, 1); negv()
-                        case "not" => checkParamCount(0, 0); push(!popTrue())
-                        case "notv" => checkParamCount(1, 1); notv()
+
+                        // Bitwise/logical operations.
+                        case "not" => checkParamCount(0, 0); push(~popLong())
+                        case "and" => checkParamCount(0, 0); bitBinOp(_ & _)
+                        case "or" => checkParamCount(0, 0); bitBinOp(_ | _)
+                        case "xor" => checkParamCount(0, 0); bitBinOp(_ ^ _)
+                        case "sal" => checkParamCount(0, 0); bitBinOp(_ << _)
+                        case "sar" => checkParamCount(0, 0); bitBinOp(_ >> _)
+                        case "shr" => checkParamCount(0, 0); bitBinOp(_ >>> _)
+                        case "ror" => checkParamCount(0, 0); ror()
+                        case "rol" => checkParamCount(0, 0); rol()
+
                         case "let" => checkParamCount(2, 2); ctx.setVar(varParam(0), anyParam(1))
                         case "dup" => checkParamCount(0, 0); if stack.nonEmpty then push(stack.head)
                         case "eq" => checkParamCount(0, 0); push(pop() == pop())
@@ -696,17 +706,20 @@ object MirAsmExecutable:
                         case "neqv" => checkParamCount(2, 2); push(getVar(varParam(0)) != anyParam(1))
                         case "eqp" => checkParamCount(1, 1); push(anyParam(0) == pop())
                         case "neqp" => checkParamCount(1, 1); push(anyParam(0) != pop())
+
+                        // Branching.
                         case "brk" => checkParamCount(0, 1); throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
-                        case "cbrk" => checkParamCount(0, 1); if popFalse() then throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
+                        case "cbrk" => checkParamCount(0, 1); if !popBool() then throw error(if paramsCnt == 1 then strOrVarParam(0) else "Aborted")
                         case "cbrkv" => checkParamCount(1, 2); if getVar(varParam(0)) == 0L then throw error(if paramsCnt == 2 then strOrVarParam(1) else "Aborted")
                         case "cjmpv" => checkParamCount(2, 2); if getVar(varParam(0)) != 0L then jump(labelParam(1))
                         case "jmp" => checkParamCount(1, 1); jump(labelParam(0))
-                        case "cjmp" => checkParamCount(1, 1); if popTrue() then jump(labelParam(0))
-                        case "ifjmp" => checkParamCount(2, 2); if popTrue() then jump(labelParam(0)) else jump(labelParam(1))
-                        case "ifjmpv" => checkParamCount(2, 2); if popTrue() then jump(strVar(varParam(0))) else jump(strVar(varParam(1)))
+                        case "cjmp" => checkParamCount(1, 1); if popBool() then jump(labelParam(0))
+                        case "ifjmp" => checkParamCount(2, 2); if popBool() then jump(labelParam(0)) else jump(labelParam(1))
+                        case "ifjmpv" => checkParamCount(2, 2); if popBool() then jump(strVar(varParam(0))) else jump(strVar(varParam(1)))
+
                         case "exit" => checkParamCount(0, 0); exit = true
                         case "nop" => checkParamCount(0, 0) // No-op instruction.
-                        case "clr" => checkParamCount(0, 0); for _ <- 0 until popInt() do stack.pop()
+                        case "clr" => checkParamCount(0, 0); for _ <- 0 until popLong().toInt do stack.pop()
                         case "clrp" => checkParamCount(1, 1); for _ <- 0 until intParam(0) do stack.pop()
                         case "clrv" => checkParamCount(1, 1); for _ <- 0 until intVar(varParam(0)) do stack.pop()
                         case "ssz" => checkParamCount(0, 0); push(stack.size)
@@ -853,7 +866,7 @@ object MirAsmExecutable:
                             jump(labelParam(0))
                         case "ret" =>
                             checkParamCount(0, 0)
-                            if callStack.isEmpty then throw error(s"'ret' outside of function body.")
+                            if callStack.isEmpty then throw error(s"'ret' instruction outside of 'call' body.")
                             idx = callStack.pop()
                             nextInstr = false
                         case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
