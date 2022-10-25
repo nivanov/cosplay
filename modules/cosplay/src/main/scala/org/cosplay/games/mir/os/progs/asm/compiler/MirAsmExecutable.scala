@@ -754,6 +754,7 @@ object MirAsmExecutable:
                             checkParamCount(1, 1)
                             val fn = strOrVarParam(0)
                             fn match
+                                // Console functions.
                                 case "print" => NativeFunctions.print()
                                 case "println" => NativeFunctions.println()
 

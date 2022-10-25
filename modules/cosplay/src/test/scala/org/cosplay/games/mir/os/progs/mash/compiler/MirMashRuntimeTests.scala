@@ -108,13 +108,15 @@ object MirMashRuntimeTests extends MirMashNatives:
                |val map = map_from([
                |    [1, "1"],
                |    [2, "2"],
-               |    ["3", 3]
+               |    ["str-3", 3]
                |])
-               |ensure(get(key_list(map), 0) == 1)
-               |ensure(get(key_list(map), 2) == "3")
+               |_println("Key(0)=" + get(key_list(map), 0))
+               |_println("Key(2)=" + get(key_list(map), 2))
+               |ensure(get(key_list(map), 0) == "1")
+               |ensure(get(key_list(map), 2) == "str-3")
                |ensure(get(map, "1") == "1")
                |ensure(get(map, "2") == "2")
-               |ensure(get(map, "3") == 3)
+               |ensure(get(map, "str-3") == 3)
                |""".stripMargin)
         executeOk(
             s"""
