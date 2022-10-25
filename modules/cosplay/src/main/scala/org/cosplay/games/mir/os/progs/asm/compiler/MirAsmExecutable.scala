@@ -399,7 +399,7 @@ object MirAsmExecutable:
                     def contains(): Unit = ()
                     def substr(): Unit = ()
                     def replace(): Unit = ()
-                    def to_int(): Unit = Try(popStr().toInt).match
+                    def to_long(): Unit = Try(popStr().toLong).match
                         case Success(i) => push(i)
                         case Failure(e) => throw e
                     def to_double(): Unit = Try(popStr().toDouble).match
@@ -490,14 +490,14 @@ object MirAsmExecutable:
                         val n = popLong()
                         val list = popList()
                         push(list.takeRight(n.toInt))
-                    def reverse(): Unit =()
+                    def reverse(): Unit = push(popList().reverse)
                     def ceil(): Unit = push(math.ceil(popDouble()))
                     def floor(): Unit = push(math.floor(popDouble()))
                     def rint(): Unit = push(math.rint(popDouble()))
                     def round(): Unit = push(math.round(popDouble()))
                     def signum(): Unit = push(math.signum(popDouble()))
-                    def sqrt(): Unit =()
-                    def cbrt(): Unit =()
+                    def sqrt(): Unit = push(math.sqrt(popDouble()))
+                    def cbrt(): Unit = push(math.cbrt(popDouble()))
                     def acos(): Unit = push(math.acos(popDouble()))
                     def asin(): Unit = push(math.asin(popDouble()))
                     def atan(): Unit = push(math.atan(popDouble()))
@@ -507,22 +507,45 @@ object MirAsmExecutable:
                     def tanh(): Unit = push(math.tanh(popDouble()))
                     def sinh(): Unit = push(math.sinh(popDouble()))
                     def cosh(): Unit = push(math.cosh(popDouble()))
-                    def degrees(): Unit =()
-                    def radians(): Unit =()
+                    def degrees(): Unit = push(math.toDegrees(popDouble()))
+                    def radians(): Unit = push(math.toRadians(popDouble()))
                     def exp(): Unit = push(math.exp(popDouble()))
                     def expm1(): Unit = push(math.expm1(popDouble()))
                     def log(): Unit = push(math.log(popDouble()))
                     def log10(): Unit = push(math.log10(popDouble()))
-                    def square(): Unit =()
+                    def square(): Unit =
+                        pop() match
+                            case d: Double => push(d * d)
+                            case d: Long => push(d * d)
+                            case x => throw wrongStack(x, "numeric")
                     def log1p(): Unit = push(math.log1p(popDouble()))
                     def pi(): Unit = push(math.Pi)
                     def euler(): Unit = push(math.E)
                     def min(): Unit =()
                     def max(): Unit =()
                     def abs(): Unit = push(math.abs(popLong()))
-                    def stddev(): Unit =()
-                    def pow(): Unit =()
-                    def hypot(): Unit =()
+                    def stddev(): Unit =
+                        val lst = popList().toSeq
+                        if lst.isEmpty then throw error("'stddev' of an empty list is undefined.")
+                        else
+                            def cast(x: Any): Double = x match
+                                case d: Long => d.toDouble
+                                case d: Double => d
+                                case x => throw error("Wrong list element for 'stddev' - numeric expected: $x")
+                            try
+                                val seq = lst.map(cast)
+                                val mean = seq.sum / seq.length
+                                push(math.sqrt(seq.map(_ - mean).map(t => t * t).sum / seq.length))
+                            catch
+                                case e: Exception => throw error(e.getMessage)
+                    def pow(): Unit =
+                        val y = popDouble()
+                        val x = popDouble()
+                        push(math.pow(x, y))
+                    def hypot(): Unit =
+                        val y = popDouble()
+                        val x = popDouble()
+                        push(math.hypot(x, y))
 
                 // Go to the "natural" next instruction... or jump.
                 var nextInstr = true
@@ -815,7 +838,7 @@ object MirAsmExecutable:
                                 case "contains" => NativeFunctions.contains()
                                 case "substr" => NativeFunctions.substr()
                                 case "replace" => NativeFunctions.replace()
-                                case "to_int" => NativeFunctions.to_int()
+                                case "to_long" => NativeFunctions.to_long()
                                 case "to_double" => NativeFunctions.to_double()
 
                                 case "assert" => NativeFunctions.assert()

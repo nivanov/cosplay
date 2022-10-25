@@ -78,13 +78,20 @@ object MirMashRuntimeTests extends MirMashNatives:
             s"""
                |$NATIVE_DECLS
                |
+               |val list = [4, 6, 20, 45, 2, 3, 4, 93, 12]
+               |_println("STDDEV is: " + stddev(list))
+               |""".stripMargin)
+        executeOk(
+            s"""
+               |$NATIVE_DECLS
+               |
                |set list = [1, 2]
                |ensure(size(list) == 2)
                |ensure(size([1, 2, 3, true, false]) == 5)
                |ensure(size([1, 2, 3, [true, false]]) == 4)
                |ensure(year() == 1997)
                |ensure(to_str(1) == "1")
-               |ensure(to_int("123") == 123)
+               |ensure(to_long("123") == 123)
                |ensure(to_double("1.2") == 1.2)
                |hour()
                |minute()
@@ -227,6 +234,7 @@ object MirMashRuntimeTests extends MirMashNatives:
               |
               |""".stripMargin)
 
+
     @Test
     def failTest(): Unit =
         executeFail(
@@ -292,7 +300,7 @@ object MirMashRuntimeTests extends MirMashNatives:
               |assert(x < 10, "Invalid assertion.")
               |""".stripMargin)
         executeFail("var x = 5 + 'fail'")
-        executeFail("var x = (true && false) || 5")
+        executeFail("var x = (true && false) || 'string'")
         executeFail(
             """
               |native def foo(a, b, c)
