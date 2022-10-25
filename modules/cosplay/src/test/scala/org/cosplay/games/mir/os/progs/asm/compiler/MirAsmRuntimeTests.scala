@@ -271,15 +271,9 @@ object MirAsmRuntimeTests:
               |push 0
               |not
               |push 1
+              |and
+              |push 1
               |eq
-              |cbrk
-              |""".stripMargin
-        )
-        executeOk(
-            """
-              |let x, 0
-              |notv x
-              |eqv x, 1
               |cbrk
               |""".stripMargin
         )
@@ -311,12 +305,56 @@ object MirAsmRuntimeTests:
         )
         executeOk(
             """
+              |let a, 60
+              |let b, 13
+              |let c, 0
+              |pushn a, b
+              |and
+              |eqp 12
+              |cbrk
+              |pushn a, b
+              |xor
+              |eqp 49
+              |cbrk
+              |pushn a, 2
+              |sal
+              |eqp 240
+              |cbrk
+              |pushn a, 2
+              |shr
+              |pop x
+              |pushn "SHR result: ", x
+              |calln "concat"
+              |calln "_println"
+              |push x
+              |eqp 15
+              |cbrk
+              |pushn a, 2
+              |shr
+              |eqp 15
+              |cbrk
+              |push a
+              |not
+              |eqp -61
+              |cbrk
+              |""".stripMargin)
+        executeOk(
+            """
               |push 1
               |dup
               |eq
               |cbrk "Assertion"
               |""".stripMargin
         )
+        executeOk(
+            """
+              |push 1
+              |rol
+              |rol
+              |push 4
+              |eq
+              |cbrk
+              |""".stripMargin)
         executeOk(
             """
               |pushn "1", 1

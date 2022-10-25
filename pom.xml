@@ -89,7 +89,7 @@
         <!-- Major Java/Scala version. -->
         <scala.major.ver>3</scala.major.ver>
         <scala3.ver>${scala.major.ver}.1.3</scala3.ver>
-        <scala2.ver>2.13.8</scala2.ver>
+        <scala2.ver>2.13.10</scala2.ver>
         <java.ver>11</java.ver>
 
         <maven.build.timestamp.format>yyyy-MM-dd-HH-mm</maven.build.timestamp.format>
@@ -112,11 +112,11 @@
         <jline.ver>3.21.0</jline.ver>
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
         <commons.math.ver>3.6.1</commons.math.ver>
-        <commons.text.ver>1.9</commons.text.ver>
+        <commons.text.ver>1.10.0</commons.text.ver>
         <commons.collections.ver>4.4</commons.collections.ver>
         <scala3.reflect.ver>1.1.4</scala3.reflect.ver>
         <scalatest.ver>3.2.14</scalatest.ver>
-        <junit.ver>5.9.0</junit.ver>
+        <junit.ver>5.9.1</junit.ver>
         <openjfx.ver>17.0.2</openjfx.ver>
         <ikonli.ver>12.3.1</ikonli.ver>
         <flatlaf.ver>2.4</flatlaf.ver>

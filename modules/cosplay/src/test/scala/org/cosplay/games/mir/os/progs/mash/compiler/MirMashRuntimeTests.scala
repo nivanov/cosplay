@@ -78,13 +78,20 @@ object MirMashRuntimeTests extends MirMashNatives:
             s"""
                |$NATIVE_DECLS
                |
+               |val list = [4, 6, 20, 45, 2, 3, 4, 93, 12]
+               |_println("STDDEV is: " + stddev(list))
+               |""".stripMargin)
+        executeOk(
+            s"""
+               |$NATIVE_DECLS
+               |
                |set list = [1, 2]
                |ensure(size(list) == 2)
                |ensure(size([1, 2, 3, true, false]) == 5)
                |ensure(size([1, 2, 3, [true, false]]) == 4)
                |ensure(year() == 1997)
                |ensure(to_str(1) == "1")
-               |ensure(to_int("123") == 123)
+               |ensure(to_long("123") == 123)
                |ensure(to_double("1.2") == 1.2)
                |hour()
                |minute()
@@ -101,11 +108,15 @@ object MirMashRuntimeTests extends MirMashNatives:
                |val map = map_from([
                |    [1, "1"],
                |    [2, "2"],
-               |    ["3", 3]
+               |    ["str-3", 3]
                |])
+               |_println("Key(0)=" + get(key_list(map), 0))
+               |_println("Key(2)=" + get(key_list(map), 2))
+               |ensure(get(key_list(map), 0) == "1")
+               |ensure(get(key_list(map), 2) == "str-3")
                |ensure(get(map, "1") == "1")
                |ensure(get(map, "2") == "2")
-               |ensure(get(map, "3") == 3)
+               |ensure(get(map, "str-3") == 3)
                |""".stripMargin)
         executeOk(
             s"""
@@ -140,6 +151,26 @@ object MirMashRuntimeTests extends MirMashNatives:
 
     @Test
     def okTest(): Unit =
+        executeOk(
+            s"""
+              |$NATIVE_DECLS
+              |
+              |val x = (!true == false) || (2 != 3)
+              |_println("x=" + x)
+              |ensure(x == 1)
+              |""".stripMargin)
+        executeOk(
+            s"""
+               |$NATIVE_DECLS
+               |ensure(60 & 13 == 12)
+               |ensure(60 | 13 == 61)
+               |ensure(60 ^ 13 == 49)
+               |ensure(~60 == -61)
+               |ensure(60 << 2 == 240)
+               |ensure(60 >> 2 == 15)
+               |ensure(60 >>> 2 == 15)
+               |
+               |""".stripMargin)
         executeOk(
             s"""
               |$NATIVE_DECLS
@@ -227,6 +258,7 @@ object MirMashRuntimeTests extends MirMashNatives:
               |
               |""".stripMargin)
 
+
     @Test
     def failTest(): Unit =
         executeFail(
@@ -292,7 +324,7 @@ object MirMashRuntimeTests extends MirMashNatives:
               |assert(x < 10, "Invalid assertion.")
               |""".stripMargin)
         executeFail("var x = 5 + 'fail'")
-        executeFail("var x = (true && false) || 5")
+        executeFail("var x = (true && false) || 'string'")
         executeFail(
             """
               |native def foo(a, b, c)

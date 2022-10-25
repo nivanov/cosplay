@@ -33,8 +33,6 @@ grammar MirAsm;
 // Parser.
 // =======
 
-// TODO: add bit-shift operations support.
-
 asm: code EOF; // Assembler entry point.
 code
     : NL* inst (NL*|EOF)
@@ -57,23 +55,38 @@ param
 // Lexer.
 // ======
 INSRT_NAME
-    : 'mulv'
-    | 'ssz'
+    // Misc.
+    : 'nop'
+    | 'exit'
+    | 'let'
+
+    // Stack operations.
     | 'cpop'
     | 'clr'
     | 'clrv'
     | 'clrp'
+    | 'push'
+    | 'pushn'
+    | 'pop'
+    | 'ssz'
+    | 'dup'
+
+    // Branching.
     | 'ifjmp'
     | 'ifjmpv'
-    | 'nop'
+    | 'brk'
+    | 'cbrk'
+    | 'cbrkv'
+    | 'calln'
+    | 'call'
+    | 'jmp'
+    | 'cjmp' // Conditional jump over stack value.
+    | 'cjmpv' // Conditional jump over variable value.
+    | 'ret'
+
+    // Comparison.
     | 'eqp'
     | 'neqp'
-    | 'and'
-    | 'or'
-    | 'mod'
-    | 'divv'
-    | 'mul'
-    | 'div'
     | 'eq'
     | 'neq'
     | 'eqv'
@@ -90,33 +103,34 @@ INSRT_NAME
     | 'ltev'
     | 'gtv'
     | 'gtev'
-    | 'brk'
-    | 'cbrk'
-    | 'cbrkv'
-    | 'push'
-    | 'pushn'
-    | 'pop'
+
+    // Bit operations.
+    | 'and' // '&'
+    | 'or' // '|'
+    | 'not' // '~'
+    | 'xor' // '^'
+    | 'sar' // '>>'
+    | 'sal' // '<<'
+    | 'shr' // '>>>'
+    | 'ror'
+    | 'rol'
+
+    // Arithmetics.
+    | 'mulv'
+    | 'mod'
+    | 'divv'
+    | 'mul'
+    | 'div'
     | 'add'
     | 'sub'
     | 'addv'
     | 'subv'
-    | 'calln'
-    | 'call'
-    | 'jmp'
-    | 'cjmp' // Conditional jump over stack value.
-    | 'cjmpv' // Conditional jump over variable value.
     | 'inc'
     | 'incv'
     | 'dec'
     | 'decv'
-    | 'ret'
-    | 'let'
-    | 'dup'
-    | 'not'
-    | 'notv'
     | 'neg'
     | 'negv'
-    | 'exit'
     ;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 NULL: 'null';

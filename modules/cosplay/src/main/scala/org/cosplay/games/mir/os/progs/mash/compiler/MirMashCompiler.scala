@@ -568,8 +568,27 @@ class MirMashCompiler:
             if defStack.isEmpty then throw error(s"'return' can only be used inside of the function body.")
             block.add("ret")
 
-        override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit = block.add(if ctx.MINUS() != null then "neg" else "not")
-        override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit = block.add(if ctx.AND() != null then "and" else "or")
+        override def exitUnaryExpr(using ctx: MMP.UnaryExprContext): Unit =
+            if ctx.MINUS() != null then block.add("neg")
+            else if ctx.TILDA() != null then block.add("not")
+            else  // 'EXCL'.
+                val thenLbl = genLabel()
+                val elseLbl = genLabel()
+                val exitLbl = genLabel()
+                block.add("push 0", null, "Start of '!' code.")
+                block.add("eq")
+                block.add(s"ifjmp $thenLbl, $elseLbl")
+                block.add("push 1", thenLbl)
+                block.add(s"jmp $exitLbl")
+                block.add("push 0", elseLbl)
+                block.add("nop", exitLbl)
+        override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit =
+            var v = genVar()
+            block.add(s"pop $v")
+            block.add("calln \"bool_sigmoid\"")
+            block.add(s"push $v")
+            block.add("calln \"bool_sigmoid\"")
+            block.add(if ctx.AND() != null then "and" else "or")
         override def exitEqNeqExpr(using ctx: MMP.EqNeqExprContext): Unit = block.add(if ctx.EQ() != null then "eq" else "neq")
         override def exitPlusMinusExpr(using ctx: MMP.PlusMinusExprContext): Unit = block.add(if ctx.PLUS() != null then "add" else "sub")
         override def exitCompExpr(using ctx: MMP.CompExprContext): Unit =
@@ -579,6 +598,12 @@ class MirMashCompiler:
             else block.add("gte")
         override def exitMultDivModExpr(using ctx: MMP.MultDivModExprContext): Unit =
             if ctx.MOD() != null then block.add("mod")
+            else if ctx.RIGHT_RIGHT() != null then block.add("sar")
+            else if ctx.LEFT_LEFT() != null then block.add("sal")
+            else if ctx.RIGHT_RIGHT_RIGHT() != null then block.add("shr")
+            else if ctx.VERT() != null then block.add("or")
+            else if ctx.AMP() != null then block.add("and")
+            else if ctx.XOR() != null then block.add("xor")
             else if ctx.MULT() != null then block.add("mul")
             else block.add("div")
 
