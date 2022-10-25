@@ -17,11 +17,6 @@
 
 package org.cosplay.games.mir.os.progs.asm.compiler
 
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
-
-import scala.util.*
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -30,46 +25,30 @@ import scala.util.*
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
+import org.cosplay.*
+
 /**
+  * Assembler exceptions.
   *
+  * @param synopsis Error message synopsis without location.
+  * @param fullMsg Full error message including synopsis and location reference.
+  * @param dbg Optional debug information associated with this exception.
   */
-object MirAsmExecutableTests:
+class MirAsmException(synopsis: String, fullMsg: String, dbg: Option[MirAsmDebug] = None) extends CPException(fullMsg):
     /**
-      *
-      * @param code
+      * Gets optional debug information.
       */
-    def executeOk(code: String): Unit =
-        Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmState())).match
-            case Success(_) => ()
-            case Failure(e) => assertTrue(false, e.getMessage)
+    def getDebug: Option[MirAsmDebug] = dbg
 
     /**
-      *
-      * @param code
+      * Gets error's synopsis.
       */
-    def executeFail(code: String): Unit =
-        Try((new MirAsmCompiler).compile(code, "test").execute(new MirAsmState())).match
-            case Success(_) => assertTrue(false)
-            case Failure(e) =>
-                println(s"<< Expected error below >>")
-                e.printStackTrace()
+    def getSynopsis: String = synopsis
 
-    /**
-      *
-      */
-    @Test
-    def executeFailTests(): Unit =
-        executeFail("push ; Missing parameter.")
-        executeFail("push null, 1, 2, \"asdas\"; Too many parameter.")
 
-    /**
-      *
-      */
-    @Test
-    def executeOkTests(): Unit =
-        executeOk("push 1")
+

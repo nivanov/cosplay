@@ -17,7 +17,14 @@
 
 package org.cosplay.games.mir.os.progs.mash.compiler
 
-import org.cosplay.games.mir.os.progs.mash.MirMashState
+import org.cosplay.games.mir.*
+
+import java.util.regex.*
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.*
+
+import scala.collection.mutable
+
 
 /*
    _________            ______________
@@ -33,7 +40,37 @@ import org.cosplay.games.mir.os.progs.mash.MirMashState
 */
 
 /**
-  *
+  * 
   */
-trait MirMashInstruction extends ((MirMashStack, MirMashState) => Unit)
+object MirMashVarExpansionTests:
+    private final val STR_VAR_REGEX = Pattern.compile("\\$\\{?(\\$|#|!|@|\\*|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)}?")
+    private val vars = mutable.HashMap(
+        "var1" -> "'var1'",
+        "var2" -> "'var2'",
+        "var3" -> "'var3'",
+        "a" -> "'a'",
+        "b" -> "'b'",
+        "$" -> "##",
+        "1" -> "'1'"
+    )
+
+    private def dequote(qs: String): String =
+        if qs.startsWith("'") && qs.endsWith("'") then MirUtils.dequote(qs)
+        else if qs.startsWith("\"") && qs.endsWith("\"") then
+            val s = MirUtils.dequote(qs)
+            val m = STR_VAR_REGEX.matcher(s)
+            val buf = new StringBuffer()
+            while m.find() do m.appendReplacement(buf, vars(m.group(1)))
+            m.appendTail(buf)
+            buf.toString
+        else
+            throw Exception(s"Uneven quotes in: $qs")
+
+    @Test
+    def testStringExpansion(): Unit =
+        val s = "\"Text$var1 $$var2 another param=$1 text${var3}text$a${b}\""
+        println(s)
+        println(dequote(s))
+
+
 

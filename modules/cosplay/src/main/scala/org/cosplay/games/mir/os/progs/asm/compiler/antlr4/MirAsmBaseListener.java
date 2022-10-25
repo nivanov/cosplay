@@ -1,4 +1,4 @@
-// Generated from C:/Users/Nikita Ivanov/Documents/GitHub/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/asm/compiler/antlr4\MirAsm.g4 by ANTLR 4.10.1
+// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/games/mir/os/progs/asm/compiler/antlr4/MirAsm.g4 by ANTLR 4.10.1
 package org.cosplay.games.mir.os.progs.asm.compiler.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -47,6 +47,18 @@ public class MirAsmBaseListener implements MirAsmListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitInst(MirAsmParser.InstContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDbg(MirAsmParser.DbgContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDbg(MirAsmParser.DbgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

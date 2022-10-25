@@ -50,13 +50,16 @@ val SND_HOME = "mir/sounds"
 val IMG_HOME = "mir/images"
 val markup = CPMarkup(
     FG,
-    Option(BG),
+    BG.?,
     Seq(
         CPMarkupElement("<%", "%>", _&&(FG_LITE, BG)), // Light.
         CPMarkupElement("<~", "~>", _&&(FG_DARK, BG)), // Dark.
         CPMarkupElement("<@", "@>", _&&(BG, FG)) // Reverse.
     )
 )
+
+extension[T](ref: T)
+    def `?`: Option[T] = Option(ref)
 
 extension(d: Int)
     // To bytes...

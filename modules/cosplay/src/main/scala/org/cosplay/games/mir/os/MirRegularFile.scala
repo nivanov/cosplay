@@ -56,7 +56,7 @@ class MirRegularFile(
     otherMod: Boolean,
     lines: Seq[String] = Seq.empty,
     initMs: Long = MirClock.now()
-) extends MirFile(FT_REG, name, owner, Option(parent), otherAcs, otherMod, initMs):
+) extends MirFile(FT_REG, name, owner, parent.?, otherAcs, otherMod, initMs):
     private val file = CPEngine.homeFile(CPRand.guid)
 
     /**

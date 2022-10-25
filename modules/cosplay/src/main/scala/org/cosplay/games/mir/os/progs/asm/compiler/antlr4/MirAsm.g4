@@ -38,8 +38,9 @@ code
     : NL* inst (NL*|EOF)
     | code inst (NL*|EOF)
     ;
-inst: label? INSRT_NAME plist?;
-label: USR_ID COLON NL*;
+inst: label? INSRT_NAME plist? dbg?;
+dbg: AT INT COMMA INT COMMA DQSTRING; // Source file information for mash.
+label: ID COLON NL*;
 plist
     : param
     | plist COMMA param
@@ -47,27 +48,89 @@ plist
 param
     : DQSTRING
     | NULL
-    | USR_ID
-    | SYS_ID
+    | ID
     | INT REAL? EXP?
     ;
 
 // Lexer.
 // ======
 INSRT_NAME
-    : 'mov'
+    // Misc.
+    : 'nop'
+    | 'exit'
+    | 'let'
+
+    // Stack operations.
+    | 'cpop'
+    | 'clr'
+    | 'clrv'
+    | 'clrp'
     | 'push'
+    | 'pushn'
     | 'pop'
-    | 'inc'
-    | 'dec'
-    | 'add'
-    | 'mul'
-    | 'div'
-    | 'sub'
+    | 'ssz'
+    | 'dup'
+
+    // Branching.
+    | 'ifjmp'
+    | 'ifjmpv'
+    | 'brk'
+    | 'cbrk'
+    | 'cbrkv'
     | 'calln'
     | 'call'
     | 'jmp'
+    | 'cjmp' // Conditional jump over stack value.
+    | 'cjmpv' // Conditional jump over variable value.
     | 'ret'
+
+    // Comparison.
+    | 'eqp'
+    | 'neqp'
+    | 'eq'
+    | 'neq'
+    | 'eqv'
+    | 'neqv'
+    | 'ltp'
+    | 'ltep'
+    | 'gtp'
+    | 'gtep'
+    | 'lt'
+    | 'lte'
+    | 'gt'
+    | 'gte'
+    | 'ltv'
+    | 'ltev'
+    | 'gtv'
+    | 'gtev'
+
+    // Bit operations.
+    | 'and' // '&'
+    | 'or' // '|'
+    | 'not' // '~'
+    | 'xor' // '^'
+    | 'sar' // '>>'
+    | 'sal' // '<<'
+    | 'shr' // '>>>'
+    | 'ror'
+    | 'rol'
+
+    // Arithmetics.
+    | 'mulv'
+    | 'mod'
+    | 'divv'
+    | 'mul'
+    | 'div'
+    | 'add'
+    | 'sub'
+    | 'addv'
+    | 'subv'
+    | 'inc'
+    | 'incv'
+    | 'dec'
+    | 'decv'
+    | 'neg'
+    | 'negv'
     ;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 NULL: 'null';
@@ -75,14 +138,13 @@ DQUOTE: '"';
 SCOLOR: ';';
 COMMA: ',';
 NL: '\n';
-DOLLAR: '$';
 COLON: ':';
 DOT: '.';
-INT: '0' | [1-9] [_0-9]*;
+AT: '@';
+INT: '0' | '-'? [1-9] [_0-9]*;
 REAL: DOT [0-9]+;
 EXP: [Ee] [+\-]? INT;
-USR_ID: [0-9a-zA-Z_]+;
-SYS_ID: '$'USR_ID;
+ID: [0-9a-zA-Z_$]+;
 COMMENT: SCOLOR ~[\r\n]* '\r'? (NL| EOF) -> skip;
 WS: [ \r\t\u000C]+ -> skip;
 ErrorChar: .;

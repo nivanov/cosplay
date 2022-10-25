@@ -35,6 +35,7 @@ import com.mixpanel.mixpanelapi.*
 import org.json.JSONObject
 import org.apache.commons.lang3.*
 
+import java.util.concurrent.{Callable, Executors}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -55,6 +56,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
   *
   */
 object CPUtils:
+    private final val THREAD_POOL_SIZE = 16
+
     private val sysProps = new SystemProperties
     private val rt = Runtime.getRuntime
     private val sysMx = ManagementFactory.getOperatingSystemMXBean
@@ -63,9 +66,21 @@ object CPUtils:
     private val MIXPANEL_TOKEN = "b5149f93d5a7693c42d1fa558896b70f"
     private val DFLT_MIXPANEL_GUID = "314159265359"
     private val isTracking = !isSysEnvSet("COSPLAY_DISABLE_MIXPANEL")
+    private val exec = Executors.newFixedThreadPool(THREAD_POOL_SIZE)
 
     /** */
     final val PING_MSG = "8369926740-3247024617-2096692631-7483698541-4348351625-9412150510-5442257448-4805421296-5646586017-0232477804"
+
+    /**
+      * Executes given function asynchronously on the system thread pool.
+      *
+      * @param f Function to execute.
+      * @tparam T Return value type.
+      * @return Future.
+      */
+    def par[T](f: () => T): java.util.concurrent.Future[T] = exec.submit(new Callable[T] {
+        override def call(): T = f()
+    })
     
     /**
       * Safely splits given string into substring by '\n' character, ignoring Windows vs. Unix

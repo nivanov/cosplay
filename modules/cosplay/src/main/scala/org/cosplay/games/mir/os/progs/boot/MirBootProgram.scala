@@ -74,13 +74,18 @@ class MirBootProgram extends MirExecutable:
 
         out.println()
         out.println("Pressurized modules:")
-        for mod <- stateMgr.state.station.allModules do
-            out.println(s"  |- ${mod.name} ('${mod.abbreviation}') - OK.")
+        val mods = stateMgr.state.station.allModules
+        for (mod, idx) <- mods.zipWithIndex do
+            val sep = if idx == mods.length - 1 then "+-" else "|-"
+            out.println(s"  $sep ${mod.name} ('${mod.abbreviation}') - OK.")
 
         out.println()
         out.println("Device map:")
         val devDir = fs.dirFile("/dev")
-        devDir.list().foreach(f => out.println(s"  |- '${f.getAbsolutePath}' initialized."))
+        val devs = devDir.list()
+        for (file, idx) <- devs.zipWithIndex do
+            val sep = if idx == devs.length - 1 then "+-" else "|-"
+            out.println(s"  $sep '${file.getAbsolutePath}' initialized.")
 
         // Only show the 1st time.
         if stateMgr.state.osRebootCnt == 1 then
@@ -88,16 +93,17 @@ class MirBootProgram extends MirExecutable:
             out.println("MirX rebooted due to:")
             out.println("  |- Fault 0x11F0 (power supply interruption)")
             out.println("  |- Fault 0x10B7 (docking module 'dck' - structural integrity sensors)")
-            out.println("  |- Fault 0x217A (docking module 'dck' - oxygen sensor readout)")
+            out.println("  +- Fault 0x217A (docking module 'dck' - oxygen sensor readout)")
 
         out.println()
         out.println("Users verified:")
-        val passwd = fs.regFile("/etc/passwd").readLines
-        for line <- passwd do
+        val pwds = fs.regFile("/etc/passwd").readLines
+        for (line, idx) <- pwds.zipWithIndex do
             val parts = line.split(":")
             val username = parts.head
             if username != "root" then
-                val base = s"  |- $username, ${parts(2)} -> ${parts(3)}"
+                val sep = if idx == pwds.length - 1 then "+-" else "|-"
+                val base = s"  $sep $username, ${parts(2)} -> ${parts(3)}"
                 if username == stateMgr.state.player.getUsername then out.println(s"$base (*)") else out.println(base)
 
         logo.split("\n").foreach(out.println)

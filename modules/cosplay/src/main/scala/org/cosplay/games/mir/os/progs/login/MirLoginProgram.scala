@@ -38,7 +38,7 @@ import org.cosplay.games.mir.os.*
   */
 object MirLoginProgram:
     private final val MIN_PWD_LEN = 4
-    private final val ERR_PREFIX = "  |-"
+    private final val ERR_PREFIX = "  +-"
 
 /**
   *
@@ -73,21 +73,21 @@ class MirLoginProgram extends MirExecutable:
 
         done = false
         while !done do
-            val passwd1 = con.promptReadLine("Password: ", Option('*'))
-            val passwd2 = con.promptReadLine("\nConfirm password: ", Option('*'))
+            val passwd1 = con.promptReadLine("Password: ", '*'.?)
+            val passwd2 = con.promptReadLine("\nConfirm password: ", '*'.?)
             con.println()
             if passwd1 != passwd2 then err(s"passwords do not match.")
             else if passwd1.length < MIN_PWD_LEN then err(s"password is too short (must be at least $MIN_PWD_LEN characters).")
             else
                 done = true
                 stateMgr.state.player.setPassword(passwd1)
-                con.println(s"Password reset for '$username'.")
+                con.println(s"Password was successfully reset for '$username'.")
 
         val lastLoginTstamp = stateMgr.state.lastLoginTstamp
 
         stateMgr.state.lastLoginTstamp = MirClock.now()
 
-        con.println(s"Last login ${MirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
+        con.println(s"Last login ${MirClock.formatDateTime(lastLoginTstamp)} on $tty.")
         con.println(s"Welcome back, ${ply.crew.camelFirstName}.")
 
         0

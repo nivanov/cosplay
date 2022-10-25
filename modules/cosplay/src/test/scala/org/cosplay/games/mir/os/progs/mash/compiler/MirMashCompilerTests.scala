@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os.progs.mash.compiler
 
+import org.cosplay.games.mir.*
+
 import scala.util.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.*
@@ -37,91 +39,205 @@ import org.junit.jupiter.api.*
 /**
   *
   */
-object MirMashCompilerTests:
+object MirMashCompilerTests extends MirMashNatives:
+    MirClock.init(0)
+
+    /**
+      *
+      * @param code Mash code to test.
+      */
+    private def compileOk(code: String): Unit =
+        Try((new MirMashCompiler).compileToAsm(code, "test")) match
+            case Success(mod) =>
+                println("---------------------")
+                mod.asm.foreach(loc => println(loc.toAsmString(false)))
+            case Failure(e) =>
+                e.printStackTrace()
+                assertTrue(false, e.getMessage)
+
+    /**
+      *
+      * @param code Mash code to test.
+      */
+    private def compileFail(code: String): Unit =
+        Try((new MirMashCompiler).compileToAsm(code, "test")).match
+            case Success(_) => assertTrue(false)
+            case Failure(e) =>
+                println(s"<< Expected error below >>")
+                e.printStackTrace()
+
+    /**
+      *
+      */
     @Test
-    def baseTest(): Unit =
-        val comp = new MirMashCompiler
-
-        def compile(code: String): Unit =
-            Try(comp.compile(code, "test")). match
-                case Success(_) => ()
-                case Failure(e) => assertTrue(false, e.getMessage)
-
-        compile("var x = 10")
-        compile("val x = 10; val y = 'abc'")
-        compile(
+    def baseOkTest(): Unit =
+        compileOk(
+            s"""
+              |$NATIVE_DECLS
+              |for a <- [1, 2, 3, 4] do _println("List element: " + a)
+              |""".stripMargin)
+        compileOk(
             """
-              |include "/etc/mash/natives.mash"
+              |native def size(list)
+              |native def ensure(cond)
               |
-              |native def listOf(fromIncl, toExcl)
-              |
-              |val x = null
-              |var x = true
-              |
-              |val WIDTH = 100
-              |val HEIGHT = {
-              |    val a = 100
-              |
-              |    (a + 100) * 80
-              |}
-              |
-              |val list0 = (1, 2, 3, true, null)
-              |var list1 = () // Empty list.
-              |
-              |list1 = {
-              |    var a = 1; var b = 2;
-              |    (a, b)
-              |}
-              |
-              |val map = ~(HEIGHT -> 2 * 0.4, "name"->"cosplay" + ' ' + "engine")
-              |
-              |println(map["name"]["key"])
-              |
-              |val s = `cat /home/file.txt | wc | take 1`
-              |
-              |echo "Some text echoing" | wc -l
-              |echo "Some staff" > new_file.txt
-              |
-              |println("Number of command line arguments is $#")
-              |println("Last exit status is $?")
-              |println("Current PID $$")
-              |println("Last background PID $!")
-              |
-              |someapp();;;
-              |
-              |alias ll = "ls -la -F"
-              |
-              |/*
-              | * Test function.
-              | *
-              | * @param a 1st parameter.
-              | */
-              |def fun(a, b, c) = {
-              |    def z() = println()
-              |    val q = (1.054 + 2_00_00) * $4 + valName[2]
-              |    while $q <= work() do println("something")
-              |    val newList = for i <- list() yield i + "str"
-              |
-              |    newList = (1, 2, 3)
-              |
-              |    val anotherList = (1, "true", true, null, ("sub", "list"), newList[1])
-              |    println("nikita") // Direct function call.
-              |    newList[q]("some", 1, "arg") // FP-style function call.
-              |    if boolFunc() && $w then doSome()
-              |    if boolVal() then {
-              |        def z() = println()
-              |        println(z())
-              |    }
-              |    else
-              |        println("Else")
-              |    if !boolVal() then null else null
-              |
-              |    fun1((p, b) => println(p))
-              |}
-              |
-              |def fun1(f, param) = {
-              |    // Comment.
-              |    f($param)
+              |ensure(size([1, 2]) == 2)
+              |""".stripMargin)
+        compileOk(
+            """
+              |def fun(x) = return x
+              |val x = fun(1)
+              |""".stripMargin)
+        compileOk(
+            """
+              |native def assert(cond, msg)
+              |def fun(x) = return x + 1
+              |assert(fun(2) == 3, "Something is wrong")
+              |assert(fun(4) == 5, "Something is wrong")
+              |assert(fun("text") == "text1", "Something is wrong")
+              |""".stripMargin)
+        compileOk(
+            """
+              |native def _println(s)
+              |var x  = 0
+              |while x < 10 do {
+              |     x = x + 1
+              |     if x % 2 == 0 then _println("Even: " + x) else _println("Odd: " + x)
               |}
               |""".stripMargin)
+        compileOk("")
+        compileOk(
+            """
+              |var x  = 0
+              |while x < 10 do {
+              |     x = x + 1
+              |}
+              |""".stripMargin)
+        compileOk("var x = 5 + 5")
+        compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
+        compileOk("var x = (true && false) || true")
+        compileOk(
+            """
+              |alias x = "ls -la"
+              |alias y = 'pwd -c'
+              |""".stripMargin)
+        compileOk(
+            """
+              |native def empty()
+              |native def foo(
+              |     a,
+              |     b,
+              |     c
+              |)
+              |/*
+              | * Function bar.
+              | */
+              |native def bar(
+              |     a,
+              |     /* Parameter b. */
+              |     b,
+              |     // Parameter c.
+              |     c
+              |)
+              |""".stripMargin)
+        compileOk(
+            """
+              |var list = ""
+              |for a <- list do {
+              |    native def x()
+              |    3
+              |}
+              |for a <- list do {
+              |    native def x() // Not a dup since it is from the different scope.
+              |    3
+              |}
+              |""".stripMargin)
+        compileOk(
+            """
+              |def z() = {
+              |     def q() = {}
+              |     def q1() = {}
+              |     def q2() = {}
+              |}
+              |def fun(a, b, c) = {
+              |     def another_fun(x, y) = return x + y
+              |     return another_fun(1, "cosplay")
+              |}
+              |fun(1, 2, 3)
+              |""".stripMargin)
+        compileOk(
+            """
+              |var x = 2
+              |val w = 20
+              |var z = x - (w * 10)
+              |var q = (x + 5) * (x + 3)
+              |""".stripMargin)
+        compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
+        compileOk("var x = 5 + 2")
+        compileOk("var x = 10_000")
+        compileOk("var x = true; var b = false; var c = null")
+        compileOk("var x = 10; var _long_variable = x")
+        compileOk("val x = 10; val y = 'abc'")
+
+    /**
+      *
+      */
+    @Test
+    def baseFailTest(): Unit =
+        compileFail(
+            """
+              |def f(a, b, c) = return 1
+              |f(1, 2) // Wrong number of parameters.
+              |""".stripMargin)
+        compileFail(
+            """
+              |def f(a, b, c) = return 1
+              |f(1, 2, 3, 4) // Wrong number of parameters.
+              |""".stripMargin)
+        compileFail("val 0x = 1 // Invalid variable name.")
+        compileFail("val .x = 1 // Invalid variable name.")
+        compileFail(
+            """
+              |def f(1x) = return true // Invalid parameter name.
+              |""".stripMargin)
+        compileFail(
+            """
+              |val x = 0
+              |x = x + 1 // Can't modify immutable variable.
+              |""".stripMargin)
+        compileFail(
+            """
+              |val list = "" // Just for compilation.
+              |for a <- list do {
+              |     return 2; // Can't use return here.
+              |}
+              |""".stripMargin)
+        compileFail(
+            """
+              |alias x = "ls -l"
+              |alias x = 'pwd'
+              |""".stripMargin)
+        compileFail("var x = d")
+        compileFail("var x = 'wrong quote\"")
+        compileFail("var x = \"\"wrong quote\"")
+        compileFail("var x = \"wrong quote'")
+        compileFail("var x = 1as1212")
+        compileFail(
+            """
+              |def z() = {
+              |     def q() = {}
+              |     def q1() = {}
+              |     def q1() = {}
+              |}
+              |""".stripMargin)
+        compileFail(
+            """
+              |def fun(a, b, c) = {
+              |     def another_fun(x, y) = return x + y
+              |     return another_fun_(1, "cosplay")
+              |}
+              |fun(1, 2, 3)
+              |""".stripMargin)
+
+
 

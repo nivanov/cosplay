@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os.progs.asm.compiler
+package org.cosplay.games.mir
 
 /*
    _________            ______________
@@ -30,21 +30,44 @@ package org.cosplay.games.mir.os.progs.asm.compiler
                ALl rights reserved.
 */
 
-import scala.collection.mutable
-
 /**
   *
   */
-object MirAsmStack:
-    private final val UUID = java.util.UUID.randomUUID()
+object MirUtils:
+    /**
+      * Adds trailing '.', if necessary
+      * 
+      * @param s
+      */
+    def addDot(s: String): String = if s.endsWith(".") then s else s"$s."
 
-    // Special marker for stack frames.
-    final val FRAME_MARKER: Any = UUID
+    /**
+      * Removes trailing '.', if necessary
+      * 
+      * @param s
+      */
+    def removeDot(s: String): String = if s.endsWith(".") then s.substring(0, s.length - 1) else s
+    
+    /**
+      * Removed paired single or double quotes from given string.
+      *
+      * @param s
+      */
+    def dequote(s: String): String =
+        val ss = s.trim
+        if ss.isEmpty then s
+        else if (ss.head == '\'' && s.last == '\'') || (ss.head == '"' && s.last == '"') then ss.substring(1, ss.length - 1)
+        else s
 
-/**
-  *
-  */
-class MirAsmStack extends mutable.Stack[Any]
+    /**
+      *
+      * @param s
+      */
+    def decapitalize(s: String): String = s"${s.head.toLower}${s.tail}"
 
-
+    /**
+      *
+      * @param s
+      */
+    def capitalize(s: String): String = s"${s.head.toUpper}${s.tail}"
 

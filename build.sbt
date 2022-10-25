@@ -32,18 +32,19 @@ val cosPlayVer = "0.7.2"
 
 val scalaMajVer = "3"
 val scalaMinVer = "1.3"
-val log4jVer = "2.18.0"
+val log4jVer = "2.19.0"
 val scalaLoggingVer = "3.9.5"
 val scalaParColVer = "1.0.4"
 val commonsLang3Ver = "3.12.0"
 val commonsMath3Ver = "3.6.1"
-val commonsTextVer = "1.9"
+val commonsTextVer = "1.10.0"
+val commonsCollectionsVer = "4.4"
 val scalaReflectVer = "1.1.4"
-val scalaTestVer = "3.2.13"
-val junitVer = "5.9.0"
+val scalaTestVer = "3.2.14"
+val junitVer = "5.9.1"
 val openjfxVer = "17.0.2"
 val ikonliVer = "12.3.1"
-val flatlafVer = "2.4"
+val flatlafVer = "2.6"
 val miglayoutVer = "11.0"
 val jlineVer = "3.21.0"
 val jnaVer = "5.10.0"
@@ -73,7 +74,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
 
         // Scaladoc config.
         Compile / doc / scalacOptions ++= Seq(
-            "-project-footer", "(C) 2021 Rowan Games, Inc.",
+            "-project-footer", "(C) 2022 Rowan Games, Inc.",
             "-project-version", cosPlayVer,
             "-siteroot", ".",
             "-skip-by-regex:org.cosplay.impl",
@@ -91,6 +92,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "org.apache.commons" % "commons-math3" % commonsMath3Ver,
         libraryDependencies += "org.apache.commons" % "commons-lang3" % commonsLang3Ver,
         libraryDependencies += "org.apache.commons" % "commons-text" % commonsTextVer,
+        libraryDependencies += "org.apache.commons" % "commons-collections4" % commonsCollectionsVer,
         libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % log4jVer,
         libraryDependencies += "org.apache.logging.log4j" % "log4j-api" % log4jVer,
         libraryDependencies += "com.miglayout" % "miglayout-swing" % miglayoutVer,

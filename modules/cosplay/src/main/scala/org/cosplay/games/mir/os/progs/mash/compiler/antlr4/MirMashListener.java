@@ -38,6 +38,16 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitDecl(MirMashParser.DeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MirMashParser#unsetDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnsetDecl(MirMashParser.UnsetDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#unsetDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnsetDecl(MirMashParser.UnsetDeclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MirMashParser#includeDecl}.
 	 * @param ctx the parse tree
 	 */
@@ -48,15 +58,15 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitIncludeDecl(MirMashParser.IncludeDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MirMashParser#delDecl}.
+	 * Enter a parse tree produced by {@link MirMashParser#delimDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterDelDecl(MirMashParser.DelDeclContext ctx);
+	void enterDelimDecl(MirMashParser.DelimDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MirMashParser#delDecl}.
+	 * Exit a parse tree produced by {@link MirMashParser#delimDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitDelDecl(MirMashParser.DelDeclContext ctx);
+	void exitDelimDecl(MirMashParser.DelimDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#assignDecl}.
 	 * @param ctx the parse tree
@@ -128,6 +138,26 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitPipeOp(MirMashParser.PipeOpContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MirMashParser#defCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterDefCall(MirMashParser.DefCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#defCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitDefCall(MirMashParser.DefCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#returnDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnDecl(MirMashParser.ReturnDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#returnDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnDecl(MirMashParser.ReturnDeclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MirMashParser#aliasDecl}.
 	 * @param ctx the parse tree
 	 */
@@ -168,15 +198,25 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitDefDecl(MirMashParser.DefDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MirMashParser#nativeDefDecl}.
+	 * Enter a parse tree produced by {@link MirMashParser#defNameDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterNativeDefDecl(MirMashParser.NativeDefDeclContext ctx);
+	void enterDefNameDecl(MirMashParser.DefNameDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MirMashParser#nativeDefDecl}.
+	 * Exit a parse tree produced by {@link MirMashParser#defNameDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitNativeDefDecl(MirMashParser.NativeDefDeclContext ctx);
+	void exitDefNameDecl(MirMashParser.DefNameDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#natDefDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterNatDefDecl(MirMashParser.NatDefDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#natDefDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitNatDefDecl(MirMashParser.NatDefDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#whileDecl}.
 	 * @param ctx the parse tree
@@ -188,6 +228,16 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitWhileDecl(MirMashParser.WhileDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MirMashParser#whileExprDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileExprDecl(MirMashParser.WhileExprDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#whileExprDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileExprDecl(MirMashParser.WhileExprDeclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MirMashParser#forDecl}.
 	 * @param ctx the parse tree
 	 */
@@ -197,6 +247,16 @@ public interface MirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitForDecl(MirMashParser.ForDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#forExprDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterForExprDecl(MirMashParser.ForExprDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#forExprDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitForExprDecl(MirMashParser.ForExprDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#funParamList}.
 	 * @param ctx the parse tree
@@ -208,101 +268,35 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitFunParamList(MirMashParser.FunParamListContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code fpCallExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
+	 * Enter a parse tree produced by {@link MirMashParser#ifThen}.
 	 * @param ctx the parse tree
 	 */
-	void enterFpCallExpr(MirMashParser.FpCallExprContext ctx);
+	void enterIfThen(MirMashParser.IfThenContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code fpCallExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
+	 * Exit a parse tree produced by {@link MirMashParser#ifThen}.
 	 * @param ctx the parse tree
 	 */
-	void exitFpCallExpr(MirMashParser.FpCallExprContext ctx);
+	void exitIfThen(MirMashParser.IfThenContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code modExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
+	 * Enter a parse tree produced by {@link MirMashParser#ifElse}.
 	 * @param ctx the parse tree
 	 */
-	void enterModExpr(MirMashParser.ModExprContext ctx);
+	void enterIfElse(MirMashParser.IfElseContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code modExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
+	 * Exit a parse tree produced by {@link MirMashParser#ifElse}.
 	 * @param ctx the parse tree
 	 */
-	void exitModExpr(MirMashParser.ModExprContext ctx);
+	void exitIfElse(MirMashParser.IfElseContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code varAccessExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
+	 * Enter a parse tree produced by {@link MirMashParser#ifDecl}.
 	 * @param ctx the parse tree
 	 */
-	void enterVarAccessExpr(MirMashParser.VarAccessExprContext ctx);
+	void enterIfDecl(MirMashParser.IfDeclContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code varAccessExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
+	 * Exit a parse tree produced by {@link MirMashParser#ifDecl}.
 	 * @param ctx the parse tree
 	 */
-	void exitVarAccessExpr(MirMashParser.VarAccessExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code plusMinusExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterPlusMinusExpr(MirMashParser.PlusMinusExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code plusMinusExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitPlusMinusExpr(MirMashParser.PlusMinusExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code mapExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterMapExpr(MirMashParser.MapExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code mapExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitMapExpr(MirMashParser.MapExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code pipelineExecExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterPipelineExecExpr(MirMashParser.PipelineExecExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code pipelineExecExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitPipelineExecExpr(MirMashParser.PipelineExecExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAtomExpr(MirMashParser.AtomExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAtomExpr(MirMashParser.AtomExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code anonDefExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAnonDefExpr(MirMashParser.AnonDefExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code anonDefExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAnonDefExpr(MirMashParser.AnonDefExprContext ctx);
+	void exitIfDecl(MirMashParser.IfDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code parExpr}
 	 * labeled alternative in {@link MirMashParser#expr}.
@@ -328,18 +322,6 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitUnaryExpr(MirMashParser.UnaryExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code forYieldExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterForYieldExpr(MirMashParser.ForYieldExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code forYieldExpr}
-	 * labeled alternative in {@link MirMashParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitForYieldExpr(MirMashParser.ForYieldExprContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code compExpr}
 	 * labeled alternative in {@link MirMashParser#expr}.
 	 * @param ctx the parse tree
@@ -352,17 +334,41 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitCompExpr(MirMashParser.CompExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ifExpr}
+	 * Enter a parse tree produced by the {@code plusMinusExpr}
 	 * labeled alternative in {@link MirMashParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterIfExpr(MirMashParser.IfExprContext ctx);
+	void enterPlusMinusExpr(MirMashParser.PlusMinusExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ifExpr}
+	 * Exit a parse tree produced by the {@code plusMinusExpr}
 	 * labeled alternative in {@link MirMashParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitIfExpr(MirMashParser.IfExprContext ctx);
+	void exitPlusMinusExpr(MirMashParser.PlusMinusExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code pipelineExecExpr}
+	 * labeled alternative in {@link MirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterPipelineExecExpr(MirMashParser.PipelineExecExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code pipelineExecExpr}
+	 * labeled alternative in {@link MirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitPipelineExecExpr(MirMashParser.PipelineExecExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code atomExpr}
+	 * labeled alternative in {@link MirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtomExpr(MirMashParser.AtomExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code atomExpr}
+	 * labeled alternative in {@link MirMashParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtomExpr(MirMashParser.AtomExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code multDivModExpr}
 	 * labeled alternative in {@link MirMashParser#expr}.
@@ -424,36 +430,6 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitEqNeqExpr(MirMashParser.EqNeqExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MirMashParser#listItems}.
-	 * @param ctx the parse tree
-	 */
-	void enterListItems(MirMashParser.ListItemsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MirMashParser#listItems}.
-	 * @param ctx the parse tree
-	 */
-	void exitListItems(MirMashParser.ListItemsContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MirMashParser#mapItem}.
-	 * @param ctx the parse tree
-	 */
-	void enterMapItem(MirMashParser.MapItemContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MirMashParser#mapItem}.
-	 * @param ctx the parse tree
-	 */
-	void exitMapItem(MirMashParser.MapItemContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MirMashParser#mapItems}.
-	 * @param ctx the parse tree
-	 */
-	void enterMapItems(MirMashParser.MapItemsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MirMashParser#mapItems}.
-	 * @param ctx the parse tree
-	 */
-	void exitMapItems(MirMashParser.MapItemsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MirMashParser#compoundExpr}.
 	 * @param ctx the parse tree
 	 */
@@ -474,15 +450,15 @@ public interface MirMashListener extends ParseTreeListener {
 	 */
 	void exitCallParamList(MirMashParser.CallParamListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MirMashParser#keyAccess}.
+	 * Enter a parse tree produced by {@link MirMashParser#callParam}.
 	 * @param ctx the parse tree
 	 */
-	void enterKeyAccess(MirMashParser.KeyAccessContext ctx);
+	void enterCallParam(MirMashParser.CallParamContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MirMashParser#keyAccess}.
+	 * Exit a parse tree produced by {@link MirMashParser#callParam}.
 	 * @param ctx the parse tree
 	 */
-	void exitKeyAccess(MirMashParser.KeyAccessContext ctx);
+	void exitCallParam(MirMashParser.CallParamContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#atom}.
 	 * @param ctx the parse tree
@@ -493,6 +469,36 @@ public interface MirMashListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAtom(MirMashParser.AtomContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#list}.
+	 * @param ctx the parse tree
+	 */
+	void enterList(MirMashParser.ListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#list}.
+	 * @param ctx the parse tree
+	 */
+	void exitList(MirMashParser.ListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#listElems}.
+	 * @param ctx the parse tree
+	 */
+	void enterListElems(MirMashParser.ListElemsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#listElems}.
+	 * @param ctx the parse tree
+	 */
+	void exitListElems(MirMashParser.ListElemsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MirMashParser#listElem}.
+	 * @param ctx the parse tree
+	 */
+	void enterListElem(MirMashParser.ListElemContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MirMashParser#listElem}.
+	 * @param ctx the parse tree
+	 */
+	void exitListElem(MirMashParser.ListElemContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MirMashParser#qstring}.
 	 * @param ctx the parse tree

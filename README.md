@@ -76,7 +76,7 @@ Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
 * Join project on [GitHub](https://github.com/nivanov/cosplay/issues)
 
 ## Copyright
-Copyright (C) 2021 Rowan Games, Inc.
+Copyright (C) 2022 Rowan Games, Inc.
 
 <img src="https://cosplayengine.com/images/cosplay-grey.gif" height="24px" alt="CosPlay Logo">
 

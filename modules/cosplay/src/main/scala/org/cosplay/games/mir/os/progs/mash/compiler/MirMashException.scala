@@ -30,20 +30,12 @@ package org.cosplay.games.mir.os.progs.mash.compiler
                ALl rights reserved.
 */
 
-import scala.collection.mutable
+import org.cosplay.*
 
 /**
-  *
+  * Mash syntax or runtime compiler error.
+  * 
+  * @param errMsg Error message.
   */
-object MirMashStack:
-    private final val UUID = java.util.UUID.randomUUID()
-
-    // Special marker for stack frames.
-    final val FRAME_MARKER: () => Any = () => UUID
-
-/**
-  *
-  */
-class MirMashStack extends mutable.Stack[() => Any]
-
+class MirMashException(errMsg: String) extends CPException(errMsg)
 

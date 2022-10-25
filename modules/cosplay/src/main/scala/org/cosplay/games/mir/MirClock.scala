@@ -31,8 +31,6 @@ package org.cosplay.games.mir
 */
 
 import org.cosplay.*
-import mir.*
-
 import java.text.*
 import java.util.Date
 
@@ -54,7 +52,7 @@ object MirClock:
 
     /**
       *
-      * @param elapsedMs
+      * @param elapsedMs Elapsed time since the "crash".
       */
     def init(elapsedMs: Long): Unit =
         require(elapsedMs >= 0)
@@ -93,7 +91,7 @@ object MirClock:
     /**
       * @param ms
       */
-    def formatTimeDate(ms: Long): String = DATETIME_FMT.format(new Date(ms))
+    def formatDateTime(ms: Long): String = DATETIME_FMT.format(new Date(ms))
 
     /**
       * @param ms

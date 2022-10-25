@@ -17,6 +17,7 @@
 
 package org.cosplay.games.mir.os.progs.asm.compiler
 
+import org.cosplay.games.mir.MirClock
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -39,20 +40,24 @@ import scala.util.*
   *
   */
 object MirAsmCompilerTests:
-    /**
-      *
-      * @param code
-      */
-    def compileOk(code: String): Unit =
-        Try((new MirAsmCompiler).compile(code, "test")).match
-            case Success(_) => ()
-            case Failure(e) => assertTrue(false, e.getMessage)
+    MirClock.init(0)
 
     /**
       *
-      * @param code
+      * @param code Asm code to test.
       */
-    def compileFail(code: String): Unit =
+    private def compileOk(code: String): Unit =
+        Try((new MirAsmCompiler).compile(code, "test")).match
+            case Success(_) => ()
+            case Failure(e) =>
+                e.printStackTrace()
+                assertTrue(false, e.getMessage)
+
+    /**
+      *
+      * @param code Asm code to test.
+      */
+    private def compileFail(code: String): Unit =
         Try((new MirAsmCompiler).compile(code, "test")).match
             case Success(_) => assertTrue(false)
             case Failure(e) =>
@@ -66,7 +71,7 @@ object MirAsmCompilerTests:
     def dupLabelTest(): Unit = compileFail(
         """
           |_label: ; Label.
-          |     add s, 2
+          |     add $_s, 2
           |
           |_label: ; Should be an error...
           |
@@ -87,6 +92,18 @@ object MirAsmCompilerTests:
         compileFail("add s,, 2 ; Extra comma.")
         compileFail("add s, 2_00.12Ea34 ; Bad number.")
         compileFail("add 'bad string' ; Bad string.")
+        compileFail(
+            """
+              |add @2, 300s, "asda"
+              |""".stripMargin)
+        compileFail(
+            """
+              |add @2, -300.23, "asda"
+              |""".stripMargin)
+        compileFail(
+            """
+              |add @2, 300, 'asda'
+              |""".stripMargin)
 
     /**
       *
@@ -101,11 +118,12 @@ object MirAsmCompilerTests:
           |; Start some code...
           |;
           |_label: ; Label.
-          |     add s, 2_00.12E34 ; Comment.
-          |     push null
-          |     pop
+          |     add $_s, 2_00.12E34 ; Comment.
+          |     push null @1,1,"source"
+          |     
+          |     
+          |     
+          |     pop @2, 300, "asdadasa"
           |     push "qwerty", ""
-          |
-          |     mov "test", 1, null ; Inline comments.
           |""".stripMargin
     )

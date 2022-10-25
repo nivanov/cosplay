@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.mir.os
+package org.cosplay.games.mir.os.progs.asm.compiler
 
 /*
    _________            ______________
@@ -25,28 +25,41 @@ package org.cosplay.games.mir.os
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII GAME ENGINE FOR SCALA3
-            (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+          2D ASCII JVM GAME ENGINE FOR SCALA3
+              (C) 2021 Rowan Games, Inc.
+                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
 import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.MirFileType.*
+import scala.collection.mutable
 
 /**
   *
-  * @param name Name of file (not including its path).
-  * @param owner User owner of this file.
-  * @param parent Parent directory of this file.
-  * @param drv Device driver.
-  * @param initMs Initial creation and update timestamp. Defaults to the current time.
+  * @param exeCtx
   */
-class MirDeviceFile(
-    name: String,
-    owner: MirUser,
-    parent: MirDirectoryFile,
-    drv: MirDeviceDriver,
-    initMs: Long = MirClock.now()
-) extends MirFile(FT_DEV, name, owner, parent.?, true, false, initMs)
+class MirAsmContext(exeCtx: MirExecutableContext):
+    private val vars = mutable.HashMap.empty[String, Any]
 
+    /**
+      *
+      */
+    def getExecContext: MirExecutableContext = exeCtx
+
+    /**
+      *
+      * @param id
+      */
+    def getVar(id: String): Option[Any] = vars.get(id)
+
+    /**
+      *
+      * @param id
+      * @param v
+      */
+    def setVar(id: String, v: Any): Unit = vars.put(id, v)
+
+    /**
+      *
+      * @param id
+      */
+    def hasVar(id: String): Boolean = getVar(id).isDefined
