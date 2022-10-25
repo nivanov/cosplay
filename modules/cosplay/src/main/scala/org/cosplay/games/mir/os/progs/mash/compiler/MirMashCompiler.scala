@@ -575,7 +575,6 @@ class MirMashCompiler:
                 val thenLbl = genLabel()
                 val elseLbl = genLabel()
                 val exitLbl = genLabel()
-
                 block.add("push 0", null, "Start of '!' code.")
                 block.add("eq")
                 block.add(s"ifjmp $thenLbl, $elseLbl")
@@ -585,7 +584,6 @@ class MirMashCompiler:
                 block.add("nop", exitLbl)
         override def exitAndOrExpr(using ctx: MMP.AndOrExprContext): Unit =
             var v = genVar()
-
             block.add(s"pop $v")
             block.add("calln \"bool_sigmoid\"")
             block.add(s"push $v")

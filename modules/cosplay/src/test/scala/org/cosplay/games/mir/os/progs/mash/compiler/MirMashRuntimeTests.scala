@@ -110,6 +110,8 @@ object MirMashRuntimeTests extends MirMashNatives:
                |    [2, "2"],
                |    ["3", 3]
                |])
+               |ensure(get(key_list(map), 0) == 1)
+               |ensure(get(key_list(map), 2) == "3")
                |ensure(get(map, "1") == "1")
                |ensure(get(map, "2") == "2")
                |ensure(get(map, "3") == 3)

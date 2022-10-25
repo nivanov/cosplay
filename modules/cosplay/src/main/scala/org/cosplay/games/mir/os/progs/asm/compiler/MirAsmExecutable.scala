@@ -266,6 +266,7 @@ object MirAsmExecutable:
                         case d: Int => stack.push(d.toLong) // Convert to 'long'.
                         case list: StackList => stack.push(list)
                         case map: StackMap => stack.push(map)
+                        case iter: Iterable[Any] => stack.push(mutable.ArrayBuffer.from(iter))
                         case _ => assert(false, s"Invalid assembler stack value push: $v")
 
                 def neg(): Unit = pop() match
@@ -444,8 +445,8 @@ object MirAsmExecutable:
                                     case key: String => push(map(key))
                                     case _ => throw error(s"Invalid map key (string expected): $idxOrKey")
                     def copy(): Unit =()
-                    def key_list(): Unit =()
-                    def value_list(): Unit =()
+                    def key_list(): Unit = push(popMap().keySet)
+                    def value_list(): Unit = push(popMap().values)
                     def size(): Unit = push(listMapOp(_.size, _.size))
                     def drop(): Unit =()
                     def drop_right(): Unit =()
