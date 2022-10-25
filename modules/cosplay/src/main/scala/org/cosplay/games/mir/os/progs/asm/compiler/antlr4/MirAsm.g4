@@ -104,7 +104,7 @@ INSRT_NAME
     | 'gtv'
     | 'gtev'
 
-    // Bitwise/logic operations.
+    // Bit operations.
     | 'and' // '&'
     | 'or' // '|'
     | 'not' // '~'

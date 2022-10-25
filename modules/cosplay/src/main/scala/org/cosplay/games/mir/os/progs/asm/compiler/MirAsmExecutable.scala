@@ -145,10 +145,7 @@ object MirAsmExecutable:
                 def popBool(): Boolean =
                     val b = pop()
                     b match
-                        case d: Long =>
-                            if d  == 1L then true
-                            else if d == 0L then false
-                            else throw wrongStack(b, BOOL_ERR_MSG)
+                        case d: Long => d != 0L
                         case _ => throw wrongStack(b, BOOL_ERR_MSG)
 
                 def varParam(idx: Int): String = params(idx) match
@@ -269,7 +266,7 @@ object MirAsmExecutable:
                         case d: Int => stack.push(d.toLong) // Convert to 'long'.
                         case list: StackList => stack.push(list)
                         case map: StackMap => stack.push(map)
-                        case _ => assert(false, s"Invalid assembler stack value type: $v")
+                        case _ => assert(false, s"Invalid assembler stack value push: $v")
 
                 def neg(): Unit = pop() match
                     case d: Long => push(-d)
@@ -491,6 +488,12 @@ object MirAsmExecutable:
                         val list = popList()
                         push(list.takeRight(n.toInt))
                     def reverse(): Unit = push(popList().reverse)
+                    def bool_sigmoid(): Unit =
+                        pop() match
+                            case x: Any if x == null => push(0L)
+                            case d: Double => push(if d == 0F then 0L else 1L)
+                            case d: Long => push(if d == 0L then 0L else 1L)
+                            case x => throw wrongStack(x, "numeric or 'null'")
                     def ceil(): Unit = push(math.ceil(popDouble()))
                     def floor(): Unit = push(math.floor(popDouble()))
                     def rint(): Unit = push(math.rint(popDouble()))
@@ -698,7 +701,7 @@ object MirAsmExecutable:
                         case "neg" => checkParamCount(0, 0); neg()
                         case "negv" => checkParamCount(1, 1); negv()
 
-                        // Bitwise/logical operations.
+                        // Bit operations.
                         case "not" => checkParamCount(0, 0); push(~popLong())
                         case "and" => checkParamCount(0, 0); bitBinOp(_ & _)
                         case "or" => checkParamCount(0, 0); bitBinOp(_ | _)
@@ -783,6 +786,7 @@ object MirAsmExecutable:
                                 case "coin_flip" => NativeFunctions.coin_flip()
 
                                 // Math functions.
+                                case "bool_sigmoid" => NativeFunctions.bool_sigmoid()
                                 case "ceil" => NativeFunctions.ceil()
                                 case "floor" => NativeFunctions.floor()
                                 case "rint" => NativeFunctions.rint()

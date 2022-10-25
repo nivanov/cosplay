@@ -151,6 +151,26 @@ object MirMashRuntimeTests extends MirMashNatives:
             s"""
               |$NATIVE_DECLS
               |
+              |val x = (!true == false) || (2 != 3)
+              |_println("x=" + x)
+              |ensure(x == 1)
+              |""".stripMargin)
+        executeOk(
+            s"""
+               |$NATIVE_DECLS
+               |ensure(60 & 13 == 12)
+               |ensure(60 | 13 == 61)
+               |ensure(60 ^ 13 == 49)
+               |ensure(~60 == -61)
+               |ensure(60 << 2 == 240)
+               |ensure(60 >> 2 == 15)
+               |ensure(60 >>> 2 == 15)
+               |
+               |""".stripMargin)
+        executeOk(
+            s"""
+              |$NATIVE_DECLS
+              |
               |for a <- [1, 2, 3, 4] do _println("List element: " + a)
               |val list = ["a", "b", "c"]
               |_println("-----")
