@@ -119,7 +119,7 @@
         <junit.ver>5.9.1</junit.ver>
         <openjfx.ver>17.0.2</openjfx.ver>
         <ikonli.ver>12.3.1</ikonli.ver>
-        <flatlaf.ver>2.4</flatlaf.ver>
+        <flatlaf.ver>2.6</flatlaf.ver>
         <miglayout.ver>11.0</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
