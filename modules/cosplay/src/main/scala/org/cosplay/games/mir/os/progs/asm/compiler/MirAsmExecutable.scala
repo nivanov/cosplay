@@ -388,15 +388,34 @@ object MirAsmExecutable:
                     def split(): Unit =
                         val sepRegex = popStr()
                         val str = popStr()
-                        val list: StackList = mutable.ArrayBuffer.from(str.split(sepRegex))
-                        push(list)
-                    def split_trim(): Unit = ()
+                        push(mutable.ArrayBuffer.from(str.split(sepRegex)))
+                    def split_trim(): Unit =
+                        val sepRegex = popStr()
+                        val str = popStr()
+                        push(mutable.ArrayBuffer.from(str.split(sepRegex).map(_.trim)))
                     def trim(): Unit = push(popStr().trim())
-                    def start_width(): Unit = ()
-                    def end_width(): Unit = ()
-                    def contains(): Unit = ()
-                    def substr(): Unit = ()
-                    def replace(): Unit = ()
+                    def start_width(): Unit =
+                        val s1 = popStr()
+                        val s2 = popStr()
+                        push(s2.startsWith(s1))
+                    def end_width(): Unit =
+                        val s1 = popStr()
+                        val s2 = popStr()
+                        push(s2.endsWith(s1))
+                    def contains(): Unit =
+                        val s1 = popStr()
+                        val s2 = popStr()
+                        push(s2.contains(s1))
+                    def substr(): Unit =
+                        val s = popStr()
+                        val from = popLong()
+                        val to = popLong()
+                        push(s.substring(from.toInt, to.toInt))
+                    def replace(): Unit =
+                        val s = popStr()
+                        val target = popStr()
+                        val repl = popStr()
+                        push(s.replace(target, repl))
                     def to_long(): Unit = Try(popStr().toLong).match
                         case Success(i) => push(i)
                         case Failure(e) => throw e
@@ -444,29 +463,67 @@ object MirAsmExecutable:
                                 idxOrKey match
                                     case key: String => push(map(key))
                                     case _ => throw error(s"Invalid map key (string expected): $idxOrKey")
-                    def copy(): Unit =()
+                    def copy(): Unit = popListOrMap() match
+                        case list: StackList => push(mutable.ArrayBuffer.from(list))
+                        case map: StackMap => push(mutable.HashMap.from(map))
                     def key_list(): Unit = push(popMap().keySet)
                     def value_list(): Unit = push(popMap().values)
                     def size(): Unit = push(listMapOp(_.size, _.size))
-                    def drop(): Unit =()
-                    def drop_right(): Unit =()
-                    def contains_key(): Unit =()
-                    def contains_value(): Unit =()
-                    def put(): Unit = ()
+                    def drop(): Unit =
+                        val n = popLong()
+                        val list = popList()
+                        push(list.drop(n.toInt))
+                    def drop_right(): Unit =
+                        val n = popLong()
+                        val list = popList()
+                        push(list.dropRight(n.toInt))
+                    def contains_key(): Unit =
+                        val key = popStr()
+                        val map = popMap()
+                        push(map.contains(key))
+                    def contains_value(): Unit =
+                        val value = pop()
+                        val map = popMap()
+                        push(map.values.exists(_ == value))
+                    def put(): Unit =
+                        val value = pop()
+                        val key = popStr()
+                        val map = popMap()
+                        map.put(key, value)
                     def first(): Unit = push(popList().head)
                     def last(): Unit = push(popList().last)
-                    def index_of(): Unit =()
-                    def index_of_start(): Unit =()
-                    def last_index_of(): Unit =()
+                    def index_of(): Unit =
+                        val elm = pop()
+                        val list = popList()
+                        push(list.indexOf(elm))
+                    def index_of_start(): Unit =
+                        val from = popLong()
+                        val elm = pop()
+                        val list = popList()
+                        push(list.indexOf(elm, from.toInt))
+                    def last_index_of(): Unit =
+                        val elm = pop()
+                        val list = popList()
+                        push(list.lastIndexOf(elm))
                     def is_empty(): Unit = push(listMapOp(_.isEmpty, _.isEmpty))
                     def non_empty(): Unit = push(listMapOp(_.nonEmpty, _.nonEmpty))
-                    def mk_string(): Unit =()
-                    def distinct(): Unit =()
-                    def add_list(): Unit =()
+                    def mk_string(): Unit =
+                        val sep = popStr()
+                        val list = popList()
+                        push(list.mkString(sep))
+                    def distinct(): Unit = push(popList().distinct)
+                    def add_list(): Unit =
+                        val list1 = popList()
+                        val list2 = popList()
+                        list2.addAll(list1)
                     def has_all(): Unit =
-                        val listToFind = popList()
-                        val listToSearch = popList()
-                    def has_any(): Unit =()
+                        val list1 = popList()
+                        val list2 = popList()
+                        list1.forall(v => list2.contains(v))
+                    def has_any(): Unit =
+                        val list1 = popList()
+                        val list2 = popList()
+                        list1.exists(v => list2.contains(v))
                     def add(): Unit =
                         val v = pop()
                         val list = popList()
@@ -475,7 +532,11 @@ object MirAsmExecutable:
                         val v = pop()
                         val list = popList()
                         list.prepend(v)
-                    def update(): Unit =()
+                    def update(): Unit =
+                        val value = pop()
+                        val idx = popLong().toInt
+                        val list = popList()
+                        list.update(idx, value)
                     def remove(): Unit =
                         val idx = popLong()
                         val list = popList()
@@ -525,8 +586,6 @@ object MirAsmExecutable:
                     def log1p(): Unit = push(math.log1p(popDouble()))
                     def pi(): Unit = push(math.Pi)
                     def euler(): Unit = push(math.E)
-                    def min(): Unit =()
-                    def max(): Unit =()
                     def abs(): Unit = push(math.abs(popLong()))
                     def stddev(): Unit =
                         val lst = popList().toSeq
@@ -815,8 +874,6 @@ object MirAsmExecutable:
                                 case "log1p" => NativeFunctions.log1p()
                                 case "pi" => NativeFunctions.pi()
                                 case "euler" => NativeFunctions.euler()
-                                case "min" => NativeFunctions.min()
-                                case "max" => NativeFunctions.max()
                                 case "abs" => NativeFunctions.abs()
                                 case "stddev" => NativeFunctions.stddev()
                                 case "pow" => NativeFunctions.pow()

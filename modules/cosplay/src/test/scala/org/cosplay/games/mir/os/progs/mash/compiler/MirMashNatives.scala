@@ -122,7 +122,7 @@ trait MirMashNatives:
           | native def end_width(s1, s2)
           | native def contains(s1, s2)
           | native def substr(s, x, y)
-          | native def replace(s1, s2)
+          | native def replace(s1, s2, s3)
           | native def to_long(s)
           | native def to_double(s)
           |
