@@ -160,10 +160,6 @@ object MirAsmExecutable:
                     case LongParam(d) => d
                     case _ => throw wrongParam(idx, "numeric")
 
-                def intParam(idx: Int): Int  = params(idx) match
-                    case LongParam(d) => d.toInt
-                    case _ => throw wrongParam(idx, "numeric")
-
                 def strOrVarParam(idx: Int): String =
                     params(idx) match
                         case StringParam(s) => s
@@ -806,7 +802,7 @@ object MirAsmExecutable:
                         case "exit" => checkParamCount(0, 0); exit = true
                         case "nop" => checkParamCount(0, 0) // No-op instruction.
                         case "clr" => checkParamCount(0, 0); for _ <- 0 until popLong().toInt do stack.pop()
-                        case "clrp" => checkParamCount(1, 1); for _ <- 0 until intParam(0) do stack.pop()
+                        case "clrp" => checkParamCount(1, 1); for _ <- 0 until longParam(0).toInt do stack.pop()
                         case "clrv" => checkParamCount(1, 1); for _ <- 0 until intVar(varParam(0)) do stack.pop()
                         case "ssz" => checkParamCount(0, 0); push(stack.size)
                         case "calln" =>
