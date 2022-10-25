@@ -116,7 +116,7 @@
         <commons.collections.ver>4.4</commons.collections.ver>
         <scala3.reflect.ver>1.1.4</scala3.reflect.ver>
         <scalatest.ver>3.2.13</scalatest.ver>
-        <junit.ver>5.9.0</junit.ver>
+        <junit.ver>5.9.1</junit.ver>
         <openjfx.ver>17.0.2</openjfx.ver>
         <ikonli.ver>12.3.1</ikonli.ver>
         <flatlaf.ver>2.4</flatlaf.ver>
