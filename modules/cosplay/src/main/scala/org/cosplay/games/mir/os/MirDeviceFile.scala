@@ -38,7 +38,7 @@ import org.cosplay.games.mir.os.MirFileType.*
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param parent Parent directory of this file.
+  * @param parent Parent directory of this file, i.e. a directory this file belongs to.
   * @param drv Device driver.
   * @param initMs Initial creation and update timestamp. Defaults to the current time.
   */

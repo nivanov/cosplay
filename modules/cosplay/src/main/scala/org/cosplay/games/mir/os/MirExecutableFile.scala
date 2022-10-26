@@ -38,6 +38,7 @@ import org.cosplay.games.mir.os.MirFileType.*
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
+  * @param parent Parent directory of this file, i.e. a directory this file belongs to.
   * @param exe Executable program.
   * @param otherAcs Can others read or execute. Owner can do anything.
   * @param otherMod Can others change or delete. Owner can do anything.
