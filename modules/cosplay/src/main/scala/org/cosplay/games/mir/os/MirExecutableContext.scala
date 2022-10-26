@@ -31,17 +31,22 @@ package org.cosplay.games.mir.os
 */
 
 import org.cosplay.games.mir.*
+import scala.collection.mutable
 
 /**
   *
   * @param pid
+  * @param ppid
   * @param file
-  * @param args
+  * @param cmdArgs
   * @param con
   * @param rt
   * @param fs
+  * @param host
   * @param workDir
-  * @param env
+  * @param vars
+  * @param aliases
+  * @param lastExit
   * @param usr
   * @param in
   * @param out
@@ -49,54 +54,48 @@ import org.cosplay.games.mir.*
   */
 case class MirExecutableContext(
     pid: Long,
+    ppid: Long,
     file: MirExecutableFile,
-    args: Seq[String],
+    cmdArgs: Seq[String],
     con: MirConsole,
     rt: MirRuntime,
     fs: MirFileSystem,
     host: String,
-    workDir: MirDirectoryFile,
-    env: Map[String, String],
+    var workDir: MirDirectoryFile,
+    vars: mutable.HashMap[String, String],
+    aliases: mutable.HashMap[String, String],
+    var lastExit: Int,
     usr: MirUser,
     in: MirInputStream,
     out: MirOutputStream,
     err: MirOutputStream
 ):
-    @transient private var killed = false
-
     /**
+      * Forks child process with given parameters.
       *
-      * @param file
-      * @param args
+      * @param file Executable file to fork with.
+      * @param cmdArgs Command line arguments.
       * @param in
       * @param out
       * @param err
       */
     def fork(
         file: MirExecutableFile,
-        args: Seq[String],
+        cmdArgs: Seq[String],
         in: MirInputStream = MirInputStream.nullStream(),
         out: MirOutputStream = MirOutputStream.consoleStream(con),
         err: MirOutputStream = MirOutputStream.consoleStream(con)): MirProcess =
         rt.exec(
-            rt.get(pid),
+            rt.getProcess(pid),
             file,
-            args,
+            cmdArgs,
             workDir,
             usr,
-            env,
+            vars,
+            aliases,
+            lastExit,
             in,
             out,
             err
         )
-
-    /**
-      *
-      */
-    def isKilled: Boolean = killed
-
-    /**
-      *
-      */
-    def kill(): Unit = killed = true
 

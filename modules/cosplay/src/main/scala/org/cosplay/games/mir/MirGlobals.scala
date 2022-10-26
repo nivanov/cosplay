@@ -21,6 +21,8 @@ import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 
+import scala.annotation.targetName
+
 
 /*
    _________            ______________
@@ -59,7 +61,13 @@ val markup = CPMarkup(
 )
 
 extension[T](ref: T)
+    @targetName("asAnOption")
     def `?`: Option[T] = Option(ref)
+
+extension[R, T](opt: Option[T])
+    def or(f: T => R, dflt: => R): R = opt match
+        case Some(t) => f(t)
+        case None => dflt
 
 extension(d: Int)
     // To bytes...

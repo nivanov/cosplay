@@ -25,6 +25,7 @@ import station.*
 import os.*
 import progs.*
 
+import scala.collection.mutable
 import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -55,9 +56,9 @@ object MirOs:
       * @param player
       */
     def apply(
-                 fs: MirFileSystem,
-                 usrs: Seq[MirUser],
-                 player: MirCrewMember
+        fs: MirFileSystem,
+        usrs: Seq[MirUser],
+        player: MirCrewMember
     ): MirOs =
         require(usrs.exists(_.isRoot))
 
@@ -67,14 +68,15 @@ object MirOs:
             override def getFs: MirFileSystem = fs
             override def bootUp(con: MirConsole): Unit =
                 stateMgr.state.osRebootCnt += 1
-
                 MirRuntime(fs, con, getHostname).exec(
                     None,
                     fs.file("/sbin/boot").get,
                     Seq.empty,
                     fs.file("/").get,
                     rootUsr,
-                    Map.empty
+                    mutable.HashMap.empty,
+                    mutable.HashMap.empty,
+                    0, // Initial last exit is '0'.
                 )
 
             override def getAllUsers: Seq[MirUser] = usrs
