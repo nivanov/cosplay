@@ -17,8 +17,9 @@
 
 package org.cosplay.games.mir.os.progs.login
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
+import org.cosplay.*
+import games.mir.*
+import os.*
 
 /*
    _________            ______________

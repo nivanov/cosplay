@@ -30,9 +30,10 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.MirFileType.*
+import org.cosplay.*
+import games.mir.*
+import os.*
+import MirFileType.*
 
 /**
   *

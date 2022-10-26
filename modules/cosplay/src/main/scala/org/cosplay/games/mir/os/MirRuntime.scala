@@ -30,9 +30,10 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import org.cosplay.*
+import games.mir.*
 import java.util.concurrent.*
 import scala.collection.mutable
-import org.cosplay.games.mir.*
 
 /**
   *
@@ -73,7 +74,7 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
         cmdArgs: Seq[String],
         workDir: MirDirectoryFile,
         usr: MirUser,
-        vars: mutable.HashMap[String, String],
+        vars: mutable.HashMap[String, Any],
         aliases: mutable.HashMap[String, String],
         lastExit: Int,
         in: MirInputStream = MirInputStream.nullStream(),
@@ -85,12 +86,11 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
         var finishTs = -1L
         var startTs: Long = 0
         val pid = pidGen
-        val ppid = parent.or(_.getPid, 0L)
         pidGen += 1
 
         val ctx = MirExecutableContext(
             pid,
-            ppid,
+            parent,
             file,
             cmdArgs,
             con,
@@ -117,7 +117,9 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
                     case _: InterruptedException => ()
                     case e: Exception => err.println(e.getLocalizedMessage)
                 finishTs = MirClock.now()
-                code.getOrElse(-1)
+                val exitCode = code.getOrElse(-1)
+                ctx.lastExit = exitCode
+                exitCode
         })
 
         val proc = new MirProcess:

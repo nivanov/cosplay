@@ -75,6 +75,7 @@ object MirAsmExecutable:
 
             val stack = mutable.Stack.empty[Any]
             val callStack = mutable.Stack.empty[Int]
+            val exeCtx = ctx.exeCtx
 
             // Ensure instructions are sorted & indexed.
             val code = instrs.sortBy(_.line)
@@ -109,7 +110,7 @@ object MirAsmExecutable:
                     if paramsCnt < min then throw error("Insufficient assembler instruction parameters")
                     if paramsCnt > max then throw error("Too many assembler instruction parameters")
 
-                def getVar(id: String): Any = ctx.getVar(id) match
+                def getVar(id: String): Any = ctx.vars.get(id) match
                     case Some(v) => v
                     case None => throw error(s"Undefined assembler variable: $id")
 
@@ -183,15 +184,15 @@ object MirAsmExecutable:
                     val v = anyParam(1) // 2d parameter (anything, including variable).
                     getVar(id) match
                         case d1: Long => v match
-                            case d2: Long => ctx.setVar(id, d2 + d1 * mul)
-                            case d2: Double => ctx.setVar(id, d2 + d1 * mul)
+                            case d2: Long => ctx.vars.put(id, d2 + d1 * mul)
+                            case d2: Double => ctx.vars.put(id, d2 + d1 * mul)
                             case _ => throw wrongParam(1, "numeric")
                         case d1: Double => v match
-                            case d2: Long => ctx.setVar(id, d2 + d1 * mul)
-                            case d2: Double => ctx.setVar(id, d2 + d1 * mul)
+                            case d2: Long => ctx.vars.put(id, d2 + d1 * mul)
+                            case d2: Double => ctx.vars.put(id, d2 + d1 * mul)
                             case _ => throw wrongParam(1, "numeric")
                         // String concatenation.
-                        case s: String => ctx.setVar(id, s"$s${v.toString}")
+                        case s: String => ctx.vars.put(id, s"$s${v.toString}")
                         case _ => throw wrongVar(id, "numeric")
 
                 //noinspection DuplicatedCode
@@ -200,12 +201,12 @@ object MirAsmExecutable:
                     val v = anyParam(1) // 2d parameter (anything, including variable).
                     getVar(id) match
                         case d1: Long => v match
-                            case d2: Long => ctx.setVar(id, d2 * d1)
-                            case d2: Double => ctx.setVar(id, d2 * d1)
+                            case d2: Long => ctx.vars.put(id, d2 * d1)
+                            case d2: Double => ctx.vars.put(id, d2 * d1)
                             case _ => throw wrongParam(1, "numeric")
                         case d1: Double => v match
-                            case d2: Long => ctx.setVar(id, d2 * d1)
-                            case d2: Double => ctx.setVar(id, d2 * d1)
+                            case d2: Long => ctx.vars.put(id, d2 * d1)
+                            case d2: Double => ctx.vars.put(id, d2 * d1)
                             case _ => throw wrongParam(1, "numeric")
                         case _ => throw wrongVar(id, "numeric")
 
@@ -215,12 +216,12 @@ object MirAsmExecutable:
                     val v = anyParam(1) // Divisor (anything, including variable).
                     getVar(id) match
                         case d1: Long => v match
-                            case d2: Long => ctx.setVar(id, d1 / d2)
-                            case d2: Double => ctx.setVar(id, d1 / d2)
+                            case d2: Long => ctx.vars.put(id, d1 / d2)
+                            case d2: Double => ctx.vars.put(id, d1 / d2)
                             case _ => throw wrongParam(1, "numeric")
                         case d1: Double => v match
-                            case d2: Long => ctx.setVar(id, d1 / d2)
-                            case d2: Double => ctx.setVar(id, d1 / d2)
+                            case d2: Long => ctx.vars.put(id, d1 / d2)
+                            case d2: Double => ctx.vars.put(id, d1 / d2)
                             case _ => throw wrongParam(1, "numeric")
                         case _ => throw wrongVar(id, "numeric")
 
@@ -243,7 +244,7 @@ object MirAsmExecutable:
                 def incDecVar(v: Int): Unit =
                     require(v == 1 || v == -1)
                     val id = varParam(0) // 1st parameter (always variable).
-                    ctx.setVar(id, longVar(id) + v)
+                    ctx.vars.put(id, longVar(id) + v)
 
                 def incDec(v: Int): Unit =
                     require(v == 1 || v == -1)
@@ -273,8 +274,8 @@ object MirAsmExecutable:
                 def negv(): Unit =
                     val id = varParam(0)
                     getVar(id) match
-                        case d: Long => ctx.setVar(id, -d)
-                        case d: Double => ctx.setVar(id, -d)
+                        case d: Long => ctx.vars.put(id, -d)
+                        case d: Double => ctx.vars.put(id, -d)
                         case _ => throw wrongVar(id, "numeric")
 
                 def mod(): Unit =
@@ -345,8 +346,8 @@ object MirAsmExecutable:
                     private final val WEEK_OF_YEAR = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()
                     private final val WEEK_OF_MONTH = WeekFields.of(Locale.getDefault()).weekOfMonth()
 
-                    def print(): Unit = ctx.getExecContext.out.print(pop().toString)
-                    def println(): Unit = ctx.getExecContext.out.println(pop().toString)
+                    def print(): Unit = ctx.exeCtx.out.print(pop().toString)
+                    def println(): Unit = ctx.exeCtx.out.println(pop().toString)
                     def guid(): Unit = push(CPRand.guid)
                     def guid6(): Unit = push(CPRand.guid6)
                     def rand(): Unit = push(CPRand.randDouble())
@@ -737,10 +738,10 @@ object MirAsmExecutable:
                         case "cpop" =>
                             checkParamCount(0, 1)
                             if stack.nonEmpty then
-                                if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
+                                if params.isEmpty then pop() else ctx.vars.put(varParam(0), pop())
                         case "push" => checkParamCount(1, 1); push(anyParam(0))
                         case "pushn" => checkParamCount(1, Int.MaxValue); for (i <- 0 until paramsCnt) push(anyParam(i))
-                        case "pop" => checkParamCount(0, 1); if params.isEmpty then pop() else ctx.setVar(varParam(0), pop())
+                        case "pop" => checkParamCount(0, 1); if params.isEmpty then pop() else ctx.vars.put(varParam(0), pop())
                         case "add" => checkParamCount(0, 0); addSub(1)
                         case "mod" => checkParamCount(0, 0); mod()
                         case "inc" => checkParamCount(0, 0); incDec(1)
@@ -768,7 +769,7 @@ object MirAsmExecutable:
                         case "ror" => checkParamCount(0, 0); ror()
                         case "rol" => checkParamCount(0, 0); rol()
 
-                        case "let" => checkParamCount(2, 2); ctx.setVar(varParam(0), anyParam(1))
+                        case "let" => checkParamCount(2, 2); ctx.vars.put(varParam(0), anyParam(1))
                         case "dup" => checkParamCount(0, 0); if stack.nonEmpty then push(stack.head)
                         case "eq" => checkParamCount(0, 0); push(pop() == pop())
                         case "neq" => checkParamCount(0, 0); push(pop() != pop())

@@ -36,7 +36,7 @@ import scala.collection.mutable
 /**
   *
   * @param pid
-  * @param ppid
+  * @param parent
   * @param file
   * @param cmdArgs
   * @param con
@@ -54,7 +54,7 @@ import scala.collection.mutable
   */
 case class MirExecutableContext(
     pid: Long,
-    ppid: Long,
+    parent: Option[MirProcess],
     file: MirExecutableFile,
     cmdArgs: Seq[String],
     con: MirConsole,
@@ -62,7 +62,7 @@ case class MirExecutableContext(
     fs: MirFileSystem,
     host: String,
     var workDir: MirDirectoryFile,
-    vars: mutable.HashMap[String, String],
+    vars: mutable.HashMap[String, Any],
     aliases: mutable.HashMap[String, String],
     var lastExit: Int,
     usr: MirUser,

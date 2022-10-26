@@ -21,8 +21,6 @@ import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 
-import scala.annotation.targetName
-
 
 /*
    _________            ______________
@@ -59,28 +57,6 @@ val markup = CPMarkup(
         CPMarkupElement("<@", "@>", _&&(BG, FG)) // Reverse.
     )
 )
-
-extension[T](ref: T)
-    @targetName("asAnOption")
-    def `?`: Option[T] = Option(ref)
-
-extension[R, T](opt: Option[T])
-    def or(f: T => R, dflt: => R): R = opt match
-        case Some(t) => f(t)
-        case None => dflt
-
-extension(d: Int)
-    // To bytes...
-    def kb: Long = d * 1024
-    def mb: Long = d * 1024 * 1024
-    def gb: Long = d * 1024 * 1024 * 1024
-
-    // To milliseconds...
-    def secs: Long = d * 1000
-    def mins: Long = d * 1000 * 60
-    def hours: Long = d * 1000 * 60 * 60
-    def days: Long = d * 1000 * 60 * 60 * 24
-    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
 
 
 

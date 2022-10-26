@@ -35,16 +35,25 @@ package org.cosplay.games.mir.os.progs.asm.compiler
   */
 object MirAsmInstruction:
     trait Param
-    object NullParam extends Param:
-        override def toString: String = "null"
-    case class IdParam(id: String) extends Param:
-        override def toString: String = id
-    case class StringParam(s: String) extends Param:
-        override def toString: String = s"\"$s\""
-    case class LongParam(d: Long) extends Param:
-        override def toString: String = d.toString
-    case class DoubleParam(d: Double) extends Param:
-        override def toString: String = d.toString
+    object NullParam extends Param { override def toString: String = "null" }
+    case class IdParam(id: String) extends Param { override def toString: String = id }
+    case class StringParam(s: String) extends Param { override def toString: String = s"\"$s\"" }
+    case class LongParam(d: Long) extends Param { override def toString: String = d.toString }
+    case class DoubleParam(d: Double) extends Param { override def toString: String = d.toString }
+
+/*
+Less boilerplate syntax...
+==========================
+
+object MirAsmInstruction:
+    trait Param
+    object NullParam -> Param { ^def toString: String = "null" }
+    #class IdParam(id: String) -> Param { ^def toString: String = id }
+    #class StringParam(s: String) -> Param { ^def toString: String = s"\"$s\"" }
+    #class LongParam(d: Long) -> Param { ^def toString: String = d.toString }
+    #class DoubleParam(d: Double) -> Param { ^def toString: String = d.toString }
+
+*/
 
 import MirAsmInstruction.*
 
