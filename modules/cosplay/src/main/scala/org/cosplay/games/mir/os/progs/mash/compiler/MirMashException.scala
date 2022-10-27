@@ -37,5 +37,5 @@ import org.cosplay.*
   * 
   * @param errMsg Error message.
   */
-class MirMashException(errMsg: String) extends CPException(errMsg)
+class MirMashException(errMsg: String, cause: Throwable = null) extends CPException(errMsg, cause)
 

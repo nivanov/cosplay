@@ -101,7 +101,10 @@ object MirAsmExecutable:
                     case x if x == null => "null"
                     case _: Any => act.toString
 
-                def error(errMsg: String): MAE = new MAE(errMsg, s"${MirUtils.removeDot(errMsg.trim)} - at line ${instr.line} in '${instr.getSourceCode(false)}'.", instr.dbg)
+                def error(errMsg: String, cause: Throwable = null): MAE =
+                    require(errMsg != null || cause != null)
+                    val msg = if errMsg != null then errMsg else "System error."
+                    new MAE(msg, s"${MirUtils.removeDot(msg.trim)} - at line ${instr.line} in '${instr.getSourceCode(false)}'.", instr.dbg, cause)
                 def wrongStack(act: Any, exp: String): MAE = error(s"Unexpected assembler stack value '${formatActual(act)}' - expecting $exp")
                 def wrongParam(idx: Int, exp: String): MAE = error(s"Invalid assembler ${nth(idx)} parameter - expecting $exp")
                 def wrongVar(id: String, exp: String): MAE = error(s"Invalid assembler variable '$id' type - expecting $exp")
@@ -1001,7 +1004,7 @@ object MirAsmExecutable:
                         case _ => throw error(s"Unknown assembler instruction: ${instr.name}")
                 catch
                     case e: MirAsmException => throw e // Rethrow.
-                    case e: Exception => throw error(e.getMessage)
+                    case e: Exception => throw error(e.getMessage, e)
                 if nextInstr then idx += 1
 
 /**

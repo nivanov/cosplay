@@ -55,8 +55,8 @@ object MirMashExecutable:
                 case e: MirAsmException =>
                     val synopsis = e.getSynopsis.trim
                     e.getDebug match
-                        case Some(dbg) => throw new MirMashException(s"${MirUtils.removeDot(synopsis)} - at line ${dbg.line} in ${dbg.origin}.")
-                        case None => throw new MirMashException(MirUtils.addDot(synopsis))
+                        case Some(dbg) => throw new MirMashException(s"${MirUtils.removeDot(synopsis)} - at line ${dbg.line} in ${dbg.origin}.", e)
+                        case None => throw new MirMashException(MirUtils.addDot(synopsis), e)
 
 /**
   *
