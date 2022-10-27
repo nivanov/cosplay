@@ -26,6 +26,7 @@ import MirAsmInstruction.*
 import org.cosplay.games.mir.*
 import org.apache.commons.collections4.CollectionUtils
 import org.apache.commons.lang3.StringUtils
+import org.cosplay.games.mir.os.MirDirectoryFile
 
 import java.time.*
 import java.time.format.*
@@ -110,9 +111,7 @@ object MirAsmExecutable:
                     if paramsCnt < min then throw error("Insufficient assembler instruction parameters")
                     if paramsCnt > max then throw error("Too many assembler instruction parameters")
 
-                def getVar(id: String): Any = ctx.vars.get(id) match
-                    case Some(v) => v
-                    case None => throw error(s"Undefined assembler variable: $id")
+                def getVar(id: String): Any = ctx.vars.get(id).getOrThrow(error(s"Undefined assembler variable: $id"))
 
                 def pop(): Any =
                     try stack.pop()
@@ -346,8 +345,19 @@ object MirAsmExecutable:
                     private final val WEEK_OF_YEAR = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()
                     private final val WEEK_OF_MONTH = WeekFields.of(Locale.getDefault()).weekOfMonth()
 
+                    // Console functions.
                     def print(): Unit = ctx.exeCtx.out.print(pop().toString)
                     def println(): Unit = ctx.exeCtx.out.println(pop().toString)
+                    def err_print(): Unit = ctx.exeCtx.err.print(pop().toString)
+                    def err_println(): Unit = ctx.exeCtx.err.println(pop().toString)
+
+                    // Misc. functions.
+                    def assert(): Unit =
+                        // Note the reverse order of popping.
+                        val msg = MirUtils.capitalize(popStr())
+                        if !popBool() then throw error(msg)
+                    def ensure(): Unit = if !popBool() then throw error(s"Condition failed.")
+
                     def guid(): Unit = push(CPRand.guid)
                     def guid6(): Unit = push(CPRand.guid6)
                     def rand(): Unit = push(CPRand.randDouble())
@@ -361,13 +371,10 @@ object MirAsmExecutable:
                         val from = popLong()
                         val to = popLong()
                         push(CPRand.between(from, to))
+
+                    // String functions.
                     def to_str(): Unit = push(pop().toString)
                     def length(): Unit = push(popStr().length.toLong)
-                    def assert(): Unit =
-                        // Note the reverse order of popping.
-                        val msg = MirUtils.capitalize(popStr())
-                        if !popBool() then throw error(msg)
-                    def ensure(): Unit = if !popBool() then throw error(s"Condition failed.")
                     def concat(): Unit =
                         val s1 = pop().toString
                         val s2 = pop().toString
@@ -419,6 +426,26 @@ object MirAsmExecutable:
                     def to_double(): Unit = Try(popStr().toDouble).match
                         case Success(d) => push(d)
                         case Failure(e) => throw e
+
+                    // System functions.
+                    def cmd_args(): Unit = push(mutable.ArrayBuffer.from(exeCtx.cmdArgs))
+                    def last_exit_code(): Unit = push(exeCtx.lastExit)
+                    def pid(): Unit = push(exeCtx.pid)
+                    def ppid(): Unit = push(exeCtx.parent.mapOr(_.getPid, -1))
+                    def exec_path(): Unit = push(exeCtx.file.getAbsolutePath)
+                    def username(): Unit = push(exeCtx.usr.getUsername)
+                    def user_uid(): Unit = push(exeCtx.usr.getUid)
+                    def user_is_root(): Unit = push(exeCtx.usr.isRoot)
+                    def user_firstname(): Unit = push(exeCtx.usr.getCrewMember.mapOr(_.firstName, ""))
+                    def user_lastname(): Unit = push(exeCtx.usr.getCrewMember.mapOr(_.lastName, ""))
+                    def user_homedir(): Unit = push(exeCtx.usr.getHomeDirectory)
+                    def get_workdir(): Unit = push(exeCtx.workDir)
+                    def set_workdir(): Unit =
+                        val wd = popStr()
+                        exeCtx.workDir = exeCtx.workDir.file[MirDirectoryFile](wd).getOrThrow(error(s"Invalid directory: $wd"))
+                    def hostname(): Unit = ()
+
+                    // Datetime functions.
                     def now(): Unit = push(MirClock.now())
                     def year(): Unit = push(localDateTime().getYear)
                     def month(): Unit = push(localDateTime().getMonthValue)
@@ -434,6 +461,7 @@ object MirAsmExecutable:
                     def format_date(): Unit = push(MirClock.formatDate(popLong()))
                     def format_time(): Unit = push(MirClock.formatTime(popLong()))
                     def format_datetime(): Unit = push(MirClock.formatDateTime(popLong()))
+
                     def new_list(): Unit = push(mutable.ArrayBuffer.empty[Any])
                     def new_map(): Unit = push(mutable.HashMap.empty[String, Any])
                     def map_from(): Unit =
@@ -757,7 +785,7 @@ object MirAsmExecutable:
                         case "subv" => checkParamCount(2, 2); addSubVar(-1)
                         case "neg" => checkParamCount(0, 0); neg()
                         case "negv" => checkParamCount(1, 1); negv()
-
+                        
                         // Bit operations.
                         case "not" => checkParamCount(0, 0); push(~popLong())
                         case "and" => checkParamCount(0, 0); bitBinOp(_ & _)
@@ -813,6 +841,24 @@ object MirAsmExecutable:
                                 // Console functions.
                                 case "print" => NativeFunctions.print()
                                 case "println" => NativeFunctions.println()
+                                case "err_print" => NativeFunctions.err_print()
+                                case "err_println" => NativeFunctions.err_println()
+
+                                // System functions.
+                                case "cmd_args" => ()
+                                case "last_exit_code" => ()
+                                case "pid" => ()
+                                case "ppid" => ()
+                                case "exec_path" => ()
+                                case "username" => ()
+                                case "user_uid" => ()
+                                case "user_is_root" => ()
+                                case "user_firstname" => ()
+                                case "user_lastname" => ()
+                                case "user_homedir" => ()
+                                case "get_workdir" => ()
+                                case "set_workdir" => ()
+                                case "hostname" => ()
 
                                 // Date and time functions.
                                 case "now" => NativeFunctions.now()

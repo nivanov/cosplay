@@ -35,8 +35,8 @@ import scala.collection.mutable
 
 /**
   *
-  * @param pid
-  * @param parent
+  * @param pid This process ID (PID).
+  * @param parent Parent process, if any.
   * @param file
   * @param cmdArgs
   * @param con

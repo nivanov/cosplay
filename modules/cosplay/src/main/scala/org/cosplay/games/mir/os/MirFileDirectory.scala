@@ -53,9 +53,7 @@ trait MirFileDirectory:
       * @param path
       * @tparam T
       */
-    private def mandatoryFile[T <: MirFile](path: String): T = file[T](path) match
-        case None => throw E(s"File is missing: $path")
-        case Some(f) => f
+    private def mandatoryFile[T <: MirFile](path: String): T = file[T](path).getOrThrow(E(s"File is missing: $path"))
 
     /**
       *

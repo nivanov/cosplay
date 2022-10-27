@@ -237,7 +237,7 @@ class MirDirectoryFile(
 
     /**
       *
-      * @param path Relative or fully qualified path.
+      * @param path Relative to this directory or fully qualified path.
       */
     def file[T <: MirFile](path: String): Option[T] = resolve(path) match
         case Some(f) => f match

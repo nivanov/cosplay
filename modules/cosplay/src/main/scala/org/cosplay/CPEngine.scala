@@ -58,6 +58,9 @@ extension[T](ref: T)
 
 extension[R, T](opt: Option[T])
     def mapOr(f: T => R, dflt: => R): R = opt.flatMap(f(_).?).getOrElse(dflt)
+    def getOrThrow[E <: Exception](e: => E): T = opt match
+        case Some(t) => t
+        case None => throw e
 
 extension(d: Int)
     // To bytes...

@@ -36,6 +36,8 @@ trait MirMashNatives:
           | // Console functions.
           | native def print(s)
           | native def println(s)
+          | native def err_print(s)
+          | native def err_println(s)
           |
           | // Date and time functions.
           | native def now()
@@ -164,6 +166,20 @@ trait MirMashNatives:
           | native def take(list, n)
           | native def take_right(list, n)
           | native def reverse(list)
+          | native def cmd_args()
+          | native def last_exit_code()
+          | native def pid()
+          | native def ppid()
+          | native def exec_path()
+          | native def username()
+          | native def user_uid()
+          | native def user_is_root()
+          | native def user_firstname()
+          | native def user_lastname()
+          | native def user_homedir()
+          | native def get_workdir()
+          | native def set_workdir(wd)
+          | native def hostname()
           |
           | // Debug only.
           | native def _println(s)
