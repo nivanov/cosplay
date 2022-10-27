@@ -67,6 +67,14 @@ object MirMashRuntimeTests extends MirMashNatives:
     def nativeFunctionsTest(): Unit =
         executeOk(
             s"""
+               |$NATIVE_DECLS
+               |
+               |_println("pid: " + pid())
+               |_println("ppid: " + ppid())
+               |_println("exec_path: " + exec_path())
+               |""".stripMargin)
+        executeOk(
+            s"""
               |$NATIVE_DECLS
               |
               |set list = new_list()

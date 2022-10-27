@@ -443,7 +443,7 @@ object MirAsmExecutable:
                     def set_workdir(): Unit =
                         val wd = popStr()
                         exeCtx.workDir = exeCtx.workDir.file[MirDirectoryFile](wd).getOrThrow(error(s"Invalid directory: $wd"))
-                    def hostname(): Unit = ()
+                    def hostname(): Unit = push(exeCtx.host)
 
                     // Datetime functions.
                     def now(): Unit = push(MirClock.now())
@@ -845,20 +845,20 @@ object MirAsmExecutable:
                                 case "err_println" => NativeFunctions.err_println()
 
                                 // System functions.
-                                case "cmd_args" => ()
-                                case "last_exit_code" => ()
-                                case "pid" => ()
-                                case "ppid" => ()
-                                case "exec_path" => ()
-                                case "username" => ()
-                                case "user_uid" => ()
-                                case "user_is_root" => ()
-                                case "user_firstname" => ()
-                                case "user_lastname" => ()
-                                case "user_homedir" => ()
-                                case "get_workdir" => ()
-                                case "set_workdir" => ()
-                                case "hostname" => ()
+                                case "cmd_args" => NativeFunctions.cmd_args()
+                                case "last_exit_code" => NativeFunctions.last_exit_code()
+                                case "pid" => NativeFunctions.pid()
+                                case "ppid" => NativeFunctions.ppid()
+                                case "exec_path" => NativeFunctions.exec_path()
+                                case "username" => NativeFunctions.username()
+                                case "user_uid" => NativeFunctions.user_uid()
+                                case "user_is_root" => NativeFunctions.user_is_root()
+                                case "user_firstname" => NativeFunctions.user_firstname()
+                                case "user_lastname" => NativeFunctions.user_lastname()
+                                case "user_homedir" => NativeFunctions.user_homedir()
+                                case "get_workdir" => NativeFunctions.get_workdir()
+                                case "set_workdir" => NativeFunctions.set_workdir()
+                                case "hostname" => NativeFunctions.hostname()
 
                                 // Date and time functions.
                                 case "now" => NativeFunctions.now()
