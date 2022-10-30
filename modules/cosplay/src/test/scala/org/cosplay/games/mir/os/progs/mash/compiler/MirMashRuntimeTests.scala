@@ -30,8 +30,12 @@ package org.cosplay.games.mir.os.progs.mash.compiler
                ALl rights reserved.
 */
 
+import org.cosplay.{CPColor, CPDim}
 import org.cosplay.games.mir.*
+import os.*
+
 import scala.util.*
+import scala.collection.mutable
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.*
 
@@ -43,10 +47,90 @@ object MirMashRuntimeTests extends MirMashNatives:
 
     /**
       *
+      * @param rootUsr
+      */
+    private def initFs(rootUsr: MirUser): MirFileSystem =
+        MirClock.init(0)
+
+        val rootDir = MirDirectoryFile.mkRoot(rootUsr)
+
+        val fs = new MirFileSystem(rootDir)
+
+        rootDir.addRegFile("info.txt", rootUsr)
+        rootDir.addRegFile("image.png", rootUsr)
+
+        val exe = new MirExecutable { override def mainEntry(ctx: MirExecutableContext): Int = 0 }
+        rootDir.addExecFile("script.mash", rootUsr, exe)
+
+        val binDir = new MirDirectoryFile("bin", rootUsr, Option(rootDir))
+
+        rootDir.addFile(binDir)
+
+        binDir.addRegFile("bin_info.txt", rootUsr)
+        binDir.addRegFile("bin_image.png", rootUsr)
+        binDir.addRegFile("bin_script.mash", rootUsr)
+
+        fs
+
+    /**
+      *
+      */
+    private def mkConsole(): MirConsole =
+        new MirConsole:
+            override def readLine(repCh: Option[Char], maxLen: Int, hist: Seq[String]): String = ""
+            override def getSize: CPDim = CPDim(50, 50)
+            override def clearBelow(): Unit = ()
+            override def clearAbove(): Unit = ()
+            override def clearLeft(): Unit = ()
+            override def clearRight(): Unit = ()
+            override def clearRow(): Unit = ()
+            override def clearColumn(): Unit = ()
+            override def clear(): Unit = ()
+            override def setCursorVisible(f: Boolean): Unit = ()
+            override def isCursorVisible: Boolean = true
+            override def moveCursor(x: Int, y: Int): Unit = ()
+            override def getCursorX: Int = 1
+            override def getCursorY: Int = 1
+            override def putChar(x: Int, y: Int, z: Int, ch: Char, fg: CPColor, bg: CPColor): Unit = ()
+            override def print(x: Any): Unit = ()
+
+    /**
+      *
+      */
+    private def mkContext(): MirExecutableContext =
+        val rootUsr = MirUser.mkRoot()
+        val fs = initFs(rootUsr)
+        val rootDir = fs.root
+        val con = mkConsole()
+        val host = "127.0.0.1"
+
+        MirExecutableContext(
+            0L,
+            None,
+            rootDir.resolve("script.mash").get.asInstanceOf[MirExecutableFile],
+            Seq("-a", "b"),
+            con,
+            new MirRuntime(fs, con, host),
+            fs,
+            host,
+            fs.root,
+            mutable.HashMap.empty[String, Any],
+            mutable.HashMap.empty[String, String],
+            0,
+            rootUsr,
+            MirInputStream.nullStream(),
+            MirOutputStream.consoleStream(con),
+            MirOutputStream.consoleStream(con)
+        )
+
+    private val exeCtx = mkContext()
+
+    /**
+      *
       * @param code Mash code to test.
       */
     private def executeOk(code: String): Unit =
-        Try((new MirMashCompiler).compile(code, "test").execute(null)) match
+        Try((new MirMashCompiler).compile(code, "test").execute(exeCtx)) match
             case Success(_) => ()
             case Failure(e) =>
                 e.printStackTrace()
@@ -57,7 +141,7 @@ object MirMashRuntimeTests extends MirMashNatives:
       * @param code Mash code to test.
       */
     private def executeFail(code: String): Unit =
-        Try((new MirMashCompiler).compile(code, "test").execute(null)).match
+        Try((new MirMashCompiler).compile(code, "test").execute(exeCtx)).match
             case Success(_) => assertTrue(false)
             case Failure(e) =>
                 println(s"<< Expected error below >>")
