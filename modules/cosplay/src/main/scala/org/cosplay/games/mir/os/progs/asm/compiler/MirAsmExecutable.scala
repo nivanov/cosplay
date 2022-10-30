@@ -24,6 +24,7 @@ import scala.collection.immutable
 import scala.collection.mutable
 import MirAsmInstruction.*
 import org.cosplay.games.mir.*
+import org.cosplay.games.mir.os.*
 import org.apache.commons.collections4.CollectionUtils
 import org.apache.commons.lang3.StringUtils
 import org.cosplay.games.mir.os.MirDirectoryFile
@@ -354,28 +355,47 @@ object MirAsmExecutable:
                     def err_print(): Unit = ctx.exeCtx.err.print(pop().toString)
                     def err_println(): Unit = ctx.exeCtx.err.println(pop().toString)
 
+                    private def con(): MirConsole = exeCtx.con
+
                     // Console functions.
-                    def con_print(): Unit = ()
-                    def con_println(): Unit = ()
-                    def con_width(): Unit = push(exeCtx.con.getSize.width)
-                    def con_height(): Unit = push(exeCtx.con.getSize.height)
-                    def con_cur_x(): Unit = ()
-                    def con_cur_y(): Unit = ()
-                    def con_move_cur(): Unit = ()
-                    def con_clear(): Unit = ()
-                    def con_clear_left(): Unit = ()
-                    def con_clear_right(): Unit = ()
-                    def con_clear_below(): Unit = ()
-                    def con_clear_above(): Unit = ()
-                    def con_clear_column(): Unit = ()
-                    def con_clear_row(): Unit = ()
-                    def con_norm_clr(): Unit = ()
-                    def con_inverse_clr(): Unit = ()
-                    def con_is_cur_vis(): Unit = ()
-                    def con_set_cur_vis(): Unit = ()
-                    def con_beep(): Unit = ()
-                    def con_put_char(): Unit = ()
-                    def con_read_line(): Unit = ()
+                    def con_print(): Unit = con().print(pop().toString)
+                    def con_println(): Unit = con().println(pop().toString)
+                    def con_width(): Unit = push(con().getSize.width)
+                    def con_height(): Unit = push(con().getSize.height)
+                    def con_cur_x(): Unit = push(con().getCursorX)
+                    def con_cur_y(): Unit = push(con().getCursorY)
+                    def con_move_cur(): Unit =
+                        val y = popLong().toInt
+                        val x = popLong().toInt
+                        con().moveCursor(x, y)
+                    def con_clear(): Unit = con().clear()
+                    def con_clear_left(): Unit = con().clearLeft()
+                    def con_clear_right(): Unit = con().clearRight()
+                    def con_clear_below(): Unit = con().clearBelow()
+                    def con_clear_above(): Unit = con().clearAbove()
+                    def con_clear_column(): Unit = con().clearColumn()
+                    def con_clear_row(): Unit = con().clearRow()
+                    def con_norm_clr(): Unit = con().resetColors()
+                    def con_inverse_clr(): Unit = con().inverseColors()
+                    def con_is_cur_vis(): Unit = push(con().isCursorVisible)
+                    def con_set_cur_vis(): Unit = con().setCursorVisible(popBool())
+                    def con_beep(): Unit = con().beep()
+                    def con_put_char(): Unit =
+                        val ch = popStr()
+                        if ch.length != 1 then
+                            throw error(s"Native function 'con_put_char()' accepts one-character string only: $ch")
+                        val y = popLong().toInt
+                        val x = popLong().toInt
+                        con().putChar(x, y, ch.head)
+                    def con_read_line(): Unit =
+                        val maxLen = popLong().toInt
+                        if maxLen <= 0 then
+                            throw error(s"Native function 'con_read_line()' maximum length must be > 0: $maxLen")
+                        val repCh = popStr()
+                        if repCh.length > 1 then
+                            throw error(s"Native function 'con_read_line()' accepts empty or one-character string only for replacement character: $repCh")
+                        val hist = popList()
+                        con().readLine(repCh.headOption, maxLen, hist.map(_.toString).toSeq)
 
                     // Misc. functions.
                     def assert(): Unit =

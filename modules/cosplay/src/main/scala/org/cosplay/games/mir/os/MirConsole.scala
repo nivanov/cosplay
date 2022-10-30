@@ -32,6 +32,7 @@ package org.cosplay.games.mir.os
 
 import org.cosplay.*
 import games.mir.*
+import org.cosplay.games.mir.os.MirConsole.CTRL_BEEP
 
 object MirConsole:
     /**  */
@@ -60,11 +61,16 @@ trait MirConsole extends MirPrintable:
     protected val initBg: CPColor = BG
 
     /**
+      *
+      */
+    def beep(): Unit = print(s"$CTRL_BEEP")
+
+    /**
       * Reads the line form the console at the current cursor position. This call will be blocked
       * until 'Enter' key is pressed.
       *
       * @param repCh Optional character to replace entered characters (e.g. when entering password).
-      * @param maxLen Optional max length of the input.
+      * @param maxLen Optional max length of the input. Defaults to maximum length.
       * @param hist Optional history to use for history scrolling and auto-completion.
       */
     def readLine(repCh: Option[Char] = None, maxLen: Int = Int.MaxValue, hist: Seq[String] = Seq.empty): String

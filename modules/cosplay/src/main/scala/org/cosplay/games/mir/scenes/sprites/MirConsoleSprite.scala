@@ -86,6 +86,8 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
       * @param hist
       */
     class ReadLineBuffer(maxLen: Int, hist: Seq[String]):
+        require(maxLen > 0)
+
         private var buf = ""
         private var pos = 0
         private var len = 0
