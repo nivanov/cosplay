@@ -33,7 +33,7 @@ package org.cosplay.games.mir.os.progs.mash.compiler
 trait MirMashNatives:
     final val NATIVE_DECLS =
         """
-          | // Console functions.
+          | // Output functions.
           | native def print(s)
           | native def println(s)
           | native def err_print(s)
@@ -103,7 +103,31 @@ trait MirMashNatives:
           | native def pow(d, v)
           | native def hypot(d, v)
           |
+          | // Console functions.
+          | native def con_print(s)
+          | native def con_println(s)
+          | native def con_width()
+          | native def con_height()
+          | native def con_cur_x()
+          | native def con_cur_y()
+          | native def con_move_cur(x, y)
+          | native def con_clear()
+          | native def con_clear_left()
+          | native def con_clear_right()
+          | native def con_clear_below()
+          | native def con_clear_above()
+          | native def con_clear_column()
+          | native def con_clear_row()
+          | native def con_norm_clr()
+          | native def con_inverse_clr()
+          | native def con_is_cur_vis()
+          | native def con_set_cur_vis(b)
+          | native def con_beep()
+          | native def con_put_char(x, y, ch)
+          | native def con_read_line(ch, maxLen, hist)
+          |
           | // String functions.
+          | native def char_at(s, idx)
           | native def concat(s1, s2)
           | native def to_str(d)
           | native def length(s)

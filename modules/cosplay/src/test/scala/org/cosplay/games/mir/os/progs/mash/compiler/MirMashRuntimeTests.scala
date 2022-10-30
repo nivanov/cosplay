@@ -153,6 +153,13 @@ object MirMashRuntimeTests extends MirMashNatives:
             s"""
                |$NATIVE_DECLS
                |
+               |_println("Console width: " + con_width())
+               |_println("Console height: " + con_height())
+               |""".stripMargin)
+        executeOk(
+            s"""
+               |$NATIVE_DECLS
+               |
                |_println("pid: " + pid())
                |_println("ppid: " + ppid())
                |_println("exec_path: " + exec_path())
@@ -223,6 +230,9 @@ object MirMashRuntimeTests extends MirMashNatives:
               |$NATIVE_DECLS
               |
               |val s = "cosplay"
+              |ensure(char_at(s, 0) == "c")
+              |ensure(char_at(s, 1) == "o")
+              |ensure(char_at(s, 6) == "y")
               |ensure([1, 2, 3] == [1, 2, 3])
               |ensure(to_str(123) == "123")
               |ensure(length(s) == 7)

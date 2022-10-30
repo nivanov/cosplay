@@ -354,6 +354,29 @@ object MirAsmExecutable:
                     def err_print(): Unit = ctx.exeCtx.err.print(pop().toString)
                     def err_println(): Unit = ctx.exeCtx.err.println(pop().toString)
 
+                    // Console functions.
+                    def con_print(): Unit = ()
+                    def con_println(): Unit = ()
+                    def con_width(): Unit = push(exeCtx.con.getSize.width)
+                    def con_height(): Unit = push(exeCtx.con.getSize.height)
+                    def con_cur_x(): Unit = ()
+                    def con_cur_y(): Unit = ()
+                    def con_move_cur(): Unit = ()
+                    def con_clear(): Unit = ()
+                    def con_clear_left(): Unit = ()
+                    def con_clear_right(): Unit = ()
+                    def con_clear_below(): Unit = ()
+                    def con_clear_above(): Unit = ()
+                    def con_clear_column(): Unit = ()
+                    def con_clear_row(): Unit = ()
+                    def con_norm_clr(): Unit = ()
+                    def con_inverse_clr(): Unit = ()
+                    def con_is_cur_vis(): Unit = ()
+                    def con_set_cur_vis(): Unit = ()
+                    def con_beep(): Unit = ()
+                    def con_put_char(): Unit = ()
+                    def con_read_line(): Unit = ()
+
                     // Misc. functions.
                     def assert(): Unit =
                         // Note the reverse order of popping.
@@ -377,6 +400,10 @@ object MirAsmExecutable:
 
                     // String functions.
                     def to_str(): Unit = push(pop().toString)
+                    def char_at(): Unit =
+                        val idx = popLong().toInt
+                        val s = popStr()
+                        push(s.substring(idx, idx + 1))
                     def length(): Unit = push(popStr().length.toLong)
                     def concat(): Unit =
                         val s1 = pop().toString
@@ -841,7 +868,7 @@ object MirAsmExecutable:
                             checkParamCount(1, 1)
                             val fn = strOrVarParam(0)
                             fn match
-                                // Console functions.
+                                // Output functions.
                                 case "print" => NativeFunctions.print()
                                 case "println" => NativeFunctions.println()
                                 case "err_print" => NativeFunctions.err_print()
@@ -925,7 +952,31 @@ object MirAsmExecutable:
                                 case "pow" => NativeFunctions.pow()
                                 case "hypot" => NativeFunctions.hypot()
 
+                                // Console functions.
+                                case "con_print" => NativeFunctions.con_print()
+                                case "con_println" => NativeFunctions.con_println()
+                                case "con_width" => NativeFunctions.con_width()
+                                case "con_height" => NativeFunctions.con_height()
+                                case "con_cur_x" => NativeFunctions.con_cur_x()
+                                case "con_cur_y" => NativeFunctions.con_cur_y()
+                                case "con_move_cur" => NativeFunctions.con_move_cur()
+                                case "con_clear" => NativeFunctions.con_clear()
+                                case "con_clear_left" => NativeFunctions.con_clear_left()
+                                case "con_clear_right" => NativeFunctions.con_clear_right()
+                                case "con_clear_below" => NativeFunctions.con_clear_below()
+                                case "con_clear_above" => NativeFunctions.con_clear_above()
+                                case "con_clear_column" => NativeFunctions.con_clear_column()
+                                case "con_clear_row" => NativeFunctions.con_clear_row()
+                                case "con_norm_clr" => NativeFunctions.con_norm_clr()
+                                case "con_inverse_clr" => NativeFunctions.con_inverse_clr()
+                                case "con_is_cur_vis" => NativeFunctions.con_is_cur_vis()
+                                case "con_set_cur_vis" => NativeFunctions.con_set_cur_vis()
+                                case "con_beep" => NativeFunctions.con_beep()
+                                case "con_put_char" => NativeFunctions.con_put_char()
+                                case "con_read_line" => NativeFunctions.con_read_line()
+        
                                 // String functions.
+                                case "char_at" => NativeFunctions.char_at()
                                 case "concat" => NativeFunctions.concat()
                                 case "to_str" => NativeFunctions.to_str()
                                 case "length" => NativeFunctions.length()
