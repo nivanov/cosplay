@@ -144,6 +144,11 @@ object CPRand:
     def randFloat(): Float = RND.nextFloat()
 
     /**
+      * Gets the next pseudorandom, uniformly distributed `double` value between `0.0` and `1.0`.
+      */
+    def randDouble(): Double = RND.nextDouble()
+
+    /**
       * Random boolean value.
       */
     def coinFlip(): Boolean = RND.nextFloat() < .5f

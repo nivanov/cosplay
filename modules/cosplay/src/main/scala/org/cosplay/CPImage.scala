@@ -639,9 +639,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     private def flipPixel(px: CPPixel, map: Seq[(Char, Char)]): CPPixel =
         map.find(px.char == _._1) match
             case Some(t) => px.withChar(t._2)
-            case None => map.find(px.char == _._2) match
-                case Some(t) => px.withChar(t._1)
-                case None => px
+            case None => map.find(px.char == _._2).mapOr(t => px.withChar(t._1), px)
 
     /**
       *

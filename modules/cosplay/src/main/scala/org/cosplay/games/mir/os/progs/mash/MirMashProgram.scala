@@ -42,7 +42,9 @@ class MirMashProgram extends MirExecutable:
 
     override def getSizeOnDisk: Long = sz
     override def mainEntry(ctx: MirExecutableContext): Int =
-        val state = initState(ctx)
+        initState(ctx)
+
+        // TODO
 
         0
 
@@ -50,18 +52,15 @@ class MirMashProgram extends MirExecutable:
       *
       * @param ctx
       */
-    private def initState(ctx: MirExecutableContext): MirMashContext =
-        val state = new MirMashContext()
-
+    private def initState(ctx: MirExecutableContext): Unit =
         // Default & well-known Unix environment variables.
-        state.setVariable("PS", """\\u@\\h:\\w\\$""", false)
-        state.setVariable("HOST", ctx.host, false)
-        state.setVariable("PWD", ctx.workDir.getAbsolutePath, false)
-        state.setVariable("HOME", ctx.usr.getHomeDirectory, false)
-        state.setVariable("UID", ctx.usr.getUid.toString, false)
-        state.setVariable("USER", ctx.usr.getUsername, false)
-        state.setVariable("LANG", "en_US", false)
-        state.setVariable("SHELL", ctx.file.getAbsolutePath, false)
-        state.setVariable("MAIL", s"${ctx.usr.getHomeDirectory}/inbox", false)
-
-        state
+        // TODO: move some of it to '/etc/include.mash'.
+        ctx.vars.put("PS", """\\u@\\h:\\w\\$""")
+        ctx.vars.put("HOST", ctx.host)
+        ctx.vars.put("PWD", ctx.workDir.getAbsolutePath)
+        ctx.vars.put("HOME", ctx.usr.getHomeDirectory)
+        ctx.vars.put("UID", ctx.usr.getUid.toString)
+        ctx.vars.put("USER", ctx.usr.getUsername)
+        ctx.vars.put("LANG", "en_US")
+        ctx.vars.put("SHELL", ctx.file.getAbsolutePath)
+        ctx.vars.put("MAIL", s"${ctx.usr.getHomeDirectory}/inbox")

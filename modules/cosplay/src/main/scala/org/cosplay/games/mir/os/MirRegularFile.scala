@@ -43,7 +43,7 @@ import java.io.FileInputStream
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param parent Parent directory of this file.
+  * @param dir Parent directory of this file, i.e. a directory this file belongs to.
   * @param otherAcs Can others read or execute. Owner can do anything.
   * @param otherMod Can others change or delete. Owner can do anything.
   * @param initMs Initial creation and update timestamp. Defaults to the current time.
@@ -51,12 +51,12 @@ import java.io.FileInputStream
 class MirRegularFile(
     name: String,
     owner: MirUser,
-    parent: MirDirectoryFile,
+    dir: MirDirectoryFile,
     otherAcs: Boolean,
     otherMod: Boolean,
     lines: Seq[String] = Seq.empty,
     initMs: Long = MirClock.now()
-) extends MirFile(FT_REG, name, owner, parent.?, otherAcs, otherMod, initMs):
+) extends MirFile(FT_REG, name, owner, dir.?, otherAcs, otherMod, initMs):
     private val file = CPEngine.homeFile(CPRand.guid)
 
     /**

@@ -52,6 +52,18 @@ public class MirMashBaseListener implements MirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterUnsetDecl(MirMashParser.UnsetDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUnsetDecl(MirMashParser.UnsetDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIncludeDecl(MirMashParser.IncludeDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -268,6 +280,18 @@ public class MirMashBaseListener implements MirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterWhileExprDecl(MirMashParser.WhileExprDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWhileExprDecl(MirMashParser.WhileExprDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterForDecl(MirMashParser.ForDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -275,6 +299,18 @@ public class MirMashBaseListener implements MirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitForDecl(MirMashParser.ForDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterForExprDecl(MirMashParser.ForExprDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitForExprDecl(MirMashParser.ForExprDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -436,13 +472,13 @@ public class MirMashBaseListener implements MirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAnonDefExpr(MirMashParser.AnonDefExprContext ctx) { }
+	@Override public void enterListExpr(MirMashParser.ListExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAnonDefExpr(MirMashParser.AnonDefExprContext ctx) { }
+	@Override public void exitListExpr(MirMashParser.ListExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -484,6 +520,18 @@ public class MirMashBaseListener implements MirMashListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCallParam(MirMashParser.CallParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCallParam(MirMashParser.CallParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAtom(MirMashParser.AtomContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -491,6 +539,42 @@ public class MirMashBaseListener implements MirMashListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAtom(MirMashParser.AtomContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterList(MirMashParser.ListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitList(MirMashParser.ListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterListElems(MirMashParser.ListElemsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitListElems(MirMashParser.ListElemsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterListElem(MirMashParser.ListElemContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitListElem(MirMashParser.ListElemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

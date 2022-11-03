@@ -17,6 +17,8 @@
 
 package org.cosplay.games.mir.os.progs.mash.compiler
 
+import org.cosplay.games.mir.MirUtils
+import org.cosplay.games.mir.os.MirExecutableContext
 import org.cosplay.games.mir.os.progs.mash.*
 
 /*
@@ -44,19 +46,17 @@ object MirMashExecutable:
       * @param origin Origin of source code.
       */
     def apply(asmCode: String, origin: String): MirMashExecutable =
-        (ctx: MirMashContext) =>
+        (ctx: MirExecutableContext) =>
             try
                 (new MirAsmCompiler)
                     .compile(asmCode, origin)
-                    .execute(new MirAsmContext(null/* TODO */))
+                    .execute(MirAsmContext(ctx))
             catch
                 case e: MirAsmException =>
                     val synopsis = e.getSynopsis.trim
                     e.getDebug match
-                        case Some(dbg) =>
-                            throw new MirMashException(s"$synopsis - at line ${dbg.line} in ${dbg.origin}.")
-                        case None =>
-                            throw new MirMashException(if synopsis.endsWith(".") then synopsis else s"$synopsis.")
+                        case Some(dbg) => throw new MirMashException(s"${MirUtils.removeDot(synopsis)} - at line ${dbg.line} in ${dbg.origin}.", e)
+                        case None => throw new MirMashException(MirUtils.addDot(synopsis), e)
 
 /**
   *
@@ -66,4 +66,4 @@ trait MirMashExecutable:
       *
       * @param ctx
       */
-    def execute(ctx: MirMashContext): Unit
+    def execute(ctx: MirExecutableContext): Unit

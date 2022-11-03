@@ -42,7 +42,7 @@ import games.mir.*
   * @param typ Type of the file.
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param parent Parent directory of this file or `None` if this is a root directory file.
+  * @param dir Directory this file belongs to or `None` if this is a root directory file.
   * @param initMs Initial creation and update timestamp.
   * @param otherAccess Can others read or execute. Owner can do anything.
   * @param otherModify Can others change or delete. Owner can do anything.
@@ -52,12 +52,12 @@ abstract class MirFile(
     typ: MirFileType,
     private var name: String,
     private var owner: MirUser,
-    private var parent: Option[MirDirectoryFile],
+    private var dir: Option[MirDirectoryFile],
     private var otherAccess: Boolean = false,
     private var otherModify: Boolean = false,
     private var initMs: Long
 ) extends Serializable:
-    require((parent.isEmpty && typ == FT_DIR) || parent.nonEmpty)
+    require((dir.isEmpty && typ == FT_DIR) || dir.nonEmpty)
 
     private var createTs = initMs
     private var updateTs = initMs
@@ -76,7 +76,7 @@ abstract class MirFile(
     /**
       *
       */
-    def getParent: Option[MirDirectoryFile] = parent
+    def getDir: Option[MirDirectoryFile] = dir
 
     /**
       *
@@ -91,7 +91,7 @@ abstract class MirFile(
         var f: Option[MirFile] = Some(this)
         while f.isDefined do
             val v = f.get
-            val p = v.getParent
+            val p = v.getDir
             if p.isDefined then
                 buf += v.getName
                 buf += PATH_SEP
@@ -100,10 +100,10 @@ abstract class MirFile(
 
     /**
       *
-      * @param parent
+      * @param dir
       */
-    def setParent(parent: Option[MirDirectoryFile]): Unit =
-        this.parent = parent
+    def setDir(dir: Option[MirDirectoryFile]): Unit =
+        this.dir = dir
         absPath = mkAbsolutePath()
 
     /**

@@ -37,29 +37,5 @@ import scala.collection.mutable
   *
   * @param exeCtx
   */
-class MirAsmContext(exeCtx: MirExecutableContext):
-    private val vars = mutable.HashMap.empty[String, Any]
-
-    /**
-      *
-      */
-    def getExecContext: MirExecutableContext = exeCtx
-
-    /**
-      *
-      * @param id
-      */
-    def getVar(id: String): Option[Any] = vars.get(id)
-
-    /**
-      *
-      * @param id
-      * @param v
-      */
-    def setVar(id: String, v: Any): Unit = vars.put(id, v)
-
-    /**
-      *
-      * @param id
-      */
-    def hasVar(id: String): Boolean = getVar(id).isDefined
+case class MirAsmContext(exeCtx: MirExecutableContext):
+    val vars = mutable.HashMap.empty[String, Any]

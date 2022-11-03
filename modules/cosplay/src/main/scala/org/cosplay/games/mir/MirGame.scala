@@ -52,7 +52,7 @@ object MirGame:
         // Start the game & wait for exit.
         try
             CPEngine.startGame(
-                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"main", fadeInMs = 3000),
+                new CPFadeShimmerLogoScene("logo", None, BG_PX, Seq(FG),"title", fadeInMs = 3000),
                 MirTitleScene,
                 MirLoadScene,
                 MirNewGameScene,

@@ -28,6 +28,7 @@ import CPKeyboardKey.*
 import impl.*
 
 import java.io.*
+import scala.annotation.targetName
 import scala.collection.mutable
 
 /*
@@ -50,6 +51,29 @@ import scala.collection.mutable
   * @param cause Optional cause.
   */
 def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
+
+extension[T](ref: T)
+    @targetName("asAnOption")
+    def `?`: Option[T] = Option(ref)
+
+extension[R, T](opt: Option[T])
+    def mapOr(f: T => R, dflt: => R): R = opt.flatMap(f(_).?).getOrElse(dflt)
+    def getOrThrow[E <: Exception](e: => E): T = opt match
+        case Some(t) => t
+        case None => throw e
+
+extension(d: Int)
+    // To bytes...
+    def kb: Long = d * 1024
+    def mb: Long = d * 1024 * 1024
+    def gb: Long = d * 1024 * 1024 * 1024
+
+    // To milliseconds...
+    def secs: Long = d * 1000
+    def mins: Long = d * 1000 * 60
+    def hours: Long = d * 1000 * 60 * 60
+    def days: Long = d * 1000 * 60 * 60 * 24
+    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
 
 /**
   * CosPlay game engine.
@@ -402,10 +426,7 @@ object CPEngine:
         tbl += ("Game name", gameInfo.name)
         tbl += ("Version", gameInfo.semVer)
         tbl += ("Initial Size", gameInfo.initDim)
-        tbl += ("Minimum Size", gameInfo.minDim match
-            case Some(dim) => dim.toString
-            case None => "n/a"
-        )
+        tbl += ("Minimum Size", gameInfo.minDim.mapOr(_.toString, "n/a"))
         tbl.info(engLog, Option("Game initialized:"))
 
     /**
@@ -753,9 +774,7 @@ object CPEngine:
         var scr: CPScreen = null
 
         def logSceneSwitch(x: CPScene): Unit =
-            val dimS = x.getDim match
-                case Some(d) => d.toString
-                case None => "[adaptive]"
+            val dimS = x.getDim.mapOr(_.toString, "[adaptive]")
             val tbl = CPAsciiTable("ID", "Tags", "Init Pos", "Z-index", "Visible", "Dim")
             x.objects.foreach(scObj => {
                 tbl += (

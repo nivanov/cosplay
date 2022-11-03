@@ -39,7 +39,7 @@ import org.junit.jupiter.api.*
 /**
   *
   */
-object MirMashCompilerTests:
+object MirMashCompilerTests extends MirMashNatives:
     MirClock.init(0)
 
     /**
@@ -66,11 +66,61 @@ object MirMashCompilerTests:
                 println(s"<< Expected error below >>")
                 e.printStackTrace()
 
+    /**
+      *
+      */
     @Test
-    def baseTest(): Unit =
+    def baseOkTest(): Unit =
+        compileOk(
+            s"""
+              |$NATIVE_DECLS
+              |for a <- [1, 2, 3, 4] do _println("List element: " + a)
+              |""".stripMargin)
+        compileOk(
+            """
+              |native def size(list)
+              |native def ensure(cond)
+              |
+              |ensure(size([1, 2]) == 2)
+              |""".stripMargin)
+        compileOk(
+            """
+              |def fun(x) = return x
+              |val x = fun(1)
+              |""".stripMargin)
+        compileOk(
+            """
+              |native def assert(cond, msg)
+              |def fun(x) = return x + 1
+              |assert(fun(2) == 3, "Something is wrong")
+              |assert(fun(4) == 5, "Something is wrong")
+              |assert(fun("text") == "text1", "Something is wrong")
+              |""".stripMargin)
+        compileOk(
+            """
+              |native def _println(s)
+              |var x  = 0
+              |while x < 10 do {
+              |     x = x + 1
+              |     if x % 2 == 0 then _println("Even: " + x) else _println("Odd: " + x)
+              |}
+              |""".stripMargin)
+        compileOk("")
+        compileOk(
+            """
+              |var x  = 0
+              |while x < 10 do {
+              |     x = x + 1
+              |}
+              |""".stripMargin)
         compileOk("var x = 5 + 5")
         compileOk("var x = 5 + 5; var z = (x + 5) * (x + 3)")
         compileOk("var x = (true && false) || true")
+        compileOk(
+            """
+              |alias x = "ls -la"
+              |alias y = 'pwd -c'
+              |""".stripMargin)
         compileOk(
             """
               |native def empty()
@@ -129,7 +179,48 @@ object MirMashCompilerTests:
         compileOk("var x = 10; var _long_variable = x")
         compileOk("val x = 10; val y = 'abc'")
 
+    /**
+      *
+      */
+    @Test
+    def baseFailTest(): Unit =
+        compileFail(
+            """
+              |def f(a, b, c) = return 1
+              |f(1, 2) // Wrong number of parameters.
+              |""".stripMargin)
+        compileFail(
+            """
+              |def f(a, b, c) = return 1
+              |f(1, 2, 3, 4) // Wrong number of parameters.
+              |""".stripMargin)
+        compileFail("val 0x = 1 // Invalid variable name.")
+        compileFail("val .x = 1 // Invalid variable name.")
+        compileFail(
+            """
+              |def f(1x) = return true // Invalid parameter name.
+              |""".stripMargin)
+        compileFail(
+            """
+              |val x = 0
+              |x = x + 1 // Can't modify immutable variable.
+              |""".stripMargin)
+        compileFail(
+            """
+              |val list = "" // Just for compilation.
+              |for a <- list do {
+              |     return 2; // Can't use return here.
+              |}
+              |""".stripMargin)
+        compileFail(
+            """
+              |alias x = "ls -l"
+              |alias x = 'pwd'
+              |""".stripMargin)
         compileFail("var x = d")
+        compileFail("var x = 'wrong quote\"")
+        compileFail("var x = \"\"wrong quote\"")
+        compileFail("var x = \"wrong quote'")
         compileFail("var x = 1as1212")
         compileFail(
             """

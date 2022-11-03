@@ -271,15 +271,9 @@ object MirAsmRuntimeTests:
               |push 0
               |not
               |push 1
+              |and
+              |push 1
               |eq
-              |cbrk
-              |""".stripMargin
-        )
-        executeOk(
-            """
-              |let x, 0
-              |notv x
-              |eqv x, 1
               |cbrk
               |""".stripMargin
         )
@@ -311,6 +305,41 @@ object MirAsmRuntimeTests:
         )
         executeOk(
             """
+              |let a, 60
+              |let b, 13
+              |let c, 0
+              |pushn a, b
+              |and
+              |eqp 12
+              |cbrk
+              |pushn a, b
+              |xor
+              |eqp 49
+              |cbrk
+              |pushn a, 2
+              |sal
+              |eqp 240
+              |cbrk
+              |pushn a, 2
+              |shr
+              |pop x
+              |pushn "SHR result: ", x
+              |calln "concat"
+              |calln "_println"
+              |push x
+              |eqp 15
+              |cbrk
+              |pushn a, 2
+              |shr
+              |eqp 15
+              |cbrk
+              |push a
+              |not
+              |eqp -61
+              |cbrk
+              |""".stripMargin)
+        executeOk(
+            """
               |push 1
               |dup
               |eq
@@ -319,13 +348,28 @@ object MirAsmRuntimeTests:
         )
         executeOk(
             """
+              |push 1
+              |rol
+              |rol
+              |push 4
+              |eq
+              |cbrk
+              |""".stripMargin)
+        executeOk(
+            """
               |pushn "1", 1
-              |calln "tostr"
+              |calln "to_str"
               |eq
               |cbrk
               |""".stripMargin
         )
 
+        executeFail(
+            """
+              |push 0
+              |push "Test assertion"
+              |calln "assert"
+              |""".stripMargin)
         executeFail(
             """
               |pushn 1, "asaa"
@@ -354,6 +398,20 @@ object MirAsmRuntimeTests:
       */
     @Test
     def jumpTests(): Unit =
+        executeOk(
+            """
+              |call fun
+              |ssz
+              |eqp 3
+              |cbrk "Should be zero here."
+              |exit
+              |fun:
+              |     ssz
+              |     eqp 0
+              |     cbrk "Should be zero here."
+              |     pushn 1, 2, 3
+              |     ret
+              |""".stripMargin)
         executeOk(
             """
               |let i, 0

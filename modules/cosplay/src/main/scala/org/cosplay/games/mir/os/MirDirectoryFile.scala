@@ -58,7 +58,7 @@ import org.cosplay.games.mir.os.MirFileSystem.*
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
-  * @param parent Parent directory of this file or `None` if this is a root directory.
+  * @param dir Parent directory of this directory or `None` if this is a root directory.
   * @param otherAcs Can others read or execute. Owner can do anything.
   * @param otherMod Can others change or delete. Owner can do anything.
   * @param initMs Initial creation and update timestamp. Defaults to the current time.
@@ -66,22 +66,22 @@ import org.cosplay.games.mir.os.MirFileSystem.*
 class MirDirectoryFile(
     name: String,
     owner: MirUser,
-    parent: Option[MirDirectoryFile],
+    dir: Option[MirDirectoryFile],
     otherAcs: Boolean = true,
     otherMod: Boolean = false,
     initMs: Long = MirClock.now()
-) extends MirFile(FT_DIR, name, owner, parent, otherAcs, otherMod, initMs) with MirFileDirectory with Iterable[MirFile]:
+) extends MirFile(FT_DIR, name, owner, dir, otherAcs, otherMod, initMs) with MirFileDirectory with Iterable[MirFile]:
     private val children = mutable.ArrayBuffer.empty[MirFile]
 
     /** */
-    val isRoot: Boolean = parent.isEmpty
+    val isRoot: Boolean = dir.isEmpty
 
     /** */
     val root: MirDirectoryFile =
         if isRoot then this
         else
             var p = this
-            while p.getParent.isDefined do p = p.getParent.get
+            while p.getDir.isDefined do p = p.getDir.get
             p
 
     override def iterator: Iterator[MirFile] = children.iterator
@@ -105,7 +105,7 @@ class MirDirectoryFile(
       */
     @throws[CPException]
     def addFile(file: MirFile): Unit =
-        require(isRoot || file.getParent.get == this)
+        require(isRoot || file.getDir.get == this)
         if file.getName == "." then throw E(s"File name '.' is reserved.")
         if file.getName == ".." then throw E(s"File name '..' is reserved.")
         if children.exists(_.getName == file.getName) then throw E(s"This directory already has a file with name: ${file.getName}")
@@ -223,7 +223,7 @@ class MirDirectoryFile(
                 case "." => () // Ignore any '.'.
                 case ".." => f match
                     // Ignore spurious '..'.
-                    case d: MirDirectoryFile => if !d.isRoot then f = d.getParent.get
+                    case d: MirDirectoryFile => if !d.isRoot then f = d.getDir.get
                     case _ => failed = true
                 case name: String => f match
                     case d: MirDirectoryFile =>
@@ -237,7 +237,7 @@ class MirDirectoryFile(
 
     /**
       *
-      * @param path Relative or fully qualified path.
+      * @param path Relative to this directory or fully qualified path.
       */
     def file[T <: MirFile](path: String): Option[T] = resolve(path) match
         case Some(f) => f match

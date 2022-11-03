@@ -33,7 +33,7 @@ grammar MirMash;
 // Parser.
 // =======
 
-mash: decls EOF; // Mash entry point.
+mash: decls* EOF; // Mash entry point.
 decls
     : decl
     | decls decl
@@ -42,6 +42,7 @@ decl
     : varDecl
     | valDecl
     | delimDecl
+    | unsetDecl
     | defDecl
     | natDefDecl
     | whileDecl
@@ -54,6 +55,7 @@ decl
     | pipelineDecl
     | defCall
     ;
+unsetDecl: UNSET STR;
 includeDecl: INCLUDE qstring;
 delimDecl: SCOL;
 assignDecl: STR ASSIGN expr;
@@ -68,17 +70,19 @@ argList
     : arg
     | argList arg
     ;
-pipeOp: VERT | GT | APPEND_FILE;
+pipeOp: VERT | GT | RIGHT_RIGHT;
 defCall: STR LPAR callParamList? RPAR;
 returnDecl: RETURN expr?;
 aliasDecl: ALIAS STR ASSIGN qstring;
 valDecl: VAL STR ASSIGN expr;
-varDecl: VAR STR ASSIGN expr;
+varDecl: (VAR|SET) STR ASSIGN expr;
 defDecl: defNameDecl LPAR funParamList? RPAR ASSIGN compoundExpr;
 defNameDecl: DEF STR;
 natDefDecl: NATIVE DEF STR LPAR funParamList? RPAR;
-whileDecl: WHILE expr DO compoundExpr;
-forDecl: FOR STR IN expr DO compoundExpr;
+whileDecl: whileExprDecl DO compoundExpr;
+whileExprDecl: WHILE expr;
+forDecl: forExprDecl DO compoundExpr;
+forExprDecl: FOR STR IN expr;
 funParamList
     : STR
     | funParamList COMMA STR
@@ -88,16 +92,16 @@ ifElse: ELSE compoundExpr;
 ifDecl: IF expr ifThen ifElse?;
 expr
     // NOTE: order of productions defines precedence.
-    : op=(MINUS | NOT) expr # unaryExpr
+    : op=(MINUS | EXCL | TILDA) expr # unaryExpr
     | LPAR expr RPAR # parExpr
-    | LPAR funParamList? RPAR ANON_DEF compoundExpr # anonDefExpr
-    | expr op=(MULT | DIV | MOD) expr # multDivModExpr
+    | expr op=(MULT | DIV | MOD | RIGHT_RIGHT | RIGHT_RIGHT_RIGHT | LEFT_LEFT | VERT | XOR | AMP) expr # multDivModExpr
     | expr op=(PLUS | MINUS) expr # plusMinusExpr
     | expr op=(LTEQ | GTEQ | LT | GT) expr # compExpr
     | expr op=(EQ | NEQ) expr # eqNeqExpr
     | expr op=(AND | OR) expr # andOrExpr
     | defCall # callExpr
     | BQUOTE pipelineDecl BQUOTE # pipelineExecExpr
+    | list # listExpr
     | atom # atomExpr
     ;
 compoundExpr
@@ -105,15 +109,25 @@ compoundExpr
     | LBRACE decl* RBRACE
     ;
 callParamList
-    : expr
-    | callParamList COMMA expr
+    : callParam
+    | callParamList COMMA callParam
     ;
+callParam: expr;
 atom
     : NULL
     | BOOL
     | STR // Number or variable access (var or val).
     | qstring
     ;
+list
+    : LIST_START LIST_END // Empty list.
+    | LIST_START listElems LIST_END
+    ;
+listElems:
+    | listElem
+    | listElems COMMA listElem
+    ;
+listElem: expr;
 qstring
     : SQSTRING
     | DQSTRING
@@ -126,9 +140,9 @@ ALIAS: 'alias';
 INCLUDE: 'include';
 VAL: 'val';
 VAR: 'var';
+SET: 'set';
+UNSET: 'unset';
 DEF: 'def';
-ANON_DEF: '=>';
-ASSOC: '->';
 NATIVE: 'native';
 RETURN: 'return';
 IF: 'if';
@@ -136,9 +150,10 @@ THEN: 'then';
 ELSE: 'else';
 WHILE: 'while';
 DO: 'do';
-YIELD: 'yield';
 FOR: 'for';
 IN: '<-';
+LIST_START: '[';
+LIST_END: ']';
 SQSTRING: SQUOTE (~'\'')* SQUOTE;
 DQSTRING: DQUOTE ((~'"') | ('\\''"'))* DQUOTE; // Allow for \" (escape double quote) in the string.
 BOOL: 'true' | 'false';
@@ -151,10 +166,14 @@ GT: '>';
 LT: '<';
 AND: '&&';
 AMP: '&';
-APPEND_FILE: '>>';
+RIGHT_RIGHT: '>>';
+LEFT_LEFT: '<<';
+RIGHT_RIGHT_RIGHT: '>>>';
+XOR: '^';
+TILDA: '~';
 OR: '||';
 VERT: '|';
-NOT: '!';
+EXCL: '!';
 LPAR: '(';
 RPAR: ')';
 LBRACE: '{';
@@ -162,20 +181,15 @@ RBRACE: '}';
 SQUOTE: '\'';
 DQUOTE: '"';
 BQUOTE: '`';
-LBR: '[';
-RBR: ']';
-POUND: '#';
 COMMA: ',';
 MINUS: '-';
 DOT: '.';
 ASSIGN: '=';
 PLUS: '+';
-QUESTION: '?';
 MULT: '*';
 SCOL: ';';
 DIV: '/';
 MOD: '%';
-DOLLAR: '$';
 STR: [0-9a-zA-Z_./-]+;
 COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
 WS: [ \r\t\n\u000C]+ -> skip;

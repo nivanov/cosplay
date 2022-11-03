@@ -17,8 +17,9 @@
 
 package org.cosplay.games.mir.os.progs.login
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
+import org.cosplay.*
+import games.mir.*
+import os.*
 
 /*
    _________            ______________
@@ -87,7 +88,7 @@ class MirLoginProgram extends MirExecutable:
 
         stateMgr.state.lastLoginTstamp = MirClock.now()
 
-        con.println(s"Last login ${MirClock.formatTimeDate(lastLoginTstamp)} on $tty.")
+        con.println(s"Last login ${MirClock.formatDateTime(lastLoginTstamp)} on $tty.")
         con.println(s"Welcome back, ${ply.crew.camelFirstName}.")
 
         0

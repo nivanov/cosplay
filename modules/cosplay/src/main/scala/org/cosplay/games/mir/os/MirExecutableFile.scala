@@ -30,14 +30,16 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
-import org.cosplay.games.mir.*
-import org.cosplay.games.mir.os.*
-import org.cosplay.games.mir.os.MirFileType.*
+import org.cosplay.*
+import games.mir.*
+import os.*
+import MirFileType.*
 
 /**
   *
   * @param name Name of file (not including its path).
   * @param owner User owner of this file.
+  * @param dir Parent directory of this file, i.e. a directory this file belongs to.
   * @param exe Executable program.
   * @param otherAcs Can others read or execute. Owner can do anything.
   * @param otherMod Can others change or delete. Owner can do anything.
@@ -46,12 +48,12 @@ import org.cosplay.games.mir.os.MirFileType.*
 class MirExecutableFile(
     name: String,
     owner: MirUser,
-    parent: MirDirectoryFile,
+    dir: MirDirectoryFile,
     exe: MirExecutable,
     otherAcs: Boolean,
     otherMod: Boolean,
     initMs: Long = MirClock.now()
-) extends MirFile(FT_EXE, name, owner, parent.?, otherAcs, otherMod, initMs):
+) extends MirFile(FT_EXE, name, owner, dir.?, otherAcs, otherMod, initMs):
     setSize(exe.getSizeOnDisk)
 
     /**

@@ -54,6 +54,7 @@ class MirAsmCompiler:
       * @param code
       * @param origin
       */
+    //noinspection DuplicatedCode
     private def mkErrorMessage(
         msg: String,
         line: Int, // 1, 2, ...
@@ -141,7 +142,6 @@ class MirAsmCompiler:
             else if ctx.ID() != null then params += IdParam(txt)
             else // Integer or real.
                 val num = txt.replaceAll("_", "")
-
                 try params += LongParam(java.lang.Long.parseLong(num)) // Try 'long'.
                 catch case _: NumberFormatException =>
                     try params += DoubleParam(java.lang.Double.parseDouble(num)) // Try 'double'.
@@ -192,7 +192,7 @@ class MirAsmCompiler:
             throw new MirAsmException(
                 msg,
                 mkErrorMessage(msg, line, charPos - 1, code, origin),
-                None
+                dbg.?
             )
 
     /**
@@ -200,6 +200,7 @@ class MirAsmCompiler:
       * @param code
       * @param origin
       */
+    //noinspection DuplicatedCode
     private def antlr4Setup(code: String, origin: String): (FiniteStateMachine, MirAsmParser) =
         val lexer = new MirAsmLexer(CharStreams.fromString(code, origin))
         val parser = new MirAsmParser(new CommonTokenStream(lexer))

@@ -59,7 +59,7 @@ trait MirProcess:
     /**
       *
       */
-    def getArguments: Seq[String]
+    def getCmdArguments: Seq[String]
 
     /**
       *

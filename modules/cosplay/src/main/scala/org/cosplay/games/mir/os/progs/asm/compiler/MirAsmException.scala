@@ -39,7 +39,7 @@ import org.cosplay.*
   * @param fullMsg Full error message including synopsis and location reference.
   * @param dbg Optional debug information associated with this exception.
   */
-class MirAsmException(synopsis: String, fullMsg: String, dbg: Option[MirAsmDebug] = None) extends CPException(fullMsg):
+class MirAsmException(synopsis: String, fullMsg: String, dbg: Option[MirAsmDebug] = None, cause: Throwable = null) extends CPException(fullMsg, cause):
     /**
       * Gets optional debug information.
       */

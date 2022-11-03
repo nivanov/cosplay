@@ -30,9 +30,10 @@ package org.cosplay.games.mir.os
                ALl rights reserved.
 */
 
+import org.cosplay.*
+import games.mir.*
 import java.util.concurrent.*
 import scala.collection.mutable
-import org.cosplay.games.mir.*
 
 /**
   *
@@ -55,12 +56,14 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
 
     /**
       *
-      * @param parent
+      * @param parent Process that invokes this method (a parent process).
       * @param file
-      * @param args
+      * @param cmdArgs
       * @param workDir
       * @param usr
-      * @param env
+      * @param vars
+      * @param aliases
+      * @param lastExit
       * @param in
       * @param out
       * @param err
@@ -68,10 +71,12 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
     def exec(
         parent: Option[MirProcess],
         file: MirExecutableFile,
-        args: Seq[String],
+        cmdArgs: Seq[String],
         workDir: MirDirectoryFile,
         usr: MirUser,
-        env: Map[String, String],
+        vars: mutable.HashMap[String, Any],
+        aliases: mutable.HashMap[String, String],
+        lastExit: Int,
         in: MirInputStream = MirInputStream.nullStream(),
         out: MirOutputStream = MirOutputStream.consoleStream(con),
         err: MirOutputStream = MirOutputStream.consoleStream(con)): MirProcess =
@@ -85,14 +90,17 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
 
         val ctx = MirExecutableContext(
             pid,
+            parent,
             file,
-            args,
+            cmdArgs,
             con,
             this,
             fs,
             host,
             workDir,
-            env,
+            vars,
+            aliases,
+            lastExit,
             usr,
             in,
             out,
@@ -109,7 +117,9 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
                     case _: InterruptedException => ()
                     case e: Exception => err.println(e.getLocalizedMessage)
                 finishTs = MirClock.now()
-                code.getOrElse(-1)
+                val exitCode = code.getOrElse(-1)
+                ctx.lastExit = exitCode
+                exitCode
         })
 
         val proc = new MirProcess:
@@ -118,7 +128,7 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
             override def getParent: Option[MirProcess] = parent
             override def getProgramFile: MirExecutableFile = file
             override def getWorkingDirectory: MirDirectoryFile = workDir
-            override def getArguments: Seq[String] = args
+            override def getCmdArguments: Seq[String] = cmdArgs
             override def getStartTime: Long = startTs
             override def getSubmitTime: Long = submitTs
             override def isQueued: Boolean = queued
@@ -152,7 +162,7 @@ class MirRuntime(fs: MirFileSystem, con: MirConsole, host: String):
       *
       * @param pid
       */
-    def get(pid: Long): Option[MirProcess] = procs.synchronized {
+    def getProcess(pid: Long): Option[MirProcess] = procs.synchronized {
         procs.get(pid)
     }
 
