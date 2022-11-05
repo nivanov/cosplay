@@ -109,9 +109,8 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                 fromHistory(hist(histIdx))
                 histIdx -= 1
         def historyDown(): Unit =
-            if histIdx < histLastIdx then
-                
-            else if histIdx == histLen - 1 then
+            if histIdx < histLastIdx then ()
+            else if histIdx == histLastIdx then
                 histIdx -= 1
                 fromHistory(if histIdx == 0 then savedBuf else hist(histIdx))
         def moveHome(): Unit = pos = 0
