@@ -205,10 +205,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         //private final val lvlDir ="gehenna/levels"
         //private final val lvlDirFile = new File(lvlDir)
 
-        private var lastMs = 0f
-
+        private var lastMs = 0L
         private var darkness = 1f
-
         private val fadeSpeed = 0.03f
 
         override def onStart(): Unit =
@@ -222,20 +220,20 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             setX((canv.w / 2) - getWidth / 2)
 
             // Appearance.
-            if visible == true && ctx.getFrameMs - lastMs >= 5000 then
+            if visible && ctx.getFrameMs - lastMs >= 5000 then
                 visible = false
                 lastMs = ctx.getFrameMs
 
-            if visible == true && darkness > 0.1 then
+            if visible && darkness > 0.1 then
                 darkness -= fadeSpeed
                 setImage(songPlayingImg(darkness))
 
             // Disappear.
-            if visible == false && ctx.getFrameMs - lastMs >= 5000 then
+            if !visible && ctx.getFrameMs - lastMs >= 5000 then
                 visible = true
                 lastMs = ctx.getFrameMs
 
-            if visible == false && darkness < 1 then
+            if !visible && darkness < 1 then
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
 

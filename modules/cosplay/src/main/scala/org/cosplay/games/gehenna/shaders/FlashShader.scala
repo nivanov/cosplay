@@ -79,7 +79,7 @@ class FlashShader extends CPShader:
     def changeRadius: Int = radius
 
     private var rate = (60/bpm) * 1000
-    private var lastMs = 0f
+    private var lastMs = 0L
 
     private var currFade = 0f
     private val fadeChange = 0.05f

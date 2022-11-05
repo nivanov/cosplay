@@ -46,11 +46,12 @@ import scala.jdk.CollectionConverters.*
                 ALl rights reserved.
 */
 
-
+/**
+  *
+  */
 object ProjectGehennaPlayMenu extends CPScene("playMenu", None, GAME_BG_PX):
-
     private val menuBorder = new CPRect(0, 0, 10, 10)
 
-    addObjects(
-        menuBorder
-    )
+//    addObjects(
+//        menuBorder
+//    )
