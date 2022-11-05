@@ -21,6 +21,8 @@ import org.cosplay.*
 import games.mir.*
 import games.mir.os.*
 
+import scala.collection.mutable
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -44,9 +46,19 @@ class MirMashProgram extends MirExecutable:
     override def mainEntry(ctx: MirExecutableContext): Int =
         initState(ctx)
 
-        // TODO
+        val con = ctx.con
+        var exit = false
+        var exitCode = 0
+        val hist = mutable.ArrayBuffer.empty[String]
+        val prompt = "$"
 
-        0
+        while !exit do
+            con.print(s"$prompt ")
+            val line = con.readLine(hist = hist.toSeq)
+            con.println(s"\nexecuting '$line'.")
+            hist += line
+
+        exitCode
 
     /**
       *

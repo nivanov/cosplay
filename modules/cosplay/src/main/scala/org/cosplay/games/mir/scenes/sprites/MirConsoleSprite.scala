@@ -91,7 +91,8 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
         private var buf = ""
         private var pos = 0
         private var len = 0
-        private var histIdx = 0
+        private val histLastIdx = hist.size - 1
+        private var histIdx = histLastIdx
         private var savedBuf = ""
 
         def moveLeft(): Unit = pos = 0.max(pos - 1)
@@ -103,12 +104,14 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
             pos = len
 
         def historyUp(): Unit =
-            if histIdx < hist.size - 1 then
-                if histIdx == 0 then savedBuf = buf.stripTrailing()
-                histIdx += 1
-                fromHistory(hist(histIdx))
-        def historyDown(): Unit =
             if histIdx > 0 then
+                if histIdx == histLastIdx then savedBuf = buf.stripTrailing()
+                fromHistory(hist(histIdx))
+                histIdx -= 1
+        def historyDown(): Unit =
+            if histIdx < histLastIdx then
+                
+            else if histIdx == histLen - 1 then
                 histIdx -= 1
                 fromHistory(if histIdx == 0 then savedBuf else hist(histIdx))
         def moveHome(): Unit = pos = 0

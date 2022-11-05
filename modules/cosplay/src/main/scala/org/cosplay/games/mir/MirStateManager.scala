@@ -75,7 +75,7 @@ case class MirState(
   *
   */
 object MirStateManager:
-    final val FG_GREEN = CPColor("0x00AF00")
+    final val FG_GREEN = CPColor("0x2EB301")
     final val BG_GREEN = CPColor("0x010101")
     final val FG_YELLOW = CPColor("0xE6C906")
     final val BG_YELLOW = CPColor("0x010101")
@@ -86,8 +86,8 @@ object MirStateManager:
     final val LOGO_YELLOW = "mir_logo_yellow.xp"
     final val LOGO_WHITE = "mir_logo_white.xp"
 
-    final val DFLT_BG = BG_YELLOW
-    final val DFLT_FG = FG_YELLOW
+    final val DFLT_BG = BG_GREEN
+    final val DFLT_FG = FG_GREEN
     final val DFLT_LOGO_IMAGE = LOGO_YELLOW
 
     private final val DIR = "mir/saved"
