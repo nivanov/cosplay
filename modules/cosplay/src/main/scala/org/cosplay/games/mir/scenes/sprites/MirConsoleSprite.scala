@@ -93,7 +93,7 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
         private var len = 0
         private val histLastIdx = hist.size - 1
         private var histIdx = histLastIdx
-        private var savedBuf = ""
+        private var savedBuf: Option[String] = None
 
         def moveLeft(): Unit = pos = 0.max(pos - 1)
         def moveRight(): Unit = pos = len.min(pos + 1)
@@ -102,17 +102,18 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
             buf = s.padTo(curLen, ' ')
             len = buf.stripTrailing().length
             pos = len
-
         def historyUp(): Unit =
-            if histIdx > 0 then
-                if histIdx == histLastIdx then savedBuf = buf.stripTrailing()
+            if histIdx >= 0 then
+                if histIdx == histLastIdx && savedBuf.isEmpty then savedBuf = buf.stripTrailing().?
+                else if histIdx > 0 then histIdx -= 1
                 fromHistory(hist(histIdx))
-                histIdx -= 1
         def historyDown(): Unit =
-            if histIdx < histLastIdx then ()
-            else if histIdx == histLastIdx then
-                histIdx -= 1
-                fromHistory(if histIdx == 0 then savedBuf else hist(histIdx))
+            if histIdx == histLastIdx && savedBuf.isDefined then
+                fromHistory(savedBuf.get)
+                savedBuf = None
+            else if histIdx < histLastIdx then
+                histIdx += 1
+                fromHistory(hist(histIdx))
         def moveHome(): Unit = pos = 0
         def moveEnd(): Unit = pos = len
         def getText: String = buf
@@ -253,7 +254,7 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
 
             if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curSolid = !curSolid
             if lastCurY != curY || lastCurX != curX then curSolid = true // Force solid state on move.
-            if curSolid && curVis then canv.drawPixel(CUR_PX, curX, curY - canvY, Int.MaxValue)
+            if curSolid && curVis then canv.inversePixel(curX, curY - canvY)
 
             lastCurX = curX
             lastCurY = curY

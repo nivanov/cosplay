@@ -779,13 +779,23 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         drawPixel(CPPixel(char, fg, bg), x, y, z)
 
     /**
-      * Gets a pixel from given XY-coordinate.
+      * Gets a pixel at given XY-coordinate.
       *
       * @param x X-coordinate.
       * @param y Y-coordinate.
       * @return Pixel at given coordinate.
       */
     def getZPixel(x: Int, y: Int): CPZPixel = pane.getPixel(x, y)
+
+    /**
+      * Inverses color of the pixel at given XY-coordinate.
+      *
+      * @param x X-coordinate.
+      * @param y Y-coordinate.
+      */
+    def inversePixel(x: Int, y: Int): Unit =
+        val zpx = pane.getPixel(x, y)
+        pane.addPixel(zpx.px.inverse, x, y, zpx.z)
 
     /**
       * Draws a rectangle.
