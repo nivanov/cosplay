@@ -233,7 +233,7 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                         saveCurX = curX
                         saveCurY = curY
                     i += 1
-                    advanceCursor(dim.w)
+                    advanceCursor()
 
                 if i != bufPos then
                     curX = saveCurX
@@ -262,11 +262,10 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
 
     /**
       *
-      * @param w Actual width to use.
       */
-    private def advanceCursor(w: Int): Unit =
+    private def advanceCursor(): Unit =
         require(Thread.holdsLock(mux))
-
+        val w = dim.w
         if curX < w - 1 then curX += 1
         else if curY < LAST_Y then
             curX = 0
@@ -280,12 +279,12 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
         mux.synchronized {
             def put(ch: Char): Unit =
                 putChar(getCursorX, getCursorY, ch)
-                if !isControl(ch) then advanceCursor(W)
+                if !isControl(ch) then advanceCursor()
             x.toString.foreach(ch => ch match
                 case '\r' => curX = 0 // For Win-compatibility just in case.
                 case '\n' =>
                     curX = LAST_X
-                    advanceCursor(W)
+                    advanceCursor()
                 case '\t' => (0 until TAB_SIZE).foreach(_ => put(' '))
                 case _ => put(ch)
             )
