@@ -233,6 +233,7 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                         saveCurX = curX
                         saveCurY = curY
                     i += 1
+                    // TODO: bug - if the screen scrolls - above logic doesn't work.
                     advanceCursor()
 
                 if i != bufPos then
