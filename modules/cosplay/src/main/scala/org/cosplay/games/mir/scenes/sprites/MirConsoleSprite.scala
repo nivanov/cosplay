@@ -91,8 +91,9 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
         private var buf = ""
         private var pos = 0
         private var len = 0
-        private var histIdx = 0
-        private var savedBuf = ""
+        private val histLastIdx = hist.size - 1
+        private var histIdx = histLastIdx
+        private var savedBuf: Option[String] = None
 
         def moveLeft(): Unit = pos = 0.max(pos - 1)
         def moveRight(): Unit = pos = len.min(pos + 1)
@@ -101,16 +102,18 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
             buf = s.padTo(curLen, ' ')
             len = buf.stripTrailing().length
             pos = len
-
         def historyUp(): Unit =
-            if histIdx < hist.size - 1 then
-                if histIdx == 0 then savedBuf = buf.stripTrailing()
-                histIdx += 1
+            if histIdx >= 0 then
+                if histIdx == histLastIdx && savedBuf.isEmpty then savedBuf = buf.stripTrailing().?
+                else if histIdx > 0 then histIdx -= 1
                 fromHistory(hist(histIdx))
         def historyDown(): Unit =
-            if histIdx > 0 then
-                histIdx -= 1
-                fromHistory(if histIdx == 0 then savedBuf else hist(histIdx))
+            if histIdx == histLastIdx && savedBuf.isDefined then
+                fromHistory(savedBuf.get)
+                savedBuf = None
+            else if histIdx < histLastIdx then
+                histIdx += 1
+                fromHistory(hist(histIdx))
         def moveHome(): Unit = pos = 0
         def moveEnd(): Unit = pos = len
         def getText: String = buf
@@ -230,7 +233,8 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                         saveCurX = curX
                         saveCurY = curY
                     i += 1
-                    advanceCursor(dim.w)
+                    // TODO: bug - if the screen scrolls - above logic doesn't work.
+                    advanceCursor()
 
                 if i != bufPos then
                     curX = saveCurX
@@ -251,7 +255,7 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
 
             if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curSolid = !curSolid
             if lastCurY != curY || lastCurX != curX then curSolid = true // Force solid state on move.
-            if curSolid && curVis then canv.drawPixel(CUR_PX, curX, curY - canvY, Int.MaxValue)
+            if curSolid && curVis then canv.inversePixel(curX, curY - canvY)
 
             lastCurX = curX
             lastCurY = curY
@@ -259,11 +263,10 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
 
     /**
       *
-      * @param w Actual width to use.
       */
-    private def advanceCursor(w: Int): Unit =
+    private def advanceCursor(): Unit =
         require(Thread.holdsLock(mux))
-
+        val w = dim.w
         if curX < w - 1 then curX += 1
         else if curY < LAST_Y then
             curX = 0
@@ -277,12 +280,12 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
         mux.synchronized {
             def put(ch: Char): Unit =
                 putChar(getCursorX, getCursorY, ch)
-                if !isControl(ch) then advanceCursor(W)
+                if !isControl(ch) then advanceCursor()
             x.toString.foreach(ch => ch match
                 case '\r' => curX = 0 // For Win-compatibility just in case.
                 case '\n' =>
                     curX = LAST_X
-                    advanceCursor(W)
+                    advanceCursor()
                 case '\t' => (0 until TAB_SIZE).foreach(_ => put(' '))
                 case _ => put(ch)
             )

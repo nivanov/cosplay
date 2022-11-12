@@ -91,5 +91,7 @@ class MirLoginProgram extends MirExecutable:
         con.println(s"Last login ${MirClock.formatDateTime(lastLoginTstamp)} on $tty.")
         con.println(s"Welcome back, ${ply.crew.camelFirstName}.")
 
-        0
+        // Start 'sbin/mash' and wait indefinitely.
+        ctx.fork(ctx.fs.file("/sbin/mash").get, Seq.empty).exitCode().getOrElse(-1)
+
 
