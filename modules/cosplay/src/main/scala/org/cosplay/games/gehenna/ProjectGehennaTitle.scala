@@ -33,6 +33,8 @@ import java.nio.charset.Charset
 import scala.io.Source
 import scala.jdk.CollectionConverters.*
 
+import de.sciss.audiofile._
+
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -54,7 +56,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val helpImg = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
 
     //private var menuSong = CPSound("sounds/games/gehenna/intro newsong.wav")
-    private var introSong = CPSound("sounds/games/gehenna/intro song.wav")
+    private var introSong = CPSound("sounds/games/gehenna/introsong.wav")
 
     private var curBpm = 55
 
@@ -65,6 +67,9 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         GAME_BG_PX,
         onFinish = _ => TextDripShader.start()
     )
+    // Variables for audiofile plugin.
+    val bufSz = 8192 // perform operations in blocks of this size
+
 
     private def skullImg(): CPImage =
         new CPArrayImage(
@@ -149,8 +154,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private val underLine: CPCanvasSprite = new CPCanvasSprite("underLine"):
         private val btns: List[CPImageSprite] = List(helpSpr, startSpr, settingsSpr)
         private var btnIndex = 1
-
-        private val menuClick = CPSound("sounds/games/gehenna/UIClick.wav")
 
         private var darkness = 1f
 
@@ -242,6 +245,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         val lvlDir ="gehenna/levels"
         val lvlDirFile = new File(lvlDir)
 
+        def mkFile(res: String): File =
+            new File(getClass.getClassLoader().getResource(res).toURI)
         def readLines(res: String): Seq[String] =
             IOUtils.readLines(getClass.getClassLoader().getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
 
@@ -258,17 +263,42 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         println(curBpm)
 
-        songPlay()
+        val in = AudioFile.openRead(mkFile(s"$lvlDir/$rndDir/song.wav"))
+
+        songPlay(in)
         println("EE")
 
-//        introSong = menuSong
-//        introSong.play(3000, menuSongChange())
-//        println("Playing Song :)")
-
-    private def songPlay(): Unit =
+    private def songPlay(in:AudioFile): Unit =
         introSong.play(30, CPSound => menuSongChange())
         println("Playing Song :)")
         println(curBpm)
+
+//        val buf = in.buffer(bufSz)
+//
+//        var mag = 0.0
+//        var remain = in.numFrames
+//        while (remain > 0) {
+//            val chunk = math.min(bufSz, remain).toInt
+//            in.read(buf, 0, chunk)
+//            buf.foreach { chan =>
+//                mag = math.max(mag, math.abs(chan.maxBy(math.abs)))
+//            }
+//            remain -= chunk
+//        }
+//        println(f"Maximum magnitude detected: $mag%1.3f")
+//        in.close()
+
+        val buf = in.buffer(bufSz)
+
+        var mag = 0.0
+        var remain = in.numFrames
+        while (remain > 0) {
+            val chunk = math.min(bufSz, remain).toInt
+            in.read(buf, 0, chunk)
+            remain -= chunk
+        }
+        buf.foreach{println}
+        in.close()
 
     addObjects(
         titleSpr,

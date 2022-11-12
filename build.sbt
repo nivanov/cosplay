@@ -51,6 +51,7 @@ val jlineVer = "3.21.0"
 val jnaVer = "5.10.0"
 val mixPanelVer = "1.5.1"
 val antlr4Ver = "4.11.1"
+var audioFileVer = "2.4.0"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
 ThisBuild / version := cosPlayVer
@@ -110,6 +111,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % scalaParColVer,
         libraryDependencies += "com.mixpanel" % "mixpanel-java" % mixPanelVer,
         libraryDependencies += "org.antlr" % "antlr4-runtime" % antlr4Ver,
+        libraryDependencies += "de.sciss" %% "audiofile_3" % audioFileVer,
 
         // Test scope.
         libraryDependencies += "org.scalatest" %% s"scalatest" % s"$scalaTestVer" % Test,

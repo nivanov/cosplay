@@ -66,6 +66,7 @@ object ProjectGehenna:
             CPEngine.startGame(
 //                new CPSlideShimmerLogoScene("logo", None, LOGO_BG_PX, CS, "title"),
                 ProjectGehennaTitle,
+                //ProjectGehennaPlayMenu
             )
         finally CPEngine.dispose()
 
