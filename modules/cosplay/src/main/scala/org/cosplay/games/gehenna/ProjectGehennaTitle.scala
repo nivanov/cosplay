@@ -288,16 +288,29 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 //        println(f"Maximum magnitude detected: $mag%1.3f")
 //        in.close()
 
+
+
+        val totalSongLength = introSong.getTotalDuration
+        println("Total Song Length : " + totalSongLength)
+
+        val timeInFrame = totalSongLength.toFloat / in.numFrames.toFloat
+        println("Time in each frame : " + timeInFrame)
+        println("in.numFrames = " + in.numFrames)
+
+        val milisecondsTest = 10000
+
         val buf = in.buffer(bufSz)
 
         var mag = 0.0
-        var remain = in.numFrames
-        while (remain > 0) {
-            val chunk = math.min(bufSz, remain).toInt
-            in.read(buf, 0, chunk)
-            remain -= chunk
+
+        val chunk = math.min(bufSz, milisecondsTest.toFloat * timeInFrame.toFloat).toInt
+        println(chunk)
+        in.read(buf, 0, chunk)
+        buf.foreach { chan =>
+            mag = math.abs(chan.maxBy(math.abs))
         }
-        buf.foreach{println}
+
+        println(f"Maximum magnitude detected: $mag%1.3f")
         in.close()
 
     addObjects(
