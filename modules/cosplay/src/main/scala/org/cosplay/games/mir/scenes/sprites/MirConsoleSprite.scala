@@ -123,14 +123,16 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                 buf = s"${buf.substring(0, pos)}$ch${buf.substring(pos)}"
                 pos += 1
                 len = buf.stripTrailing().length
+        private def delAtPos(): Unit =
+            buf = s"${buf.substring(0, pos)}${buf.substring(pos + 1)} "
         def deleteChar(): Unit =
             if pos < len then
-                buf = s"${buf.substring(0, pos)}${buf.substring(pos + 1)} "
+                delAtPos()
                 len = buf.stripTrailing().length
         def backspace(): Unit =
             if pos > 0 then
                 pos -= 1
-                buf = s"${buf.substring(0, pos)}${buf.substring(pos + 1)} "
+                delAtPos()
                 len = buf.stripTrailing().length
 
     clear()
@@ -272,9 +274,11 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
             curX = 0
             curY += 1
         else
+            // Scroll up the screen by 1 row.
             for y <- 1 until H do Array.copy(pane(y), 0, pane(y - 1), 0, W)
             for x <- 0 until W do pane(LAST_Y)(x) = SPACE
             curX = 0
+            rlStartY -= 1
 
     override def print(x: Any): Unit =
         mux.synchronized {
