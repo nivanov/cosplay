@@ -114,7 +114,7 @@
         <commons.math.ver>3.6.1</commons.math.ver>
         <commons.text.ver>1.10.0</commons.text.ver>
         <commons.collections.ver>4.4</commons.collections.ver>
-        <scala3.reflect.ver>1.1.4</scala3.reflect.ver>
+        <scala3.reflect.ver>1.1.11</scala3.reflect.ver>
         <scalatest.ver>3.2.14</scalatest.ver>
         <junit.ver>5.9.1</junit.ver>
         <openjfx.ver>17.0.2</openjfx.ver>
