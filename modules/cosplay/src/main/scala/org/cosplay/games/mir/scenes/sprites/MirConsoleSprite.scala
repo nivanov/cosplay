@@ -63,8 +63,8 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
     private final val TAB_SIZE = 8
     private final val mux = Object()
     private val pane = Array.ofDim[ZChar](H, W)
-    private var curX = 0
-    private var curY = 0
+    private var crsX = 0
+    private var crsY = 0
     private var lastCurX = 0
     private var lastCurY = 0
     private var curVis = true // Visible vs. non-visible.
@@ -140,23 +140,23 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
     inline private def isPositionValid(x: Int, y: Int): Boolean = x >= 0 && x < W && y >= 0 && y < H
 
     override def clear(): Unit = for x <- 0 until W; y <- 0 until H do pane(y)(x) = SPACE
-    override def clearLeft(): Unit = for x <- 0 until curX do pane(curY)(x) = SPACE
-    override def clearRight(): Unit = for x <- curX + 1 until W do pane(curY)(x) = SPACE
-    override def clearRow(): Unit = for x <- 0 until W do pane(x)(curY) = SPACE
-    override def clearColumn(): Unit = for y <- 0 until H do pane(y)(curX) = SPACE
-    override def clearAbove(): Unit = for y <- 0 until curY do pane(y)(curX) = SPACE
-    override def clearBelow(): Unit = for y <- curY + 1 until H do pane(y)(curX) = SPACE
+    override def clearLeft(): Unit = for x <- 0 until crsX do pane(crsY)(x) = SPACE
+    override def clearRight(): Unit = for x <- crsX + 1 until W do pane(crsY)(x) = SPACE
+    override def clearRow(): Unit = for x <- 0 until W do pane(x)(crsY) = SPACE
+    override def clearColumn(): Unit = for y <- 0 until H do pane(y)(crsX) = SPACE
+    override def clearAbove(): Unit = for y <- 0 until crsY do pane(y)(crsX) = SPACE
+    override def clearBelow(): Unit = for y <- crsY + 1 until H do pane(y)(crsX) = SPACE
     override def isCursorVisible: Boolean = curVis
     override def setCursorVisible(f: Boolean): Unit = curVis = f
     override def moveCursor(x: Int, y: Int): Unit =
         val y2 = y + canvY
         if isPositionValid(x, y2) then mux.synchronized {
-            curX = x
-            curY = y2
+            crsX = x
+            crsY = y2
         }
     override def getSize: CPDim = dim
-    override def getCursorX: Int = curX
-    override def getCursorY: Int = curY - canvY
+    override def getCursorX: Int = crsX
+    override def getCursorY: Int = crsY - canvY
     override def putChar(x: Int, y: Int, z: Int, ch: Char, fg: CPColor, bg: CPColor): Unit =
         ch match
             case CTRL_REV_COL => inverseColors()
@@ -172,8 +172,8 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
     override def readLine(repCh: Option[Char], maxLen: Int, hist: Seq[String]): String =
         require(!rlMode)
         rlLatch = CountDownLatch(1)
-        rlStartX = curX
-        rlStartY = curY
+        rlStartX = crsX
+        rlStartY = crsY
         rlRepCh = repCh
         rlBuf = new ReadLineBuffer(maxLen, hist)
         rlMode = true
@@ -223,26 +223,26 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
             dim = canv.dim
 
             if rlMode then
-                curX = rlStartX
-                curY = rlStartY
-                var saveCurX = curX
-                var saveCurY = curY
+                crsX = rlStartX
+                crsY = rlStartY
+                var saveCrsX = crsX
+                var saveCrsY = crsY
                 var i = 0
                 val bufPos = rlBuf.getPos
                 for ch <- rlBuf.getText do
-                    pane(curY)(curX) = ZChar(if ch == ' ' then ch else rlRepCh.getOrElse(ch), getFg, getBg, Int.MaxValue)
+                    pane(crsY)(crsX) = ZChar(if ch == ' ' then ch else rlRepCh.getOrElse(ch), getFg, getBg, Int.MaxValue)
                     if i == bufPos then
-                        saveCurX = curX
-                        saveCurY = curY
+                        saveCrsX = crsX
+                        saveCrsY = crsY
                     i += 1
                     // TODO: bug - if the screen scrolls - above logic doesn't work.
                     advanceCursor()
 
                 if i != bufPos then
-                    curX = saveCurX
-                    curY = saveCurY
+                    crsX = saveCrsX
+                    crsY = saveCrsY
 
-            canvY = if curY < canv.h then 0 else curY - canv.h + 1
+            canvY = if crsY < canv.h then 0 else crsY - canv.h + 1
             val w = canv.w.min(W)
             val h = canv.h
 
@@ -256,11 +256,11 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                 y += 1
 
             if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curSolid = !curSolid
-            if lastCurY != curY || lastCurX != curX then curSolid = true // Force solid state on move.
-            if curSolid && curVis then canv.inversePixel(curX, curY - canvY)
+            if lastCurY != crsY || lastCurX != crsX then curSolid = true // Force solid state on move.
+            if curSolid && curVis then canv.inversePixel(crsX, crsY - canvY)
 
-            lastCurX = curX
-            lastCurY = curY
+            lastCurX = crsX
+            lastCurY = crsY
         }
 
     /**
@@ -269,15 +269,15 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
     private def advanceCursor(): Unit =
         require(Thread.holdsLock(mux))
         val w = dim.w
-        if curX < w - 1 then curX += 1
-        else if curY < LAST_Y then
-            curX = 0
-            curY += 1
+        if crsX < w - 1 then crsX += 1
+        else if crsY < LAST_Y then
+            crsX = 0
+            crsY += 1
         else
             // Scroll up the screen by 1 row.
             for y <- 1 until H do Array.copy(pane(y), 0, pane(y - 1), 0, W)
             for x <- 0 until W do pane(LAST_Y)(x) = SPACE
-            curX = 0
+            crsX = 0
             rlStartY -= 1
 
     override def print(x: Any): Unit =
@@ -286,9 +286,9 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                 putChar(getCursorX, getCursorY, ch)
                 if !isControl(ch) then advanceCursor()
             x.toString.foreach(ch => ch match
-                case '\r' => curX = 0 // For Win-compatibility just in case.
+                case '\r' => crsX = 0 // For Win-compatibility just in case.
                 case '\n' =>
-                    curX = LAST_X
+                    crsX = LAST_X
                     advanceCursor()
                 case '\t' => (0 until TAB_SIZE).foreach(_ => put(' '))
                 case _ => put(ch)
