@@ -58,21 +58,22 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
     private final val H = 100
     private final val LAST_X = W - 1
     private final val LAST_Y = H - 1
-    private final val CUR_PX = ' '&&(FG, FG)
-    private final val CUR_BLINK_FRM_NUM = 13
+    private final val CRS_PX = ' '&&(FG, FG)
+    private final val CRS_BLINK_FRM_NUM = 13
     private final val TAB_SIZE = 8
     private final val mux = Object()
-    private val pane = Array.ofDim[ZChar](H, W)
-    private var crsX = 0
-    private var crsY = 0
-    private var lastCurX = 0
-    private var lastCurY = 0
-    private var curVis = true // Visible vs. non-visible.
-    private var curSolid = true
+
+    private val buf = Array.ofDim[ZChar](H, W)
+    private var bufX = 0 // X-coordinate within the buffer.
+    private var bufY = 0 // Y-coordinate within the buffer.
+    private var lastBufX = 0
+    private var lastBufY = 0
+    private var crsVis = true // Visible vs. non-visible cursor.
+    private var crsSolid = true
     private var dim = CPDim(W, H)
     private var canvY = 0
 
-    // Read line staff.
+    // Read line stuff.
     private var rlBuf: ReadLineBuffer = _
     private var rlMode = false
     private var rlLatch: CountDownLatch = _
@@ -88,7 +89,7 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
     class ReadLineBuffer(maxLen: Int, hist: Seq[String]):
         require(maxLen > 0)
 
-        private var buf = ""
+        private var txt = ""
         private var pos = 0
         private var len = 0
         private val histLastIdx = hist.size - 1
@@ -97,14 +98,15 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
 
         def moveLeft(): Unit = pos = 0.max(pos - 1)
         def moveRight(): Unit = pos = len.min(pos + 1)
+        private def stripLen(): Int = txt.stripTrailing().length
         private def fromHistory(s: String): Unit =
-            val curLen = buf.length
-            buf = s.padTo(curLen, ' ')
-            len = buf.stripTrailing().length
-            pos = len
+            val curLen = txt.length
+            txt = s.padTo(curLen, ' ')
+            len = stripLen()
+            moveEnd() // Move cursor to the last non-whitespace character.
         def historyUp(): Unit =
             if histIdx >= 0 then
-                if histIdx == histLastIdx && savedBuf.isEmpty then savedBuf = buf.stripTrailing().?
+                if histIdx == histLastIdx && savedBuf.isEmpty then savedBuf = txt.stripTrailing().?
                 else if histIdx > 0 then histIdx -= 1
                 fromHistory(hist(histIdx))
         def historyDown(): Unit =
@@ -116,47 +118,49 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                 fromHistory(hist(histIdx))
         def moveHome(): Unit = pos = 0
         def moveEnd(): Unit = pos = len
-        def getText: String = buf
-        def getPos: Int = pos
+        def getText: String = txt
+        def getPos: Int = pos // Cursor position in the buffer.
         def insertChar(ch: Char): Unit =
             if len < maxLen then
-                buf = s"${buf.substring(0, pos)}$ch${buf.substring(pos)}"
+                txt = s"${txt.substring(0, pos)}$ch${txt.substring(pos)}"
                 pos += 1
-                len = buf.stripTrailing().length
-        private def delAtPos(): Unit =
-            buf = s"${buf.substring(0, pos)}${buf.substring(pos + 1)} "
+                len = stripLen()
+        private def delAtPos(): Unit = txt = s"${txt.substring(0, pos)}${txt.substring(pos + 1)} "
         def deleteChar(): Unit =
             if pos < len then
                 delAtPos()
-                len = buf.stripTrailing().length
+                len = stripLen()
         def backspace(): Unit =
             if pos > 0 then
                 pos -= 1
-                delAtPos()
-                len = buf.stripTrailing().length
+                deleteChar()
 
     clear()
 
-    inline private def isPositionValid(x: Int, y: Int): Boolean = x >= 0 && x < W && y >= 0 && y < H
+    // Is valid for buffer?
+    inline private def isBufValid(x: Int, y: Int): Boolean = x >= 0 && x < W && y >= 0 && y < H
 
-    override def clear(): Unit = for x <- 0 until W; y <- 0 until H do pane(y)(x) = SPACE
-    override def clearLeft(): Unit = for x <- 0 until crsX do pane(crsY)(x) = SPACE
-    override def clearRight(): Unit = for x <- crsX + 1 until W do pane(crsY)(x) = SPACE
-    override def clearRow(): Unit = for x <- 0 until W do pane(x)(crsY) = SPACE
-    override def clearColumn(): Unit = for y <- 0 until H do pane(y)(crsX) = SPACE
-    override def clearAbove(): Unit = for y <- 0 until crsY do pane(y)(crsX) = SPACE
-    override def clearBelow(): Unit = for y <- crsY + 1 until H do pane(y)(crsX) = SPACE
-    override def isCursorVisible: Boolean = curVis
-    override def setCursorVisible(f: Boolean): Unit = curVis = f
+    override def clear(): Unit = for x <- 0 until W; y <- 0 until H do buf(y)(x) = SPACE
+    override def clearLeft(): Unit = for x <- 0 until bufX do buf(bufY)(x) = SPACE
+    override def clearRight(): Unit = for x <- bufX + 1 until W do buf(bufY)(x) = SPACE
+    override def clearRow(): Unit = for x <- 0 until W do buf(x)(bufY) = SPACE
+    override def clearColumn(): Unit = for y <- 0 until H do buf(y)(bufX) = SPACE
+    override def clearAbove(): Unit = for y <- 0 until bufY do buf(y)(bufX) = SPACE
+    override def clearBelow(): Unit = for y <- bufY + 1 until H do buf(y)(bufX) = SPACE
+    override def isCursorVisible: Boolean = crsVis
+    override def setCursorVisible(f: Boolean): Unit = crsVis = f
+
+    // 'x' and 'y' are window coordinates.
     override def moveCursor(x: Int, y: Int): Unit =
         val y2 = y + canvY
-        if isPositionValid(x, y2) then mux.synchronized {
-            crsX = x
-            crsY = y2
+        if isBufValid(x, y2) then mux.synchronized {
+            bufX = x
+            bufY = y2
         }
     override def getSize: CPDim = dim
-    override def getCursorX: Int = crsX
-    override def getCursorY: Int = crsY - canvY
+    override def getCursorX: Int = bufX // Window X-coordinate.
+    override def getCursorY: Int = bufY - canvY // Window Y-coordinate.
+    // 'x' and 'y' are window coordinates.
     override def putChar(x: Int, y: Int, z: Int, ch: Char, fg: CPColor, bg: CPColor): Unit =
         ch match
             case CTRL_REV_COL => inverseColors()
@@ -164,16 +168,16 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
             case CTRL_BEEP => beepCnt += 1
             case _ =>
                 val y2 = y + canvY
-                if isPositionValid(x, y2) then mux.synchronized {
-                    val zch = pane(y2)(x)
-                    if zch.z <= z then pane(y2)(x) = ZChar(ch, fg, bg, z)
+                if isBufValid(x, y2) then mux.synchronized {
+                    val zch = buf(y2)(x)
+                    if zch.z <= z then buf(y2)(x) = ZChar(ch, fg, bg, z)
                 }
 
     override def readLine(repCh: Option[Char], maxLen: Int, hist: Seq[String]): String =
         require(!rlMode)
         rlLatch = CountDownLatch(1)
-        rlStartX = crsX
-        rlStartY = crsY
+        rlStartX = bufX
+        rlStartY = bufY
         rlRepCh = repCh
         rlBuf = new ReadLineBuffer(maxLen, hist)
         rlMode = true
@@ -223,44 +227,44 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
             dim = canv.dim
 
             if rlMode then
-                crsX = rlStartX
-                crsY = rlStartY
-                var saveCrsX = crsX
-                var saveCrsY = crsY
+                bufX = rlStartX
+                bufY = rlStartY
+                var savedX = -1
+                var savedY = -1
                 var i = 0
-                val bufPos = rlBuf.getPos
+                val rlPos = rlBuf.getPos
                 for ch <- rlBuf.getText do
-                    pane(crsY)(crsX) = ZChar(if ch == ' ' then ch else rlRepCh.getOrElse(ch), getFg, getBg, Int.MaxValue)
-                    if i == bufPos then
-                        saveCrsX = crsX
-                        saveCrsY = crsY
+                    buf(bufY)(bufX) = ZChar(if ch == ' ' then ch else rlRepCh.getOrElse(ch), getFg, getBg, Int.MaxValue)
+                    if i == rlPos then
+                        savedX = bufX
+                        savedY = bufY
                     i += 1
-                    // TODO: bug - if the screen scrolls - above logic doesn't work.
                     advanceCursor()
 
-                if i != bufPos then
-                    crsX = saveCrsX
-                    crsY = saveCrsY
+                if savedX != -1 && savedY != -1 then
+                    bufX = savedX
+                    bufY = savedY
 
-            canvY = if crsY < canv.h then 0 else crsY - canv.h + 1
-            val w = canv.w.min(W)
-            val h = canv.h
+            val w = dim.w.min(W)
+            val h = dim.h.min(H)
+
+            canvY = if bufY < h then 0 else bufY - h + 1
 
             var y = 0
             while y < h do
                 var x = 0
                 while x < w do
-                    val zch = pane(y + canvY)(x)
+                    val zch = buf(y + canvY)(x)
                     canv.drawPixel(zch.px, x, y, zch.z)
                     x += 1
                 y += 1
 
-            if ctx.getFrameCount % CUR_BLINK_FRM_NUM == 0 then curSolid = !curSolid
-            if lastCurY != crsY || lastCurX != crsX then curSolid = true // Force solid state on move.
-            if curSolid && curVis then canv.inversePixel(crsX, crsY - canvY)
+            if ctx.getFrameCount % CRS_BLINK_FRM_NUM == 0 then crsSolid = !crsSolid
+            if lastBufY != bufY || lastBufX != bufX then crsSolid = true // Force solid state on cursor move.
+            if crsSolid && crsVis then canv.inversePixel(bufX, bufY - canvY)
 
-            lastCurX = crsX
-            lastCurY = crsY
+            lastBufX = bufX
+            lastBufY = bufY
         }
 
     /**
@@ -268,17 +272,18 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
       */
     private def advanceCursor(): Unit =
         require(Thread.holdsLock(mux))
-        val w = dim.w
-        if crsX < w - 1 then crsX += 1
-        else if crsY < LAST_Y then
-            crsX = 0
-            crsY += 1
+        val w = dim.w.min(W)
+        if bufX < w - 1 then bufX += 1
+        else if bufY < LAST_Y then
+            bufX = 0
+            bufY += 1
         else
             // Scroll up the screen by 1 row.
-            for y <- 1 until H do Array.copy(pane(y), 0, pane(y - 1), 0, W)
-            for x <- 0 until W do pane(LAST_Y)(x) = SPACE
-            crsX = 0
-            rlStartY -= 1
+            for y <- 1 until H do Array.copy(buf(y), 0, buf(y - 1), 0, W)
+            // Clear the last row.
+            for x <- 0 until W do buf(LAST_Y)(x) = SPACE
+            bufX = 0
+            rlStartY = 0.max(rlStartY - 1)
 
     override def print(x: Any): Unit =
         mux.synchronized {
@@ -286,9 +291,9 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
                 putChar(getCursorX, getCursorY, ch)
                 if !isControl(ch) then advanceCursor()
             x.toString.foreach(ch => ch match
-                case '\r' => crsX = 0 // For Win-compatibility just in case.
+                case '\r' => bufX = 0 // For Win-compatibility.
                 case '\n' =>
-                    crsX = LAST_X
+                    bufX = LAST_X
                     advanceCursor()
                 case '\t' => (0 until TAB_SIZE).foreach(_ => put(' '))
                 case _ => put(ch)
