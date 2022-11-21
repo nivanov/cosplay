@@ -58,7 +58,7 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
     private final val H = 100
     private final val LAST_X = W - 1
     private final val LAST_Y = H - 1
-    private final val CRS_PX = ' '&&(FG, FG)
+
     private final val CRS_BLINK_FRM_NUM = 13
     private final val TAB_SIZE = 8
     private final val mux = Object()
