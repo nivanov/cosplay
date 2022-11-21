@@ -95,14 +95,17 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
         private val histLastIdx = hist.size - 1
         private var histIdx = histLastIdx
         private var savedBuf: Option[String] = None
+        private var clear = false
 
         def moveLeft(): Unit = pos = 0.max(pos - 1)
         def moveRight(): Unit = pos = len.min(pos + 1)
+        def needClear: Boolean = clear
+        def cleared(): Unit = clear = false
         private def stripLen(): Int = txt.stripTrailing().length
         private def fromHistory(s: String): Unit =
-            val curLen = txt.length
-            txt = s.padTo(curLen, ' ')
+            txt = s.stripTrailing()
             len = stripLen()
+            clear = true
             moveEnd() // Move cursor to the last non-whitespace character.
         def historyUp(): Unit =
             if histIdx >= 0 then
@@ -227,14 +230,21 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
             dim = canv.dim
 
             if rlMode then
+                if rlBuf.needClear then
+                    // Clear everything below-and-after read-line start point.
+                    for x <- 0 until W; y <- rlStartY until H do
+                        if !(y == rlStartY && x < rlStartX) then buf(y)(x) = SPACE
+                    rlBuf.cleared()
+
                 bufX = rlStartX
                 bufY = rlStartY
+
                 var savedX = -1
                 var savedY = -1
                 var i = 0
                 val rlPos = rlBuf.getPos
                 for ch <- rlBuf.getText do
-                    buf(bufY)(bufX) = ZChar(if ch == ' ' then ch else rlRepCh.getOrElse(ch), getFg, getBg, Int.MaxValue)
+                    buf(bufY)(bufX) = if ch == ' ' then SPACE else ZChar(rlRepCh.getOrElse(ch), getFg, getBg, Int.MaxValue)
                     if i == rlPos then
                         savedX = bufX
                         savedY = bufY
@@ -268,7 +278,7 @@ class MirConsoleSprite extends CPCanvasSprite(id = "console") with MirConsole:
         }
 
     /**
-      *
+      * Advances cursor respecting current window dimension.
       */
     private def advanceCursor(): Unit =
         require(Thread.holdsLock(mux))
