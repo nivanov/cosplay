@@ -54,7 +54,7 @@ class MirMashProgram extends MirExecutable:
 
         while !exit do
             con.print(s"$prompt ")
-            val line = con.readLine(maxLen = 512, hist = hist.toSeq).trim
+            val line = con.readLine(maxLen = 512, hist = hist.toSeq)
             con.println(s"\nexecuting '$line'.")
             if line.nonEmpty then hist += line
 
