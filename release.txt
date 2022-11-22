@@ -1,0 +1,4 @@
+# Make sure to have propper Sonatype/JIRA credentials in ~/.m2/settings.xml file.
+
+# Deploy command.
+mvn clean -e -U deploy -P release
