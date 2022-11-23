@@ -62,7 +62,7 @@ ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/nivanov/cosplay"), "
 ThisBuild / developers ++= List(
     "nivanov" -> "Nikita Ivanov",
     "vlad94568" -> "Vlad Ivanov",
-    "leo94582" → "Leo Ivanov"
+    "leo94582" -> "Leo Ivanov"
 ).map {
     case (username, fullName) => Developer(username, fullName, s"@$username", url(s"https://github.com/$username"))
 }
