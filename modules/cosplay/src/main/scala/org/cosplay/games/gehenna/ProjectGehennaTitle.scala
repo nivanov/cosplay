@@ -274,6 +274,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         println(curBpm)
 
 //        val buf = in.buffer(bufSz)
+//        println(bufSz)
 //
 //        var mag = 0.0
 //        var remain = in.numFrames
@@ -288,29 +289,43 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 //        println(f"Maximum magnitude detected: $mag%1.3f")
 //        in.close()
 
-
+//Exact chunk is 8192
+//Exact buffer is [[D@4f3e7344
+//Exact buffer size is 8192
 
         val totalSongLength = introSong.getTotalDuration
         println("Total Song Length : " + totalSongLength)
 
-        val timeInFrame = totalSongLength.toFloat / in.numFrames.toFloat
+        val timeInFrame = in.numFrames/totalSongLength.toFloat
         println("Time in each frame : " + timeInFrame)
         println("in.numFrames = " + in.numFrames)
 
-        val milisecondsTest = 10000
+        val msTest = 7500
 
-        val buf = in.buffer(bufSz)
+        val buf = in.buffer(bufSz) // Array[Array[Double]]
 
         var mag = 0.0
 
-        val chunk = math.min(bufSz, milisecondsTest.toFloat * timeInFrame.toFloat).toInt
-        println(chunk)
-        in.read(buf, 0, chunk)
-        buf.foreach { chan =>
-            mag = math.abs(chan.maxBy(math.abs))
+        println("Time tested : " + msTest)
+        println(s"bufSz : $bufSz")
+
+        var remain = timeInFrame * msTest
+        while (remain > 0) {
+            val chunk = math.min(bufSz, msTest.toFloat * timeInFrame / timeInFrame).toInt
+            //println(s"Chunk: $chunk")
+
+            in.read(buf, 0, chunk)
+            buf.foreach { chnl => // Array[Double]
+                //println(s"Channel: ${chnl.mkString("[", ",", "]")}")
+                val chnlMax = chnl.maxBy(math.abs)
+                //println(s"Channel max: $chnlMax")
+                //mag = mag.max(chnlMax)
+                mag = math.max(mag, math.abs(chnl.maxBy(math.abs)))
+            }
+            remain -= chunk
         }
 
-        println(f"Maximum magnitude detected: $mag%1.3f")
+        println(s"Maximum magnitude detected: $mag")
         in.close()
 
     addObjects(
