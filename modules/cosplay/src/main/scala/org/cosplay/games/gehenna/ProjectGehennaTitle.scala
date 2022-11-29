@@ -300,7 +300,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         println("Time in each frame : " + timeInFrame)
         println("in.numFrames = " + in.numFrames)
 
-        val msTest = 7500
+        val msTest = 7000
+        val msTestEnd = msTest - 1
 
         val buf = in.buffer(bufSz) // Array[Array[Double]]
 
@@ -310,17 +311,13 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         println(s"bufSz : $bufSz")
 
         var remain = timeInFrame * msTest
-        while (remain > 0) {
+        while (remain > msTestEnd) {
             val chunk = math.min(bufSz, msTest.toFloat * timeInFrame / timeInFrame).toInt
-            //println(s"Chunk: $chunk")
 
             in.read(buf, 0, chunk)
             buf.foreach { chnl => // Array[Double]
-                //println(s"Channel: ${chnl.mkString("[", ",", "]")}")
                 val chnlMax = chnl.maxBy(math.abs)
-                //println(s"Channel max: $chnlMax")
-                //mag = mag.max(chnlMax)
-                mag = math.max(mag, math.abs(chnl.maxBy(math.abs)))
+                mag = math.max(mag, math.abs(chnlMax))
             }
             remain -= chunk
         }
