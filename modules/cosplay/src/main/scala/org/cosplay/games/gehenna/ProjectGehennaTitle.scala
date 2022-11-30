@@ -56,7 +56,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val HELP_IMG = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
     private final val TITLE_IMG = FIG_OGRE.render(TITLE, BLOOD_RED).trimBg()
     private final val NOW_PLAYING_MS = 5000L
-    private final val DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
+    private final var DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -219,7 +219,45 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
 
     private def jukebox(): Unit = ???
-    private def sequence(af: AudioFile): Seq[Float] = ???
+    private def sequence(af: AudioFile, ms: Int): Seq[Float] =
+        var msTest = -500
+        var msTestEnd = 0
+
+        var finalSeq = Seq[Float]()
+
+        val totalSongLength = DFLT_SONG.getTotalDuration
+        val timeInFrame = af.numFrames / totalSongLength.toFloat
+        val buf = af.buffer(BUF_SZ)
+        var mag = 0.0
+
+        while (msTest < totalSongLength) {
+            var remain = timeInFrame * msTest
+
+            while (remain > msTestEnd) {
+                val chunk = math.min(BUF_SZ, msTest.toFloat * timeInFrame / timeInFrame).toInt
+
+                af.read(buf, 0, chunk)
+                buf.foreach { chnl => // Array[Double]
+                    val chnlMax = chnl.maxBy(math.abs)
+                    mag = math.max(mag, math.abs(chnlMax))
+                }
+                remain -= chunk
+            }
+            finalSeq = finalSeq :+ mag.toFloat
+
+            msTestEnd += ms
+            msTest += ms
+            println("msTest : " + msTest)
+            println("msTestEnd : " + msTestEnd)
+
+            mag = 0.0
+        }
+
+        af.close()
+        println(finalSeq)
+        println("Seq length : " + finalSeq.length)
+        return finalSeq
+
 
 
 
@@ -239,7 +277,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         val rndDir = CPRand.rand(dirs.toSeq)
         val lvlTxt = readLines(s"$lvlDir/$rndDir/level.txt")
         //introSong.stop()
-//        DFLT_SONG = CPSound(s"$lvlDir/$rndDir/song.wav")
+        DFLT_SONG = CPSound(s"$lvlDir/$rndDir/song.wav")
 
         val songName = lvlTxt(1).replace(".LevelSongName:", "")
 //        println(songName)
@@ -249,6 +287,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
     private def songPlay(in: AudioFile): Unit =
         DFLT_SONG.play(30, CPSound => menuSongChange())
+
+        sequence(in, 500)
 
 //        val buf = in.buffer(bufSz)
 //        println(bufSz)
@@ -270,37 +310,43 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 //Exact buffer is [[D@4f3e7344
 //Exact buffer size is 8192
 
-        val totalSongLength = DFLT_SONG.getTotalDuration
-        println("Total Song Length : " + totalSongLength)
 
-        val timeInFrame = in.numFrames/totalSongLength.toFloat
-        println("Time in each frame : " + timeInFrame)
-        println("in.numFrames = " + in.numFrames)
 
-        val msTest = 7000
-        val msTestEnd = msTest - 1
 
-        val buf = in.buffer(BUF_SZ) // Array[Array[Double]]
 
-        var mag = 0.0
 
-        println("Time tested : " + msTest)
-        println(s"bufSz : $BUF_SZ")
 
-        var remain = timeInFrame * msTest
-        while (remain > msTestEnd) {
-            val chunk = math.min(BUF_SZ, msTest.toFloat * timeInFrame / timeInFrame).toInt
-
-            in.read(buf, 0, chunk)
-            buf.foreach { chnl => // Array[Double]
-                val chnlMax = chnl.maxBy(math.abs)
-                mag = math.max(mag, math.abs(chnlMax))
-            }
-            remain -= chunk
-        }
-
-        println(s"Maximum magnitude detected: $mag")
-        in.close()
+//        val totalSongLength = DFLT_SONG.getTotalDuration
+//        println("Total Song Length : " + totalSongLength)
+//
+//        val timeInFrame = in.numFrames/totalSongLength.toFloat
+//        println("Time in each frame : " + timeInFrame)
+//        println("in.numFrames = " + in.numFrames)
+//
+//        val msTest = 7000
+//        val msTestEnd = msTest - 1
+//
+//        val buf = in.buffer(BUF_SZ) // Array[Array[Double]]
+//
+//        var mag = 0.0
+//
+//        println("Time tested : " + msTest)
+//        println(s"bufSz : $BUF_SZ")
+//
+//        var remain = timeInFrame * msTest
+//        while (remain > msTestEnd) {
+//            val chunk = math.min(BUF_SZ, msTest.toFloat * timeInFrame / timeInFrame).toInt
+//
+//            in.read(buf, 0, chunk)
+//            buf.foreach { chnl => // Array[Double]
+//                val chnlMax = chnl.maxBy(math.abs)
+//                mag = math.max(mag, math.abs(chnlMax))
+//            }
+//            remain -= chunk
+//        }
+//
+//        println(s"Maximum magnitude detected: $mag")
+//        in.close()
 
 
 
