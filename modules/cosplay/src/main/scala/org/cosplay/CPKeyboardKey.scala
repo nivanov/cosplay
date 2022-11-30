@@ -265,7 +265,6 @@ enum CPKeyboardKey(val id: String, val isPrintable: Boolean, val ch: Char, val r
     /** `'?'` key press. */
     case KEY_QUESTION extends CPKeyboardKey("?", true, '?', Seq('?'))
 
-    /** @inheritdoc */
     override def hashCode(): Int = id.hashCode
     override def equals(obj: Any): Boolean = obj match
         case x: CPKeyboardKey => x.id == id

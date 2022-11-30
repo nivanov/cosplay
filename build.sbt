@@ -28,7 +28,7 @@
                ALl rights reserved.
 */
 
-val cosPlayVer = "0.7.2"
+val cosPlayVer = "0.7.3"
 
 val scalaMajVer = "3"
 val scalaMinVer = "1.3"
@@ -40,7 +40,7 @@ val commonsMath3Ver = "3.6.1"
 val commonsTextVer = "1.10.0"
 val commonsIoVer = "2.11.0"
 val commonsCollectionsVer = "4.4"
-val scalaReflectVer = "1.1.4"
+val scalaReflectVer = "1.2.0"
 val scalaTestVer = "3.2.14"
 val junitVer = "5.9.1"
 val openjfxVer = "17.0.2"
@@ -64,7 +64,7 @@ ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/nivanov/cosplay"), "
 ThisBuild / developers ++= List(
     "nivanov" -> "Nikita Ivanov",
     "vlad94568" -> "Vlad Ivanov",
-    "leo94582" → "Leo Ivanov"
+    "leo94582" -> "Leo Ivanov"
 ).map {
     case (username, fullName) => Developer(username, fullName, s"@$username", url(s"https://github.com/$username"))
 }
