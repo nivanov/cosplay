@@ -50,15 +50,13 @@ import de.sciss.audiofile._
 
 
 object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
-    private val titleText = "Project Gehenna"
-    private val startImg = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
-    private val settingsImg = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
-    private val helpImg = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
-
-    //private var menuSong = CPSound("sounds/games/gehenna/intro newsong.wav")
-    private var introSong = CPSound("sounds/games/gehenna/introsong.wav")
-
-    private var curBpm = 55
+    private final val TITLE = "Project Gehenna"
+    private final val START_IMG = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
+    private final val SETTINGS_IMG = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
+    private final val HELP_IMG = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
+    private final val TITLE_IMG = FIG_OGRE.render(TITLE, BLOOD_RED).trimBg()
+    private final val NOW_PLAYING_MS = 5000L
+    private final val DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -67,9 +65,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         GAME_BG_PX,
         onFinish = _ => TextDripShader.start()
     )
-    // Variables for audiofile plugin.
-    val bufSz = 8192 // perform operations in blocks of this size
-
+    // Variables for audio file plugin for operations in blocks of this size.
+    final val BUF_SZ = 8192
 
     private def skullImg(): CPImage =
         new CPArrayImage(
@@ -100,7 +97,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&BLOOD_RED.darker(0.55)
         )
 
-    private def songPlayingImg(darkness:Float): CPImage =
+    private def songPlayingImg(darkness: Float): CPImage =
         new CPArrayImage(
             prepSeq(
                 """
@@ -112,62 +109,44 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&NEON_BLUE.darker(darkness)
         )
 
-    private val flashShdrSkull = new FlashShader()
-
-    private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr, flashShdrSkull)):
+    private val flashShdr = new FlashShader()
+    private val skullFlashShdr = new FlashShader()
+    private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr, skullFlashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-
-            flashShdrSkull.changeBPM(curBpm)
-
+            skullFlashShdr.changeBPM(0) // TODO: change the shader logic.
             setY(((canv.w - getWidth) / 2) - 15)
             setX(((canv.h - getHeight) / 2) + 10)
 
-    private def titleImage(): CPImage = FIG_OGRE.render(titleText, BLOOD_RED).trimBg()
-
-    private val flashShdr = new FlashShader()
-
-    private val titleSpr = new CPImageSprite("title", 0, 0, 1, titleImage(), shaders = Seq(fadeInShdr, TextDripShader, flashShdr)):
-        //introSong = menuSong
-
+    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, TextDripShader, flashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
-
-            flashShdr.changeBPM(curBpm)
-
+            flashShdr.changeBPM(0)
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
-            //introSong = menuSong
-
-    private val startSpr = new CPImageSprite("start", 0, 43, 1, startImg, shaders = Seq(fadeInShdr)):
+    private val startSpr = new CPImageSprite("start", 0, 43, 1, START_IMG, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
-    private val helpSpr = new CPImageSprite("help", 0, 45, 1, helpImg, shaders = Seq(fadeInShdr)):
+    private val helpSpr = new CPImageSprite("help", 0, 45, 1, HELP_IMG, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX(((ctx.getCanvas.w - this.getWidth) / 2) - 30 - getWidth)
 
-    private val settingsSpr = new CPImageSprite("settings", 0, 45, 1, settingsImg, shaders = Seq(fadeInShdr)):
+    private val settingsSpr = new CPImageSprite("settings", 0, 45, 1, SETTINGS_IMG, shaders = Seq(fadeInShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX(((ctx.getCanvas.w - this.getWidth) / 2) + 30)
 
-    private val underLine: CPCanvasSprite = new CPCanvasSprite("underLine"):
-        private val btns: List[CPImageSprite] = List(helpSpr, startSpr, settingsSpr)
+    private val underLineSpr = new CPCanvasSprite("underLine"):
+        private val btns = List(helpSpr, startSpr, settingsSpr)
         private var btnIndex = 1
-
         private var darkness = 1f
-
         private var otherDarkness = 3f
-
         private var lastBtn = btns(btnIndex)
 
-        private def swtichBtn(change:Int): Unit =
+        private def switchBtn(change: Int): Unit =
             lastBtn = btns(btnIndex)
-
             btnIndex += change
-
             otherDarkness = darkness
-
             darkness = 1
 
         override def render(ctx: CPSceneObjectContext): Unit =
@@ -181,33 +160,23 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             // Other line.
             if otherDarkness != 3 then
                 canv.drawLine(lastBtn.getX, lastBtn.getY + 1, lastBtn.getX + lastBtn.getWidth - 1, lastBtn.getY + 1, 1, '-'&NEON_BLUE.darker(otherDarkness))
-                if otherDarkness < 1f && ctx.getFrameCount % 1 == 0 then
-                    otherDarkness += 0.1f
+                if otherDarkness < 1f then otherDarkness += 0.1f
 
-            if darkness > 0.1f && ctx.getFrameCount % 1 == 0 then
-                darkness -= 0.1f
+            if darkness > 0.1f then darkness -= 0.1f
 
             ctx.getKbEvent match
                 case Some(evt) =>
                     evt.key match
-                        case KEY_LO_D | KEY_RIGHT =>
-                            swtichBtn(1)
-                        case KEY_LO_A | KEY_LEFT =>
-                            swtichBtn(-1)
+                        case KEY_LO_D | KEY_RIGHT => switchBtn(1)
+                        case KEY_LO_A | KEY_LEFT => switchBtn(-1)
                         case _ => ()
                 case None => ()
 
-            if btnIndex < 0 then
-                btnIndex = btns.length - 1
-            else if btnIndex > btns.length - 1 then
-                btnIndex = 0
+            if btnIndex < 0 then btnIndex = btns.length - 1
+            else if btnIndex > btns.length - 1 then btnIndex = 0
 
     private val nowPlaySpr = new CPImageSprite(x = 0, y = 10, z = 4, songPlayingImg(1), false, Seq(fadeInShdr)):
         private var visible = false
-
-        //private final val lvlDir ="gehenna/levels"
-        //private final val lvlDirFile = new File(lvlDir)
-
         private var lastMs = 0L
         private var darkness = 1f
         private val fadeSpeed = 0.03f
@@ -222,8 +191,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             setY(canv.h - 7)
             setX((canv.w / 2) - getWidth / 2)
 
-            // Appearance.
-            if visible && ctx.getFrameMs - lastMs >= 5000 then
+            // Appear.
+            if visible && ctx.getFrameMs - lastMs >= NOW_PLAYING_MS then
                 visible = false
                 lastMs = ctx.getFrameMs
 
@@ -232,7 +201,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 setImage(songPlayingImg(darkness))
 
             // Disappear.
-            if !visible && ctx.getFrameMs - lastMs >= 5000 then
+            if !visible && ctx.getFrameMs - lastMs >= NOW_PLAYING_MS then
                 visible = true
                 lastMs = ctx.getFrameMs
 
@@ -240,38 +209,46 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
 
+
+
+
+
+
+
+
+
+
+    private def jukebox(): Unit = ???
+    private def sequence(af: AudioFile): Seq[Float] = ???
+
+
+
+
+
+    
     private def menuSongChange(): Unit =
-        println("Choosing next song")
         val lvlDir ="gehenna/levels"
         val lvlDirFile = new File(lvlDir)
 
         def mkFile(res: String): File =
-            new File(getClass.getClassLoader().getResource(res).toURI)
+            new File(getClass.getClassLoader.getResource(res).toURI)
         def readLines(res: String): Seq[String] =
-            IOUtils.readLines(getClass.getClassLoader().getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
+            IOUtils.readLines(getClass.getClassLoader.getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
 
         val dirs = readLines(lvlDir)
         val rndDir = CPRand.rand(dirs.toSeq)
         val lvlTxt = readLines(s"$lvlDir/$rndDir/level.txt")
         //introSong.stop()
-        introSong = CPSound(s"$lvlDir/$rndDir/song.wav")
-        lvlTxt.foreach(println)
+//        DFLT_SONG = CPSound(s"$lvlDir/$rndDir/song.wav")
 
         val songName = lvlTxt(1).replace(".LevelSongName:", "")
-        println(songName)
-        curBpm = (lvlTxt(2).replace(".LevelBPM:", "")).toInt
+//        println(songName)
+//        curBpm = (lvlTxt(2).replace(".LevelBPM:", "")).toInt
 
-        println(curBpm)
+        songPlay(AudioFile.openRead(mkFile(s"$lvlDir/$rndDir/song.wav")))
 
-        val in = AudioFile.openRead(mkFile(s"$lvlDir/$rndDir/song.wav"))
-
-        songPlay(in)
-        println("EE")
-
-    private def songPlay(in:AudioFile): Unit =
-        introSong.play(30, CPSound => menuSongChange())
-        println("Playing Song :)")
-        println(curBpm)
+    private def songPlay(in: AudioFile): Unit =
+        DFLT_SONG.play(30, CPSound => menuSongChange())
 
 //        val buf = in.buffer(bufSz)
 //        println(bufSz)
@@ -293,7 +270,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 //Exact buffer is [[D@4f3e7344
 //Exact buffer size is 8192
 
-        val totalSongLength = introSong.getTotalDuration
+        val totalSongLength = DFLT_SONG.getTotalDuration
         println("Total Song Length : " + totalSongLength)
 
         val timeInFrame = in.numFrames/totalSongLength.toFloat
@@ -303,16 +280,16 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         val msTest = 7000
         val msTestEnd = msTest - 1
 
-        val buf = in.buffer(bufSz) // Array[Array[Double]]
+        val buf = in.buffer(BUF_SZ) // Array[Array[Double]]
 
         var mag = 0.0
 
         println("Time tested : " + msTest)
-        println(s"bufSz : $bufSz")
+        println(s"bufSz : $BUF_SZ")
 
         var remain = timeInFrame * msTest
         while (remain > msTestEnd) {
-            val chunk = math.min(bufSz, msTest.toFloat * timeInFrame / timeInFrame).toInt
+            val chunk = math.min(BUF_SZ, msTest.toFloat * timeInFrame / timeInFrame).toInt
 
             in.read(buf, 0, chunk)
             buf.foreach { chnl => // Array[Double]
@@ -325,12 +302,22 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         println(s"Maximum magnitude detected: $mag")
         in.close()
 
+
+
+
+
+
+
+
+
+
+
     addObjects(
         titleSpr,
         startSpr,
         helpSpr,
         settingsSpr,
-        underLine,
+        underLineSpr,
         skullSpr,
         nowPlaySpr
     )

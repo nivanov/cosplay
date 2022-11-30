@@ -36,11 +36,16 @@ import scala.util.*
 
 
 class FlashShader extends CPShader:
-//    (radius: Int, bpm: Int, bgPx: CPPixel, skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false)
     private var go = true
-    private var radius = 10
+    private val radius = 10
     private var bpm = 50
     private var bgPx = GAME_BG_PX
+
+    private var rate = (60 / bpm) * 1000
+    private var lastMs = 0L
+
+    private var currFade = 0f
+    private val fadeChange = 0.05f
 
     /**
      * Toggles this shader effect on and off.
@@ -75,14 +80,6 @@ class FlashShader extends CPShader:
         bpm = newBPM
         rate = ((60/bpm.toFloat) * 1000).round
         //println(s"Rate is : $rate")
-
-    def changeRadius: Int = radius
-
-    private var rate = (60/bpm) * 1000
-    private var lastMs = 0L
-
-    private var currFade = 0f
-    private val fadeChange = 0.05f
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go && ctx.isVisible && (ctx.getFrameMs - rate) >= lastMs then
