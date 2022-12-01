@@ -32,8 +32,9 @@ import org.apache.commons.io.*
 import java.nio.charset.Charset
 import scala.io.Source
 import scala.jdk.CollectionConverters.*
+import de.sciss.audiofile.*
 
-import de.sciss.audiofile._
+import scala.collection.mutable
 
 /*
    _________            ______________
@@ -219,45 +220,14 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
 
     private def jukebox(): Unit = ???
-    private def sequence(af: AudioFile, ms: Int): Seq[Float] =
-        var msTest = -500
-        var msTestEnd = 0
 
-        var finalSeq = Seq[Float]()
-
-        val totalSongLength = DFLT_SONG.getTotalDuration
-        val timeInFrame = af.numFrames / totalSongLength.toFloat
-        val buf = af.buffer(BUF_SZ)
-        var mag = 0.0
-
-        while (msTest < totalSongLength) {
-            var remain = timeInFrame * msTest
-
-            while (remain > msTestEnd) {
-                val chunk = math.min(BUF_SZ, msTest.toFloat * timeInFrame / timeInFrame).toInt
-
-                af.read(buf, 0, chunk)
-                buf.foreach { chnl => // Array[Double]
-                    val chnlMax = chnl.maxBy(math.abs)
-                    mag = math.max(mag, math.abs(chnlMax))
-                }
-                remain -= chunk
-            }
-            finalSeq = finalSeq :+ mag.toFloat
-
-            msTestEnd += ms
-            msTest += ms
-            println("msTest : " + msTest)
-            println("msTestEnd : " + msTestEnd)
-
-            mag = 0.0
-        }
-
-        af.close()
-        println(finalSeq)
-        println("Seq length : " + finalSeq.length)
-        return finalSeq
-
+    /**
+      *
+      * @param af
+      * @param snd
+      * @param measureMs
+      */
+    private def sequence(af: AudioFile, snd: CPSound, measureMs: Int): Seq[Float] = ???
 
 
 
@@ -274,7 +244,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             IOUtils.readLines(getClass.getClassLoader.getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
 
         val dirs = readLines(lvlDir)
-        val rndDir = CPRand.rand(dirs.toSeq)
+        val rndDir = CPRand.rand(dirs)
         val lvlTxt = readLines(s"$lvlDir/$rndDir/level.txt")
         //introSong.stop()
         DFLT_SONG = CPSound(s"$lvlDir/$rndDir/song.wav")
@@ -288,7 +258,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private def songPlay(in: AudioFile): Unit =
         DFLT_SONG.play(30, CPSound => menuSongChange())
 
-        sequence(in, 500)
+        sequence(in, DFLT_SONG, 500)
 
 //        val buf = in.buffer(bufSz)
 //        println(bufSz)

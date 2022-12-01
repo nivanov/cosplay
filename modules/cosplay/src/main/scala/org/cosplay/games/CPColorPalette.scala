@@ -17,7 +17,7 @@
 
 package org.cosplay.games
 
-import org.cosplay.{CPColor, CPRand}
+import org.cosplay.*
 
 /*
    _________            ______________

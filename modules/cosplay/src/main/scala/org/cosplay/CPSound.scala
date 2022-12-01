@@ -90,6 +90,11 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     override val getOrigin: String = src
 
     /**
+      * Gets source of this sound. Note that this method returns the same value as [[getOrigin]] method.
+      */
+    def getSource: String = src
+
+    /**
       *
       */
     private def getUri: String =
