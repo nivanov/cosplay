@@ -35,6 +35,8 @@ import scala.jdk.CollectionConverters.*
 import de.sciss.audiofile.*
 
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
+import collection.immutable.HashSet
 
 /*
    _________            ______________
@@ -67,7 +69,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         onFinish = _ => TextDripShader.start()
     )
     // Variables for audio file plugin for operations in blocks of this size.
-    final val BUF_SZ = 8192
+    final val BUF_SZ = 8192 //8192
 
     private def skullImg(): CPImage =
         new CPArrayImage(
@@ -227,7 +229,45 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
       * @param snd
       * @param measureMs
       */
-    private def sequence(af: AudioFile, snd: CPSound, measureMs: Int): Seq[Float] = ???
+    private def sequence(af: AudioFile, snd: CPSound, measureMs: Int): Seq[Float] =
+        val seq = ArrayBuffer[Float]()
+        val magSeq = ArrayBuffer[Float]()
+
+        val buf = af.buffer(BUF_SZ)
+        println(BUF_SZ)
+
+        var mag = 0.0
+        var remain = af.numFrames
+        while (remain > 0) {
+            val chunk = math.min(BUF_SZ, remain).toInt
+            af.read(buf, 0, chunk)
+
+            buf.foreach { chan =>
+                mag = math.max(mag, math.abs(chan.maxBy(math.abs)))
+                println(math.abs(chan.maxBy(math.abs)))
+
+                magSeq += math.abs(chan.maxBy(math.abs)).toFloat
+            }
+            remain -= chunk
+        }
+
+        val chanLengthMs = snd.getTotalDuration / magSeq.length
+
+        val splitSize = measureMs / chanLengthMs.toInt
+        val splitMagSeq = magSeq.sliding(splitSize, splitSize).toList
+
+        splitMagSeq.foreach { magPart =>
+            seq += magPart.max
+        }
+
+        println("splitMagSeq : " + splitMagSeq)
+
+        println(f"Maximum magnitude detected: $mag%1.3f")
+        println("Song length : " + snd.getTotalDuration)
+        println("Seq : " + seq)
+        println()
+        af.close()
+        seq.toSeq
 
 
 
@@ -284,39 +324,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
 
 
-
-
-//        val totalSongLength = DFLT_SONG.getTotalDuration
-//        println("Total Song Length : " + totalSongLength)
-//
-//        val timeInFrame = in.numFrames/totalSongLength.toFloat
-//        println("Time in each frame : " + timeInFrame)
-//        println("in.numFrames = " + in.numFrames)
-//
-//        val msTest = 7000
-//        val msTestEnd = msTest - 1
-//
-//        val buf = in.buffer(BUF_SZ) // Array[Array[Double]]
-//
-//        var mag = 0.0
-//
-//        println("Time tested : " + msTest)
-//        println(s"bufSz : $BUF_SZ")
-//
-//        var remain = timeInFrame * msTest
-//        while (remain > msTestEnd) {
-//            val chunk = math.min(BUF_SZ, msTest.toFloat * timeInFrame / timeInFrame).toInt
-//
-//            in.read(buf, 0, chunk)
-//            buf.foreach { chnl => // Array[Double]
-//                val chnlMax = chnl.maxBy(math.abs)
-//                mag = math.max(mag, math.abs(chnlMax))
-//            }
-//            remain -= chunk
-//        }
-//
-//        println(s"Maximum magnitude detected: $mag")
-//        in.close()
 
 
 
