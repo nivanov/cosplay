@@ -212,15 +212,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
 
-
-
-
-
-
-
-
-
-
     private def jukebox(): Unit = ???
 
     /**
@@ -229,45 +220,23 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
       * @param snd
       * @param measureMs
       */
-    private def sequence(af: AudioFile, snd: CPSound, measureMs: Int): Seq[Float] =
+    private def sequence(af: AudioFile, snd: CPSound, measureMs: Long): Seq[Float] =
         val seq = ArrayBuffer[Float]()
-        val magSeq = ArrayBuffer[Float]()
-
         val buf = af.buffer(BUF_SZ)
-        println(BUF_SZ)
-
-        var mag = 0.0
         var remain = af.numFrames
-        while (remain > 0) {
+
+        while remain > 0 do
             val chunk = math.min(BUF_SZ, remain).toInt
             af.read(buf, 0, chunk)
-
-            buf.foreach { chan =>
-                mag = math.max(mag, math.abs(chan.maxBy(math.abs)))
-                println(math.abs(chan.maxBy(math.abs)))
-
-                magSeq += math.abs(chan.maxBy(math.abs)).toFloat
-            }
+            buf.foreach(chan => seq += math.abs(chan.maxBy(math.abs)).toFloat)
             remain -= chunk
-        }
 
-        val chanLengthMs = snd.getTotalDuration / magSeq.length
+        val chanLenMs = snd.getTotalDuration / seq.size
+        val splitSz = (measureMs / chanLenMs).toInt
 
-        val splitSize = measureMs / chanLengthMs.toInt
-        val splitMagSeq = magSeq.sliding(splitSize, splitSize).toList
+        seq.sliding(splitSz, splitSz).map(_.max).toSeq
 
-        splitMagSeq.foreach { magPart =>
-            seq += magPart.max
-        }
 
-        println("splitMagSeq : " + splitMagSeq)
-
-        println(f"Maximum magnitude detected: $mag%1.3f")
-        println("Song length : " + snd.getTotalDuration)
-        println("Seq : " + seq)
-        println()
-        af.close()
-        seq.toSeq
 
 
 
@@ -293,7 +262,9 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 //        println(songName)
 //        curBpm = (lvlTxt(2).replace(".LevelBPM:", "")).toInt
 
-        songPlay(AudioFile.openRead(mkFile(s"$lvlDir/$rndDir/song.wav")))
+        val af = AudioFile.openRead(mkFile(s"$lvlDir/$rndDir/song.wav"))
+        songPlay(af)
+        af.close()
 
     private def songPlay(in: AudioFile): Unit =
         DFLT_SONG.play(30, CPSound => menuSongChange())
