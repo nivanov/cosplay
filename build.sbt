@@ -25,10 +25,10 @@
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
-val cosPlayVer = "0.7.3"
+val cosPlayVer = "0.7.4"
 
 val scalaMajVer = "3"
 val scalaMinVer = "1.3"

@@ -41,7 +41,7 @@ import scala.collection.mutable
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -413,7 +413,7 @@ object CPEngine:
                 |
                 |         ${CPVersion.tagline}
                 |           ${CPVersion.copyright}
-                |              ALl rights reserved.
+                |              All rights reserved.
                 |""".stripMargin
         engLog.info(s"\n$logo")
 

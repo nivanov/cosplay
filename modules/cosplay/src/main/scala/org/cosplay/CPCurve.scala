@@ -30,7 +30,7 @@ import org.apache.commons.math3.analysis.polynomials.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**

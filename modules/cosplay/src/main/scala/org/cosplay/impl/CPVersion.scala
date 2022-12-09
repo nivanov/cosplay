@@ -29,7 +29,7 @@ import java.time.{LocalDate, Year}
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -65,6 +65,7 @@ object CPVersion:
         Version("0.7.1", LocalDate.of(2022, 6, 29)),
         Version("0.7.2", LocalDate.of(2022, 6, 30)),
         Version("0.7.3", LocalDate.of(2022, 11, 22)),
+        Version("0.7.4", LocalDate.of(2022, 12, 8)),
     ).sortBy(_.semver)
     // +=================================================+
     // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
