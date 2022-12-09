@@ -28,7 +28,7 @@
                All rights reserved.
 */
 
-val cosPlayVer = "0.7.4"
+val cosPlayVer = "0.7.5"
 
 val scalaMajVer = "3"
 val scalaMinVer = "1.3"
