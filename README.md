@@ -57,14 +57,14 @@ Prerequisites:
 
 Using SBT:
 ```scala
-libraryDependencies += "org.cosplayengine" % "cosplay" % "0.7.3"
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.7.5"
 ```
 Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
 ```xml
 <dependency>
   <groupId>org.cosplayengine</groupId>
   <artifactId>cosplay</artifactId>
-  <version>0.7.3</version>
+  <version>0.7.5</version>
 </dependency>
 ```
 
