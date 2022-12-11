@@ -60,7 +60,10 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val TITLE_IMG = FIG_OGRE.render(TITLE, BLOOD_RED).trimBg()
     private final val NOW_PLAYING_MS = 5000L
     private final var DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
-
+    
+    val magTestLength = 500
+    private var curMag:Seq[Float] = Seq()
+    
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
         true,
@@ -118,13 +121,13 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            skullFlashShdr.changeBPM(0) // TODO: change the shader logic.
+            //skullFlashShdr.changeMag(curMag) // TODO: change the shader logic.
             setY(((canv.w - getWidth) / 2) - 15)
             setX(((canv.h - getHeight) / 2) + 10)
 
     private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, TextDripShader, flashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
-            flashShdr.changeBPM(0)
+            //flashShdr.changeMag(curMag)
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
     private val startSpr = new CPImageSprite("start", 0, 43, 1, START_IMG, shaders = Seq(fadeInShdr)):
@@ -244,6 +247,9 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
     
     private def menuSongChange(): Unit =
+        skullFlashShdr.stop()
+        flashShdr.stop()
+        
         val lvlDir ="gehenna/levels"
         val lvlDirFile = new File(lvlDir)
 
@@ -268,8 +274,12 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
     private def songPlay(in: AudioFile): Unit =
         DFLT_SONG.play(30, CPSound => menuSongChange())
+        
+        //skullFlashShdr.start()
+        //flashShdr.start()
 
-        sequence(in, DFLT_SONG, 500)
+        curMag = sequence(in, DFLT_SONG, magTestLength)
+        println(curMag)
 
 //        val buf = in.buffer(bufSz)
 //        println(bufSz)
