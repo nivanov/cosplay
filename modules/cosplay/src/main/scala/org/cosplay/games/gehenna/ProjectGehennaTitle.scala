@@ -121,7 +121,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            //skullFlashShdr.changeMag(curMag) // TODO: change the shader logic.
+            skullFlashShdr.changeMag(curMag) // TODO: change the shader logic.
             setY(((canv.w - getWidth) / 2) - 15)
             setX(((canv.h - getHeight) / 2) + 10)
 
@@ -239,13 +239,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         seq.sliding(splitSz, splitSz).map(_.max).toSeq
 
-
-
-
-
-
-
-    
     private def menuSongChange(): Unit =
         skullFlashShdr.stop()
         flashShdr.stop()
@@ -275,7 +268,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private def songPlay(in: AudioFile): Unit =
         DFLT_SONG.play(30, CPSound => menuSongChange())
         
-        //skullFlashShdr.start()
+        skullFlashShdr.start()
         //flashShdr.start()
 
         curMag = sequence(in, DFLT_SONG, magTestLength)
