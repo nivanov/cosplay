@@ -117,7 +117,7 @@
         <scala3.reflect.ver>1.2.0</scala3.reflect.ver>
         <scalatest.ver>3.2.14</scalatest.ver>
         <junit.ver>5.9.1</junit.ver>
-        <openjfx.ver>17.0.2</openjfx.ver>
+        <openjfx.ver>19</openjfx.ver>
         <ikonli.ver>12.3.1</ikonli.ver>
         <flatlaf.ver>3.0</flatlaf.ver>
         <miglayout.ver>11.0</miglayout.ver>
