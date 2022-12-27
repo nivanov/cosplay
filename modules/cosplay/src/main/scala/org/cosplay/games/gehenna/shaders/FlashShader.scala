@@ -19,6 +19,7 @@ package org.cosplay.games.gehenna.shaders
 
 import org.cosplay.*
 import games.gehenna.*
+
 import scala.util.*
 import java.io.*
 import org.apache.commons.io.*
@@ -29,7 +30,7 @@ import scala.jdk.CollectionConverters.*
 import de.sciss.audiofile.*
 
 import scala.collection.mutable.ArrayBuffer
-import collection.immutable.HashSet
+import collection.immutable.{HashSet, StringOps}
 
 /*
    _________            ______________
@@ -46,31 +47,26 @@ import collection.immutable.HashSet
 
 
 class FlashShader extends CPShader:
-    private var go = false
-    private var startTimeSet = false
-    //private val radius = 10
-    private var bgPx = GAME_BG_PX
+    private var run = false
 
     private var brightness = 0f
     private val brightChng = 0.05f
 
-    private var mag:Seq[Float] = Seq(0f)
-    private val msTest = ProjectGehennaTitle.magTestLength
-    private var timeWhenStart = 0f
-    private var goMs = 0f
+    private var mag = Seq.empty[Float]
+    private val msTestFrame = ProjectGehennaTitle.magTestLength
 
-    private var loops = 0
-    private var maxBright = 0f
+    private var curTime = 0f
+    private var timeStart = 0f
 
-    //var ctx = //TODO
+    private var index = 0
 
     /**
      * Toggles this shader effect on and off.
      *
-     * @see [[go()]]
+     * @see [[run()]]
      * @see [[stop()]]
      */
-    def toggle(): Unit = go = !go
+    def toggle(): Unit = run = !run
 
     /**
      * Starts the shader effect.
@@ -78,48 +74,22 @@ class FlashShader extends CPShader:
      * @see [[toggle()]]
      */
     def start(): Unit =
-        go = true
-        startTimeSet = true
+        run = true
+    def stop(): Unit = run = false
 
-    /**
-     * Stops the shader effect.
-     *
-     * @see [[toggle()]]
-     */
-    def stop(): Unit = go = false
-
-    /**
-     * Returns `true` if this shader effect is on, `false` otherwise.
-     */
-    def isActive: Boolean = go
-
-    /** @inheritdoc */
-
-//    def changeBPM(newBPM: Int): Unit =
-//        bpm = newBPM
-//        rate = ((60/bpm.toFloat) * 1000).round
-//        //println(s"Rate is : $rate")
+    def isActive: Boolean = run
 
     def changeMag(mag: Seq[Float]): Unit =
         this.mag = mag
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
+        if run then
+            curTime = ctx.getFrameMs
 
-        if startTimeSet then
-            startTimeSet = false
-            timeWhenStart = ctx.getFrameMs
-            loops = 0
-
-            maxBright = 1 / mag.max
-
-        goMs = ctx.getFrameMs
-        if go && ctx.isVisible && goMs >= timeWhenStart + msTest then
-
-            brightness = mag(loops) * maxBright
-            loops += 1
-            timeWhenStart = ctx.getFrameMs
-
-            if loops >= mag.length then loops = 0 //TODO
+            if (curTime - timeStart) >= msTestFrame then
+                brightness = mag(index)
+                timeStart = curTime
+                index += 1
 
         if brightness != 0 && brightness > brightChng then
             brightness -= brightChng
@@ -131,26 +101,3 @@ class FlashShader extends CPShader:
                 val px = zpx.px
                 if px.char != ' ' then canv.drawPixel(px.withLighterFg(brightness), x, y, zpx.z)
         })
-
-
-
-
-
-
-
-
-//        if go && ctx.isVisible && (ctx.getFrameMs - rate) >= lastMs then
-//            lastMs = ctx.getFrameMs
-//            currFade = CPRand.between(0.5f, 1f)
-//
-//        if currFade != 0 && currFade > fadeChange then
-//            currFade -= fadeChange
-//
-//        val canv = ctx.getCanvas
-//        objRect.loop((x, y) => {
-//            if canv.isValid(x, y) then
-//                val zpx = canv.getZPixel(x, y)
-//                val px = zpx.px
-//                if px.char != ' ' then canv.drawPixel(px.withLighterFg(currFade), x, y, zpx.z)
-//        })
-

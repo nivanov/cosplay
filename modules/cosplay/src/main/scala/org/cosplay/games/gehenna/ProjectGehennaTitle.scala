@@ -61,7 +61,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val NOW_PLAYING_MS = 5000L
     private final var DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
     
-    val magTestLength = 500
+    val magTestLength = 250
     private var curMag:Seq[Float] = Seq()
     
     private val fadeInShdr = CPSlideInShader.sigmoid(
@@ -121,7 +121,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
-            skullFlashShdr.changeMag(curMag) // TODO: change the shader logic.
             setY(((canv.w - getWidth) / 2) - 15)
             setX(((canv.h - getHeight) / 2) + 10)
 
@@ -244,70 +243,34 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         flashShdr.stop()
         
         val lvlDir ="gehenna/levels"
-        val lvlDirFile = new File(lvlDir)
 
         def mkFile(res: String): File =
             new File(getClass.getClassLoader.getResource(res).toURI)
         def readLines(res: String): Seq[String] =
             IOUtils.readLines(getClass.getClassLoader.getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
 
-        val dirs = readLines(lvlDir)
-        val rndDir = CPRand.rand(dirs)
+        //val dirs = readLines(lvlDir) //TODO
+        //val rndDir = CPRand.rand(dirs) //TODO
+        val rndDir = "first" //Temp
+
         val lvlTxt = readLines(s"$lvlDir/$rndDir/level.txt")
-        //introSong.stop()
         DFLT_SONG = CPSound(s"$lvlDir/$rndDir/song.wav")
 
         val songName = lvlTxt(1).replace(".LevelSongName:", "")
-//        println(songName)
-//        curBpm = (lvlTxt(2).replace(".LevelBPM:", "")).toInt
 
         val af = AudioFile.openRead(mkFile(s"$lvlDir/$rndDir/song.wav"))
         songPlay(af)
         af.close()
 
     private def songPlay(in: AudioFile): Unit =
+        curMag = sequence(in, DFLT_SONG, magTestLength)
+        
         DFLT_SONG.play(30, CPSound => menuSongChange())
         
+        skullFlashShdr.changeMag(curMag)
         skullFlashShdr.start()
-        //flashShdr.start()
-
-        curMag = sequence(in, DFLT_SONG, magTestLength)
+        
         println(curMag)
-
-//        val buf = in.buffer(bufSz)
-//        println(bufSz)
-//
-//        var mag = 0.0
-//        var remain = in.numFrames
-//        while (remain > 0) {
-//            val chunk = math.min(bufSz, remain).toInt
-//            in.read(buf, 0, chunk)
-//            buf.foreach { chan =>
-//                mag = math.max(mag, math.abs(chan.maxBy(math.abs)))
-//            }
-//            remain -= chunk
-//        }
-//        println(f"Maximum magnitude detected: $mag%1.3f")
-//        in.close()
-
-//Exact chunk is 8192
-//Exact buffer is [[D@4f3e7344
-//Exact buffer size is 8192
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     addObjects(
         titleSpr,
