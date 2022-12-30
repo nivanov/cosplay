@@ -236,13 +236,13 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
     private def stopFlash(): Unit =
         skullFlashShdr.stop()
-        titleFlashShdr.stop()
+        //titleFlashShdr.stop()
 
     private def resetFlash(mag: Seq[Float]): Unit =
         skullFlashShdr.changeMag(mag)
         skullFlashShdr.start()
-        titleFlashShdr.changeMag(mag)
-        titleFlashShdr.start()
+        //titleFlashShdr.changeMag(mag)
+        //titleFlashShdr.start()
 
     private def menuSongChange(): Unit =
         stopFlash()

@@ -59,7 +59,9 @@ class FlashShader(val msgTestLenMs: Int) extends CPShader:
     def stop(): Unit = run = false
     def changeMag(mag: Seq[Float]): Unit =
         this.mag = mag
+        println(mag)
         maxMag = mag.max
+        println(s"Max mag: $maxMag")
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if run then
@@ -69,6 +71,7 @@ class FlashShader(val msgTestLenMs: Int) extends CPShader:
                 brightness = mag(index % mag.size) / maxMag
                 timeStartMs = ms
                 index += 1
+                println(s"Current brightness: $brightness")
             else if brightness > BRIGHT_DELTA then
                 brightness -= BRIGHT_DELTA
 
