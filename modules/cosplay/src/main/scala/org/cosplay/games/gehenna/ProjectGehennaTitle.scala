@@ -53,17 +53,18 @@ import collection.immutable.HashSet
 
 
 object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
+    private final val MAG_TEST_LENGTH = 250
     private final val TITLE = "Project Gehenna"
     private final val START_IMG = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
     private final val SETTINGS_IMG = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
     private final val HELP_IMG = CPImage.loadRexCsv("images/games/gehenna/HelpBtn.csv").trimBg()
     private final val TITLE_IMG = FIG_OGRE.render(TITLE, BLOOD_RED).trimBg()
     private final val NOW_PLAYING_MS = 5000L
-    private final var DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
-    
-    val magTestLength = 250
-    private var curMag:Seq[Float] = Seq()
-    
+    private final val LEVEL_DIR = "gehenna/levels"
+    private final val DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
+    // Variables for audio file plugin for operations in blocks of this size.
+    private final val BUF_SZ = 8192
+
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
         true,
@@ -71,8 +72,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         GAME_BG_PX,
         onFinish = _ => TextDripShader.start()
     )
-    // Variables for audio file plugin for operations in blocks of this size.
-    final val BUF_SZ = 8192 //8192
 
     private def skullImg(): CPImage =
         new CPArrayImage(
@@ -115,8 +114,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&NEON_BLUE.darker(darkness)
         )
 
-    private val flashShdr = new FlashShader()
-    private val skullFlashShdr = new FlashShader()
+    private val titleFlashShdr = new FlashShader(MAG_TEST_LENGTH)
+    private val skullFlashShdr = new FlashShader(MAG_TEST_LENGTH)
     private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr, skullFlashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -124,9 +123,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             setY(((canv.w - getWidth) / 2) - 15)
             setX(((canv.h - getHeight) / 2) + 10)
 
-    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, TextDripShader, flashShdr)):
+    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, TextDripShader, titleFlashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
-            //flashShdr.changeMag(curMag)
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
     private val startSpr = new CPImageSprite("start", 0, 43, 1, START_IMG, shaders = Seq(fadeInShdr)):
@@ -214,8 +212,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
 
-    private def jukebox(): Unit = ???
-
     /**
       *
       * @param af
@@ -238,39 +234,43 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         seq.sliding(splitSz, splitSz).map(_.max).toSeq
 
-    private def menuSongChange(): Unit =
+    private def stopFlash(): Unit =
         skullFlashShdr.stop()
-        flashShdr.stop()
-        
-        val lvlDir ="gehenna/levels"
+        titleFlashShdr.stop()
 
-        def mkFile(res: String): File =
-            new File(getClass.getClassLoader.getResource(res).toURI)
-        def readLines(res: String): Seq[String] =
-            IOUtils.readLines(getClass.getClassLoader.getResourceAsStream(res), Charset.forName("UTF-8")).asScala.toSeq
-
-        //val dirs = readLines(lvlDir) //TODO
-        //val rndDir = CPRand.rand(dirs) //TODO
-        val rndDir = "first" //Temp
-
-        val lvlTxt = readLines(s"$lvlDir/$rndDir/level.txt")
-        DFLT_SONG = CPSound(s"$lvlDir/$rndDir/song.wav")
-
-        val songName = lvlTxt(1).replace(".LevelSongName:", "")
-
-        val af = AudioFile.openRead(mkFile(s"$lvlDir/$rndDir/song.wav"))
-        songPlay(af)
-        af.close()
-
-    private def songPlay(in: AudioFile): Unit =
-        curMag = sequence(in, DFLT_SONG, magTestLength)
-        
-        DFLT_SONG.play(30, CPSound => menuSongChange())
-        
-        skullFlashShdr.changeMag(curMag)
+    private def resetFlash(mag: Seq[Float]): Unit =
+        skullFlashShdr.changeMag(mag)
         skullFlashShdr.start()
-        
-        println(curMag)
+        titleFlashShdr.changeMag(mag)
+        titleFlashShdr.start()
+
+    private def menuSongChange(): Unit =
+        stopFlash()
+
+        def readLines(res: String): Seq[String] = IOUtils.readLines(getClass.getClassLoader.getResourceAsStream(res),
+            Charset.forName("UTF-8")).asScala.toSeq
+
+        /*
+        val dirs = readLines(lvlDir)
+        val rndDir = CPRand.rand(dirs)
+        */
+
+        val rndDir = "first" //Temp
+        val lvlTxt = readLines(s"$LEVEL_DIR/$rndDir/level.txt")
+
+        //val songName = lvlTxt(1).replace(".LevelSongName:", "") TODO: FIX
+        songPlay(s"$LEVEL_DIR/$rndDir/song.wav")
+
+    private def songPlay(songFile: String): Unit =
+        def mkFile(res: String): File = new File(getClass.getClassLoader.getResource(res).toURI)
+
+        val af = AudioFile.openRead(mkFile(songFile))
+        val snd = CPSound(songFile)
+        val mag = sequence(af, snd, MAG_TEST_LENGTH)
+
+        af.close()
+        snd.play(0, CPSound => menuSongChange())
+        resetFlash(mag)
 
     addObjects(
         titleSpr,

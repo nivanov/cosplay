@@ -46,58 +46,36 @@ import collection.immutable.{HashSet, StringOps}
 */
 
 
-class FlashShader extends CPShader:
+class FlashShader(val msgTestLenMs: Int) extends CPShader:
+    private final val BRIGHT_DELTA = 0.05f
     private var run = false
-
-    private var brightness = 0f
-    private val brightChng = 0.05f
-
     private var mag = Seq.empty[Float]
-    private val msTestFrame = ProjectGehennaTitle.magTestLength
-
-    private var curTime = 0f
-    private var timeStart = 0f
-
+    private var timeStartMs = 0f
     private var index = 0
+    private var brightness = 0f
+    private var maxMag = 0f
 
-    /**
-     * Toggles this shader effect on and off.
-     *
-     * @see [[run()]]
-     * @see [[stop()]]
-     */
-    def toggle(): Unit = run = !run
-
-    /**
-     * Starts the shader effect.
-     *
-     * @see [[toggle()]]
-     */
-    def start(): Unit =
-        run = true
+    def start(): Unit = run = true
     def stop(): Unit = run = false
-
-    def isActive: Boolean = run
-
     def changeMag(mag: Seq[Float]): Unit =
         this.mag = mag
+        maxMag = mag.max
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if run then
-            curTime = ctx.getFrameMs
+            val ms = ctx.getFrameMs
 
-            if (curTime - timeStart) >= msTestFrame then
-                brightness = mag(index)
-                timeStart = curTime
+            if (ms - timeStartMs) >= msgTestLenMs then
+                brightness = mag(index % mag.size) / maxMag
+                timeStartMs = ms
                 index += 1
+            else if brightness > BRIGHT_DELTA then
+                brightness -= BRIGHT_DELTA
 
-        if brightness != 0 && brightness > brightChng then
-            brightness -= brightChng
-
-        val canv = ctx.getCanvas
-        objRect.loop((x,y) => {
-            if canv.isValid(x, y) then
-                val zpx = canv.getZPixel(x, y)
-                val px = zpx.px
-                if px.char != ' ' then canv.drawPixel(px.withLighterFg(brightness), x, y, zpx.z)
-        })
+            val canv = ctx.getCanvas
+            objRect.loop((x,y) => {
+                if canv.isValid(x, y) then
+                    val zpx = canv.getZPixel(x, y)
+                    val px = zpx.px
+                    if px.char != ' ' then canv.drawPixel(px.withLighterFg(brightness), x, y, zpx.z)
+            })
