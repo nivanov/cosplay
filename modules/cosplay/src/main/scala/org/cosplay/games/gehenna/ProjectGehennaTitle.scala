@@ -221,16 +221,16 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private def sequence(af: AudioFile, snd: CPSound, measureMs: Long): Seq[Float] =
         val seq = ArrayBuffer[Float]()
         val buf = af.buffer(BUF_SZ)
-        var remain = af.numFrames
+        var remainFrames = af.numFrames.toInt
 
-        while remain > 0 do
-            val chunk = math.min(BUF_SZ, remain).toInt
-            af.read(buf, 0, chunk)
-            buf.foreach(chan => seq += math.abs(chan.maxBy(math.abs)).toFloat)
-            remain -= chunk
+        while remainFrames > 0 do
+            val chunkSz = math.min(BUF_SZ, remainFrames)
+            af.read(buf, 0, chunkSz) // Read channels.
+            buf.foreach(chan => seq += chan.map(math.abs).max.toFloat)
+            remainFrames -= chunkSz
 
-        val chanLenMs = snd.getTotalDuration / seq.size
-        val splitSz = (measureMs / chanLenMs).toInt
+        val chanPerMs = seq.size.toFloat / snd.getTotalDuration
+        val splitSz = (chanPerMs * measureMs).toInt
 
         seq.sliding(splitSz, splitSz).map(_.max).toSeq
 
