@@ -46,7 +46,7 @@ import collection.immutable.{HashSet, StringOps}
 */
 
 
-class FlashShader(val msgTestLenMs: Int) extends CPShader:
+class FlashShader() extends CPShader:
     private final val BRIGHT_DELTA = 0.05f
     private var run = false
     private var mag = Seq.empty[Float]
@@ -54,18 +54,24 @@ class FlashShader(val msgTestLenMs: Int) extends CPShader:
     private var index = 0
     private var brightness = 0f
     private var maxMag = 0f
+    private var msgTestLenMs = 100f
 
     def start(): Unit = run = true
     def stop(): Unit = run = false
     def changeMag(mag: Seq[Float]): Unit =
         this.mag = mag
-        println(mag)
+        //println(mag)
         maxMag = mag.max
         println(s"Max mag: $maxMag")
+
+    def changeMsgTestLenMs(msgTestLenMs: Float): Unit =
+        this.msgTestLenMs = msgTestLenMs
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if run then
             val ms = ctx.getFrameMs
+
+            println("Test Length : " + msgTestLenMs)
 
             if (ms - timeStartMs) >= msgTestLenMs then
                 brightness = mag(index % mag.size) / maxMag

@@ -53,7 +53,6 @@ import collection.immutable.HashSet
 
 
 object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
-    private final val MAG_TEST_LENGTH = 250
     private final val TITLE = "Project Gehenna"
     private final val START_IMG = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
     private final val SETTINGS_IMG = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
@@ -64,6 +63,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
     // Variables for audio file plugin for operations in blocks of this size.
     private final val BUF_SZ = 8192
+    private var magTestLength = 100f
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -114,8 +114,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&NEON_BLUE.darker(darkness)
         )
 
-    private val titleFlashShdr = new FlashShader(MAG_TEST_LENGTH)
-    private val skullFlashShdr = new FlashShader(MAG_TEST_LENGTH)
+    private val titleFlashShdr = new FlashShader()
+    private val skullFlashShdr = new FlashShader()
     private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr, skullFlashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -218,7 +218,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
       * @param snd
       * @param measureMs
       */
-    private def sequence(af: AudioFile, snd: CPSound, measureMs: Long): Seq[Float] =
+    private def sequence(af: AudioFile, snd: CPSound): Seq[Float] =
         val seq = ArrayBuffer[Float]()
         val buf = af.buffer(BUF_SZ)
         var remainFrames = af.numFrames.toInt
@@ -229,10 +229,18 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             buf.foreach(chan => seq += chan.map(math.abs).max.toFloat)
             remainFrames -= chunkSz
 
-        val chanPerMs = seq.size.toFloat / snd.getTotalDuration
-        val splitSz = (chanPerMs * measureMs).toInt
+        //val chanPerMs = seq.size.toFloat / snd.getTotalDuration
+        //val splitSz = (chanPerMs * measureMs).toInt
 
-        seq.sliding(splitSz, splitSz).map(_.max).toSeq
+        //println("Split Size : " + splitSz)
+        //println("Initial Seq Size : " + seq.length)
+
+        magTestLength = snd.getTotalDuration / seq.length.toFloat
+        println("Outcome : " + magTestLength)
+
+        seq.toSeq
+
+        //seq.sliding(splitSz, splitSz).map(_.max).toSeq
 
     private def stopFlash(): Unit =
         skullFlashShdr.stop()
@@ -240,6 +248,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
     private def resetFlash(mag: Seq[Float]): Unit =
         skullFlashShdr.changeMag(mag)
+        skullFlashShdr.changeMsgTestLenMs(magTestLength)
         skullFlashShdr.start()
         //titleFlashShdr.changeMag(mag)
         //titleFlashShdr.start()
@@ -266,7 +275,9 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         val af = AudioFile.openRead(mkFile(songFile))
         val snd = CPSound(songFile)
-        val mag = sequence(af, snd, MAG_TEST_LENGTH)
+        val mag = sequence(af, snd)
+        println("Mag length : " + mag.length)
+        println("Song length : " + snd.getTotalDuration)
 
         af.close()
         snd.play(0, CPSound => menuSongChange())
