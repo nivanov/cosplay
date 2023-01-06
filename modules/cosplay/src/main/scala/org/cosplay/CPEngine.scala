@@ -764,7 +764,7 @@ object CPEngine:
             catch case e: Exception => engLog.error(s"Failed to stop object: $x", e)
 
         def postQ(id: String, msgs: Seq[AnyRef]): Unit = msgQ.get(id) match
-            case Some(buf) => buf ++= msgs
+            case Some(b) => b ++= msgs
             case None => msgQ += id -> mutable.Buffer(msgs)
 
         if term.isNative && gameInfo.minDim.isDefined && term.getDim <@ gameInfo.minDim.get then
