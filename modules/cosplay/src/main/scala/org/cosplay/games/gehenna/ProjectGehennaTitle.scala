@@ -62,7 +62,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val LEVEL_DIR = "gehenna/levels"
     private final val DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
     // Variables for audio file plugin for operations in blocks of this size.
-    private final val BUF_SZ = 8192
+    private final val BUF_SZ = 4000 //8192
     private var magTestLength = 100f
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
@@ -212,43 +212,44 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
 
-    /**
-      *
-      * @param af
-      * @param snd
-      * @param measureMs
-      */
-    private def sequence(af: AudioFile, snd: CPSound): Seq[Float] =
-        val seq = ArrayBuffer[Float]()
+    private def sequence2(af: AudioFile, snd: CPSound): Long => Float =
+        val magSeq = ArrayBuffer[Float]()
         val buf = af.buffer(BUF_SZ)
         var remainFrames = af.numFrames.toInt
 
         while remainFrames > 0 do
             val chunkSz = math.min(BUF_SZ, remainFrames)
             af.read(buf, 0, chunkSz) // Read channels.
-            buf.foreach(chan => seq += chan.map(math.abs).max.toFloat)
+            buf.foreach(chan => magSeq += chan.map(math.abs).max.toFloat)
             remainFrames -= chunkSz
 
-        //val chanPerMs = seq.size.toFloat / snd.getTotalDuration
-        //val splitSz = (chanPerMs * measureMs).toInt
+        val maxMag = magSeq.max.max(0.0001f)
+        val normMagSeq = magSeq.map(_ / maxMag)
+        val magDurMs =  snd.getTotalDuration / magSeq.size
+        val sz = normMagSeq.size
 
-        //println("Split Size : " + splitSz)
-        //println("Initial Seq Size : " + seq.length)
+        (ms: Long) => {
+            val normMs = ms % snd.getTotalDuration
+            var idx1 = (normMs / magDurMs).toInt
+            if idx1 >= sz - 1 then idx1 = 1
+            val idx2 = idx1 + 1
+            val y1 =  normMagSeq(idx1)
+            val y2 = normMagSeq(idx2)
+            val t1 = idx1 * magDurMs
+            val t2 = idx2 * magDurMs
+            val a = (y2 - y1) / (t2 - t1).toFloat
+            val b = y1 - a * t1
 
-        magTestLength = snd.getTotalDuration / seq.length.toFloat
-        println("Outcome : " + magTestLength)
-
-        seq.toSeq
-
-        //seq.sliding(splitSz, splitSz).map(_.max).toSeq
+            // Return value.
+            normMs * a + b
+        }
 
     private def stopFlash(): Unit =
         skullFlashShdr.stop()
         //titleFlashShdr.stop()
 
-    private def resetFlash(mag: Seq[Float]): Unit =
-        skullFlashShdr.changeMag(mag)
-        skullFlashShdr.changeMsgTestLenMs(magTestLength)
+    private def resetFlash(fun: Long => Float): Unit =
+        skullFlashShdr.setFun(fun)
         skullFlashShdr.start()
         //titleFlashShdr.changeMag(mag)
         //titleFlashShdr.start()
@@ -275,13 +276,13 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         val af = AudioFile.openRead(mkFile(songFile))
         val snd = CPSound(songFile)
-        val mag = sequence(af, snd)
-        println("Mag length : " + mag.length)
-        println("Song length : " + snd.getTotalDuration)
+        val fun = sequence2(af, snd)
+//        println("Mag length : " + mag.length)
+//        println("Song length : " + snd.getTotalDuration)
 
         af.close()
         snd.play(0, CPSound => menuSongChange())
-        resetFlash(mag)
+        resetFlash(fun)
 
     addObjects(
         titleSpr,

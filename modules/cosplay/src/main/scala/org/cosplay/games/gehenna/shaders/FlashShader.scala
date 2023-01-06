@@ -47,39 +47,27 @@ import collection.immutable.{HashSet, StringOps}
 
 
 class FlashShader() extends CPShader:
-    private final val BRIGHT_DELTA = 0.05f
     private var run = false
-    private var mag = Seq.empty[Float]
-    private var timeStartMs = 0f
-    private var index = 0
-    private var brightness = 0f
-    private var maxMag = 0f
-    private var msgTestLenMs = 100f
+
+    private type Fun = Long => Float
+    private var fun: Fun = null
+    private var dur = 0L
+    private var lastRenderMs = 0L
 
     def start(): Unit = run = true
     def stop(): Unit = run = false
-    def changeMag(mag: Seq[Float]): Unit =
-        this.mag = mag
-        //println(mag)
-        maxMag = mag.max
-        println(s"Max mag: $maxMag")
 
-    def changeMsgTestLenMs(msgTestLenMs: Float): Unit =
-        this.msgTestLenMs = msgTestLenMs
+    def setFun(fun: Fun): Unit =
+        this.fun = fun
+        dur =  0L
+        lastRenderMs = System.currentTimeMillis()
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if run then
-            val ms = ctx.getFrameMs
-
-            println("Test Length : " + msgTestLenMs)
-
-            if (ms - timeStartMs) >= msgTestLenMs then
-                brightness = mag(index % mag.size) / maxMag
-                timeStartMs = ms
-                index += 1
-                println(s"Current brightness: $brightness")
-            else if brightness > BRIGHT_DELTA then
-                brightness -= BRIGHT_DELTA
+            val brightness = fun(dur)
+            val now = System.currentTimeMillis()
+            dur += now - lastRenderMs
+            lastRenderMs = now
 
             val canv = ctx.getCanvas
             objRect.loop((x,y) => {
