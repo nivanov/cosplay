@@ -146,10 +146,10 @@ object CPParticleExample:
 
         val emitter = new CPParticleEmitter():
             // Number of particles this emitter will emit on each update.
-            private final val GEN_SIZE = 20
+            private val GEN_SIZE = 20
             // Emit from the center of the 'bomb' sprite.
-            private final val x = (w - bw) / 2 + bw / 2
-            private final val y = (h - bh) / 2 + bh / 2
+            private val x = (w - bw) / 2 + bw / 2
+            private val y = (h - bh) / 2 + bh / 2
             private var age = 0
 
             override def reset(): Unit = age = 0

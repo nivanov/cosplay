@@ -50,17 +50,17 @@ import org.cosplay.prefabs.sprites.CPCenteredImageSprite
 object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private def randBallAngle(): Int = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
-    private final val INIT_VAL = -1f
-    private final val MAX_SCORE = 10
-    private final val IS_WIN = SystemUtils.IS_OS_WINDOWS
-    private final val INIT_BALL_SPEED = if IS_WIN then .8f else .9f
-    private final val INIT_NPC_SPEED = if IS_WIN then .6f else .7f
-    private final val BALL_SPEED_INCR = if IS_WIN then .045f else .05f
-    private final val ENEMY_SPEED_INCR = if IS_WIN then .045f else .06f
+    private val INIT_VAL = -1f
+    private val MAX_SCORE = 10
+    private val IS_WIN = SystemUtils.IS_OS_WINDOWS
+    private val INIT_BALL_SPEED = if IS_WIN then .8f else .9f
+    private val INIT_NPC_SPEED = if IS_WIN then .6f else .7f
+    private val BALL_SPEED_INCR = if IS_WIN then .045f else .05f
+    private val ENEMY_SPEED_INCR = if IS_WIN then .045f else .06f
 
     private var plyScore = 0
     private var npcScore = 0
-    private final val plySpeed = 1.2f
+    private val plySpeed = 1.2f
     private var npcSpeed = INIT_NPC_SPEED
     private var ballSpeed = INIT_BALL_SPEED
     private var playing = false
@@ -101,17 +101,17 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val plyShdr = CPPongPaddleShader()
     private val npcShdr = CPPongPaddleShader()
 
-    private final val ballW = ballImg.getWidth
-    private final val ballH = ballImg.getHeight
+    private val ballW = ballImg.getWidth
+    private val ballH = ballImg.getHeight
 
     // Audio assets.
-    private final val paddleSnd = CPSound(s"sounds/games/pong/bounce1.wav", 0.2f)
-    private final val wallSnd = CPSound(s"sounds/games/pong/bounce2.wav", 0.6f)
-    private final val missSnd = CPSound(s"sounds/games/pong/miss.wav", 0.3f)
-    private final val youLostSnd = CPSound(s"sounds/games/pong/you_lost.wav", 0.5f)
-    private final val youWonSnd = CPSound(s"sounds/games/pong/you_won.wav", 0.5f)
-    private final val bgSnd = CPSound(s"sounds/games/pong/bg.wav", 0.02f)
-    private final val boostSnd = CPSound(s"sounds/games/pong/boost.wav", 0.2f)
+    private val paddleSnd = CPSound(s"sounds/games/pong/bounce1.wav", 0.2f)
+    private val wallSnd = CPSound(s"sounds/games/pong/bounce2.wav", 0.6f)
+    private val missSnd = CPSound(s"sounds/games/pong/miss.wav", 0.3f)
+    private val youLostSnd = CPSound(s"sounds/games/pong/you_lost.wav", 0.5f)
+    private val youWonSnd = CPSound(s"sounds/games/pong/you_won.wav", 0.5f)
+    private val bgSnd = CPSound(s"sounds/games/pong/bg.wav", 0.02f)
+    private val boostSnd = CPSound(s"sounds/games/pong/boost.wav", 0.2f)
 
     private val serveImg = new CPArrayImage(
         prepSeq(

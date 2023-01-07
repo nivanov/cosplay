@@ -36,10 +36,11 @@ import java.time.{LocalDate, Year}
   * Release version holder. Note that this is manually changing property. For every official
   * release the new version will be added to this object manually.
   */
+//noinspection ScalaWeakerAccess
 object CPVersion:
-    final val year = Year.now().toString
-    final val tagline = "2D ASCII Game Engine for Scala3"
-    final val copyright = s"(C) $year Rowan Games, Inc."
+    val year = Year.now().toString
+    val tagline = "2D ASCII Game Engine for Scala3"
+    val copyright = s"(C) $year Rowan Games, Inc."
 
     /**
       *
@@ -52,7 +53,7 @@ object CPVersion:
     // +=================================================+
     // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
     // +=================================================+
-    private final val VERSIONS = Seq(
+    private val VERSIONS = Seq(
         Version("0.1.0", LocalDate.of(2022, 1, 25)),
         Version("0.1.1", LocalDate.of(2022, 2, 25)),
         Version("0.2.0", LocalDate.of(2022, 3, 18)),

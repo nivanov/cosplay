@@ -41,12 +41,12 @@ import java.util.UUID
   * @see [[Random]]
   */
 object CPRand:
-    private final val RND = new Random()
-    private final val LO_LETTERS = "qwertyuiopasdfghjklzxcvbnm"
-    private final val UP_LETTERS = "QWERTYUIOPASDFGHJKLZXCVBNM"
-    private final val LETTERS = s"$LO_LETTERS$UP_LETTERS"
-    private final val DIGITS = "1234567890"
-    private final val SYMBOLS = "~!@#$%^&*()_+-=[]{}';:\",.<>/?"
+    private val RND = new Random()
+    private val LO_LETTERS = "qwertyuiopasdfghjklzxcvbnm"
+    private val UP_LETTERS = "QWERTYUIOPASDFGHJKLZXCVBNM"
+    private val LETTERS = s"$LO_LETTERS$UP_LETTERS"
+    private val DIGITS = "1234567890"
+    private val SYMBOLS = "~!@#$%^&*()_+-=[]{}';:\",.<>/?"
 
     /**
       * Creates new globally unique 16-bytes type 4 UUID.

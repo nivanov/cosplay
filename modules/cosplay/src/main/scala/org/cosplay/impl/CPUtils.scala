@@ -34,8 +34,11 @@ import scala.collection.mutable.ArrayBuffer
 import com.mixpanel.mixpanelapi.*
 import org.json.JSONObject
 import org.apache.commons.lang3.*
+import com.formdev.flatlaf.*
+import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme
 
 import java.util.concurrent.{Callable, Executors}
+import javax.swing.UIManager
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -56,7 +59,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   *
   */
 object CPUtils:
-    private final val THREAD_POOL_SIZE = 16
+    private val THREAD_POOL_SIZE = 16
 
     private val sysProps = new SystemProperties
     private val rt = Runtime.getRuntime
@@ -69,7 +72,18 @@ object CPUtils:
     private val exec = Executors.newFixedThreadPool(THREAD_POOL_SIZE)
 
     /** */
-    final val PING_MSG = "8369926740-3247024617-2096692631-7483698541-4348351625-9412150510-5442257448-4805421296-5646586017-0232477804"
+    val PING_MSG = "8369926740-3247024617-2096692631-7483698541-4348351625-9412150510-5442257448-4805421296-5646586017-0232477804"
+
+    /**
+      * Initializes custom L&F.
+      */
+    def initLaF(): Unit =
+        if SystemUtils.IS_OS_WINDOWS then System.setProperty("flatlaf.uiScale", "1.1")
+        UIManager.put("Component.arrowType", "chevron")
+        UIManager.put("Component.focusWidth", 0)
+        UIManager.put("Component.innerFocusWidth", 0)
+        FlatLightLaf.setup()
+        FlatDarkPurpleIJTheme.setup() // Default theme.
 
     /**
       * Executes given function asynchronously on the system thread pool.
@@ -209,7 +223,7 @@ object CPUtils:
       *
       * @param url URL to read.
       */
-    def readByteUrl(url: String): Array[Byte] =
+    private def readByteUrl(url: String): Array[Byte] =
         Using.resource(new URL(url).openStream()) { in => readByteStream(in, url) }
 
     /**
@@ -221,10 +235,7 @@ object CPUtils:
             val gis = new GZIPInputStream(new ByteArrayInputStream(bytes))
             try
                 val out = new ByteArrayOutputStream(bytes.length)
-                val buf = new Array[Byte](1024)
-                while (gis.available() > 0)
-                    val cnt = gis.read(buf, 0, 1024)
-                    if cnt > 0 then out.write(buf, 0, cnt)
+                tunnelThrough(gis, out)
                 close(out)
                 out.toByteArray
             finally
@@ -240,18 +251,26 @@ object CPUtils:
         try
             val gis = new ByteArrayInputStream(bytes)
             try
-                val bout = new ByteArrayOutputStream()
+                val bout = new ByteArrayOutputStream(bytes.length)
                 val out = new GZIPOutputStream(bout)
-                val buf = new Array[Byte](1024)
-                while (gis.available() > 0)
-                    val cnt = gis.read(buf, 0, 1024)
-                    if cnt > 0 then out.write(buf, 0, cnt)
+                tunnelThrough(gis, out)
                 close(out)
                 bout.toByteArray
             finally
                 close(gis)
         catch
             case e: Exception => E(s"Failed to zip byte array.", e)
+
+    /**
+      *
+      * @param in
+      * @param out
+      */
+    private def tunnelThrough(in: InputStream, out: OutputStream): Unit =
+        val buf = new Array[Byte](1024)
+        while (in.available() > 0)
+            val cnt = in.read(buf, 0, 1024)
+            if cnt > 0 then out.write(buf, 0, cnt)
 
     /**
       * Creates gzip file.
@@ -312,7 +331,7 @@ object CPUtils:
       *
       * @param url URL to check.
       */
-    def isUrl(url: String): Boolean =
+    private def isUrl(url: String): Boolean =
         try
             new URL(url)
             true

@@ -74,47 +74,45 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private val yamAniSeq = Seq(
         CPAnimation.filmStrip("yamAni", 150, imgs = yamImgs)
     )
-    private val youLostImg = new CPArrayImage(
-        prepSeq(
-            """
-              |**********************************
-              |**                              **
-              |**    YOU LOST :-(              **
-              |**    ------------              **
-              |**                              **
-              |**    [SPACE]   Continue        **
-              |**    [Q]       Quit            **
-              |**    [CTRL+A]  Audio On/OFF    **
-              |**    [CTRL+Q]  FPD Overlay     **
-              |**    [CTRL+L]  Log Console     **
-              |**                              **
-              |**********************************
-            """),
-        (ch, _, _) => ch match
-            case '*' => ' '&&(C2, C2)
-            case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
-            case _ => ch&&(C3, BG_PX.bg.get)
+    private def prepDialog(art: String): CPArrayImage =
+        new CPArrayImage(
+            prepSeq(art),
+            (ch, _, _) => ch match
+                case '*' => ' ' && (C2, C2)
+                case c if c.isLetter || c == '/' => c && (C4, BG_PX.bg.get)
+                case _ => ch && (C3, BG_PX.bg.get)
+        )
+    private val youLostImg = prepDialog(
+        """
+          |**********************************
+          |**                              **
+          |**    YOU LOST :-(              **
+          |**    ------------              **
+          |**                              **
+          |**    [SPACE]   Continue        **
+          |**    [Q]       Quit            **
+          |**    [CTRL+A]  Audio On/OFF    **
+          |**    [CTRL+Q]  FPD Overlay     **
+          |**    [CTRL+L]  Log Console     **
+          |**                              **
+          |**********************************
+        """
     )
-    private val youWonImg = new CPArrayImage(
-        prepSeq(
-            """
-              |**********************************
-              |**                              **
-              |**    YOU WON :-)               **
-              |**    -----------               **
-              |**                              **
-              |**    [SPACE]   Continue        **
-              |**    [Q]       Quit            **
-              |**    [CTRL+A]  Audio On/OFF    **
-              |**    [CTRL+Q]  FPD Overlay     **
-              |**    [CTRL+L]  Log Console     **
-              |**                              **
-              |**********************************
-            """),
-        (ch, _, _) => ch match
-            case '*' => ' '&&(C2, C2)
-            case c if c.isLetter || c == '/' => c&&(C4, BG_PX.bg.get)
-            case _ => ch&&(C3, BG_PX.bg.get)
+    private val youWonImg = prepDialog(
+        """
+          |**********************************
+          |**                              **
+          |**    YOU WON :-)               **
+          |**    -----------               **
+          |**                              **
+          |**    [SPACE]   Continue        **
+          |**    [Q]       Quit            **
+          |**    [CTRL+A]  Audio On/OFF    **
+          |**    [CTRL+Q]  FPD Overlay     **
+          |**    [CTRL+L]  Log Console     **
+          |**                              **
+          |**********************************
+        """
     )
     private val yamEmitter = new CPConfettiEmitter(
         () => yamSpr.getX,
@@ -144,8 +142,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private val yamShdr = CPShimmerShader(false, CS, 7, true)
     private val yamSpr = new CPAnimationSprite(anis = yamAniSeq, 0, 0, 0, "yamAni", false, shaders = Seq(yamShdr))
     private val snakeSpr: CPCanvasSprite = new CPCanvasSprite:
-        private final val INIT_SPEED = .5f
-        private final val yelps = Seq("Yam", "Tasty", "Num", "Okay", "Nice", "Right", "Bam", "Wow", "Yep", "Yes")
+        private val INIT_SPEED = .5f
+        private val yelps = Seq("Yam", "Tasty", "Num", "Okay", "Nice", "Right", "Bam", "Wow", "Yep", "Yes")
         private var snake: List[(Int, Int)] = Nil
         private var dx = 0f
         private var dy = 0f
@@ -209,14 +207,17 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                         dy = speed
                     dropYam(canv)
 
-                // Check for snake death.
-                if isDead(canv) then
-                    go = false
-                    dead = true
+                def youLost(): Unit =
                     youLostSpr.show()
                     if audioOn then youLostSnd.replay(1000)
                     yamSpr.hide()
                     bgSnd.stop(1000)
+
+                // Check for snake death.
+                if isDead(canv) then
+                    go = false
+                    dead = true
+                    youLost()
                 else
                     // Move snake.
                     x += dx
@@ -251,10 +252,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
                         if score == WIN_SCORE then
                             go = false
                             dead = false
-                            youWonSpr.show()
-                            if audioOn then youWonSnd.replay(1000)
-                            yamSpr.hide()
-                            bgSnd.stop(1000)
+                            youLost()
                         else
                             ateYam = true
                             dropYam(canv)
@@ -296,10 +294,10 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
     private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, z = 6, shaders = Seq(lostWonShdr))
     private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, z = 6, shaders = Seq(lostWonShdr))
 
-    private final val bgSnd = CPSound(s"sounds/games/snake/snake.wav", 0.7f)
-    private final val yamSnd = CPSound(s"sounds/games/snake/yam.wav")
-    private final val youLostSnd = CPSound(s"sounds/games/snake/you_lost.wav")
-    private final val youWonSnd = CPSound(s"sounds/games/snake/you_won.wav")
+    private val bgSnd = CPSound(s"sounds/games/snake/snake.wav", 0.7f)
+    private val yamSnd = CPSound(s"sounds/games/snake/yam.wav")
+    private val youLostSnd = CPSound(s"sounds/games/snake/you_lost.wav")
+    private val youWonSnd = CPSound(s"sounds/games/snake/you_won.wav")
 
     /** Creates score image. */
     private def mkScoreImage: CPImage = FIG_ANSI_REGULAR.render(s"SCORE : $score", C3).trimBg()

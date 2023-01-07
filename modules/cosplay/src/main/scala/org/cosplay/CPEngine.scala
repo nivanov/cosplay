@@ -146,13 +146,13 @@ object CPEngine:
 
     private case class LaterRun(tsMs: Long, f: CPSceneObjectContext => Unit)
 
-    private final val FPS = 30 // Target FPS.
-    private final val FRAME_NANOS = 1_000_000_000 / FPS
-    private final val FRAME_MICROS = 1_000_000 / FPS
-    private final val FRAME_MILLIS = 1_000 / FPS
-    private final val FPS_LIST_SIZE = 500
-    private final val FPS_1PCT_LIST_SIZE = FPS_LIST_SIZE / 100
-    private final val HOME_DIR = ".cosplay"
+    private val FPS = 30 // Target FPS.
+    private val FRAME_NANOS = 1_000_000_000 / FPS
+    private val FRAME_MICROS = 1_000_000 / FPS
+    private val FRAME_MILLIS = 1_000 / FPS
+    private val FPS_LIST_SIZE = 500
+    private val FPS_1PCT_LIST_SIZE = FPS_LIST_SIZE / 100
+    private val HOME_DIR = ".cosplay"
 
     private val scenes = CPContainer[CPScene]()
     private var term: CPTerminal = _
@@ -165,8 +165,8 @@ object CPEngine:
     private var isShowFps = false
     private var kbReader: NativeKbReader = _
     private var kbKey: CPKeyboardKey = _
-    private final val kbMux = AnyRef
-    private final val pauseMux = AnyRef
+    private val kbMux = AnyRef
+    private val pauseMux = AnyRef
     private var engLog: CPLog = BufferedLog("").getLog("root")
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
@@ -258,9 +258,9 @@ object CPEngine:
       *
       */
     private class NativeKbReader extends Thread:
-        private final val EOF = -1
-        private final val TIMEOUT = -2
-        private final val ESC = 27
+        private val EOF = -1
+        private val TIMEOUT = -2
+        private val ESC = 27
         private val mapping = mutable.HashMap.empty[Seq[Int], CPKeyboardKey]
 
         @volatile var st0p = false
@@ -467,6 +467,7 @@ object CPEngine:
       * Can also be open by pressing `Ctrl-l` in the game.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       */
+    //noinspection ScalaWeakerAccess
     def openLog(): Unit =
         rootLog().info(CPUtils.PING_MSG)
 

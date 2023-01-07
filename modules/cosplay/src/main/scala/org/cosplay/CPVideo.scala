@@ -95,7 +95,7 @@ abstract class CPVideo(id: String, origin: String, tags: Set[String] = Set.empty
   * Companion object provides utility functions.
   */
 object CPVideo:
-    private final val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
+    private val DFLT_BG = CPPixel('.', C_GRAY2, C_GRAY1)
 
     /**
       * Previews given video using built-in video player.

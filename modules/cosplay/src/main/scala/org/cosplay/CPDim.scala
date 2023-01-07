@@ -113,17 +113,17 @@ final case class CPDim(width: Int, height: Int) extends CPIntTuple[CPDim](width,
     /**
       * Area in characters for this dimension.
       */
-    final val area: Int = width * height
+    val area: Int = width * height
 
     /**
       * Whether width or height equals to zero.
       */
-    final val isEmpty: Boolean = area == 0
+    val isEmpty: Boolean = area == 0
 
     /**
       * Whether width and height are greater than zero.
       */
-    final val nonEmpty: Boolean = area > 0
+    val nonEmpty: Boolean = area > 0
 
     override def toString: String = s"[${width}x$height]"
 
@@ -134,4 +134,4 @@ object CPDim:
     /**
       * Zero dimension.
       */
-    final val ZERO = new CPDim(0)
+    val ZERO = new CPDim(0)

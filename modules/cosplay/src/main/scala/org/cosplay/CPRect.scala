@@ -51,27 +51,27 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * Area of this rectangle as `width * height`.
       */
-    final val area: Int = width * height
+    val area: Int = width * height
 
     /**
       * Whether width or height equals to zero.
       */
-    final val isEmpty: Boolean = area == 0
+    val isEmpty: Boolean = area == 0
 
     /**
       * Whether width and height are greater than zero.
       */
-    final val nonEmpty: Boolean = area > 0
+    val nonEmpty: Boolean = area > 0
 
     /**
       * Dimension of this rectangle.
       */
-    final val dim: CPDim = CPDim(width, height)
+    val dim: CPDim = CPDim(width, height)
 
     /**
       * Maximum X-coordinate. If width is zero this will equal to `x - 1`.
       */
-    final val xMax = x + width - 1
+    val xMax: Int = x + width - 1
 
     /**
       * Maximum X-coordinate as a float. If width is zero this will equal to `x - 1`.
@@ -81,7 +81,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * Maximum Y-coordinate. If height is zero this will equal to `y - 1`.
       */
-    final val yMax = y + height - 1
+    val yMax: Int = y + height - 1
 
     /**
       * Maximum Y-coordinate as a float. If height is zero this will equal to `y - 1`.
@@ -91,7 +91,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * Minimal X-coordinate. It is equal to `x`.
       */
-    final val xMin = x
+    val xMin: Int = x
 
     /**
       * Minimal X-coordinate as a float. It is equal to `x`.
@@ -101,7 +101,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * Minimal Y-coordinate. It is equal to `y`.
       */
-    final val yMin = y
+    val yMin: Int = y
 
     /**
       * Minimal Y-coordinate as a float. It is equal to `y`.
@@ -111,7 +111,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * Width of the rectangular (shortcut API).
       */
-    final val w = width
+    val w: Int = width
 
     /**
       * Width of the rectangular (shortcut API) as a float.
@@ -121,7 +121,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * Height of the rectangular (shortcut API).
       */
-    final val h = height
+    val h: Int = height
 
     /**
       * Height of the rectangular (shortcut API) as a float.
@@ -131,7 +131,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * X-coordinate of the center point.
       */
-    final val centerX = if width == 0 then x else x + (xMax - x) / 2
+    val centerX: Int = if width == 0 then x else x + (xMax - x) / 2
 
     /**
       * X-coordinate of the center point as a float.
@@ -141,7 +141,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
     /**
       * Y-coordinate of the center point.
       */
-    final val centerY = if height == 0 then y else y + (yMax - y) / 2
+    val centerY: Int = if height == 0 then y else y + (yMax - y) / 2
 
     /**
       * Y-coordinate of the center point as a float.
@@ -438,5 +438,5 @@ object CPRect:
     /**
       * Zero rectangle defines as `CPRect(0, 0, 0, 0)`.
       */
-    final val ZERO = CPRect(0, 0, 0, 0)
+    val ZERO: CPRect = CPRect(0, 0, 0, 0)
 

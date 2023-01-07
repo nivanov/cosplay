@@ -113,7 +113,7 @@ object CPShaderExample:
         ).trimBg()
 
         object FlashLightShader extends CPShader:
-            private final val RADIUS = 8
+            private val RADIUS = 8
             private var on = false
 
             def toggle(): Unit = on = !on

@@ -72,6 +72,7 @@ import scala.collection.mutable
   * @example See [[org.cosplay.examples.animation.CPAnimationExample CPAnimationExample]] source code for an
   *     example of animation functionality.
   */
+//noinspection ScalaWeakerAccess
 class CPAnimationSprite(
     id: String = s"ani-spr-${CPRand.guid6}",
     anis: Seq[CPAnimation],
@@ -98,21 +99,21 @@ class CPAnimationSprite(
       *
       * @see [[setX()]]
       */
-    final val initX: Int = x
+    val initX: Int = x
 
     /**
       * Initial Y-coordinate of the sprite.
       *
       * @see [[setY()]]
       */
-    final val initY: Int = y
+    val initY: Int = y
 
     /**
       * Initial Z-index of the sprite.
       *
       * @see [[setZ()]]
       */
-    final val initZ: Int = z
+    val initZ: Int = z
 
     /**
       * Resets this sprite to its initial XYZ-coordinates.

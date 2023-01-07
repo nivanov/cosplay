@@ -104,7 +104,7 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
     override def toString: String = s"Pixel ['$char', fg=$fg, bg=$bg, tag=$tag]"
 
     /** ANSI sequence to render this pixel on ANSI terminal. */
-    final val ansi = s"$RESET_ALL${fg.fgAnsi}${if bg.isEmpty then "" else bg.get.bgAnsi}$char"
+    val ansi = s"$RESET_ALL${fg.fgAnsi}${if bg.isEmpty then "" else bg.get.bgAnsi}$char"
 
     /**
       * Gets a new pixel with the lower case character.
@@ -213,14 +213,14 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
   * Companion object with utility functions.
   */
 object CPPixel:
-    private final val XRAY_CH = '\u0000'
+    private val XRAY_CH = '\u0000'
 
     /**
       * Transparent non-rendering pixel. Background and foreground are unused. Note that this pixel
       * is never rendered on any terminal. It can only be used internally for
       * drawing on canvas, creating images, etc.
       */
-    final val XRAY = CPPixel(XRAY_CH, C_BLACK)
+    val XRAY: CPPixel = CPPixel(XRAY_CH, C_BLACK)
 
     /**
       * Creates new pixel without background and default zero tag.

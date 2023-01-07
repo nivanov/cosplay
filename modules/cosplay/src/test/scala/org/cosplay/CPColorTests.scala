@@ -88,8 +88,8 @@ object CPColorTests:
       *
       */
     private def genColorSwatches(cs: Seq[CPColor]): Unit =
-        // ^(\s+)final val ([\d\w_]+) = CPColor\((\d{1,3}, \d{1,3}, \d{1,3})\)$
-        // $1final val $2 = new CPColor($3, "$2")
+        // ^(\s+)val ([\d\w_]+) = CPColor\((\d{1,3}, \d{1,3}, \d{1,3})\)$
+        // $1val $2 = new CPColor($3, "$2")
         /*
             <tr>
                 <td>

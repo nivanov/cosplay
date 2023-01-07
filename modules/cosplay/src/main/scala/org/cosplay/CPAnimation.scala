@@ -206,7 +206,7 @@ abstract class CPAnimation(id: String) extends CPGameObject(id) with CPAsset:
   * Companion object containing factory methods.
   */
 object CPAnimation:
-    private final val DFLT_BG = '.'&&(C_GRAY2, C_GRAY1)
+    private val DFLT_BG = '.'&&(C_GRAY2, C_GRAY1)
 
     /**
       * Previews given animation.
@@ -301,7 +301,7 @@ object CPAnimation:
         if bounce && !loop then E("'bounce' cannot be true when 'loop' is false.")
 
         new CPAnimation(id):
-            private var lastFrameMs = 0l
+            private var lastFrameMs = 0L
             private val imgsCnt = frames.length
             private val lastIdx = imgsCnt - 1
             private var idx = 0
@@ -314,7 +314,7 @@ object CPAnimation:
                 idx = 0
                 idxIncr = 1
                 playing = true
-                lastFrameMs = 0l
+                lastFrameMs = 0L
             override def keyFrame(ctx: CPAnimationContext): Option[CPAnimationKeyFrame] =
                 if playing then
                     if lastFrameMs == 0 then lastFrameMs = ctx.getFrameMs

@@ -106,14 +106,14 @@ object CPImageCarouselExample:
     private val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
 
     class CarouselSprite(img: CPImage, viewDim: CPDim) extends CPSceneObject:
-        private final val centerY = (viewDim.h - img.h) / 2
-        private final val centerX = (viewDim.w - img.w) / 2
-        private final val leftOffScrX = -(img.w + 1)
-        private final val rightOffScrX = viewDim.w
-        private final val stepX = 1.0f
+        private val centerY = (viewDim.h - img.h) / 2
+        private val centerX = (viewDim.w - img.w) / 2
+        private val leftOffScrX = -(img.w + 1)
+        private val rightOffScrX = viewDim.w
+        private val stepX = 1.0f
         private val fadeInShdr = new CPFadeInShader(false, 2000, bgPx, autoStart = false)
         private val fadeOutShdr = new CPFadeOutShader(false, 1000, bgPx, onFinish = _ => setVisible(false))
-        private final val shdrs = Seq(fadeInShdr, fadeOutShdr)
+        private val shdrs = Seq(fadeInShdr, fadeOutShdr)
 
         private var x = leftOffScrX.toFloat
         private var step = 0f

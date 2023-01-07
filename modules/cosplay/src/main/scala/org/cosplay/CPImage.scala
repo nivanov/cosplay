@@ -696,7 +696,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
   */
 object CPImage:
     // First search for '_1' then, if not found, search for '_2'.
-    private final val HOR_FLIP_MAP = Seq(
+    private val HOR_FLIP_MAP = Seq(
         '{' -> '}',
         '/' -> '\\',
         '<' -> '>',
@@ -712,7 +712,7 @@ object CPImage:
     )
 
     // First search for '_1' then, if not found, search for '_2'.
-    private final val VER_FLIP_MAP = Seq(
+    private val VER_FLIP_MAP = Seq(
         '-' -> '-', // Don't replace.
         '_' -> '-',
         '`' -> '.',
@@ -730,7 +730,7 @@ object CPImage:
         'z' -> 's'
     )
 
-    private final val DFLT_PREVIEW_BG = CPPixel('.', C_GRAY2, C_GRAY1)
+    private val DFLT_PREVIEW_BG = CPPixel('.', C_GRAY2, C_GRAY1)
 
     /**
       * Creates new image by stacking given images vertically, starting with the 1st image,

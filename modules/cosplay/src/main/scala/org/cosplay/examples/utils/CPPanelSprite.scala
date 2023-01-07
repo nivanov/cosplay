@@ -58,9 +58,9 @@ class CPPanelSprite(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, title: String) e
     require(x2 > x1 && y2 > y1)
 
     private val dim = CPDim(x2 - x1, y2 - y1)
-    private final val c1 = C_GREEN_YELLOW
-    private final val c2 = C_DARK_BLUE
-    private final val c3 = C_DARK_ORANGE3
+    private val c1 = C_GREEN_YELLOW
+    private val c2 = C_DARK_BLUE
+    private val c3 = C_DARK_ORANGE3
 
     override def getX: Int = x1
     override def getY: Int = y1
