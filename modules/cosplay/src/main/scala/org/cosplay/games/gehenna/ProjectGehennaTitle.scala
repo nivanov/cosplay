@@ -212,7 +212,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
 
-    private def sequence2(af: AudioFile, snd: CPSound): Long => Float =
+    private def sequence(af: AudioFile, snd: CPSound): Long => Float =
         val magSeq = ArrayBuffer[Float]()
         val buf = af.buffer(BUF_SZ)
         var remainFrames = af.numFrames.toInt
@@ -276,7 +276,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         val af = AudioFile.openRead(mkFile(songFile))
         val snd = CPSound(songFile)
-        val fun = sequence2(af, snd)
+        val fun = sequence(af, snd)
 //        println("Mag length : " + mag.length)
 //        println("Song length : " + snd.getTotalDuration)
 

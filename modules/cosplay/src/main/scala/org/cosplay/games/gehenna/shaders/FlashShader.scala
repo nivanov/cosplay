@@ -47,6 +47,14 @@ import collection.immutable.{HashSet, StringOps}
 
 
 class FlashShader() extends CPShader:
+    private final val RNDM_FLASH = 0.05f
+    private final val FLASH_START = 1f
+
+    private final val MIN_FLASH = 0.6f
+    private final val MAX_FLASH = 1f
+
+    private final val FLASH_OFFSET = 0.2f
+
     private var run = false
 
     private type Fun = Long => Float
@@ -64,10 +72,31 @@ class FlashShader() extends CPShader:
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if run then
-            val brightness = fun(dur)
+            var brightness = fun(dur)
             val now = System.currentTimeMillis()
             dur += now - lastRenderMs
             lastRenderMs = now
+
+            // Apply min/max values.
+//            if brightness >= MIN_FLASH then
+//                val mult1 = brightness - MIN_FLASH
+//                val value1 = MAX_FLASH - MIN_FLASH
+//                val mult2 = 1 / value1
+//                brightness = mult1 * mult2
+//            else brightness = 0
+
+            // EXPERIMENTAL
+            if brightness != 1 then
+                brightness = brightness - FLASH_OFFSET
+
+                if brightness < 0 then brightness = 0
+
+            println(brightness)
+
+            // Apply randomness.
+            if brightness >= FLASH_START then
+                brightness += Random.between(-RNDM_FLASH.toFloat, RNDM_FLASH.toFloat)
+                if brightness > 1 then brightness = 1
 
             val canv = ctx.getCanvas
             objRect.loop((x,y) => {
