@@ -72,17 +72,17 @@ object CPInt2:
     /**
       * Equivalent of `CPInt2(1)`.
       */
-    final val ONE = CPInt2(1)
+    val ONE = CPInt2(1)
 
     /**
       * Equivalent of `CPInt2(-1)`.
       */
-    final val NEG_ONE = CPInt2(-1)
+    val NEG_ONE = CPInt2(-1)
 
     /**
       * Equivalent of `CPInt2(0)`.
       */
-    final val ZERO = CPInt2(0)
+    val ZERO = CPInt2(0)
 
     given Conversion[CPInt2, (Int, Int)] = t => t.i1 -> t.i2
     given Conversion[(Int, Int), CPInt2] = t => CPInt2(t._1, t._2)

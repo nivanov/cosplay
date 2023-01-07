@@ -105,7 +105,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
     inline def getName: String = name
 
     /** RGB value of this color. */
-    final val rgb: Int = ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff)
+    val rgb: Int = ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff)
 
     /**
       * HSB (Hue, Saturation, Brightness) values as 3-element array for this color.
@@ -114,7 +114,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
       * @see [[saturation]]
       * @see [[brightness]]
       */
-    final val hsb: Array[Float] = Color.RGBtoHSB(red, green, blue, null)
+    val hsb: Array[Float] = Color.RGBtoHSB(red, green, blue, null)
 
     /**
       * 8-bit xterm lookup number for this color.
@@ -122,7 +122,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
       * Note that if converted from 24-bit color this is only an approximation unless there's a direct match
       * between 24-bit color space and 8-bit color space.
       */
-    final val xterm: Int = toXterm(red, green, blue)
+    val xterm: Int = toXterm(red, green, blue)
 
     /**
      * If 8-bit color space is used.
@@ -134,7 +134,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
      * built-in terminal emulator can always display true 24-bit color. This is only necessary if running the game in the
      * native terminal that does not support 24-bit colors.
      */
-    final val color8Bit: Boolean = force8Bit
+    val color8Bit: Boolean = force8Bit
 
     /**
      * If 24-bit color space is used (default behavior).
@@ -146,16 +146,16 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
      * built-in terminal emulator can always display true 24-bit color. This is only necessary if running the game in the
      * native terminal that does not support 24-bit colors.
      */
-    final val color24Bit: Boolean = !force8Bit
+    val color24Bit: Boolean = !force8Bit
 
     /** Color's hue. */
-    final val hue: Float = hsb(0)
+    val hue: Float = hsb(0)
 
     /** Color's saturation. */
-    final val saturation: Float = hsb(1)
+    val saturation: Float = hsb(1)
 
     /** Color's brightness. */
-    final val brightness: Float = hsb(2)
+    val brightness: Float = hsb(2)
 
     private def toHex(i: Int): String =
         var hex = i.toHexString.toUpperCase
@@ -163,25 +163,25 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
         hex
 
     /** Hexadecimal string representation of this color's RGB value in `0x000000` upper case format */
-    final val hex: String = s"0x${toHex(red)}${toHex(green)}${toHex(blue)}"
+    val hex: String = s"0x${toHex(red)}${toHex(green)}${toHex(blue)}"
 
     /** Hexadecimal CSS string representation of this color's RGB value in `#000000` upper case format */
-    final val cssHex: String = s"#${toHex(red)}${toHex(green)}${toHex(blue)}"
+    val cssHex: String = s"#${toHex(red)}${toHex(green)}${toHex(blue)}"
 
     /**
      * ANSI foreground color sequence for this color. It automatically accounts for 8-bit or 24-bit color rendering.
      */
-    final val fgAnsi = if force8Bit then fg8Bit(xterm) else fg24Bit(red, green, blue)
+    val fgAnsi: String = if force8Bit then fg8Bit(xterm) else fg24Bit(red, green, blue)
 
     /**
      * ANSI background color sequence for this color. It automatically accounts for 8-bit or 24-bit color rendering.
      */
-    final val bgAnsi = if force8Bit then bg8Bit(xterm) else bg24Bit(red, green, blue)
+    val bgAnsi: String = if force8Bit then bg8Bit(xterm) else bg24Bit(red, green, blue)
 
     /**
      * Standard Java AWT color. It automatically accounts for 8-bit or 24-bit color rendering.
      */
-    final val awt = if force8Bit then new Color(XTERM_COLORS(xterm)) else new Color(red, green, blue)
+    val awt: Color = if force8Bit then new Color(XTERM_COLORS(xterm)) else new Color(red, green, blue)
 
     /**
       * Creates a new color by multiplying RGB values by given `factor`.
@@ -276,12 +276,13 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
 /**
   * Companion object contains utility functions and color constants.
   */
+//noinspection ScalaWeakerAccess
 object CPColor:
     // https://stackoverflow.com/questions/11765623/convert-hex-to-closest-x11-color-number
-    private final val Q2C = Seq(0x0, 0x5f, 0x87, 0xaf, 0xd7, 0xff).toIndexedSeq
+    private val Q2C = Seq(0x0, 0x5f, 0x87, 0xaf, 0xd7, 0xff).toIndexedSeq
 
     // xterm LUT.
-    private final val XTERM_COLORS = Seq(
+    private val XTERM_COLORS = Seq(
         0x000000,
         0x800000,
         0x008000,
@@ -541,7 +542,7 @@ object CPColor:
     ).toIndexedSeq
 
     /** */
-    private final val force8Bit = CPUtils.sysEnvBool("COSPLAY_FORCE_8BIT_COLOR")
+    private val force8Bit = CPUtils.sysEnvBool("COSPLAY_FORCE_8BIT_COLOR")
 
     /**
       * Creates new color with this RGB string value.
@@ -655,20 +656,20 @@ object CPColor:
             (c1.blue + i * db).round
         )
 
-    final val C_X11_LIGHT_SALMON = new CPColor(255, 160, 122, "C_X11_LIGHT_SALMON")
-    final val C_X11_SALMON = new CPColor(250, 128, 114, "C_X11_SALMON")
-    final val C_X11_DARK_SALMON = new CPColor(233, 150, 122, "C_X11_DARK_SALMON")
-    final val C_X11_LIGHT_CORAL = new CPColor(240, 128, 128, "C_X11_LIGHT_CORAL")
-    final val C_X11_INDIAN_RED = new CPColor(205, 92, 92, "C_X11_INDIAN_RED")
-    final val C_X11_CRIMSON = new CPColor(220, 20, 60, "C_X11_CRIMSON")
-    final val C_X11_FIRE_BRICK = new CPColor(178, 34, 34, "C_X11_FIRE_BRICK")
-    final val C_X11_RED = new CPColor(255, 0, 0, "C_X11_RED")
-    final val C_X11_DARK_RED = new CPColor(139, 0, 0, "C_X11_DARK_RED")
+    val C_X11_LIGHT_SALMON = new CPColor(255, 160, 122, "C_X11_LIGHT_SALMON")
+    val C_X11_SALMON = new CPColor(250, 128, 114, "C_X11_SALMON")
+    val C_X11_DARK_SALMON = new CPColor(233, 150, 122, "C_X11_DARK_SALMON")
+    val C_X11_LIGHT_CORAL = new CPColor(240, 128, 128, "C_X11_LIGHT_CORAL")
+    val C_X11_INDIAN_RED = new CPColor(205, 92, 92, "C_X11_INDIAN_RED")
+    val C_X11_CRIMSON = new CPColor(220, 20, 60, "C_X11_CRIMSON")
+    val C_X11_FIRE_BRICK = new CPColor(178, 34, 34, "C_X11_FIRE_BRICK")
+    val C_X11_RED = new CPColor(255, 0, 0, "C_X11_RED")
+    val C_X11_DARK_RED = new CPColor(139, 0, 0, "C_X11_DARK_RED")
 
     /**
       *
       */
-    final val CS_X11_REDS = Seq(
+    val CS_X11_REDS: Seq[CPColor] = Seq(
         C_X11_LIGHT_SALMON,
         C_X11_SALMON,
         C_X11_DARK_SALMON,
@@ -680,17 +681,17 @@ object CPColor:
         C_X11_DARK_RED
     ).sorted
 
-    final val C_X11_CORAL = new CPColor(255, 127, 80, "C_X11_CORAL")
-    final val C_X11_TOMATO = new CPColor(255, 99, 71, "C_X11_TOMATO")
-    final val C_X11_ORANGE_RED = new CPColor(255, 69, 0, "C_X11_ORANGE_RED")
-    final val C_X11_GOLD = new CPColor(255, 215, 0, "C_X11_GOLD")
-    final val C_X11_ORANGE = new CPColor(255, 165, 0, "C_X11_ORANGE")
-    final val C_X11_DARK_ORANGE = new CPColor(255, 140, 0, "C_X11_DARK_ORANGE")
+    val C_X11_CORAL = new CPColor(255, 127, 80, "C_X11_CORAL")
+    val C_X11_TOMATO = new CPColor(255, 99, 71, "C_X11_TOMATO")
+    val C_X11_ORANGE_RED = new CPColor(255, 69, 0, "C_X11_ORANGE_RED")
+    val C_X11_GOLD = new CPColor(255, 215, 0, "C_X11_GOLD")
+    val C_X11_ORANGE = new CPColor(255, 165, 0, "C_X11_ORANGE")
+    val C_X11_DARK_ORANGE = new CPColor(255, 140, 0, "C_X11_DARK_ORANGE")
 
     /**
       *
       */
-    final val CS_X11_ORANGES = Seq(
+    val CS_X11_ORANGES: Seq[CPColor] = Seq(
         C_X11_CORAL,
         C_X11_TOMATO,
         C_X11_ORANGE_RED,
@@ -702,271 +703,271 @@ object CPColor:
     /*
      * System colors.
      */
-    final val C_BLACK = new CPColor(0,  0,  0, "C_BLACK")
-    final val C_MAROON  = new CPColor(128, 0, 0, "C_MAROON")
-    final val C_GREEN = new CPColor(0, 128, 0, "C_GREEN")
-    final val C_OLIVE = new CPColor(128, 128, 0, "C_OLIVE")
-    final val C_NAVY = new CPColor(0, 0, 128, "C_NAVY")
-    final val C_PURPLE = new CPColor(128, 0, 128, "C_PURPLE")
-    final val C_TEAL = new CPColor(0, 128, 128, "C_TEAL")
-    final val C_SILVER = new CPColor(192, 192, 192, "C_SILVER")
-    final val C_GREY = new CPColor(128, 128, 128, "C_GREY")
-    final val C_RED = new CPColor(255, 0, 0, "C_RED")
-    final val C_LIME = new CPColor(0, 255, 0, "C_LIME")
-    final val C_YELLOW = new CPColor(255, 255, 0, "C_YELLOW")
-    final val C_BLUE = new CPColor(0, 0, 255, "C_BLUE")
-    final val C_FUCHSIA = new CPColor(255, 0, 255, "C_FUCHSIA")
-    final val C_AQUA = new CPColor(0, 255, 255, "C_AQUA")
-    final val C_WHITE = new CPColor(255, 255, 255, "C_WHITE")
+    val C_BLACK = new CPColor(0,  0,  0, "C_BLACK")
+    val C_MAROON  = new CPColor(128, 0, 0, "C_MAROON")
+    val C_GREEN = new CPColor(0, 128, 0, "C_GREEN")
+    val C_OLIVE = new CPColor(128, 128, 0, "C_OLIVE")
+    val C_NAVY = new CPColor(0, 0, 128, "C_NAVY")
+    val C_PURPLE = new CPColor(128, 0, 128, "C_PURPLE")
+    val C_TEAL = new CPColor(0, 128, 128, "C_TEAL")
+    val C_SILVER = new CPColor(192, 192, 192, "C_SILVER")
+    val C_GREY = new CPColor(128, 128, 128, "C_GREY")
+    val C_RED = new CPColor(255, 0, 0, "C_RED")
+    val C_LIME = new CPColor(0, 255, 0, "C_LIME")
+    val C_YELLOW = new CPColor(255, 255, 0, "C_YELLOW")
+    val C_BLUE = new CPColor(0, 0, 255, "C_BLUE")
+    val C_FUCHSIA = new CPColor(255, 0, 255, "C_FUCHSIA")
+    val C_AQUA = new CPColor(0, 255, 255, "C_AQUA")
+    val C_WHITE = new CPColor(255, 255, 255, "C_WHITE")
 
     /*
      * xterm colors.
      * https://www.ditig.com/256-colors-cheat-sheet
      */
-    final val C_GREY0 = new CPColor(0, 0, 0, "C_GREY0")
-    final val C_NAVY_BLUE = new CPColor(0, 0, 95, "C_NAVY_BLUE")
-    final val C_DARK_BLUE = new CPColor(0, 0, 135, "C_DARK_BLUE")
-    final val C_BLUE3 = new CPColor(0, 0, 175, "C_BLUE3")
-    final val C_BLUE31 = new CPColor(0, 0, 215, "C_BLUE31")
-    final val C_BLUE1 = new CPColor(0, 0, 255, "C_BLUE1")
-    final val C_DARK_GREEN = new CPColor(0, 95, 0, "C_DARK_GREEN")
-    final val C_STEEL_BLUE14 = new CPColor(0, 95, 95, "C_STEEL_BLUE14")
-    final val C_STEEL_BLUE14A = new CPColor(0, 95, 135, "C_STEEL_BLUE14A")
-    final val C_STEEL_BLUE14B = new CPColor(0, 95, 175, "C_STEEL_BLUE14B")
-    final val C_DODGER_BLUE3 = new CPColor(0, 95, 215, "C_DODGER_BLUE3")
-    final val C_DODGER_BLUE2 = new CPColor(0, 95, 255, "C_DODGER_BLUE2")
-    final val C_GREEN4 = new CPColor(0, 135, 0, "C_GREEN4")
-    final val C_SPRING_GREEN4 = new CPColor(0, 135, 95, "C_SPRING_GREEN4")
-    final val C_TURQUOISE4 = new CPColor(0, 135, 135, "C_TURQUOISE4")
-    final val C_STEEL_BLUE13 = new CPColor(0, 135, 175, "C_STEEL_BLUE13")
-    final val C_STEEL_BLUE13A = new CPColor(0, 135, 215, "C_STEEL_BLUE13A")
-    final val C_DODGER_BLUE1 = new CPColor(0, 135, 255, "C_DODGER_BLUE1")
-    final val C_GREEN3 = new CPColor(0, 175, 0, "C_GREEN3")
-    final val C_SPRING_GREEN3 = new CPColor(0, 175, 95, "C_SPRING_GREEN3")
-    final val C_DARK_CYAN = new CPColor(0, 175, 135, "C_DARK_CYAN")
-    final val C_LIGHT_SEA_GREEN = new CPColor(0, 175, 175, "C_LIGHT_SEA_GREEN")
-    final val C_STEEL_BLUE12 = new CPColor(0, 175, 215, "C_STEEL_BLUE12")
-    final val C_STEEL_BLUE11 = new CPColor(0, 175, 255, "C_STEEL_BLUE11")
-    final val C_GREEN3A = new CPColor(0, 215, 0, "C_GREEN3A")
-    final val C_SPRING_GREEN3A = new CPColor(0, 215, 95, "C_SPRING_GREEN3A")
-    final val C_SPRING_GREEN2 = new CPColor(0, 215, 135, "C_SPRING_GREEN2")
-    final val C_CYAN3 = new CPColor(0, 215, 175, "C_CYAN3")
-    final val C_DARK_TURQUOISE = new CPColor(0, 215, 215, "C_DARK_TURQUOISE")
-    final val C_TURQUOISE2 = new CPColor(0, 215, 255, "C_TURQUOISE2")
-    final val C_GREEN1 = new CPColor(0, 255, 0, "C_GREEN1")
-    final val C_SPRING_GREEN2A = new CPColor(0, 255, 95, "C_SPRING_GREEN2A")
-    final val C_SPRING_GREEN1 = new CPColor(0, 255, 135, "C_SPRING_GREEN1")
-    final val C_MEDIUM_SPRING_GREEN = new CPColor(0, 255, 175, "C_MEDIUM_SPRING_GREEN")
-    final val C_CYAN2 = new CPColor(0, 255, 215, "C_CYAN2")
-    final val C_CYAN1 = new CPColor(0, 255, 255, "C_CYAN1")
-    final val C_DARK_RED = new CPColor(95, 0, 0, "C_DARK_RED")
-    final val C_DEEP_PINK4 = new CPColor(95, 0, 95, "C_DEEP_PINK4")
-    final val C_PURPLE4 = new CPColor(95, 0, 135, "C_PURPLE4")
-    final val C_PURPLE4A = new CPColor(95, 0, 175, "C_PURPLE4A")
-    final val C_PURPLE3 = new CPColor(95, 0, 215, "C_PURPLE3")
-    final val C_BLUE_VIOLET = new CPColor(95, 0, 255, "C_BLUE_VIOLET")
-    final val C_ORANGE4 = new CPColor(95, 95, 0, "C_ORANGE4")
-    final val C_GREY37 = new CPColor(95, 95, 95, "C_GREY37")
-    final val C_MEDIUM_PURPLE34 = new CPColor(95, 95, 135, "C_MEDIUM_PURPLE34")
-    final val C_SLATE_BLUE3 = new CPColor(95, 95, 175, "C_SLATE_BLUE3")
-    final val C_SLATE_BLUE3A = new CPColor(95, 95, 215, "C_SLATE_BLUE3A")
-    final val C_ROYAL_BLUE1 = new CPColor(95, 95, 255, "C_ROYAL_BLUE1")
-    final val C_CHARTREUSE4 = new CPColor(95, 135, 0, "C_CHARTREUSE4")
-    final val C_DARK_SEA_GREEN4 = new CPColor(95, 135, 95, "C_DARK_SEA_GREEN4")
-    final val C_PALE_TURQUOISE4 = new CPColor(95, 135, 135, "C_PALE_TURQUOISE4")
-    final val C_STEEL_BLUE = new CPColor(95, 135, 175, "C_STEEL_BLUE")
-    final val C_STEEL_BLUE3 = new CPColor(95, 135, 215, "C_STEEL_BLUE3")
-    final val C_CORNFLOWER_BLUE = new CPColor(95, 135, 255, "C_CORNFLOWER_BLUE")
-    final val C_CHARTREUSE3 = new CPColor(95, 175, 0, "C_CHARTREUSE3")
-    final val C_DARK_SEA_GREEN4A = new CPColor(95, 175, 95, "C_DARK_SEA_GREEN4A")
-    final val C_CADET_BLUE = new CPColor(95, 175, 135, "C_CADET_BLUE")
-    final val C_CADET_BLUE1 = new CPColor(95, 175, 175, "C_CADET_BLUE1")
-    final val C_SKY_BLUE1 = new CPColor(95, 175, 215, "C_SKY_BLUE1")
-    final val C_STEEL_BLUE1 = new CPColor(95, 175, 255, "C_STEEL_BLUE1")
-    final val C_CHARTREUSE3A = new CPColor(95, 215, 0, "C_CHARTREUSE3A")
-    final val C_PALE_GREEN3 = new CPColor(95, 215, 95, "C_PALE_GREEN3")
-    final val C_SEA_GREEN3 = new CPColor(95, 215, 135, "C_SEA_GREEN3")
-    final val C_AQUAMARINE3 = new CPColor(95, 215, 175, "C_AQUAMARINE3")
-    final val C_MEDIUM_TURQUOISE = new CPColor(95, 215, 215, "C_MEDIUM_TURQUOISE")
-    final val C_STEEL_BLUE1A = new CPColor(95, 215, 255, "C_STEEL_BLUE1A")
-    final val C_CHARTREUSE2 = new CPColor(95, 255, 0, "C_CHARTREUSE2")
-    final val C_SEA_GREEN2 = new CPColor(95, 255, 95, "C_SEA_GREEN2")
-    final val C_SEA_GREEN1 = new CPColor(95, 255, 135, "C_SEA_GREEN1")
-    final val C_SEA_GREEN1A = new CPColor(95, 255, 175, "C_SEA_GREEN1A")
-    final val C_AQUAMARINE1 = new CPColor(95, 255, 215, "C_AQUAMARINE1")
-    final val C_DARK_SLATE_GRAY2 = new CPColor(95, 255, 255, "C_DARK_SLATE_GRAY2")
-    final val C_DARK_RED1 = new CPColor(135, 0, 0, "C_DARK_RED1")
-    final val C_DEEP_PINK4A = new CPColor(135, 0, 95, "C_DEEP_PINK4A")
-    final val C_DARK_MAGENTA = new CPColor(135, 0, 135, "C_DARK_MAGENTA")
-    final val C_DARK_MAGENTA1 = new CPColor(135, 0, 175, "C_DARK_MAGENTA1")
-    final val C_DARK_VIOLET = new CPColor(135, 0, 215, "C_DARK_VIOLET")
-    final val C_PURPLE1 = new CPColor(135, 0, 255, "C_PURPLE1")
-    final val C_ORANGE4A = new CPColor(135, 95, 0, "C_ORANGE4A")
-    final val C_LIGHT_PINK4 = new CPColor(135, 95, 95, "C_LIGHT_PINK4")
-    final val C_PLUM4 = new CPColor(135, 95, 135, "C_PLUM4")
-    final val C_MEDIUM_PURPLE33 = new CPColor(135, 95, 175, "C_MEDIUM_PURPLE33")
-    final val C_MEDIUM_PURPLE33A = new CPColor(135, 95, 215, "C_MEDIUM_PURPLE33A")
-    final val C_SLATE_BLUE1 = new CPColor(135, 95, 255, "C_SLATE_BLUE1")
-    final val C_YELLOW4 = new CPColor(135, 135, 0, "C_YELLOW4")
-    final val C_WHEAT4 = new CPColor(135, 135, 95, "C_WHEAT4")
-    final val C_GREY53 = new CPColor(135, 135, 135, "C_GREY53")
-    final val C_LIGHT_SLATE_GREY = new CPColor(135, 135, 175, "C_LIGHT_SLATE_GREY")
-    final val C_MEDIUM_PURPLE3 = new CPColor(135, 135, 215, "C_MEDIUM_PURPLE3")
-    final val C_LIGHT_SLATE_BLUE = new CPColor(135, 135, 255, "C_LIGHT_SLATE_BLUE")
-    final val C_YELLOW4A = new CPColor(135, 175, 0, "C_YELLOW4A")
-    final val C_DARK_OLIVE_GREEN3 = new CPColor(135, 175, 95, "C_DARK_OLIVE_GREEN3")
-    final val C_DARK_SEA_GREEN = new CPColor(135, 175, 135, "C_DARK_SEA_GREEN")
-    final val C_LIGHT_SKY_BLUE3 = new CPColor(135, 175, 175, "C_LIGHT_SKY_BLUE3")
-    final val C_LIGHT_SKY_BLUE3A = new CPColor(135, 175, 215, "C_LIGHT_SKY_BLUE3A")
-    final val C_SKY_BLUE12 = new CPColor(135, 175, 255, "C_SKY_BLUE12")
-    final val C_CHARTREUSE2A = new CPColor(135, 215, 0, "C_CHARTREUSE2A")
-    final val C_DARK_OLIVE_GREEN3A = new CPColor(135, 215, 95, "C_DARK_OLIVE_GREEN3A")
-    final val C_PALE_GREEN3A = new CPColor(135, 215, 135, "C_PALE_GREEN3A")
-    final val C_DARK_SEA_GREEN3 = new CPColor(135, 215, 175, "C_DARK_SEA_GREEN3")
-    final val C_DARK_SLATE_GRAY3 = new CPColor(135, 215, 215, "C_DARK_SLATE_GRAY3")
-    final val C_SKY_BLUE11 = new CPColor(135, 215, 255, "C_SKY_BLUE11")
-    final val C_CHARTREUSE1 = new CPColor(135, 255, 0, "C_CHARTREUSE1")
-    final val C_LIGHT_GREEN = new CPColor(135, 255, 95, "C_LIGHT_GREEN")
-    final val C_LIGHT_GREEN1 = new CPColor(135, 255, 135, "C_LIGHT_GREEN1")
-    final val C_PALE_GREEN1 = new CPColor(135, 255, 175, "C_PALE_GREEN1")
-    final val C_AQUAMARINE1A = new CPColor(135, 255, 215, "C_AQUAMARINE1A")
-    final val C_DARK_SLATE_GRAY1 = new CPColor(135, 255, 255, "C_DARK_SLATE_GRAY1")
-    final val C_RED3 = new CPColor(175, 0, 0, "C_RED3")
-    final val C_DEEP_PINK4B = new CPColor(175, 0, 95, "C_DEEP_PINK4B")
-    final val C_MEDIUM_VIOLET_RED = new CPColor(175, 0, 135, "C_MEDIUM_VIOLET_RED")
-    final val C_MAGENTA3 = new CPColor(175, 0, 175, "C_MAGENTA3")
-    final val C_DARK_VIOLET1 = new CPColor(175, 0, 215, "C_DARK_VIOLET1")
-    final val C_PURPLE2 = new CPColor(175, 0, 255, "C_PURPLE2")
-    final val C_DARK_ORANGE3 = new CPColor(175, 95, 0, "C_DARK_ORANGE3")
-    final val C_INDIAN_RED = new CPColor(175, 95, 95, "C_INDIAN_RED")
-    final val C_HOT_PINK3 = new CPColor(175, 95, 135, "C_HOT_PINK3")
-    final val C_MEDIUM_ORCHID3 = new CPColor(175, 95, 175, "C_MEDIUM_ORCHID3")
-    final val C_MEDIUM_ORCHID = new CPColor(175, 95, 215, "C_MEDIUM_ORCHID")
-    final val C_MEDIUM_PURPLE32 = new CPColor(175, 95, 255, "C_MEDIUM_PURPLE32")
-    final val C_DARK_GOLDEN_ROD = new CPColor(175, 135, 0, "C_DARK_GOLDEN_ROD")
-    final val C_LIGHT_SALMON3 = new CPColor(175, 135, 95, "C_LIGHT_SALMON3")
-    final val C_ROSY_BROWN = new CPColor(175, 135, 135, "C_ROSY_BROWN")
-    final val C_GREY63 = new CPColor(175, 135, 175, "C_GREY63")
-    final val C_MEDIUM_PURPLE32A = new CPColor(175, 135, 215, "C_MEDIUM_PURPLE32A")
-    final val C_MEDIUM_PURPLE31 = new CPColor(175, 135, 255, "C_MEDIUM_PURPLE31")
-    final val C_GOLD3 = new CPColor(175, 175, 0, "C_GOLD3")
-    final val C_DARK_KHAKI = new CPColor(175, 175, 95, "C_DARK_KHAKI")
-    final val C_NAVAJO_WHITE3 = new CPColor(175, 175, 135, "C_NAVAJO_WHITE3")
-    final val C_GREY69 = new CPColor(175, 175, 175, "C_GREY69")
-    final val C_LIGHT_STEEL_BLUE3 = new CPColor(175, 175, 215, "C_LIGHT_STEEL_BLUE3")
-    final val C_LIGHT_STEEL_BLUE = new CPColor(175, 175, 255, "C_LIGHT_STEEL_BLUE")
-    final val C_YELLOW3 = new CPColor(175, 215, 0, "C_YELLOW3")
-    final val C_DARK_OLIVE_GREEN3B = new CPColor(175, 215, 95, "C_DARK_OLIVE_GREEN3B")
-    final val C_DARK_SEA_GREEN3A = new CPColor(175, 215, 135, "C_DARK_SEA_GREEN3A")
-    final val C_DARK_SEA_GREEN2 = new CPColor(175, 215, 175, "C_DARK_SEA_GREEN2")
-    final val C_LIGHT_CYAN3 = new CPColor(175, 215, 215, "C_LIGHT_CYAN3")
-    final val C_LIGHT_SKYBLUE1 = new CPColor(175, 215, 255, "C_LIGHT_SKYBLUE1")
-    final val C_GREEN_YELLOW = new CPColor(175, 255, 0, "C_GREEN_YELLOW")
-    final val C_DARK_OLIVE_GREEN2 = new CPColor(175, 255, 95, "C_DARK_OLIVE_GREEN2")
-    final val C_PALE_GREEN1A = new CPColor(175, 255, 135, "C_PALE_GREEN1A")
-    final val C_DARK_SEA_GREEN2A = new CPColor(175, 255, 175, "C_DARK_SEA_GREEN2A")
-    final val C_DARK_SEA_GREEN1 = new CPColor(175, 255, 215, "C_DARK_SEA_GREEN1")
-    final val C_PALE_TURQUOISE1 = new CPColor(175, 255, 255, "C_PALE_TURQUOISE1")
-    final val C_RED3A = new CPColor(215, 0, 0, "C_RED3A")
-    final val C_DEEP_PINK3 = new CPColor(215, 0, 95, "C_DEEP_PINK3")
-    final val C_DEEP_PINK3A = new CPColor(215, 0, 135, "C_DEEP_PINK3A")
-    final val C_MAGENTA3A = new CPColor(215, 0, 175, "C_MAGENTA3A")
-    final val C_MAGENTA3B = new CPColor(215, 0, 215, "C_MAGENTA3B")
-    final val C_MAGENTA2 = new CPColor(215, 0, 255, "C_MAGENTA2")
-    final val C_DARK_ORANGE3A = new CPColor(215, 95, 0, "C_DARK_ORANGE3A")
-    final val C_INDIAN_RED1 = new CPColor(215, 95, 95, "C_INDIAN_RED1")
-    final val C_HOT_PINK3A = new CPColor(215, 95, 135, "C_HOT_PINK3A")
-    final val C_HOT_PINK2 = new CPColor(215, 95, 175, "C_HOT_PINK2")
-    final val C_ORCHID = new CPColor(215, 95, 215, "C_ORCHID")
-    final val C_MEDIUM_ORCHID1 = new CPColor(215, 95, 255, "C_MEDIUM_ORCHID1")
-    final val C_ORANGE3 = new CPColor(215, 135, 0, "C_ORANGE3")
-    final val C_LIGHT_SALMON3A = new CPColor(215, 135, 95, "C_LIGHT_SALMON3A")
-    final val C_LIGHT_PINK3 = new CPColor(215, 135, 135, "C_LIGHT_PINK3")
-    final val C_PINK3 = new CPColor(215, 135, 175, "C_PINK3")
-    final val C_PLUM3 = new CPColor(215, 135, 215, "C_PLUM3")
-    final val C_VIOLET = new CPColor(215, 135, 255, "C_VIOLET")
-    final val C_GOLD3A = new CPColor(215, 175, 0, "C_GOLD3A")
-    final val C_LIGHT_GOLDEN_ROD3 = new CPColor(215, 175, 95, "C_LIGHT_GOLDEN_ROD3")
-    final val C_TAN = new CPColor(215, 175, 135, "C_TAN")
-    final val C_MISTY_ROSE3 = new CPColor(215, 175, 175, "C_MISTY_ROSE3")
-    final val C_THISTLE3 = new CPColor(215, 175, 215, "C_THISTLE3")
-    final val C_PLUM2 = new CPColor(215, 175, 255, "C_PLUM2")
-    final val C_YELLOW3A = new CPColor(215, 215, 0, "C_YELLOW3A")
-    final val C_KHAKI3 = new CPColor(215, 215, 95, "C_KHAKI3")
-    final val C_LIGHT_GOLDEN_ROD2 = new CPColor(215, 215, 135, "C_LIGHT_GOLDEN_ROD2")
-    final val C_LIGHT_YELLOW3 = new CPColor(215, 215, 175, "C_LIGHT_YELLOW3")
-    final val C_GREY84 = new CPColor(215, 215, 215, "C_GREY84")
-    final val C_LIGHT_STEEL_BLUE1 = new CPColor(215, 215, 255, "C_LIGHT_STEEL_BLUE1")
-    final val C_YELLOW2 = new CPColor(215, 255, 0, "C_YELLOW2")
-    final val C_DARK_OLIVE_GREEN1 = new CPColor(215, 255, 95, "C_DARK_OLIVE_GREEN1")
-    final val C_DARK_OLIVE_GREEN1A = new CPColor(215, 255, 135, "C_DARK_OLIVE_GREEN1A")
-    final val C_DARK_SEA_GREEN1A = new CPColor(215, 255, 175, "C_DARK_SEA_GREEN1A")
-    final val C_HONEYDEW2 = new CPColor(215, 255, 215, "C_HONEYDEW2")
-    final val C_LIGHT_CYAN1 = new CPColor(215, 255, 255, "C_LIGHT_CYAN1")
-    final val C_RED1 = new CPColor(255, 0, 0, "C_RED1")
-    final val C_DEEP_PINK2 = new CPColor(255, 0, 95, "C_DEEP_PINK2")
-    final val C_DEEP_PINK1 = new CPColor(255, 0, 135, "C_DEEP_PINK1")
-    final val C_DEEP_PINK1A = new CPColor(255, 0, 175, "C_DEEP_PINK1A")
-    final val C_MAGENTA2A = new CPColor(255, 0, 215, "C_MAGENTA2A")
-    final val C_MAGENTA1 = new CPColor(255, 0, 255, "C_MAGENTA1")
-    final val C_ORANGE_RED1 = new CPColor(255, 95, 0, "C_ORANGE_RED1")
-    final val C_INDIAN_RED1A = new CPColor(255, 95, 95, "C_INDIAN_RED1A")
-    final val C_INDIAN_RED1B = new CPColor(255, 95, 135, "C_INDIAN_RED1B")
-    final val C_HOT_PINK = new CPColor(255, 95, 175, "C_HOT_PINK")
-    final val C_HOT_PINK1 = new CPColor(255, 95, 215, "C_HOT_PINK1")
-    final val C_MEDIUM_ORCHID1A = new CPColor(255, 95, 255, "C_MEDIUM_ORCHID1A")
-    final val C_DARK_ORANGE = new CPColor(255, 135, 0, "C_DARK_ORANGE")
-    final val C_SALMON1 = new CPColor(255, 135, 95, "C_SALMON1")
-    final val C_LIGHT_CORAL = new CPColor(255, 135, 135, "C_LIGHT_CORAL")
-    final val C_HOT_PINK31 = new CPColor(255, 135, 175, "C_HOT_PINK31")
-    final val C_ORCHID2 = new CPColor(255, 135, 215, "C_ORCHID2")
-    final val C_ORCHID1 = new CPColor(255, 135, 255, "C_ORCHID1")
-    final val C_ORANGE1 = new CPColor(255, 175, 0, "C_ORANGE1")
-    final val C_SANDY_BROWN = new CPColor(255, 175, 95, "C_SANDY_BROWN")
-    final val C_LIGHT_SALMON1 = new CPColor(255, 175, 135, "C_LIGHT_SALMON1")
-    final val C_LIGHT_PINK1 = new CPColor(255, 175, 175, "C_LIGHT_PINK1")
-    final val C_PINK1 = new CPColor(255, 175, 215, "C_PINK1")
-    final val C_PLUM1 = new CPColor(255, 175, 255, "C_PLUM1")
-    final val C_GOLD1 = new CPColor(255, 215, 0, "C_GOLD1")
-    final val C_LIGHT_GOLDEN_ROD2B = new CPColor(255, 215, 95, "C_LIGHT_GOLDEN_ROD2B")
-    final val C_LIGHT_GOLDEN_ROD2A = new CPColor(255, 215, 135, "C_LIGHT_GOLDEN_ROD2A")
-    final val C_NAVAJO_WHITE1 = new CPColor(255, 215, 175, "C_NAVAJO_WHITE1")
-    final val C_MISTY_ROSE1 = new CPColor(255, 215, 215, "C_MISTY_ROSE1")
-    final val C_THISTLE1 = new CPColor(255, 215, 255, "C_THISTLE1")
-    final val C_YELLOW1 = new CPColor(255, 255, 0, "C_YELLOW1")
-    final val C_LIGHT_GOLDEN_ROD1 = new CPColor(255, 255, 95, "C_LIGHT_GOLDEN_ROD1")
-    final val C_KHAKI1 = new CPColor(255, 255, 135, "C_KHAKI1")
-    final val C_WHEAT1 = new CPColor(255, 255, 175, "C_WHEAT1")
-    final val C_CORN_SILK1 = new CPColor(255, 255, 215, "C_CORN_SILK1")
-    final val C_GREY100 = new CPColor(255, 255, 255, "C_GREY100")
-    final val C_GREY3 = new CPColor(8, 8, 8, "C_GREY3")
-    final val C_GREY7 = new CPColor(18, 18, 18, "C_GREY7")
-    final val C_GREY11 = new CPColor(28, 28, 28, "C_GREY11")
-    final val C_GREY15 = new CPColor(38, 38, 38, "C_GREY15")
-    final val C_GREY19 = new CPColor(48, 48, 48, "C_GREY19")
-    final val C_GREY23 = new CPColor(58, 58, 58, "C_GREY23")
-    final val C_GREY27 = new CPColor(68, 68, 68, "C_GREY27")
-    final val C_GREY30 = new CPColor(78, 78, 78, "C_GREY30")
-    final val C_GREY35 = new CPColor(88, 88, 88, "C_GREY35")
-    final val C_GREY39 = new CPColor(98, 98, 98, "C_GREY39")
-    final val C_GREY42 = new CPColor(108, 108, 108, "C_GREY42")
-    final val C_GREY46 = new CPColor(118, 118, 118, "C_GREY46")
-    final val C_GREY50 = new CPColor(128, 128, 128, "C_GREY50")
-    final val C_GREY54 = new CPColor(138, 138, 138, "C_GREY54")
-    final val C_GREY58 = new CPColor(148, 148, 148, "C_GREY58")
-    final val C_GREY62 = new CPColor(158, 158, 158, "C_GREY62")
-    final val C_GREY66 = new CPColor(168, 168, 168, "C_GREY66")
-    final val C_GREY70 = new CPColor(178, 178, 178, "C_GREY70")
-    final val C_GREY74 = new CPColor(188, 188, 188, "C_GREY74")
-    final val C_GREY78 = new CPColor(198, 198, 198, "C_GREY78")
-    final val C_GREY82 = new CPColor(208, 208, 208, "C_GREY82")
-    final val C_GREY85 = new CPColor(218, 218, 218, "C_GREY85")
-    final val C_GREY89 = new CPColor(228, 228, 228, "C_GREY89")
-    final val C_GREY93 = new CPColor(238, 238, 238, "C_GREY93")
+    val C_GREY0 = new CPColor(0, 0, 0, "C_GREY0")
+    val C_NAVY_BLUE = new CPColor(0, 0, 95, "C_NAVY_BLUE")
+    val C_DARK_BLUE = new CPColor(0, 0, 135, "C_DARK_BLUE")
+    val C_BLUE3 = new CPColor(0, 0, 175, "C_BLUE3")
+    val C_BLUE31 = new CPColor(0, 0, 215, "C_BLUE31")
+    val C_BLUE1 = new CPColor(0, 0, 255, "C_BLUE1")
+    val C_DARK_GREEN = new CPColor(0, 95, 0, "C_DARK_GREEN")
+    val C_STEEL_BLUE14 = new CPColor(0, 95, 95, "C_STEEL_BLUE14")
+    val C_STEEL_BLUE14A = new CPColor(0, 95, 135, "C_STEEL_BLUE14A")
+    val C_STEEL_BLUE14B = new CPColor(0, 95, 175, "C_STEEL_BLUE14B")
+    val C_DODGER_BLUE3 = new CPColor(0, 95, 215, "C_DODGER_BLUE3")
+    val C_DODGER_BLUE2 = new CPColor(0, 95, 255, "C_DODGER_BLUE2")
+    val C_GREEN4 = new CPColor(0, 135, 0, "C_GREEN4")
+    val C_SPRING_GREEN4 = new CPColor(0, 135, 95, "C_SPRING_GREEN4")
+    val C_TURQUOISE4 = new CPColor(0, 135, 135, "C_TURQUOISE4")
+    val C_STEEL_BLUE13 = new CPColor(0, 135, 175, "C_STEEL_BLUE13")
+    val C_STEEL_BLUE13A = new CPColor(0, 135, 215, "C_STEEL_BLUE13A")
+    val C_DODGER_BLUE1 = new CPColor(0, 135, 255, "C_DODGER_BLUE1")
+    val C_GREEN3 = new CPColor(0, 175, 0, "C_GREEN3")
+    val C_SPRING_GREEN3 = new CPColor(0, 175, 95, "C_SPRING_GREEN3")
+    val C_DARK_CYAN = new CPColor(0, 175, 135, "C_DARK_CYAN")
+    val C_LIGHT_SEA_GREEN = new CPColor(0, 175, 175, "C_LIGHT_SEA_GREEN")
+    val C_STEEL_BLUE12 = new CPColor(0, 175, 215, "C_STEEL_BLUE12")
+    val C_STEEL_BLUE11 = new CPColor(0, 175, 255, "C_STEEL_BLUE11")
+    val C_GREEN3A = new CPColor(0, 215, 0, "C_GREEN3A")
+    val C_SPRING_GREEN3A = new CPColor(0, 215, 95, "C_SPRING_GREEN3A")
+    val C_SPRING_GREEN2 = new CPColor(0, 215, 135, "C_SPRING_GREEN2")
+    val C_CYAN3 = new CPColor(0, 215, 175, "C_CYAN3")
+    val C_DARK_TURQUOISE = new CPColor(0, 215, 215, "C_DARK_TURQUOISE")
+    val C_TURQUOISE2 = new CPColor(0, 215, 255, "C_TURQUOISE2")
+    val C_GREEN1 = new CPColor(0, 255, 0, "C_GREEN1")
+    val C_SPRING_GREEN2A = new CPColor(0, 255, 95, "C_SPRING_GREEN2A")
+    val C_SPRING_GREEN1 = new CPColor(0, 255, 135, "C_SPRING_GREEN1")
+    val C_MEDIUM_SPRING_GREEN = new CPColor(0, 255, 175, "C_MEDIUM_SPRING_GREEN")
+    val C_CYAN2 = new CPColor(0, 255, 215, "C_CYAN2")
+    val C_CYAN1 = new CPColor(0, 255, 255, "C_CYAN1")
+    val C_DARK_RED = new CPColor(95, 0, 0, "C_DARK_RED")
+    val C_DEEP_PINK4 = new CPColor(95, 0, 95, "C_DEEP_PINK4")
+    val C_PURPLE4 = new CPColor(95, 0, 135, "C_PURPLE4")
+    val C_PURPLE4A = new CPColor(95, 0, 175, "C_PURPLE4A")
+    val C_PURPLE3 = new CPColor(95, 0, 215, "C_PURPLE3")
+    val C_BLUE_VIOLET = new CPColor(95, 0, 255, "C_BLUE_VIOLET")
+    val C_ORANGE4 = new CPColor(95, 95, 0, "C_ORANGE4")
+    val C_GREY37 = new CPColor(95, 95, 95, "C_GREY37")
+    val C_MEDIUM_PURPLE34 = new CPColor(95, 95, 135, "C_MEDIUM_PURPLE34")
+    val C_SLATE_BLUE3 = new CPColor(95, 95, 175, "C_SLATE_BLUE3")
+    val C_SLATE_BLUE3A = new CPColor(95, 95, 215, "C_SLATE_BLUE3A")
+    val C_ROYAL_BLUE1 = new CPColor(95, 95, 255, "C_ROYAL_BLUE1")
+    val C_CHARTREUSE4 = new CPColor(95, 135, 0, "C_CHARTREUSE4")
+    val C_DARK_SEA_GREEN4 = new CPColor(95, 135, 95, "C_DARK_SEA_GREEN4")
+    val C_PALE_TURQUOISE4 = new CPColor(95, 135, 135, "C_PALE_TURQUOISE4")
+    val C_STEEL_BLUE = new CPColor(95, 135, 175, "C_STEEL_BLUE")
+    val C_STEEL_BLUE3 = new CPColor(95, 135, 215, "C_STEEL_BLUE3")
+    val C_CORNFLOWER_BLUE = new CPColor(95, 135, 255, "C_CORNFLOWER_BLUE")
+    val C_CHARTREUSE3 = new CPColor(95, 175, 0, "C_CHARTREUSE3")
+    val C_DARK_SEA_GREEN4A = new CPColor(95, 175, 95, "C_DARK_SEA_GREEN4A")
+    val C_CADET_BLUE = new CPColor(95, 175, 135, "C_CADET_BLUE")
+    val C_CADET_BLUE1 = new CPColor(95, 175, 175, "C_CADET_BLUE1")
+    val C_SKY_BLUE1 = new CPColor(95, 175, 215, "C_SKY_BLUE1")
+    val C_STEEL_BLUE1 = new CPColor(95, 175, 255, "C_STEEL_BLUE1")
+    val C_CHARTREUSE3A = new CPColor(95, 215, 0, "C_CHARTREUSE3A")
+    val C_PALE_GREEN3 = new CPColor(95, 215, 95, "C_PALE_GREEN3")
+    val C_SEA_GREEN3 = new CPColor(95, 215, 135, "C_SEA_GREEN3")
+    val C_AQUAMARINE3 = new CPColor(95, 215, 175, "C_AQUAMARINE3")
+    val C_MEDIUM_TURQUOISE = new CPColor(95, 215, 215, "C_MEDIUM_TURQUOISE")
+    val C_STEEL_BLUE1A = new CPColor(95, 215, 255, "C_STEEL_BLUE1A")
+    val C_CHARTREUSE2 = new CPColor(95, 255, 0, "C_CHARTREUSE2")
+    val C_SEA_GREEN2 = new CPColor(95, 255, 95, "C_SEA_GREEN2")
+    val C_SEA_GREEN1 = new CPColor(95, 255, 135, "C_SEA_GREEN1")
+    val C_SEA_GREEN1A = new CPColor(95, 255, 175, "C_SEA_GREEN1A")
+    val C_AQUAMARINE1 = new CPColor(95, 255, 215, "C_AQUAMARINE1")
+    val C_DARK_SLATE_GRAY2 = new CPColor(95, 255, 255, "C_DARK_SLATE_GRAY2")
+    val C_DARK_RED1 = new CPColor(135, 0, 0, "C_DARK_RED1")
+    val C_DEEP_PINK4A = new CPColor(135, 0, 95, "C_DEEP_PINK4A")
+    val C_DARK_MAGENTA = new CPColor(135, 0, 135, "C_DARK_MAGENTA")
+    val C_DARK_MAGENTA1 = new CPColor(135, 0, 175, "C_DARK_MAGENTA1")
+    val C_DARK_VIOLET = new CPColor(135, 0, 215, "C_DARK_VIOLET")
+    val C_PURPLE1 = new CPColor(135, 0, 255, "C_PURPLE1")
+    val C_ORANGE4A = new CPColor(135, 95, 0, "C_ORANGE4A")
+    val C_LIGHT_PINK4 = new CPColor(135, 95, 95, "C_LIGHT_PINK4")
+    val C_PLUM4 = new CPColor(135, 95, 135, "C_PLUM4")
+    val C_MEDIUM_PURPLE33 = new CPColor(135, 95, 175, "C_MEDIUM_PURPLE33")
+    val C_MEDIUM_PURPLE33A = new CPColor(135, 95, 215, "C_MEDIUM_PURPLE33A")
+    val C_SLATE_BLUE1 = new CPColor(135, 95, 255, "C_SLATE_BLUE1")
+    val C_YELLOW4 = new CPColor(135, 135, 0, "C_YELLOW4")
+    val C_WHEAT4 = new CPColor(135, 135, 95, "C_WHEAT4")
+    val C_GREY53 = new CPColor(135, 135, 135, "C_GREY53")
+    val C_LIGHT_SLATE_GREY = new CPColor(135, 135, 175, "C_LIGHT_SLATE_GREY")
+    val C_MEDIUM_PURPLE3 = new CPColor(135, 135, 215, "C_MEDIUM_PURPLE3")
+    val C_LIGHT_SLATE_BLUE = new CPColor(135, 135, 255, "C_LIGHT_SLATE_BLUE")
+    val C_YELLOW4A = new CPColor(135, 175, 0, "C_YELLOW4A")
+    val C_DARK_OLIVE_GREEN3 = new CPColor(135, 175, 95, "C_DARK_OLIVE_GREEN3")
+    val C_DARK_SEA_GREEN = new CPColor(135, 175, 135, "C_DARK_SEA_GREEN")
+    val C_LIGHT_SKY_BLUE3 = new CPColor(135, 175, 175, "C_LIGHT_SKY_BLUE3")
+    val C_LIGHT_SKY_BLUE3A = new CPColor(135, 175, 215, "C_LIGHT_SKY_BLUE3A")
+    val C_SKY_BLUE12 = new CPColor(135, 175, 255, "C_SKY_BLUE12")
+    val C_CHARTREUSE2A = new CPColor(135, 215, 0, "C_CHARTREUSE2A")
+    val C_DARK_OLIVE_GREEN3A = new CPColor(135, 215, 95, "C_DARK_OLIVE_GREEN3A")
+    val C_PALE_GREEN3A = new CPColor(135, 215, 135, "C_PALE_GREEN3A")
+    val C_DARK_SEA_GREEN3 = new CPColor(135, 215, 175, "C_DARK_SEA_GREEN3")
+    val C_DARK_SLATE_GRAY3 = new CPColor(135, 215, 215, "C_DARK_SLATE_GRAY3")
+    val C_SKY_BLUE11 = new CPColor(135, 215, 255, "C_SKY_BLUE11")
+    val C_CHARTREUSE1 = new CPColor(135, 255, 0, "C_CHARTREUSE1")
+    val C_LIGHT_GREEN = new CPColor(135, 255, 95, "C_LIGHT_GREEN")
+    val C_LIGHT_GREEN1 = new CPColor(135, 255, 135, "C_LIGHT_GREEN1")
+    val C_PALE_GREEN1 = new CPColor(135, 255, 175, "C_PALE_GREEN1")
+    val C_AQUAMARINE1A = new CPColor(135, 255, 215, "C_AQUAMARINE1A")
+    val C_DARK_SLATE_GRAY1 = new CPColor(135, 255, 255, "C_DARK_SLATE_GRAY1")
+    val C_RED3 = new CPColor(175, 0, 0, "C_RED3")
+    val C_DEEP_PINK4B = new CPColor(175, 0, 95, "C_DEEP_PINK4B")
+    val C_MEDIUM_VIOLET_RED = new CPColor(175, 0, 135, "C_MEDIUM_VIOLET_RED")
+    val C_MAGENTA3 = new CPColor(175, 0, 175, "C_MAGENTA3")
+    val C_DARK_VIOLET1 = new CPColor(175, 0, 215, "C_DARK_VIOLET1")
+    val C_PURPLE2 = new CPColor(175, 0, 255, "C_PURPLE2")
+    val C_DARK_ORANGE3 = new CPColor(175, 95, 0, "C_DARK_ORANGE3")
+    val C_INDIAN_RED = new CPColor(175, 95, 95, "C_INDIAN_RED")
+    val C_HOT_PINK3 = new CPColor(175, 95, 135, "C_HOT_PINK3")
+    val C_MEDIUM_ORCHID3 = new CPColor(175, 95, 175, "C_MEDIUM_ORCHID3")
+    val C_MEDIUM_ORCHID = new CPColor(175, 95, 215, "C_MEDIUM_ORCHID")
+    val C_MEDIUM_PURPLE32 = new CPColor(175, 95, 255, "C_MEDIUM_PURPLE32")
+    val C_DARK_GOLDEN_ROD = new CPColor(175, 135, 0, "C_DARK_GOLDEN_ROD")
+    val C_LIGHT_SALMON3 = new CPColor(175, 135, 95, "C_LIGHT_SALMON3")
+    val C_ROSY_BROWN = new CPColor(175, 135, 135, "C_ROSY_BROWN")
+    val C_GREY63 = new CPColor(175, 135, 175, "C_GREY63")
+    val C_MEDIUM_PURPLE32A = new CPColor(175, 135, 215, "C_MEDIUM_PURPLE32A")
+    val C_MEDIUM_PURPLE31 = new CPColor(175, 135, 255, "C_MEDIUM_PURPLE31")
+    val C_GOLD3 = new CPColor(175, 175, 0, "C_GOLD3")
+    val C_DARK_KHAKI = new CPColor(175, 175, 95, "C_DARK_KHAKI")
+    val C_NAVAJO_WHITE3 = new CPColor(175, 175, 135, "C_NAVAJO_WHITE3")
+    val C_GREY69 = new CPColor(175, 175, 175, "C_GREY69")
+    val C_LIGHT_STEEL_BLUE3 = new CPColor(175, 175, 215, "C_LIGHT_STEEL_BLUE3")
+    val C_LIGHT_STEEL_BLUE = new CPColor(175, 175, 255, "C_LIGHT_STEEL_BLUE")
+    val C_YELLOW3 = new CPColor(175, 215, 0, "C_YELLOW3")
+    val C_DARK_OLIVE_GREEN3B = new CPColor(175, 215, 95, "C_DARK_OLIVE_GREEN3B")
+    val C_DARK_SEA_GREEN3A = new CPColor(175, 215, 135, "C_DARK_SEA_GREEN3A")
+    val C_DARK_SEA_GREEN2 = new CPColor(175, 215, 175, "C_DARK_SEA_GREEN2")
+    val C_LIGHT_CYAN3 = new CPColor(175, 215, 215, "C_LIGHT_CYAN3")
+    val C_LIGHT_SKYBLUE1 = new CPColor(175, 215, 255, "C_LIGHT_SKYBLUE1")
+    val C_GREEN_YELLOW = new CPColor(175, 255, 0, "C_GREEN_YELLOW")
+    val C_DARK_OLIVE_GREEN2 = new CPColor(175, 255, 95, "C_DARK_OLIVE_GREEN2")
+    val C_PALE_GREEN1A = new CPColor(175, 255, 135, "C_PALE_GREEN1A")
+    val C_DARK_SEA_GREEN2A = new CPColor(175, 255, 175, "C_DARK_SEA_GREEN2A")
+    val C_DARK_SEA_GREEN1 = new CPColor(175, 255, 215, "C_DARK_SEA_GREEN1")
+    val C_PALE_TURQUOISE1 = new CPColor(175, 255, 255, "C_PALE_TURQUOISE1")
+    val C_RED3A = new CPColor(215, 0, 0, "C_RED3A")
+    val C_DEEP_PINK3 = new CPColor(215, 0, 95, "C_DEEP_PINK3")
+    val C_DEEP_PINK3A = new CPColor(215, 0, 135, "C_DEEP_PINK3A")
+    val C_MAGENTA3A = new CPColor(215, 0, 175, "C_MAGENTA3A")
+    val C_MAGENTA3B = new CPColor(215, 0, 215, "C_MAGENTA3B")
+    val C_MAGENTA2 = new CPColor(215, 0, 255, "C_MAGENTA2")
+    val C_DARK_ORANGE3A = new CPColor(215, 95, 0, "C_DARK_ORANGE3A")
+    val C_INDIAN_RED1 = new CPColor(215, 95, 95, "C_INDIAN_RED1")
+    val C_HOT_PINK3A = new CPColor(215, 95, 135, "C_HOT_PINK3A")
+    val C_HOT_PINK2 = new CPColor(215, 95, 175, "C_HOT_PINK2")
+    val C_ORCHID = new CPColor(215, 95, 215, "C_ORCHID")
+    val C_MEDIUM_ORCHID1 = new CPColor(215, 95, 255, "C_MEDIUM_ORCHID1")
+    val C_ORANGE3 = new CPColor(215, 135, 0, "C_ORANGE3")
+    val C_LIGHT_SALMON3A = new CPColor(215, 135, 95, "C_LIGHT_SALMON3A")
+    val C_LIGHT_PINK3 = new CPColor(215, 135, 135, "C_LIGHT_PINK3")
+    val C_PINK3 = new CPColor(215, 135, 175, "C_PINK3")
+    val C_PLUM3 = new CPColor(215, 135, 215, "C_PLUM3")
+    val C_VIOLET = new CPColor(215, 135, 255, "C_VIOLET")
+    val C_GOLD3A = new CPColor(215, 175, 0, "C_GOLD3A")
+    val C_LIGHT_GOLDEN_ROD3 = new CPColor(215, 175, 95, "C_LIGHT_GOLDEN_ROD3")
+    val C_TAN = new CPColor(215, 175, 135, "C_TAN")
+    val C_MISTY_ROSE3 = new CPColor(215, 175, 175, "C_MISTY_ROSE3")
+    val C_THISTLE3 = new CPColor(215, 175, 215, "C_THISTLE3")
+    val C_PLUM2 = new CPColor(215, 175, 255, "C_PLUM2")
+    val C_YELLOW3A = new CPColor(215, 215, 0, "C_YELLOW3A")
+    val C_KHAKI3 = new CPColor(215, 215, 95, "C_KHAKI3")
+    val C_LIGHT_GOLDEN_ROD2 = new CPColor(215, 215, 135, "C_LIGHT_GOLDEN_ROD2")
+    val C_LIGHT_YELLOW3 = new CPColor(215, 215, 175, "C_LIGHT_YELLOW3")
+    val C_GREY84 = new CPColor(215, 215, 215, "C_GREY84")
+    val C_LIGHT_STEEL_BLUE1 = new CPColor(215, 215, 255, "C_LIGHT_STEEL_BLUE1")
+    val C_YELLOW2 = new CPColor(215, 255, 0, "C_YELLOW2")
+    val C_DARK_OLIVE_GREEN1 = new CPColor(215, 255, 95, "C_DARK_OLIVE_GREEN1")
+    val C_DARK_OLIVE_GREEN1A = new CPColor(215, 255, 135, "C_DARK_OLIVE_GREEN1A")
+    val C_DARK_SEA_GREEN1A = new CPColor(215, 255, 175, "C_DARK_SEA_GREEN1A")
+    val C_HONEYDEW2 = new CPColor(215, 255, 215, "C_HONEYDEW2")
+    val C_LIGHT_CYAN1 = new CPColor(215, 255, 255, "C_LIGHT_CYAN1")
+    val C_RED1 = new CPColor(255, 0, 0, "C_RED1")
+    val C_DEEP_PINK2 = new CPColor(255, 0, 95, "C_DEEP_PINK2")
+    val C_DEEP_PINK1 = new CPColor(255, 0, 135, "C_DEEP_PINK1")
+    val C_DEEP_PINK1A = new CPColor(255, 0, 175, "C_DEEP_PINK1A")
+    val C_MAGENTA2A = new CPColor(255, 0, 215, "C_MAGENTA2A")
+    val C_MAGENTA1 = new CPColor(255, 0, 255, "C_MAGENTA1")
+    val C_ORANGE_RED1 = new CPColor(255, 95, 0, "C_ORANGE_RED1")
+    val C_INDIAN_RED1A = new CPColor(255, 95, 95, "C_INDIAN_RED1A")
+    val C_INDIAN_RED1B = new CPColor(255, 95, 135, "C_INDIAN_RED1B")
+    val C_HOT_PINK = new CPColor(255, 95, 175, "C_HOT_PINK")
+    val C_HOT_PINK1 = new CPColor(255, 95, 215, "C_HOT_PINK1")
+    val C_MEDIUM_ORCHID1A = new CPColor(255, 95, 255, "C_MEDIUM_ORCHID1A")
+    val C_DARK_ORANGE = new CPColor(255, 135, 0, "C_DARK_ORANGE")
+    val C_SALMON1 = new CPColor(255, 135, 95, "C_SALMON1")
+    val C_LIGHT_CORAL = new CPColor(255, 135, 135, "C_LIGHT_CORAL")
+    val C_HOT_PINK31 = new CPColor(255, 135, 175, "C_HOT_PINK31")
+    val C_ORCHID2 = new CPColor(255, 135, 215, "C_ORCHID2")
+    val C_ORCHID1 = new CPColor(255, 135, 255, "C_ORCHID1")
+    val C_ORANGE1 = new CPColor(255, 175, 0, "C_ORANGE1")
+    val C_SANDY_BROWN = new CPColor(255, 175, 95, "C_SANDY_BROWN")
+    val C_LIGHT_SALMON1 = new CPColor(255, 175, 135, "C_LIGHT_SALMON1")
+    val C_LIGHT_PINK1 = new CPColor(255, 175, 175, "C_LIGHT_PINK1")
+    val C_PINK1 = new CPColor(255, 175, 215, "C_PINK1")
+    val C_PLUM1 = new CPColor(255, 175, 255, "C_PLUM1")
+    val C_GOLD1 = new CPColor(255, 215, 0, "C_GOLD1")
+    val C_LIGHT_GOLDEN_ROD2B = new CPColor(255, 215, 95, "C_LIGHT_GOLDEN_ROD2B")
+    val C_LIGHT_GOLDEN_ROD2A = new CPColor(255, 215, 135, "C_LIGHT_GOLDEN_ROD2A")
+    val C_NAVAJO_WHITE1 = new CPColor(255, 215, 175, "C_NAVAJO_WHITE1")
+    val C_MISTY_ROSE1 = new CPColor(255, 215, 215, "C_MISTY_ROSE1")
+    val C_THISTLE1 = new CPColor(255, 215, 255, "C_THISTLE1")
+    val C_YELLOW1 = new CPColor(255, 255, 0, "C_YELLOW1")
+    val C_LIGHT_GOLDEN_ROD1 = new CPColor(255, 255, 95, "C_LIGHT_GOLDEN_ROD1")
+    val C_KHAKI1 = new CPColor(255, 255, 135, "C_KHAKI1")
+    val C_WHEAT1 = new CPColor(255, 255, 175, "C_WHEAT1")
+    val C_CORN_SILK1 = new CPColor(255, 255, 215, "C_CORN_SILK1")
+    val C_GREY100 = new CPColor(255, 255, 255, "C_GREY100")
+    val C_GREY3 = new CPColor(8, 8, 8, "C_GREY3")
+    val C_GREY7 = new CPColor(18, 18, 18, "C_GREY7")
+    val C_GREY11 = new CPColor(28, 28, 28, "C_GREY11")
+    val C_GREY15 = new CPColor(38, 38, 38, "C_GREY15")
+    val C_GREY19 = new CPColor(48, 48, 48, "C_GREY19")
+    val C_GREY23 = new CPColor(58, 58, 58, "C_GREY23")
+    val C_GREY27 = new CPColor(68, 68, 68, "C_GREY27")
+    val C_GREY30 = new CPColor(78, 78, 78, "C_GREY30")
+    val C_GREY35 = new CPColor(88, 88, 88, "C_GREY35")
+    val C_GREY39 = new CPColor(98, 98, 98, "C_GREY39")
+    val C_GREY42 = new CPColor(108, 108, 108, "C_GREY42")
+    val C_GREY46 = new CPColor(118, 118, 118, "C_GREY46")
+    val C_GREY50 = new CPColor(128, 128, 128, "C_GREY50")
+    val C_GREY54 = new CPColor(138, 138, 138, "C_GREY54")
+    val C_GREY58 = new CPColor(148, 148, 148, "C_GREY58")
+    val C_GREY62 = new CPColor(158, 158, 158, "C_GREY62")
+    val C_GREY66 = new CPColor(168, 168, 168, "C_GREY66")
+    val C_GREY70 = new CPColor(178, 178, 178, "C_GREY70")
+    val C_GREY74 = new CPColor(188, 188, 188, "C_GREY74")
+    val C_GREY78 = new CPColor(198, 198, 198, "C_GREY78")
+    val C_GREY82 = new CPColor(208, 208, 208, "C_GREY82")
+    val C_GREY85 = new CPColor(218, 218, 218, "C_GREY85")
+    val C_GREY89 = new CPColor(228, 228, 228, "C_GREY89")
+    val C_GREY93 = new CPColor(238, 238, 238, "C_GREY93")
 
-    final val C_DFLT_BG = new CPColor(17, 17, 17, "C_DFLT_BG")
+    val C_DFLT_BG = new CPColor(17, 17, 17, "C_DFLT_BG")
 
-    final val CS_XTERM_ALL = Seq(
+    val CS_XTERM_ALL: Seq[CPColor] = Seq(
         C_GREY0,
         C_NAVY_BLUE,
         C_DARK_BLUE,
@@ -1212,59 +1213,59 @@ object CPColor:
     /*
      * Basic grays.
      */
-    final val C_GRAY0 = CPColor("0x000000")
-    final val C_GRAY1 = CPColor("0x111111")
-    final val C_GRAY2 = CPColor("0x222222")
-    final val C_GRAY3 = CPColor("0x333333")
-    final val C_GRAY4 = CPColor("0x444444")
-    final val C_GRAY5 = CPColor("0x555555")
-    final val C_GRAY6 = CPColor("0x666666")
-    final val C_GRAY7 = CPColor("0x777777")
-    final val C_GRAY8 = CPColor("0x888888")
-    final val C_GRAY9 = CPColor("0x999999")
-    final val C_GRAY_A = CPColor("0xaaaaaa")
-    final val C_GRAY_B = CPColor("0xbbbbbb")
-    final val C_GRAY_C = CPColor("0xcccccc")
-    final val C_GRAY_D = CPColor("0xdddddd")
-    final val C_GRAY_E = CPColor("0xeeeeee")
-    final val C_GRAY_F = CPColor("0xffffff")
+    val C_GRAY0 = CPColor("0x000000")
+    val C_GRAY1 = CPColor("0x111111")
+    val C_GRAY2 = CPColor("0x222222")
+    val C_GRAY3 = CPColor("0x333333")
+    val C_GRAY4 = CPColor("0x444444")
+    val C_GRAY5 = CPColor("0x555555")
+    val C_GRAY6 = CPColor("0x666666")
+    val C_GRAY7 = CPColor("0x777777")
+    val C_GRAY8 = CPColor("0x888888")
+    val C_GRAY9 = CPColor("0x999999")
+    val C_GRAY_A = CPColor("0xaaaaaa")
+    val C_GRAY_B = CPColor("0xbbbbbb")
+    val C_GRAY_C = CPColor("0xcccccc")
+    val C_GRAY_D = CPColor("0xdddddd")
+    val C_GRAY_E = CPColor("0xeeeeee")
+    val C_GRAY_F = CPColor("0xffffff")
 
     // Gradients of the first non-black gray.
-    final val C_GRAY10 = CPColor("0x101010")
-    final val C_GRAY11 = CPColor("0x111111")
-    final val C_GRAY12 = CPColor("0x121212")
-    final val C_GRAY13 = CPColor("0x131313")
-    final val C_GRAY14 = CPColor("0x141414")
-    final val C_GRAY15 = CPColor("0x151515")
-    final val C_GRAY16 = CPColor("0x161616")
-    final val C_GRAY17 = CPColor("0x171717")
-    final val C_GRAY18 = CPColor("0x181818")
-    final val C_GRAY19 = CPColor("0x191919")
-    final val C_GRAY1A = CPColor("0x1a1a1a")
-    final val C_GRAY1B = CPColor("0x1b1b1b")
-    final val C_GRAY1C = CPColor("0x1c1c1c")
-    final val C_GRAY1D = CPColor("0x1d1d1d")
-    final val C_GRAY1E = CPColor("0x1e1e1e")
-    final val C_GRAY1F = CPColor("0x1fbf1f")
+    val C_GRAY10 = CPColor("0x101010")
+    val C_GRAY11 = CPColor("0x111111")
+    val C_GRAY12 = CPColor("0x121212")
+    val C_GRAY13 = CPColor("0x131313")
+    val C_GRAY14 = CPColor("0x141414")
+    val C_GRAY15 = CPColor("0x151515")
+    val C_GRAY16 = CPColor("0x161616")
+    val C_GRAY17 = CPColor("0x171717")
+    val C_GRAY18 = CPColor("0x181818")
+    val C_GRAY19 = CPColor("0x191919")
+    val C_GRAY1A = CPColor("0x1a1a1a")
+    val C_GRAY1B = CPColor("0x1b1b1b")
+    val C_GRAY1C = CPColor("0x1c1c1c")
+    val C_GRAY1D = CPColor("0x1d1d1d")
+    val C_GRAY1E = CPColor("0x1e1e1e")
+    val C_GRAY1F = CPColor("0x1fbf1f")
 
     /*
      * X11 colors.
      */
-    final val C_X11_GAINSBORO = new CPColor(220, 220, 220, "C_X11_GAINSBORO")
-    final val C_X11_LIGHT_GRAY = new CPColor(211, 211, 211, "C_X11_LIGHT_GRAY")
-    final val C_X11_SILVER = new CPColor(192, 192, 192, "C_X11_SILVER")
-    final val C_X11_DARK_GRAY = new CPColor(169, 169, 169, "C_X11_DARK_GRAY")
-    final val C_X11_GRAY = new CPColor(128, 128, 128, "C_X11_GRAY")
-    final val C_X11_DIM_GRAY = new CPColor(105, 105, 105, "C_X11_DIM_GRAY")
-    final val C_X11_LIGHT_SLATE_GRAY = new CPColor(119, 136, 153, "C_X11_LIGHT_SLATE_GRAY")
-    final val C_X11_SLATE_GRAY = new CPColor(112, 128, 144, "C_X11_SLATE_GRAY")
-    final val C_X11_DARK_SLATE_GRAY = new CPColor(47, 79, 79, "C_X11_DARK_SLATE_GRAY")
-    final val C_X11_BLACK = new CPColor(0, 0, 0, "C_X11_BLACK")
+    val C_X11_GAINSBORO = new CPColor(220, 220, 220, "C_X11_GAINSBORO")
+    val C_X11_LIGHT_GRAY = new CPColor(211, 211, 211, "C_X11_LIGHT_GRAY")
+    val C_X11_SILVER = new CPColor(192, 192, 192, "C_X11_SILVER")
+    val C_X11_DARK_GRAY = new CPColor(169, 169, 169, "C_X11_DARK_GRAY")
+    val C_X11_GRAY = new CPColor(128, 128, 128, "C_X11_GRAY")
+    val C_X11_DIM_GRAY = new CPColor(105, 105, 105, "C_X11_DIM_GRAY")
+    val C_X11_LIGHT_SLATE_GRAY = new CPColor(119, 136, 153, "C_X11_LIGHT_SLATE_GRAY")
+    val C_X11_SLATE_GRAY = new CPColor(112, 128, 144, "C_X11_SLATE_GRAY")
+    val C_X11_DARK_SLATE_GRAY = new CPColor(47, 79, 79, "C_X11_DARK_SLATE_GRAY")
+    val C_X11_BLACK = new CPColor(0, 0, 0, "C_X11_BLACK")
 
     /**
       *
       */
-    final val CS_X11_GRAYS = Seq(
+    val CS_X11_GRAYS: Seq[CPColor] = Seq(
         C_X11_GAINSBORO,
         C_X11_LIGHT_GRAY,
         C_X11_SILVER,
@@ -1277,27 +1278,27 @@ object CPColor:
         C_X11_BLACK
     ).sorted
 
-    final val C_X11_CORN_SILK = new CPColor(255, 248, 220, "C_X11_CORN_SILK")
-    final val C_X11_BLANCHED_ALMOND = new CPColor(255, 235, 205, "C_X11_BLANCHED_ALMOND")
-    final val C_X11_BISQUE = new CPColor(255, 228, 196, "C_X11_BISQUE")
-    final val C_X11_NAVAJO_WHITE = new CPColor(255, 222, 173, "C_X11_NAVAJO_WHITE")
-    final val C_X11_WHEAT = new CPColor(245, 222, 179, "C_X11_WHEAT")
-    final val C_X11_BURLY_WOOD = new CPColor(222, 184, 135, "C_X11_BURLY_WOOD")
-    final val C_X11_TAN = new CPColor(210, 180, 140, "C_X11_TAN")
-    final val C_X11_ROSY_BROWN = new CPColor(188, 143, 143, "C_X11_ROSY_BROWN")
-    final val C_X11_SANDY_BROWN = new CPColor(244, 164, 96, "C_X11_SANDY_BROWN")
-    final val C_X11_GOLDEN_ROD = new CPColor(218, 165, 32, "C_X11_GOLDEN_ROD")
-    final val C_X11_PERU = new CPColor(205, 133, 63, "C_X11_PERU")
-    final val C_X11_CHOCOLATE = new CPColor(210, 105, 30, "C_X11_CHOCOLATE")
-    final val C_X11_SADDLE_BROWN = new CPColor(139, 69, 19, "C_X11_SADDLE_BROWN")
-    final val C_X11_SIENNA = new CPColor(160, 82, 45, "C_X11_SIENNA")
-    final val C_X11_BROWN = new CPColor(165, 42, 42, "C_X11_BROWN")
-    final val C_X11_MAROON = new CPColor(128, 0, 0, "C_X11_MAROON")
+    val C_X11_CORN_SILK = new CPColor(255, 248, 220, "C_X11_CORN_SILK")
+    val C_X11_BLANCHED_ALMOND = new CPColor(255, 235, 205, "C_X11_BLANCHED_ALMOND")
+    val C_X11_BISQUE = new CPColor(255, 228, 196, "C_X11_BISQUE")
+    val C_X11_NAVAJO_WHITE = new CPColor(255, 222, 173, "C_X11_NAVAJO_WHITE")
+    val C_X11_WHEAT = new CPColor(245, 222, 179, "C_X11_WHEAT")
+    val C_X11_BURLY_WOOD = new CPColor(222, 184, 135, "C_X11_BURLY_WOOD")
+    val C_X11_TAN = new CPColor(210, 180, 140, "C_X11_TAN")
+    val C_X11_ROSY_BROWN = new CPColor(188, 143, 143, "C_X11_ROSY_BROWN")
+    val C_X11_SANDY_BROWN = new CPColor(244, 164, 96, "C_X11_SANDY_BROWN")
+    val C_X11_GOLDEN_ROD = new CPColor(218, 165, 32, "C_X11_GOLDEN_ROD")
+    val C_X11_PERU = new CPColor(205, 133, 63, "C_X11_PERU")
+    val C_X11_CHOCOLATE = new CPColor(210, 105, 30, "C_X11_CHOCOLATE")
+    val C_X11_SADDLE_BROWN = new CPColor(139, 69, 19, "C_X11_SADDLE_BROWN")
+    val C_X11_SIENNA = new CPColor(160, 82, 45, "C_X11_SIENNA")
+    val C_X11_BROWN = new CPColor(165, 42, 42, "C_X11_BROWN")
+    val C_X11_MAROON = new CPColor(128, 0, 0, "C_X11_MAROON")
 
     /**
       *
       */
-    final val CS_X11_BROWNS = Seq(
+    val CS_X11_BROWNS: Seq[CPColor] = Seq(
         C_X11_CORN_SILK,
         C_X11_BLANCHED_ALMOND,
         C_X11_BISQUE,
@@ -1316,28 +1317,28 @@ object CPColor:
         C_X11_MAROON
     ).sorted
 
-    final val C_X11_WHITE = new CPColor(255, 255, 255, "C_X11_WHITE")
-    final val C_X11_SNOW = new CPColor(255, 250, 250, "C_X11_SNOW")
-    final val C_X11_HONEY_DEW = new CPColor(240, 255, 240, "C_X11_HONEY_DEW")
-    final val C_X11_MINT_CREAM = new CPColor(245, 255, 250, "C_X11_MINT_CREAM")
-    final val C_X11_AZURE = new CPColor(240, 255, 255, "C_X11_AZURE")
-    final val C_X11_ALICE_BLUE = new CPColor(240, 248, 255, "C_X11_ALICE_BLUE")
-    final val C_X11_GHOST_WHITE = new CPColor(248, 248, 255, "C_X11_GHOST_WHITE")
-    final val C_X11_WHITE_SMOKE = new CPColor(245, 245, 245, "C_X11_WHITE_SMOKE")
-    final val C_X11_SEA_SHELL = new CPColor(255, 245, 238, "C_X11_SEA_SHELL")
-    final val C_X11_BEIGE = new CPColor(245, 245, 220, "C_X11_BEIGE")
-    final val C_X11_OLD_LACE = new CPColor(253, 245, 230, "C_X11_OLD_LACE")
-    final val C_X11_FLORAL_WHITE = new CPColor(255, 250, 240, "C_X11_FLORAL_WHITE")
-    final val C_X11_IVORY = new CPColor(255, 255, 240, "C_X11_IVORY")
-    final val C_X11_ANTIQUE_WHITE = new CPColor(250, 235, 215, "C_X11_ANTIQUE_WHITE")
-    final val C_X11_LINEN = new CPColor(250, 240, 230, "C_X11_LINEN")
-    final val C_X11_LAVENDER_BLUSH = new CPColor(255, 240, 245, "C_X11_LAVENDER_BLUSH")
-    final val C_X11_MISTY_ROSE = new CPColor(255, 228, 225, "C_X11_MISTY_ROSE")
+    val C_X11_WHITE = new CPColor(255, 255, 255, "C_X11_WHITE")
+    val C_X11_SNOW = new CPColor(255, 250, 250, "C_X11_SNOW")
+    val C_X11_HONEY_DEW = new CPColor(240, 255, 240, "C_X11_HONEY_DEW")
+    val C_X11_MINT_CREAM = new CPColor(245, 255, 250, "C_X11_MINT_CREAM")
+    val C_X11_AZURE = new CPColor(240, 255, 255, "C_X11_AZURE")
+    val C_X11_ALICE_BLUE = new CPColor(240, 248, 255, "C_X11_ALICE_BLUE")
+    val C_X11_GHOST_WHITE = new CPColor(248, 248, 255, "C_X11_GHOST_WHITE")
+    val C_X11_WHITE_SMOKE = new CPColor(245, 245, 245, "C_X11_WHITE_SMOKE")
+    val C_X11_SEA_SHELL = new CPColor(255, 245, 238, "C_X11_SEA_SHELL")
+    val C_X11_BEIGE = new CPColor(245, 245, 220, "C_X11_BEIGE")
+    val C_X11_OLD_LACE = new CPColor(253, 245, 230, "C_X11_OLD_LACE")
+    val C_X11_FLORAL_WHITE = new CPColor(255, 250, 240, "C_X11_FLORAL_WHITE")
+    val C_X11_IVORY = new CPColor(255, 255, 240, "C_X11_IVORY")
+    val C_X11_ANTIQUE_WHITE = new CPColor(250, 235, 215, "C_X11_ANTIQUE_WHITE")
+    val C_X11_LINEN = new CPColor(250, 240, 230, "C_X11_LINEN")
+    val C_X11_LAVENDER_BLUSH = new CPColor(255, 240, 245, "C_X11_LAVENDER_BLUSH")
+    val C_X11_MISTY_ROSE = new CPColor(255, 228, 225, "C_X11_MISTY_ROSE")
 
     /**
       *
       */
-    final val CS_X11_WHITES = Seq(
+    val CS_X11_WHITES: Seq[CPColor] = Seq(
         C_X11_WHITE,
         C_X11_SNOW,
         C_X11_HONEY_DEW,
@@ -1357,17 +1358,17 @@ object CPColor:
         C_X11_MISTY_ROSE
     ).sorted
 
-    final val C_X11_PINK = new CPColor(255, 192, 203, "C_X11_PINK")
-    final val C_X11_LIGHT_PINK = new CPColor(255, 182, 193, "C_X11_LIGHT_PINK")
-    final val C_X11_HOT_PINK = new CPColor(255, 105, 180, "C_X11_HOT_PINK")
-    final val C_X11_DEEP_PINK = new CPColor(255, 20, 147, "C_X11_DEEP_PINK")
-    final val C_X11_PALE_VIOLET_RED = new CPColor(219, 112, 147, "C_X11_PALE_VIOLET_RED")
-    final val C_X11_MEDIUM_VIOLET_RED = new CPColor(199, 21, 133, "C_X11_MEDIUM_VIOLET_RED")
+    val C_X11_PINK = new CPColor(255, 192, 203, "C_X11_PINK")
+    val C_X11_LIGHT_PINK = new CPColor(255, 182, 193, "C_X11_LIGHT_PINK")
+    val C_X11_HOT_PINK = new CPColor(255, 105, 180, "C_X11_HOT_PINK")
+    val C_X11_DEEP_PINK = new CPColor(255, 20, 147, "C_X11_DEEP_PINK")
+    val C_X11_PALE_VIOLET_RED = new CPColor(219, 112, 147, "C_X11_PALE_VIOLET_RED")
+    val C_X11_MEDIUM_VIOLET_RED = new CPColor(199, 21, 133, "C_X11_MEDIUM_VIOLET_RED")
 
     /**
       *
       */
-    final val CS_X11_PINKS = Seq(
+    val CS_X11_PINKS: Seq[CPColor] = Seq(
          C_X11_PINK,
          C_X11_LIGHT_PINK,
          C_X11_HOT_PINK,
@@ -1376,26 +1377,26 @@ object CPColor:
          C_X11_MEDIUM_VIOLET_RED
     ).sorted
 
-    final val C_X11_LAVENDER = new CPColor(230, 230, 250, "C_X11_LAVENDER")
-    final val C_X11_THISTLE = new CPColor(216, 191, 216, "C_X11_THISTLE")
-    final val C_X11_PLUM = new CPColor(221, 160, 221, "C_X11_PLUM")
-    final val C_X11_VIOLET = new CPColor(238, 130, 238, "C_X11_VIOLET")
-    final val C_X11_ORCHID = new CPColor(218, 112, 214, "C_X11_ORCHID")
-    final val C_X11_FUCHSIA = new CPColor(255, 0, 255, "C_X11_FUCHSIA")
-    final val C_X11_MAGENTA = new CPColor(255, 0, 255, "C_X11_MAGENTA")
-    final val C_X11_MEDIUM_ORCHID = new CPColor(186, 85, 211, "C_X11_MEDIUM_ORCHID")
-    final val C_X11_MEDIUM_PURPLE = new CPColor(147, 112, 219, "C_X11_MEDIUM_PURPLE")
-    final val C_X11_BLUE_VIOLET = new CPColor(138, 43, 226, "C_X11_BLUE_VIOLET")
-    final val C_X11_DARK_VIOLET = new CPColor(148, 0, 211, "C_X11_DARK_VIOLET")
-    final val C_X11_DARK_ORCHID = new CPColor(153, 50, 204, "C_X11_DARK_ORCHID")
-    final val C_X11_DARK_MAGENTA = new CPColor(139, 0, 139, "C_X11_DARK_MAGENTA")
-    final val C_X11_PURPLE = new CPColor(128, 0, 128, "C_X11_PURPLE")
-    final val C_X11_INDIGO = new CPColor(75, 0, 130, "C_X11_INDIGO")
+    val C_X11_LAVENDER = new CPColor(230, 230, 250, "C_X11_LAVENDER")
+    val C_X11_THISTLE = new CPColor(216, 191, 216, "C_X11_THISTLE")
+    val C_X11_PLUM = new CPColor(221, 160, 221, "C_X11_PLUM")
+    val C_X11_VIOLET = new CPColor(238, 130, 238, "C_X11_VIOLET")
+    val C_X11_ORCHID = new CPColor(218, 112, 214, "C_X11_ORCHID")
+    val C_X11_FUCHSIA = new CPColor(255, 0, 255, "C_X11_FUCHSIA")
+    val C_X11_MAGENTA = new CPColor(255, 0, 255, "C_X11_MAGENTA")
+    val C_X11_MEDIUM_ORCHID = new CPColor(186, 85, 211, "C_X11_MEDIUM_ORCHID")
+    val C_X11_MEDIUM_PURPLE = new CPColor(147, 112, 219, "C_X11_MEDIUM_PURPLE")
+    val C_X11_BLUE_VIOLET = new CPColor(138, 43, 226, "C_X11_BLUE_VIOLET")
+    val C_X11_DARK_VIOLET = new CPColor(148, 0, 211, "C_X11_DARK_VIOLET")
+    val C_X11_DARK_ORCHID = new CPColor(153, 50, 204, "C_X11_DARK_ORCHID")
+    val C_X11_DARK_MAGENTA = new CPColor(139, 0, 139, "C_X11_DARK_MAGENTA")
+    val C_X11_PURPLE = new CPColor(128, 0, 128, "C_X11_PURPLE")
+    val C_X11_INDIGO = new CPColor(75, 0, 130, "C_X11_INDIGO")
 
     /**
       *
       */
-    final val CS_X11_PURPLES = Seq(
+    val CS_X11_PURPLES: Seq[CPColor] = Seq(
          C_X11_LAVENDER,
          C_X11_THISTLE,
          C_X11_PLUM,
@@ -1413,29 +1414,29 @@ object CPColor:
          C_X11_INDIGO
     ).sorted
 
-    final val C_X11_POWDER_BLUE = new CPColor(176, 224, 230, "C_X11_POWDER_BLUE")
-    final val C_X11_LIGHT_BLUE = new CPColor(173, 216, 230, "C_X11_LIGHT_BLUE")
-    final val C_X11_LIGHT_SKY_BLUE = new CPColor(135, 206, 250, "C_X11_LIGHT_SKY_BLUE")
-    final val C_X11_SKY_BLUE = new CPColor(135, 206, 235, "C_X11_SKY_BLUE")
-    final val C_X11_DEEP_SKY_BLUE = new CPColor(0, 191, 255, "C_X11_DEEP_SKY_BLUE")
-    final val C_X11_LIGHT_STEEL_BLUE = new CPColor(176, 196, 222, "C_X11_LIGHT_STEEL_BLUE")
-    final val C_X11_DODGER_BLUE = new CPColor(30, 144, 255, "C_X11_DODGER_BLUE")
-    final val C_X11_CORN_FLOWER_BLUE = new CPColor(100, 149, 237, "C_X11_CORN_FLOWER_BLUE")
-    final val C_X11_STEEL_BLUE = new CPColor(70, 130, 180, "C_X11_STEEL_BLUE")
-    final val C_X11_ROYAL_BLUE = new CPColor(65, 105, 225, "C_X11_ROYAL_BLUE")
-    final val C_X11_BLUE = new CPColor(0, 0, 255, "C_X11_BLUE")
-    final val C_X11_MEDIUM_BLUE = new CPColor(0, 0, 205, "C_X11_MEDIUM_BLUE")
-    final val C_X11_DARK_BLUE = new CPColor(0, 0, 139, "C_X11_DARK_BLUE")
-    final val C_X11_NAVY = new CPColor(0, 0, 128, "C_X11_NAVY")
-    final val C_X11_MIDNIGHT_BLUE = new CPColor(25, 25, 112, "C_X11_MIDNIGHT_BLUE")
-    final val C_X11_MEDIUM_SLATE_BLUE = new CPColor(123, 104, 238, "C_X11_MEDIUM_SLATE_BLUE")
-    final val C_X11_SLATE_BLUE = new CPColor(106, 90, 205, "C_X11_SLATE_BLUE")
-    final val C_X11_DARK_SLATE_BLUE = new CPColor(72, 61, 139, "C_X11_DARK_SLATE_BLUE")
+    val C_X11_POWDER_BLUE = new CPColor(176, 224, 230, "C_X11_POWDER_BLUE")
+    val C_X11_LIGHT_BLUE = new CPColor(173, 216, 230, "C_X11_LIGHT_BLUE")
+    val C_X11_LIGHT_SKY_BLUE = new CPColor(135, 206, 250, "C_X11_LIGHT_SKY_BLUE")
+    val C_X11_SKY_BLUE = new CPColor(135, 206, 235, "C_X11_SKY_BLUE")
+    val C_X11_DEEP_SKY_BLUE = new CPColor(0, 191, 255, "C_X11_DEEP_SKY_BLUE")
+    val C_X11_LIGHT_STEEL_BLUE = new CPColor(176, 196, 222, "C_X11_LIGHT_STEEL_BLUE")
+    val C_X11_DODGER_BLUE = new CPColor(30, 144, 255, "C_X11_DODGER_BLUE")
+    val C_X11_CORN_FLOWER_BLUE = new CPColor(100, 149, 237, "C_X11_CORN_FLOWER_BLUE")
+    val C_X11_STEEL_BLUE = new CPColor(70, 130, 180, "C_X11_STEEL_BLUE")
+    val C_X11_ROYAL_BLUE = new CPColor(65, 105, 225, "C_X11_ROYAL_BLUE")
+    val C_X11_BLUE = new CPColor(0, 0, 255, "C_X11_BLUE")
+    val C_X11_MEDIUM_BLUE = new CPColor(0, 0, 205, "C_X11_MEDIUM_BLUE")
+    val C_X11_DARK_BLUE = new CPColor(0, 0, 139, "C_X11_DARK_BLUE")
+    val C_X11_NAVY = new CPColor(0, 0, 128, "C_X11_NAVY")
+    val C_X11_MIDNIGHT_BLUE = new CPColor(25, 25, 112, "C_X11_MIDNIGHT_BLUE")
+    val C_X11_MEDIUM_SLATE_BLUE = new CPColor(123, 104, 238, "C_X11_MEDIUM_SLATE_BLUE")
+    val C_X11_SLATE_BLUE = new CPColor(106, 90, 205, "C_X11_SLATE_BLUE")
+    val C_X11_DARK_SLATE_BLUE = new CPColor(72, 61, 139, "C_X11_DARK_SLATE_BLUE")
 
     /**
       *
       */
-    final val CS_X11_BLUES = Seq(
+    val CS_X11_BLUES: Seq[CPColor] = Seq(
         C_X11_POWDER_BLUE,
         C_X11_LIGHT_BLUE,
         C_X11_LIGHT_SKY_BLUE,
@@ -1456,24 +1457,24 @@ object CPColor:
         C_X11_DARK_SLATE_BLUE
     ).sorted
 
-    final val C_X11_LIGHT_CYAN = new CPColor(224, 255, 255, "C_X11_LIGHT_CYAN")
-    final val C_X11_CYAN = new CPColor(0, 255, 255, "C_X11_CYAN")
-    final val C_X11_AQUA = new CPColor(0, 255, 255, "C_X11_AQUA")
-    final val C_X11_AQUAMARINE = new CPColor(127, 255, 212, "C_X11_AQUAMARINE")
-    final val C_X11_MEDIUM_AQUAMARINE = new CPColor(102, 205, 170, "C_X11_MEDIUM_AQUAMARINE")
-    final val C_X11_PALE_TURQUOISE = new CPColor(175, 238, 238, "C_X11_PALE_TURQUOISE")
-    final val C_X11_TURQUOISE = new CPColor(64, 224, 208, "C_X11_TURQUOISE")
-    final val C_X11_MEDIUM_TURQUOISE = new CPColor(72, 209, 204, "C_X11_MEDIUM_TURQUOISE")
-    final val C_X11_DARK_TURQUOISE = new CPColor(0, 206, 209, "C_X11_DARK_TURQUOISE")
-    final val C_X11_LIGHT_SEA_GREEN = new CPColor(32, 178, 170, "C_X11_LIGHT_SEA_GREEN")
-    final val C_X11_CADET_BLUE = new CPColor(95, 158, 160, "C_X11_CADET_BLUE")
-    final val C_X11_DARK_CYAN = new CPColor(0, 139, 139, "C_X11_DARK_CYAN")
-    final val C_X11_TEAL = new CPColor(0, 128, 128, "C_X11_TEAL")
+    val C_X11_LIGHT_CYAN = new CPColor(224, 255, 255, "C_X11_LIGHT_CYAN")
+    val C_X11_CYAN = new CPColor(0, 255, 255, "C_X11_CYAN")
+    val C_X11_AQUA = new CPColor(0, 255, 255, "C_X11_AQUA")
+    val C_X11_AQUAMARINE = new CPColor(127, 255, 212, "C_X11_AQUAMARINE")
+    val C_X11_MEDIUM_AQUAMARINE = new CPColor(102, 205, 170, "C_X11_MEDIUM_AQUAMARINE")
+    val C_X11_PALE_TURQUOISE = new CPColor(175, 238, 238, "C_X11_PALE_TURQUOISE")
+    val C_X11_TURQUOISE = new CPColor(64, 224, 208, "C_X11_TURQUOISE")
+    val C_X11_MEDIUM_TURQUOISE = new CPColor(72, 209, 204, "C_X11_MEDIUM_TURQUOISE")
+    val C_X11_DARK_TURQUOISE = new CPColor(0, 206, 209, "C_X11_DARK_TURQUOISE")
+    val C_X11_LIGHT_SEA_GREEN = new CPColor(32, 178, 170, "C_X11_LIGHT_SEA_GREEN")
+    val C_X11_CADET_BLUE = new CPColor(95, 158, 160, "C_X11_CADET_BLUE")
+    val C_X11_DARK_CYAN = new CPColor(0, 139, 139, "C_X11_DARK_CYAN")
+    val C_X11_TEAL = new CPColor(0, 128, 128, "C_X11_TEAL")
 
     /**
       *
       */
-    final val CS_X11_CYANS = Seq(
+    val CS_X11_CYANS: Seq[CPColor] = Seq(
         C_X11_LIGHT_CYAN,
         C_X11_CYAN,
         C_X11_AQUA,
@@ -1489,30 +1490,30 @@ object CPColor:
         C_X11_TEAL
     ).sorted
 
-    final val C_X11_LAWN_GREEN = new CPColor(124, 252, 0, "C_X11_LAWN_GREEN")
-    final val C_X11_CHARTREUSE = new CPColor(127, 255, 0, "C_X11_CHARTREUSE")
-    final val C_X11_LIME_GREEN = new CPColor(50, 205, 50, "C_X11_LIME_GREEN")
-    final val C_X11_LIME = new CPColor(0, 255, 0, "C_X11_LIME")
-    final val C_X11_FOREST_GREEN = new CPColor(34, 139, 34, "C_X11_FOREST_GREEN")
-    final val C_X11_GREEN = new CPColor(0, 128, 0, "C_X11_GREEN")
-    final val C_X11_DARK_GREEN = new CPColor(0, 100, 0, "C_X11_DARK_GREEN")
-    final val C_X11_GREEN_YELLOW = new CPColor(173, 255, 47, "C_X11_GREEN_YELLOW")
-    final val C_X11_YELLOW_GREEN = new CPColor(154, 205, 50, "C_X11_YELLOW_GREEN")
-    final val C_X11_SPRING_GREEN = new CPColor(0, 255, 127, "C_X11_SPRING_GREEN")
-    final val C_X11_MEDIUM_SPRING_GREEN = new CPColor(0, 250, 154, "C_X11_MEDIUM_SPRING_GREEN")
-    final val C_X11_LIGHT_GREEN = new CPColor(144, 238, 144, "C_X11_LIGHT_GREEN")
-    final val C_X11_PALE_GREEN = new CPColor(152, 251, 152, "C_X11_PALE_GREEN")
-    final val C_X11_DARK_SEA_GREEN = new CPColor(143, 188, 143, "C_X11_DARK_SEA_GREEN")
-    final val C_X11_MEDIUM_SEA_GREEN = new CPColor(60, 179, 113, "C_X11_MEDIUM_SEA_GREEN")
-    final val C_X11_SEA_GREEN = new CPColor(46, 139, 87, "C_X11_SEA_GREEN")
-    final val C_X11_OLIVE = new CPColor(128, 128, 0, "C_X11_OLIVE")
-    final val C_X11_DARK_OLIVE_GREEN = new CPColor(85, 107, 47, "C_X11_DARK_OLIVE_GREEN")
-    final val C_X11_OLIVE_DRAB = new CPColor(107, 142, 35, "C_X11_OLIVE_DRAB")
+    val C_X11_LAWN_GREEN = new CPColor(124, 252, 0, "C_X11_LAWN_GREEN")
+    val C_X11_CHARTREUSE = new CPColor(127, 255, 0, "C_X11_CHARTREUSE")
+    val C_X11_LIME_GREEN = new CPColor(50, 205, 50, "C_X11_LIME_GREEN")
+    val C_X11_LIME = new CPColor(0, 255, 0, "C_X11_LIME")
+    val C_X11_FOREST_GREEN = new CPColor(34, 139, 34, "C_X11_FOREST_GREEN")
+    val C_X11_GREEN = new CPColor(0, 128, 0, "C_X11_GREEN")
+    val C_X11_DARK_GREEN = new CPColor(0, 100, 0, "C_X11_DARK_GREEN")
+    val C_X11_GREEN_YELLOW = new CPColor(173, 255, 47, "C_X11_GREEN_YELLOW")
+    val C_X11_YELLOW_GREEN = new CPColor(154, 205, 50, "C_X11_YELLOW_GREEN")
+    val C_X11_SPRING_GREEN = new CPColor(0, 255, 127, "C_X11_SPRING_GREEN")
+    val C_X11_MEDIUM_SPRING_GREEN = new CPColor(0, 250, 154, "C_X11_MEDIUM_SPRING_GREEN")
+    val C_X11_LIGHT_GREEN = new CPColor(144, 238, 144, "C_X11_LIGHT_GREEN")
+    val C_X11_PALE_GREEN = new CPColor(152, 251, 152, "C_X11_PALE_GREEN")
+    val C_X11_DARK_SEA_GREEN = new CPColor(143, 188, 143, "C_X11_DARK_SEA_GREEN")
+    val C_X11_MEDIUM_SEA_GREEN = new CPColor(60, 179, 113, "C_X11_MEDIUM_SEA_GREEN")
+    val C_X11_SEA_GREEN = new CPColor(46, 139, 87, "C_X11_SEA_GREEN")
+    val C_X11_OLIVE = new CPColor(128, 128, 0, "C_X11_OLIVE")
+    val C_X11_DARK_OLIVE_GREEN = new CPColor(85, 107, 47, "C_X11_DARK_OLIVE_GREEN")
+    val C_X11_OLIVE_DRAB = new CPColor(107, 142, 35, "C_X11_OLIVE_DRAB")
 
     /**
       *
       */
-    final val CS_X11_GREENS = Seq(
+    val CS_X11_GREENS: Seq[CPColor] = Seq(
         C_X11_LAWN_GREEN,
         C_X11_CHARTREUSE,
         C_X11_LIME_GREEN,
@@ -1534,21 +1535,21 @@ object CPColor:
         C_X11_OLIVE_DRAB
     ).sorted
 
-    final val C_X11_LIGHT_YELLOW = new CPColor(255, 255, 224, "C_X11_LIGHT_YELLOW")
-    final val C_X11_LEMON_CHIFFON = new CPColor(255, 250, 205, "C_X11_LEMON_CHIFFON")
-    final val C_X11_LIGHT_GOLDEN_ROD_YELLOW = new CPColor(250, 250, 210, "C_X11_LIGHT_GOLDEN_ROD_YELLOW")
-    final val C_X11_PAPAYA_WHIP = new CPColor(255, 239, 213, "C_X11_PAPAYA_WHIP")
-    final val C_X11_MOCCASIN = new CPColor(255, 228, 181, "C_X11_MOCCASIN")
-    final val C_X11_PEACH_PUFF = new CPColor(255, 218, 185, "C_X11_PEACH_PUFF")
-    final val C_X11_PALE_GOLDEN_ROD = new CPColor(238, 232, 170, "C_X11_PALE_GOLDEN_ROD")
-    final val C_X11_KHAKI = new CPColor(240, 230, 140, "C_X11_KHAKI")
-    final val C_X11_DARK_KHAKI = new CPColor(189, 183, 107, "C_X11_DARK_KHAKI")
-    final val C_X11_YELLOW = new CPColor(255, 255, 0, "C_X11_YELLOW")
+    val C_X11_LIGHT_YELLOW = new CPColor(255, 255, 224, "C_X11_LIGHT_YELLOW")
+    val C_X11_LEMON_CHIFFON = new CPColor(255, 250, 205, "C_X11_LEMON_CHIFFON")
+    val C_X11_LIGHT_GOLDEN_ROD_YELLOW = new CPColor(250, 250, 210, "C_X11_LIGHT_GOLDEN_ROD_YELLOW")
+    val C_X11_PAPAYA_WHIP = new CPColor(255, 239, 213, "C_X11_PAPAYA_WHIP")
+    val C_X11_MOCCASIN = new CPColor(255, 228, 181, "C_X11_MOCCASIN")
+    val C_X11_PEACH_PUFF = new CPColor(255, 218, 185, "C_X11_PEACH_PUFF")
+    val C_X11_PALE_GOLDEN_ROD = new CPColor(238, 232, 170, "C_X11_PALE_GOLDEN_ROD")
+    val C_X11_KHAKI = new CPColor(240, 230, 140, "C_X11_KHAKI")
+    val C_X11_DARK_KHAKI = new CPColor(189, 183, 107, "C_X11_DARK_KHAKI")
+    val C_X11_YELLOW = new CPColor(255, 255, 0, "C_X11_YELLOW")
 
     /**
       *
       */
-    final val CS_X11_YELLOWS = Seq(
+    val CS_X11_YELLOWS: Seq[CPColor] = Seq(
         C_X11_LIGHT_YELLOW,
         C_X11_LEMON_CHIFFON,
         C_X11_LIGHT_GOLDEN_ROD_YELLOW,
@@ -1564,7 +1565,7 @@ object CPColor:
     /**
       *
       */
-    final val CS_X11_ALL =
+    val CS_X11_ALL: Seq[CPColor] =
         CS_X11_WHITES ++
         CS_X11_CYANS ++
         CS_X11_ORANGES ++
@@ -1580,7 +1581,7 @@ object CPColor:
     /**
       *
       */
-    final val C_X11_GROUPS = Seq(
+    val C_X11_GROUPS: Seq[Seq[CPColor]] = Seq(
         CS_X11_REDS,
         CS_X11_GRAYS,
         CS_X11_PINKS,
@@ -1597,7 +1598,7 @@ object CPColor:
     /**
       *
       */
-    final val C_SYS_GROUP = Seq(
+    val C_SYS_GROUP: Seq[CPColor] = Seq(
         C_BLACK,
         C_MAROON,
         C_GREEN,

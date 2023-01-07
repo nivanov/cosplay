@@ -42,6 +42,7 @@ import scala.reflect.ClassTag
   * @tparam T Type of the array element.
   * @note If clear value is not set, the default clear value is `null`.
   */
+//noinspection ScalaWeakerAccess
 class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     if width < 0 || height < 0 then E(s"2D array dimension must be >= 0: [$width, $height]")
 
@@ -51,25 +52,25 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     private lazy val clearBuf: Array[Array[T]] = Array.ofDim[T](width, height)
 
     /** Shape of this array as a rectangle.*/
-    final val rect: CPRect = CPRect(0, 0, width, height)
+    val rect: CPRect = CPRect(0, 0, width, height)
 
     /** Maximum X-coordinate. If width is zero this will equal to `-1`. */
-    final val xMax: Int = width - 1
+    val xMax: Int = width - 1
 
     /** Maximum Y-coordinate. If height is zero this will equal to `-1`. */
-    final val yMax: Int = height - 1
+    val yMax: Int = height - 1
 
     /** Dimension of this array. */
-    final val dim: CPDim = CPDim(width, height)
+    val dim: CPDim = CPDim(width, height)
 
     /** Number of cells in this 2D array. */
-    final val size: Int = width * height
+    val size: Int = width * height
 
     /** Checks whether or not this array is empty, i.e. it's [[size]] == 0. */
-    final val isEmpty: Boolean = size == 0
+    val isEmpty: Boolean = size == 0
 
     /** Checks whether or not this array is not empty, i.e. it's [[size]] != 0. */
-    final val nonEmpty: Boolean = size > 0
+    val nonEmpty: Boolean = size > 0
 
     /**
       * Creates 1x1 array with a given single value.
@@ -389,29 +390,23 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       * @param x X-coordinate
       * @param f Blank predicate.
       */
-    private def isColumnBlank(x: Int, f: T => Boolean): Boolean =
-        if nonEmpty then
-            var y = 0
-            var isBlank = true
-            while (y <= yMax && isBlank)
-                isBlank = f(data(x)(y))
-                y += 1
-            isBlank
-        else
-            false
+    private def isColumnBlank(x: Int, f: T => Boolean): Boolean = isBlank(x, f, false)
 
     /**
       *
       * @param y Y-coordinate
       * @param f Blank predicate.
       */
-    private def isRowBlank(y: Int, f: T => Boolean): Boolean =
+    private def isRowBlank(y: Int, f: T => Boolean): Boolean = isBlank(y, f, true)
+
+    private def isBlank(d: Int, f: T => Boolean, isRow: Boolean): Boolean =
+        val max = if isRow then xMax else yMax
         if nonEmpty then
-            var x = 0
+            var a = 0
             var isBlank = true
-            while (x <= xMax && isBlank)
-                isBlank = f(data(x)(y))
-                x += 1
+            while (a <= max && isBlank)
+                isBlank = f(if isRow then data(a)(d) else data(d)(a))
+                a += 1
             isBlank
         else
             false

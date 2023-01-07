@@ -126,28 +126,28 @@ class CPImageSprite(
       *
       * @see [[setX()]]
       */
-    final val initX: Int = x
+    val initX: Int = x
 
     /**
       * Initial Y-coordinate of the sprite.
       *
       * @see [[setY()]]
       */
-    final val initY: Int = y
+    val initY: Int = y
 
     /**
       * Initial Z-index of the sprite.
       *
       * @see [[setZ()]]
       */
-    final val initZ: Int = z
+    val initZ: Int = z
 
     /**
       * Initial image of the sprite.
       *
       * @see [[setImage()]]
       */
-    final val initImg: CPImage = img
+    val initImg: CPImage = img
 
     /**
       * Resets this sprite to its initial XYZ-coordinates and the initial image.

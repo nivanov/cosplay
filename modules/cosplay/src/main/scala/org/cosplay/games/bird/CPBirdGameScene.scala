@@ -64,19 +64,19 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private var score = 0
 
-    private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 35))
-    private final val PIPE_BG = CPColor("0x4C338F")
-    private final val PIPE_PX = '|'&&(PIPE_BG, PIPE_BG)
-    private final val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
-    private final val BUILD_WIN_PX = CPPixel('.', C_X11_ANTIQUE_WHITE, C_GRAY6, tag = 1) // Use tag '1' in shader.
-    private final val BUILD_MIN_W = 4
-    private final val BUILD_MAX_W = 10
-    private final val BUILD_MIN_H = 6
-    private final val BUILD_MAX_H = 13
+    private val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 35))
+    private val PIPE_BG = CPColor("0x4C338F")
+    private val PIPE_PX = '|'&&(PIPE_BG, PIPE_BG)
+    private val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
+    private val BUILD_WIN_PX = CPPixel('.', C_X11_ANTIQUE_WHITE, C_GRAY6, tag = 1) // Use tag '1' in shader.
+    private val BUILD_MIN_W = 4
+    private val BUILD_MAX_W = 10
+    private val BUILD_MIN_H = 6
+    private val BUILD_MAX_H = 13
     private final var PIPE_WIDTH = 5
     private final var PIPE_GAP_HEIGHT = 15
-    private final val BUILD_GAP_MAX = 4
-    private final val BUILD_GAP_MIN = -4
+    private val BUILD_GAP_MAX = 4
+    private val BUILD_GAP_MIN = -4
 
     private var closestPipeX = 60
     private var closestPipeCut = 0
@@ -124,6 +124,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
             case _ => ch&C4
     ).split(5, 3)
 
+    //noinspection DuplicatedCode
     private val brickImg = new CPArrayImage(
         // 5x3
         prepSeq(

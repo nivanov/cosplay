@@ -21,9 +21,9 @@ import CPKeyboardKey.KEY_BACKSPACE
 
 import scala.collection.mutable
 
-private final val ESC = '\u001b'
-private final val CSI = Seq(ESC, '[')
-private final val WCSI = Seq(ESC, 'O') // Windows application mode.
+private val ESC = '\u001b'
+private val CSI = Seq(ESC, '[')
+private val WCSI = Seq(ESC, 'O') // Windows application mode.
 
 /*
    _________            ______________

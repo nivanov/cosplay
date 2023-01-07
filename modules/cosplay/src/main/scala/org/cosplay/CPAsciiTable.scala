@@ -20,6 +20,7 @@ package org.cosplay
 import java.io.*
 import CPAsciiTable.*
 
+import scala.annotation.targetName
 import scala.collection.mutable
 import scala.util.Using
 
@@ -50,6 +51,7 @@ import scala.util.Using
   * +------------------------------------------------------+
   * </pre>
   */
+//noinspection ScalaWeakerAccess
 class CPAsciiTable:
     /**
       * Cell style.
@@ -181,6 +183,7 @@ class CPAsciiTable:
       *
       * @param cells Row cells. For multi-line cells - use `Seq(...)`.
       */
+    @targetName("plusEqualAny")
     def +=(cells: Any*): CPAsciiTable =
         startRow()
         cells foreach {
@@ -195,6 +198,7 @@ class CPAsciiTable:
       *
       * @param cells Row cells. For multi-line cells - use `Seq(...)`.
       */
+    @targetName("plusEqualSeq")
     def +=(cells: mutable.Seq[Any]): CPAsciiTable =
         +=(cells.toSeq: _*)
 
@@ -203,6 +207,7 @@ class CPAsciiTable:
       *
       * @param cells Row cells tuples (style, text). For multi-line cells - use `Seq(...)`.
       */
+    @targetName("plusSlashAny")
     def +/(cells: (String, Any)*): CPAsciiTable =
         startRow()
         cells foreach {
@@ -228,6 +233,7 @@ class CPAsciiTable:
       *
       * @param cells Header cells. For multi-line cells - use `Seq(...)`.
       */
+    @targetName("poundEqualAny")
     def #=(cells: Any*): CPAsciiTable =
         cells foreach {
             case i: Iterable[_] => addHeaderCell(i.iterator.toSeq: _*)
@@ -240,6 +246,7 @@ class CPAsciiTable:
       *
       * @param cells Header cells. For multi-line cells - use `Seq(...)`.
       */
+    @targetName("poundEqualSeq")
     def #=(cells: mutable.Seq[Any]): CPAsciiTable =
         #=(cells.toSeq: _*)
 
@@ -248,6 +255,7 @@ class CPAsciiTable:
       *
       * @param cells Header cells tuples (style, text). For multi-line cells - use `Seq(...)`.
       */
+    @targetName("poundSlashAny")
     def #/(cells: (String, Any)*): CPAsciiTable =
         cells foreach {
             case i if i._2.isInstanceOf[Iterable[_]] => addStyledHeaderCell(i._1, i._2.asInstanceOf[Iterable[_]].iterator.toSeq: _*)
@@ -607,8 +615,8 @@ class CPAsciiTable:
   */
 object CPAsciiTable:
     // Default styles.
-    private final val DFLT_ROW_STYLE = "align:left"
-    private final val DFLT_HEADER_STYLE = "align:center"
+    private val DFLT_ROW_STYLE = "align:left"
+    private val DFLT_HEADER_STYLE = "align:center"
 
     /**
       * Creates new ASCII text table with all defaults.

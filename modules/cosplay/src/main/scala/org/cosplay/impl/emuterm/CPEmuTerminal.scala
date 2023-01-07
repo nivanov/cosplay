@@ -65,10 +65,10 @@ import scala.language.implicitConversions
   * - COSPLAY_EMUTERM_ANTIALIAS
   */
 class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
-    private final val INIT_PXS_SIZE = 100 * 100
-    private final val INIT_GLYPHS_SIZE = 1000
-    private final val GLYPHS_LOAD_FACTOR = 0.2
-    private final val DFLT_DIM = CPDim(100, 50)
+    private val INIT_PXS_SIZE = 100 * 100
+    private val INIT_GLYPHS_SIZE = 1000
+    private val GLYPHS_LOAD_FACTOR = 0.2
+    private val DFLT_DIM = CPDim(100, 50)
     private var frame: JFrame = _
     private var panel: JPanel = _
     private val fontName = CPUtils.sysEnv("COSPLAY_EMUTERM_FONT_NAME").getOrElse("Monospaced")
@@ -85,8 +85,8 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private var bufImg: BufferedImage = _
     private val glyphCache = new mutable.HashMap[CPPixel, BufferedImage](INIT_GLYPHS_SIZE, GLYPHS_LOAD_FACTOR)
     private var kbKey: Option[CPKeyboardKey] = None
-    private final val renderMux = new Object
-    private final val kbMux = new Object
+    private val renderMux = new Object
+    private val kbMux = new Object
     private val isAA = CPUtils.isSysEnvSet("COSPLAY_EMUTERM_ANTIALIAS")
     private val root = new CPGuiLog("")
     private val pauseGameAct: Action = mkAction(
@@ -201,18 +201,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
     /**
-      * Initializes custom L&F.
-      */
-
-    private def initLaF(): Unit =
-        if SystemUtils.IS_OS_WINDOWS then System.setProperty("flatlaf.uiScale", "1.1")
-        UIManager.put("Component.arrowType", "chevron")
-        UIManager.put("Component.focusWidth", 0)
-        UIManager.put("Component.innerFocusWidth", 0)
-        FlatLightLaf.setup()
-        FlatDarkPurpleIJTheme.setup() // Default theme.
-
-    /**
       *
       * @param txt
       * @param icon
@@ -220,7 +208,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       * @param enabled
       * @param f
       */
-
     private def mkAction(
         txt: String,
         icon: Option[Icon],
@@ -258,7 +245,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       *
       */
     private def init(): Unit =
-        initLaF()
+        CPUtils.initLaF()
         initFontMetrics()
 
         // Setup frame and panel inside it.

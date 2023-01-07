@@ -38,7 +38,7 @@ import games.pong.*
   * Paddle return shader.
   */
 class CPPongPaddleShader extends CPShader:
-    private final val DUR_MS = 250
+    private val DUR_MS = 250
 
     private var startMs = 0L
     private var go = false

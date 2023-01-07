@@ -48,8 +48,8 @@ import scala.util.Using
   * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-tunnel-animated-ascii-art.html"):
-    private final val RAW_FOOTAGE = "prefab/video/tunnel.txt" // Under 'resources' folder...
-    private final val FRAME_CNT = 40 // We know upfront that there are 40 frames there.
+    private val RAW_FOOTAGE = "prefab/video/tunnel.txt" // Under 'resources' folder...
+    private val FRAME_CNT = 40 // We know upfront that there are 40 frames there.
     private val frames: Seq[CPImage] = {
         val rsrc = getClass.getClassLoader.getResourceAsStream(RAW_FOOTAGE)
         if rsrc != null then

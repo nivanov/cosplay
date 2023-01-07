@@ -93,17 +93,17 @@ object CPInt4:
     /**
       * Equivalent of `CPInt4(1)`.
       */
-    final val ONE = CPInt4(1)
+    val ONE = CPInt4(1)
 
     /**
       * Equivalent of `CPInt4(-1)`.
       */
-    final val NEG_ONE = CPInt4(-1)
+    val NEG_ONE = CPInt4(-1)
 
     /**
       * Equivalent of `CPInt4(0)`.
       */
-    final val ZERO = CPInt4(0)
+    val ZERO = CPInt4(0)
 
     given Conversion[CPInt4, (Int, Int, Int, Int)] = t => (t.i1, t.i2, t.i3, t.i4)
     given Conversion[(Int, Int, Int, Int), CPInt4] = t => CPInt4(t._1, t._2, t._3, t._4)

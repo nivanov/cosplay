@@ -81,16 +81,16 @@ class CPGuiLog(cat: String) extends CPLog:
   *
   */
 object CPGuiLog:
-    initLaF()
+    CPUtils.initLaF()
 
-    private final val KB = 1024
-    private final val MB = KB * 1024
-    private final val GB = MB * 1024
-    private final val TB = GB * 1024
+    private val KB = 1024
+    private val MB = KB * 1024
+    private val GB = MB * 1024
+    private val TB = GB * 1024
 
-    private final val MAX_DOC_SIZE = 50_000
-    private final val LOG_FONT_SIZE = 14
-    private final val MIN_LOG_SEARCH_TERM_LEN = 3
+    private val MAX_DOC_SIZE = 50_000
+    private val LOG_FONT_SIZE = 14
+    private val MIN_LOG_SEARCH_TERM_LEN = 3
     private var frame: JFrame = _
     private var frameCnt = 1L
     private var logPaused = false
@@ -148,7 +148,7 @@ object CPGuiLog:
             try
                 val txt = logPanel.getSelectedText
                 if txt != null then
-                    val sel = new StringSelection(txt);
+                    val sel = new StringSelection(txt)
                     clipboard.setContents(sel, sel)
             catch case _: Exception => ()
     )
@@ -643,17 +643,6 @@ object CPGuiLog:
         })
 
     /**
-      * Initializes custom L&F.
-      */
-    private def initLaF(): Unit =
-        if SystemUtils.IS_OS_WINDOWS then System.setProperty("flatlaf.uiScale", "1.1")
-        UIManager.put("Component.arrowType", "chevron")
-        UIManager.put("Component.focusWidth", 0)
-        UIManager.put("Component.innerFocusWidth", 0)
-        FlatLightLaf.setup()
-        FlatDarkPurpleIJTheme.setup() // Default theme.
-
-    /**
       * @param isPaused
       */
     def onGamePauseResume(isPaused: Boolean): Unit =
@@ -693,7 +682,7 @@ object CPGuiLog:
       * @param act
       * @param initState
       */
-    def mkCheckBox(act: Action, initState: Boolean): JCheckBox =
+    private def mkCheckBox(act: Action, initState: Boolean): JCheckBox =
         val cb = new JCheckBox(act)
         cb.setFocusPainted(false)
         cb.setSelected(initState)
@@ -703,7 +692,7 @@ object CPGuiLog:
       *
       * @param act
       */
-    def mkCheckBoxMenuItem(act: Action): JCheckBoxMenuItem =
+    private def mkCheckBoxMenuItem(act: Action): JCheckBoxMenuItem =
         val cb = new JCheckBoxMenuItem(act)
         cb.setFocusPainted(false)
         cb.setSelected(true)
@@ -1115,6 +1104,7 @@ object CPGuiLog:
     /**
       *
       */
+    //noinspection DuplicatedCode
     private def initGui(): Unit =
         font = Font
             .createFont(Font.TRUETYPE_FONT, CPUtils.getStream("fonts/SourceCodePro-Regular.ttf"))

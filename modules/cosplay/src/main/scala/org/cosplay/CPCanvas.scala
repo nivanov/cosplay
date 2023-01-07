@@ -107,64 +107,64 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def getClipRect: CPRect = clip
 
     /** Dimension of this canvas. */
-    final val dim: CPDim = pane.getDim
+    val dim: CPDim = pane.getDim
 
     /** Width of this canvas. */
-    final val width: Int = dim.w
+    val width: Int = dim.w
 
     /** Width of this canvas (shortcut API). */
-    final val w: Int = dim.w
+    val w: Int = dim.w
 
     /** Width of this canvas as float (shortcut API). */
-    final val wF: Float = dim.wF
+    val wF: Float = dim.wF
 
     /** Height of this canvas. */
-    final val height: Int = dim.h
+    val height: Int = dim.h
 
     /** Height of this canvas (shortcut API). */
-    final val h: Int = dim.h
+    val h: Int = dim.h
 
     /** Height of this canvas as float (shortcut API). */
-    final val hF: Float = dim.hF
+    val hF: Float = dim.hF
 
     /** Maximum X-coordinate of this canvas. */
-    final val xMax = width - 1
+    val xMax = width - 1
 
     /** Maximum X-coordinate of this canvas as a float. */
     final lazy val xMaxF = xMax.toFloat
 
     /** Maximum Y-coordinate of this canvas. */
-    final val yMax = height - 1
+    val yMax = height - 1
 
     /** Maximum Y-coordinate of this canvas as a float. */
     final lazy val yMaxF = yMax.toFloat
 
     /** Minimum X-coordinate of this canvas (always zero). */
-    final val xMin = 0
+    val xMin = 0
 
     /** Minimum X-coordinate of this canvas (always zero) as a float. */
     final lazy val xMinF = 0f
 
     /** Minimum Y-coordinate of this canvas (always zero). */
-    final val yMin = 0
+    val yMin = 0
 
     /** Minimum Y-coordinate of this canvas (always zero) as a float. */
     final lazy val yMinF = 0f
 
     /** X-coordinate of the center point of this canvas. */
-    final val xCenter = xMax / 2
+    val xCenter = xMax / 2
 
     /** X-coordinate of the center point of this canvas as a float. */
     final lazy val xCenterF = xMaxF / 2
 
     /** Y-coordinate of the center point of this canvas. */
-    final val yCenter = yMax / 2
+    val yCenter = yMax / 2
 
     /** Y-coordinate of the center point of this canvas as a float. */
-    final val yCenterF = yMaxF / 2
+    val yCenterF = yMaxF / 2
 
     /** Rectangle object (shape) for this canvas. */
-    final val rect = new CPRect(0, 0, dim)
+    val rect = new CPRect(0, 0, dim)
 
     /**
       * Tests whether or not given XY-coordinates are within this canvas.
