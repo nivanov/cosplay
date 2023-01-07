@@ -87,9 +87,7 @@ class FlashShader() extends CPShader:
 
             // EXPERIMENTAL
             if brightness != 1 then
-                brightness = brightness - FLASH_OFFSET
-
-                if brightness < 0 then brightness = 0
+                brightness = (brightness - FLASH_OFFSET).max(0)
 
             println(brightness)
 
