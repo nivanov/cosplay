@@ -125,7 +125,7 @@
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
         <exec.maven.ver>3.1.0</exec.maven.ver>
-        <jna.ver>5.12.1</jna.ver>
+        <jna.ver>5.13.0</jna.ver>
         <mixpanel.ver>1.5.1</mixpanel.ver>
         <org.antlr4.ver>4.11.1</org.antlr4.ver>
 
