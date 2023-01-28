@@ -228,7 +228,7 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         val magDurMs =  snd.getTotalDuration / magSeq.size
         val sz = normMagSeq.size
 
-        (ms: Long) => {
+        val magFun = (ms: Long) => {
             val normMs = ms % snd.getTotalDuration
             var idx1 = (normMs / magDurMs).toInt
             if idx1 >= sz - 1 then idx1 = 1
@@ -243,6 +243,24 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             // Return value.
             normMs * a + b
         }
+
+        mkBeatFun(magFun, snd)
+    private def mkBeatFun(magFun: Long => Float, snd: CPSound): Long => Float =
+        val newMagFun = (ms: Long) => {
+            var finalMs = 0L
+            val dropSz = 1
+            println(magFun(ms) + " , " + magFun(ms - dropSz))
+            if ms >= dropSz then
+                if magFun(ms) < magFun(ms - dropSz) then
+                    finalMs = 0L
+                    println("Nothing")
+                else
+                    finalMs = magFun(ms).toLong
+                    println("brighter")
+
+            finalMs.toFloat
+        }
+        newMagFun
 
     private def stopFlash(): Unit =
         skullFlashShdr.stop()
@@ -277,8 +295,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         val af = AudioFile.openRead(mkFile(songFile))
         val snd = CPSound(songFile)
         val fun = sequence(af, snd)
-//        println("Mag length : " + mag.length)
-//        println("Song length : " + snd.getTotalDuration)
 
         af.close()
         snd.play(0, CPSound => menuSongChange())
