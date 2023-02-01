@@ -47,10 +47,8 @@ import collection.immutable.{HashSet, StringOps}
 
 
 class FlashShader() extends CPShader:
-    var lastBright = 0D
-
+    private var lastBright = 0F
     private var run = false
-
     private type Fun = Long => Float
     private var fun: Fun = null
     private var dur = 0L
@@ -66,19 +64,12 @@ class FlashShader() extends CPShader:
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if run then
-            var brightness = 0f
-            if fun(dur) != 0 then
-                brightness = fun(dur)
-            else
-                brightness = (lastBright - 0.1).toFloat
-                if brightness <= 0 then brightness = 0
-
+            var brightness = fun(dur)
+            if brightness == 0F then brightness = (lastBright - 0.1).max(0).toFloat
             lastBright = brightness
-
             val now = System.currentTimeMillis()
             dur += now - lastRenderMs
             lastRenderMs = now
-
             val canv = ctx.getCanvas
             objRect.loop((x,y) => {
                 if canv.isValid(x, y) then
