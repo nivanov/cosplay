@@ -69,7 +69,7 @@ import impl.CPUtils
 abstract class CPCanvasSprite(
     id: String = s"canv-spr-${CPRand.guid6}",
     shaders: Seq[CPShader] = Seq.empty,
-    tags: String*
+    tags: Seq[String] = Seq.empty
 ) extends CPSceneObject(id, tags.toSet):
     private var rect: CPRect = _
 

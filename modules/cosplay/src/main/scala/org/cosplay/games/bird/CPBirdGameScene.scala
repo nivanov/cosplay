@@ -312,7 +312,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 for s <- set do canv.drawPixel('.'&&(s.fg, s.bg), s.x, s.y, 1)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
-        new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = "building"):
+        new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = Seq("building")):
             private var x = posX
             private val col = CPRand.rand(BUILD_COLORS)
             private val wallPx = BUILD_WALL_PX.withBg(Option(col))
@@ -336,7 +336,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     if x <= -width then ctx.deleteMyself()
 
     private def newPipeSprite(width: Int, posX: Int) : CPSceneObject =
-        new CPCanvasSprite(tags = "pipe"):
+        new CPCanvasSprite(tags = Seq("pipe")):
             private var pipeX = posX
             private var finished = false
             private var gapStartY = -1
@@ -372,7 +372,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     canv.drawLine(x, gapStartY - PIPE_GAP_HEIGHT, x, 0, 2, px2)
 
     private def newGrassSprite(posX: Int, posY: Int) : CPSceneObject =
-        new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = "grass"):
+        new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = Seq("grass")):
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
                 if ctx.getFrameCount % grassSpeed == 0 && !dead then

@@ -34,9 +34,12 @@ import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*
+import org.cosplay.CPFIGLetFont.*
 import prefabs.images.ani.*
 import prefabs.scenes.*
 import prefabs.shaders.*
+import prefabs.sprites.*
+import CPCenteredImageSpriteOrientation.*
 
 /**
   * Five stick-figures dancing macarena. You control dances by pressing their numbers
@@ -65,7 +68,7 @@ object CPMacarenaGame:
     def main(args: Array[String]): Unit =
         val BLUE_BLACK = CPColor("0x00000F")
         val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
-        val dim = CPDim(80, 20)
+        val dim = CPDim(80, 23)
 
         // Initialize the engine.
         CPEngine.init(CPGameInfo(name = "ASCII Macarena", initDim = Option(dim)))
@@ -87,15 +90,22 @@ object CPMacarenaGame:
                                 else change(idleAni.getId, true, false)
                         case None => ()
 
-        val x = 24
-        val y = 8
-        val sc = CPScene("danceFloor", Option(dim), bgPx,
+        val x = 25
+        val y = 13
+        val titleSpr = new CPCenteredImageSprite(
+            img = FIG_CRAWFORD.withFullWidth().render("MACARENA", C_LIGHT_CORAL).trimBg(),
+            z = 0,
+            orient = HOR,
+            shaders = Seq(new CPEq))
+        titleSpr.setY(3)
+        val danceFloor = CPScene("danceFloor", Option(dim), bgPx,
+            titleSpr,
             mkSprite("1", CPMacarena1AniImage.trimBg().split(3, 3), x, y, KEY_1),
             mkSprite("2", CPMacarena2AniImage.trimBg().split(3, 3), x + 7, y, KEY_2),
             mkSprite("3", CPMacarena3AniImage.trimBg().split(3, 4), x + 7 * 2, y - 1, KEY_3),
             mkSprite("4", CPMacarena4AniImage.trimBg().split(3, 3), x + 7 * 3, y, KEY_4),
             mkSprite("5", CPMacarena5AniImage.trimBg().split(3, 3), x + 7 * 4, y, KEY_5),
-            new CPLabelSprite(24, 12, 0, "[1]    [2]    [3]    [4]    [5]", C_DARK_CYAN),
+            new CPLabelSprite(25, 18, 0, "[1]    [2]    [3]    [4]    [5]", C_DARK_CYAN),
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             new CPOffScreenSprite:
                 override def onStart(): Unit =
@@ -106,7 +116,7 @@ object CPMacarenaGame:
         try CPEngine.startGame(
             // CosPlay logo scene.
             new CPSlideShimmerLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES, nextSc = "danceFloor"),
-            sc
+            danceFloor
         )
         finally CPEngine.dispose()
 

@@ -82,7 +82,7 @@ class CPAnimationSprite(
     initAniId: String,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
-    tags: String*) extends CPSceneObject(id, tags.toSet):
+    tags: Seq[String] = Seq.empty) extends CPSceneObject(id, tags.toSet):
     require(anis.nonEmpty, "Sequence of animation cannot be empty.")
 
     private var myX = x

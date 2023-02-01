@@ -66,8 +66,8 @@ import org.cosplay.impl.CPUtils
   */
 class CPKeyboardSprite(
     f: (CPSceneObjectContext, CPKeyboardKey) => Unit,
-    tags: String*
-) extends CPOffScreenSprite(s"kbd-spr-${CPRand.guid6}", tags = tags: _*):
+    tags: Seq[String] = Seq.empty
+) extends CPOffScreenSprite(s"kbd-spr-${CPRand.guid6}", tags = tags):
     /** @inheritdoc */ 
     override def update(ctx: CPSceneObjectContext): Unit = ctx.getKbEvent match
         case Some(evt) => f(ctx, evt.key)

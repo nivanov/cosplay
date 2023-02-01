@@ -92,7 +92,7 @@ class CPTextInputSprite(
     private var next: Option[String] = None,
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
-    tags: String*
+    tags: Seq[String] = Seq.empty
 ) extends CPSceneObject(id, tags.toSet):
     require(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
     require(initTxt != null, "Initial text cannot be 'null'.")

@@ -98,7 +98,7 @@ class CPImageSprite(
     img: CPImage,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
-    tags: String*) extends CPSceneObject(id, tags.toSet):
+    tags: Seq[String] = Seq.empty) extends CPSceneObject(id, tags.toSet):
     private var myImg = img
     private var myDim = img.getDim
     private var myX = x

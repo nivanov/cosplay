@@ -31,7 +31,7 @@
 val cosPlayVer = "0.7.5"
 
 val scalaMajVer = "3"
-val scalaMinVer = "1.3"
+val scalaMinVer = "2.1"
 val log4jVer = "2.19.0"
 val scalaLoggingVer = "3.9.5"
 val scalaParColVer = "1.0.4"
