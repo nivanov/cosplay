@@ -100,7 +100,7 @@
         <log4j.ver>2.19.0</log4j.ver>
         <scala.logging.ver>3.9.5</scala.logging.ver>
         <scala.par.colections>1.0.4</scala.par.colections>
-        <scalatest.ver>3.2.14</scalatest.ver>
+        <scalatest.ver>3.2.15</scalatest.ver>
         <maven.jar.plugin.ver>3.2.0</maven.jar.plugin.ver>
         <maven.compiler.plugin.ver>3.8.0</maven.compiler.plugin.ver>
         <maven.enforcer.plugin.ver>1.4.1</maven.enforcer.plugin.ver>
@@ -109,14 +109,14 @@
         <maven.install.plugin.ver>2.5.2</maven.install.plugin.ver>
         <maven.source.plugin.ver>3.0.1</maven.source.plugin.ver>
         <maven.clean.plugin.ver>3.1.0</maven.clean.plugin.ver>
-        <jline.ver>3.21.0</jline.ver>
+        <jline.ver>3.22.0</jline.ver>
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
         <commons.math.ver>3.6.1</commons.math.ver>
         <commons.text.ver>1.10.0</commons.text.ver>
         <commons.collections.ver>4.4</commons.collections.ver>
         <scala3.reflect.ver>1.2.0</scala3.reflect.ver>
-        <scalatest.ver>3.2.14</scalatest.ver>
-        <junit.ver>5.9.1</junit.ver>
+        <scalatest.ver>3.2.15</scalatest.ver>
+        <junit.ver>5.9.2</junit.ver>
         <openjfx.ver>17.0.2</openjfx.ver>
         <ikonli.ver>12.3.1</ikonli.ver>
         <flatlaf.ver>3.0</flatlaf.ver>
@@ -125,9 +125,10 @@
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
         <exec.maven.ver>3.1.0</exec.maven.ver>
-        <jna.ver>5.12.1</jna.ver>
+        <jna.ver>5.13.0</jna.ver>
         <mixpanel.ver>1.5.1</mixpanel.ver>
         <org.antlr4.ver>4.11.1</org.antlr4.ver>
+        <de.sciss.audiofile.ver>2.4.0</de.sciss.audiofile.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
 
@@ -137,6 +138,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>de.sciss</groupId>
+                <artifactId>audiofile_3</artifactId>
+                <version>${de.sciss.audiofile.ver}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.mixpanel</groupId>
                 <artifactId>mixpanel-java</artifactId>
