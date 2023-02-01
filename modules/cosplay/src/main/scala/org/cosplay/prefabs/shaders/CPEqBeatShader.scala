@@ -125,8 +125,9 @@ class CPEqBeatShader(snd: CPSound) extends CPShader:
             // For zero brightness we gradually reduce it to get dimming effect.
             if brightness == 0F then brightness = (lastBrightness - 0.2).max(0).toFloat
             lastBrightness = brightness
-            dur += ctx.getFrameMs - lastRenderMs
-            lastRenderMs = ctx.getFrameMs
+            val now = ctx.getFrameMs
+            dur += now - lastRenderMs
+            lastRenderMs = now
             val canv = ctx.getCanvas
             objRect.loop((x, y) => {
                 if canv.isValid(x, y) then

@@ -92,11 +92,12 @@ object CPMacarenaGame:
 
         val x = 25
         val y = 13
+        val beatShdr = new CPEqBeatShader(music)
         val titleSpr = new CPCenteredImageSprite(
             img = FIG_CRAWFORD.withFullWidth().render("MACARENA", C_LIGHT_CORAL).trimBg(),
             z = 0,
             orient = HOR,
-            shaders = Seq(new CPEq))
+            shaders = Seq(beatShdr))
         titleSpr.setY(3)
         val danceFloor = CPScene("danceFloor", Option(dim), bgPx,
             titleSpr,
@@ -110,6 +111,7 @@ object CPMacarenaGame:
             new CPOffScreenSprite:
                 override def onStart(): Unit =
                     music.loop(1500) // Auto-play with fade-in.
+                    beatShdr.start()
         )
 
         // Start the game & wait for exit.

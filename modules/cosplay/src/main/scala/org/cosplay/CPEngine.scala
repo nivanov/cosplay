@@ -804,7 +804,7 @@ object CPEngine:
                 stopFrame = false
 
                 val frameNs = System.nanoTime()
-                val frameMs = frameNs / 1_000_000
+                val frameMs = frameNs / 1_000_000L
 
                 def waitForWakeup(): Unit =
                     while (pause)
