@@ -85,9 +85,9 @@ class CPBeatShader(
     private var dur = 0L
     private var lastRenderMs = 0L
     private type Fun = Long => Float
-    private val fun = buildFun()
+    private var fun = buildFun(snd)
 
-    private def buildFun(): Fun =
+    private def buildFun(snd: CPSound): Fun =
         def getUri(src: String): URI =
             if CPUtils.isResource(src) then getClass.getClassLoader.getResource(src).toURI else URI.create(src)
 
@@ -168,6 +168,14 @@ class CPBeatShader(
       * Tests whether this shader is in progress or not.
       */
     def isActive: Boolean = go
+
+    /**
+     *
+     * @param snd
+     */
+    def changeSound(snd: CPSound): Unit =
+        dur = 0L
+        fun = buildFun(snd)
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go then

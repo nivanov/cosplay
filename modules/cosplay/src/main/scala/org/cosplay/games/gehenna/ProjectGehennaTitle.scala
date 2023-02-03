@@ -114,8 +114,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&NEON_BLUE.darker(darkness)
         )
 
-    private val titleFlashShdr = new FlashShader()
-    private val skullFlashShdr = new FlashShader()
+    private val titleFlashShdr = new CPBeatShader(DFLT_SONG)
+    private val skullFlashShdr = new CPBeatShader(DFLT_SONG)
     private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr, skullFlashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -266,14 +266,13 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         skullFlashShdr.stop()
         //titleFlashShdr.stop()
 
-    private def resetFlash(fun: Long => Float): Unit =
-        skullFlashShdr.setFun(fun)
+    private def resetFlash(): Unit =
+//        skullFlashShdr.setFun(fun)
         skullFlashShdr.start()
         //titleFlashShdr.changeMag(mag)
         //titleFlashShdr.start()
 
     private def menuSongChange(): Unit =
-        stopFlash()
 
         def readLines(res: String): Seq[String] = IOUtils.readLines(getClass.getClassLoader.getResourceAsStream(res),
             Charset.forName("UTF-8")).asScala.toSeq
@@ -294,11 +293,16 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         val af = AudioFile.openRead(mkFile(songFile))
         val snd = CPSound(songFile)
-        val fun = sequence(af, snd)
+        //val fun = sequence(af, snd)
+
+        skullFlashShdr.changeSound(snd)
+        titleFlashShdr.changeSound(snd)
+        skullFlashShdr.start()
+        titleFlashShdr.start()
 
         af.close()
         snd.play(0, CPSound => menuSongChange())
-        resetFlash(fun)
+        resetFlash()
 
     addObjects(
         titleSpr,
