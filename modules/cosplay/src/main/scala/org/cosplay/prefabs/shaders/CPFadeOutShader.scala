@@ -123,7 +123,7 @@ class CPFadeOutShader(
                         require(bal >= 0f && bal <= 1f, "Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(c, bgBg, bal))
+                            case Some(c) => CPColor.mixture(c, bgBg, bal).?
                             case None => None
                         canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
             })

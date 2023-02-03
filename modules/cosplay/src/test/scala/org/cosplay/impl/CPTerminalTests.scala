@@ -32,9 +32,9 @@ object CPTerminalTests:
     def termTests(): Unit =
         val gameInfo = CPGameInfo(
             name = "Name",
-            initDim = Option(CPDim(10, 10)),
+            initDim = CPDim(10, 10).?,
             termBg = CPColor.C_DFLT_BG,
-            minDim = Option(CPDim(10, 10))
+            minDim = CPDim(10, 10).?
         )
 
         val term = new CPJLineTerminal(gameInfo)

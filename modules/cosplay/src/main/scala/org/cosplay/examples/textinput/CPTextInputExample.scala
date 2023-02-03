@@ -86,7 +86,7 @@ object CPTextInputExample:
             mkSkin(true, false),
             mkSkin(false, false),
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = Option("passwd")
+            next = "passwd".?
         )
         val pwdLbl = new CPLabelSprite(6, 7, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
         val pwdTin = CPTextInputSprite("passwd", 6, 8, 1,
@@ -95,13 +95,13 @@ object CPTextInputExample:
             mkSkin(true, true),
             mkSkin(false, true),
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = Option("user")
+            next = "user".?
         )
         val panel = CPPanelSprite(2, 2, 24, 11, 0, "Login")
         val focusAcq = CPOffScreenSprite(ctx => if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user"))
 
         val bgPx = '.'&&(C_GRAY2, C_GRAY1)
-        val sc = new CPScene("scene", Option(CPDim(27, 13)), bgPx,
+        val sc = new CPScene("scene", CPDim(27, 13).?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             userLbl,
@@ -114,7 +114,7 @@ object CPTextInputExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Text Input Example", initDim = Option(termDim)),
+            CPGameInfo(name = "Text Input Example", initDim = termDim.?),
             System.console() == null || args.contains("emuterm")
         )
 

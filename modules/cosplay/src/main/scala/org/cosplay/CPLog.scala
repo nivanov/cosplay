@@ -196,7 +196,7 @@ trait CPLog:
                     stats.objCount,
                     stats.visObjCount
                 )
-                tbl.trace(this, Option("Performance snapshot:"))
+                tbl.trace(this, "Performance snapshot:".?)
 
             case None => ()
 

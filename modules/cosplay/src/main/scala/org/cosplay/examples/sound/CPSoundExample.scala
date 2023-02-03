@@ -67,7 +67,7 @@ object CPSoundExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Sound Example", initDim = Option(dim)),
+            CPGameInfo(name = "Sound Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -96,7 +96,7 @@ object CPSoundExample:
                     case None => ()
 
         val bgPx = '.'&&(C_GRAY2, C_GRAY1)
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             panel,
             lbl,
             ctrl,

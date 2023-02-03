@@ -76,8 +76,8 @@ object CPBirdGame:
     def main(args: Array[String]): Unit =
         val gameInfo = CPGameInfo(
             name = "Ascii Bird",
-            initDim = Option(dim),
-            minDim = Option(dim)
+            initDim = dim.?,
+            minDim = dim.?
         )
 
         // Initialize the engine.

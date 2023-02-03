@@ -113,7 +113,7 @@ object CPSlideShaderExample:
     def main(args: Array[String]): Unit =
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Slide Shaders Demo", initDim = Option(dim)),
+            CPGameInfo(name = "Slide Shaders Demo", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -145,10 +145,10 @@ object CPSlideShaderExample:
             lastShdr = s2
 
         val imgSpr = new CPCenteredImageSprite(img = img, 0, shdrs.toSeq)
-        val sc = new CPScene("scene", Option(dim), BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
+        val sc = new CPScene("scene", dim.?, BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), BG_PX, cols, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, BG_PX, cols, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

@@ -41,7 +41,7 @@ object CPAstronaut1Image extends CPArrayImage(
           |         \   `\  \
           |          `-._/._/
         """),
-    (ch, _, _) => if ch.isLetter then CPPixel(ch, C_RED, Option(C_WHITE)) else ch&C_WHITE
+    (ch, _, _) => if ch.isLetter then CPPixel(ch, C_RED, C_WHITE.?) else ch&C_WHITE
 )
 
 /**

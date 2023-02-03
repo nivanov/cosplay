@@ -124,7 +124,7 @@ class CPFadeInShader(
                         require(bal >= 0f && bal <= 1f, "Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(bgFg, px.fg, bal)
                         val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(bgBg, c, bal))
+                            case Some(c) => CPColor.mixture(bgBg, c, bal).?
                             case None => None
                         canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
             })

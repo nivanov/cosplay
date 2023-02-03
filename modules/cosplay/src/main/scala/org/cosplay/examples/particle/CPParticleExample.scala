@@ -95,7 +95,7 @@ object CPParticleExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Particle Example", initDim = Option(dim)),
+            CPGameInfo(name = "Particle Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -181,7 +181,7 @@ object CPParticleExample:
         val bombX = (w - bw) / 2
         val bombY = (h - bh) / 2
 
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             kaboomSpr,
             ctrlSpr,
             new CPStaticImageSprite("bomb", bombX, bombY, 0, bomb),
@@ -193,7 +193,7 @@ object CPParticleExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, bgPx, COLORS, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

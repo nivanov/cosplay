@@ -252,7 +252,7 @@ object CPAnimation:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview $dim",
-                initDim = Option(dim),
+                initDim = dim.?,
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -262,7 +262,7 @@ object CPAnimation:
         try
             CPEngine.startGame(new CPScene(
                 "scene",
-                Option(dim),
+                dim.?,
                 bg,
                 spr, // Animation we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
@@ -336,11 +336,11 @@ object CPAnimation:
                         else
                             idx += idxIncr
                     if playing then
-                        Option(CPAnimationKeyFrame(
+                        CPAnimationKeyFrame(
                             id,
                             frames(idx)._1,
                             idx
-                        ))
+                        ).?
                     else
                         None
                 else

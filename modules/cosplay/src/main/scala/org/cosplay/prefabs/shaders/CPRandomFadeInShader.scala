@@ -137,7 +137,7 @@ class CPRandomFadeInShader(
                         val newFg = CPColor.mixture(bgFg, px.fg, bal)
                         val fin = newFg == px.fg
                         val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(bgBg, c, bal))
+                            case Some(c) => CPColor.mixture(bgBg, c, bal).?
                             case None => None
                         var newPx = px.withFg(newFg).withBg(newBg)
                         var ch = px.char

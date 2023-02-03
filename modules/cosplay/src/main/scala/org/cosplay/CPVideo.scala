@@ -135,7 +135,7 @@ object CPVideo:
         CPEngine.init(
             CPGameInfo(
                 name = s"Video Preview (${vid.getFrameCount} ${vidDim.w}x${vidDim.h} frames)",
-                initDim = Option(scDim)
+                initDim = scDim.?
             ),
             emuTerm = emuTerm
         )
@@ -144,7 +144,7 @@ object CPVideo:
             CPEngine.rootLog().info(s"Video preview [origin=${vid.getOrigin}, frameCount=${vid.getFrameCount}, frameDim=${vid.getFrameDim}, class=${vid.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Option(scDim),
+                scDim.?,
                 bg,
                 spr, // Video we are previewing.
                 makeKbCtrl(),

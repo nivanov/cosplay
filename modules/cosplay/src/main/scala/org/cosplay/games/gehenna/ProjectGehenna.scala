@@ -59,7 +59,7 @@ object ProjectGehenna:
         // Initialize the engine.
         CPEngine.init(CPGameInfo(
             name = "Project Gehenna",
-            initDim = Option(dim)
+            initDim = dim.?
         ))
 
         try

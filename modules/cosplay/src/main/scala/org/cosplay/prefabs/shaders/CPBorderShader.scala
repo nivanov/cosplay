@@ -109,7 +109,7 @@ class CPBorderShader(
                 val zpx = canv.getZPixel(x, y)
                 val px = zpx.px
                 if px.bg.nonEmpty then
-                    canv.drawPixel(px.withBg(Option(mixColor(px.bg.get))), x, y, zpx.z)
+                    canv.drawPixel(px.withBg(mixColor(px.bg.get).?), x, y, zpx.z)
 
             if !compensateWidth then
                 for d <- 0 until width do

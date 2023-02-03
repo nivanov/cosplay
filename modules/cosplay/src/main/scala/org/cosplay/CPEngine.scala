@@ -57,6 +57,10 @@ extension[T](ref: T)
     def `?`: Option[T] = Option(ref)
 
 extension[R, T](opt: Option[T])
+    @targetName("optEqual")
+    def ===(t: T): Boolean = opt match
+        case Some(a) => a == t
+        case None => false
     def mapOr(f: T => R, dflt: => R): R = opt.flatMap(f(_).?).getOrElse(dflt)
     def getOrThrow[E <: Exception](e: => E): T = opt match
         case Some(t) => t
@@ -427,7 +431,7 @@ object CPEngine:
         tbl += ("Version", gameInfo.semVer)
         tbl += ("Initial Size", gameInfo.initDim)
         tbl += ("Minimum Size", gameInfo.minDim.mapOr(_.toString, "n/a"))
-        tbl.info(engLog, Option("Game initialized:"))
+        tbl.info(engLog, "Game initialized:".?)
 
     /**
       *
@@ -529,7 +533,7 @@ object CPEngine:
         checkState()
         pauseMux.synchronized {
             if !pause then E(s"Game must be paused for debugging.")
-            dbgStopAtFrameCnt = Option(frameCnt + 1)
+            dbgStopAtFrameCnt = (frameCnt + 1).?
             dbgKbKey = kbKey
             pause = false
             pauseMux.notifyAll()
@@ -787,7 +791,7 @@ object CPEngine:
                     scObj.getDim
                 )
             })
-            tbl.info(engLog, Option(s"Switching to scene '${x.getId}' $dimS with scene objects:"))
+            tbl.info(engLog, s"Switching to scene '${x.getId}' $dimS with scene objects:".?)
 
         try
             logSceneSwitch(sc) // Initial scene.
@@ -899,23 +903,23 @@ object CPEngine:
 
                         lastKbEvt match
                             case Some(lastEvt) =>
-                                kbEvt = Option(CPKeyboardEvent(
+                                kbEvt = CPKeyboardEvent(
                                     kbKey,
                                     lastEvt.key == kbKey,
                                     frameCnt,
                                     frameMs,
                                     lastEvt.eventFrame,
                                     lastEvt.eventMs
-                                ))
+                                ).?
                             case None =>
-                                kbEvt = Option(CPKeyboardEvent(
+                                kbEvt = CPKeyboardEvent(
                                     kbKey,
                                     sameAsLast = false,
                                     frameCnt,
                                     frameMs,
                                     0L,
                                     0L
-                                ))
+                                ).?
 
                         lastKbEvt = kbEvt
                         kbKey = null
@@ -1005,7 +1009,7 @@ object CPEngine:
                         if kbFocusOwner.isDefined && kbFocusOwner.get != id then
                             scLog.trace(s"Input focus is currently held by '${kbFocusOwner.get}', switching to '$id'.")
                         val cloId = id
-                        delayedQ += (() => kbFocusOwner = Option(cloId))
+                        delayedQ += (() => kbFocusOwner = cloId.?)
                     override def getFocusOwner: Option[String] = kbFocusOwner
                     override def releaseFocus(id: String): Unit =
                         if kbFocusOwner.isDefined && kbFocusOwner.get == id then
@@ -1205,7 +1209,7 @@ object CPEngine:
                     val avgFps = fpsSum / fpsCnt
                     val avgLow1Fps = low1FpsList.sum / low1FpsCnt
 
-                    stats = Option(CPRenderStats(frameCnt, scFrameCnt, fps, avgFps, avgLow1Fps, usrNs, sysNs, objs.length, visObjCnt, kbEvt))
+                    stats = CPRenderStats(frameCnt, scFrameCnt, fps, avgFps, avgLow1Fps, usrNs, sysNs, objs.length, visObjCnt, kbEvt).?
 
                     // Update GUI log.
                     CPGuiLog.updateStats(stats.get)

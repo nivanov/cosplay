@@ -48,7 +48,7 @@ import prefabs.particles.*
   *
   * @param dim Fixed dimension for this scene.
   */
-class CPSnakePlayScene(dim: CPDim) extends CPScene("play", Option(dim), BG_PX):
+class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
     private val WIN_SCORE = 100
     private var score = 0
     private var go = true

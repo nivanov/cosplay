@@ -114,8 +114,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&NEON_BLUE.darker(darkness)
         )
 
-    private val titleFlashShdr = new CPBeatShader(DFLT_SONG)
-    private val skullFlashShdr = new CPBeatShader(DFLT_SONG)
+    private val titleFlashShdr = new CPBeatShader(DFLT_SONG.?)
+    private val skullFlashShdr = new CPBeatShader(DFLT_SONG.?)
     private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr, skullFlashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)

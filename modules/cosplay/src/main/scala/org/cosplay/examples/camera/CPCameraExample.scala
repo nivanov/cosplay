@@ -230,15 +230,15 @@ object CPCameraExample:
         objs ++= palmSeq
 
         // Create the scene.
-        val sc = new CPScene("scene", Option(dim), bgPx, objs)
+        val sc = new CPScene("scene", dim.?, bgPx, objs)
         val cam = sc.getCamera
 
-        cam.setFocusTrackId(Option("ufo"))
+        cam.setFocusTrackId("ufo".?)
         cam.setFocusFrameInsets(new CPInsets(10, 0))
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Camera Example", initDim = Option(initDim)),
+            CPGameInfo(name = "Camera Example", initDim = initDim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -247,7 +247,7 @@ object CPCameraExample:
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene(
                     id = "logo",
-                    Option(initDim),
+                    initDim.?,
                     bgPx,
                     Seq(C_ORANGE1, C_SKY_BLUE1, C_CYAN1, C_DARK_ORANGE3, C_GREEN_YELLOW),
                     nextSc = "scene"

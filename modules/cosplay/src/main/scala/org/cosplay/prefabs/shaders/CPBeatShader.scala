@@ -67,7 +67,8 @@ import CPBeatShaderSmoothing.*
   * Note that by default this shader is inactive and user must call [[start()]] method to start this shader.
   *
   * @param snd Sound asset to analyze for the beat detection. Note that the start of playing this sound should
-  *     generally be synchronized in time with calling [[start()]] method on this shader.
+  *     generally be synchronized in time with calling [[start()]] method on this shader. If not provided - ensure
+  *     that method [[changeSound()]] is called before shader is started.
   * @param smoothing Smoothing mode. Default value is [[SMOOTH_UP]].
   * @param thresholdGain A constant that can be used to fine tune the calculated RMS-based threshold. Once threshold is
   *     calculated it will be multiplied by this constant. Default value is `1.0f`. Typical fine tuning values
@@ -76,7 +77,7 @@ import CPBeatShaderSmoothing.*
   *     threshold.
   */
 class CPBeatShader(
-    snd: Option[CPound],
+    snd: Option[CPSound] = None,
     smoothing: CPBeatShaderSmoothing = SMOOTH_UP,
     thresholdGain: Float = 1.0f,
     thresholdTailMs: Int = 2000
@@ -85,7 +86,7 @@ class CPBeatShader(
     private var dur = 0L
     private var lastRenderMs = 0L
     private type Fun = Long => Float
-    private var fun = buildFun(snd)
+    private var fun: Option[Fun] = if snd.isDefined then buildFun(snd.get).? else None
 
     private def buildFun(snd: CPSound): Fun =
         def getUri(src: String): URI =
@@ -175,7 +176,7 @@ class CPBeatShader(
      */
     def changeSound(snd: CPSound): Unit =
         dur = 0L
-        fun = buildFun(snd)
+        fun = buildFun(snd).?
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
@@ -183,7 +184,7 @@ class CPBeatShader(
             val now = ctx.getFrameMs
             dur += (now - lastRenderMs).max(0L)
             lastRenderMs = now
-            val brightness = fun(dur)
+            val brightness = fun.get(dur)
             val canv = ctx.getCanvas
             objRect.loop((x, y) => {
                 if canv.isValid(x, y) then

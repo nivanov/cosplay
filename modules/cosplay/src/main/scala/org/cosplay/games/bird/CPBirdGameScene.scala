@@ -316,8 +316,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = Seq("building")):
             private var x = posX
             private val col = CPRand.rand(BUILD_COLORS)
-            private val wallPx = BUILD_WALL_PX.withBg(Option(col))
-            private val winPx = BUILD_WIN_PX.withBg(Option(col))
+            private val wallPx = BUILD_WALL_PX.withBg(col.?)
+            private val winPx = BUILD_WIN_PX.withBg(col.?)
 
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
@@ -367,7 +367,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 for a <- 0 until width - 1 do
                     val bg = col.lighter(a.toFloat / 20f)
                     val fg = bg.darker(.3f)
-                    val px2 = PIPE_PX.withFg(fg).withBg(Option(bg))
+                    val px2 = PIPE_PX.withFg(fg).withBg(bg.?)
                     val x = pipeX + a
                     canv.drawLine(x, gapStartY, x, canv.dim.h, 2, px2)
                     canv.drawLine(x, gapStartY - PIPE_GAP_HEIGHT, x, 0, 2, px2)

@@ -153,7 +153,7 @@ object CPCanvasExample:
                 )
 
         // Create the scene (exit the game on 'q' press).
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             drawSpr,
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)), // Just shader for the entire screen.
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.
@@ -161,7 +161,7 @@ object CPCanvasExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Canvas Example", initDim = Option(dim)),
+            CPGameInfo(name = "Canvas Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -170,7 +170,7 @@ object CPCanvasExample:
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene(
                     "logo",
-                    Option(dim),
+                    dim.?,
                     bgPx,
                     Seq(C_STEEL_BLUE1, C_INDIAN_RED, C_LIGHT_STEEL_BLUE),
                     "scene"

@@ -779,7 +779,7 @@ object CPImage:
                     val fg = CPColor(Integer.decode(parts(3)))
                     val bg = CPColor(Integer.decode(parts(4)))
 
-                    CPPosPixel(CPPixel(ch, fg, Option(bg)), x, y)
+                    CPPosPixel(CPPixel(ch, fg, bg.?), x, y)
                 catch
                     case e: Exception => E(s"Invalid CSV file format at line $idx: $src", e)
             })
@@ -819,7 +819,7 @@ object CPImage:
                 val bgB = unsigned(bb.get)
                 val fg = CPColor(fgR, fgG, fgB)
                 // REXPaint uses RGB(255, 0, 255) as a built-in transparent background.
-                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB))
+                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else CPColor(bgR, bgG, bgB).?
                 layer.set(x, y, CPPixel(ch, fg, bg))
                 idx += 1
             layers += layer
@@ -879,7 +879,7 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview (${frameDim.w}x${frameDim.h})",
-                initDim = Option(dim),
+                initDim = dim.?,
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -890,7 +890,7 @@ object CPImage:
             CPEngine.rootLog().info(s"Animation preview [frames=${imgs.size}, frameDim=$frameDim]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Option(dim),
+                dim.?,
                 bg,
                 spr, // Animation we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
@@ -911,7 +911,7 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.w}x${imgDim.h})",
-                initDim = Option(dim),
+                initDim = dim.?,
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -920,7 +920,7 @@ object CPImage:
             CPEngine.rootLog().info(s"Image preview [origin=${img.getOrigin}, dim=${img.getDim}, class=${img.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Option(dim),
+                dim.?,
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.

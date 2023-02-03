@@ -82,12 +82,12 @@ object CPVideoExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Video Example", initDim = Option(dim)),
+            CPGameInfo(name = "Video Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
         val music = CPSound(src = "sounds/examples/bg3.wav")
-        val beatShdr = new CPBeatShader(music, smoothing = CPBeatShaderSmoothing.SMOOTH_UP)
+        val beatShdr = new CPBeatShader(music.?, smoothing = CPBeatShaderSmoothing.SMOOTH_UP)
         val vidSpr = new CPVideoSprite(
             vid = CPVideoClip,
             4, 2, 0, 30,
@@ -97,7 +97,7 @@ object CPVideoExample:
             shaders = Seq(beatShdr)
         )
         // Create the scene.
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             vidSpr,
             new CPKeyboardSprite((_, key) => key match // Separate keyboard control (as an example).
                 case KEY_LO_R => vidSpr.rewind()

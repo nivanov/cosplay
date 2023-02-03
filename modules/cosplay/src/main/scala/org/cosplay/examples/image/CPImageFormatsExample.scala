@@ -115,7 +115,7 @@ object CPImageFormatsExample:
 
         val markup = CPMarkup(
             C_DEEP_PINK3,
-            Option(C_BLACK),
+            C_BLACK.?,
             Seq(
                 CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
                 CPMarkupElement("{#", "#}", _&&(C_X11_BROWN, C_YELLOW)),
@@ -160,7 +160,7 @@ object CPImageFormatsExample:
         val markupSpr = CPStaticImageSprite(15, 32, 0, markupImg)
         val markupLbl = CPLabelSprite(25, 37, 0, "Markup image", c1)
 
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             alienSpr, alienLbl,
             speckSpr, speckLbl,
             guitarSpr, guitarLbl,
@@ -173,12 +173,12 @@ object CPImageFormatsExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Image Formats Example", initDim = Option(dim)),
+            CPGameInfo(name = "Image Formats Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_LIME, C_PURPLE, C_GREY, C_STEEL_BLUE1), "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, bgPx, List(C_LIME, C_PURPLE, C_GREY, C_STEEL_BLUE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

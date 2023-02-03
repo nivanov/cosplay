@@ -47,15 +47,15 @@ object CPMarkupTests:
     private def mkMarkup(elms: List[(String, String)]): CPMarkup =
         new CPMarkup(
             C_GREEN,
-            Option(C_GRAY1),
-            elms.map(elm => (elm._1, elm._2, (ch: Char) => CPPixel(ch, C_WHITE, Option(C_RED))))
+            C_GRAY1.?,
+            elms.map(elm => (elm._1, elm._2, (ch: Char) => CPPixel(ch, C_WHITE, C_RED.?)))
         )
 
     @Test
     def checkMarkupProcess(): Unit =
         val markup = CPMarkup(
             C_GREEN,
-            Option(C_BLACK),
+            C_BLACK.?,
             Seq(
                 CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
                 CPMarkupElement("{#", "#}", _&&(C_BLUE, C_YELLOW)),

@@ -182,7 +182,7 @@ object CPAnimationExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Animation Example", initDim = Option(dim)),
+            CPGameInfo(name = "Animation Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -233,7 +233,7 @@ object CPAnimationExample:
             override def getY: Int = y.round
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                // Demo the log snapshoting (rendering stats get logged in every 2 seconds).
+                // Demo the log snapshotting (rendering stats get logged in every 2 seconds).
                 if ctx.getFrameCount % 60 == 0 then ctx.getLog.snapshot()
                 ctx.getKbEvent match
                     case Some(evt) =>
@@ -249,7 +249,7 @@ object CPAnimationExample:
                     // Switch to 'idle' waiting for the current animation to complete (default).
                     case None => change("idle")
 
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             player,
             CPStaticImageSprite(28, 28, 0, imgHelp),
             // On 'q' kick in fade out shader that will exit the game once it is finished.
@@ -261,7 +261,7 @@ object CPAnimationExample:
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene(
                     "logo",
-                    Option(dim),
+                    dim.?,
                     bgPx,
                     Seq(C_ORANGE1, C_STEEL_BLUE1, C_DARK_ORANGE, C_WHITE, C_LIGHT_CORAL),
                     "scene"

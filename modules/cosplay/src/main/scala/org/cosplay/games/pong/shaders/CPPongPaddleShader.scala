@@ -59,5 +59,5 @@ class CPPongPaddleShader extends CPShader:
             objRect.loop((x, y) => {
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
-                    canv.drawPixel(zpx.px.withBg(Option(C2)), x, y, zpx.z)
+                    canv.drawPixel(zpx.px.withBg(C2.?), x, y, zpx.z)
             })

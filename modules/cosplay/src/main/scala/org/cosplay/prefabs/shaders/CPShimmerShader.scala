@@ -135,7 +135,7 @@ class CPShimmerShader(
                         if !skip(zpx, x, y) then
                             val rc = CPRand.rand(colors)
                             val px = zpx.px
-                            val newPx = if px.char == ' ' then px.withBg(Option(rc)) else px.withFg(rc)
+                            val newPx = if px.char == ' ' then px.withBg(rc.?) else px.withFg(rc)
                             canv.drawPixel(newPx, x, y, zpx.z)
                             lastSet += PixelXYZ(newPx, x, y, zpx.z)
                 })

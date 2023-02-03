@@ -133,7 +133,7 @@ class CPStyledString:
       */
     def fgbg(fg: CPColor, bg: CPColor): CPStyledString =
         this.fg = fg
-        this.bg = Option(bg)
+        this.bg = bg.?
         this
 
     /**
@@ -151,7 +151,7 @@ class CPStyledString:
       * @param bg Background color to set.
       */
     def bg(bg: CPColor): CPStyledString =
-        this.bg = Option(bg)
+        this.bg = bg.?
         this
 
     /**
