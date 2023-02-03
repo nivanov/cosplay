@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.cosplay.prefabs.particles.confetti
+package org.cosplay.prefabs.particles
 
 import org.cosplay.*
-import CPPixel.*
+import org.cosplay.CPPixel.*
 
 /*
    _________            ______________

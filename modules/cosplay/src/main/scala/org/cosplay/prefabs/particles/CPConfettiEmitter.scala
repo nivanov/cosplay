@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.cosplay.prefabs.particles.confetti
+package org.cosplay.prefabs.particles
 
 import org.cosplay.*
-import CPColor.*
-import games.snake.*
+import org.cosplay.CPColor.*
+import org.cosplay.games.snake.*
 
 /*
    _________            ______________

@@ -177,6 +177,7 @@ import scala.util.Using
   * @example See [[org.cosplay.examples.image.CPImageFormatsExample CPImageFormatsExample]] class for the example of
   *     using images.
   */
+//noinspection ScalaWeakerAccess
 abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     override val toString: String = s"Image [dim=$getDim, origin=$origin]"
 
@@ -557,15 +558,20 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
 
     /**
       * Makes a deep snapshot copy of the current image.
+      *
+      * @param skin Optional skin to apply when copying.
       */
-    def copy(): CPImage = new CPArrayImage(toArray2D, origin)
+    def copy(skin: (CPPixel, Int, Int) => CPPixel = (px: CPPixel, x: Int, y: Int) => px): CPImage =
+        new CPArrayImage(toArray2D.map(skin), origin)
 
     /**
       * Makes a deep snapshot copy of the subregion of the current image.
       *
       * @param rect Subregion to copy.
+      * @param skin Optional skin to apply when copying.
       */
-    def copy(rect: CPRect): CPImage = new CPArrayImage(toArray2D.extract(rect), origin)
+    def copyRect(rect: CPRect, skin: (CPPixel, Int, Int) => CPPixel = (px: CPPixel, x: Int, y: Int) => px): CPImage =
+        new CPArrayImage(toArray2D.extract(rect).map(skin), origin)
 
     /**
       * Attaches given image underneath this image returning a new combined image.
@@ -694,6 +700,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
 /**
   * Companion object with utility functions.
   */
+//noinspection ScalaWeakerAccess
 object CPImage:
     // First search for '_1' then, if not found, search for '_2'.
     private val HOR_FLIP_MAP = Seq(

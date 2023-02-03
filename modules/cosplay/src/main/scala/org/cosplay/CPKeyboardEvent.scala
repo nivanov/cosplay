@@ -38,18 +38,18 @@ package org.cosplay
   * @param key Keyboard key.
   * @param sameAsLast Whether or not last keyboard event had the same keyboard key.
   * @param eventFrame Frame number for this event.
-  * @param eventNs Timestamp of the event in nanoseconds.
+  * @param eventMs Timestamp of the event in milliseconds.
   * @param lastEventFrame Frame number of the last keyboard event.
-  * @param lastEventNs Timestamp in nanoseconds of the last keyboard event.
+  * @param lastEventMs Timestamp in milliseconds of the last keyboard event.
   * @see [[CPSceneObjectContext.getKbEvent]]
   */
 final case class CPKeyboardEvent(
     key: CPKeyboardKey,
     sameAsLast: Boolean,
     eventFrame: Long,
-    eventNs: Long,
+    eventMs: Long,
     lastEventFrame: Long,
-    lastEventNs: Long
+    lastEventMs: Long
 ):
     /**
       * Whether or not this is a repeated press on keyboard of the same key.

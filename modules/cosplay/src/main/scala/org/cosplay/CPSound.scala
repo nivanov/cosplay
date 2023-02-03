@@ -89,20 +89,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     /** @inheritdoc */
     override val getOrigin: String = src
 
-    /**
-      * Gets source of this sound. Note that this method returns the same value as [[getOrigin]] method.
-      */
-    def getSource: String = src
-
-    /**
-      *
-      */
-    private def getUri: String =
-        if CPUtils.isResource(src) then getClass.getClassLoader.getResource(src).toURI.toString else src
-
-    /**
-      *
-      */
+    private def getUri: String = if CPUtils.isResource(src) then getClass.getClassLoader.getResource(src).toURI.toString else src
     private def init(): Unit = tracks.synchronized(tracks.add(this))
 
     /**
@@ -206,9 +193,6 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
         )
         if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
 
-    /**
-      *
-      */
     private def stopTimeline(): Unit = if timeline != null then timeline.stop()
 
     /**

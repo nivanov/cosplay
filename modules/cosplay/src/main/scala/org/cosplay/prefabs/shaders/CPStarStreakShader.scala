@@ -163,7 +163,7 @@ class CPStarStreakShader(
         startMs = 0
 
     /**
-      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods..
+      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods.
       *
       * @see [[start()]]
       * @see [[stop()]]
@@ -173,7 +173,7 @@ class CPStarStreakShader(
     /**
       * Tests whether this shader is in progress or not.
       */
-    def isOn: Boolean = go
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =

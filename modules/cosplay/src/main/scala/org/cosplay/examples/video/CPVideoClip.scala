@@ -51,9 +51,9 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
     private val RAW_FOOTAGE = "prefab/video/tunnel.txt" // Under 'resources' folder...
     private val FRAME_CNT = 40 // We know upfront that there are 40 frames there.
     private val frames: Seq[CPImage] = {
-        val rsrc = getClass.getClassLoader.getResourceAsStream(RAW_FOOTAGE)
-        if rsrc != null then
-            Using.resource(Source.fromInputStream(rsrc, "UTF-8")) { rs =>
+        val in = getClass.getClassLoader.getResourceAsStream(RAW_FOOTAGE)
+        if in != null then
+            Using.resource(Source.fromInputStream(in, "UTF-8")) { rs =>
                 val lines = rs.getLines().toSeq.filter(_.trim.nonEmpty) // Load all lines and skip empty ones.
                 lines.grouped(lines.size / FRAME_CNT).toSeq.map { frameLines =>
                     // Psychedelic mode :-)

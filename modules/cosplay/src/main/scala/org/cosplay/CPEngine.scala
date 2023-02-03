@@ -804,7 +804,7 @@ object CPEngine:
                 stopFrame = false
 
                 val frameNs = System.nanoTime()
-                val frameMs = frameNs / 1_000_000
+                val frameMs = System.currentTimeMillis()
 
                 def waitForWakeup(): Unit =
                     while (pause)
@@ -903,16 +903,16 @@ object CPEngine:
                                     kbKey,
                                     lastEvt.key == kbKey,
                                     frameCnt,
-                                    frameNs,
+                                    frameMs,
                                     lastEvt.eventFrame,
-                                    lastEvt.eventNs
+                                    lastEvt.eventMs
                                 ))
                             case None =>
                                 kbEvt = Option(CPKeyboardEvent(
                                     kbKey,
                                     sameAsLast = false,
                                     frameCnt,
-                                    frameNs,
+                                    frameMs,
                                     0L,
                                     0L
                                 ))
