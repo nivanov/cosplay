@@ -81,6 +81,7 @@ import scala.collection.mutable
   * @example See [[org.cosplay.examples.video.CPVideoExample CPVideoExample]] class for the example of
   *     using video support.
   */
+//noinspection ScalaWeakerAccess
 class CPVideoSprite(
     id: String = s"video-spr-${CPRand.guid6}",
     vid: CPVideo,

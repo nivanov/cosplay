@@ -68,18 +68,34 @@ object CPVideoExample:
     def main(args: Array[String]): Unit =
         val c1 = C_LIGHT_GREEN
         val c2 = C_ORANGE1
+        val vidDim = CPVideoClip.getFrameDim
         val ctrlImg = new CPArrayImage(
             styleStr("[SPACE]", c1) ++ styleStr(" Play|Pause    ", c2) ++
-            styleStr("[R]", c1) ++ styleStr(" Rewind    ", c2) ++
-            styleStr("[Q]", c1) ++ styleStr(" Quit    ", c2) ++
-            styleStr("[CTRL-L]", c1) ++ styleStr(" Log    ", c2) ++
-            styleStr("[CTRL-Q]", c1) ++ styleStr(" FPS Overlay", c2)
+                styleStr("[R]", c1) ++ styleStr(" Rewind    ", c2) ++
+                styleStr("[Q]", c1) ++ styleStr(" Quit    ", c2) ++
+                styleStr("[CTRL-L]", c1) ++ styleStr(" Log    ", c2) ++
+                styleStr("[CTRL-Q]", c1) ++ styleStr(" FPS Overlay", c2)
         ).trimBg()
-        val vidDim = CPVideoClip.getFrameDim
         val ctrlDim = ctrlImg.getDim
         val dim = CPDim((vidDim.w + 8).max(ctrlDim.w + 4), vidDim.h + 8)
-        val vidSpr = new CPVideoSprite(vid = CPVideoClip, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
         val bgPx = '.'&&(C_GRAY2, C_GRAY1)
+
+        // Initialize the engine.
+        CPEngine.init(
+            CPGameInfo(name = "Video Example", initDim = Option(dim)),
+            System.console() == null || args.contains("emuterm")
+        )
+
+        val music = CPSound(src = "sounds/examples/bg3.wav")
+        val beatShdr = new CPBeatShader(music, smoothing = CPBeatShaderSmoothing.SMOOTH_UP)
+        val vidSpr = new CPVideoSprite(
+            vid = CPVideoClip,
+            4, 2, 0, 30,
+            loop = true,
+            collidable = false,
+            autoPlay = true,
+            shaders = Seq(beatShdr)
+        )
         // Create the scene.
         val sc = new CPScene("scene", Option(dim), bgPx,
             vidSpr,
@@ -90,14 +106,12 @@ object CPVideoExample:
             ),
             new CPStaticImageSprite((dim.w - ctrlDim.w) / 2, dim.h - 4, 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
-            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
+            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)):
+                override def onStart(): Unit =
+                    music.loop(1500) // Auto-play with fade-in.
+                    beatShdr.start() // Start beat shader in the same time.
+            ,
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.
-        )
-
-        // Initialize the engine.
-        CPEngine.init(
-            CPGameInfo(name = "Video Example", initDim = Option(dim)),
-            System.console() == null || args.contains("emuterm")
         )
 
         // Start the game & wait for exit.
