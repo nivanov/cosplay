@@ -76,7 +76,7 @@ import CPBeatShaderSmoothing.*
   *     threshold.
   */
 class CPBeatShader(
-    snd: CPSound,
+    snd: Option[CPound],
     smoothing: CPBeatShaderSmoothing = SMOOTH_UP,
     thresholdGain: Float = 1.0f,
     thresholdTailMs: Int = 2000
@@ -177,6 +177,7 @@ class CPBeatShader(
         dur = 0L
         fun = buildFun(snd)
 
+    /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go then
             val now = ctx.getFrameMs
