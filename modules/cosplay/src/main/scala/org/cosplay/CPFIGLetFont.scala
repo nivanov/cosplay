@@ -329,11 +329,16 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
 
         new CPArrayImage(data.trim(px => px == null || px.char == ' '))
 
-    /** @inheritdoc */ override def isSystem: Boolean = false
-    /** @inheritdoc */ override def getHeight: Int = figHeight
-    /** @inheritdoc */ override def getWidth: Int = figMaxLength
-    /** @inheritdoc */ override def getEncoding: String = enc
-    /** @inheritdoc */ override def getBaseline: Int = figBaseline
+    /** @inheritdoc */
+    override def isSystem: Boolean = false
+    /** @inheritdoc */
+    override def getHeight: Int = figHeight
+    /** @inheritdoc */
+    override def getWidth: Int = figMaxLength
+    /** @inheritdoc */
+    override def getEncoding: String = enc
+    /** @inheritdoc */
+    override def getBaseline: Int = figBaseline
 
     /*
 

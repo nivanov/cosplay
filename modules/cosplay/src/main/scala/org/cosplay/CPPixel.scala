@@ -37,7 +37,7 @@ import scala.annotation.targetName
 */
 
 /**
-  * Single character pixel.
+  * Single immutable character pixel.
   *
   * Character-pixel is a fundamental graphics unit in ASCII-based games. Just like the raster pixel on a graphics
   * screen it represents the smallest area that can be rendered on the screen.

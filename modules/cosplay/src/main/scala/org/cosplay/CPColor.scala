@@ -241,7 +241,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
       * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
       */
     inline def darker(factor: Float): CPColor =
-        assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
+        assert(factor >= 0 && factor <= 1, s"Factor ($factor) must be >= 0 && <= 1")
         val inv: Float = 1.0f - factor
         mapInt(d => (d * inv).round)
 
@@ -268,7 +268,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
       *     `0.1` means 10% lighter.
       */
     inline def lighter(factor: Float): CPColor =
-        assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
+        assert(factor >= 0 && factor <= 1, s"Factor ($factor) must be >= 0 && <= 1")
         mapInt(d => Math.round(d + (255 - d) * factor))
 
     override def toString: String = strClr

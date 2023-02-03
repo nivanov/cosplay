@@ -68,18 +68,19 @@ object CPMacarenaGame:
     def main(args: Array[String]): Unit =
         val BLUE_BLACK = CPColor("0x00000F")
         val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
-        val dim = CPDim(80, 23)
+        val dim = CPDim(100, 23)
+        val DANCE_FPS = 5
 
         // Initialize the engine.
         CPEngine.init(CPGameInfo(name = "ASCII Macarena", initDim = Option(dim)))
 
-        val music = CPSound(src = "sounds/examples/macarena.wav") // https://freesound.org
+        val music = CPSound(src = "sounds/examples/bg3.wav") // https://freesound.org
 
         def mkSprite(id: String, aniFrames: Seq[CPImage], x: Int, y: Int, key: CPKeyboardKey): CPSceneObject =
-            val fiShdr = new CPFadeInShader(true, 1000, bgPx)
+            val fiShdr = new CPFadeInShader(false, 1000, bgPx)
             val idleImg = aniFrames.head.skin((px, _, _) => px.withFg(C_GRAY5))
-            val idleAni = CPAnimation.filmStrip(s"ani-idl-$id", 250 /* 4 FPS */, true, false, Seq(idleImg))
-            val danceAni = CPAnimation.filmStrip(s"ani-dance-$id", 250 /* 4 FPS */, true, false, aniFrames)
+            val idleAni = CPAnimation.filmStrip(s"ani-idl-$id", 1_000 / DANCE_FPS, true, false, Seq(idleImg))
+            val danceAni = CPAnimation.filmStrip(s"ani-dance-$id", 1_000 / DANCE_FPS, true, false, aniFrames)
             new CPAnimationSprite(s"spr-$id", Seq(idleAni, danceAni), x, y, 0, idleAni.getId, false, Seq(fiShdr)):
                 override def update(ctx: CPSceneObjectContext): Unit =
                     super.update(ctx)
@@ -90,11 +91,12 @@ object CPMacarenaGame:
                                 else change(idleAni.getId, true, false)
                         case None => ()
 
-        val x = 25
+        val startX = 35
+        val x = startX
         val y = 13
         val beatShdr = new CPEqBeatShader(music)
         val titleSpr = new CPCenteredImageSprite(
-            img = FIG_CRAWFORD.withFullWidth().render("MACARENA", C_LIGHT_CORAL).trimBg(),
+            img = FIG_BIG_MONEY_NE.withFullWidth().render("MACARENA", CPColor.C_RED3A).trimBg(),
             z = 0,
             orient = HOR,
             shaders = Seq(beatShdr))
@@ -106,12 +108,12 @@ object CPMacarenaGame:
             mkSprite("3", CPMacarena3AniImage.trimBg().split(3, 4), x + 7 * 2, y - 1, KEY_3),
             mkSprite("4", CPMacarena4AniImage.trimBg().split(3, 3), x + 7 * 3, y, KEY_4),
             mkSprite("5", CPMacarena5AniImage.trimBg().split(3, 3), x + 7 * 4, y, KEY_5),
-            new CPLabelSprite(25, 18, 0, "[1]    [2]    [3]    [4]    [5]", C_DARK_CYAN),
+            new CPLabelSprite(startX, 18, 0, "[1]    [2]    [3]    [4]    [5]", C_DARK_CYAN),
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
             new CPOffScreenSprite:
                 override def onStart(): Unit =
                     music.loop(1500) // Auto-play with fade-in.
-                    beatShdr.start()
+                    beatShdr.start() // Start beat shader in the same time.
         )
 
         // Start the game & wait for exit.
