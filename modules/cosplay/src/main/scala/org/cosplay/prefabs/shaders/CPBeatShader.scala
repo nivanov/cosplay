@@ -40,11 +40,27 @@ import scala.collection.mutable.{ArrayBuffer, Queue}
                ALl rights reserved.
 */
 
+enum CPBeatShaderSmoothing:
+    case SMOOTH_BOTH
+    case SMOOTH_NONE
+    case SMOOTH_UP
+    case SMOOTH_DOWN
+
+import CPBeatShaderSmoothing.*
+
 /**
   *
   * @param snd
+  * @param smoothing
+  * @param thresholdGain
+  * @param thresholdTailMs
   */
-class CPEqBeatShader(snd: CPSound) extends CPShader:
+class CPBeatShader(
+    snd: CPSound,
+    smoothing: CPBeatShaderSmoothing = SMOOTH_UP,
+    thresholdGain: Float = 1.0f,
+    thresholdTailMs: Int = 2000
+) extends CPShader:
     private var go = false
     private var dur = 0L
     private var lastRenderMs = 0L
@@ -70,6 +86,7 @@ class CPEqBeatShader(snd: CPSound) extends CPShader:
             ampSeq += (buf.map(_.sum / sz).sum / numChs).toFloat
             frames -= sz
 
+        // Bringing amplitudes to [0,1] range.
         val maxAmp = ampSeq.max
         val minAmp = ampSeq.min
         val gain = maxAmp - minAmp
@@ -77,17 +94,27 @@ class CPEqBeatShader(snd: CPSound) extends CPShader:
         val normAmpSeq = ampSeq.map(_ / gain - shift)
         val sz = normAmpSeq.size
 
-        val ringSz = 100 // Look back 100 data points (~1s).
-        val ring = new mutable.Queue[Float](ringSz)
+        // Bounded FIFO queue for threshold calculation.
+        val queueCap = thresholdTailMs / winMs
+        val queue = new mutable.Queue[Float](queueCap)
+        // Manually maintain the sum of the elements in the queue for RMS calculation.
         var sum = 0f
 
         (ms: Long) => {
-            val threshold = if ring.isEmpty then 0 else sum / ring.size
+            // Calculate RMS of the elements in the queue..
+            val threshold = (if queue.isEmpty then 0 else math.sqrt(sum / queue.size)) * thresholdGain
             val br = normAmpSeq(((ms % sndDur) / winMs).toInt.min(sz - 1))
-            if ring.size == ringSz then sum -= ring.dequeue()
-            ring.enqueue(br)
-            sum += br
-            if br < threshold then br else 1
+            // Maintain constant max size of the FIFO queue.
+            if queue.size == queueCap then
+                val x = queue.dequeue()
+                sum -= x * x
+            queue.enqueue(br)
+            sum += br * br
+            smoothing match
+                case SMOOTH_BOTH => br
+                case SMOOTH_NONE => if br < threshold then 0 else 1
+                case SMOOTH_UP => if br < threshold then 0 else br
+                case SMOOTH_DOWN => if br < threshold then br else 1
         }
 
     /**

@@ -68,13 +68,14 @@ object CPMacarenaGame:
     def main(args: Array[String]): Unit =
         val BLUE_BLACK = CPColor("0x00000F")
         val bgPx = ' '&&(BLUE_BLACK, BLUE_BLACK)
+        val shimmers = CS_X11_ORANGES ++ CS_X11_BLUES
         val dim = CPDim(100, 23)
         val DANCE_FPS = 5
 
         // Initialize the engine.
         CPEngine.init(CPGameInfo(name = "ASCII Macarena", initDim = Option(dim)))
 
-        val music = CPSound(src = "sounds/examples/bg3.wav") // https://freesound.org
+        val music = CPSound(src = "sounds/examples/macarena.wav") // https://freesound.org
 
         def mkSprite(id: String, aniFrames: Seq[CPImage], x: Int, y: Int, key: CPKeyboardKey): CPSceneObject =
             val fiShdr = new CPFadeInShader(false, 1000, bgPx)
@@ -94,9 +95,9 @@ object CPMacarenaGame:
         val startX = 35
         val x = startX
         val y = 13
-        val beatShdr = new CPEqBeatShader(music)
+        val beatShdr = new CPBeatShader(music)
         val titleSpr = new CPCenteredImageSprite(
-            img = FIG_BIG_MONEY_NE.withFullWidth().render("MACARENA", CPColor.C_RED3A).trimBg(),
+            img = FIG_BIG_MONEY_NE.withFullWidth().render("MACARENA", CPColor.C_RED3A).trimBg().copy((px, _, _) => px.withFg(CPRand.rand(shimmers))),
             z = 0,
             orient = HOR,
             shaders = Seq(beatShdr))
@@ -119,7 +120,7 @@ object CPMacarenaGame:
         // Start the game & wait for exit.
         try CPEngine.startGame(
             // CosPlay logo scene.
-            new CPSlideShimmerLogoScene("logo", Option(dim), bgPx, CS_X11_ORANGES ++ CS_X11_BLUES, nextSc = "danceFloor"),
+            new CPSlideShimmerLogoScene("logo", Option(dim), bgPx, shimmers, nextSc = "danceFloor"),
             danceFloor
         )
         finally CPEngine.dispose()
