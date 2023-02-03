@@ -40,20 +40,40 @@ import scala.collection.mutable.{ArrayBuffer, Queue}
                ALl rights reserved.
 */
 
+/**
+  * Smoothing modes for the beat shader.
+  */
 enum CPBeatShaderSmoothing:
+    /** Smoothes brightness both below and above beat threshold. */
     case SMOOTH_BOTH
+    /** Binary (blinking) mode where brightness is either on or off depending on the threshold. */
     case SMOOTH_NONE
+    /** Smoothes brightness only above beat threshold. */
     case SMOOTH_UP
+    /** Smoothes brightness only below beat threshold. */
     case SMOOTH_DOWN
 
 import CPBeatShaderSmoothing.*
 
 /**
+  * A shader that changes brightness of its object based on the perceived beat of the given sound. This shader uses
+  * a simple beat-detection algorithm based on calculating root mean square (RMS) of amplitudes across all channels.
+  * RMS is constantly recalculated over a sliding window of the past few seconds. If the current amplitude value is
+  * above the RMS the beat is detected.
   *
-  * @param snd
-  * @param smoothing
-  * @param thresholdGain
-  * @param thresholdTailMs
+  * It is important to note that this shader does not work by default for all types of sounds. For each particular
+  * sound profile you may need to "play" with smoothing and threshold gain to achieve the best visual effect.
+  *
+  * Note that by default this shader is inactive and user must call [[start()]] method to start this shader.
+  *
+  * @param snd Sound asset to analyze for the beat detection. Note that the start of playing this sound should
+  *     generally be synchronized in time with calling [[start()]] method on this shader.
+  * @param smoothing Smoothing mode. Default value is [[SMOOTH_UP]].
+  * @param thresholdGain A constant that can be used to fine tune the calculated RMS-based threshold. Once threshold is
+  *     calculated it will be multiplied by this constant. Default value is `1.0f`. Typical fine tuning values
+  *     are between `0.5f` and `0.9f`.
+  * @param thresholdTailMs Duration of the sliding window in milliseconds that is used for calculating RMS-based
+  *     threshold.
   */
 class CPBeatShader(
     snd: CPSound,
@@ -118,7 +138,8 @@ class CPBeatShader(
         }
 
     /**
-      * Starts the shader effect.
+      * Starts the shader effect. Note that the start of playing the sound this shader is configured with must be
+      * generally synchronized in time with calling this method.
       *
       * @see [[toggle()]]
       */

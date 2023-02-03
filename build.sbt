@@ -109,7 +109,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % scalaParColVer,
         libraryDependencies += "com.mixpanel" % "mixpanel-java" % mixPanelVer,
         libraryDependencies += "org.antlr" % "antlr4-runtime" % antlr4Ver,
-        libraryDependencies += "de.sciss" %% "audiofile_3" % audioFileVer,
+        libraryDependencies += "de.sciss" % "audiofile_3" % audioFileVer,
 
         // Test scope.
         libraryDependencies += "org.scalatest" %% s"scalatest" % s"$scalaTestVer" % Test,

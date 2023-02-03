@@ -24,9 +24,10 @@ import CPFIGLetFont.*
 import CPKeyboardKey.*
 import CPColor.*
 import prefabs.shaders.*
-import prefabs.particles.confetti.*
+import prefabs.particles.*
 import prefabs.sprites.*
 import CPSlideDirection.*
+import org.cosplay.prefabs.particles.CPConfettiEmitter
 
 import scala.collection.mutable
 
