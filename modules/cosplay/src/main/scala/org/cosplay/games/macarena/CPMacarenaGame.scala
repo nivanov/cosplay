@@ -75,7 +75,7 @@ object CPMacarenaGame:
         // Initialize the engine.
         CPEngine.init(CPGameInfo(name = "ASCII Macarena", initDim = Option(dim)))
 
-        val music = CPSound(src = "sounds/examples/macarena.wav") // https://freesound.org
+        val music = CPSound(src = "sounds/games/macarena/macarena.wav") // https://freesound.org
 
         def mkSprite(id: String, aniFrames: Seq[CPImage], x: Int, y: Int, key: CPKeyboardKey): CPSceneObject =
             val fiShdr = new CPFadeInShader(false, 1000, bgPx)
