@@ -52,7 +52,7 @@ import collection.immutable.HashSet
 */
 
 
-object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
+object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val TITLE = "Project Gehenna"
     private final val START_IMG = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
     private final val SETTINGS_IMG = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()

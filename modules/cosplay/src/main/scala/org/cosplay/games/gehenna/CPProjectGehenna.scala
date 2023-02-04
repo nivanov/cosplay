@@ -52,7 +52,10 @@ val CS = Seq(C1, C2, C3, C4, C5, C6)
 val LOGO_BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK)
 val GAME_BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.
 
-object ProjectGehenna:
+/**
+  * Work in progress on demo game.
+  */
+object CPProjectGehenna:
     def main(args: Array[String]): Unit =
         val dim = CPDim(100, 100) // Dimension for the scenes.
 
@@ -64,9 +67,8 @@ object ProjectGehenna:
 
         try
             CPEngine.startGame(
-//                new CPSlideShimmerLogoScene("logo", None, LOGO_BG_PX, CS, "title"),
-                ProjectGehennaTitle,
-                //ProjectGehennaPlayMenu
+                new CPSlideShimmerLogoScene("logo", None, LOGO_BG_PX, CS, "title"),
+                CPProjectGehennaTitle,
             )
         finally CPEngine.dispose()
 
