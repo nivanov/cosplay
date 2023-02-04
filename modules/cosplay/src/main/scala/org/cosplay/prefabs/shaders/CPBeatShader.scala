@@ -68,7 +68,7 @@ import CPBeatShaderSmoothing.*
   *
   * @param snd Sound asset to analyze for the beat detection. Note that the start of playing this sound should
   *     generally be synchronized in time with calling [[start()]] method on this shader. If not provided - ensure
-  *     that method [[changeSound()]] is called before shader is started.
+  *     that method [[setSound()]] is called before this shader is started.
   * @param smoothing Smoothing mode. Default value is [[SMOOTH_UP]].
   * @param thresholdGain A constant that can be used to fine tune the calculated RMS-based threshold. Once threshold is
   *     calculated it will be multiplied by this constant. Default value is `1.0f`. Typical fine tuning values
@@ -92,7 +92,7 @@ class CPBeatShader(
         def getUri(src: String): URI =
             if CPUtils.isResource(src) then getClass.getClassLoader.getResource(src).toURI else URI.create(src)
 
-        val af = AudioFile.openRead(getUri(snd.getOrigin).toURL.openStream())
+        val af = AudioFile.openRead(new BufferedInputStream(getUri(snd.getOrigin).toURL.openStream()))
         val numChs = af.numChannels
         val sndDur = snd.getTotalDuration
         val winMs = 10 // 10ms worth of samples, ~3 data points per game frame.
@@ -145,6 +145,7 @@ class CPBeatShader(
       * @see [[toggle()]]
       */
     def start(): Unit =
+        if fun.isEmpty then throw E(s"Sound asset must be set before shader can start.")
         go = true
         dur = 0L
         lastRenderMs = System.currentTimeMillis()
@@ -171,11 +172,13 @@ class CPBeatShader(
     def isActive: Boolean = go
 
     /**
-     *
-     * @param snd
-     */
-    def changeSound(snd: CPSound): Unit =
-        dur = 0L
+      * Sets given sound asset for this shader. Note that if this shader is currently active it will be stopped
+      * by calling method [[stop()]] first.
+      *
+      * @param snd
+      */
+    def setSound(snd: CPSound): Unit =
+        if go then stop()
         fun = buildFun(snd).?
 
     /** @inheritdoc */

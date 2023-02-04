@@ -43,11 +43,6 @@
         </dependency>
 
         <dependency>
-            <groupId>de.sciss</groupId>
-            <artifactId>audiofile_3</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.mixpanel</groupId>
             <artifactId>mixpanel-java</artifactId>
         </dependency>

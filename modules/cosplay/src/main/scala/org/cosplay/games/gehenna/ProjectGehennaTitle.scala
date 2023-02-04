@@ -295,8 +295,8 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         val snd = CPSound(songFile)
         //val fun = sequence(af, snd)
 
-        skullFlashShdr.changeSound(snd)
-        titleFlashShdr.changeSound(snd)
+        skullFlashShdr.setSound(snd)
+        titleFlashShdr.setSound(snd)
         skullFlashShdr.start()
         titleFlashShdr.start()
 

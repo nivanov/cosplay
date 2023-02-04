@@ -92,7 +92,7 @@ object CPMacarenaGame:
                                 else change(idleAni.getId, true, false)
                         case None => ()
 
-        val startX = 35
+        val startX = 34
         val x = startX
         val y = 13
         val beatShdr = new CPBeatShader(music.?)

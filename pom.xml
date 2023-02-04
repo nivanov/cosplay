@@ -152,12 +152,6 @@
             </dependency>
 
             <dependency>
-                <groupId>de.sciss</groupId>
-                <artifactId>audiofile_3</artifactId>
-                <version>${de.sciss.ver}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
                 <version>${jna.ver}</version>
