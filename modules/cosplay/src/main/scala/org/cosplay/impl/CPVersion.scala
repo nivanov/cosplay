@@ -38,7 +38,7 @@ import java.time.{LocalDate, Year}
   */
 //noinspection ScalaWeakerAccess
 object CPVersion:
-    val year = Year.now().toString
+    val year: String = Year.now().toString
     val tagline = "2D ASCII Game Engine for Scala3"
     val copyright = s"(C) $year Rowan Games, Inc."
 
@@ -68,10 +68,14 @@ object CPVersion:
         Version("0.7.3", LocalDate.of(2022, 11, 22)),
         Version("0.7.4", LocalDate.of(2022, 12, 8)),
         Version("0.7.5", LocalDate.of(2022, 12, 8)),
+        Version("0.8.0", LocalDate.of(2023, 2, 5)),
     ).sortBy(_.semver)
     // +=================================================+
     // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
     // +=================================================+
+
+    require(VERSIONS.map(_.semver).distinct.sizeIs == VERSIONS.size, "Semver not unique.")
+    require(VERSIONS.map(_.date).distinct.sizeIs == VERSIONS.size, "Release date not unique.")
 
     /**
       * Gets current version.
