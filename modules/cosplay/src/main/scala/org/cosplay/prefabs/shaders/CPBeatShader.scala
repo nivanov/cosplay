@@ -173,7 +173,9 @@ class CPBeatShader(
 
     /**
       * Sets given sound asset for this shader. Note that if this shader is currently active it will be stopped
-      * by calling method [[stop()]] first.
+      * by calling method [[stop()]] first. After the sound is set you need to call method [[start()]] to active
+      * this shader. Note that the start of playing this sound should generally be synchronized in time with
+      * calling [[start()]] method on this shader.
       *
       * @param snd
       */

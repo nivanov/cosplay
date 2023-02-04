@@ -249,7 +249,6 @@ object ProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         val newMagFun = (ms: Long) => {
             var finalMs = 0L
             val dropSz = 1
-            println(magFun(ms) + " , " + magFun(ms - dropSz))
             if ms >= dropSz then
                 if magFun(ms) < magFun(ms - dropSz) then
                     finalMs = 0L

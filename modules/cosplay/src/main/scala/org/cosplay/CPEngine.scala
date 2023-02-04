@@ -304,7 +304,8 @@ object CPEngine:
                         case EOF | TIMEOUT => ()
                         case code => key = mapping.getOrElse(Seq(code), KEY_UNKNOWN)
                 catch
-                    case _: (InterruptedIOException | InterruptedException) => ()
+                    case _: InterruptedIOException => ()
+                    case _: InterruptedException => ()
                     case e: Exception => E(s"Keyboard read error: $e", e)
 
                 kbMux.synchronized {
