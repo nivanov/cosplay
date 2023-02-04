@@ -53,6 +53,7 @@
 Built-in [[https://cosplayengine.com/devguide/examples.html games]] located under `org.cosplay.games` package:
    - [[https://cosplayengine.com/devguide/pong_game.html Pong Game]]
    - [[https://cosplayengine.com/devguide/snake_game.html Snake Game]]
+   - [[https://cosplayengine.com/devguide/bird_game.html Flappy Bird Game]]
    - [[https://cosplayengine.com/devguide/macarena_game.html Macarena Game]]
 
 Maven dependency:
@@ -60,11 +61,11 @@ Maven dependency:
 &lt;dependency&gt;
   &lt;groupId&gt;org.cosplayengine&lt;/groupId&gt;
   &lt;artifactId&gt;cosplay&lt;/artifactId&gt;
-  &lt;version&gt;0.7.5&lt;/version&gt;
+  &lt;version&gt;0.8.0&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
 
 SBT dependency:
 <pre>
-libraryDependencies += "org.cosplayengine" % "cosplay" % "0.7.5"
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.8.0"
 </pre>
