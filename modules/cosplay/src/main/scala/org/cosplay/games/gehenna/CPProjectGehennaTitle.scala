@@ -61,9 +61,6 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val NOW_PLAYING_MS = 5000L
     private final val LEVEL_DIR = "gehenna/levels"
     private final val DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
-    // Variables for audio file plugin for operations in blocks of this size.
-    private final val BUF_SZ = 4000 //8192
-    private var magTestLength = 100f
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
@@ -114,7 +111,6 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             (ch, _, _) => ch&NEON_BLUE.darker(darkness)
         )
 
-    private val titleFlashShdr = new CPBeatShader(DFLT_SONG.?)
     private val skullFlashShdr = new CPBeatShader(DFLT_SONG.?)
     private val skullSpr = new CPImageSprite(x = 0, y = 0, z = 0, skullImg(), false, Seq(fadeInShdr, skullFlashShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -123,7 +119,7 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             setY(((canv.w - getWidth) / 2) - 15)
             setX(((canv.h - getHeight) / 2) + 10)
 
-    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, TextDripShader, titleFlashShdr)):
+    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, TextDripShader)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
@@ -143,13 +139,13 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         private val btns = List(helpSpr, startSpr, settingsSpr)
         private var btnIndex = 1
         private var darkness = 1f
-        private var otherDarkness = 3f
+        private var lastDarkness = 3f
         private var lastBtn = btns(btnIndex)
 
         private def switchBtn(change: Int): Unit =
             lastBtn = btns(btnIndex)
             btnIndex += change
-            otherDarkness = darkness
+            lastDarkness = darkness
             darkness = 1
 
         override def render(ctx: CPSceneObjectContext): Unit =
@@ -160,10 +156,10 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             // Bottom line.
             canv.drawLine(btn.getX, btn.getY + 1, btn.getX + btn.getWidth - 1, btn.getY + 1, 1, '-'&NEON_BLUE.darker(darkness))
 
-            // Other line.
-            if otherDarkness != 3 then
-                canv.drawLine(lastBtn.getX, lastBtn.getY + 1, lastBtn.getX + lastBtn.getWidth - 1, lastBtn.getY + 1, 1, '-'&NEON_BLUE.darker(otherDarkness))
-                if otherDarkness < 1f then otherDarkness += 0.1f
+            // Last line.
+            if lastDarkness != 3 then
+                canv.drawLine(lastBtn.getX, lastBtn.getY + 1, lastBtn.getX + lastBtn.getWidth - 1, lastBtn.getY + 1, 1, '-'&NEON_BLUE.darker(lastDarkness))
+                if lastDarkness < 1f then lastDarkness += 0.1f
 
             if darkness > 0.1f then darkness -= 0.1f
 
@@ -212,67 +208,7 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
 
-    private def sequence(af: AudioFile, snd: CPSound): Long => Float =
-        val magSeq = ArrayBuffer[Float]()
-        val buf = af.buffer(BUF_SZ)
-        var remainFrames = af.numFrames.toInt
-
-        while remainFrames > 0 do
-            val chunkSz = math.min(BUF_SZ, remainFrames)
-            af.read(buf, 0, chunkSz) // Read channels.
-            buf.foreach(chan => magSeq += chan.map(math.abs).max.toFloat)
-            remainFrames -= chunkSz
-
-        val maxMag = magSeq.max.max(0.0001f)
-        val normMagSeq = magSeq.map(_ / maxMag)
-        val magDurMs =  snd.getTotalDuration / magSeq.size
-        val sz = normMagSeq.size
-
-        val magFun = (ms: Long) => {
-            val normMs = ms % snd.getTotalDuration
-            var idx1 = (normMs / magDurMs).toInt
-            if idx1 >= sz - 1 then idx1 = 1
-            val idx2 = idx1 + 1
-            val y1 =  normMagSeq(idx1)
-            val y2 = normMagSeq(idx2)
-            val t1 = idx1 * magDurMs
-            val t2 = idx2 * magDurMs
-            val a = (y2 - y1) / (t2 - t1).toFloat
-            val b = y1 - a * t1
-
-            // Return value.
-            normMs * a + b
-        }
-
-        mkBeatFun(magFun, snd)
-    private def mkBeatFun(magFun: Long => Float, snd: CPSound): Long => Float =
-        val newMagFun = (ms: Long) => {
-            var finalMs = 0L
-            val dropSz = 1
-            if ms >= dropSz then
-                if magFun(ms) < magFun(ms - dropSz) then
-                    finalMs = 0L
-                    println("Nothing")
-                else
-                    finalMs = magFun(ms).toLong
-                    println("brighter")
-
-            finalMs.toFloat
-        }
-        newMagFun
-
-    private def stopFlash(): Unit =
-        skullFlashShdr.stop()
-        //titleFlashShdr.stop()
-
-    private def resetFlash(): Unit =
-//        skullFlashShdr.setFun(fun)
-        skullFlashShdr.start()
-        //titleFlashShdr.changeMag(mag)
-        //titleFlashShdr.start()
-
     private def menuSongChange(): Unit =
-
         def readLines(res: String): Seq[String] = IOUtils.readLines(getClass.getClassLoader.getResourceAsStream(res),
             Charset.forName("UTF-8")).asScala.toSeq
 
@@ -292,16 +228,12 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         val af = AudioFile.openRead(mkFile(songFile))
         val snd = CPSound(songFile)
-        //val fun = sequence(af, snd)
 
         skullFlashShdr.setSound(snd)
-        titleFlashShdr.setSound(snd)
         skullFlashShdr.start()
-        titleFlashShdr.start()
 
         af.close()
         snd.play(0, CPSound => menuSongChange())
-        resetFlash()
 
     addObjects(
         titleSpr,
