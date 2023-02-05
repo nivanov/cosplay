@@ -50,9 +50,9 @@ object CPVersion:
     case class Version(semver: String,  date: LocalDate):
         override def toString = s"Version [version=$semver, date=$date]"
 
-    // +=================================================+
-    // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
-    // +=================================================+
+    // +==================================================+
+    // | UPDATE BELOW SEQUENCE FOR EACH RELEASE MANUALLY. |
+    // +==================================================+
     private val VERSIONS = Seq(
         Version("0.1.0", LocalDate.of(2022, 1, 25)),
         Version("0.1.1", LocalDate.of(2022, 2, 25)),
@@ -68,11 +68,12 @@ object CPVersion:
         Version("0.7.3", LocalDate.of(2022, 11, 22)),
         Version("0.7.4", LocalDate.of(2022, 12, 8)),
         Version("0.7.5", LocalDate.of(2022, 12, 9)),
-        Version("0.8.0", LocalDate.of(2023, 2, 5)),
+        Version("0.8.0", LocalDate.of(2023, 2, 4)),
+        Version("0.8.1", LocalDate.of(2023, 2, 6)),
     ).sortBy(_.semver)
-    // +=================================================+
-    // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
-    // +=================================================+
+    // +==================================================+
+    // | UPDATE ABOVE SEQUENCE FOR EACH RELEASE MANUALLY. |
+    // +==================================================+
 
     require(VERSIONS.map(_.semver).distinct.sizeIs == VERSIONS.size, "Semver not unique.")
     require(VERSIONS.map(_.date).distinct.sizeIs == VERSIONS.size, "Release date not unique.")
