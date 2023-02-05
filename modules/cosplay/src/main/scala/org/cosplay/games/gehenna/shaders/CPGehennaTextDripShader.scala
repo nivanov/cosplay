@@ -17,7 +17,7 @@
 
 package org.cosplay.games.gehenna.shaders
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import games.gehenna.*
 import scala.util.*
 
@@ -34,8 +34,10 @@ import scala.util.*
                 All rights reserved.
 */
 
-
-object CPGehennaTextDripShader extends CPShader:
+/**
+  * Text dripping shader.
+  */
+class CPGehennaTextDripShader extends CPShader:
     private var go = false
     private var firstFrame = false
     private var startFrame = -1L
@@ -76,7 +78,6 @@ object CPGehennaTextDripShader extends CPShader:
                     if newY >= canv.yMax + 300 && ctx.getFrameCount % 10 == 0 then
                         startFrame = ctx.getFrameCount
                         newDrip = true
-                    //canv.drawPixel(GAME_BG_PX, x, y, zpx.z)
             })
 
             // TODO: detect the end of the effect and call stop().

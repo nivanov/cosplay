@@ -17,7 +17,7 @@
 
 package org.cosplay.games.pong
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import games.*
 import CPColor.*
 import CPPixel.*
@@ -113,6 +113,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val bgSnd = CPSound(s"sounds/games/pong/bg.wav", 0.02f)
     private val boostSnd = CPSound(s"sounds/games/pong/boost.wav", 0.2f)
 
+    private val menuSkin = (ch: Char, _: Int, _: Int) => ch match
+        case c if c.isLetter => c & C4
+        case '+' => ch & C1
+        case '&' => '+' & C4
+        case _ => ch & C2
     private val serveImg = new CPArrayImage(
         prepSeq(
             """
@@ -129,11 +134,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               ||                              |
               |+______________________________+
             """),
-        (ch, _, _) => ch match
-            case c if c.isLetter => c&C4
-            case '+' => ch&C1
-            case '&' => '+'&C4
-            case _ => ch&C2
+        menuSkin
     ).trimBg()
 
     private val youLostImg = new CPArrayImage(
@@ -152,11 +153,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               ||                              |
               |+______________________________+
             """),
-        (ch, _, _) => ch match
-            case c if c.isLetter => c&C4
-            case '&' => '+'&C4
-            case '+' => ch&C1
-            case _ => ch&C2
+        menuSkin
     ).trimBg()
 
     private val youWonImg = new CPArrayImage(
@@ -175,11 +172,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               ||                              |
               |+______________________________+
             """),
-        (ch, _, _) => ch match
-            case c if c.isLetter => c&C4
-            case '&' => '+'&C4
-            case '+' => ch&C1
-            case _ => ch&C2
+        menuSkin
     ).trimBg()
 
     /**
@@ -201,26 +194,19 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     // Score sprites.
     private val plyScoreSpr = mkScoreSprite((canv, spr) => (canv.dim.w - spr.getImage.w) / 4)
     private val npcScoreSpr = mkScoreSprite((canv, spr) => (canv.dim.w - spr.getImage.h) - ((canv.dim.w / 4) - 1))
-    private val plyScoreEmitter = new CPConfettiEmitter(
-        () => plyScoreSpr.getRect.centerX,
-        () => plyScoreSpr.getRect.h / 2,
-        15,
-        15,
-        CS,
-        BG_PX.fg,
-        _ => CPRand.rand("1234567890"),
-        1
-    )
-    private val npcScoreEmitter = new CPConfettiEmitter(
-        () => npcScoreSpr.getRect.centerX,
-        () => npcScoreSpr.getRect.h / 2,
-        15,
-        15,
-        CS,
-        BG_PX.fg,
-        _ => CPRand.rand("1234567890"),
-        1
-    )
+    private def mkEmitter(spr: CPImageSprite): CPConfettiEmitter =
+        new CPConfettiEmitter(
+            () => spr.getRect.centerX,
+            () => spr.getRect.h / 2,
+            genSize = 15,
+            maxAge = 15,
+            CS,
+            BG_PX.fg,
+            _ => "1234567890".rand,
+            z = 1
+        )
+    private val plyScoreEmitter = mkEmitter(plyScoreSpr)
+    private val npcScoreEmitter = mkEmitter(npcScoreSpr)
     private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
     private val npcScorePartSpr = CPParticleSprite(emitters = Seq(npcScoreEmitter))
 
@@ -228,7 +214,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val boostShdr = new CPShimmerShader(
         false,
         CS,
-        2,
+        keyFrame = 2,
         true,
         skip = (zpx, _, _) => zpx.z != 10 || zpx.char == BG_PX.char || zpx.char == ' '
     )
@@ -302,7 +288,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     setY(y.round)
 
     // Ball sprite.
-    private val ballSpr = new CPImageSprite("bs", 0, 0, 1, ballImg, false,
+    private val ballSpr = new CPImageSprite("bs", x = 0, y = 0, z = 1, ballImg, false,
         Seq(CPPongBallBoostShader, new CPFlashlightShader(radius = 6, autoStart = true))):
         private var x, y = INIT_VAL
         private var boosted = false
@@ -344,17 +330,11 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 def paddleReturn(isPly: Boolean): Unit =
                     setBoost(false)
                     val yr = y.round
-                    val edge =
-                        if isPly then
-                            yr == plySpr.getY - ballH ||
-                            yr == plySpr.getY - ballH + 1 ||
-                            yr == plySpr.getY + plyImg.h ||
-                            yr == plySpr.getY + plyImg.h - 1
-                        else
-                            yr == npcSpr.getY - ballH ||
-                            yr == npcSpr.getY - ballH  + 1 ||
-                            yr == npcSpr.getY + npcImg.h ||
-                            yr == npcSpr.getY + npcImg.h - 1
+                    def isEdge(spr: CPImageSprite): Boolean =
+                        val y = spr.getY
+                        val y2 = y + spr.getHeight
+                        yr == y - ballH || yr == y - ballH + 1 || yr == y2 || yr == y2 - 1
+                    val edge = if isPly then isEdge(plySpr) else isEdge(npcSpr)
                     if edge then setBoost(true)
                     x = if isPly then paddleW.toFloat else canv.wF - paddleW - ballW - 2
                     ballAngle = -ballAngle + 180 + CPRand.randInt(0, 10) - 5
@@ -363,10 +343,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
                 def score(plyScr: Int, npcScr: Int): Unit =
                     setBoost(false)
-
                     plyScore += plyScr
                     npcScore += npcScr
-
                     if plyScr > 0 then
                         ballSpeed += BALL_SPEED_INCR
                         npcSpeed += ENEMY_SPEED_INCR

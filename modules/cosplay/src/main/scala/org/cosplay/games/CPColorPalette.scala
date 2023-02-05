@@ -17,7 +17,7 @@
 
 package org.cosplay.games
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 
 /*
    _________            ______________

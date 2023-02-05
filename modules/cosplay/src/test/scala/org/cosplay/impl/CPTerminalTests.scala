@@ -17,7 +17,7 @@
 
 package org.cosplay.impl
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import org.cosplay.impl.jlineterm.CPJLineTerminal
 import org.junit.jupiter.api.Test
 

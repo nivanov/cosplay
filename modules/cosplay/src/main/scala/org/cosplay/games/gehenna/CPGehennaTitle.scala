@@ -17,7 +17,7 @@
 
 package org.cosplay.games.gehenna
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*
@@ -62,12 +62,13 @@ object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val LEVEL_DIR = "gehenna/levels"
     private final val DFLT_SONG = CPSound("sounds/games/gehenna/introsong.wav")
 
+    private val textDripShdr = new CPGehennaTextDripShader
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
-        true,
-        3000,
+        entireFrame = true,
+        durMs = 3000.ms,
         GAME_BG_PX,
-        onFinish = _ => CPGehennaTextDripShader.start()
+        onFinish = _ => textDripShdr.start()
     )
 
     private def skullImg(): CPImage =
@@ -119,7 +120,7 @@ object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             setY(((canv.w - getWidth) / 2) - 15)
             setX(((canv.h - getHeight) / 2) + 10)
 
-    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, CPGehennaTextDripShader)):
+    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, textDripShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
@@ -150,17 +151,22 @@ object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
 
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-
             val btn = btns(btnIndex)
+            def drawLine(spr: CPImageSprite, darkness: Float): Unit =
+                canv.drawLine(
+                    ax = spr.getX,
+                    ay = spr.getY + 1,
+                    bx = spr.getX + spr.getWidth - 1,
+                    by = spr.getY + 1,
+                    z = 1, '-'&NEON_BLUE.darker(darkness)
+                )
 
             // Bottom line.
-            canv.drawLine(btn.getX, btn.getY + 1, btn.getX + btn.getWidth - 1, btn.getY + 1, 1, '-'&NEON_BLUE.darker(darkness))
-
+            drawLine(btn, darkness)
             // Last line.
             if lastDarkness != 3 then
-                canv.drawLine(lastBtn.getX, lastBtn.getY + 1, lastBtn.getX + lastBtn.getWidth - 1, lastBtn.getY + 1, 1, '-'&NEON_BLUE.darker(lastDarkness))
+                drawLine(lastBtn, lastDarkness)
                 if lastDarkness < 1f then lastDarkness += 0.1f
-
             if darkness > 0.1f then darkness -= 0.1f
 
             ctx.getKbEvent match
@@ -194,16 +200,13 @@ object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             if visible && ctx.getFrameMs - lastMs >= NOW_PLAYING_MS then
                 visible = false
                 lastMs = ctx.getFrameMs
-
             if visible && darkness > 0.1 then
                 darkness -= fadeSpeed
                 setImage(songPlayingImg(darkness))
-
             // Disappear.
             if !visible && ctx.getFrameMs - lastMs >= NOW_PLAYING_MS then
                 visible = true
                 lastMs = ctx.getFrameMs
-
             if !visible && darkness < 1 then
                 darkness += fadeSpeed
                 setImage(songPlayingImg(darkness))
@@ -212,15 +215,9 @@ object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         def readLines(res: String): Seq[String] = IOUtils.readLines(getClass.getClassLoader.getResourceAsStream(res),
             Charset.forName("UTF-8")).asScala.toSeq
 
-        /*
-        val dirs = readLines(lvlDir)
-        val rndDir = CPRand.rand(dirs)
-        */
-
         val rndDir = "first" //Temp
         val lvlTxt = readLines(s"$LEVEL_DIR/$rndDir/level.txt")
 
-        //val songName = lvlTxt(1).replace(".LevelSongName:", "") TODO: FIX
         songPlay(s"$LEVEL_DIR/$rndDir/song.wav")
 
     private def songPlay(songFile: String): Unit =

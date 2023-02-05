@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.sound
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPColor.*
 import CPPixel.*
 import CPStyledString.*
@@ -71,7 +71,7 @@ object CPSoundExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        val snd = CPSound(s"sounds/examples/${CPRand.rand(Seq("bg1", "bg2", "bg3"))}.wav")
+        val snd = CPSound(s"sounds/examples/${Seq("bg1", "bg2", "bg3").rand}.wav")
         val panel = CPPanelSprite(4, 2, 80, 8, 0, "Audio Player")
         val c1 = C_SKY_BLUE1
         val c2 = C_LIGHT_CYAN1

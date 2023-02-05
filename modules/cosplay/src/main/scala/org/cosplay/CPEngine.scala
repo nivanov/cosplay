@@ -52,6 +52,9 @@ import scala.collection.mutable
   */
 def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
 
+/**
+  * Shortcut for `Option[x]` as `x.?`.
+  */
 extension[T](ref: T)
     @targetName("asAnOption")
     def `?`: Option[T] = Option(ref)
@@ -66,6 +69,50 @@ extension[R, T](opt: Option[T])
         case Some(t) => t
         case None => throw e
 
+/**
+  * Base trait for typed coordinates and dimensions.
+  *
+  * User code can choose to use these typed coordinates, color components
+  * and dimensions in methods where there could be a confusion about parameters.
+  * Alternatively, user code can use named parameters to disambiguate the formal
+  * parameters at the call site.
+  */
+sealed trait Base(val d: Int)
+given scala.Conversion[Base, Int] with
+    /** Converting numeric base to integer. */
+    def apply(b: Base): Int = b.d
+/** Typed X-coordinate. */
+case class X(x: Int) extends Base(x)
+/** Typed Y-coordinate. */
+case class Y(y: Int) extends Base(y)
+/** Typed Z-coordinate. */
+case class Z(z: Int) extends Base(z)
+/** Typed width. */
+case class W(w: Int) extends Base(w)
+/** Typed height. */
+case class H(h: Int) extends Base(h)
+/** Typed red RGB component. */
+case class R(r: Int) extends Base(r)
+/** Typed green RGB component. */
+case class G(g: Int) extends Base(g)
+/** Typed blue RGB component. */
+case class B(b: Int) extends Base(b)
+extension(d: Int)
+    def x: X = X(d)
+    def y: Y = Y(d)
+    def z: Z = Z(d)
+    def w: W = W(d)
+    def h: H = H(d)
+    def r: R = R(d)
+    def g: G = G(d)
+    def b: B = B(d)
+
+extension[T](seq: Seq[T])
+    /**
+      * Random element selector using [[CPRand]] class.
+      */
+    def rand: T = CPRand.rand(seq)
+
 extension(d: Int)
     // To bytes...
     def kb: Long = d * 1024
@@ -73,6 +120,8 @@ extension(d: Int)
     def gb: Long = d * 1024 * 1024 * 1024
 
     // To milliseconds...
+    def msec: Long = d
+    def ms: Long = d
     def secs: Long = d * 1000
     def mins: Long = d * 1000 * 60
     def hours: Long = d * 1000 * 60 * 60
@@ -87,7 +136,7 @@ extension(d: Int)
   *
   * Most CosPlay games follow this basic game organization:
   * {{{
-  * import org.cosplay.*
+  * import org.cosplay.{given, *}
   *
   * object Game:
   *    def main(args: Array[String]): Unit =
@@ -150,7 +199,7 @@ object CPEngine:
 
     private case class LaterRun(tsMs: Long, f: CPSceneObjectContext => Unit)
 
-    private val FPS = 30 // Target FPS.
+    private val FPS = 30 // Target FPS - ASCII rendering does not benefit from higher frame rate.
     private val FRAME_NANOS = 1_000_000_000 / FPS
     private val FRAME_MICROS = 1_000_000 / FPS
     private val FRAME_MILLIS = 1_000 / FPS
@@ -176,6 +225,8 @@ object CPEngine:
     private val inputReg = mutable.HashSet.empty[CPInput]
     private var savedEx: Throwable = _
     private var stats: Option[CPRenderStats] = None
+    private var homeRoot: Option[String] = None
+    private var tempRoot: Option[String] = None
     @volatile private var state = State.ENG_INIT
     @volatile private var playing = true
 
@@ -224,8 +275,7 @@ object CPEngine:
                     ent.ex
                 ))
                 buf.clear()
-
-
+        
         def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit =
             if frameCnt % nthFrame == 0 then
                 if obj.toString != CPUtils.PING_MSG then
@@ -338,14 +388,14 @@ object CPEngine:
       * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
       */
     def tempFile(): File = newFile(s"$HOME_DIR/temp/", CPRand.guid)
-    
+
     /**
       *
-      * @param root
+      * @param dir
       * @param path
       */
-    private def newFile(root: String, path: String): File =
-        val file = new File(SystemUtils.getUserHome, s"$root/$path")
+    private def newFile(dir: String, path: String): File =
+        val file = new File(SystemUtils.getUserHome, s"$dir/$path")
         val parent = file.getParentFile
         if !parent.exists() && !parent.mkdirs() then throw E(s"Failed to create folder: ${parent.getAbsolutePath}")
         file
@@ -366,12 +416,15 @@ object CPEngine:
         catch case e: Exception => E(s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io).", e)
 
         this.gameInfo = gameInfo
+        val gameId = gameInfo.name.toLowerCase.replace(' ', '_').replaceAll("\\W+", "")
+
+        homeRoot = s"$HOME_DIR/$gameId".?
+        tempRoot = s"$homeRoot/temp".?
+
+        // Make sure folders exist and temp folder is cleared up.
 
         // Used by Log4J configuration for log output sub-folder.
-        System.setProperty(
-            "COSPLAY_GAME_NAME",
-            gameInfo.name.toLowerCase.replace(' ', '_').replaceAll("\\W+", "")
-        )
+        System.setProperty("COSPLAY_GAME_NAME", gameId)
 
         val termClsName = CPUtils.sysEnv("COSPLAY_TERM_CLASSNAME") match
             case Some(cls) => cls
@@ -1024,8 +1077,8 @@ object CPEngine:
                         })
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
-                    override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
-                    override def countObjectsForTags(tags: String*): Int = sc.objects.countForTags(tags: _*)
+                    override def getObjectsForTags(tags: Seq[String]): Seq[CPSceneObject] = sc.objects.getForTags(tags)
+                    override def countObjectsForTags(tags: Seq[String]): Int = sc.objects.countForTags(tags)
                     override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit = 
                         delayedQ += (() => {
                             engLog.info(s"Scene added: ${newSc.getId}")

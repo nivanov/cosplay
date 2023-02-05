@@ -31,7 +31,7 @@ package org.cosplay.games.snake
 */
 
 import org.cosplay.games.*
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*

@@ -17,7 +17,7 @@
 
 package org.cosplay.games.pong
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import games.*
 import CPColor.*
 import CPArrayImage.*

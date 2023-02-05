@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.utils
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import org.cosplay.CPColor.*
 import org.cosplay.CPStyledString.*
 

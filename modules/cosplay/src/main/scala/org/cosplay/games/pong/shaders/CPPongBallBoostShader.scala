@@ -18,7 +18,7 @@
 package org.cosplay.games.pong.shaders
 
 import org.cosplay.games.*
-import org.cosplay.*
+import org.cosplay.{given, *}
 import games.pong.*
 
 /*
@@ -53,5 +53,5 @@ object CPPongBallBoostShader extends CPShader:
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     if zpx.px.char != BG_PX.char then
-                        canv.drawPixel(zpx.px.withFg(CPRand.rand(CS)), x, y, zpx.z)
+                        canv.drawPixel(zpx.px.withFg(CS.rand), x, y, zpx.z)
             })

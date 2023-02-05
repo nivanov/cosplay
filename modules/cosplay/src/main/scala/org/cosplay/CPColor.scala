@@ -703,7 +703,7 @@ object CPColor:
     /*
      * System colors.
      */
-    val C_BLACK = new CPColor(0,  0,  0, "C_BLACK")
+    val C_BLACK = new CPColor(red = 0,  green = 0,  blue = 0, name = "C_BLACK")
     val C_MAROON  = new CPColor(128, 0, 0, "C_MAROON")
     val C_GREEN = new CPColor(0, 128, 0, "C_GREEN")
     val C_OLIVE = new CPColor(128, 128, 0, "C_OLIVE")

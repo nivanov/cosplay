@@ -30,7 +30,7 @@ package org.cosplay.examples.shader
                 All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPPixel.*
 import CPColor.*
 import CPArrayImage.*
@@ -102,7 +102,7 @@ object CPSlideShaderExample:
             |******************************************************
             |******************************************************
             |"""),
-        (_, _, _) => CPRand.randSymbol()&CPRand.rand(cols)
+        (_, _, _) => CPRand.randSymbol()&cols.rand
     )
 
     /**

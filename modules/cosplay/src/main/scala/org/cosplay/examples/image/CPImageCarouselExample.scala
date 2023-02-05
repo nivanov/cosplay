@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.image
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPArrayImage.prepSeq
 import CPColor.*
 import CPPixel.*

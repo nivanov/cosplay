@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import scala.collection.mutable
 import scala.reflect.ClassTag
 
@@ -52,7 +52,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     private lazy val clearBuf: Array[Array[T]] = Array.ofDim[T](width, height)
 
     /** Shape of this array as a rectangle.*/
-    val rect: CPRect = CPRect(0, 0, width, height)
+    val rect: CPRect = CPRect(x = 0, y = 0, width, height)
 
     /** Maximum X-coordinate. If width is zero this will equal to `-1`. */
     val xMax: Int = width - 1

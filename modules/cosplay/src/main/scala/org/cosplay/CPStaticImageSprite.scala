@@ -77,7 +77,7 @@ class CPStaticImageSprite(
     img: CPImage,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
-    tags: String*
+    tags: Seq[String] = Seq.empty
 ) extends CPSceneObject(id, tags.toSet):
     private val imgDim = img.getDim
     private val imgRect = new CPRect(x, y, imgDim)

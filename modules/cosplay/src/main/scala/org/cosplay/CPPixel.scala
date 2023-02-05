@@ -49,7 +49,7 @@ import scala.annotation.targetName
   * Pixel creation and manipulation is used extensively throughout a CosPlay game. There are several ways you
   * can create a pixel:
   * {{{
-  *     import org.cosplay.*
+  *     import org.cosplay.{given, *}
   *     import CPColor.*
   *     import CPPixel.*
   *
@@ -66,7 +66,7 @@ import scala.annotation.targetName
   * The following unit test demonstrates that usage. Note that usage of `'&'` extension operators is the
   * recommended way and that is what is used internally by CosPlay:
   * {{{
-  *     import org.cosplay.*
+  *     import org.cosplay.{given, *}
   *     import CPColor.*
   *     import CPPixel.*
   *     // Must be enabled for conversions.

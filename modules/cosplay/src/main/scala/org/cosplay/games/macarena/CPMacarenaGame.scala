@@ -30,7 +30,7 @@ package org.cosplay.games.macarena
                 All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*
@@ -97,7 +97,7 @@ object CPMacarenaGame:
         val y = 13
         val beatShdr = new CPBeatShader(music.?)
         val titleSpr = new CPCenteredImageSprite(
-            img = FIG_BIG_MONEY_NE.withFullWidth().render("MACARENA", CPColor.C_RED3A).trimBg().copy((px, _, _) => px.withFg(CPRand.rand(shimmers))),
+            img = FIG_BIG_MONEY_NE.withFullWidth().render("MACARENA", CPColor.C_RED3A).trimBg().copy((px, _, _) => px.withFg(shimmers.rand)),
             z = 0,
             orient = HOR,
             shaders = Seq(beatShdr))

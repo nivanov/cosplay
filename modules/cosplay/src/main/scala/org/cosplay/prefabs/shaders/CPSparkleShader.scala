@@ -30,7 +30,7 @@ package org.cosplay.prefabs.shaders
                 All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import games.*
 import CPColor.*
 
@@ -83,7 +83,7 @@ class CPSparkleShader(
     require(colors.nonEmpty, "Colors cannot be empty.")
 
     case class Sparkle(zpx: CPZPixel, x: Int, y: Int):
-        private val initCol = CPRand.rand(colors)
+        private val initCol = colors.rand
         private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, steps / 2) ++ CPColor.gradientSeq(initCol, zpx.px.fg, steps / 2)
         private val gradSz = grad.size
         private var gradIdx = CPRand.between(0, gradSz)

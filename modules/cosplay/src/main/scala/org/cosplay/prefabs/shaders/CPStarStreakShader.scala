@@ -30,7 +30,7 @@ package org.cosplay.prefabs.shaders
                All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPPixel.*
 
 import scala.collection.mutable
@@ -126,7 +126,7 @@ class CPStarStreakShader(
     case class Star(streak: CPStarStreak, initX: Int, initY: Int):
         private var x = initX.toFloat
         private var y = initY.toFloat
-        private val initCol = CPRand.rand(streak.colors)
+        private val initCol = streak.colors.rand
         private val grad = CPColor.gradientSeq(initCol, bg, streak.steps)
         private val gradSz = grad.size
         private var gradIdx = CPRand.between(0, gradSz)

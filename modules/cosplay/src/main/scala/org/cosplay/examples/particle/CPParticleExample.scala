@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.particle
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPArrayImage.*
 import CPColor.*
 import CPKeyboardKey.*
@@ -115,7 +115,7 @@ object CPParticleExample:
             private var x = initX.toFloat
             private var y = initY.toFloat
             // Linear color gradient, slowly dimming.
-            private val cf = CPCurve.colorGradient(CPRand.rand(COLORS), C_GRAY1, MAX_AGE)
+            private val cf = CPCurve.colorGradient(COLORS.rand, C_GRAY1, MAX_AGE)
             // X-curve for slowing down the speed of particle as it moves away from the center.
             private val dxf = CPCurve.lagrangePoly(Seq(
                 x -> 1f,

@@ -19,7 +19,7 @@ package org.cosplay.prefabs.videos
 
 import org.cosplay.CPColor.*
 import org.cosplay.CPArrayImage.*
-import org.cosplay.*
+import org.cosplay.{given, *}
 
 import scala.collection.mutable.ArrayBuffer
 import CPPixel.*

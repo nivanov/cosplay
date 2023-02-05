@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.video
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*

@@ -30,7 +30,7 @@ package org.cosplay
                 All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPColor.*
 import CPPixel.*
 import org.junit.jupiter.api.Assertions.*

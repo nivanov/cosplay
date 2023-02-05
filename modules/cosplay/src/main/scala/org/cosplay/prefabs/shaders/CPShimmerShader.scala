@@ -17,7 +17,7 @@
 
 package org.cosplay.prefabs.shaders
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 
 import scala.collection.mutable
 
@@ -133,7 +133,7 @@ class CPShimmerShader(
                     if canv.isValid(x, y) then
                         val zpx = canv.getZPixel(x, y)
                         if !skip(zpx, x, y) then
-                            val rc = CPRand.rand(colors)
+                            val rc = colors.rand
                             val px = zpx.px
                             val newPx = if px.char == ' ' then px.withBg(rc.?) else px.withFg(rc)
                             canv.drawPixel(newPx, x, y, zpx.z)

@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.video
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPPixel.*
 import CPColor.*
 
@@ -57,7 +57,7 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
                 val lines = rs.getLines().toSeq.filter(_.trim.nonEmpty) // Load all lines and skip empty ones.
                 lines.grouped(lines.size / FRAME_CNT).toSeq.map { frameLines =>
                     // Psychedelic mode :-)
-                    val c = CPRand.rand(CS_X11_ALL)
+                    val c = CS_X11_ALL.rand
                     new CPArrayImage(frameLines, (ch, _, _) => {
                         ch match
                             // Color it for more contrast.

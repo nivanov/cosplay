@@ -24,7 +24,7 @@ import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.XRAY
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.*
+import org.cosplay.{given, *}
 
 /*
    _________            ______________

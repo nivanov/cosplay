@@ -30,7 +30,7 @@ package org.cosplay.games.gehenna
                 All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import org.cosplay.CPColor.*
 import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPPixel.*

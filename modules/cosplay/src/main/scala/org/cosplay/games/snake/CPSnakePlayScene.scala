@@ -17,7 +17,7 @@
 
 package org.cosplay.games.snake
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import games.*
 import prefabs.shaders.*
 import CPSlideDirection.*
@@ -122,7 +122,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
         15,
         CS,
         BG_PX.fg,
-        _ => CPRand.rand("oO0Xx"),
+        _ => "oO0Xx".rand,
         0
     )
     private val yamPartSpr = CPParticleSprite(emitters = Seq(yamEmitter))
@@ -237,7 +237,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
                         // Particle effect (for new location).
                         yamPartSpr.resume(reset = true)
                         // Bubble sprite (for current location).
-                        val img = FIG_CHUNKY.render(s"${CPRand.rand(yelps)}!", CPRand.rand(CS), None)
+                        val img = FIG_CHUNKY.render(s"${yelps.rand}!", CS.rand, None)
                         val bubbleSpr = new CPBubbleSprite(
                             img = img,
                             // Make sure the bubble fits on the screen.

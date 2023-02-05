@@ -17,7 +17,7 @@
 
 package org.cosplay.games.bird
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPPixel.*
 import CPArrayImage.*
 import CPFIGLetFont.*
@@ -78,10 +78,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private final var PIPE_GAP_HEIGHT = 15
     private val BUILD_GAP_MAX = 4
     private val BUILD_GAP_MIN = -4
-
     private var closestPipeX = 60
     private var closestPipeCut = 0
-
     private val buildSpeed = 7
     private val grassSpeed = 3
 
@@ -96,7 +94,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         true,
         GAME_BG_PX.bg.get,
         Seq(
-            CPStarStreak('.', CS, 0.025, 30, (-.3f, .2f), 0),
+            CPStarStreak('.', CS, ratio = 0.025, steps = 30, speed = (-.3f, .2f), z = 0),
             CPStarStreak(':', CS, 0.015, 25, (-.3f, .4f), 0),
             CPStarStreak('|', CS, 0.005, 50, (-.3f, .8f), 0)
         ),
@@ -306,7 +304,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                             val zpx = canv.getZPixel(x, y)
                             val px = zpx.px
                             if px.tag == 1 && CPRand.randFloat() < .02f then
-                                set += Sparkle(x, y, CPRand.rand(winSparkleColors), px.bg.get)
+                                set += Sparkle(x, y, winSparkleColors.rand, px.bg.get)
                     })
                     map += objId -> set
 
@@ -315,7 +313,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
         new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = Seq("building")):
             private var x = posX
-            private val col = CPRand.rand(BUILD_COLORS)
+            private val col = BUILD_COLORS.rand
             private val wallPx = BUILD_WALL_PX.withBg(col.?)
             private val winPx = BUILD_WIN_PX.withBg(col.?)
 

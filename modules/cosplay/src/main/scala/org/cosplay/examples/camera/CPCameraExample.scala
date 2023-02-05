@@ -24,7 +24,7 @@ import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.*
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.*
+import org.cosplay.{given, *}
 
 import scala.collection.mutable
 
@@ -80,7 +80,7 @@ object CPCameraExample:
         bgCanv.fillRect(bgCanv.rect, -1, (x, y) => {
             if y < 7 && CPRand.randFloat() < 0.02 then
                 val ch = if CPRand.randFloat() < 0.5 then '+' else '*'
-                ch&CPRand.rand(starClrs)
+                ch&starClrs.rand
             else
                 XRAY
         })
@@ -117,7 +117,7 @@ object CPCameraExample:
             else blank
         )
 
-        val fiShdr = new CPFadeInShader(true, 500, bgPx)
+        val fiShdr = new CPFadeInShader(entireFrame = true, durMs = 500.ms, bgPx)
         val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
         val bgSpr = new CPImageSprite("bg", 0, 0, 0, bgCanv.capture(), false, Seq(fiShdr, foShdr)):
@@ -152,7 +152,7 @@ object CPCameraExample:
         )
         
         val brickCanv = CPCanvas(CPDim(bgW, 3), bgPx)
-        for i <- 0 until bgW / brickImg.getWidth do brickCanv.drawImage(brickImg, i * 5, 0, 2)
+        for i <- 0 until bgW / brickImg.getWidth do brickCanv.drawImage(brickImg, x = i * 5, y = 0, z = 2)
         val brickY = bgH - brickImg.getHeight
         val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, 2, brickCanv.capture())
 
@@ -234,7 +234,7 @@ object CPCameraExample:
         val cam = sc.getCamera
 
         cam.setFocusTrackId("ufo".?)
-        cam.setFocusFrameInsets(new CPInsets(10, 0))
+        cam.setFocusFrameInsets(new CPInsets(hor = 10, vert = 0))
 
         // Initialize the engine.
         CPEngine.init(

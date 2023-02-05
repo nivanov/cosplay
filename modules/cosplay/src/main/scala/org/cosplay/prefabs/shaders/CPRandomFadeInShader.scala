@@ -17,7 +17,7 @@
 
 package org.cosplay.prefabs.shaders
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 
 /*
    _________            ______________
@@ -142,7 +142,7 @@ class CPRandomFadeInShader(
                         var newPx = px.withFg(newFg).withBg(newBg)
                         var ch = px.char
                         if !fin && !(skipSpaces && px.char == ' ') && CPRand.randFloat() > bal then
-                            ch = CPRand.rand(chars)
+                            ch = chars.rand
                         if reCalc then chArr(x)(y) = ch
                         newPx = newPx.withChar(chArr(x)(y))
                         canv.drawPixel(newPx, x, y, zpx.z)

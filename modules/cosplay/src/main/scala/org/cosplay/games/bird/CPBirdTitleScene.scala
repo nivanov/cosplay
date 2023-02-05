@@ -30,7 +30,7 @@ package org.cosplay.games.bird
                 All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import CPColor.*
 import CPKeyboardKey.*
 import CPPixel.*

@@ -17,7 +17,7 @@
 
 package org.cosplay.prefabs.particles
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import org.cosplay.CPColor.*
 import org.cosplay.games.snake.*
 

@@ -182,7 +182,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
       * @param dim Rectangle dimension.
       */
     def this(dim: CPDim) = 
-        this(0, 0, dim.w, dim.h)
+        this(x = 0, y = 0, dim.w, dim.h)
 
     /**
       * Gets random X-coordinate within this rectangle.

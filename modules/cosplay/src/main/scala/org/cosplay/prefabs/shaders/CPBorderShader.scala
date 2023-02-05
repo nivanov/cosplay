@@ -17,7 +17,7 @@
 
 package org.cosplay.prefabs.shaders
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import org.cosplay.CPColor.*
 import org.cosplay.CPZPixel.*
 import org.cosplay.prefabs.shaders.*

@@ -17,7 +17,7 @@
 
 package org.cosplay.prefabs.particles
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import org.cosplay.CPPixel.*
 
 /*
@@ -62,7 +62,7 @@ class CPConfettiParticle(
     private var x = initX.toFloat
     private var y = initY.toFloat
     // Linear color gradient, slowly dimming.
-    private val cf = CPCurve.colorGradient(CPRand.rand(colors), bgFg, maxAge)
+    private val cf = CPCurve.colorGradient(colors.rand, bgFg, maxAge)
     // X-curve for slowing down the speed of particle as it moves away from the center.
     private val dxf = CPCurve.lagrangePoly(Seq(
         x -> 1f,

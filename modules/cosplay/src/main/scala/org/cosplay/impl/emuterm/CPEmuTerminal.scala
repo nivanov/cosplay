@@ -21,7 +21,7 @@ import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme
 import org.kordamp.ikonli.lineawesome.LineAwesomeSolid.*
 import com.formdev.flatlaf.*
 import org.apache.commons.lang3.SystemUtils
-import org.cosplay.*
+import org.cosplay.{given, *}
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPColor.*
 import org.cosplay.impl.*

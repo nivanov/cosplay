@@ -45,7 +45,7 @@ object CPArray2DTests:
         val arr1 = new CPArray2D[Char](100, 100, 'a')
         val arr2 = arr1.copy()
         assertTrue(arr1 == arr2)
-        assertTrue(arr2.get(0, 0) == 'a')
+        assertTrue(arr2.get(x = 0, y = 0) == 'a')
 
     /**
       *

@@ -30,7 +30,7 @@ package org.cosplay.prefabs.shaders
                All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 
 /**
   * Direction of the slide effect produced by [[CPSlideInShader]] and [[CPSlideOutShader]] shaders.

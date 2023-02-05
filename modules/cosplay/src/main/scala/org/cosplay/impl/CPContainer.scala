@@ -17,7 +17,7 @@
 
 package org.cosplay.impl
 
-import org.cosplay.*
+import org.cosplay.{given, *}
 import scala.collection.mutable
 
 /*
@@ -65,7 +65,7 @@ class CPContainer[T <: CPGameObject]:
       *
       * @param tags
       */
-    def removeForTags(tags: String): Unit = getForTags(tags).foreach(t => remove(t.getId))
+    def removeForTags(tags: String*): Unit = getForTags(tags).foreach(t => remove(t.getId))
 
     /**
       *
@@ -77,7 +77,7 @@ class CPContainer[T <: CPGameObject]:
       *
       * @param tags
       */
-    def containsForTags(tags: String*): Boolean =
+    def containsForTags(tags: Seq[String]): Boolean =
         map.values.exists(obj => tags.exists(tag => obj.getTags.contains(tag)))
 
     /**
@@ -95,14 +95,14 @@ class CPContainer[T <: CPGameObject]:
       *
       * @param tags
       */
-    def getForTags(tags: String*): Seq[T] =
+    def getForTags(tags: Seq[String]): Seq[T] =
         map.values.filter(obj => tags.exists(tag => obj.getTags.contains(tag))).toSeq
 
     /**
       *
       * @param tags
       */
-    def countForTags(tags: String*): Int =
+    def countForTags(tags: Seq[String]): Int =
         map.values.count(obj => tags.exists(tag => obj.getTags.contains(tag)))
 
     /**
