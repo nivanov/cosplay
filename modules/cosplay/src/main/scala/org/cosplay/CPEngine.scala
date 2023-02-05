@@ -255,7 +255,7 @@ object CPEngine:
 
     /**
       * Log4J2 wrapper for the log. Mirrors all log output to log4j2 rolling file appended
-      * under ${user.home}/.cosplay/log folder.
+      * under ${user.home}/.cosplay/${game.name}/log folder.
       *
       * @param impl Log implementation.
       */
@@ -379,25 +379,36 @@ object CPEngine:
       * Creates file with given relative path in the engine's special, system-specific, root location. The actual
       * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
       *
-      * @param path Relative path of the file.
+      * @param path Relative path of the file. Path may include sub-directories and should use Unix
+      *     style '/' for path separator.
       */
-    def homeFile(path: String): File = newFile(s"$HOME_DIR/fs/", path)
+    def homeFile(path: String): File =
+        checkState()
+        newFile(s"${homeRoot.get}/data/$path")
 
     /**
       * Creates file in the engine's special, system-specific, temporary file location. The actual
-      * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
+      * absolute path of the returned file is OS-dependent and shouldn't be relied on or used. Returned
+      * file wil be automatically deleted upon exiting the game engine.
       */
-    def tempFile(): File = newFile(s"$HOME_DIR/temp/", CPRand.guid)
+    def tempFile(): File =
+        checkState()
+        val tempFile = newFile(s"${tempRoot.get}/${CPRand.guid}")
+        tempFile.deleteOnExit()
+        tempFile
+
+    private def mkDir(dir: File): File =
+        if !dir.exists() && !dir.mkdirs() then throw E(s"Failed to create folder: ${dir.getAbsolutePath}")
+        dir
 
     /**
       *
-      * @param dir
       * @param path
       */
-    private def newFile(dir: String, path: String): File =
-        val file = new File(SystemUtils.getUserHome, s"$dir/$path")
+    private def newFile(path: String): File =
+        val file = new File(path)
         val parent = file.getParentFile
-        if !parent.exists() && !parent.mkdirs() then throw E(s"Failed to create folder: ${parent.getAbsolutePath}")
+        mkDir(parent)
         file
 
     /**
@@ -416,15 +427,19 @@ object CPEngine:
         catch case e: Exception => E(s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io).", e)
 
         this.gameInfo = gameInfo
+        // Internal game ID.
         val gameId = gameInfo.name.toLowerCase.replace(' ', '_').replaceAll("\\W+", "")
-
-        homeRoot = s"$HOME_DIR/$gameId".?
-        tempRoot = s"$homeRoot/temp".?
-
-        // Make sure folders exist and temp folder is cleared up.
 
         // Used by Log4J configuration for log output sub-folder.
         System.setProperty("COSPLAY_GAME_NAME", gameId)
+
+        homeRoot = s"${SystemUtils.getUserHome}/$HOME_DIR/$gameId".?
+        tempRoot = s"${homeRoot.get}/temp".?
+
+        // Make sure folders exist and temp folder is cleared up.
+        mkDir(new File(homeRoot.get))
+        val tempDir = mkDir(new File(tempRoot.get))
+        tempDir.listFiles().foreach(_.delete())
 
         val termClsName = CPUtils.sysEnv("COSPLAY_TERM_CLASSNAME") match
             case Some(cls) => cls
