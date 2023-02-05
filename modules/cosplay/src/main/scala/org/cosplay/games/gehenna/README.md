@@ -24,7 +24,7 @@ $ cd cosplay
 #### SBT:
 ```shell
 $ sbt package
-$ sbt "project cosplay; runMain org.cosplay.games.gehenna.CPProjectGehenna"
+$ sbt "project cosplay; runMain org.cosplay.games.gehenna.CPGehenna"
 ```
 
 ## Questions?

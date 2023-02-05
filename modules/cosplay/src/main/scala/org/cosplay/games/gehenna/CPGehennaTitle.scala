@@ -23,7 +23,7 @@ import CPPixel.*
 import CPKeyboardKey.*
 import org.cosplay.CPArrayImage.*
 import org.cosplay.CPFIGLetFont.*
-import org.cosplay.games.gehenna.shaders.{FlashShader, TextDripShader}
+import org.cosplay.games.gehenna.shaders.*
 import org.cosplay.prefabs.shaders.*
 
 import java.io.*
@@ -52,7 +52,7 @@ import collection.immutable.HashSet
 */
 
 
-object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
+object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val TITLE = "Project Gehenna"
     private final val START_IMG = CPImage.loadRexCsv("images/games/gehenna/StartBtn.csv").trimBg()
     private final val SETTINGS_IMG = CPImage.loadRexCsv("images/games/gehenna/SettingsBtn.csv").trimBg()
@@ -67,7 +67,7 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         true,
         3000,
         GAME_BG_PX,
-        onFinish = _ => TextDripShader.start()
+        onFinish = _ => CPGehennaTextDripShader.start()
     )
 
     private def skullImg(): CPImage =
@@ -119,7 +119,7 @@ object CPProjectGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             setY(((canv.w - getWidth) / 2) - 15)
             setX(((canv.h - getHeight) / 2) + 10)
 
-    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, TextDripShader)):
+    private val titleSpr = new CPImageSprite("title", 0, 0, 1, TITLE_IMG, shaders = Seq(fadeInShdr, CPGehennaTextDripShader)):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 

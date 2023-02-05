@@ -19,18 +19,7 @@ package org.cosplay.games.gehenna.shaders
 
 import org.cosplay.*
 import games.gehenna.*
-
 import scala.util.*
-import java.io.*
-import org.apache.commons.io.*
-
-import java.nio.charset.Charset
-import scala.io.Source
-import scala.jdk.CollectionConverters.*
-import de.sciss.audiofile.*
-
-import scala.collection.mutable.ArrayBuffer
-import collection.immutable.{HashSet, StringOps}
 
 /*
    _________            ______________
@@ -46,34 +35,50 @@ import collection.immutable.{HashSet, StringOps}
 */
 
 
-class FlashShader() extends CPShader:
-    private var lastBright = 0F
-    private var run = false
-    private type Fun = Long => Float
-    private var fun: Fun = null
-    private var dur = 0L
-    private var lastRenderMs = 0L
+object CPGehennaTextDripShader extends CPShader:
+    private var go = false
+    private var firstFrame = false
+    private var startFrame = -1L
+    private var currDrip = true
+    private var newDrip = true
+    private var currDripHeight = 0
 
-    def start(): Unit = run = true
-    def stop(): Unit = run = false
+    private var randX = 0
 
-    def setFun(fun: Fun): Unit =
-        this.fun = fun
-        dur =  0L
-        lastRenderMs = System.currentTimeMillis()
+    def start(): Unit =
+        go = true
+        firstFrame = true
+    def stop(): Unit =
+        go = false
+        firstFrame = false
 
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
-        if run then
-            var brightness = fun(dur)
-            if brightness == 0F then brightness = (lastBright - 0.1).max(0).toFloat
-            lastBright = brightness
-            val now = System.currentTimeMillis()
-            dur += now - lastRenderMs
-            lastRenderMs = now
+        if go && ctx.isVisible then
+            if firstFrame then
+                startFrame = ctx.getFrameCount
+                firstFrame = false
+
             val canv = ctx.getCanvas
-            objRect.loop((x,y) => {
+            val curFrame = ctx.getFrameCount
+
+                objRect.loop((x, y) => {
                 if canv.isValid(x, y) then
+                    if newDrip then
+                        val imageOffSet = (canv.w - objRect.w) / 2
+                        randX = CPRand.between(imageOffSet, objRect.w + imageOffSet)
+                        newDrip = false
+
                     val zpx = canv.getZPixel(x, y)
-                    val px = zpx.px
-                    if px.char != ' ' then canv.drawPixel(px.withLighterFg(brightness), x, y, zpx.z)
+                    val newY = 3 + (curFrame - startFrame) * (y - objRect.y)
+                    canv.drawPixel(zpx.px, randX, newY.toInt, zpx.z)
+
+                    // Reset drip.
+                    if newY >= canv.yMax + 300 && ctx.getFrameCount % 10 == 0 then
+                        startFrame = ctx.getFrameCount
+                        newDrip = true
+                    //canv.drawPixel(GAME_BG_PX, x, y, zpx.z)
             })
+
+            // TODO: detect the end of the effect and call stop().
+
+
