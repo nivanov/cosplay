@@ -140,8 +140,9 @@ object CPShaderExample:
 
         val bulbSpr = new CPImageSprite("bulb",
             // Center it on the screen.
-            (dim.w - bulbImg.w) / 2,
-            (dim.h - bulbImg.h) / 2 - 5, 1, bulbImg, false, Seq(FlashLightShader)):
+            x = (dim.w - bulbImg.w) / 2,
+            y = (dim.h - bulbImg.h) / 2 - 5,
+            z = 1, bulbImg, false, FlashLightShader.seq):
             private var x = initX.toFloat
             private var y = initY.toFloat
 

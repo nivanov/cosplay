@@ -124,15 +124,15 @@ object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
-    private val startSpr = new CPImageSprite("start", 0, 43, 1, START_IMG, shaders = Seq(fadeInShdr)):
+    private val startSpr = new CPImageSprite("start", 0, 43, 1, START_IMG, shaders = fadeInShdr.seq):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.w - this.getWidth) / 2)
 
-    private val helpSpr = new CPImageSprite("help", 0, 45, 1, HELP_IMG, shaders = Seq(fadeInShdr)):
+    private val helpSpr = new CPImageSprite("help", 0, 45, 1, HELP_IMG, shaders = fadeInShdr.seq):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX(((ctx.getCanvas.w - this.getWidth) / 2) - 30 - getWidth)
 
-    private val settingsSpr = new CPImageSprite("settings", 0, 45, 1, SETTINGS_IMG, shaders = Seq(fadeInShdr)):
+    private val settingsSpr = new CPImageSprite("settings", 0, 45, 1, SETTINGS_IMG, shaders = fadeInShdr.seq):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX(((ctx.getCanvas.w - this.getWidth) / 2) + 30)
 
@@ -180,7 +180,7 @@ object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
             if btnIndex < 0 then btnIndex = btns.length - 1
             else if btnIndex > btns.length - 1 then btnIndex = 0
 
-    private val nowPlaySpr = new CPImageSprite(x = 0, y = 10, z = 4, songPlayingImg(1), false, Seq(fadeInShdr)):
+    private val nowPlaySpr = new CPImageSprite(x = 0, y = 10, z = 4, songPlayingImg(1), false, fadeInShdr.seq):
         private var visible = false
         private var lastMs = 0L
         private var darkness = 1f

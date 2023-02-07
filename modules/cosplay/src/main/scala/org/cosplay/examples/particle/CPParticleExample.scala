@@ -164,10 +164,10 @@ object CPParticleExample:
                 else
                     Seq.empty
 
-        val kaboomSpr = CPParticleSprite("kaboom", Seq(emitter))
+        val kaboomSpr = CPParticleSprite("kaboom", emitter.seq)
 
         kaboomSpr.setOnStart(Option(_ => boomSnd.play()))
-        kaboomSpr.setOnEnd(Option(_ => boomSnd.stop(1000)))
+        kaboomSpr.setOnEnd(Option(_ => boomSnd.stop(1000.ms)))
 
         val ctrlSpr = new CPOffScreenSprite():
             override def update(ctx: CPSceneObjectContext): Unit =
@@ -184,10 +184,10 @@ object CPParticleExample:
         val sc = new CPScene("scene", dim.?, bgPx,
             kaboomSpr,
             ctrlSpr,
-            new CPStaticImageSprite("bomb", bombX, bombY, 0, bomb),
-            new CPStaticImageSprite((w - ctrlDim.w) / 2, h - 4, 0, ctrlImg), // Help label.
+            new CPStaticImageSprite("bomb", bombX, bombY, z = 0, bomb),
+            new CPStaticImageSprite((w - ctrlDim.w) / 2, h - 4, z = 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
-            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
+            new CPOffScreenSprite(new CPFadeInShader(true, 1500.ms, bgPx)),
             // Exit the game on 'Q' press.
             CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )

@@ -192,23 +192,23 @@ object CPAnimationExample:
 
         val aniSeq = Seq(
             // In film strip animation each frame is shown for the same amount of time.
-            CPAnimation.filmStrip("right", 150, imgs = imgsRight),
-            CPAnimation.filmStrip("left", 150, imgs = imgsLeft),
+            CPAnimation.filmStrip("right", 150.ms, imgs = imgsRight),
+            CPAnimation.filmStrip("left", 150.ms, imgs = imgsLeft),
             // In time-based animation each frame has its own duration.
             CPAnimation.timeBased("idle", frames = Seq(
-                imgsIdle.head -> 1000,
-                imgsIdle(1) -> 100,
-                imgsIdle(2) -> 1000,
-                imgsIdle(3) -> 1000,
-                imgsIdle(4) -> 100
+                imgsIdle.head -> 1000.ms,
+                imgsIdle(1) -> 100.ms,
+                imgsIdle(2) -> 1000.ms,
+                imgsIdle(3) -> 1000.ms,
+                imgsIdle(4) -> 100.ms
             )),
-            CPAnimation.filmStrip("vert", 150, imgs = imgVert)
+            CPAnimation.filmStrip("vert", 150.ms, imgs = imgVert)
         )
 
-        val fiShdr = new CPFadeInShader(true, 500, bgPx)
-        val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
+        val fiShdr = new CPFadeInShader(true, 500.ms, bgPx)
+        val foShdr = new CPFadeOutShader(true, 300.ms, bgPx, _.exitGame())
 
-        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
+        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, x = 45, y = 19, z = 0, "idle", false, Seq(fiShdr, foShdr)):
             // Use 'float' type for coordinates to smooth out the movement.
             private var x = super.getX.toFloat
             private var y = super.getY.toFloat

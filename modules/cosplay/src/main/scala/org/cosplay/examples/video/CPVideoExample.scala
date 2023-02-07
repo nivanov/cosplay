@@ -90,11 +90,12 @@ object CPVideoExample:
         val beatShdr = new CPBeatShader(music.?, smoothing = CPBeatShaderSmoothing.SMOOTH_UP)
         val vidSpr = new CPVideoSprite(
             vid = CPVideoClip,
-            4, 2, 0, 30,
+            x = 4, y = 2, z = 0,
+            fps = 30,
             loop = true,
             collidable = false,
             autoPlay = true,
-            shaders = Seq(beatShdr)
+            shaders = beatShdr.seq
         )
         // Create the scene.
         val sc = new CPScene("scene", dim.?, bgPx,
@@ -104,11 +105,11 @@ object CPVideoExample:
                 case KEY_SPACE => vidSpr.toggle()
                 case _ => ()
             ),
-            new CPStaticImageSprite((dim.w - ctrlDim.w) / 2, dim.h - 4, 0, ctrlImg), // Help label.
+            new CPStaticImageSprite(x = (dim.w - ctrlDim.w) / 2, y = dim.h - 4, z = 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
-            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)):
+            new CPOffScreenSprite(new CPFadeInShader(true, 1500.ms, bgPx)):
                 override def onStart(): Unit =
-                    music.loop(1500) // Auto-play with fade-in.
+                    music.loop(1500.ms) // Auto-play with fade-in.
                     beatShdr.start() // Start beat shader in the same time.
             ,
             CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.

@@ -94,7 +94,7 @@ class CPSlideShimmerLogoScene(
     private val inShdr = new CPSlideInShader(slideInDir, false, slideInMs, bgPx, _ => outShdr.start(), true)
 
     // Main logo sprite with 3 shaders.
-    private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, inShdr, outShdr)):
+    private val logoSpr = new CPImageSprite("logo", x = 0, y = 0, z = 0, logoImg, false, Seq(shimmerShdr, inShdr, outShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             // Center the logo on each frame (ensuring the support for adaptive scenes).
             val canv = ctx.getCanvas

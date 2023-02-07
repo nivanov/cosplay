@@ -175,10 +175,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         _ => CPRand.rand("oO0Xx"),
         0
     )
-    private val scorePartSpr = CPParticleSprite(emitters = Seq(scoreEmitter))
+    private val scorePartSpr = CPParticleSprite(emitters = scoreEmitter.seq)
 
-    private val birdAnis = Seq(CPAnimation.filmStrip("ani", 100, imgs = birdImgs))
-    private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, 15, 5, 10, "ani", false):
+    private val birdAnis = Seq(CPAnimation.filmStrip("ani", 100.ms, imgs = birdImgs))
+    private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, x = 15, y = 5, z = 10, "ani", false):
         private var cnt = 0L
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
@@ -265,7 +265,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit =
             setX((ctx.getCanvas.width / 2) - 3)
 
-    private val lostShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000, GAME_BG_PX)
+    private val lostShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000.ms, GAME_BG_PX)
     private val lostBorderShdr = CPBorderShader(false, 3, true, -.03f, true)
     private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 3, Seq(lostShdr, lostBorderShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -311,7 +311,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 for s <- set do canv.drawPixel('.'&&(s.fg, s.bg), s.x, s.y, 1)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
-        new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = Seq("building")):
+        new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = "building".seq):
             private var x = posX
             private val col = BUILD_COLORS.rand
             private val wallPx = BUILD_WALL_PX.withBg(col.?)
@@ -371,7 +371,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     canv.drawLine(x, gapStartY - PIPE_GAP_HEIGHT, x, 0, 2, px2)
 
     private def newGrassSprite(posX: Int, posY: Int) : CPSceneObject =
-        new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = Seq("grass")):
+        new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = "grass".seq):
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
                 if ctx.getFrameCount % grassSpeed == 0 && !dead then

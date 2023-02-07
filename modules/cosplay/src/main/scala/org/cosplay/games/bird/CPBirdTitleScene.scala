@@ -75,7 +75,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     // Add scene objects...
     addObjects(
         // Main logo.
-        CPCenteredImageSprite(img = logoImg, 1, shaders = Seq(blinkShdr)),
+        CPCenteredImageSprite(img = logoImg, 1, shaders = blinkShdr.seq),
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderShdr)),
         // Exit on 'Q' press.

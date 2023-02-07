@@ -207,8 +207,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         )
     private val plyScoreEmitter = mkEmitter(plyScoreSpr)
     private val npcScoreEmitter = mkEmitter(npcScoreSpr)
-    private val plyScorePartSpr = CPParticleSprite(emitters = Seq(plyScoreEmitter))
-    private val npcScorePartSpr = CPParticleSprite(emitters = Seq(npcScoreEmitter))
+    private val plyScorePartSpr = CPParticleSprite(emitters = plyScoreEmitter.seq)
+    private val npcScorePartSpr = CPParticleSprite(emitters = npcScoreEmitter.seq)
 
     // Boost announcement sprite.
     private val boostShdr = new CPShimmerShader(
@@ -218,7 +218,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         true,
         skip = (zpx, _, _) => zpx.z != 10 || zpx.char == BG_PX.char || zpx.char == ' '
     )
-    private val boostSpr = new CPImageSprite(x = 0, y = 0, z = 10, FIG_RECTANGLES.render("boost", C1).trimBg(), shaders = Seq(boostShdr)):
+    private val boostSpr = new CPImageSprite(x = 0, y = 0, z = 10, FIG_RECTANGLES.render("boost", C1).trimBg(), shaders = boostShdr.seq):
         override def update(ctx: CPSceneObjectContext): Unit =
             super.update(ctx)
             val canv = ctx.getCanvas
@@ -232,7 +232,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, 5, '|'&C2)
 
     // Player paddle.
-    private val plySpr = new CPImageSprite(x = 0, y = 0, z = 0, plyImg, false, Seq(plyShdr)):
+    private val plySpr = new CPImageSprite(x = 0, y = 0, z = 0, plyImg, false, plyShdr.seq):
         private var y = INIT_VAL
 
         override def reset(): Unit =
@@ -267,7 +267,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         else currY
 
     // NPC paddle sprite.
-    private val npcSpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, npcImg, false, Seq(npcShdr)):
+    private val npcSpr: CPImageSprite = new CPImageSprite(x = 1, y = 0, z = 0, npcImg, false, npcShdr.seq):
         private var y = INIT_VAL
 
         override def reset(): Unit =
@@ -384,9 +384,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val serveShdr = mkShader
     private val youLostShdr = mkShader
     private val youWonShdr = mkShader
-    private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6, Seq(serveShdr))
-    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6, Seq(youLostShdr))
-    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6, Seq(youWonShdr))
+    private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6, serveShdr.seq)
+    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6, youLostShdr.seq)
+    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6, youWonShdr.seq)
 
     private val gameCtrlSpr = new CPOffScreenSprite():
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -437,7 +437,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         youLostSpr,
         youWonSpr,
         // Scene-wide shader holder.
-        new CPOffScreenSprite(shaders = Seq(CPFadeInShader(true, 1000, BG_PX)))
+        new CPOffScreenSprite(shaders = CPFadeInShader(true, 1000.ms, BG_PX).seq)
     )
 
     private def stopAudio(): Unit =

@@ -84,7 +84,7 @@ class CPOffScreenSprite(
       *
       * @param shader Shader for this sprite.
       */
-    def this(shader: CPShader) = this(CPRand.guid6, Seq(shader))
+    def this(shader: CPShader) = this(CPRand.guid6, shader.seq)
 
     /** @inheritdoc */
     override def getX: Int = 0

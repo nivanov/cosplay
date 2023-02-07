@@ -885,8 +885,8 @@ object CPImage:
             emuTerm = emuTerm
         )
         try
-            val ani = CPAnimation.filmStrip("ani", 1_000 / fps, true, false, imgs)
-            val spr = CPAnimationSprite("spr", Seq(ani), 4, 4, 0, "ani")
+            val ani = CPAnimation.filmStrip("ani", 1_000.ms / fps, true, false, imgs)
+            val spr = CPAnimationSprite("spr", ani.seq, x = 4, y = 4, z = 0, "ani")
             CPEngine.rootLog().info(s"Animation preview [frames=${imgs.size}, frameDim=$frameDim]")
             CPEngine.startGame(new CPScene(
                 "scene",

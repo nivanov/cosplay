@@ -78,10 +78,10 @@ object CPMacarenaGame:
         val music = CPSound(src = "sounds/games/macarena/macarena.wav") // https://freesound.org
 
         def mkSprite(id: String, aniFrames: Seq[CPImage], x: Int, y: Int, key: CPKeyboardKey): CPSceneObject =
-            val fiShdr = new CPFadeInShader(false, 1000, bgPx)
+            val fiShdr = new CPFadeInShader(false, 1000.ms, bgPx)
             val idleImg = aniFrames.head.skin((px, _, _) => px.withFg(C_GRAY5))
-            val idleAni = CPAnimation.filmStrip(s"ani-idl-$id", 1_000 / DANCE_FPS, true, false, idleImg.seq)
-            val danceAni = CPAnimation.filmStrip(s"ani-dance-$id", 1_000 / DANCE_FPS, true, false, aniFrames)
+            val idleAni = CPAnimation.filmStrip(s"ani-idl-$id", 1_000.ms / DANCE_FPS, true, false, idleImg.seq)
+            val danceAni = CPAnimation.filmStrip(s"ani-dance-$id", 1_000.ms / DANCE_FPS, true, false, aniFrames)
             new CPAnimationSprite(s"spr-$id", Seq(idleAni, danceAni), x, y, 0, idleAni.getId, false, fiShdr.seq):
                 override def update(ctx: CPSceneObjectContext): Unit =
                     super.update(ctx)

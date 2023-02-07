@@ -257,7 +257,7 @@ object CPAnimation:
             ),
             emuTerm = emuTerm
         )
-        val spr = CPAnimationSprite("spr", Seq(ani), 4, 4, 0, ani.getId)
+        val spr = CPAnimationSprite("spr", ani.seq, x = 4, y = 4, z = 0, ani.getId)
         CPEngine.rootLog().info(s"Animation ID: ${ani.getId}")
         try
             CPEngine.startGame(new CPScene(
