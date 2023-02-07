@@ -67,7 +67,7 @@ class CPBorderShader(
     colorMixPerStep: Float,
     autoStart: Boolean = false
 ) extends CPShader:
-    require(colorMixPerStep >= -1f && colorMixPerStep <= 1f, "Color mix per step must be in [-1,1] range.")
+    !>(colorMixPerStep >= -1f && colorMixPerStep <= 1f, "Color mix per step must be in [-1,1] range.")
     private var go = autoStart
 
     /**

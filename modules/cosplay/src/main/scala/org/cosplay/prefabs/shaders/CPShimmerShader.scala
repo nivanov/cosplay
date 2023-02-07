@@ -72,7 +72,7 @@ class CPShimmerShader(
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
 
     case class PixelXYZ(px: CPPixel, x: Int, y: Int, z: Int)
     private var go = autoStart

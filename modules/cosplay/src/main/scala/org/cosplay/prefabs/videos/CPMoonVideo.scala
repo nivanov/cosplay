@@ -4728,13 +4728,11 @@ object CPMoonVideo extends CPVideo("moon_vid", "https://ascii.co.uk/animated-art
       *
       */
     private def prepFrames(): Seq[CPImage] =
-        if rawFrames.isEmpty then
-            E(s"No video frames found.")
+        !>(rawFrames.nonEmpty, s"No video frames found.")
         // NOTE: just in case we remove '\r' from the images...
         val frameStrs = rawFrames.map(_.replace("\r", "").split('\n').filter(_.nonEmpty))
         val frameLines = frameStrs.head.length
-        if frameStrs.exists(_.length != frameLines) then
-            E(s"Uneven number of lines per frame.")
+        !>(!frameStrs.exists(_.length != frameLines), s"Uneven number of lines per frame.")
         val maxLen = frameStrs.flatten.max.length
         frameStrs.map(strArr =>
             val padded = strArr.map(_.padTo(maxLen, ' ')).toSeq

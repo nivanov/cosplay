@@ -69,20 +69,19 @@ import scala.collection.{immutable, mutable}
 class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(tags = tags) with CPAsset:
     private var timeline: Timeline = _
     private val player =
-        if !CPEngine.isInit then
-            E("CosPlay engine must be initialized (CPEngine.init(...) method) before sound can be created.")
-        else
-            val latch = new CountDownLatch(1)
-            try
-                val impl = new MediaPlayer(new Media(getUri))
-                // Wait & load the sounds media.
-                impl.setOnReady(
-                    new Runnable():
-                        override def run(): Unit = latch.countDown()
-                )
-                latch.await()
-                impl
-            catch case e: Exception => E(s"Failed to load sound media: $src", e)
+        !>(CPEngine.isInit, "CosPlay engine must be initialized (CPEngine.init(...) method) before sound can be created.")
+
+        val latch = new CountDownLatch(1)
+        try
+            val impl = new MediaPlayer(new Media(getUri))
+            // Wait & load the sounds media.
+            impl.setOnReady(
+                new Runnable():
+                    override def run(): Unit = latch.countDown()
+            )
+            latch.await()
+            impl
+        catch case e: Exception => raise(s"Failed to load sound media: $src", e)
     private var vol = player.getVolume
     private val totalDur = player.getTotalDuration.toMillis.toLong
 

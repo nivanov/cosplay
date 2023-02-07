@@ -78,7 +78,7 @@ class CPParticleSprite(
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty
 ) extends CPSceneObject(id):
-    require(emitters.nonEmpty, "Sequence of emitters cannot be empty.")
+    !>(emitters.nonEmpty, "Sequence of emitters cannot be empty.")
 
     private var x = 0
     private var y = 0
@@ -108,7 +108,7 @@ class CPParticleSprite(
       * @see [[setOnEnd()]]
       */
     def setOnStart(fun: Option[CPSceneObjectContext => Unit]): Unit =
-        require(fun != null, "Callback cannot be 'null'.")
+        !>(fun != null, "Callback cannot be 'null'.")
         onStartFun = fun
 
     /**
@@ -121,7 +121,7 @@ class CPParticleSprite(
       * @see [[setOnStart()]]
       */
     def setOnEnd(fun: Option[CPSceneObjectContext => Unit]): Unit =
-        require(fun != null, "Callback cannot be 'null'.")
+        !>(fun != null, "Callback cannot be 'null'.")
         onEndFun = fun
 
     /**

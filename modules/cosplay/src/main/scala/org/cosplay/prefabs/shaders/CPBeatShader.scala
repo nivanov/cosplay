@@ -145,7 +145,7 @@ class CPBeatShader(
       * @see [[toggle()]]
       */
     def start(): Unit =
-        if fun.isEmpty then throw E(s"Sound asset must be set before shader can start.")
+        !>(fun.nonEmpty, s"Sound asset must be set before shader can start.")
         go = true
         dur = 0L
         lastRenderMs = System.currentTimeMillis()

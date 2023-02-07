@@ -75,8 +75,8 @@ object CPVersion:
     // | UPDATE ABOVE SEQUENCE FOR EACH RELEASE MANUALLY. |
     // +==================================================+
 
-    require(VERSIONS.map(_.semver).distinct.sizeIs == VERSIONS.size, "Semver not unique.")
-    require(VERSIONS.map(_.date).distinct.sizeIs == VERSIONS.size, "Release date not unique.")
+    !>(VERSIONS.map(_.semver).distinct.sizeIs == VERSIONS.size, "Semver not unique.")
+    !>(VERSIONS.map(_.date).distinct.sizeIs == VERSIONS.size, "Release date not unique.")
 
     /**
       * Gets current version.

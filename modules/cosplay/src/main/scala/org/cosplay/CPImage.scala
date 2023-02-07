@@ -746,7 +746,7 @@ object CPImage:
       * @param imgs Non-empty set of images to stitch vertically.
       */
     def vertImage(imgs: CPImage*): CPImage =
-        require(imgs.nonEmpty)
+        !>(imgs.nonEmpty, "At least one image must be provided.")
         imgs.tail.foldLeft(imgs.head)((acc, img) => acc.stitchBelow(img))
 
     /**
@@ -756,7 +756,7 @@ object CPImage:
       * @param imgs Non-empty set of images to stitch horizontally.
       */
     def horImage(imgs: CPImage*): CPImage =
-        require(imgs.nonEmpty)
+        !>(imgs.nonEmpty, "At least one image must be provided.")
         imgs.tail.foldLeft(imgs.head)((acc, img) => acc.stitchRight(img))
 
     /**
@@ -771,7 +771,7 @@ object CPImage:
             CPUtils.readAllStrings(src).tail.zipWithIndex.map((line, i) => {
                 val idx = i + 1
                 val parts = line.split(",").map(_.strip)
-                if parts.length != 5 then E(s"Invalid CSV file format at line $idx: $src")
+                !>(parts.length == 5, s"Invalid CSV file format at line $idx: $src")
                 try
                     val x = Integer.decode(parts(0))
                     val y = Integer.decode(parts(1))
@@ -781,7 +781,7 @@ object CPImage:
 
                     CPPosPixel(CPPixel(ch, fg, bg.?), x, y)
                 catch
-                    case e: Exception => E(s"Invalid CSV file format at line $idx: $src", e)
+                    case e: Exception => raise(s"Invalid CSV file format at line $idx: $src", e)
             })
         )
         new CPArrayImage(arr.map(skin))
@@ -799,7 +799,7 @@ object CPImage:
         bb.order(ByteOrder.LITTLE_ENDIAN)
         bb.getInt // '-1' in REXPaint 1.60  (skip).
         val layerCnt = bb.getInt
-        if layerCnt <= 0 then E(s"Image file is empty: $src")
+        !>(layerCnt > 0, s"Image file is empty: $src")
         val layers = ArrayBuffer.empty[CPArray2D[CPPixel]]
         for _ <- 0 until layerCnt do
             val w = bb.getInt
@@ -861,7 +861,7 @@ object CPImage:
         if path.endsWith(".csv") then loadRexCsv(path, skin)
         else if path.endsWith(".xp") then loadRexXp(path, skin)
         else if path.endsWith(".txt") then loadTxt(path, skin)
-        else E(s"Unsupported file image format (must be .csv, .txt or .xp): $path")
+        else raise(s"Unsupported file image format (must be .csv, .txt or .xp): $path")
 
     /**
       * Previews given sequence of image as animation.
@@ -872,9 +872,9 @@ object CPImage:
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       */
     def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_PREVIEW_BG): Unit =
-        require(fps < 1_000, "FPS must be < 1,000.")
+        !>(fps < 1_000, "FPS must be < 1,000.")
         val frameDim = imgs.head.getDim
-        require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
+        !>(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
         val dim = CPDim(frameDim.w + 8, frameDim.h + 8)
         CPEngine.init(
             CPGameInfo(

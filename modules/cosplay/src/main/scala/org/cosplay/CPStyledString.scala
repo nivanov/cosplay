@@ -60,7 +60,7 @@ import scala.collection.mutable
   */
 class CPStyledString:
     private var fg: CPColor = _
-    private var bg: Option[CPColor] = None
+    private var bg = none[CPColor]
     private val buf = mutable.Buffer.empty[CPPixel]
 
     /**
@@ -101,7 +101,7 @@ class CPStyledString:
       * @param obj Object to add.
       */
     def str(obj: Any): CPStyledString =
-        if fg == null then E(s"Foreground color must be specified first.")
+        !>(fg != null, s"Foreground color must be specified first.")
         for ch <- obj.toString do buf += CPPixel(ch, fg, bg)
         this
 

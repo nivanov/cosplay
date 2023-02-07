@@ -60,7 +60,7 @@ import scala.collection.mutable.ArrayBuffer
   * @param origin The origin of the image like file path or URL.
   */
 class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CPImage(origin):
-    require(!data.contains(_ == null), "Image data cannot have 'null' values.")
+    !>(!data.contains(_ == null), "Image data cannot have 'null' values.")
 
     /**
       * Creates an image from 2D array of characters.
@@ -177,7 +177,7 @@ object CPArrayImage:
       *  - `2` - no alignment, the text is taken as is. Necessary spaces added to the end of the each line.
       */
     def apply(pxs: Seq[CPPixel], spacePx: CPPixel, align: Int = 2): CPImage =
-        require(align == -1 || align == 0 || align == 1 || align == 2, "'align' parameter can only be one of '-1', '0', '1', or '2'.")
+        !>(align == -1 || align == 0 || align == 1 || align == 2, "'align' parameter can only be one of '-1', '0', '1', or '2'.")
 
         val lines = CPUtils
             .splitBy(pxs.filter(_.char != '\r'), _.char == '\n')

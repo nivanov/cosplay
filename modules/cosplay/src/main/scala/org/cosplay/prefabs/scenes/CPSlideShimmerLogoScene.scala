@@ -56,6 +56,7 @@ import org.cosplay.prefabs.shaders.*
   *
   * @see [[CPFadeShimmerLogoScene]]
   */
+//noinspection DuplicatedCode
 class CPSlideShimmerLogoScene(
     id: String,
     dim: Option[CPDim],
@@ -67,7 +68,7 @@ class CPSlideShimmerLogoScene(
     slideOutMs: Long = 1000,
     slideOutDir: CPSlideDirection = CPSlideDirection.LEFT_TO_RIGHT,
     shimmerKeyFrame: Int = 2) extends CPScene(id, dim, bgPx):
-    require(colors.nonEmpty, "Color sequence cannot be empty.")
+    !>(colors.nonEmpty, "Color sequence cannot be empty.")
 
     private val initFg = bgPx.bg.getOrElse(bgPx.fg)
     private val logoImg = new CPArrayImage(

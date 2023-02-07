@@ -63,7 +63,7 @@ class CPFadeShimmerLogoScene(
     fadeInMs: Long = 2000,
     fadeOutMs: Long = 1000,
     shimmerKeyFrame: Int = 2) extends CPScene(id, dim, bgPx):
-    require(colors.nonEmpty, "Color sequence cannot be empty.")
+    !>(colors.nonEmpty, "Color sequence cannot be empty.")
 
     private val initFg = bgPx.bg.getOrElse(bgPx.fg)
     private val logoImg = new CPArrayImage(

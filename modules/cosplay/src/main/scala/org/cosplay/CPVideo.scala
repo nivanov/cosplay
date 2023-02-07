@@ -113,7 +113,6 @@ object CPVideo:
         def makeKbCtrl(): CPSceneObject = new CPOffScreenSprite:
             override def update(ctx: CPSceneObjectContext): Unit =
                 require(spr != null)
-
                 if ctx.getKbEvent.isDefined then
                     ctx.getKbEvent.get.key match
                         case KEY_LO_Q => ctx.exitGame() // Exit preview on 'Q' press.
@@ -139,7 +138,7 @@ object CPVideo:
             ),
             emuTerm = emuTerm
         )
-        spr = new CPVideoSprite("spr", vid, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
+        spr = new CPVideoSprite("spr", vid, 4.x, 2.y, 0.z, fps = 30, loop = true, collidable = false, autoPlay = true)
         try
             CPEngine.rootLog().info(s"Video preview [origin=${vid.getOrigin}, frameCount=${vid.getFrameCount}, frameDim=${vid.getFrameDim}, class=${vid.getClass.getName}]")
             CPEngine.startGame(new CPScene(

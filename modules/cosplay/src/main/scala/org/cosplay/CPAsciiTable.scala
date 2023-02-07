@@ -79,7 +79,7 @@ class CPAsciiTable:
             if sty.nonEmpty then
                 for e <- sty.split(',') do
                     val a = e.split(":")
-                    require(a.length == 2, s"Invalid cell style: ${e.trim}")
+                    !>(a.length == 2, s"Invalid cell style: ${e.trim}")
                     val a0 = a(0).trim
                     val a1 = a(1).trim
 
@@ -90,10 +90,10 @@ class CPAsciiTable:
                         case "align" => cs.align = a1.toLowerCase
                         case _ => assert(assertion = false, s"Invalid style: ${e.trim}")
 
-            require(cs.leftPad >= 0, "Style 'leftPad' must >= 0.")
-            require(cs.rightPad >= 0, "Style 'rightPad' must >= 0.")
-            require(cs.maxWidth > 0, "Style 'maxWidth' must > 0.")
-            require(cs.align == "center" || cs.align == "left" || cs.align == "right", "Style 'align' must be 'left', 'right' or 'center'.")
+            !>(cs.leftPad >= 0, "Style 'leftPad' must >= 0.")
+            !>(cs.rightPad >= 0, "Style 'rightPad' must >= 0.")
+            !>(cs.maxWidth > 0, "Style 'maxWidth' must > 0.")
+            !>(cs.align == "center" || cs.align == "left" || cs.align == "right", "Style 'align' must be 'left', 'right' or 'center'.")
 
             cs
 
@@ -608,7 +608,7 @@ class CPAsciiTable:
 
     private def renderPrintStream(f: => PrintStream, file: String): Unit =
         try Using.resource(f) { _.print(mkString()) }
-        catch case e: IOException => E(s"Error outputting table into file: $file", e)
+        catch case e: IOException => raise(s"Error outputting table into file: $file", e)
 
 /**
   * Companion object contains utility functions.

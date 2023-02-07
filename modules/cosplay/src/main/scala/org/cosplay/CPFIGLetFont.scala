@@ -199,9 +199,9 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
     /** @inheritdoc */
     override def render(s: String, fg: CPColor, bg: Option[CPColor] = None): CPImage =
         def getFIGChar(code: Int): FIGLet =
-            if code < 0 || code >= chars.length then E(s"Invalid FIGLet font char code: $code")
+            !>(code >= 0 && code < chars.length, s"Invalid FIGLet font char code: $code")
             val figlet = chars(code)
-            if figlet == null then E(s"Unsupported char code: $code")
+            !>(figlet != null, s"Unsupported char code: $code")
             figlet
 
         val data = new CPArray2D[CPPixel](s.foldLeft(0)((sum, ch) => sum + getFIGChar(ch).width), figHeight)
@@ -392,7 +392,7 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
         if parts.length >= 9 then
             figCodeTagCount = try parts(8).toInt catch case _: NumberFormatException => throw wrongHeader("invalid code tag count")
 
-        if figPrintDirection == 1 then E(s"Right-to-left FIGLet fonts are not supported: $flfPath")
+        if figPrintDirection == 1 then raise(s"Right-to-left FIGLet fonts are not supported: $flfPath")
 
         if figFullLayout > 0 then
             if figOldLayout == -1 &&
@@ -412,7 +412,7 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
             else if figOldLayout > 0 &&
                 (figFullLayout & 128) == 128 then figCtrlSmush = true
             else
-                E(s"Cannot determine font layout: $flfPath")
+                raise(s"Cannot determine font layout: $flfPath")
         else
             if figOldLayout == -1 then figFullWidth = true
             else if figOldLayout == 0 then figKerning = true
@@ -428,7 +428,7 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
             figSmushRule6 = (figOldLayout & 32) == 32 || (figFullLayout & 32) == 32
 
         if !figKerning && !figUniSmush && !figCtrlSmush && !figFullWidth then
-            E(s"undetermined layout")
+            raise(s"Undetermined layout.")
 
     /**
       *
@@ -444,7 +444,7 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
             val chLine = lines(idx)
             if chLine.endsWith(s"$eol$eol") then chLines += chLine.dropRight(2)
             else if chLine.endsWith(s"$eol") then chLines += chLine.dropRight(1)
-            else E(s"FLF character line $idx '$chLine' does not properly terminate in $flfPath'")
+            else raise(s"FLF character line $idx '$chLine' does not properly terminate in $flfPath'")
 
         val width = chLines.maxBy(_.length).length
 
@@ -471,13 +471,12 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
                 try
                     enc = "windows-1252"
                     CPUtils.readAllStrings(flfPath, enc).toIndexedSeq
-                catch
-                    case e: Exception => E(s"Failed to read (unsupported encoding?): $flfPath", e)
+                catch case e: Exception => raise(s"Failed to read (unsupported encoding?): $flfPath", e)
 
         // Some fonts are not following FIGLet spec with extra spaces after EOL...
         lines = lines.map(_.stripTrailing())
 
-        if lines.isEmpty then E(s"FLF file is empty: $flfPath")
+        !>(lines.nonEmpty, s"FLF file is empty: $flfPath")
 
         parseFIGHeader(lines.head)
 

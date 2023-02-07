@@ -50,7 +50,22 @@ import scala.collection.mutable
   * @param msg Exception message.
   * @param cause Optional cause.
   */
-def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
+def raise[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
+
+/**
+  * A shortcut for `if cond then throw new CPException(errMsg)`.
+  *
+  * @param cond Condition to check.
+  * @param errMsg Error message to throw if condition is `false`.
+  */
+@targetName("exclamationRightAngle")
+def !>(cond: Boolean, errMsg: => String): Unit = if cond then raise(errMsg)
+
+/** Sugar for typed `None` value. */
+def none[T]: Option[T] = None
+
+/** Sugar for typed `Nil` value. */
+def nil[T]: List[T] = Nil
 
 /**
   * Shortcut for `Option[x]` as `x.?`.
@@ -69,9 +84,9 @@ extension[R, T](opt: Option[T])
         case Some(a) => a == t
         case None => false
     def mapOr(f: T => R, dflt: => R): R = opt.flatMap(f(_).?).getOrElse(dflt)
-    def getOrThrow[E <: Exception](e: => E): T = opt match
+    def getOrThrow[E <: Exception](errMsg: => String): T = opt match
         case Some(t) => t
-        case None => throw e
+        case None => raise(errMsg)
 
 /**
   * Base trait for typed coordinates and dimensions.
@@ -216,8 +231,8 @@ object CPEngine:
     private var pause = false
     private var frameCnt = 0L // Overall game fame count.
     private var scFrameCnt = 0L // Current scene fame count (each scene starts at zero).
-    private var dbgStopAtFrameCnt: Option[Long] = None
-    private var dbgKbKey: Option[CPKeyboardKey] = None
+    private var dbgStopAtFrameCnt = none[Long]
+    private var dbgKbKey = none[CPKeyboardKey]
     private var gameInfo: CPGameInfo = _
     private var isShowFps = false
     private var kbReader: NativeKbReader = _
@@ -228,9 +243,9 @@ object CPEngine:
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
     private var savedEx: Throwable = _
-    private var stats: Option[CPRenderStats] = None
-    private var homeRoot: Option[String] = None
-    private var tempRoot: Option[String] = None
+    private var stats = none[CPRenderStats]
+    private var homeRoot = none[String]
+    private var tempRoot = none[String]
     @volatile private var state = State.ENG_INIT
     @volatile private var playing = true
 
@@ -279,7 +294,7 @@ object CPEngine:
                     ent.ex
                 ))
                 buf.clear()
-        
+
         def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit =
             if frameCnt % nthFrame == 0 then
                 if obj.toString != CPUtils.PING_MSG then
@@ -360,7 +375,7 @@ object CPEngine:
                 catch
                     case _: InterruptedIOException => ()
                     case _: InterruptedException => ()
-                    case e: Exception => E(s"Keyboard read error: $e", e)
+                    case e: Exception => raise(s"Keyboard read error: $e", e)
 
                 kbMux.synchronized {
                     key.clear() // Clear potential metadata from the key.
@@ -402,7 +417,7 @@ object CPEngine:
         tempFile
 
     private def mkDir(dir: File): File =
-        if !dir.exists() && !dir.mkdirs() then throw E(s"Failed to create folder: ${dir.getAbsolutePath}")
+        if !dir.exists() && !dir.mkdirs() then raise(s"Failed to create folder: ${dir.getAbsolutePath}")
         dir
 
     /**
@@ -423,12 +438,12 @@ object CPEngine:
       *     value will be result of this expression: {{{System.console() == null}}}
       */
     def init(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Unit =
-        if state == State.ENG_STARTED then E("Engine is already initialized.")
-        if state == State.ENG_STOPPED then E("Engine is stopped and cannot be restarted.")
+        !>(state != State.ENG_STARTED, "Engine is already initialized.")
+        !>(state != State.ENG_STOPPED, "Engine is stopped and cannot be restarted.")
 
         // Initialize JavaFX toolkit for audio.
         try com.sun.javafx.application.PlatformImpl.startup(() => ())
-        catch case e: Exception => E(s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io).", e)
+        catch case e: Exception => raise(s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io).", e)
 
         this.gameInfo = gameInfo
         // Internal game ID.
@@ -451,7 +466,7 @@ object CPEngine:
 
         // Create new terminal.
         try term = Class.forName(termClsName).getDeclaredConstructor(classOf[CPGameInfo]).newInstance(gameInfo).asInstanceOf[CPTerminal]
-        catch case e: Exception => E(s"Failed to create the terminal for class: $termClsName", e)
+        catch case e: Exception => raise(s"Failed to create the terminal for class: $termClsName", e)
 
         // Set terminal window title.
         updateTitle(term.getDim)
@@ -518,7 +533,7 @@ object CPEngine:
       *
       */
     private def checkState(): Unit =
-        if state != State.ENG_STARTED then E(s"Engine is not started.")
+        !>(state == State.ENG_STARTED, s"Engine is not started.")
 
     /**
       * Gets root log for the game engine.
@@ -605,7 +620,7 @@ object CPEngine:
     def debugStep(kbKey: Option[CPKeyboardKey]): Unit =
         checkState()
         pauseMux.synchronized {
-            if !pause then E(s"Game must be paused for debugging.")
+            !>(pause, s"Game must be paused for debugging.")
             dbgStopAtFrameCnt = (frameCnt + 1).?
             dbgKbKey = kbKey
             pause = false
@@ -766,8 +781,6 @@ object CPEngine:
       * @return Adjusted camera frame.
       */
     private def adjustCameraFrame(scr: CPRect, x: Int, y: Int, termW: Int, termH: Int): CPRect =
-        require(scr.x == 0 && scr.y == 0)
-
         val frame = CPRect(x, y, termW, termH)
         if frame.contains(scr) then
             // If terminal is larger than entire scene return scene as a camera frame.
@@ -796,8 +809,8 @@ object CPEngine:
         var startScMs = startMs
         var fps = 0
         var sc = startScene
-        var lastKbEvt: Option[CPKeyboardEvent] = None
-        var kbEvt: Option[CPKeyboardEvent] = None
+        var lastKbEvt = none[CPKeyboardEvent]
+        var kbEvt = none[CPKeyboardEvent]
         var lastTermDim = CPDim.ZERO
         val msgQ = mutable.HashMap.empty[String, mutable.Buffer[AnyRef]]
         val delayedQ = mutable.ArrayBuffer.empty[() => Unit]
@@ -807,16 +820,16 @@ object CPEngine:
         val sceneCache = CPCache(delayedQ)
         val collidedBuf = mutable.ArrayBuffer.empty[CPSceneObject]
         var stopFrame = false
-        var kbFocusOwner: Option[String] = None
+        var kbFocusOwner = none[String]
         var camRect: CPRect = null
         var camX = 0
         var camY = 0
         var camPanX = 0f
         var camPanY = 0f
-        var fpsList: List[Int] = Nil
+        var fpsList = nil[Int]
         var fpsCnt = 0
         var fpsSum = 0
-        var low1FpsList: List[Int] = Nil
+        var low1FpsList = nil[Int]
         var low1FpsCnt = 0
         var scLog = engLog.getLog(s"${startScene.getId}")
         var forceStatsUpdate = false
@@ -846,7 +859,7 @@ object CPEngine:
             case None => msgQ += id -> mutable.Buffer(msgs)
 
         if term.isNative && gameInfo.minDim.isDefined && term.getDim <@ gameInfo.minDim.get then
-            throw E(s"Terminal window is too small (must be at least ${gameInfo.minDim.get}).")
+            raise(s"Terminal window is too small (must be at least ${gameInfo.minDim.get}).")
 
         var lastScDim: CPDim = null
         var scr: CPScreen = null
@@ -907,7 +920,7 @@ object CPEngine:
                 // Visible scene objects sorted by layer.
                 val objs = sc.objects.values.toSeq.sortBy(_.getZ)
 
-                if objs.isEmpty then E(s"Scene '${sc.getId}' has no objects.")
+                !>(objs.nonEmpty, s"Scene '${sc.getId}' has no objects.")
 
                 // Transition objects states.
                 objs.foreach(lifecycleStart)
@@ -1098,7 +1111,7 @@ object CPEngine:
                     override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
                     override def getObjectsForTags(tags: Seq[String]): Seq[CPSceneObject] = sc.objects.getForTags(tags)
                     override def countObjectsForTags(tags: Seq[String]): Int = sc.objects.countForTags(tags)
-                    override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit = 
+                    override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit =
                         delayedQ += (() => {
                             engLog.info(s"Scene added: ${newSc.getId}")
                             scenes.add(newSc)
@@ -1106,7 +1119,7 @@ object CPEngine:
                         if switchTo then doSwitchScene(newSc.getId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
-                        if sc.getId == id then E(s"Cannot remove current scene: ${sc.getId}")
+                        if sc.getId == id then raise(s"Cannot remove current scene: ${sc.getId}")
                         else
                             val cloId = id
                             delayedQ += (() => {
@@ -1129,7 +1142,7 @@ object CPEngine:
                                     engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $cloId")
                         })
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
-                        if myObj.getCollisionRect.isEmpty then E(s"Current object does not provide collision shape: ${myObj.getId}")
+                        if myObj.getCollisionRect.isEmpty then raise(s"Current object does not provide collision shape: ${myObj.getId}")
                         else
                             val myClsRect = myObj.getCollisionRect.get
                             collide(r => r.overlaps(myClsRect), zs: _*)

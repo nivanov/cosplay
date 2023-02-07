@@ -69,7 +69,7 @@ package org.cosplay
   *     using camera.
   */
 open class CPCamera:
-    private var focusTrackId: Option[String] = None
+    private var focusTrackId = none[String]
     private var focusFrameInset: CPInsets = CPInsets.ZERO
     private var panningStepX = 1.0f
     private var panningStepY = 1.0f
@@ -111,7 +111,7 @@ open class CPCamera:
       * @param panningStepX Panning step for X-axis.
       */
     def setPanningStepX(panningStepX: Float): Unit =
-        if panningStepX <= 0 then E(s"Panning x-step must be > 0: $panningStepX")
+        !>(panningStepX > 0, s"Panning x-step must be > 0: $panningStepX")
         this.panningStepX = panningStepX
 
     /**
@@ -127,7 +127,7 @@ open class CPCamera:
       * @param panningStepY Panning step for Y-axis.
       */
     def setPanningStepY(panningStepY: Float): Unit =
-        if panningStepY <= 0 then E(s"Panning y-step must be > 0: $panningStepY")
+        !>(panningStepY > 0, s"Panning y-step must be > 0: $panningStepY")
         this.panningStepY = panningStepY
 
     /**
@@ -181,7 +181,7 @@ open class CPCamera:
       * @param focusFrameInsets Insets for the screen to defined the focus frame.
       */
     def setFocusFrameInsets(focusFrameInsets: CPInsets): Unit =
-        if focusFrameInset < 0 then E("Focus frame inset must be >= 0: $focusFrameInset")
+        !>(focusFrameInset >= 0, "Focus frame inset must be >= 0: $focusFrameInset")
         this.focusFrameInset = focusFrameInsets
 
     /**

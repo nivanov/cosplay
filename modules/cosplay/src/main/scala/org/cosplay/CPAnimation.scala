@@ -296,9 +296,9 @@ object CPAnimation:
       * @see [[filmStrip()]]
       */
     def timeBased(id: String, loop: Boolean = true, bounce: Boolean = false, frames: Seq[(CPImage, Long)]): CPAnimation =
-        if frames.isEmpty then E(s"Animation frames cannot be empty.")
-        if frames.exists(_._2 <= 0) then E(s"Invalid animation frames duration (must be > 0).")
-        if bounce && !loop then E("'bounce' cannot be true when 'loop' is false.")
+        !>(frames.nonEmpty, s"Animation frames cannot be empty.")
+        !>(frames.forall(_._2 > 0), s"Invalid animation frames duration (must be > 0).")
+        !>(!(bounce && !loop), "'bounce' cannot be true when 'loop' is false.")
 
         new CPAnimation(id):
             private var lastFrameMs = 0L

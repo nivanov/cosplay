@@ -81,8 +81,8 @@ class CPRandomFadeInShader(
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) => Float = (a, b) => a.toFloat / b
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
+    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    !>(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private val chars = "xXzZwWmMkKfFdDsS1234567890{}[]@#$%^&*()_+<>?"
     private var frmCnt = 0

@@ -109,13 +109,13 @@ class CPContainer[T <: CPGameObject]:
       *
       * @param id
       */
-    def grab(id: String): T = map.getOrElse(id, E(s"Unknown game object ID: $id"))
+    def grab(id: String): T = map.getOrElse(id, raise(s"Unknown game object ID: $id"))
 
     /**
       *
       * @param t
       */
-    def add(t: T): Unit = if map.contains(t.getId) then E(s"Dup game object ID: ${t.getId}") else map.put(t.getId, t)
+    def add(t: T): Unit = if map.contains(t.getId) then raise(s"Dup game object ID: ${t.getId}") else map.put(t.getId, t)
 
     /**
       *

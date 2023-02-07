@@ -190,8 +190,6 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
         if x != bg then
             if !(shadow != null && (shadow.bg == x || (shadow.bg.isDefined && x.isDefined && shadow.bg.get == x.get))) then
                 shadow = CPPixel(char, fg, x, tag)
-
-            require(shadow != null)
             shadow
         else
             this
@@ -290,7 +288,7 @@ object CPPixel:
       * @note Pixel tag will be set to zero.
       */
     def seq(first: Char, last: Char, fg: CPColor, bg: Option[CPColor]): Seq[CPPixel] =
-        if first > last then E(s"'first' char ('$first') must < 'last' char ('$last').")
+        !>(first <= last, s"'first' char ('$first') must be <= 'last' char ('$last').")
         for ch <- first to last yield CPPixel(ch, fg, bg, 0)
 
     /**
@@ -303,7 +301,7 @@ object CPPixel:
       * @note Pixel tag will be set to zero.
       */
     def seq(first: Char, last: Char, fgf: Char => CPColor, bgf: Char => Option[CPColor]): Seq[CPPixel] =
-        if first > last then E(s"'first' char ('$first') must < 'last' char ('$last').")
+        !>(first <= last, s"'first' char ('$first') must be <= 'last' char ('$last').")
         for ch <- first to last yield CPPixel(ch, fgf(ch), bgf(ch), 0)
 
     /**

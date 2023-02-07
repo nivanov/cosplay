@@ -46,7 +46,7 @@ import impl.CPUtils
   * @see [[CPArray2D]] 2D content holder.
   */
 final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(x, y, width, height):
-    if width < 0 || height < 0 then E(s"Rect dimension must be >= 0: [$width, $height]")
+    !>(width >= 0 && height >= 0, s"Rect dimension must be >= 0: [$width, $height]")
 
     /**
       * Area of this rectangle as `width * height`.

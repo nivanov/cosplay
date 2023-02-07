@@ -143,7 +143,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
     private val snakeSpr: CPCanvasSprite = new CPCanvasSprite:
         private val INIT_SPEED = .5f
         private val yelps = Seq("Yam", "Tasty", "Num", "Okay", "Nice", "Right", "Bam", "Wow", "Yep", "Yes")
-        private var snake: List[(Int, Int)] = Nil
+        private var snake = nil[(Int, Int)]
         private var dx = 0f
         private var dy = 0f
         private var x = 0f
@@ -276,14 +276,11 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
         override def render(ctx: CPSceneObjectContext): Unit =
             require(snake.nonEmpty)
             val canv = ctx.getCanvas
-
             def draw(xy: (Int, Int), px: CPPixel): Unit =
                 canv.drawPixel(px, xy._1 * 2, xy._2, 2)
                 canv.drawPixel(px, xy._1 * 2 + 1, xy._2, 2)
-
             val hpx = if !go && dead then headPx.withChar('8').withFg(C_BLACK) else headPx
             val bpx = if !go && dead then bodyPx.withChar('X').withFg(C_BLACK) else bodyPx
-
             // Draw snake.
             draw(snake.head, hpx) // Head.
             snake.tail.foreach(draw(_, bpx)) // Rest of the body.

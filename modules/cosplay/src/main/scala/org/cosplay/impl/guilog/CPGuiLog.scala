@@ -68,14 +68,13 @@ import scala.util.Using
   */
 class CPGuiLog(cat: String) extends CPLog:
     override def getLog(category: String): CPLog =
-        require(category != null, "Log category cannot be 'null'.")
+        !>(category != null, "Log category cannot be 'null'.")
         val log = new CPGuiLog(s"$cat/$category")
         log.inheritFrom(this)
         log
     override def getCategory: String = cat
     override def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit =
-        if isEnabled(lvl) then
-            CPGuiLog.addLog(nthFrame, lvl, cat, obj, ex)
+        if isEnabled(lvl) then CPGuiLog.addLog(nthFrame, lvl, cat, obj, ex)
 
 /**
   *

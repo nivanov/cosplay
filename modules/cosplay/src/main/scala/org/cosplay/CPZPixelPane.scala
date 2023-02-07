@@ -95,7 +95,7 @@ object CPZPixelPane:
       * @param bgPx Background pixel for new Z-pixel pane.
       */
     def apply(arr: CPArray2D[CPZPixel], bgPx: CPPixel): CPZPixelPane =
-        if bgPx.isXray then E(s"Background pixel cannot be 'xray'.")
+        !>(!bgPx.isXray, s"Background pixel cannot be 'xray'.")
 
         new CPZPixelPane:
             override def getDim: CPDim = arr.dim

@@ -83,15 +83,15 @@ class CPAnimationSprite(
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
     tags: Seq[String] = Seq.empty) extends CPSceneObject(id, tags.toSet):
-    require(anis.nonEmpty, "Sequence of animation cannot be empty.")
+    !>(anis.nonEmpty, "Sequence of animation cannot be empty.")
 
     private var myX = x
     private var myY = y
     private var myZ = z
-    private var keyFrameOpt: Option[CPAnimationKeyFrame] = None
+    private var keyFrameOpt = none[CPAnimationKeyFrame]
     private var curAni: CPAnimation = getAni(initAniId)
-    private var delayedAni: Option[CPAnimation] = None
-    private var pausedAni: Option[CPAnimation] = None
+    private var delayedAni = none[CPAnimation]
+    private var pausedAni = none[CPAnimation]
     private val onKfChangeMap = mutable.HashMap.empty[String, (CPAnimation, CPSceneObjectContext) => Unit]
 
     /**
@@ -158,9 +158,7 @@ class CPAnimationSprite(
       *
       * @param id
       */
-    private def getAni(id: String): CPAnimation = anis.find(_.getId == id) match
-        case Some(ani) => ani
-        case None => E(s"Unknown animation: $id")
+    private def getAni(id: String): CPAnimation = anis.find(_.getId == id).getOrThrow(s"Unknown animation: $id")
 
     /**
       * Gets sequence of animation for this sprite.

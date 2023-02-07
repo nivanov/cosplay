@@ -1017,7 +1017,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Fill in pixel producer.
       */
     def fill(x: Int, y: Int, isBorder: CPZPixel => Boolean, pxf: (Int, Int) => CPPixel): Unit =
-        var seen: List[(Int, Int)] = Nil
+        var seen = nil[(Int, Int)]
         var stack = List(x -> y)
 
         while (stack.nonEmpty)
@@ -1080,7 +1080,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Pixel producing function.
       */
     def drawPolyline(pts: Seq[(Int, Int)], z: Int, pxf: (Int, Int) => CPPixel): Unit =
-        require(pts.length >= 2, "Polyline must have at 2 or more points.")
+        !>(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         val max = pts.length - 1
         var i = 0
@@ -1098,7 +1098,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param pxf Pixel producing function.
       */
     def polylinePixels(pts: Seq[(Int, Int)], z: Int, pxf: (Int, Int) => CPPixel): mutable.ArrayBuffer[CPPosPixel] =
-        require(pts.length >= 2, "Polyline must have at 2 or more points.")
+        !>(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         val buf = new mutable.ArrayBuffer[CPPosPixel]()
         val max = pts.length - 1
@@ -1136,7 +1136,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param style Art style to use. Default value is [[ART_BLOCK]].
       */
     def drawArtPolyline(pts: Seq[(Int, Int)], z: Int, pxf: CPPosPixel => CPPixel, style: ArtLineStyle = ART_BLOCK): Unit =
-        require(pts.length >= 2, "Polyline must have at 2 or more points.")
+        !>(pts.length >= 2, "Polyline must have at 2 or more points.")
 
         for i <- 0 until pts.length - 1 do
             val pt1 = pts(i)
@@ -1438,7 +1438,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         titleX: Int = -1,
         titleY: Int = -1
     ): Unit =
-        if title.nonEmpty && (titleX <= 0 || titleY <=0) then E("Title coordinate must be supplied and >= 0.")
+        if title.nonEmpty && (titleX <= 0 || titleY <= 0) then raise("Title coordinate must be supplied and >= 0.")
         drawRect(x1, y1, x2, y2, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
         if title.nonEmpty then drawPixels(titleX, titleY, z, title)
 

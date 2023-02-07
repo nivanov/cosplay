@@ -95,8 +95,8 @@ class CPTextInputSprite(
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
     tags: Seq[String] = Seq.empty
 ) extends CPSceneObject(id, tags.toSet):
-    require(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
-    require(initTxt != null, "Initial text cannot be 'null'.")
+    !>(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
+    !>(initTxt != null, "Initial text cannot be 'null'.")
 
     private val dim = CPDim(visLen, 1)
     private val buf = mutable.ArrayBuffer.empty[Char]
@@ -104,7 +104,7 @@ class CPTextInputSprite(
     private var lastStart = 0
     private var ready = false
     private val pxs = mutable.ArrayBuffer.empty[CPPixel]
-    private var res: Option[String] = None
+    private var res = none[String]
 
     reset()
 

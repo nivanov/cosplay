@@ -89,7 +89,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
     with Serializable:
     import CPColor.*
 
-    require(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
+    !>(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
 
     private val rgbStr = s"[r=$red,g=$green,b=$blue]"
     private inline def strClr = if name == null then rgbStr else name

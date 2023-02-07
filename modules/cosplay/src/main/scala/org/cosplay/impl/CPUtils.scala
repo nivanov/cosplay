@@ -58,6 +58,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
   *
   */
+//noinspection ScalaWeakerAccess
 object CPUtils:
     private val THREAD_POOL_SIZE = 16
 
@@ -92,9 +93,7 @@ object CPUtils:
       * @tparam T Return value type.
       * @return Future.
       */
-    def par[T](f: () => T): java.util.concurrent.Future[T] = exec.submit(new Callable[T] {
-        override def call(): T = f()
-    })
+    def par[T](f: () => T): java.util.concurrent.Future[T] = exec.submit(() => f())
     
     /**
       * Safely splits given string into substring by '\n' character, ignoring Windows vs. Unix
@@ -241,7 +240,7 @@ object CPUtils:
             finally
                 close(gis)
         catch
-            case e: Exception => E(s"Failed to unzip byte array.", e)
+            case e: Exception => raise(s"Failed to unzip byte array.", e)
 
     /**
       *
@@ -259,7 +258,7 @@ object CPUtils:
             finally
                 close(gis)
         catch
-            case e: Exception => E(s"Failed to zip byte array.", e)
+            case e: Exception => raise(s"Failed to zip byte array.", e)
 
     /**
       *
@@ -287,8 +286,8 @@ object CPUtils:
                 stream.flush()
             }
         catch
-            case e: IOException => E(s"Error creating file: $gz", e)
-        if del && !f.delete() then E(s"Error while deleting file: $f")
+            case e: IOException => raise(s"Error creating file: $gz", e)
+        if del && !f.delete() then raise(s"Error while deleting file: $f")
 
     /**
       * Gets resource stream from classpath.
@@ -298,7 +297,7 @@ object CPUtils:
     def getStream(res: String): InputStream =
         getClass.getClassLoader.getResourceAsStream(res) match
             case in if in != null => in
-            case _ => E(s"Resource not found: $res")
+            case _ => raise(s"Resource not found: $res")
 
     /**
       * Gets resource existing flag.
@@ -315,7 +314,7 @@ object CPUtils:
         if isFile(src) then readFile(new File(src), enc)
         else if isResource(src) then readResource(src, enc)
         else if isUrl(src) then Using.resource(new URL(src).openStream()) { readStream(_, enc) }
-        else E(s"Source not found or unsupported: $src")
+        else raise(s"Source not found or unsupported: $src")
 
     /**
       *
@@ -325,7 +324,7 @@ object CPUtils:
         if isFile(src) then CPUtils.readByteFile(new File(src))
         else if isResource(src) then readByteResource(src)
         else if isUrl(src) then readByteUrl(src)
-        else E(s"Binary source not found or unsupported: $src")
+        else raise(s"Binary source not found or unsupported: $src")
 
     /**
       *
@@ -353,7 +352,7 @@ object CPUtils:
       */
     def readFile(f: File, enc: String = "UTF-8"): List[String] =
         try Using.resource(Source.fromFile(f, enc)) { _.getLines().map(p => p).toList }
-        catch case e: IOException => E(s"Failed to read file: ${f.getAbsolutePath}", e)
+        catch case e: IOException => raise(s"Failed to read file: ${f.getAbsolutePath}", e)
 
     /**
       * Reads all bytes from given file.
@@ -362,7 +361,7 @@ object CPUtils:
       */
     def readByteFile(f: File): Array[Byte] =
         try Files.readAllBytes(f.toPath)
-        catch case e: IOException => E(s"Failed to read binary file: ${f.getAbsolutePath}", e)
+        catch case e: IOException => raise(s"Failed to read binary file: ${f.getAbsolutePath}", e)
 
     /**
       * Reads lines from given stream.
@@ -389,10 +388,10 @@ object CPUtils:
         val buf = ArrayBuffer.empty[Byte]
         try
             var b = in.read()
-            while (b != -1)
+            while b != -1 do
                 buf += b.toByte
                 b = in.read()
-        catch case e: Exception => E(s"Failed to read binary stream: $name", e)
+        catch case e: Exception => raise(s"Failed to read binary stream: $name", e)
         finally close(in)
         buf.toArray
 

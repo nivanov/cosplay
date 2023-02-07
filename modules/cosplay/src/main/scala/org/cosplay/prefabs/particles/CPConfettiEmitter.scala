@@ -55,7 +55,7 @@ class CPConfettiEmitter(
     bgFg: CPColor,
     chf: Int => Char,
     z: Int) extends CPParticleEmitter():
-    require(colors.nonEmpty, "Colors cannot be empty.")
+    !>(colors.nonEmpty, "Colors cannot be empty.")
 
     // Number of particles this emitter will emit on each update.
     private val GEN_SIZE = 10
