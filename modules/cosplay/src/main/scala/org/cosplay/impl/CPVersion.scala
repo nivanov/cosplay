@@ -17,6 +17,7 @@
 
 package org.cosplay.impl
 
+import org.cosplay.*
 import java.time.{LocalDate, Year}
 
 /*
