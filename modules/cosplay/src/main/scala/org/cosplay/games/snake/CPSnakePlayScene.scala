@@ -72,9 +72,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
         ),
         (ch, _, _) => ch&C1
     ).split(2, 1)
-    private val yamAniSeq = Seq(
-        CPAnimation.filmStrip("yamAni", 150, imgs = yamImgs)
-    )
+    private val yamAniSeq = CPAnimation.filmStrip("yamAni", 150.ms, imgs = yamImgs).seq
     private def prepDialog(art: String): CPArrayImage =
         new CPArrayImage(
             prepSeq(art),
@@ -118,14 +116,14 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
     private val yamEmitter = new CPConfettiEmitter(
         () => yamSpr.getX,
         () => yamSpr.getY,
-        10,
-        15,
+        genSize = 10,
+        maxAge = 15,
         CS,
         BG_PX.fg,
         _ => "oO0Xx".rand,
-        0
+        z = 0
     )
-    private val yamPartSpr = CPParticleSprite(emitters = Seq(yamEmitter))
+    private val yamPartSpr = CPParticleSprite(emitters = yamEmitter.seq)
     private val scoreSpr = new CPImageSprite(x = 0, y = 0, z = 1, img = mkScoreImage):
         override def update(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
@@ -140,8 +138,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
             canv.drawLine(canv.w - 2, scoreH + 1, canv.w - 2, canv.h, 1, borderPx)
             // Draw score rectangle fill.
             canv.fillRect(0, 0, canv.w, scoreH - 1, 1, (_, _) => scorePx)
-    private val yamShdr = CPShimmerShader(false, CS, 7, true)
-    private val yamSpr = new CPAnimationSprite(anis = yamAniSeq, 0, 0, 0, "yamAni", false, shaders = Seq(yamShdr))
+    private val yamShdr = CPShimmerShader(false, CS, keyFrame = 7, autoStart = true)
+    private val yamSpr = new CPAnimationSprite(anis = yamAniSeq, x = 0, y = 0, z = 0, initAniId = "yamAni", shaders = yamShdr.seq)
     private val snakeSpr: CPCanvasSprite = new CPCanvasSprite:
         private val INIT_SPEED = .5f
         private val yelps = Seq("Yam", "Tasty", "Num", "Okay", "Nice", "Right", "Bam", "Wow", "Yep", "Yes")
@@ -210,9 +208,9 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
 
                 def youLost(): Unit =
                     youLostSpr.show()
-                    if audioOn then youLostSnd.replay(1000)
+                    if audioOn then youLostSnd.replay(1000.ms)
                     yamSpr.hide()
-                    bgSnd.stop(1000)
+                    bgSnd.stop(1000.ms)
 
                 // Check for snake death.
                 if isDead(canv) then
@@ -247,7 +245,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
                             _ => 0f,
                             _ => -0.3f,
                             BG_PX,
-                            1000
+                            durMs = 1000.ms
                         )
                         ctx.addObject(bubbleSpr)
                         if score == WIN_SCORE then
@@ -291,11 +289,11 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
             snake.tail.foreach(draw(_, bpx)) // Rest of the body.
 
     // Announcements.
-    private val lostWonShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000, BG_PX)
-    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, z = 6, shaders = Seq(lostWonShdr))
-    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, z = 6, shaders = Seq(lostWonShdr))
+    private val lostWonShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000.ms, BG_PX)
+    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, z = 6, shaders = lostWonShdr.seq)
+    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, z = 6, shaders = lostWonShdr.seq)
 
-    private val bgSnd = CPSound(s"sounds/games/snake/snake.wav", 0.7f)
+    private val bgSnd = CPSound(s"sounds/games/snake/snake.wav", vol = 0.7f)
     private val yamSnd = CPSound(s"sounds/games/snake/yam.wav")
     private val youLostSnd = CPSound(s"sounds/games/snake/you_lost.wav")
     private val youWonSnd = CPSound(s"sounds/games/snake/you_won.wav")
@@ -304,8 +302,8 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
     private def mkScoreImage: CPImage = FIG_ANSI_REGULAR.render(s"SCORE : $score", C3).trimBg()
 
     // Shaders.
-    private val fadeInShdr = CPFadeInShader(true, 500, BG_PX)
-    private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
+    private val fadeInShdr = CPFadeInShader(entireFrame = true, 500.ms, BG_PX)
+    private val fadeOutShdr = CPFadeOutShader(entireFrame = true, 500.ms, BG_PX)
 
     addObjects(
         new CPOffScreenSprite(Seq(fadeInShdr, fadeOutShdr)),
@@ -333,7 +331,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
             stopAudio() // Stop all sounds.
             audioOn = false
         else
-            bgSnd.loop(2000)
+            bgSnd.loop(2000.ms)
             audioOn = true
 
     override def onDeactivate(): Unit = stopAudio()
@@ -341,6 +339,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
         score = 0
         go = true
         dead = false
-        if audioOn then bgSnd.loop(2000) // Start background audio.
+        if audioOn then bgSnd.loop(2000.ms) // Start background audio.
         youWonSpr.hide()
         youLostSpr.hide()

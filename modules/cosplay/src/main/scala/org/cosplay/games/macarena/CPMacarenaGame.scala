@@ -80,9 +80,9 @@ object CPMacarenaGame:
         def mkSprite(id: String, aniFrames: Seq[CPImage], x: Int, y: Int, key: CPKeyboardKey): CPSceneObject =
             val fiShdr = new CPFadeInShader(false, 1000, bgPx)
             val idleImg = aniFrames.head.skin((px, _, _) => px.withFg(C_GRAY5))
-            val idleAni = CPAnimation.filmStrip(s"ani-idl-$id", 1_000 / DANCE_FPS, true, false, Seq(idleImg))
+            val idleAni = CPAnimation.filmStrip(s"ani-idl-$id", 1_000 / DANCE_FPS, true, false, idleImg.seq)
             val danceAni = CPAnimation.filmStrip(s"ani-dance-$id", 1_000 / DANCE_FPS, true, false, aniFrames)
-            new CPAnimationSprite(s"spr-$id", Seq(idleAni, danceAni), x, y, 0, idleAni.getId, false, Seq(fiShdr)):
+            new CPAnimationSprite(s"spr-$id", Seq(idleAni, danceAni), x, y, 0, idleAni.getId, false, fiShdr.seq):
                 override def update(ctx: CPSceneObjectContext): Unit =
                     super.update(ctx)
                     ctx.getKbEvent match
@@ -100,7 +100,8 @@ object CPMacarenaGame:
             img = FIG_BIG_MONEY_NE.withFullWidth().render("MACARENA", CPColor.C_RED3A).trimBg().copy((px, _, _) => px.withFg(shimmers.rand)),
             z = 0,
             orient = HOR,
-            shaders = Seq(beatShdr))
+            shaders = beatShdr.seq
+        )
         titleSpr.setY(3)
         val danceFloor = CPScene("danceFloor", dim.?, bgPx,
             titleSpr,

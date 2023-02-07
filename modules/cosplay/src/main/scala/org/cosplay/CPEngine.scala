@@ -59,6 +59,10 @@ extension[T](ref: T)
     @targetName("asAnOption")
     def `?`: Option[T] = Option(ref)
 
+/** Single element sequence sugar. */
+extension[T](t: T)
+    def seq: Seq[T] = Seq(t)
+
 extension[R, T](opt: Option[T])
     @targetName("optEqual")
     def ===(t: T): Boolean = opt match
