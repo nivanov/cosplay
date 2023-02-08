@@ -44,7 +44,7 @@ import scala.reflect.ClassTag
   */
 //noinspection ScalaWeakerAccess
 class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
-    !>(width > 0 && height > 0, s"2D array dimension must be >= 0: [$width, $height]")
+    !>(width >= 0 && height >= 0, s"2D array dimension must be >= 0: [$width, $height]")
 
     private val data = Array.ofDim[T](width, height)
     private var clearVal: T = _
