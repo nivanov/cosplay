@@ -58,35 +58,36 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
     // Bird metrics.
     private var speed = 1f
     private var vel = 0f
-    private val jump = 5f
-    private val gravity = 0.2f
     private var delta = 0.4f
     private var dead = false
+    private val jump = 5f
+    private val gravity = 0.2f
 
     private var score = 0
 
-    private val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 35))
-    private val PIPE_BG = CPColor("0x4C338F")
-    private val PIPE_PX = '|'&&(PIPE_BG, PIPE_BG)
-    private val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
-    private val BUILD_WIN_PX = CPPixel('.', C_X11_ANTIQUE_WHITE, C_GRAY6, tag = 1) // Use tag '1' in shader.
-    private val BUILD_MIN_W = 4
-    private val BUILD_MAX_W = 10
-    private val BUILD_MIN_H = 6
-    private val BUILD_MAX_H = 13
-    private final var PIPE_WIDTH = 5
-    private final var PIPE_GAP_HEIGHT = 15
-    private val BUILD_GAP_MAX = 4
-    private val BUILD_GAP_MIN = -4
+    private final val BUILD_COLORS = Seq(C_GRAY3, C_GRAY4, C_GRAY5, C_GRAY6, C_GRAY7).map(c => c.setBlue(c.blue + 35))
+    private final val PIPE_BG = CPColor("0x4C338F")
+    private final val PIPE_PX = '|'&&(PIPE_BG, PIPE_BG)
+    private final val BUILD_WALL_PX = ' '&&(C_BLACK, C_GRAY6)
+    private final val BUILD_WIN_PX = CPPixel('.', C_X11_ANTIQUE_WHITE, C_GRAY6, tag = 1) // Use tag '1' in shader.
+    private final val BUILD_MIN_W = 4
+    private final val BUILD_MAX_W = 10
+    private final val BUILD_MIN_H = 6
+    private final val BUILD_MAX_H = 13
+    private final val BUILD_GAP_MAX = 4
+    private final val BUILD_GAP_MIN = -4
+    private final val BUILD_SPEED = 7
+    private final val GRASS_SPEED = 3
+
+    private var pipeWidth = 5
+    private var pipeGaHeight = 15
     private var closestPipeX = 60
     private var closestPipeCut = 0
-    private val buildSpeed = 7
-    private val grassSpeed = 3
 
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
         true,
-        1000,
+        1000.ms,
         GAME_BG_PX
     )
     private val CS = Seq(C1, C2, C3, C4, C5)
@@ -211,12 +212,12 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 // Bottom pipe.
                 if ((getY + getHeight) >= closestPipeCut) &&
                     getX + getWidth >= closestPipeX && // Touching pipe.
-                    getX <= closestPipeX + PIPE_WIDTH - 1 then
+                    getX <= closestPipeX + pipeWidth - 1 then
                     kill(0, true)
                 // Top pipe.
-                else if (getY <= closestPipeCut - PIPE_GAP_HEIGHT) &&
+                else if (getY <= closestPipeCut - pipeGaHeight) &&
                     getX + getWidth >= closestPipeX && // Touching pipe.
-                    getX <= closestPipeX + PIPE_WIDTH - 1 then
+                    getX <= closestPipeX + pipeWidth - 1 then
                     kill(0, true)
                 else if getY <= 0 then kill(5, false)
                 else if getY >= canv.height then kill(0, false)
@@ -249,17 +250,17 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
                 // Game difficulty.
                 if score == 0 then
-                    PIPE_WIDTH = 5
-                    PIPE_GAP_HEIGHT = 15
+                    pipeWidth = 5
+                    pipeGaHeight = 15
                 else if score == 5 then
-                    PIPE_WIDTH = 6
-                    PIPE_GAP_HEIGHT = 13
+                    pipeWidth = 6
+                    pipeGaHeight = 13
                 else if score == 10 then
-                    PIPE_WIDTH = 10
-                    PIPE_GAP_HEIGHT = 10
+                    pipeWidth = 10
+                    pipeGaHeight = 10
                 else if score == 15 then
-                    PIPE_WIDTH = 13
-                    PIPE_GAP_HEIGHT = 7
+                    pipeWidth = 13
+                    pipeGaHeight = 7
 
     private val scoreSpr = new CPImageSprite("score", 0, 0, 1, mkScoreImage()):
         override def update(ctx: CPSceneObjectContext): Unit =
@@ -292,7 +293,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 val canv = ctx.getCanvas
                 val objId = ctx.getId
 
-                if ctx.getFrameCount % buildSpeed == 0 then map.clear()
+                if ctx.getFrameCount % BUILD_SPEED == 0 then map.clear()
 
                 val set = map.get(objId) match
                     case Some(s) => s
@@ -330,7 +331,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 // Windows.
                 for index <- 0 to height do canv.drawLine(x + 1, y + index, x + width - 1, y + index, 1, winPx)
 
-                if ctx.getFrameCount % buildSpeed == 0 && !dead then
+                if ctx.getFrameCount % BUILD_SPEED == 0 && !dead then
                     x -= 1
                     if x <= -width then ctx.deleteMyself()
 
@@ -368,13 +369,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     val px2 = PIPE_PX.withFg(fg).withBg(bg.?)
                     val x = pipeX + a
                     canv.drawLine(x, gapStartY, x, canv.dim.h, 2, px2)
-                    canv.drawLine(x, gapStartY - PIPE_GAP_HEIGHT, x, 0, 2, px2)
+                    canv.drawLine(x, gapStartY - pipeGaHeight, x, 0, 2, px2)
 
     private def newGrassSprite(posX: Int, posY: Int) : CPSceneObject =
         new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = "grass".seq):
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                if ctx.getFrameCount % grassSpeed == 0 && !dead then
+                if ctx.getFrameCount % GRASS_SPEED == 0 && !dead then
                     setX(getX - 1)
                     if getX <= -brickImg.w then ctx.deleteMyself()
                 setY(ctx.getCanvas.height - brickImg.h)
@@ -392,10 +393,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         delta = 0.4
         vel = velChange
         speed = 0f
-        if pipe then birdSpr.setX(closestPipeX - PIPE_WIDTH + 2)
+        if pipe then birdSpr.setX(closestPipeX - pipeWidth + 2)
 
     private def restart(ctx : CPSceneObjectContext) : Unit =
-        if audioOn then youLostSnd.stop(250)
+        if audioOn then youLostSnd.stop(250.ms)
 
         // Delete all buildings, grass, and pipes.
         ctx.deleteObjectsForTags("building")
@@ -438,8 +439,8 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         scorePartSpr
     )
 
-    private def startBgAudio(): Unit = bgSnd.loop(2000)
-    private def stopBgAudio(): Unit = bgSnd.stop(500)
+    private def startBgAudio(): Unit = bgSnd.loop(2000.ms)
+    private def stopBgAudio(): Unit = bgSnd.stop(500.ms)
 
     /**
       * Toggles audio on and off.

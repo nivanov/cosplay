@@ -61,11 +61,11 @@ Maven dependency:
 &lt;dependency&gt;
   &lt;groupId&gt;org.cosplayengine&lt;/groupId&gt;
   &lt;artifactId&gt;cosplay&lt;/artifactId&gt;
-  &lt;version&gt;0.8.2&lt;/version&gt;
+  &lt;version&gt;0.8.3&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
 
 SBT dependency:
 <pre>
-libraryDependencies += "org.cosplayengine" % "cosplay" % "0.8.2"
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.8.3"
 </pre>

@@ -45,7 +45,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
         true,
-        3000,
+        3000.ms,
         GAME_BG_PX
     )
     private val CS = Seq(C1, C2, C3, C4, C5)
@@ -53,7 +53,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         true,
         GAME_BG_PX.bg.get,
         Seq(
-            CPStarStreak('.', CS, 0.025, 30, (0f, .2f), 0),
+            CPStarStreak('.', CS, ratio = 0.025, steps = 30, speed = (0f, .2f), z = 0),
             CPStarStreak(':', CS, 0.015, 25, (0f, .4f), 0),
             CPStarStreak('|', CS, 0.005, 50, (0f, .8f), 0)
         ),
@@ -86,8 +86,8 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         CPKeyboardSprite(KEY_SPACE, _.switchScene("play"))
     )
 
-    private def startBgAudio(): Unit = bgSnd.loop(2000)
-    private def stopBgAudio(): Unit = bgSnd.stop(2000)
+    private def startBgAudio(): Unit = bgSnd.loop(2000.ms)
+    private def stopBgAudio(): Unit = bgSnd.stop(2000.ms)
 
     /**
       * Toggles audio on and off.

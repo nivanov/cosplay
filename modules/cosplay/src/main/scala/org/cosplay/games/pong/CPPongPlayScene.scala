@@ -93,8 +93,8 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
 
     private val plyImg = mkPaddleImage(C5)
     private val npcImg = mkPaddleImage(C3)
-    require(plyImg.h == npcImg.h)
-    require(plyImg.w == npcImg.w)
+    !>(plyImg.h == npcImg.h)
+    !>(plyImg.w == npcImg.w)
     private val paddleH = plyImg.h
     private val paddleW = plyImg.w
 
@@ -229,7 +229,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val netSpr = new CPCanvasSprite("net"):
         override def render(ctx: CPSceneObjectContext): Unit =
             val canv = ctx.getCanvas
-            canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, 5, '|'&C2)
+            canv.drawLine(canv.dim.w / 2, 0, canv.dim.w / 2, canv.dim.h, z = 5, '|'&C2)
 
     // Player paddle.
     private val plySpr = new CPImageSprite(x = 0, y = 0, z = 0, plyImg, false, plyShdr.seq):
@@ -359,7 +359,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     def finishGame(spr: CPImageSprite, shdr: CPSlideInShader, snd: CPSound): Unit =
                         playing = false
                         gameOver = true
-                        bgSnd.stop(500) // Stop background audio.
+                        bgSnd.stop(500.ms) // Stop background audio.
                         shdr.start()
                         spr.show()
                         if audioOn then snd.replay(3000)
@@ -380,7 +380,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 setY(Math.min(Math.max(y, 0f), yMax).round)
 
     // Announcements.
-    private def mkShader = CPSlideInShader.sigmoid(CENTRIFUGAL, false, 500, BG_PX)
+    private def mkShader = CPSlideInShader.sigmoid(CENTRIFUGAL, false, 500.ms, BG_PX)
     private val serveShdr = mkShader
     private val youLostShdr = mkShader
     private val youWonShdr = mkShader
@@ -450,7 +450,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     override def onDeactivate(): Unit = stopAudio()
     override def onActivate(): Unit =
         // Start background audio.
-        if audioOn then bgSnd.loop(2000)
+        if audioOn then bgSnd.loop(2000.ms)
 
         // All announcements are invisible initially.
         serveSpr.hide()
@@ -475,7 +475,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
             stopAudio() // Stop all sounds.
             audioOn = false
         else
-            bgSnd.loop(2000)
+            bgSnd.loop(2000.ms)
             audioOn = true
 
 

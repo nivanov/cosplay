@@ -113,7 +113,7 @@ object CPVideo:
           */
         def makeKbCtrl(): CPSceneObject = new CPOffScreenSprite:
             override def update(ctx: CPSceneObjectContext): Unit =
-                require(spr != null)
+                !>(spr != null)
                 if ctx.getKbEvent.isDefined then
                     ctx.getKbEvent.get.key match
                         case KEY_LO_Q => ctx.exitGame() // Exit preview on 'Q' press.

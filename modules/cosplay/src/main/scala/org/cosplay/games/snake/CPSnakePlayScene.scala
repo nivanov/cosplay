@@ -270,11 +270,11 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
                         case None => ()
             else
                 if ctx.isKbKey(KEY_SPACE) then
-                    youLostSnd.stop(500)
+                    youLostSnd.stop(500.ms)
                     fadeOutShdr.start(ctx => ctx.switchScene("title", true))
 
         override def render(ctx: CPSceneObjectContext): Unit =
-            require(snake.nonEmpty)
+            !>(snake.nonEmpty)
             val canv = ctx.getCanvas
             def draw(xy: (Int, Int), px: CPPixel): Unit =
                 canv.drawPixel(px, xy._1 * 2, xy._2, 2)

@@ -56,10 +56,11 @@ def raise[T](msg: String, cause: Throwable = null): T = throw new CPException(ms
   * A shortcut for `if cond then throw new CPException(errMsg)`.
   *
   * @param cond Condition to check.
-  * @param errMsg Error message to throw if condition is `false`.
+  * @param errMsg Optional error message to throw if condition is `false`. By default, 'Requirement failed."
+  *     message will be used.
   */
 @targetName("exclamationRightAngle")
-def !>(cond: Boolean, errMsg: => String): Unit = if !cond then raise(errMsg)
+def !>(cond: Boolean, errMsg: => String = "Requirement failed."): Unit = if !cond then raise(errMsg)
 
 /** Sugar for typed `None` value. */
 def none[T]: Option[T] = None
@@ -249,7 +250,7 @@ object CPEngine:
     @volatile private var state = State.ENG_INIT
     @volatile private var playing = true
 
-    require(FPS_1PCT_LIST_SIZE > 0)
+    !>(FPS_1PCT_LIST_SIZE > 0)
 
     /**
       * Target FPS of the game engine. If the actual frame rate exceeds this value the game engine will

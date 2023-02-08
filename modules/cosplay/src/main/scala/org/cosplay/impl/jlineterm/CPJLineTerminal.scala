@@ -68,7 +68,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       * @param camRect
       */
     class TermScreen(termDim: CPDim, scr: CPScreen, camRect: CPRect):
-        require(scr.getRect.contains(camRect))
+        !>(scr.getRect.contains(camRect))
 
         private val termRect = new CPRect(0, 0, termDim) // Exact terminal window.
         private val termCamRect = centerCamRect() // Camera rect positioned (centered) within terminal window.
@@ -110,11 +110,11 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         override def run(): Unit =
             while (!st0p)
                 curDim = getDim
-                try Thread.sleep(250)
+                try Thread.sleep(250.ms)
                 catch case _: InterruptedException => ()
 
     override def render(scr: CPScreen, camRect: CPRect, forceRedraw: Boolean): Unit =
-        require(scr.getRect.contains(camRect), s"scr=${scr.getRect}, cam=$camRect")
+        !>(scr.getRect.contains(camRect))
 
         val termDim = getDim
         val termScr = new TermScreen(termDim, scr, camRect)

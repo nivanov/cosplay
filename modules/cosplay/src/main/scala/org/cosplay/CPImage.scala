@@ -258,7 +258,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         val dim = getDim
         val byteSize = 10 * dim.area + 4/* Version (-1). */ + 4/* Number of layers. */ + 4/* Width. */ + 4/* Height. */
         val buf = ByteBuffer.allocate(byteSize)
-        require(buf.hasArray)
+        !>(buf.hasArray)
         buf.order(ByteOrder.LITTLE_ENDIAN)
         buf.putInt(-1) // Version (-1 for REXPaint 1.60)
         buf.putInt(1) // Only 1 layer.

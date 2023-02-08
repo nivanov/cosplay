@@ -226,7 +226,7 @@ object CPAnimationExample:
 
             override def onStart(): Unit =
                 bgSnd.setVolume(0.2f) // Make background 20% volume.
-                bgSnd.loop(1500) // Auto-play with fade-in.
+                bgSnd.loop(1500.ms) // Auto-play with fade-in.
                 // Example of the per-frame sound synchronization.
                 setOnKeyFrameChange("vert", Option((_, _) => stepSnd.play()))
             override def getX: Int = x.round
