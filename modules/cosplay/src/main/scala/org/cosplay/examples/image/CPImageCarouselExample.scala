@@ -111,8 +111,8 @@ object CPImageCarouselExample:
         private val leftOffScrX = -(img.w + 1)
         private val rightOffScrX = viewDim.w
         private val stepX = 1.0f
-        private val fadeInShdr = new CPFadeInShader(false, 2000, bgPx, autoStart = false)
-        private val fadeOutShdr = new CPFadeOutShader(false, 1000, bgPx, onFinish = _ => setVisible(false))
+        private val fadeInShdr = new CPFadeInShader(false, 2000.ms, bgPx, autoStart = false)
+        private val fadeOutShdr = new CPFadeOutShader(false, 1000.ms, bgPx, onFinish = _ => setVisible(false))
         private val shdrs = Seq(fadeInShdr, fadeOutShdr)
 
         private var x = leftOffScrX.toFloat
@@ -209,7 +209,7 @@ object CPImageCarouselExample:
                     CPStaticImageSprite((dim.w - ctrlImg.w) / 2, dim.h - ctrlImg.h - 2, 0, ctrlImg),
                     kbCtrl,
                     // Just for the initial scene fade-in effect.
-                    new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
+                    new CPOffScreenSprite(new CPFadeInShader(true, 1500.ms, bgPx)),
                 )
                 ++
                 // Add carousel images sprites.
@@ -224,7 +224,16 @@ object CPImageCarouselExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(
+            new CPFadeShimmerLogoScene(
+                id = "logo",
+                dim.?,
+                bgPx,
+                C_STEEL_BLUE1 :: C_LIME :: C_ORANGE1 :: Nil,
+                nextSc = "scene"
+            ),
+            sc
+        )
         finally CPEngine.dispose()
 
         sys.exit(0)

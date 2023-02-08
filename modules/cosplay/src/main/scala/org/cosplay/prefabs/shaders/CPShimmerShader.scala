@@ -114,7 +114,7 @@ class CPShimmerShader(
     /**
       * Tests whether this shader is in progress or not.
       */
-    def isOn: Boolean = go
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =

@@ -453,12 +453,11 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     override def setTitle(s: String): Unit = frame.setTitle(s)
     override def nativeKbRead(timeoutMs: Long): Int = assert(assertion = false, "Unsupported.")
     override def kbRead(): Option[CPKeyboardKey] = kbMux.synchronized {
-        kbKey match
-            case Some(key) => 
-                kbKey = None
-                key.clear()
-                Some(key)
-            case None => None
+        kbKey.flatMap(key =>
+            kbKey = None
+            key.clear()
+            key.?
+        )
     }
 
     init()

@@ -103,20 +103,20 @@ object CPMarkupTests:
         assertDoesNotThrow(() => mkMarkup(
             List(("<%", "%>"))
         ))
-        assertThrows(classOf[IllegalArgumentException], () => mkMarkup(
+        assertThrows(classOf[CPException], () => mkMarkup(
             List((" a", "%>>"))
         ))
-        assertThrows(classOf[IllegalArgumentException], () => mkMarkup(
+        assertThrows(classOf[CPException], () => mkMarkup(
             List(("a", ""))
         ))
-        assertThrows(classOf[IllegalArgumentException], () => mkMarkup(
+        assertThrows(classOf[CPException], () => mkMarkup(
             List(
                 ("<%", "%>"),
                 ("<$", "$>"),
                 ("<~", "%>")
             )
         ))
-        assertThrows(classOf[IllegalArgumentException], () => mkMarkup(
+        assertThrows(classOf[CPException], () => mkMarkup(
             List(
                 ("<%", "%>"),
                 ("<%", "%>>")

@@ -131,10 +131,8 @@ class CPSlideOutShader(
                         val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
                         !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(px.fg, bgFg, bal)
-                        val newBg = px.bg match
-                            case Some(c) => CPColor.mixture(c, bgBg, bal).?
-                            case None => None
-                        canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
+                        val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
+                        canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then

@@ -59,7 +59,7 @@ def raise[T](msg: String, cause: Throwable = null): T = throw new CPException(ms
   * @param errMsg Error message to throw if condition is `false`.
   */
 @targetName("exclamationRightAngle")
-def !>(cond: Boolean, errMsg: => String): Unit = if cond then raise(errMsg)
+def !>(cond: Boolean, errMsg: => String): Unit = if !cond then raise(errMsg)
 
 /** Sugar for typed `None` value. */
 def none[T]: Option[T] = None

@@ -39,7 +39,7 @@ import org.cosplay.{given, *}
   * camera frame or the individual scene object it is attached to. If used for entire
   * camera frame effect it can be attached to an off-screen sprite.
   *
-  * @param entireFrame Whether apply to the entire camera frame or just the object this
+  * @param entireFrame Whether apply this shader to the entire camera frame or just the object this
   *     shader is attached to.
   * @param durMs Duration of the fade in effect in milliseconds.
   * @param bgPx Background pixel to fade in from. Background pixel don't participate in shader effect.
@@ -91,7 +91,7 @@ class CPFadeInShader(
       * Resets this shaders to its initial state starting its effect on the next frame.
       *
       * @param onFinish Optional override for the callback to call when shader effect is finished.
-      *         If not provided, the default value is the callback supplied at the creation of this shader.
+      *     If not provided, the default value is the callback supplied at the creation of this shader.
       */
     def start(onFinish: CPSceneObjectContext => Unit = cb): Unit =
         cb = onFinish
@@ -123,10 +123,8 @@ class CPFadeInShader(
                         val bal = balance(frmCnt, maxFrmCnt)
                         !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(bgFg, px.fg, bal)
-                        val newBg = px.bg match
-                            case Some(c) => CPColor.mixture(bgBg, c, bal).?
-                            case None => None
-                        canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
+                        val newBg = px.bg.flatMap(CPColor.mixture(bgBg, _, bal).?)
+                        canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then
