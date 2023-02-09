@@ -50,8 +50,8 @@ import scala.collection.mutable
   * then compares previous canvas and this one to determine which areas of the terminal need redrawing.
   *
   * You can also create the canvas object outside game loop using companion object methods. Such "off-line" canvas is
-  * convinient when one needs to draw something off the screen and then capture that drawing as an image, for example,
-  * during scene intialization out of the game loop.
+  * convenient when one needs to draw something off the screen and then capture that drawing as an image, for example,
+  * during scene initialization out of the game loop.
   *
   * Canvas `(0,0)` coordinate point is located in the top left corner. X-axis goes to the right and Y-axis
   * points down. Every drawn pixel on the canvas also has a Z-index or depth. Pixel with larger or equal

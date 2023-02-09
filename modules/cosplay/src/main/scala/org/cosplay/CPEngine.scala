@@ -85,9 +85,11 @@ extension[R, T](opt: Option[T])
         case Some(a) => a == t
         case None => false
     def mapOr(f: T => R, dflt: => R): R = opt.flatMap(f(_).?).getOrElse(dflt)
-    def getOrThrow[E <: Exception](errMsg: => String): T = opt match
+    def getOrThrow(err: => String | Exception): T = opt match
         case Some(t) => t
-        case None => raise(errMsg)
+        case None => err match
+            case s: String => raise(s)
+            case e: Exception => throw e
 
 /**
   * Base trait for typed coordinates and dimensions.
@@ -140,7 +142,6 @@ extension(d: Int)
     def gb: Long = d * 1024 * 1024 * 1024
 
     // To milliseconds...
-    def msec: Long = d
     def ms: Long = d
     def secs: Long = d * 1000
     def mins: Long = d * 1000 * 60

@@ -17,6 +17,7 @@
 
 package org.cosplay
 
+import scala.language.implicitConversions
 import org.cosplay.CPColor.*
 import org.cosplay.CPKeyboardKey.*
 
@@ -41,7 +42,7 @@ object CPArtPolylineApp:
       *
       */
     def main(args: Array[String]): Unit =
-        val dim = CPDim(100, 40)
+        val dim = (100, 40)
         val bgPx = CPPixel(' ', C_GRAY2, C_GRAY1)
 
         CPEngine.init(

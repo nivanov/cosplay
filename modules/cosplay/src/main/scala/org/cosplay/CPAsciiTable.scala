@@ -136,19 +136,21 @@ class CPAsciiTable:
 
     /**
       * Global flag indicating whether or not to draw inside horizontal lines
-      * between individual rows.
+      * between individual rows. Default value is `false`.
       */
-    private val insideBorder = false
+    var insideBorder = false
+
     /**
       * Global Flag indicating whether of not to automatically draw horizontal lines
-      * for multiline rows.
+      * for multiline rows. Default value is `true`.
       */
-    private val multiLineAutoBorder = true
+    var multiLineAutoBorder = true
+
     /**
       * If lines exceeds the style's maximum width it will be broken up
-      * either by nearest space (by whole words) or mid-word.
+      * either by nearest space (by whole words) or mid-word. Default value is `true`.
       */
-    private val breakUpByWords = true
+    var breakUpByWords = true
 
     private def dash(ch: String, len: Int): String = ch * len
     private def space(len: Int): String = " " * len
@@ -275,7 +277,14 @@ class CPAsciiTable:
     /**
       * Adds headers with the given `style`.
       *
-      * @param style Style top use.
+      * @param style Style to use. If empty string is given, then default header style
+      *     [[CPAsciiTable.DFLT_HEADER_STYLE]] will be used. Style string is a comma-separated list of one of
+      *     the following styles:
+      *     - `leftPad: x` - left padding of `x` characters.
+      *     - `rightPad: x` - right padding of `x` characters.
+      *     - `maxWidth: x` - maximum width of  `x` characters.
+      *     - `align: {left|center|right}` - left, center or right alignment.
+      *
       * @param cells Header cells.
       */
     def addStyledHeaders(style: String, cells: List[Any]): CPAsciiTable =
@@ -373,7 +382,13 @@ class CPAsciiTable:
     /**
       * Adds single header cell with the default style..
       *
-      * @param style Style to use.
+      * @param style Style to use. If empty string is given, then default header style
+      *     [[CPAsciiTable.DFLT_HEADER_STYLE]] will be used. Style string is a comma-separated list of one of
+      *     the following styles:
+      *     - `leftPad: x` - left padding of `x` characters.
+      *     - `rightPad: x` - right padding of `x` characters.
+      *     - `maxWidth: x` - maximum width of  `x` characters.
+      *     - `align: {left|center|right}` - left, center or right alignment.
       * @param lines One or more cell lines.
       */
     def addStyledHeaderCell(style: String, lines: Any*): CPAsciiTable =
@@ -387,7 +402,13 @@ class CPAsciiTable:
     /**
       * Adds single row cell with the default style.
       *
-      * @param style Style to use.
+      * @param style Style to use. If empty string is given, then default header style
+      *     [[CPAsciiTable.DFLT_HEADER_STYLE]] will be used. Style string is a comma-separated list of one of
+      *     the following styles:
+      *     - `leftPad: x` - left padding of `x` characters.
+      *     - `rightPad: x` - right padding of `x` characters.
+      *     - `maxWidth: x` - maximum width of  `x` characters.
+      *     - `align: {left|center|right}` - left, center or right alignment.
       * @param lines One or more row cells. Multiple lines will be printed on separate lines.
       */
     def addStyledRowCell(style: String, lines: Any*): CPAsciiTable =
@@ -533,6 +554,7 @@ class CPAsciiTable:
 
     /**
       * Prepares table string representation for logger.
+      *
       * @param header Optional header.
       */
     private def mkLogString(header: Option[String] = None): String = s"${header.getOrElse("")}\n${mkString()}"
@@ -614,9 +636,10 @@ class CPAsciiTable:
   * Companion object contains utility functions.
   */
 object CPAsciiTable:
-    // Default styles.
-    private val DFLT_ROW_STYLE = "align:left"
-    private val DFLT_HEADER_STYLE = "align:center"
+    /** Default row style. */
+    final val DFLT_ROW_STYLE = "align:left"
+    /** Default header style. */
+    final val DFLT_HEADER_STYLE = "align:center"
 
     /**
       * Creates new ASCII text table with all defaults.
