@@ -40,6 +40,7 @@ import prefabs.scenes.*
 import prefabs.shaders.*
 import prefabs.sprites.*
 import CPCenteredImageSpriteOrientation.*
+import scala.util.*
 
 /**
   * Five stick-figures dancing macarena. You control dances by pressing their numbers
@@ -60,6 +61,8 @@ import CPCenteredImageSpriteOrientation.*
   * @note See more details at [[https://cosplayengine.org/devguide/quick_game.html]]
   */
 object CPMacarenaGame:
+    private def error(e: Throwable): Unit = Console.err.println(s"${Console.RED}[err]${Console.RESET}: ${e.getMessage}")
+
     /**
       * Entry point for JVM runtime.
       *
@@ -73,7 +76,9 @@ object CPMacarenaGame:
         val DANCE_FPS = 5
 
         // Initialize the engine.
-        CPEngine.init(CPGameInfo(name = "ASCII Macarena", initDim = dim.?))
+        CPEngine.initEff(CPGameInfo(name = "ASCII Macarena", initDim = dim.?)) match
+            case Failure(e) => error(e); sys.exit(1)
+            case _ => ()
 
         val music = CPSound(src = "sounds/games/macarena/macarena.wav") // https://freesound.org
 
@@ -118,12 +123,14 @@ object CPMacarenaGame:
                     beatShdr.start() // Start beat shader in the same time.
         )
 
-        // Start the game & wait for exit.
-        try CPEngine.startGame(
+        // Start the game & wait for the exit.
+        CPEngine.startGame(
             // CosPlay logo scene.
             new CPSlideShimmerLogoScene("logo", dim.?, bgPx, shimmers, nextSc = "danceFloor"),
             danceFloor
         )
-        finally CPEngine.dispose()
 
-        sys.exit(0)
+        // Dispose the engine.
+        CPEngine.disposeEff() match
+            case Failure(e) => error(e); sys.exit(2)
+            case _ => sys.exit(0)

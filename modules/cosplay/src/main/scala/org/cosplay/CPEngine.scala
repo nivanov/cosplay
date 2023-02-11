@@ -30,6 +30,7 @@ import impl.*
 import java.io.*
 import scala.annotation.targetName
 import scala.collection.mutable
+import scala.util.*
 
 /*
    _________            ______________
@@ -194,6 +195,7 @@ extension(d: Int)
   *
   * | System Property | Value Type | Description  |
   * | ----------------| ---------- | ------------ |
+  * | `COSPLAY_GAME_ID` | `String` | Internal unique game ID. |
   * | `COSPLAY_EMUTERM_FONT_NAME` | `String` | Applies to the built-in terminal emulator only. Specifies the font name to use. |
   * | `COSPLAY_EMUTERM_FONT_SIZE` | `Int` | Applies to the built-in terminal emulator only. Specifies the font size to use. |
   * | `COSPLAY_EMUTERM_CH_WIDTH_OFFSET` | `Int` | Applies to the built-in terminal emulator only. Specifies character width offset. Can be positive or negative. Default is zero. |
@@ -206,14 +208,15 @@ extension(d: Int)
   * There are three reserved key strokes that are used by the game engine itself and therefore NOT available
   * to the game. These keystrokes are intercepted before frame update and not propagated to the scene object
   * context:
-  *  - 'CTRL+Q' - toggles in-game FPS overlay
-  *  - 'CTRL+L' - opens GUI-based loc viewer & debugger
+  *  - 'CTRL+Q' - toggles in-game FPS overlay (see [[CPEngine.enableCtrlFps()]] method)
+  *  - 'CTRL+L' - opens GUI-based loc viewer & debugger (see [[CPEngine.enableCtrlLog()]] method)
   *  - 'F12' - saves current frame screenshot as *.xp image to the current working folder.
   *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
   *     working with game engine including initialization and game start.
   * @note See developer guide at [[https://cosplayengine.com]]
   */
+//noinspection ScalaWeakerAccess
 object CPEngine:
     private enum State:
         case ENG_INIT, ENG_STARTED, ENG_STOPPED
@@ -228,6 +231,8 @@ object CPEngine:
     private val FPS_1PCT_LIST_SIZE = FPS_LIST_SIZE / 100
     private val HOME_DIR = ".cosplay"
 
+    private var ctrlLogEnabled: Boolean = true
+    private var ctrlFpsEnabled: Boolean = true
     private val scenes = CPContainer[CPScene]()
     private var term: CPTerminal = _
     private var pause = false
@@ -433,26 +438,38 @@ object CPEngine:
         file
 
     /**
+      * Initializes the game engine. Effect-based version of [[init()]] method.
+      *
+      * @param gameInfo Game information.
+      * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
+      *     value will be result of this expression: {{{System.console() == null}}}
+      * @return Try-monad.
+      */
+    def initEff(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Try[Unit] =
+        Try(init(gameInfo, emuTerm))
+
+    /**
       * Initializes the game engine.
       *
       * @param gameInfo Game information.
       * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
       *     value will be result of this expression: {{{System.console() == null}}}
+      * @see [[initEff()]]
       */
     def init(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Unit =
         !>(state != State.ENG_STARTED, "Engine is already initialized.")
         !>(state != State.ENG_STOPPED, "Engine is stopped and cannot be restarted.")
-
         // Initialize JavaFX toolkit for audio.
-        try com.sun.javafx.application.PlatformImpl.startup(() => ())
-        catch case e: Exception => raise(s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io).", e)
+        !>(
+            Try(com.sun.javafx.application.PlatformImpl.startup(() => ())).isSuccess,
+            s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io)."
+        )
 
         this.gameInfo = gameInfo
         // Internal game ID.
         val gameId = gameInfo.name.toLowerCase.replace(' ', '_').replaceAll("\\W+", "")
-
         // Used by Log4J configuration for log output sub-folder.
-        System.setProperty("COSPLAY_GAME_NAME", gameId)
+        System.setProperty("COSPLAY_GAME_ID", gameId)
 
         homeRoot = s"${SystemUtils.getUserHome}/$HOME_DIR/$gameId".?
         tempRoot = s"${homeRoot.get}/temp".?
@@ -546,11 +563,41 @@ object CPEngine:
     def rootLog(): CPLog = engLog
 
     /**
+      * Enables or disables opening the GUI-based debugger log by pressing 'Ctrl-l'. Production games may want to
+      * disable that capability. Default value is `true`.
+      *
+      * @param f Whether to enable or disable opening the GUI-based debugger log by pressing 'Ctrl-l'.
+      */
+    def enableCtrlLog(f: Boolean): Unit = ctrlLogEnabled = f
+
+    /**
+      * Checks whether or not opening the GUI-based debugger log by pressing 'Ctrl-l' is enabled.
+      * Default value is `true`.
+      */
+    def isCtrlLog: Boolean = ctrlLogEnabled
+
+    /**
+      * Enables or disables opening built-in FPS window pressing 'Ctrl-q'. Production games may want to
+      * disable that capability. Default value is `true`.
+      *
+      * @param f Whether to enable or disable opening built-in FPS window pressing 'Ctrl-q'.
+      */
+    def enableCtrlFps(f: Boolean): Unit = ctrlFpsEnabled = f
+
+    /**
+      * Checks whether or not opening built-in FPS window pressing 'Ctrl-q' is enabled.
+      * Default value is `true`.
+      */
+    def isCtrlFps:Boolean = ctrlFpsEnabled
+
+    /**
       * Shows or hides the built-in FPS overlay in the right top corner. Can
       * also be turned on or off by pressing `Ctrl-q` in the game.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
-      * @param show Show/hide flag.
+      * @param show Show/hide built-in FPS flag.
+      * @see [[enableCtrlFps()]]
+      * @see [[isCtrlFps]]
       */
     def showFpsOverlay(show: Boolean): Unit =
         checkState()
@@ -560,24 +607,49 @@ object CPEngine:
       * Opens GUI-based log window by bringing it upfront.
       * Can also be open by pressing `Ctrl-l` in the game.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      *
+      * @see [[enableCtrlLog()]]
+      * @see [[isCtrlLog]]
       */
-    //noinspection ScalaWeakerAccess
     def openLog(): Unit =
         rootLog().info(CPUtils.PING_MSG)
 
-    /**
-      * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
-      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
-      */
-    def dispose(): Unit =
-        checkState()
+    private def stopInternals(): Unit =
         if kbReader != null then
             kbReader.st0p = true
             kbReader.interrupt()
             kbReader.join()
         if term != null then term.dispose()
+
+    /**
+      * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      *
+      * @see [[disposeEff()]]
+      */
+    def dispose(): Unit =
+        checkState()
+        stopInternals()
         state = State.ENG_STOPPED
         if savedEx != null then savedEx.printStackTrace()
+
+    /**
+      * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      * Effect-based version of [[dispose()]] method allowing end-user to use pattern matching for error handling.
+      *
+      * @return Try-monad.
+      * @see [[dispose()]]
+      */
+    def disposeEff(): Try[Unit] =
+        Try {
+            checkState()
+            stopInternals()
+        } match
+            case x: Success[_] =>
+                state = State.ENG_STOPPED
+                if savedEx != null then Failure(savedEx) else x
+            case x => x
 
     /**
       * Shortcut for the following two calls:
@@ -1244,15 +1316,15 @@ object CPEngine:
                 // Clear delayed operations.
                 delayedQ.clear()
 
-                // Built-in support for 'CTRL+Q', 'CTRL+L' and 'F12'.
+                // Built-in support for 'Ctrl+q', 'Ctrl+l' and 'F12'.
                 if kbEvt.isDefined then
-                    if kbEvt.get.key == KEY_CTRL_Q then
+                    if ctrlFpsEnabled && kbEvt.get.key == KEY_CTRL_Q then
                         isShowFps = !isShowFps
                     else if kbEvt.get.key == KEY_F12 then
                         val path = s"cosplay-screenshot-${CPRand.guid6}.xp"
                         ctx.getCanvas.capture().saveRexXp(path, sc.getBgColor)
                         engLog.info(s"Screenshot saved: $path")
-                    else if kbEvt.get.key == KEY_CTRL_L then
+                    else if ctrlLogEnabled && kbEvt.get.key == KEY_CTRL_L then
                         engLog.info(CPUtils.PING_MSG)
                 end if
 

@@ -61,8 +61,8 @@ enum CPLogLevel:
   *     <Appenders>
   *         <RollingFile
   *             name="file"
-  *             fileName="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_NAME}/log.txt"
-  *             filePattern="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_NAME}/$${date:yyyy-MM}/log-%d{MM-dd-yyyy}-%i.gz">
+  *             fileName="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_ID}/log.txt"
+  *             filePattern="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_ID}/$${date:yyyy-MM}/log-%d{MM-dd-yyyy}-%i.gz">
   *             <PatternLayout>
   *                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
   *             </PatternLayout>
