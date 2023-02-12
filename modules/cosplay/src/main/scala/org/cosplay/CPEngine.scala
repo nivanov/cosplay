@@ -54,7 +54,10 @@ import scala.util.*
 def raise[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
 
 /**
-  * A shortcut for `if cond then throw new CPException(errMsg)`.
+  * A shortcut for:
+  * {{{
+  *     if !cond then throw new CPException(errMsg)
+  * }}}
   *
   * @param cond Condition to check.
   * @param errMsg Optional error message to throw if condition is `false`. By default, 'Requirement failed."
@@ -70,14 +73,49 @@ def none[T]: Option[T] = None
 def nil[T]: List[T] = Nil
 
 /**
+  * Shortcut handler for `Try` monad.
+  */
+extension[T] (t: Try[T])
+    /**
+      * Shortcut for:
+      * {{{
+      * t match
+      *     case Success(x) => s(x)
+      *     case Failure(e) => f(e)
+      * }}}
+      *
+      * @param s On `Success(x)` function.
+      * @param f On `Failure(e)` function.
+      */
+    def onTry(s: T => Unit, f: Throwable => Unit): Unit = t match
+        case Success(x) => s(x)
+        case Failure(e) => f(e)
+
+    /**
+      * Shortcut for:
+      * {{{
+      * t match
+      *     case Success(s) => ()
+      *     case Failure(e) => f(e)
+      * }}}
+      *
+      * @param f On `Failure(e)` function.
+      */
+    def onError(f: Throwable => Unit): Unit = t match
+        case Success(s) => ()
+        case Failure(e) => f(e)
+
+/**
   * Shortcut for `Option[x]` as `x.?`.
   */
 extension[T](ref: T)
+    /** Shortcut for `Option[x]` as `x.?`. */
     @targetName("asAnOption")
     def `?`: Option[T] = Option(ref)
 
 /** Single element sequence sugar. */
 extension[T](t: T)
+    /** Shortcut for `Seq(t)` as `t.seq` */
     def seq: Seq[T] = Seq(t)
 
 extension[R, T](opt: Option[T])
@@ -319,7 +357,7 @@ object CPEngine:
     /**
       *
       */
-    object BufferedLog:
+    private object BufferedLog:
         case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable)
         val buf: mutable.ArrayBuffer[BufferedLogEntry] = mutable.ArrayBuffer.empty[BufferedLogEntry]
 
@@ -391,7 +429,7 @@ object CPEngine:
             end while
 
     /**
-      * Tests whether or not game engine is initialized.
+      * Returns whether or not game engine is initialized.
       */
     def isInit: Boolean = state == State.ENG_STARTED
 
@@ -438,12 +476,16 @@ object CPEngine:
         file
 
     /**
-      * Initializes the game engine. Effect-based version of [[init()]] method.
+      * Initializes the game engine. Effect-based version of [[init()]] method allowing end-user to use pattern
+      * matching for error handling. This method does not throw any exceptions.
       *
       * @param gameInfo Game information.
       * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
       *     value will be result of this expression: {{{System.console() == null}}}
       * @return Try-monad.
+      * @see [[init()]]
+      * @see [[startGameEff()]]
+      * @see [[disposeEff()]]
       */
     def initEff(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Try[Unit] =
         Try(init(gameInfo, emuTerm))
@@ -455,6 +497,7 @@ object CPEngine:
       * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
       *     value will be result of this expression: {{{System.console() == null}}}
       * @see [[initEff()]]
+      * @throws CPException Thrown in case of any errors.
       */
     def init(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Unit =
         !>(state != State.ENG_STARTED, "Engine is already initialized.")
@@ -631,15 +674,18 @@ object CPEngine:
         checkState()
         stopInternals()
         state = State.ENG_STOPPED
-        if savedEx != null then savedEx.printStackTrace()
+        if savedEx != null then throw savedEx
 
     /**
       * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       * Effect-based version of [[dispose()]] method allowing end-user to use pattern matching for error handling.
+      * This method does not throw any exceptions.
       *
       * @return Try-monad.
       * @see [[dispose()]]
+      * @see [[startGame()]]
+      * @see [[initEff()]]
       */
     def disposeEff(): Try[Unit] =
         Try {
@@ -715,50 +761,50 @@ object CPEngine:
         engLog.info("Game resumed.")
 
     /**
-      * Starts the game.
+      * Starts the game. Games start with the first scene in the list.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
-      * @param startSceneId ID of the scene to start with.
-      * @param scs Set of scene comprising the game. Note that scenes can be dynamically
+      * @param scs Non-empty set of scene comprising the game. Note that scenes can be dynamically
       *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @see [[startGameEff()]]
+      * @throws CPException Thrown in case of any errors.
       */
-    def startGame(startSceneId: String, scs: CPScene*): Unit =
+    def startGame(scs: CPScene*): Unit =
+        !>(scs.nonEmpty, "At least one scene must be provided.")
         checkState()
         scs.foreach(scenes.add)
         engLog.info("Game started.")
-        gameLoop(scenes.grab(startSceneId))
+        gameLoop(scenes.grab(scs.head.getId))
 
     /**
-      * Starts the game.
+      * This is effect-based version of [[startGame()]] method allowing end-user to use pattern matching
+      * for error handling. Starts the game. Games start with the first scene in the list.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      * This method does not throw any exceptions.
       *
-      * @param startSceneId ID of the scene to start with.
-      * @param scs Set of scene comprising the game. Note that scenes can be dynamically
-      *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @param scs Non-empty set of scene comprising the game. Note that scenes can be dynamically
+      * [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @see [[startGame()]]
+      * @see [[initEff()]]
+      * @see [[disposeEff()]]
       */
-    def startGame(startSceneId: String, scs: List[CPScene]): Unit = startGame(startSceneId, scs:_*)
+    def startGameEff(scs: CPScene*): Try[Unit] =
+        Try {
+            startGame(scs: _*)
+        } match
+            case x: Success[_] =>
+                if savedEx == null then x
+                else
+                    val f = Failure(savedEx)
+                    savedEx = null
+                    f
+            case x => x
 
     /**
-      * Starts the game. Games start with the first scene in the list.
-      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
-      *
-      * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
-      *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
-      */
-    def startGame(scenes: CPScene*): Unit = startGame(scenes.head.getId, scenes:_*)
-
-    /**
-      * Starts the game. Games start with the first scene in the list.
-      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
-      *
-      * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
-      *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
-      */
-    def startGame(scenes: List[CPScene]): Unit = startGame(scenes:_*)
-
-    /**
-      * Exits the game. Calling this method will exit the [[startGame()]] method.
-      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      * Exits the game. Calling this method will cause [[startGame()]] method to exit on the next frame. Note that
+      * this method can only be called from a thread different from the one used to call [[startGame()]] method. If
+      * the game wasn't started yet, this method is a no-op. Engine must be [[init() initialized]] before this
+      * call otherwise exception is thrown.
       */
     def exitGame(): Unit =
         checkState()
@@ -1392,7 +1438,10 @@ object CPEngine:
             end while
         catch case e: Throwable => savedEx = e
         finally
-            engLog.info("Game stopped.")
+            if savedEx == null then
+                engLog.info("Game stopped.")
+            else
+                engLog.error(s"Game stopped with exception: ${savedEx.getMessage}")
 
             // Stop all the scenes and their scene objects.
             for sc <- scenes.values do

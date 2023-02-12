@@ -61,7 +61,9 @@ import scala.util.*
   * @note See more details at [[https://cosplayengine.org/devguide/quick_game.html]]
   */
 object CPMacarenaGame:
-    private def error(e: Throwable): Unit = Console.err.println(s"${Console.RED}[err]${Console.RESET}: ${e.getMessage}")
+    private def error(phase: String, e: Throwable, exitCode: Int): Unit =
+        Console.err.println(s"${Console.RED}[err]${Console.RESET}[$phase]: ${e.getMessage}")
+        sys.exit(exitCode)
 
     /**
       * Entry point for JVM runtime.
@@ -75,10 +77,9 @@ object CPMacarenaGame:
         val dim = CPDim(100, 23)
         val DANCE_FPS = 5
 
+        val game = CPGameInfo(name = "ASCII Macarena", initDim = dim.?)
         // Initialize the engine.
-        CPEngine.initEff(CPGameInfo(name = "ASCII Macarena", initDim = dim.?)) match
-            case Failure(e) => error(e); sys.exit(1)
-            case _ => ()
+        CPEngine.initEff(game).onError(e => error("init", e, 1))
 
         val music = CPSound(src = "sounds/games/macarena/macarena.wav") // https://freesound.org
 
@@ -108,6 +109,7 @@ object CPMacarenaGame:
             shaders = beatShdr.seq
         )
         titleSpr.setY(3)
+        // "Dance floor" main scene.
         val danceFloor = CPScene("danceFloor", dim.?, bgPx,
             titleSpr,
             mkSprite("1", CPMacarena1AniImage.trimBg().split(3, 3), x, y, KEY_1),
@@ -122,15 +124,10 @@ object CPMacarenaGame:
                     music.loop(1500.ms) // Auto-play with fade-in.
                     beatShdr.start() // Start beat shader in the same time.
         )
+        // CosPlay logo scene.
+        val logoSc = new CPSlideShimmerLogoScene("logo", dim.?, bgPx, shimmers, nextSc = "danceFloor")
 
         // Start the game & wait for the exit.
-        CPEngine.startGame(
-            // CosPlay logo scene.
-            new CPSlideShimmerLogoScene("logo", dim.?, bgPx, shimmers, nextSc = "danceFloor"),
-            danceFloor
-        )
-
+        CPEngine.startGameEff(logoSc, danceFloor).onError(e => error("game", e,2 ))
         // Dispose the engine.
-        CPEngine.disposeEff() match
-            case Failure(e) => error(e); sys.exit(2)
-            case _ => sys.exit(0)
+        CPEngine.disposeEff().onTry(_ => sys.exit(0), e => error("dispose", e, 3))
