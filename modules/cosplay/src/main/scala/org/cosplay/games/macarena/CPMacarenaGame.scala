@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.cosplay.games.macarena
+package org.cosplay
+package games
+package macarena
 
 /*
    _________            ______________
@@ -61,6 +63,7 @@ import scala.util.*
   * @note See more details at [[https://cosplayengine.org/devguide/quick_game.html]]
   */
 object CPMacarenaGame:
+    /** Print error message and exit the process with given exit code. */
     private def error(phase: String, e: Throwable, exitCode: Int): Unit =
         Console.err.println(s"${Console.RED}[err]${Console.RESET}[$phase]: ${e.getMessage}")
         sys.exit(exitCode)
@@ -78,7 +81,7 @@ object CPMacarenaGame:
         val DANCE_FPS = 5
 
         val game = CPGameInfo(name = "ASCII Macarena", initDim = dim.?)
-        // Initialize the engine.
+        // Initialize the engine - using effect API.
         CPEngine.initEff(game).onError(e => error("init", e, 1))
 
         val music = CPSound(src = "sounds/games/macarena/macarena.wav") // https://freesound.org
@@ -127,7 +130,7 @@ object CPMacarenaGame:
         // CosPlay logo scene.
         val logoSc = new CPSlideShimmerLogoScene("logo", dim.?, bgPx, shimmers, nextSc = "danceFloor")
 
-        // Start the game & wait for the exit.
+        // Start the game & wait for the exit - using effect API.
         CPEngine.startGameEff(logoSc, danceFloor).onError(e => error("game", e,2 ))
-        // Dispose the engine.
+        // Dispose the engine - using effect API.
         CPEngine.disposeEff().onTry(_ => sys.exit(0), e => error("dispose", e, 3))
