@@ -25,7 +25,6 @@ import org.cosplay.CPPixel.*
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.*
-import scala.language.implicitConversions
 import scala.collection.mutable
 
 /*

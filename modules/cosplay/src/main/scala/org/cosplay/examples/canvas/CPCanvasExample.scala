@@ -18,7 +18,6 @@
 package org.cosplay.examples.canvas
 
 import org.cosplay.*
-import scala.language.implicitConversions
 import CPColor.*
 import CPCanvas.ArtLineStyle.*
 import CPArrayImage.*

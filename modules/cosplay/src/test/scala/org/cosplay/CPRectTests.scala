@@ -3,8 +3,6 @@ package org.cosplay
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-import scala.language.implicitConversions
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __

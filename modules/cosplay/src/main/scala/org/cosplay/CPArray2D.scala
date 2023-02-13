@@ -17,7 +17,6 @@
 
 package org.cosplay
 
-import scala.language.implicitConversions
 import org.cosplay.*
 import scala.collection.mutable
 import scala.reflect.ClassTag

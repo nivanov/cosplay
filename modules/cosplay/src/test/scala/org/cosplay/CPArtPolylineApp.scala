@@ -17,7 +17,6 @@
 
 package org.cosplay
 
-import scala.language.implicitConversions
 import org.cosplay.CPColor.*
 import org.cosplay.CPKeyboardKey.*
 

@@ -41,7 +41,6 @@ import java.util.Date
 import javax.swing.*
 import javax.swing.JFrame.*
 import scala.collection.mutable
-import scala.language.implicitConversions
 
 /*
    _________            ______________

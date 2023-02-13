@@ -69,18 +69,12 @@ import scala.annotation.targetName
   *     import org.cosplay.*
   *     import CPColor.*
   *     import CPPixel.*
-  *     // Must be enabled for conversions.
-  *     import scala.language.implicitConversions
   *
   *     val p1 = 'x'&C_BLACK // Recommended way.
-  *     val p2: CPPixel = 'x' -> C_BLACK // Requires explicit type declaration.
-  *     val p3: CPPixel = ('x', C_BLACK) // Requires explicit type declaration.
   *     val p4 = CPPixel('x', C_BLACK)
   *     val p5 = new CPPixel('x', C_BLACK, None, 0)
   *
-  *     assertTrue(p1 == p2)
-  *     assertTrue(p2 == p3)
-  *     assertTrue(p3 == p4)
+  *     assertTrue(p1 == p4)
   *     assertTrue(p4 == p5)
   *
   *     val p6 = 'x'&&(C_BLACK, C_WHITE) // Recommended way.
@@ -325,8 +319,6 @@ object CPPixel:
       */
     def seq(chars: String, fgf: Char => CPColor, bgf: Char => Option[CPColor]): Seq[CPPixel] =
         for ch <- chars yield CPPixel(ch, fgf(ch), bgf(ch), 0)
-
-    given Conversion[(Char, CPColor), CPPixel] = t => CPPixel(t._1, t._2)
 
     extension(ch: Char)
         /**
