@@ -17,7 +17,7 @@
 
 package org.cosplay.prefabs.scenes
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPArrayImage.*
 import CPPixel.*
 import CPColor.*

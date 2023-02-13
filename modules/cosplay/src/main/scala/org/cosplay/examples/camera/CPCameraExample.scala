@@ -24,7 +24,7 @@ import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.*
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.{given, *}
+import org.cosplay.*
 import scala.language.implicitConversions
 import scala.collection.mutable
 
@@ -151,7 +151,7 @@ object CPCameraExample:
                 case c => c&&(C_MAROON, C_DARK_ORANGE3)
         )
         
-        val brickCanv = CPCanvas(bgW -> 3, bgPx)
+        val brickCanv = CPCanvas(CPDim(bgW, 3), bgPx)
         for i <- 0 until bgW / brickImg.getWidth do brickCanv.drawImage(brickImg, x = i * 5, y = 0, z = 2)
         val brickY = bgH - brickImg.getHeight
         val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, 2, brickCanv.capture())
@@ -218,7 +218,7 @@ object CPCameraExample:
                         case _ => ()
                     case None => ()
 
-        val initDim = bgW / 2 -> bgH
+        val initDim = CPDim(bgW / 2, bgH)
 
         var objs = List(
             bgSpr,

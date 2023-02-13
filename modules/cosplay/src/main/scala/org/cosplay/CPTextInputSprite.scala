@@ -30,7 +30,7 @@ package org.cosplay
                All rights reserved.
 */
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPKeyboardKey.*
 import org.cosplay.impl.CPUtils
 

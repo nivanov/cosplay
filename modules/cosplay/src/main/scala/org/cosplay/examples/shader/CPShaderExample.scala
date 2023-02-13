@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.shader
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPPixel.*
 import CPArrayImage.prepSeq
 import CPColor.*

@@ -17,7 +17,7 @@
 
 package org.cosplay.impl
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import scala.collection.mutable
 
 /*

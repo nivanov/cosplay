@@ -18,7 +18,7 @@
 package org.cosplay
 
 import scala.language.implicitConversions
-import org.cosplay.{given, *}
+import org.cosplay.*
 import scala.collection.mutable
 import scala.reflect.ClassTag
 
@@ -62,7 +62,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     val yMax: Int = height - 1
 
     /** Dimension of this array. */
-    val dim: CPDim = width -> height
+    val dim: CPDim = CPDim(width, height)
 
     /** Number of cells in this 2D array. */
     val size: Int = width * height

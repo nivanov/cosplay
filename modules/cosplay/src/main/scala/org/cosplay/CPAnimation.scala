@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*

@@ -17,7 +17,7 @@
 
 package org.cosplay.games.gehenna
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*

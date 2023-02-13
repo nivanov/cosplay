@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.tilemapper
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPColor.*
 import CPKeyboardKey.*
 import CPArrayImage.*

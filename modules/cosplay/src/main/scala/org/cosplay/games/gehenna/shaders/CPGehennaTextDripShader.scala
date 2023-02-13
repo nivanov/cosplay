@@ -17,7 +17,7 @@
 
 package org.cosplay.games.gehenna.shaders
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import games.gehenna.*
 import scala.util.*
 

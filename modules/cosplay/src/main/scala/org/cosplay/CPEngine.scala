@@ -132,7 +132,7 @@ extension(d: Int)
   *
   * CosPlay game organization using classic exception-based error handling:
   * {{{
-  * import org.cosplay.{given, *}
+  * import org.cosplay.*
   *
   * object Game:
   *    def main(args: Array[String]): Unit =
@@ -155,7 +155,7 @@ extension(d: Int)
   * Here's the same game structure using effect-based error handling (calling `sys.exit()` with an
   * appropriate exit code at each step):
   * {{{
-  * import org.cosplay.{given, *}
+  * import org.cosplay.*
   *
   * object Game:
   *    def main(args: Array[String]): Unit =

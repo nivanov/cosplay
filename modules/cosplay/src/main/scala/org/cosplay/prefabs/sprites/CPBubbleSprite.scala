@@ -17,7 +17,7 @@
 
 package org.cosplay.prefabs.sprites
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import org.cosplay.prefabs.shaders.*
 
 /*

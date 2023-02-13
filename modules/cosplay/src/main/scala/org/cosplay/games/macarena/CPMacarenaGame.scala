@@ -32,7 +32,7 @@ package macarena
                 All rights reserved.
 */
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPKeyboardKey.*

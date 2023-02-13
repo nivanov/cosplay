@@ -32,9 +32,6 @@ import scala.annotation.targetName
                All rights reserved.
 */
 
-given Conversion[(Int, Int), CPDim] = t => CPDim(t(0), t(1))
-given Conversion[CPDim, (Int, Int)] = d => d.w -> d.h
-
 /**
   * 2D dimension immutable container.
   *

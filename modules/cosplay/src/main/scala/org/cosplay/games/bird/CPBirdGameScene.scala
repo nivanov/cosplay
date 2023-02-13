@@ -17,7 +17,7 @@
 
 package org.cosplay.games.bird
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPPixel.*
 import CPArrayImage.*
 import CPFIGLetFont.*

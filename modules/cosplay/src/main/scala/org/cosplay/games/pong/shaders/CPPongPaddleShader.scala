@@ -17,7 +17,7 @@
 
 package org.cosplay.games.pong.shaders
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import games.*
 import games.pong.*
 

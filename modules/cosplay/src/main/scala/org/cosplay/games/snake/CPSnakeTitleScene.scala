@@ -18,7 +18,7 @@
 package org.cosplay.games.snake
 
 import org.cosplay.games.*
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPColor.*
 import CPArrayImage.*
 import prefabs.shaders.*

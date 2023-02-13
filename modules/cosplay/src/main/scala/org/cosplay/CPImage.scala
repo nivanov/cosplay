@@ -62,7 +62,7 @@ import scala.util.Using
   * in code with very minimal gestalt. The easiest way is to use [[CPArrayImage]] class that provides utility
   * methods to convert a margin-based Scala string into an image. For [[CPAlienImage example]]:
   * {{{
-  * import org.cosplay.{given, *}
+  * import org.cosplay.*
   * import CPColor.*
   * import CPArrayImage.*
   * import CPPixel.*
@@ -82,7 +82,7 @@ import scala.util.Using
   * }}}
   * Another [[CPAmigaImage example]] with more sophisticated skinning:
   * {{{
-  * import org.cosplay.{given, *}
+  * import org.cosplay.*
   * import CPColor.*
   * import CPArrayImage.*
   * import CPPixel.*

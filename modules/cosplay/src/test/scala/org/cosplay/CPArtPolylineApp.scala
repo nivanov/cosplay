@@ -42,7 +42,7 @@ object CPArtPolylineApp:
       *
       */
     def main(args: Array[String]): Unit =
-        val dim = (100, 40)
+        val dim = CPDim(100, 40)
         val bgPx = CPPixel(' ', C_GRAY2, C_GRAY1)
 
         CPEngine.init(

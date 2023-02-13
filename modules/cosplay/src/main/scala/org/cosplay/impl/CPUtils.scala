@@ -17,7 +17,7 @@
 
 package org.cosplay.impl
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPKeyboardKey.*
 
 import java.util.{Locale, Random, TimeZone, UUID}

@@ -25,7 +25,7 @@ import net.miginfocom.swing.MigLayout
 import org.apache.commons.lang3.SystemUtils
 import org.apache.commons.lang3.exception.ExceptionUtils
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import org.cosplay.CPLogLevel.*
 import org.cosplay.CPColor.*
 import org.cosplay.impl.CPUtils

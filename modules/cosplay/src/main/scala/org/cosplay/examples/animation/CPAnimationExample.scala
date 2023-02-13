@@ -24,7 +24,7 @@ import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.XRAY
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.{given, *}
+import org.cosplay.*
 import scala.language.implicitConversions
 
 /*
@@ -179,7 +179,7 @@ object CPAnimationExample:
         ).trimBg()
 
         val bgPx = CPPixel('.', C_GRAY2, C_GRAY1)
-        val dim = 100 -> 40
+        val dim = CPDim(100, 40)
 
         // Initialize the engine.
         CPEngine.init(

@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.textinput
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
 import org.cosplay.CPFIGLetFont.*

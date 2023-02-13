@@ -18,7 +18,7 @@
 package org.cosplay.impl.jlineterm
 
 import org.apache.commons.lang3.SystemUtils
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import impl.CPAnsi.*

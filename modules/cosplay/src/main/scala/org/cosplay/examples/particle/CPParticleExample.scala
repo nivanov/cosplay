@@ -17,7 +17,7 @@
 
 package org.cosplay.examples.particle
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPArrayImage.*
 import CPColor.*
 import CPKeyboardKey.*

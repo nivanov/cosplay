@@ -30,7 +30,7 @@ package org.cosplay.examples.shader
                 All rights reserved.
 */
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPPixel.*
 import CPColor.*
 import CPArrayImage.*

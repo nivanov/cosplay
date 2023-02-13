@@ -30,7 +30,7 @@ package org.cosplay.prefabs.shaders
                 All rights reserved.
 */
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import games.*
 import CPColor.*
 

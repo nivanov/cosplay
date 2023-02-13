@@ -17,7 +17,7 @@
 
 package org.cosplay.prefabs.images
 
-import org.cosplay.{given, *}
+import org.cosplay.*
 import CPColor.*
 import CPPixel.*
 import CPArrayImage.*
