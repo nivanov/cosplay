@@ -35,6 +35,12 @@ import java.util.UUID
                All rights reserved.
 */
 
+extension[T](seq: Seq[T])
+    /**
+      * Random element selector using [[CPRand]] class.
+      */
+    def rand: T = CPRand.rand(seq)
+
 /**
   * Provides convenient functions for random number generation and usage.
   *

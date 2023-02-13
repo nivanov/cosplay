@@ -51,7 +51,7 @@ import scala.util.*
   * @param msg Exception message.
   * @param cause Optional cause.
   */
-def raise[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
+private[cosplay] def raise[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
 
 /**
   * A shortcut for:
@@ -71,39 +71,6 @@ def none[T]: Option[T] = None
 
 /** Sugar for typed `Nil` value. */
 def nil[T]: List[T] = Nil
-
-/**
-  * Shortcut handler for `Try` monad.
-  */
-extension[T] (t: Try[T])
-    /**
-      * Shortcut for:
-      * {{{
-      * t match
-      *     case Success(x) => s(x)
-      *     case Failure(e) => f(e)
-      * }}}
-      *
-      * @param s On `Success(x)` function.
-      * @param f On `Failure(e)` function.
-      */
-    def onTry(s: T => Unit, f: Throwable => Unit): Unit = t match
-        case Success(x) => s(x)
-        case Failure(e) => f(e)
-
-    /**
-      * Shortcut for:
-      * {{{
-      * t match
-      *     case Success(s) => ()
-      *     case Failure(e) => f(e)
-      * }}}
-      *
-      * @param f On `Failure(e)` function.
-      */
-    def onError(f: Throwable => Unit): Unit = t match
-        case Success(s) => ()
-        case Failure(e) => f(e)
 
 /**
   * Shortcut for `Option[x]` as `x.?`.
@@ -130,63 +97,19 @@ extension[R, T](opt: Option[T])
             case s: String => raise(s)
             case e: Exception => throw e
 
-/**
-  * Base trait for typed coordinates and dimensions.
-  *
-  * User code can choose to use these typed coordinates, color components
-  * and dimensions in methods where there could be a confusion about parameters.
-  * Alternatively, user code can use named parameters to disambiguate the formal
-  * parameters at the call site.
-  */
-sealed trait Base(val d: Int)
-given scala.Conversion[Base, Int] with
-    /** Converting numeric base to integer. */
-    def apply(b: Base): Int = b.d
-/** Typed X-coordinate. */
-case class X(x: Int) extends Base(x)
-/** Typed Y-coordinate. */
-case class Y(y: Int) extends Base(y)
-/** Typed Z-coordinate. */
-case class Z(z: Int) extends Base(z)
-/** Typed width. */
-case class W(w: Int) extends Base(w)
-/** Typed height. */
-case class H(h: Int) extends Base(h)
-/** Typed red RGB component. */
-case class R(r: Int) extends Base(r)
-/** Typed green RGB component. */
-case class G(g: Int) extends Base(g)
-/** Typed blue RGB component. */
-case class B(b: Int) extends Base(b)
-extension(d: Int)
-    def x: X = X(d)
-    def y: Y = Y(d)
-    def z: Z = Z(d)
-    def w: W = W(d)
-    def h: H = H(d)
-    def r: R = R(d)
-    def g: G = G(d)
-    def b: B = B(d)
-
-extension[T](seq: Seq[T])
-    /**
-      * Random element selector using [[CPRand]] class.
-      */
-    def rand: T = CPRand.rand(seq)
-
 extension(d: Int)
     // To bytes...
-    def kb: Long = d * 1024
-    def mb: Long = d * 1024 * 1024
-    def gb: Long = d * 1024 * 1024 * 1024
+    private[cosplay] def kb: Long = d * 1024
+    private[cosplay] def mb: Long = d * 1024 * 1024
+    private[cosplay] def gb: Long = d * 1024 * 1024 * 1024
 
     // To milliseconds...
-    def ms: Long = d
-    def secs: Long = d * 1000
-    def mins: Long = d * 1000 * 60
-    def hours: Long = d * 1000 * 60 * 60
-    def days: Long = d * 1000 * 60 * 60 * 24
-    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
+    private[cosplay] def ms: Long = d
+    private[cosplay] def secs: Long = d * 1000
+    private[cosplay] def mins: Long = d * 1000 * 60
+    private[cosplay] def hours: Long = d * 1000 * 60 * 60
+    private[cosplay] def days: Long = d * 1000 * 60 * 60 * 24
+    private[cosplay] def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
 
 /**
   * CosPlay game engine.

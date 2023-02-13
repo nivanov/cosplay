@@ -82,7 +82,7 @@ object CPMacarenaGame:
 
         val game = CPGameInfo(name = "ASCII Macarena", initDim = dim.?)
         // Initialize the engine - using effect API.
-        CPEngine.initEff(game).onError(e => error("init", e, 1))
+        CPEngine.initEff(game).recover(e => error("init", e, 1))
 
         val music = CPSound(src = "sounds/games/macarena/macarena.wav") // https://freesound.org
 
@@ -112,8 +112,8 @@ object CPMacarenaGame:
             shaders = beatShdr.seq
         )
         titleSpr.setY(3)
-        // "Dance floor" main scene.
-        val danceFloor = CPScene("danceFloor", dim.?, bgPx,
+        // Dance floor main scene.
+        val danceSc = CPScene("danceFloor", dim.?, bgPx,
             titleSpr,
             mkSprite("1", CPMacarena1AniImage.trimBg().split(3, 3), x, y, KEY_1),
             mkSprite("2", CPMacarena2AniImage.trimBg().split(3, 3), x + 7, y, KEY_2),
@@ -125,12 +125,12 @@ object CPMacarenaGame:
             new CPOffScreenSprite:
                 override def onStart(): Unit =
                     music.loop(1500.ms) // Auto-play with fade-in.
-                    beatShdr.start() // Start beat shader in the same time.
+                    beatShdr.start() // Start beat shader at the same time.
         )
         // CosPlay logo scene.
         val logoSc = new CPSlideShimmerLogoScene("logo", dim.?, bgPx, shimmers, nextSc = "danceFloor")
 
         // Start the game & wait for the exit - using effect API.
-        CPEngine.startGameEff(logoSc, danceFloor).onError(e => error("game", e,2 ))
+        CPEngine.startGameEff(logoSc, danceSc).recover(e => error("game", e,2 ))
         // Dispose the engine - using effect API.
-        CPEngine.disposeEff().onTry(_ => sys.exit(0), e => error("dispose", e, 3))
+        CPEngine.disposeEff().fold(e => error("dispose", e, 3), _ => sys.exit(0))

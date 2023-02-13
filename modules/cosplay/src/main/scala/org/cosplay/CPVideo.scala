@@ -139,7 +139,7 @@ object CPVideo:
             ),
             emuTerm = emuTerm
         )
-        spr = new CPVideoSprite("spr", vid, 4.x, 2.y, 0.z, fps = 30, loop = true, collidable = false, autoPlay = true)
+        spr = new CPVideoSprite("spr", vid, x = 4, y = 2, z = 0, fps = 30, loop = true, collidable = false, autoPlay = true)
         try
             CPEngine.rootLog().info(s"Video preview [origin=${vid.getOrigin}, frameCount=${vid.getFrameCount}, frameDim=${vid.getFrameDim}, class=${vid.getClass.getName}]")
             CPEngine.startGame(new CPScene(

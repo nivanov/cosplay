@@ -86,7 +86,7 @@ object CPCanvasExample:
         val fgf = (_: Char) => COLORS.rand
         val pxs = CPPixel.seq("~!@#$%^&*()[]:;'<>?", fgf, _ => None)
 
-        val dim = CPDim(100.w, 40.h)
+        val dim = CPDim(width = 100, height = 40)
 
         // Demo sprite that illustrates working with 'canvas'.
         val drawSpr = new CPCanvasSprite():
@@ -99,8 +99,8 @@ object CPCanvasExample:
                 val c3 = C_LIGHT_STEEL_BLUE
 
                 // Draw image.
-                canv.drawImage(alienImg, 2.x, 2.y, 0.z)
-                canv.drawString(5.x, (alienImg.getHeight + 4).y, 0.z, "Image", c1)
+                canv.drawImage(alienImg, x = 2, y = 2, z = 0)
+                canv.drawString(x = 5, y = alienImg.getHeight + 4, z = 0, "Image", c1)
 
                 // Draw a basic polyline shape.
                 canv.drawPolyline(Seq(
@@ -114,7 +114,7 @@ object CPCanvasExample:
 
                 // Fill this shape with random color on each frame.
                 canv.fill(17, 3, _.char == '*', (_, _) => pxs.rand)
-                canv.drawString(18.x, 19.y, 0.z, "Filled shape", c1)
+                canv.drawString(x = 18, y = 19, z = 0, "Filled shape", c1)
 
                 // Draw ASCII-art style polyline shape.
                 canv.drawArtPolyline(Seq(
@@ -127,31 +127,31 @@ object CPCanvasExample:
                 ), 100, _.px.withFg(c3), ART_SMOOTH)
 
                 // Fill this ASCII-art shape with dark grey 'x'.
-                canv.fill(35.x, 4.y, _.px != bgPx, (_, _) => 'x'&C_GRAY3)
-                canv.drawString(34.x, 19.y, 0.z, "Filled smooth shape", c1)
+                canv.fill(x = 35, y = 4, _.px != bgPx, (_, _) => 'x'&C_GRAY3)
+                canv.drawString(x = 34, y = 19, z = 0, "Filled smooth shape", c1)
 
                 // Draw antialias circle.
-                val circRect = canv.drawCircle(75.x, 12.y, 10, 0.z, 2f, 1f, 0.5f, true, 'x'&c2)
+                val circRect = canv.drawCircle(x = 75, y = 12, 10, z = 0, 2f, 1f, 0.5f, true, 'x'&c2)
                 canv.antialias(circRect, _.char != 'x')
                 // Draw a center point (z-index 1).
                 canv.drawPixel('X'&c1, 75, 12, z = 1)
                 // Draw a moving radius arm.
-                canv.drawArtVector(75.x, 12.y, ctx.getFrameCount.toFloat % 360, 9, 0.z, 2f, 1f, _.px.withFg(COLORS.rand), ART_SMOOTH)
-                canv.drawString(68.x, 24.y, 0.z, "Antialias circle", c1)
+                canv.drawArtVector(x = 75, y = 12, ctx.getFrameCount.toFloat % 360, 9, z = 0, 2f, 1f, _.px.withFg(COLORS.rand), ART_SMOOTH)
+                canv.drawString(x = 68, y = 24, z = 0, "Antialias circle", c1)
 
                 // Flickering colors without styled string...
                 val flickImg = new CPArrayImage(
                     "Flickering String Example".map(_&COLORS.rand)
                 )
-                canv.drawImage(flickImg, 2.x, 24.y, 0.z)
+                canv.drawImage(flickImg, x = 2, y = 24, z = 0)
 
                 // Draw a panel with titled border.
-                canv.fillRect(3.x, 27.y, 40.x, 37.y, 0.z, Seq(' '&C_BLACK))
+                canv.fillRect(x1 = 3, y1 = 27, x2 = 40, y2 = 37, z = 0, Seq(' '&C_BLACK))
                 canv.drawSimpleBorder(
-                    2.x, 26.y, 41.x, 38.y, 0.z,
+                    x1 =2, y1 = 26, x2 = 41, y2 = 38, z = 0,
                     '|'&c3, '-'&c3, '+'&c1,
                     styleStr("/ ", c3) ++ styleStr("Titled Panel", C_INDIAN_RED) ++ styleStr(" /", c3),
-                    5.x, 26.y
+                    titleX = 5, titleY = 26
                 )
 
         // Create the scene (exit the game on 'q' press).
