@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.cosplayengine</groupId>
         <artifactId>cosplay-parent</artifactId>
-        <version>0.8.4</version>
+        <version>0.8.5</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 

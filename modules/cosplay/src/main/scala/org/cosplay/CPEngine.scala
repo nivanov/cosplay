@@ -114,10 +114,23 @@ extension(d: Int)
 /**
   * CosPlay game engine.
   *
-  * Game engine is mostly an internal object, and it is only used at the beginning of the game. It provides
-  * variety of utility and miscellaneous methods for games.
+  * Game engine is used mostly for game lifecycle like starting and stopping as well as debugging, logging,
+  * and managing global utility and miscellaneous features.
   *
-  * Most CosPlay games follow this basic game organization:
+  * CosPlay games follow relatively straightforward game organization:
+  *  - Initialize game engine by calling [[CPEngine.init()]] or [[CPEngine.initEff()]] method.
+  *  - Start the game loop by calling [[CPEngine.startGame()]] or [[CPEngine.startGameEff()]] method.
+  *  - Dispose the game engine calling [[CPEngine.dispose()]] or [[CPEngine.disposeEff()]] method.
+  *
+  * Note that these methods have two versions:
+  *  - One that throws [[CPException]] exception in case of any errors for the classic exception-based
+  *    error handling.
+  *  - Another with `Eff` suffix in the name that returns [[scala.util.Try]]-monad allowing for composable effect-based error handling.
+  *
+  * You can use either approach but you can't mix them up. Effect-based approach, however, forces a more
+  * rigorous error handling requiring to handle errors at each call.
+  *
+  * CosPlay game organization using classic exception-based error handling:
   * {{{
   * import org.cosplay.{given, *}
   *
@@ -139,20 +152,59 @@ extension(d: Int)
   *
   *        sys.exit(0)
   * }}}
+  * Here's the same game structure using effect-based error handling (calling `sys.exit()` with an
+  * appropriate exit code at each step):
+  * {{{
+  * import org.cosplay.{given, *}
+  *
+  * object Game:
+  *    def main(args: Array[String]): Unit =
+  *        // Initialize the engine.
+  *        CPEngine.initEff(
+  *             CPGameInfo(name = "My Game"),
+  *             System.console() == null || args.contains("emuterm")
+  *        ).recover(_ => sys.exit(1))
+  *
+  *        // Create game scenes & their scene objects.
+  *        val sc1 = new CPScene(...)
+  *        val sc2 = new CPScene(...)
+  *
+  *        // Start the game & wait for exit.
+  *        CPEngine.startGameEff(sc1, sc2).recover(_ => sys.exit(2))
+  *
+  *        // Dispose game engine.
+  *        CPEngine.disposeEff().fold(_ => sys.exit(3), _ => sys.exit(0))
+  * }}}
   * Notes:
   *  - Game start in a standard Scala way. It is recommended to use `main(...)` function for better
   *    compatibility.
   *  - Create [[CPGameInfo]] object that describes the game and its properties.
-  *  - Initialize game engine by calling [[CPEngine.init()]] method passing it game descriptor and terminal emulation
+  *  - Initialize game engine by calling [[CPEngine.init()]]/[[CPEngine.initEff()]] method passing it game descriptor and terminal emulation
   *    flag.
   *  - Create all necessary scenes, scene objects and assets. You can organize these objects in any desirable way - CosPlay
-  *    does not impose any restrictions or limitation on how it is should be done.
-  *  - Once you have all scenes constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
-  *  - Make sure to call [[CPEngine.dispose()]] method upon exit from [[CPEngine.startGame()]] method.
+  *    does not impose any restrictions or limitation on how it is should be done. Note also that scene and scene objects
+  *    can be added, removed or modified later throughout the game lifecycle.
+  *  - Once you have all initially required scenes constructed - you can start the game by calling one of the
+  *    [[CPEngine.startGame()]]/[[CPEngine.startGameEff()]] methods.
+  *  - Make sure to call [[CPEngine.dispose()]]/[[CPEngine.disposeEff()]] method upon exit from
+  *    [[CPEngine.startGame()]]/[[CPEngine.startGameEff()]] method.
+  *
+  * ### Extensions and Shortcuts
+  * Throughout the CosPlay code, exampled and built-in games there are several extensions and syntactic shortcuts
+  * used to simplify frequently used code idioms:
+  *
+  * | Shortcut | Replaced By |
+  * | -------- | ---- |
+  * | `x.?` | `Option(x)` |
+  * | `x.seq` | `Seq(x)` |
+  * | `val x = nil[Int]` | `val x: List[Int] = Nil` |
+  * | `val x = none[Int]` | `val x: Option[Int] = None` |
+  *
+  * These extensions are introduced in the global scope and can be used by any code that is using CosPlay.
   *
   * ### System Properties
   * CosPlay game engine supports the following system properties that control various aspects of its
-  * operation. Note that these properties must be set before method [[CPEngine.init()]] is called:
+  * operation. Note that these properties must be set before method [[CPEngine.init()]]/[[CPEngine.initEff()]] is called:
   *
   * | System Property | Value Type | Description  |
   * | ----------------| ---------- | ------------ |
@@ -210,7 +262,6 @@ object CPEngine:
     private var engLog: CPLog = BufferedLog("").getLog("root")
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
-    private var savedEx: Throwable = _
     private var stats = none[CPRenderStats]
     private var homeRoot = none[String]
     private var tempRoot = none[String]
@@ -543,10 +594,10 @@ object CPEngine:
     def isCtrlLog: Boolean = ctrlLogEnabled
 
     /**
-      * Enables or disables opening built-in FPS window pressing 'Ctrl-q'. Production games may want to
+      * Enables or disables opening built-in FPS window by pressing 'Ctrl-q'. Production games may want to
       * disable that capability. Default value is `true`.
       *
-      * @param f Whether to enable or disable opening built-in FPS window pressing 'Ctrl-q'.
+      * @param f Whether to enable or disable opening built-in FPS window by pressing 'Ctrl-q'.
       */
     def enableCtrlFps(f: Boolean): Unit = ctrlFpsEnabled = f
 
@@ -597,11 +648,10 @@ object CPEngine:
         checkState()
         stopInternals()
         state = State.ENG_STOPPED
-        if savedEx != null then throw savedEx
 
     /**
-      * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
-      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      * Disposes the game engine. This method must be called upon exit from the [[startGameEff()]] method.
+      * Engine must be [[initEff() initialized]] before this call otherwise exception is thrown.
       * Effect-based version of [[dispose()]] method allowing end-user to use pattern matching for error handling.
       * This method does not throw any exceptions.
       *
@@ -615,10 +665,8 @@ object CPEngine:
             checkState()
             stopInternals()
         } match
-            case x: Success[_] =>
-                state = State.ENG_STOPPED
-                if savedEx != null then Failure(savedEx) else x
-            case x => x
+            case s: Success[Unit] => state = State.ENG_STOPPED; s
+            case f => f
 
     /**
       * Shortcut for the following two calls:
@@ -711,17 +759,7 @@ object CPEngine:
       * @see [[initEff()]]
       * @see [[disposeEff()]]
       */
-    def startGameEff(scs: CPScene*): Try[Unit] =
-        Try {
-            startGame(scs: _*)
-        } match
-            case x: Success[_] =>
-                if savedEx == null then x
-                else
-                    val f = Failure(savedEx)
-                    savedEx = null
-                    f
-            case x => x
+    def startGameEff(scs: CPScene*): Try[Unit] = Try(startGame(scs: _*))
 
     /**
       * Exits the game. Calling this method will cause [[startGame()]] method to exit on the next frame. Note that
@@ -1359,12 +1397,8 @@ object CPEngine:
                 frameCnt += 1
                 if !stopFrame then scFrameCnt += 1
             end while
-        catch case e: Throwable => savedEx = e
         finally
-            if savedEx == null then
-                engLog.info("Game stopped.")
-            else
-                engLog.error(s"Game stopped with exception: ${savedEx.getMessage}")
+            engLog.info("Game stopped.")
 
             // Stop all the scenes and their scene objects.
             for sc <- scenes.values do
