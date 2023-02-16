@@ -19,8 +19,8 @@ package org.cosplay
 
 import org.cosplay
 import org.cosplay.*
-import CPPixel.*
-import impl.*
+import org.cosplay.CPPixel.*
+import org.cosplay.impl.*
 import scala.collection.mutable.ArrayBuffer
 
 /*

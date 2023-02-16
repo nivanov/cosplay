@@ -18,9 +18,9 @@
 package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPArrayImage.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPArrayImage.*
 
 /*
    _________            ______________

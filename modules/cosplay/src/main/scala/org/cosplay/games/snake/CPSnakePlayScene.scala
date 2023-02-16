@@ -18,17 +18,17 @@
 package org.cosplay.games.snake
 
 import org.cosplay.*
-import games.*
-import prefabs.shaders.*
-import CPSlideDirection.*
-import CPFIGLetFont.*
-import CPArrayImage.*
-import CPPixel.*
-import CPColor.*
-import CPKeyboardKey.*
+import org.cosplay.games.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.shaders.CPSlideDirection.*
+import org.cosplay.CPFIGLetFont.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
 import org.cosplay.prefabs.particles.CPConfettiEmitter
 import org.cosplay.prefabs.sprites.{CPBubbleSprite, CPCenteredImageSprite}
-import prefabs.particles.*
+import org.cosplay.prefabs.particles.*
 
 /*
    _________            ______________

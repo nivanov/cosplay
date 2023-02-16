@@ -18,12 +18,12 @@
 package org.cosplay.examples.fonts
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPFIGLetFont.*
-import CPKeyboardKey.KEY_LO_Q
-import prefabs.scenes.CPFadeShimmerLogoScene
-import prefabs.shaders.CPFadeInShader
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPFIGLetFont.*
+import org.cosplay.CPKeyboardKey.KEY_LO_Q
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
+import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
    _________            ______________

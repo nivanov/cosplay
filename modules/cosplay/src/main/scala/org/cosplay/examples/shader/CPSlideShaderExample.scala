@@ -31,13 +31,13 @@ package org.cosplay.examples.shader
 */
 
 import org.cosplay.*
-import CPPixel.*
-import CPColor.*
-import CPArrayImage.*
-import CPKeyboardKey.*
-import prefabs.scenes.*
-import prefabs.shaders.*
-import CPSlideDirection.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.scenes.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.shaders.CPSlideDirection.*
 import org.cosplay.prefabs.sprites.CPCenteredImageSprite
 
 import scala.collection.mutable

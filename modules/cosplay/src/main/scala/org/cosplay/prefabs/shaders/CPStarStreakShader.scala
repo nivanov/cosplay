@@ -31,7 +31,7 @@ package org.cosplay.prefabs.shaders
 */
 
 import org.cosplay.*
-import CPPixel.*
+import org.cosplay.CPPixel.*
 
 import scala.collection.mutable
 

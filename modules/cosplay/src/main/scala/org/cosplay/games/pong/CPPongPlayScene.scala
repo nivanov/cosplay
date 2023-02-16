@@ -18,15 +18,15 @@
 package org.cosplay.games.pong
 
 import org.cosplay.*
-import games.*
-import CPColor.*
-import CPPixel.*
-import CPArrayImage.*
-import CPFIGLetFont.*
-import CPKeyboardKey.*
-import prefabs.shaders.*
-import pong.shaders.*
-import CPSlideDirection.*
+import org.cosplay.games.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPFIGLetFont.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.games.pong.shaders.*
+import org.cosplay.prefabs.shaders.CPSlideDirection.*
 import org.apache.commons.lang3.SystemUtils
 import org.cosplay.prefabs.particles.CPConfettiEmitter
 import org.cosplay.prefabs.sprites.CPCenteredImageSprite

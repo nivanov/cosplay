@@ -18,12 +18,12 @@
 package org.cosplay.examples.image
 
 import org.cosplay.*
-import CPPixel.*
-import CPArrayImage.*
-import CPColor.*
-import CPKeyboardKey.*
-import prefabs.scenes.*
-import prefabs.shaders.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.scenes.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________

@@ -17,8 +17,8 @@
 
 package org.cosplay
 
-import CPRect.*
-import impl.CPUtils
+import org.cosplay.CPRect.*
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________

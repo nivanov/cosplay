@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import impl.CPUtils
+import org.cosplay.impl.CPUtils
 
 import java.text.SimpleDateFormat
 import java.util.Date

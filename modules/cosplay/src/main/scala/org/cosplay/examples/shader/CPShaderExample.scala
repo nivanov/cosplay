@@ -18,10 +18,10 @@
 package org.cosplay.examples.shader
 
 import org.cosplay.*
-import CPPixel.*
+import org.cosplay.CPPixel.*
 import CPArrayImage.prepSeq
-import CPColor.*
-import CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
 import CPStyledString.styleStr
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*

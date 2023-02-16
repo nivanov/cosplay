@@ -19,9 +19,9 @@ package org.cosplay
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import CPColor.*
-import CPRand.*
-import impl.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPRand.*
+import org.cosplay.impl.*
 
 /*
    _________            ______________

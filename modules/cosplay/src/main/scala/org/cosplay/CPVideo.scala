@@ -17,10 +17,10 @@
 
 package org.cosplay
 
-import CPKeyboardKey.*
-import CPColor.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPColor.*
 import CPStyledString.*
-import impl.CPUtils
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________

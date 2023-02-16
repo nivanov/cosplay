@@ -19,13 +19,13 @@ package org.cosplay
 
 import org.apache.logging.log4j.LogManager
 import org.apache.commons.lang3.*
-import impl.emuterm.*
-import impl.guilog.*
-import impl.jlineterm.*
-import CPColor.*
-import CPLifecycle.State.*
-import CPKeyboardKey.*
-import impl.*
+import org.cosplay.impl.emuterm.*
+import org.cosplay.impl.guilog.*
+import org.cosplay.impl.jlineterm.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPLifecycle.State.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.impl.*
 
 import java.io.*
 import scala.annotation.targetName

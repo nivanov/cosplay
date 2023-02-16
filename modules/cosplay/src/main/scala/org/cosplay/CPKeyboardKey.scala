@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import CPKeyboardKey.KEY_BACKSPACE
+import org.cosplay.CPKeyboardKey.KEY_BACKSPACE
 
 import scala.collection.mutable
 

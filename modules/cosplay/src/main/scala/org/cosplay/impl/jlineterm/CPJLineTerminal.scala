@@ -19,11 +19,11 @@ package org.cosplay.impl.jlineterm
 
 import org.apache.commons.lang3.SystemUtils
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import impl.CPAnsi.*
-import impl.guilog.CPGuiLog
-import impl.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.impl.CPAnsi.*
+import org.cosplay.impl.guilog.CPGuiLog
+import org.cosplay.impl.*
 import org.jline.terminal.*
 import org.jline.utils.NonBlockingReader
 

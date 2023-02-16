@@ -18,7 +18,7 @@
 package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
-import CPSlideDirection.*
+import org.cosplay.prefabs.shaders.CPSlideDirection.*
 import org.apache.commons.math3.analysis.function.*
 
 /*

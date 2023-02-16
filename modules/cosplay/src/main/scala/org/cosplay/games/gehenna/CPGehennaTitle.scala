@@ -18,9 +18,9 @@
 package org.cosplay.games.gehenna
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPArrayImage.*
 import org.cosplay.CPFIGLetFont.*
 import org.cosplay.games.gehenna.shaders.*
@@ -36,7 +36,7 @@ import de.sciss.audiofile.*
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
-import collection.immutable.HashSet
+import scala.collection.immutable.HashSet
 
 /*
    _________            ______________
@@ -50,7 +50,6 @@ import collection.immutable.HashSet
               (C) 2021 Rowan Games, Inc.
                 All rights reserved.
 */
-
 
 object CPGehennaTitle extends CPScene("title", None, GAME_BG_PX):
     private final val TITLE = "Project Gehenna"

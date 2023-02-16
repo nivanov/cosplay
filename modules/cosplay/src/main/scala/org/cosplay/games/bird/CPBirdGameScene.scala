@@ -18,15 +18,15 @@
 package org.cosplay.games.bird
 
 import org.cosplay.*
-import CPPixel.*
-import CPArrayImage.*
-import CPFIGLetFont.*
-import CPKeyboardKey.*
-import CPColor.*
-import prefabs.shaders.*
-import prefabs.particles.*
-import prefabs.sprites.*
-import CPSlideDirection.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPFIGLetFont.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.particles.*
+import org.cosplay.prefabs.sprites.*
+import org.cosplay.prefabs.shaders.CPSlideDirection.*
 import org.cosplay.prefabs.particles.CPConfettiEmitter
 
 import scala.collection.mutable

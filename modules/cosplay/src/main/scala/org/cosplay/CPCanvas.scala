@@ -17,10 +17,10 @@
 
 package org.cosplay
 
-import CPCanvas.ArtLineStyle
-import CPCanvas.ArtLineStyle.*
-import impl.CPUtils
-import CPPixel.*
+import org.cosplay.CPCanvas.ArtLineStyle
+import org.cosplay.CPCanvas.ArtLineStyle.*
+import org.cosplay.impl.CPUtils
+import org.cosplay.CPPixel.*
 import org.cosplay.CPCanvas.*
 
 import scala.annotation.tailrec

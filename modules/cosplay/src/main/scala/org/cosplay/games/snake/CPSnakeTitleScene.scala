@@ -19,12 +19,12 @@ package org.cosplay.games.snake
 
 import org.cosplay.games.*
 import org.cosplay.*
-import CPColor.*
-import CPArrayImage.*
-import prefabs.shaders.*
-import prefabs.sprites.*
-import CPPixel.*
-import CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
 
 /*
    _________            ______________

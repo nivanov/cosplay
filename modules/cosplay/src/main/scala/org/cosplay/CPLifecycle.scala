@@ -96,7 +96,7 @@ object CPLifecycle:
   *  - [[onStop()]]
   */
 trait CPLifecycle:
-    import CPLifecycle.State.*
+    import org.cosplay.CPLifecycle.State.*
 
     /**
       *

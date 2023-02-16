@@ -18,10 +18,10 @@
 package org.cosplay.games.pong
 
 import org.cosplay.*
-import games.*
-import CPColor.*
-import CPPixel.*
-import prefabs.scenes.CPFadeShimmerLogoScene
+import org.cosplay.games.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 
 /*
    _________            ______________

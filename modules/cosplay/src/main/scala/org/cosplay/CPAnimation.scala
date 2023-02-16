@@ -18,10 +18,10 @@
 package org.cosplay
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
-import impl.CPUtils
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________

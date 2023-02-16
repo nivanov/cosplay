@@ -18,8 +18,8 @@
 package org.cosplay.examples.video
 
 import org.cosplay.*
-import CPPixel.*
-import CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPColor.*
 
 import scala.io.Source
 import scala.util.Using

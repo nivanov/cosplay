@@ -31,13 +31,13 @@ package org.cosplay.games.bird
 */
 
 import org.cosplay.*
-import CPColor.*
-import CPKeyboardKey.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPPixel.*
 import org.cosplay.CPArrayImage.*
-import prefabs.scenes.*
-import prefabs.shaders.*
-import prefabs.sprites.*
+import org.cosplay.prefabs.scenes.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
 
 object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     private val bgSnd = CPSound("sounds/games/bird/bg.wav")

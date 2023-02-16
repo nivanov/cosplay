@@ -21,9 +21,9 @@ import javafx.animation.{KeyFrame, KeyValue, Timeline}
 import javafx.scene.media.*
 import javafx.scene.media.MediaPlayer.Status
 import javafx.util.*
-import CPSound.*
-import impl.{CPContainer, CPUtils}
-import javafx.event.{ActionEvent, EventHandler}
+import org.cosplay.CPSound.*
+import org.cosplay.impl.*
+import javafx.event.*
 
 import java.io.File
 import java.net.URL

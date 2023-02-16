@@ -30,8 +30,8 @@ package org.cosplay
                All rights reserved.
 */
 
-import CPArrayImage.*
-import impl.CPUtils
+import org.cosplay.CPArrayImage.*
+import org.cosplay.impl.CPUtils
 import scala.collection.mutable.ArrayBuffer
 
 /**

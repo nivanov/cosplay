@@ -17,8 +17,8 @@
 
 package org.cosplay
 
-import CPFIGLetFont.FIG_HDR_MARKER
-import impl.CPUtils
+import org.cosplay.CPFIGLetFont.FIG_HDR_MARKER
+import org.cosplay.impl.CPUtils
 import org.cosplay.CPPixel.*
 
 import java.nio.charset.MalformedInputException

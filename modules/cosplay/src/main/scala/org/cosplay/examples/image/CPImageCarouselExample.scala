@@ -19,12 +19,12 @@ package org.cosplay.examples.image
 
 import org.cosplay.*
 import CPArrayImage.prepSeq
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
-import prefabs.images.*
-import prefabs.scenes.*
-import prefabs.shaders.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.images.*
+import org.cosplay.prefabs.scenes.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________

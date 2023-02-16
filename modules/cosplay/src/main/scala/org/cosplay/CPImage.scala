@@ -17,11 +17,11 @@
 
 package org.cosplay
 
-import CPKeyboardKey.*
-import CPImage.*
-import CPColor.*
-import impl.CPUtils
-import CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPImage.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.impl.CPUtils
 import org.cosplay.prefabs.images.*
 
 import java.io.*
@@ -63,9 +63,9 @@ import scala.util.Using
   * methods to convert a margin-based Scala string into an image. For [[CPAlienImage example]]:
   * {{{
   * import org.cosplay.*
-  * import CPColor.*
-  * import CPArrayImage.*
-  * import CPPixel.*
+  * import org.cosplay.CPColor.*
+  * import org.cosplay.CPArrayImage.*
+  * import org.cosplay.CPPixel.*
   *
   * object CPAlienImage extends CPArrayImage(
   *     prepSeq("""
@@ -83,9 +83,9 @@ import scala.util.Using
   * Another [[CPAmigaImage example]] with more sophisticated skinning:
   * {{{
   * import org.cosplay.*
-  * import CPColor.*
-  * import CPArrayImage.*
-  * import CPPixel.*
+  * import org.cosplay.CPColor.*
+  * import org.cosplay.CPArrayImage.*
+  * import org.cosplay.CPPixel.*
   *
   * object CPAmigaImage extends CPArrayImage(
   *     prepSeq("""
@@ -498,7 +498,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * @see [[trimBg()]]
       */
     def replaceBg(isBgPx: CPPixel => Boolean, replacePx: CPPixel): CPImage =
-        import CPPixel.*
+        import org.cosplay.CPPixel.*
 
         val rect = getRect
         val xMax = rect.xMax

@@ -18,12 +18,12 @@
 package org.cosplay.examples.sound
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 import CPStyledString.*
-import CPKeyboardKey.*
+import org.cosplay.CPKeyboardKey.*
 import examples.utils.*
-import prefabs.shaders.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________

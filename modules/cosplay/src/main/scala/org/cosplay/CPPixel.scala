@@ -17,9 +17,9 @@
 
 package org.cosplay
 
-import impl.CPAnsi.*
-import CPColor.*
-import CPPixel.*
+import org.cosplay.impl.CPAnsi.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 
 import scala.annotation.targetName
 
@@ -50,8 +50,8 @@ import scala.annotation.targetName
   * can create a pixel:
   * {{{
   *     import org.cosplay.*
-  *     import CPColor.*
-  *     import CPPixel.*
+  *     import org.cosplay.CPColor.*
+  *     import org.cosplay.CPPixel.*
   *
   *     // Canonical black 'x' on white background.
   *     new CPPixel('x', C_BLACK, Some(C_WHITE), 0)
@@ -67,8 +67,8 @@ import scala.annotation.targetName
   * recommended way and that is what is used internally by CosPlay:
   * {{{
   *     import org.cosplay.*
-  *     import CPColor.*
-  *     import CPPixel.*
+  *     import org.cosplay.CPColor.*
+  *     import org.cosplay.CPPixel.*
   *
   *     val p1 = 'x'&C_BLACK // Recommended way.
   *     val p4 = CPPixel('x', C_BLACK)

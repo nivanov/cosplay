@@ -31,7 +31,7 @@ package org.cosplay
 */
 
 import org.cosplay.*
-import CPKeyboardKey.*
+import org.cosplay.CPKeyboardKey.*
 import org.cosplay.impl.CPUtils
 
 import scala.collection.mutable

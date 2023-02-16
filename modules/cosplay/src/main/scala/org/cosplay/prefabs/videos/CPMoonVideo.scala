@@ -22,7 +22,7 @@ import org.cosplay.CPArrayImage.*
 import org.cosplay.*
 
 import scala.collection.mutable.ArrayBuffer
-import CPPixel.*
+import org.cosplay.CPPixel.*
 
 /*
    _________            ______________

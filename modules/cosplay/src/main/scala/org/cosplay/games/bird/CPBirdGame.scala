@@ -18,9 +18,9 @@
 package org.cosplay.games.bird
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import prefabs.scenes.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.prefabs.scenes.*
 
 /*
    _________            ______________

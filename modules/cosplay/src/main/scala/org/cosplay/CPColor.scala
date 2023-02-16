@@ -17,8 +17,8 @@
 
 package org.cosplay
 
-import impl.CPAnsi.*
-import impl.*
+import org.cosplay.impl.CPAnsi.*
+import org.cosplay.impl.*
 
 import java.awt.Color
 
@@ -87,7 +87,7 @@ import java.awt.Color
 final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) extends CPIntTuple[CPColor](red, green, blue)
     with Ordered[CPColor]
     with Serializable:
-    import CPColor.*
+    import org.cosplay.CPColor.*
 
     !>(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
 

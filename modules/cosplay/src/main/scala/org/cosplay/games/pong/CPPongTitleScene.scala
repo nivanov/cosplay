@@ -18,14 +18,14 @@
 package org.cosplay.games.pong
 
 import org.cosplay.*
-import games.*
-import CPColor.*
-import CPArrayImage.*
-import CPPixel.*
-import CPKeyboardKey.*
-import prefabs.shaders.*
-import prefabs.sprites.*
-import games.pong.shaders.*
+import org.cosplay.games.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
+import org.cosplay.games.pong.shaders.*
 
 /*
    _________            ______________

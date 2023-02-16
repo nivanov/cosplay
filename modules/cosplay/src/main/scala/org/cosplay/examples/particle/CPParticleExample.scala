@@ -18,11 +18,11 @@
 package org.cosplay.examples.particle
 
 import org.cosplay.*
-import CPArrayImage.*
-import CPColor.*
-import CPKeyboardKey.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
 import CPStyledString.styleStr
-import CPPixel.*
+import org.cosplay.CPPixel.*
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 

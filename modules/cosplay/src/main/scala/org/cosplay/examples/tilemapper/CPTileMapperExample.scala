@@ -18,10 +18,10 @@
 package org.cosplay.examples.tilemapper
 
 import org.cosplay.*
-import CPColor.*
-import CPKeyboardKey.*
-import CPArrayImage.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*

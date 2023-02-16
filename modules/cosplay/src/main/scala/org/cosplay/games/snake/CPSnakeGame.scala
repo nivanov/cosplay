@@ -32,10 +32,10 @@ package org.cosplay.games.snake
 
 import org.cosplay.games.*
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
-import prefabs.scenes.CPFadeShimmerLogoScene
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 
 val BLUE_BLACK = CPColor("0x00000F")
 val BG_PX = ' '&&(BLUE_BLACK, BLUE_BLACK) // Background pixel.

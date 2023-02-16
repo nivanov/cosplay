@@ -17,8 +17,8 @@
 
 package org.cosplay
 
-import CPColor.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

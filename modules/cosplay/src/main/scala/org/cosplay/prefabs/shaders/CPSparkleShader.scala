@@ -31,8 +31,8 @@ package org.cosplay.prefabs.shaders
 */
 
 import org.cosplay.*
-import games.*
-import CPColor.*
+import org.cosplay.games.*
+import org.cosplay.CPColor.*
 
 import scala.collection.mutable
 

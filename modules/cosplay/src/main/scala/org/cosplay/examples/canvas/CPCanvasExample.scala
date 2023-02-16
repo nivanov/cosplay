@@ -18,13 +18,13 @@
 package org.cosplay.examples.canvas
 
 import org.cosplay.*
-import CPColor.*
-import CPCanvas.ArtLineStyle.*
-import CPArrayImage.*
-import CPPixel.*
-import CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPCanvas.ArtLineStyle.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
 import CPStyledString.*
-import CPPixel.*
+import org.cosplay.CPPixel.*
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 

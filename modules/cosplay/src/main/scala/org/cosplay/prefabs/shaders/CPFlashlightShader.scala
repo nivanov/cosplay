@@ -18,7 +18,7 @@
 package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
-import games.pong.*
+import org.cosplay.games.pong.*
 
 /*
    _________            ______________

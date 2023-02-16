@@ -18,11 +18,11 @@
 package org.cosplay.examples.video
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
 import CPStyledString.styleStr
-import prefabs.shaders.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________

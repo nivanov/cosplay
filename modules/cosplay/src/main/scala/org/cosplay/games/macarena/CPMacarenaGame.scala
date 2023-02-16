@@ -33,14 +33,14 @@ package macarena
 */
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPFIGLetFont.*
-import prefabs.images.ani.*
-import prefabs.scenes.*
-import prefabs.shaders.*
-import prefabs.sprites.*
+import org.cosplay.prefabs.images.ani.*
+import org.cosplay.prefabs.scenes.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
 import CPCenteredImageSpriteOrientation.*
 import scala.util.*
 

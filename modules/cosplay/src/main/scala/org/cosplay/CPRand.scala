@@ -18,7 +18,7 @@
 package org.cosplay
 
 import scala.util.Random
-import CPColor.*
+import org.cosplay.CPColor.*
 import org.apache.commons.lang3.RandomStringUtils
 import java.util.UUID
 
