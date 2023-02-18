@@ -44,13 +44,13 @@ object CPInsetsTests:
     def insetTest(): Unit =
         val ins = CPInsets(1, 1, 1, 1)
         val ins1 = ins + 2
-        assertTrue(ins1.i1 == 3 && ins1.i2 == 3 && ins1.i3 == 3 && ins1.i4 == 3)
+        assertTrue(ins1.top == 3 && ins1.left == 3 && ins1.right == 3 && ins1.bottom == 3)
 
         val ins3 = CPInsets(1, 1, 1, 1)
         assertTrue(ins3 == ins)
 
         val ins4 = ins1 + ins3
-        assertTrue(ins4.i1 == 4 && ins4.i2 == 4)
+        assertTrue(ins4.top == 4 && ins4.right == 4)
 
         assertTrue(ins4.isWhole)
         assertTrue(ins4.isPositive)

@@ -81,6 +81,3 @@ object CPInsets:
       * Zero insets.
       */
     val ZERO = new CPInsets(0)
-
-    given Conversion[CPInt4, CPInsets] = d => CPInsets(d.i1, d.i2, d.i3, d.i4)
-    given Conversion[CPInsets, CPInt4] = d => CPInt4(d.top, d.right, d.bottom, d.left)

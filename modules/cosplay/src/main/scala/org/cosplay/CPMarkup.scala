@@ -133,7 +133,7 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
       * @see [[CPArrayImage.apply()]] method for creating an image from the list of pixel representing text.
       */
     def process(in: String): List[CPPixel] =
-        var skin = (ch: Char) => ch&?(fg, bg)
+        var skin = (ch: Char) => ch&&(fg, bg)
         var skinStack = List(skin)
         val buf = ArrayBuffer.empty[CPPixel]
         val len = in.length

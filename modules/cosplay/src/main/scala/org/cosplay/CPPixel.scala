@@ -335,21 +335,14 @@ object CPPixel:
         /**
           * Adds `'&&'` operator to `Char` type as a sugar to create pixel with background. For example:
           * {{{
-          *     val x = 'x'&&(C_BLACK, C_WHITE)
+          *     val x1 = 'x'&&(C_BLACK, C_WHITE)
+          *     val x2 = 'x'&&(C_BLACK, Some(C_WHITE))
           *     val ch = 'a'
-          *     val a = ch&&(C_WHITE, C_PINK)
+          *     val a = ch&&(C_WHITE, Option(C_PINK))
           * }}}
+          * Note that background can be either of type `CPColor` or `Option[CPColor]`.
           */
         @targetName("mkCharFgBgPixel")
-        infix def &&(fg: CPColor, bg: CPColor): CPPixel = CPPixel(ch, fg, bg.?)
-
-        /**
-          * Adds `'&?'` operator to `Char` type as a sugar to create pixel with background. For example:
-          * {{{
-          *     val x = 'x'&?(C_BLACK, Option(C_WHITE))
-          *     val ch = 'a'
-          *     val a = ch&?(C_WHITE, Some(C_PINK))
-          * }}}
-          */
-        @targetName("mkCharFgOptBgPixel")
-        infix def &?(fg: CPColor, bg: Option[CPColor]): CPPixel = CPPixel(ch, fg, bg)
+        infix def &&(fg: CPColor, bg: CPColor | Option[CPColor]): CPPixel = bg match
+            case c: CPColor => CPPixel(ch, fg, c.?)
+            case cp: Option[CPColor] => CPPixel(ch, fg, cp)

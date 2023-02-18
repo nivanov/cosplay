@@ -311,11 +311,11 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
                                 (ch1 == '}' && ch2 == '{') ||
                                 (ch1 == '(' && ch2 == ')') ||
                                 (ch1 == ')' && ch2 == '(') then
-                                data.set(x2, y, '|'&?(fg, bg))
+                                data.set(x2, y, '|'&&(fg, bg))
                         if figSmushRule5 then
-                            if ch1 == '/' && ch2 == '\\' then data.set(x2, y, '|'&?(fg, bg))
-                            else if ch1 == '\\' && ch2 == '/' then data.set(x2, y, 'Y'&?(fg, bg))
-                            else if ch1 == '>' && ch2 == '<' then data.set(x2, y, 'X'&?(fg, bg))
+                            if ch1 == '/' && ch2 == '\\' then data.set(x2, y, '|'&&(fg, bg))
+                            else if ch1 == '\\' && ch2 == '/' then data.set(x2, y, 'Y'&&(fg, bg))
+                            else if ch1 == '>' && ch2 == '<' then data.set(x2, y, 'X'&&(fg, bg))
                 })
                 chX += figCh.width
         else
