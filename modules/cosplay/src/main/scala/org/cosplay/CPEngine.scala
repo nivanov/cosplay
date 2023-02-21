@@ -745,7 +745,24 @@ object CPEngine:
         checkState()
         scs.foreach(scenes.add)
         engLog.info("Game started.")
-        gameLoop(scenes.grab(scs.head.getId))
+        gameLoop(scenes(scs.head.getId))
+
+    /**
+      * Starts the game. Games start with the given start scene.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      *
+      * @param startSc ID of the scene to start the game with.
+      * @param scs Non-empty set of scene comprising the game. Note that scenes can be dynamically
+      * [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @see [[startGameEff()]]
+      * @throws CPException Thrown in case of any errors.
+      */
+    def startGame(startSc: String, scs: CPScene*): Unit =
+        !>(scs.nonEmpty, "At least one scene must be provided.")
+        checkState()
+        scs.foreach(scenes.add)
+        engLog.info("Game started.")
+        gameLoop(scenes(startSc))
 
     /**
       * This is effect-based version of [[startGame()]] method allowing end-user to use pattern matching
@@ -760,6 +777,21 @@ object CPEngine:
       * @see [[disposeEff()]]
       */
     def startGameEff(scs: CPScene*): Try[Unit] = Try(startGame(scs: _*))
+
+    /**
+      * This is effect-based version of [[startGame()]] method allowing end-user to use pattern matching
+      * for error handling. Starts the game. Games start with the given start scene ID.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      * This method does not throw any exceptions.
+      *
+      * @param startSc ID of the scene to start the game with.
+      * @param scs Non-empty set of scene comprising the game. Note that scenes can be dynamically
+      * [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @see [[startGame()]]
+      * @see [[initEff()]]
+      * @see [[disposeEff()]]
+      */
+    def startGameEff(startSc: String, scs: CPScene*): Try[Unit] = Try(startGame(startSc, scs: _*))
 
     /**
       * Exits the game. Calling this method will cause [[startGame()]] method to exit on the next frame. Note that
@@ -1125,7 +1157,7 @@ object CPEngine:
                             else
                                 sc.onDeactivateX()
                                 sc.objects.values.foreach(_.onDeactivateX())
-                            sc = scenes.grab(cloId)
+                            sc = scenes(cloId)
                             scLog = engLog.getLog(s"scene:${sc.getId}")
                             scr = null
                             sceneCache.reset()
@@ -1189,7 +1221,7 @@ object CPEngine:
                             engLog.info(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
                         })
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
-                    override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
+                    override def grabObject(id: String): CPSceneObject = sc.objects(id)
                     override def getObjectsForTags(tags: Seq[String]): Seq[CPSceneObject] = sc.objects.getForTags(tags)
                     override def countObjectsForTags(tags: Seq[String]): Int = sc.objects.countForTags(tags)
                     override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit =

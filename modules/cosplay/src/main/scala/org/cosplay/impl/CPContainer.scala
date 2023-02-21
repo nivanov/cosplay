@@ -109,7 +109,7 @@ class CPContainer[T <: CPGameObject]:
       *
       * @param id
       */
-    def grab(id: String): T = map.getOrElse(id, raise(s"Unknown game object ID: $id"))
+    def apply(id: String): T = map.getOrElse(id, raise(s"Unknown game object ID: $id"))
 
     /**
       *

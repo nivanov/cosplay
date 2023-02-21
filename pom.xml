@@ -24,7 +24,7 @@
     <name>CosPlay Parent</name>
     <groupId>org.cosplayengine</groupId>
     <artifactId>cosplay-parent</artifactId>
-    <version>0.8.6</version>
+    <version>0.8.7</version>
     <packaging>pom</packaging>
     <description>An open-source 2D ASCII game engine for Scala3</description>
     <url>https://github.com/nivanov/cosplay</url>

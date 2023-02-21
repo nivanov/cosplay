@@ -131,6 +131,6 @@ object CPMacarenaGame:
         val logoSc = new CPSlideShimmerLogoScene("logo", dim.?, bgPx, shimmers, nextSc = "danceFloor")
 
         // Start the game & wait for the exit - using effect API.
-        CPEngine.startGameEff(logoSc, danceSc).recover(e => error("game", e,2 ))
+        CPEngine.startGameEff("logo", logoSc, danceSc).recover(e => error("game", e,2 ))
         // Dispose the engine - using effect API.
         CPEngine.disposeEff().fold(e => error("dispose", e, 3), _ => sys.exit(0))
