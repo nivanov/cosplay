@@ -414,26 +414,28 @@ object CPEngine:
         gameInfo
 
     /**
-      * Creates file with given relative path in the engine's special, system-specific, root location. The actual
+      * Creates file with given relative path in the engine's special, system-specific, game-specific root location. The actual
       * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
       *
       * @param path Relative path of the file. Path may include sub-directories and should use Unix
       *     style '/' for path separator.
       */
-    def homeFile(path: String): File =
+    def homeFile(path: String): Try[File] = Try {
         checkState()
         newFile(s"${homeRoot.get}/data/$path")
+    }
 
     /**
       * Creates file in the engine's special, system-specific, temporary file location. The actual
       * absolute path of the returned file is OS-dependent and shouldn't be relied on or used. Returned
       * file wil be automatically deleted upon exiting the game engine.
       */
-    def tempFile(): File =
+    def tempFile(): Try[File] = Try {
         checkState()
         val tempFile = newFile(s"${tempRoot.get}/${CPRand.guid}")
         tempFile.deleteOnExit()
         tempFile
+    }
 
     private def mkDir(dir: File): File =
         if !dir.exists() && !dir.mkdirs() then raise(s"Failed to create folder: ${dir.getAbsolutePath}")
@@ -794,8 +796,8 @@ object CPEngine:
     def startGameEff(startSc: String, scs: CPScene*): Try[Unit] = Try(startGame(startSc, scs: _*))
 
     /**
-      * Exits the game. Calling this method will cause [[startGame()]] method to exit on the next frame. Note that
-      * this method can only be called from a thread different from the one used to call [[startGame()]] method. If
+      * Exits the game. Calling this method will cause [[startGame()]] or [[startGameEff()]] method to exit on the next frame. Note that
+      * this method can only be called from a thread different from the one used to call [[startGame()]] or [[startGameEff()]] method. If
       * the game wasn't started yet, this method is a no-op. Engine must be [[init() initialized]] before this
       * call otherwise exception is thrown.
       */

@@ -50,10 +50,11 @@ object CPImageTests:
         canv.fillRect(1, 1, 49, 49, 0, (_, _) => CPPixel(randSymbol(), randXtermColor(), randXtermColor()))
         val img1 = canv.capture(0, 0, dim)
         CPEngine.init(CPGameInfo(name = "image-save-test", initDim = CPDim(1, 1).?))
-        val file = CPEngine.homeFile("test_img.csv").getAbsolutePath
+        val file = CPEngine.homeFile("test_img.csv")
+        assertTrue(file.isSuccess)
         CPEngine.dispose()
-        img1.saveRexCsv(file, C_BLACK)
-        val img2 = CPImage.load(file)
+        img1.saveRexCsv(file.get, C_BLACK)
+        val img2 = CPImage.load(file.get.getAbsolutePath)
         assertTrue(img1 != img2)
         assertTrue(img1.isSameAs(img2))
         val arr1 = img1.toArray2D
