@@ -81,7 +81,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
             )
             latch.await()
             impl
-        catch case e: Exception => raise(s"Failed to load sound media: $src", e)
+        catch case e: Exception => raise(s"Failed to load sound media: $src", e.?)
     private var vol = player.getVolume
     private val totalDur = player.getTotalDuration.toMillis.toLong
 

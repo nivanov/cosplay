@@ -51,7 +51,13 @@ import scala.util.*
   * @param msg Exception message.
   * @param cause Optional cause.
   */
-private[cosplay] def raise[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
+private[cosplay] def raise[T](msg: String, cause: Option[Throwable] = None): T = throw new CPException(msg, cause)
+/**
+  * Global syntax sugar for throwing [[CPException]].
+  *
+  * @param msg Exception message.
+  */
+private[cosplay] def raise[T](msg: String): T = throw new CPException(msg, None)
 
 /**
   * A shortcut for:
@@ -394,7 +400,7 @@ object CPEngine:
                 catch
                     case _: InterruptedIOException => ()
                     case _: InterruptedException => ()
-                    case e: Exception => raise(s"Keyboard read error: $e", e)
+                    case e: Exception => raise(s"Keyboard read error: $e", e.?)
 
                 kbMux.synchronized {
                     key.clear() // Clear potential metadata from the key.
@@ -504,7 +510,7 @@ object CPEngine:
 
         // Create new terminal.
         try term = Class.forName(termClsName).getDeclaredConstructor(classOf[CPGameInfo]).newInstance(gameInfo).asInstanceOf[CPTerminal]
-        catch case e: Exception => raise(s"Failed to create the terminal for class: $termClsName", e)
+        catch case e: Exception => raise(s"Failed to create the terminal for class: $termClsName", e.?)
 
         // Set terminal window title.
         updateTitle(term.getDim)

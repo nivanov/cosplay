@@ -781,7 +781,7 @@ object CPImage:
 
                     CPPosPixel(CPPixel(ch, fg, bg.?), x, y)
                 catch
-                    case e: Exception => raise(s"Invalid CSV file format at line $idx: $src", e)
+                    case e: Exception => raise(s"Invalid CSV file format at line $idx: $src", e.?)
             })
         )
         new CPArrayImage(arr.map(skin))

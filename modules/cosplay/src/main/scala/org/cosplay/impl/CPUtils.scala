@@ -240,7 +240,7 @@ object CPUtils:
             finally
                 close(gis)
         catch
-            case e: Exception => raise(s"Failed to unzip byte array.", e)
+            case e: Exception => raise(s"Failed to unzip byte array.", e.?)
 
     /**
       *
@@ -258,7 +258,7 @@ object CPUtils:
             finally
                 close(gis)
         catch
-            case e: Exception => raise(s"Failed to zip byte array.", e)
+            case e: Exception => raise(s"Failed to zip byte array.", e.?)
 
     /**
       *
@@ -286,7 +286,7 @@ object CPUtils:
                 stream.flush()
             }
         catch
-            case e: IOException => raise(s"Error creating file: $gz", e)
+            case e: IOException => raise(s"Error creating file: $gz", e.?)
         if del && !f.delete() then raise(s"Error while deleting file: $f")
 
     /**
@@ -352,7 +352,7 @@ object CPUtils:
       */
     def readFile(f: File, enc: String = "UTF-8"): List[String] =
         try Using.resource(Source.fromFile(f, enc)) { _.getLines().map(p => p).toList }
-        catch case e: IOException => raise(s"Failed to read file: ${f.getAbsolutePath}", e)
+        catch case e: IOException => raise(s"Failed to read file: ${f.getAbsolutePath}", e.?)
 
     /**
       * Reads all bytes from given file.
@@ -361,7 +361,7 @@ object CPUtils:
       */
     def readByteFile(f: File): Array[Byte] =
         try Files.readAllBytes(f.toPath)
-        catch case e: IOException => raise(s"Failed to read binary file: ${f.getAbsolutePath}", e)
+        catch case e: IOException => raise(s"Failed to read binary file: ${f.getAbsolutePath}", e.?)
 
     /**
       * Reads lines from given stream.
@@ -391,7 +391,7 @@ object CPUtils:
             while b != -1 do
                 buf += b.toByte
                 b = in.read()
-        catch case e: Exception => raise(s"Failed to read binary stream: $name", e)
+        catch case e: Exception => raise(s"Failed to read binary stream: $name", e.?)
         finally close(in)
         buf.toArray
 

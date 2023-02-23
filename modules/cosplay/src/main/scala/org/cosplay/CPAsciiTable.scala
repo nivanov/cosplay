@@ -630,7 +630,7 @@ class CPAsciiTable:
 
     private def renderPrintStream(f: => PrintStream, file: String): Unit =
         try Using.resource(f) { _.print(mkString()) }
-        catch case e: IOException => raise(s"Error outputting table into file: $file", e)
+        catch case e: IOException => raise(s"Error outputting table into file: $file", e.?)
 
 /**
   * Companion object contains utility functions.

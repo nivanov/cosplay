@@ -38,6 +38,6 @@ package org.cosplay
   * In rare cases where such recovery is possible - the documentation specifically highlights it.
   *
   * @param msg Error message.
-  * @param cause Optional case of this error. Default value is `null`.
+  * @param cause Optional case of this error. Default value is `None`.
   */
-class CPException(msg: String, cause: Throwable = null) extends RuntimeException(msg, cause)
+class CPException(msg: String, cause: Option[Throwable] = None) extends RuntimeException(msg, cause.orNull)

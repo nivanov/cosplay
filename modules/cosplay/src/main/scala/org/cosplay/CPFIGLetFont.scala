@@ -471,7 +471,7 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
                 try
                     enc = "windows-1252"
                     CPUtils.readAllStrings(flfPath, enc).toIndexedSeq
-                catch case e: Exception => raise(s"Failed to read (unsupported encoding?): $flfPath", e)
+                catch case e: Exception => raise(s"Failed to read (unsupported encoding?): $flfPath", e.?)
 
         // Some fonts are not following FIGLet spec with extra spaces after EOL...
         lines = lines.map(_.stripTrailing())

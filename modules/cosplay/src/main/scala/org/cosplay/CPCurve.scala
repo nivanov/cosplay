@@ -71,7 +71,7 @@ object CPCurve:
             )
             (z: Float) => poly.value(z).toFloat
         catch
-            case e: Exception => raise(s"Failed to interpolate Lagrange polynomial.", e)
+            case e: Exception => raise(s"Failed to interpolate Lagrange polynomial.", e.?)
 
     /**
       * Gets a linear gradient function for given two values.
