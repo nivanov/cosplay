@@ -31,7 +31,7 @@ import scala.collection.mutable
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -72,7 +72,7 @@ class CPShimmerShader(
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
 
     case class PixelXYZ(px: CPPixel, x: Int, y: Int, z: Int)
     private var go = autoStart
@@ -114,7 +114,7 @@ class CPShimmerShader(
     /**
       * Tests whether this shader is in progress or not.
       */
-    def isOn: Boolean = go
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
@@ -133,9 +133,9 @@ class CPShimmerShader(
                     if canv.isValid(x, y) then
                         val zpx = canv.getZPixel(x, y)
                         if !skip(zpx, x, y) then
-                            val rc = CPRand.rand(colors)
+                            val rc = colors.rand
                             val px = zpx.px
-                            val newPx = if px.char == ' ' then px.withBg(Option(rc)) else px.withFg(rc)
+                            val newPx = if px.char == ' ' then px.withBg(rc.?) else px.withFg(rc)
                             canv.drawPixel(newPx, x, y, zpx.z)
                             lastSet += PixelXYZ(newPx, x, y, zpx.z)
                 })

@@ -17,8 +17,8 @@
 
 package org.cosplay
 
-import CPRect.*
-import impl.CPUtils
+import org.cosplay.CPRect.*
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -30,7 +30,7 @@ import impl.CPUtils
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -46,7 +46,7 @@ import impl.CPUtils
   * @see [[CPArray2D]] 2D content holder.
   */
 final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(x, y, width, height):
-    if width < 0 || height < 0 then E(s"Rect dimension must be >= 0: [$width, $height]")
+    !>(width >= 0 && height >= 0, s"Rect dimension must be >= 0: [$width, $height]")
 
     /**
       * Area of this rectangle as `width * height`.
@@ -182,7 +182,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
       * @param dim Rectangle dimension.
       */
     def this(dim: CPDim) = 
-        this(0, 0, dim.w, dim.h)
+        this(x = 0, y = 0, dim.w, dim.h)
 
     /**
       * Gets random X-coordinate within this rectangle.

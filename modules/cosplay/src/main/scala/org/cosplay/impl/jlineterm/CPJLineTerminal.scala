@@ -19,11 +19,11 @@ package org.cosplay.impl.jlineterm
 
 import org.apache.commons.lang3.SystemUtils
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import impl.CPAnsi.*
-import impl.guilog.CPGuiLog
-import impl.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.impl.CPAnsi.*
+import org.cosplay.impl.guilog.CPGuiLog
+import org.cosplay.impl.*
 import org.jline.terminal.*
 import org.jline.utils.NonBlockingReader
 
@@ -42,7 +42,7 @@ import scala.collection.mutable.ArrayBuffer
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -68,7 +68,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       * @param camRect
       */
     class TermScreen(termDim: CPDim, scr: CPScreen, camRect: CPRect):
-        require(scr.getRect.contains(camRect))
+        !>(scr.getRect.contains(camRect))
 
         private val termRect = new CPRect(0, 0, termDim) // Exact terminal window.
         private val termCamRect = centerCamRect() // Camera rect positioned (centered) within terminal window.
@@ -110,11 +110,11 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         override def run(): Unit =
             while (!st0p)
                 curDim = getDim
-                try Thread.sleep(250)
+                try Thread.sleep(250.ms)
                 catch case _: InterruptedException => ()
 
     override def render(scr: CPScreen, camRect: CPRect, forceRedraw: Boolean): Unit =
-        require(scr.getRect.contains(camRect), s"scr=${scr.getRect}, cam=$camRect")
+        !>(scr.getRect.contains(camRect))
 
         val termDim = getDim
         val termScr = new TermScreen(termDim, scr, camRect)

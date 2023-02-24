@@ -18,11 +18,11 @@
 package org.cosplay.examples.particle
 
 import org.cosplay.*
-import CPArrayImage.*
-import CPColor.*
-import CPKeyboardKey.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
 import CPStyledString.styleStr
-import CPPixel.*
+import org.cosplay.CPPixel.*
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
@@ -36,7 +36,7 @@ import org.cosplay.prefabs.shaders.CPFadeInShader
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -95,7 +95,7 @@ object CPParticleExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Particle Example", initDim = Option(dim)),
+            CPGameInfo(name = "Particle Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -115,7 +115,7 @@ object CPParticleExample:
             private var x = initX.toFloat
             private var y = initY.toFloat
             // Linear color gradient, slowly dimming.
-            private val cf = CPCurve.colorGradient(CPRand.rand(COLORS), C_GRAY1, MAX_AGE)
+            private val cf = CPCurve.colorGradient(COLORS.rand, C_GRAY1, MAX_AGE)
             // X-curve for slowing down the speed of particle as it moves away from the center.
             private val dxf = CPCurve.lagrangePoly(Seq(
                 x -> 1f,
@@ -164,10 +164,10 @@ object CPParticleExample:
                 else
                     Seq.empty
 
-        val kaboomSpr = CPParticleSprite("kaboom", Seq(emitter))
+        val kaboomSpr = CPParticleSprite("kaboom", emitter.seq)
 
         kaboomSpr.setOnStart(Option(_ => boomSnd.play()))
-        kaboomSpr.setOnEnd(Option(_ => boomSnd.stop(1000)))
+        kaboomSpr.setOnEnd(Option(_ => boomSnd.stop(1000.ms)))
 
         val ctrlSpr = new CPOffScreenSprite():
             override def update(ctx: CPSceneObjectContext): Unit =
@@ -181,19 +181,19 @@ object CPParticleExample:
         val bombX = (w - bw) / 2
         val bombY = (h - bh) / 2
 
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             kaboomSpr,
             ctrlSpr,
-            new CPStaticImageSprite("bomb", bombX, bombY, 0, bomb),
-            new CPStaticImageSprite((w - ctrlDim.w) / 2, h - 4, 0, ctrlImg), // Help label.
+            new CPStaticImageSprite("bomb", bombX, bombY, z = 0, bomb),
+            new CPStaticImageSprite((w - ctrlDim.w) / 2, h - 4, z = 0, ctrlImg), // Help label.
             // Just for the initial scene fade-in effect.
-            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
+            new CPOffScreenSprite(new CPFadeInShader(true, 1500.ms, bgPx)),
             // Exit the game on 'Q' press.
             CPKeyboardSprite(KEY_LO_Q, _.exitGame())
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, COLORS, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, bgPx, COLORS, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

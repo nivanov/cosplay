@@ -27,10 +27,11 @@ package org.cosplay
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
-import CPKeyboardKey.*
+import org.cosplay.*
+import org.cosplay.CPKeyboardKey.*
 import org.cosplay.impl.CPUtils
 
 import scala.collection.mutable
@@ -92,10 +93,10 @@ class CPTextInputSprite(
     private var next: Option[String] = None,
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
-    tags: String*
+    tags: Seq[String] = Seq.empty
 ) extends CPSceneObject(id, tags.toSet):
-    require(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
-    require(initTxt != null, "Initial text cannot be 'null'.")
+    !>(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
+    !>(initTxt != null, "Initial text cannot be 'null'.")
 
     private val dim = CPDim(visLen, 1)
     private val buf = mutable.ArrayBuffer.empty[Char]
@@ -103,7 +104,7 @@ class CPTextInputSprite(
     private var lastStart = 0
     private var ready = false
     private val pxs = mutable.ArrayBuffer.empty[CPPixel]
-    private var res: Option[String] = None
+    private var res = none[String]
 
     reset()
 
@@ -146,7 +147,7 @@ class CPTextInputSprite(
                     case KEY_DEL => if buf.nonEmpty && curPos < buf.length then buf.remove(curPos)
                     case key if cancelKeys.contains(key) => done(None)
                     case key if submitKeys.contains(key) =>
-                        done(Option(buf.toString()))
+                        done(buf.toString().?)
                         if next.isDefined then ctx.acquireFocus(next.get)
                     case key if key.isPrintable =>
                         if curPos < maxBuf then

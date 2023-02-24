@@ -17,11 +17,11 @@
 
 package org.cosplay
 
-import CPKeyboardKey.*
-import CPImage.*
-import CPColor.*
-import impl.CPUtils
-import CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPImage.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.impl.CPUtils
 import org.cosplay.prefabs.images.*
 
 import java.io.*
@@ -40,7 +40,7 @@ import scala.util.Using
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -63,9 +63,9 @@ import scala.util.Using
   * methods to convert a margin-based Scala string into an image. For [[CPAlienImage example]]:
   * {{{
   * import org.cosplay.*
-  * import CPColor.*
-  * import CPArrayImage.*
-  * import CPPixel.*
+  * import org.cosplay.CPColor.*
+  * import org.cosplay.CPArrayImage.*
+  * import org.cosplay.CPPixel.*
   *
   * object CPAlienImage extends CPArrayImage(
   *     prepSeq("""
@@ -83,9 +83,9 @@ import scala.util.Using
   * Another [[CPAmigaImage example]] with more sophisticated skinning:
   * {{{
   * import org.cosplay.*
-  * import CPColor.*
-  * import CPArrayImage.*
-  * import CPPixel.*
+  * import org.cosplay.CPColor.*
+  * import org.cosplay.CPArrayImage.*
+  * import org.cosplay.CPPixel.*
   *
   * object CPAmigaImage extends CPArrayImage(
   *     prepSeq("""
@@ -177,6 +177,7 @@ import scala.util.Using
   * @example See [[org.cosplay.examples.image.CPImageFormatsExample CPImageFormatsExample]] class for the example of
   *     using images.
   */
+//noinspection ScalaWeakerAccess
 abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     override val toString: String = s"Image [dim=$getDim, origin=$origin]"
 
@@ -257,7 +258,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         val dim = getDim
         val byteSize = 10 * dim.area + 4/* Version (-1). */ + 4/* Number of layers. */ + 4/* Width. */ + 4/* Height. */
         val buf = ByteBuffer.allocate(byteSize)
-        require(buf.hasArray)
+        !>(buf.hasArray)
         buf.order(ByteOrder.LITTLE_ENDIAN)
         buf.putInt(-1) // Version (-1 for REXPaint 1.60)
         buf.putInt(1) // Only 1 layer.
@@ -497,7 +498,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
       * @see [[trimBg()]]
       */
     def replaceBg(isBgPx: CPPixel => Boolean, replacePx: CPPixel): CPImage =
-        import CPPixel.*
+        import org.cosplay.CPPixel.*
 
         val rect = getRect
         val xMax = rect.xMax
@@ -557,15 +558,20 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
 
     /**
       * Makes a deep snapshot copy of the current image.
+      *
+      * @param skin Optional skin to apply when copying.
       */
-    def copy(): CPImage = new CPArrayImage(toArray2D, origin)
+    def copy(skin: (CPPixel, Int, Int) => CPPixel = (px: CPPixel, x: Int, y: Int) => px): CPImage =
+        new CPArrayImage(toArray2D.map(skin), origin)
 
     /**
       * Makes a deep snapshot copy of the subregion of the current image.
       *
       * @param rect Subregion to copy.
+      * @param skin Optional skin to apply when copying.
       */
-    def copy(rect: CPRect): CPImage = new CPArrayImage(toArray2D.extract(rect), origin)
+    def copyRect(rect: CPRect, skin: (CPPixel, Int, Int) => CPPixel = (px: CPPixel, x: Int, y: Int) => px): CPImage =
+        new CPArrayImage(toArray2D.extract(rect).map(skin), origin)
 
     /**
       * Attaches given image underneath this image returning a new combined image.
@@ -694,6 +700,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
 /**
   * Companion object with utility functions.
   */
+//noinspection ScalaWeakerAccess
 object CPImage:
     // First search for '_1' then, if not found, search for '_2'.
     private val HOR_FLIP_MAP = Seq(
@@ -739,7 +746,7 @@ object CPImage:
       * @param imgs Non-empty set of images to stitch vertically.
       */
     def vertImage(imgs: CPImage*): CPImage =
-        require(imgs.nonEmpty)
+        !>(imgs.nonEmpty, "At least one image must be provided.")
         imgs.tail.foldLeft(imgs.head)((acc, img) => acc.stitchBelow(img))
 
     /**
@@ -749,7 +756,7 @@ object CPImage:
       * @param imgs Non-empty set of images to stitch horizontally.
       */
     def horImage(imgs: CPImage*): CPImage =
-        require(imgs.nonEmpty)
+        !>(imgs.nonEmpty, "At least one image must be provided.")
         imgs.tail.foldLeft(imgs.head)((acc, img) => acc.stitchRight(img))
 
     /**
@@ -764,7 +771,7 @@ object CPImage:
             CPUtils.readAllStrings(src).tail.zipWithIndex.map((line, i) => {
                 val idx = i + 1
                 val parts = line.split(",").map(_.strip)
-                if parts.length != 5 then E(s"Invalid CSV file format at line $idx: $src")
+                !>(parts.length == 5, s"Invalid CSV file format at line $idx: $src")
                 try
                     val x = Integer.decode(parts(0))
                     val y = Integer.decode(parts(1))
@@ -772,9 +779,9 @@ object CPImage:
                     val fg = CPColor(Integer.decode(parts(3)))
                     val bg = CPColor(Integer.decode(parts(4)))
 
-                    CPPosPixel(CPPixel(ch, fg, Option(bg)), x, y)
+                    CPPosPixel(CPPixel(ch, fg, bg.?), x, y)
                 catch
-                    case e: Exception => E(s"Invalid CSV file format at line $idx: $src", e)
+                    case e: Exception => raise(s"Invalid CSV file format at line $idx: $src", e.?)
             })
         )
         new CPArrayImage(arr.map(skin))
@@ -792,7 +799,7 @@ object CPImage:
         bb.order(ByteOrder.LITTLE_ENDIAN)
         bb.getInt // '-1' in REXPaint 1.60  (skip).
         val layerCnt = bb.getInt
-        if layerCnt <= 0 then E(s"Image file is empty: $src")
+        !>(layerCnt > 0, s"Image file is empty: $src")
         val layers = ArrayBuffer.empty[CPArray2D[CPPixel]]
         for _ <- 0 until layerCnt do
             val w = bb.getInt
@@ -812,7 +819,7 @@ object CPImage:
                 val bgB = unsigned(bb.get)
                 val fg = CPColor(fgR, fgG, fgB)
                 // REXPaint uses RGB(255, 0, 255) as a built-in transparent background.
-                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else Option(CPColor(bgR, bgG, bgB))
+                val bg = if bgR == 255 && bgG == 0 && bgB == 255 then None else CPColor(bgR, bgG, bgB).?
                 layer.set(x, y, CPPixel(ch, fg, bg))
                 idx += 1
             layers += layer
@@ -854,7 +861,7 @@ object CPImage:
         if path.endsWith(".csv") then loadRexCsv(path, skin)
         else if path.endsWith(".xp") then loadRexXp(path, skin)
         else if path.endsWith(".txt") then loadTxt(path, skin)
-        else E(s"Unsupported file image format (must be .csv, .txt or .xp): $path")
+        else raise(s"Unsupported file image format (must be .csv, .txt or .xp): $path")
 
     /**
       * Previews given sequence of image as animation.
@@ -865,25 +872,25 @@ object CPImage:
       * @param bg Optional background pixel for the terminal. Default value is {{{CPPixel('.', C_GRAY2, C_GRAY1)}}}.
       */
     def previewAnimation(imgs: Seq[CPImage], fps: Int = 5, emuTerm: Boolean = true, bg: CPPixel = DFLT_PREVIEW_BG): Unit =
-        require(fps < 1_000, "FPS must be < 1,000.")
+        !>(fps < 1_000, "FPS must be < 1,000.")
         val frameDim = imgs.head.getDim
-        require(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
+        !>(imgs.forall(_.getDim == frameDim), "All images must be of the same dimension.")
         val dim = CPDim(frameDim.w + 8, frameDim.h + 8)
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview (${frameDim.w}x${frameDim.h})",
-                initDim = Option(dim),
+                initDim = dim.?,
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
         )
         try
-            val ani = CPAnimation.filmStrip("ani", 1_000 / fps, true, false, imgs)
-            val spr = CPAnimationSprite("spr", Seq(ani), 4, 4, 0, "ani")
+            val ani = CPAnimation.filmStrip("ani", 1_000.ms / fps, true, false, imgs)
+            val spr = CPAnimationSprite("spr", ani.seq, x = 4, y = 4, z = 0, "ani")
             CPEngine.rootLog().info(s"Animation preview [frames=${imgs.size}, frameDim=$frameDim]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Option(dim),
+                dim.?,
                 bg,
                 spr, // Animation we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
@@ -904,7 +911,7 @@ object CPImage:
         CPEngine.init(
             CPGameInfo(
                 name = s"Image Preview (${img.getClass.getSimpleName}, ${imgDim.w}x${imgDim.h})",
-                initDim = Option(dim),
+                initDim = dim.?,
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
@@ -913,7 +920,7 @@ object CPImage:
             CPEngine.rootLog().info(s"Image preview [origin=${img.getOrigin}, dim=${img.getDim}, class=${img.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Option(dim),
+                dim.?,
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.

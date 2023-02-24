@@ -17,9 +17,9 @@
 
 package org.cosplay
 
-import impl.CPAnsi.*
-import CPColor.*
-import CPPixel.*
+import org.cosplay.impl.CPAnsi.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 
 import scala.annotation.targetName
 
@@ -33,11 +33,11 @@ import scala.annotation.targetName
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
-  * Single character pixel.
+  * Single immutable character pixel.
   *
   * Character-pixel is a fundamental graphics unit in ASCII-based games. Just like the raster pixel on a graphics
   * screen it represents the smallest area that can be rendered on the screen.
@@ -50,8 +50,8 @@ import scala.annotation.targetName
   * can create a pixel:
   * {{{
   *     import org.cosplay.*
-  *     import CPColor.*
-  *     import CPPixel.*
+  *     import org.cosplay.CPColor.*
+  *     import org.cosplay.CPPixel.*
   *
   *     // Canonical black 'x' on white background.
   *     new CPPixel('x', C_BLACK, Some(C_WHITE), 0)
@@ -67,20 +67,14 @@ import scala.annotation.targetName
   * recommended way and that is what is used internally by CosPlay:
   * {{{
   *     import org.cosplay.*
-  *     import CPColor.*
-  *     import CPPixel.*
-  *     // Must be enabled for conversions.
-  *     import scala.language.implicitConversions
+  *     import org.cosplay.CPColor.*
+  *     import org.cosplay.CPPixel.*
   *
   *     val p1 = 'x'&C_BLACK // Recommended way.
-  *     val p2: CPPixel = 'x' -> C_BLACK // Requires explicit type declaration.
-  *     val p3: CPPixel = ('x', C_BLACK) // Requires explicit type declaration.
   *     val p4 = CPPixel('x', C_BLACK)
   *     val p5 = new CPPixel('x', C_BLACK, None, 0)
   *
-  *     assertTrue(p1 == p2)
-  *     assertTrue(p2 == p3)
-  *     assertTrue(p3 == p4)
+  *     assertTrue(p1 == p4)
   *     assertTrue(p4 == p5)
   *
   *     val p6 = 'x'&&(C_BLACK, C_WHITE) // Recommended way.
@@ -120,7 +114,7 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
       * Gets a new pixel with inverse foreground and background color. If background color
       * is not set, returns this instance.
       */
-    lazy val inverse: CPPixel = if bg.isEmpty then this else CPPixel(char, bg.get, Option(fg), tag)
+    lazy val inverse: CPPixel = if bg.isEmpty then this else CPPixel(char, bg.get, fg.?, tag)
 
     /**
       * Gets a copy of this pixel with a new character.
@@ -161,7 +155,7 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
       * @see [[CPColor.lighter()]]
       */
     inline def withLighterBg(factor: Float): CPPixel = bg match
-        case Some(c) => CPPixel(char, fg, Option(c.lighter(factor)), tag)
+        case Some(c) => CPPixel(char, fg, c.lighter(factor).?, tag)
         case None => this
 
     /**
@@ -171,7 +165,7 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
       * @see [[CPColor.darker()]]
       */
     inline def withDarkerBg(factor: Float): CPPixel = bg match
-        case Some(c) => CPPixel(char, fg, Option(c.darker(factor)), tag)
+        case Some(c) => CPPixel(char, fg, c.darker(factor).?, tag)
         case None => this
 
     /**
@@ -190,8 +184,6 @@ final case class CPPixel(char: Char, fg: CPColor, bg: Option[CPColor] = None, ta
         if x != bg then
             if !(shadow != null && (shadow.bg == x || (shadow.bg.isDefined && x.isDefined && shadow.bg.get == x.get))) then
                 shadow = CPPixel(char, fg, x, tag)
-
-            require(shadow != null)
             shadow
         else
             this
@@ -248,7 +240,7 @@ object CPPixel:
       * @param bg Pixel background.
       * @note Pixel tag will be set to zero.
       */
-    def apply(char: Char, fg: CPColor, bg: CPColor): CPPixel = new CPPixel(char, fg, Option(bg), 0)
+    def apply(char: Char, fg: CPColor, bg: CPColor): CPPixel = new CPPixel(char, fg, bg.?, 0)
 
     /**
       * Creates new pixel.
@@ -268,7 +260,7 @@ object CPPixel:
       * @param bg Pixel background.
       * @param tag Pixel tag.
       */
-    def apply(char: Char, fg: CPColor, bg: CPColor, tag: Int): CPPixel = new CPPixel(char, fg, Option(bg), tag)
+    def apply(char: Char, fg: CPColor, bg: CPColor, tag: Int): CPPixel = new CPPixel(char, fg, bg.?, tag)
 
     /**
       * Creates new pixel.
@@ -290,7 +282,7 @@ object CPPixel:
       * @note Pixel tag will be set to zero.
       */
     def seq(first: Char, last: Char, fg: CPColor, bg: Option[CPColor]): Seq[CPPixel] =
-        if first > last then E(s"'first' char ('$first') must < 'last' char ('$last').")
+        !>(first <= last, s"'first' char ('$first') must be <= 'last' char ('$last').")
         for ch <- first to last yield CPPixel(ch, fg, bg, 0)
 
     /**
@@ -303,7 +295,7 @@ object CPPixel:
       * @note Pixel tag will be set to zero.
       */
     def seq(first: Char, last: Char, fgf: Char => CPColor, bgf: Char => Option[CPColor]): Seq[CPPixel] =
-        if first > last then E(s"'first' char ('$first') must < 'last' char ('$last').")
+        !>(first <= last, s"'first' char ('$first') must be <= 'last' char ('$last').")
         for ch <- first to last yield CPPixel(ch, fgf(ch), bgf(ch), 0)
 
     /**
@@ -328,8 +320,6 @@ object CPPixel:
     def seq(chars: String, fgf: Char => CPColor, bgf: Char => Option[CPColor]): Seq[CPPixel] =
         for ch <- chars yield CPPixel(ch, fgf(ch), bgf(ch), 0)
 
-    given Conversion[(Char, CPColor), CPPixel] = t => CPPixel(t._1, t._2)
-
     extension(ch: Char)
         /**
           * Adds `'&'` operator to `Char` type as a sugar to create pixel without background. For example:
@@ -345,21 +335,14 @@ object CPPixel:
         /**
           * Adds `'&&'` operator to `Char` type as a sugar to create pixel with background. For example:
           * {{{
-          *     val x = 'x'&&(C_BLACK, C_WHITE)
+          *     val x1 = 'x'&&(C_BLACK, C_WHITE)
+          *     val x2 = 'x'&&(C_BLACK, Some(C_WHITE))
           *     val ch = 'a'
-          *     val a = ch&&(C_WHITE, C_PINK)
+          *     val a = ch&&(C_WHITE, Option(C_PINK))
           * }}}
+          * Note that background can be either of type `CPColor` or `Option[CPColor]`.
           */
         @targetName("mkCharFgBgPixel")
-        infix def &&(fg: CPColor, bg: CPColor): CPPixel = CPPixel(ch, fg, Option(bg))
-
-        /**
-          * Adds `'&?'` operator to `Char` type as a sugar to create pixel with background. For example:
-          * {{{
-          *     val x = 'x'&?(C_BLACK, Option(C_WHITE))
-          *     val ch = 'a'
-          *     val a = ch&?(C_WHITE, Some(C_PINK))
-          * }}}
-          */
-        @targetName("mkCharFgOptBgPixel")
-        infix def &?(fg: CPColor, bg: Option[CPColor]): CPPixel = CPPixel(ch, fg, bg)
+        infix def &&(fg: CPColor, bg: CPColor | Option[CPColor]): CPPixel = bg match
+            case c: CPColor => CPPixel(ch, fg, c.?)
+            case cp: Option[CPColor] => CPPixel(ch, fg, cp)

@@ -30,7 +30,7 @@ import org.cosplay.CPKeyboardKey.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -45,7 +45,7 @@ object CPArtPolylineApp:
         val bgPx = CPPixel(' ', C_GRAY2, C_GRAY1)
 
         CPEngine.init(
-            CPGameInfo(name = s"Art Polyline Test", initDim = Option(dim)),
+            CPGameInfo(name = s"Art Polyline Test", initDim = dim.?),
             emuTerm = System.console() == null || args.contains("emuterm")
         )
 
@@ -67,7 +67,7 @@ object CPArtPolylineApp:
                     )
                     ctx.getCanvas.drawArtPolyline(pts, 0, _.px.withFg(C_WHITE), CPCanvas.ArtLineStyle.ART_SMOOTH)
 
-            CPEngine.startGame(new CPScene("scene", Option(dim), bgPx,
+            CPEngine.startGame(new CPScene("scene", dim.?, bgPx,
                 spr,
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.
             ))

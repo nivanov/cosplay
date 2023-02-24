@@ -17,8 +17,8 @@
 
 package org.cosplay
 
-import impl.CPAnsi.*
-import impl.*
+import org.cosplay.impl.CPAnsi.*
+import org.cosplay.impl.*
 
 import java.awt.Color
 
@@ -32,7 +32,7 @@ import java.awt.Color
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -87,9 +87,9 @@ import java.awt.Color
 final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) extends CPIntTuple[CPColor](red, green, blue)
     with Ordered[CPColor]
     with Serializable:
-    import CPColor.*
+    import org.cosplay.CPColor.*
 
-    require(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
+    !>(red >= 0 && red <= 0xFF && green >= 0 && green <= 0xFF && blue >= 0 && blue <= 0xFF, s"Invalid RGB values [$red,$green,$blue].")
 
     private val rgbStr = s"[r=$red,g=$green,b=$blue]"
     private inline def strClr = if name == null then rgbStr else name
@@ -241,7 +241,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
       * @param factor Mixing factor in `[0,1]` range. `0.9` means 90% darker, `0.1` means 10% darker.
       */
     inline def darker(factor: Float): CPColor =
-        assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
+        assert(factor >= 0 && factor <= 1, s"Factor ($factor) must be >= 0 && <= 1")
         val inv: Float = 1.0f - factor
         mapInt(d => (d * inv).round)
 
@@ -268,7 +268,7 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
       *     `0.1` means 10% lighter.
       */
     inline def lighter(factor: Float): CPColor =
-        assert(factor >= 0 && factor <= 1, "Factor must be >= 0 && <= 1")
+        assert(factor >= 0 && factor <= 1, s"Factor ($factor) must be >= 0 && <= 1")
         mapInt(d => Math.round(d + (255 - d) * factor))
 
     override def toString: String = strClr
@@ -703,7 +703,7 @@ object CPColor:
     /*
      * System colors.
      */
-    val C_BLACK = new CPColor(0,  0,  0, "C_BLACK")
+    val C_BLACK = new CPColor(red = 0,  green = 0,  blue = 0, name = "C_BLACK")
     val C_MAROON  = new CPColor(128, 0, 0, "C_MAROON")
     val C_GREEN = new CPColor(0, 128, 0, "C_GREEN")
     val C_OLIVE = new CPColor(128, 128, 0, "C_OLIVE")

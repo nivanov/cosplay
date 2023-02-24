@@ -60,7 +60,7 @@ import scala.util.Using
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -68,14 +68,13 @@ import scala.util.Using
   */
 class CPGuiLog(cat: String) extends CPLog:
     override def getLog(category: String): CPLog =
-        require(category != null, "Log category cannot be 'null'.")
+        !>(category != null, "Log category cannot be 'null'.")
         val log = new CPGuiLog(s"$cat/$category")
         log.inheritFrom(this)
         log
     override def getCategory: String = cat
     override def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit =
-        if isEnabled(lvl) then
-            CPGuiLog.addLog(nthFrame, lvl, cat, obj, ex)
+        if isEnabled(lvl) then CPGuiLog.addLog(nthFrame, lvl, cat, obj, ex)
 
 /**
   *
@@ -140,7 +139,7 @@ object CPGuiLog:
 
     private val copyLogAct: Action = mkAction(
         "Copy",
-        Option(mkIcon(COPY)),
+        mkIcon(COPY).?,
         "",
         enabled = false,
         None,
@@ -163,7 +162,7 @@ object CPGuiLog:
         })
     private val saveLogAct: Action = mkAction(
         "Save Log",
-        Option(mkIcon(SAVE)),
+        mkIcon(SAVE).?,
         "<html>Save log to a file.<br/>Log must be paused.</html>",
         enabled = false,
         None,
@@ -189,25 +188,25 @@ object CPGuiLog:
         })
     private val searchNextAct: Action = mkAction(
         "Next",
-        Option(mkIcon(STEP_FORWARD)),
+        mkIcon(STEP_FORWARD).?,
         "<html>Next search result.<br/>Log must be paused.</html>",
         enabled = false,
-        Option('N'),
+        'N'.?,
         _ => {
             logSearchPrevNext(true)
         })
     private val searchPrevAct: Action = mkAction(
         "Prev",
-        Option(mkIcon(STEP_BACKWARD)),
+        mkIcon(STEP_BACKWARD).?,
         "<html>Previous search result.<br/>Log must be paused.</html>",
         enabled = false,
-        Option('P'),
+        'P'.?,
         _ => {
             logSearchPrevNext(false)
         })
     private val searchClearAct: Action = mkAction(
         "",
-        Option(mkIcon(TRASH_ALT)),
+        mkIcon(TRASH_ALT).?,
         "<html>Clear the search.<br/>Log must be paused.</html>",
         enabled = false,
         None,
@@ -217,7 +216,7 @@ object CPGuiLog:
         })
     private val searchFirstAct: Action = mkAction(
         "",
-        Option(mkIcon(FAST_BACKWARD)),
+        mkIcon(FAST_BACKWARD).?,
         "<html>Go to the first match.<br/>Log must be paused.</html>",
         enabled = false,
         None,
@@ -229,7 +228,7 @@ object CPGuiLog:
         })
     private val searchLastAct: Action = mkAction(
         "",
-        Option(mkIcon(FAST_FORWARD)),
+        mkIcon(FAST_FORWARD).?,
         "<html>Go to the last match.<br/>Log must be paused.</html>",
         enabled = false,
         None,
@@ -301,7 +300,7 @@ object CPGuiLog:
         })
     private val clearLogAct: Action = mkAction(
         "Clear",
-        Option(mkIcon(TRASH_ALT)),
+        mkIcon(TRASH_ALT).?,
         "Clear entire log.",
         enabled = true,
         None,
@@ -311,7 +310,7 @@ object CPGuiLog:
         })
     private val pauseLogAct: Action = mkAction(
         "Pause",
-        Option(mkIcon(PAUSE)),
+        mkIcon(PAUSE).?,
         "<html>Pause new log entries.<br/>Log must be paused for search.</html>",
         enabled = true,
         None,
@@ -327,7 +326,7 @@ object CPGuiLog:
         })
     private val resumeLogAct: Action = mkAction(
         "Resume",
-        Option(mkIcon(PLAY)),
+        mkIcon(PLAY).?,
         "Resume new log entries.",
         enabled = false,
         None,
@@ -350,7 +349,7 @@ object CPGuiLog:
         )
     private val pauseGameAct: Action = mkAction(
         "Pause",
-        Option(mkIcon(PAUSE)),
+        mkIcon(PAUSE).?,
         "Pause game play.",
         enabled = CPEngine.isGamePaused,
         None,
@@ -365,7 +364,7 @@ object CPGuiLog:
         })
     private val resumeGameAct: Action = mkAction(
         "Resume",
-        Option(mkIcon(PLAY)),
+        mkIcon(PLAY).?,
         "Resume game play.",
         enabled = !CPEngine.isGamePaused,
         None,
@@ -380,7 +379,7 @@ object CPGuiLog:
         })
     private val audioOffAct: Action = mkAction(
         "Audio Off",
-        Option(mkIcon(VOLUME_MUTE)),
+        mkIcon(VOLUME_MUTE).?,
         "Silence all audio.",
         enabled = true,
         None,
@@ -392,7 +391,7 @@ object CPGuiLog:
         })
     private val audioOnAct: Action = mkAction(
         "Audio On",
-        Option(mkIcon(VOLUME_UP)),
+        mkIcon(VOLUME_UP).?,
         "Resume all audio.",
         enabled = false,
         None,
@@ -404,10 +403,10 @@ object CPGuiLog:
         })
     private val dbgStepAct: Action = mkAction(
         "Step",
-        Option(mkIcon(BUG)),
+        mkIcon(BUG).?,
         "<html>Step one frame at a time.<br/>Game must be paused.</html>",
         enabled = CPEngine.isGamePaused,
-        Option('S'.toInt),
+        'S'.toInt.?,
         _ => {
             val kbKey = Option.when(dbgSimKbChkBox.isSelected)(CPKeyboardKey.ofId(dbgKbCombo.getSelectedItem.asInstanceOf[String]))
             if kbKey.isDefined then kbKey.get.clear() // Clear potential metadata from the key.
@@ -487,7 +486,7 @@ object CPGuiLog:
         })
     private val stopGameAct: Action = mkAction(
         "Stop Game",
-        Option(mkIcon(TIMES)),
+        mkIcon(TIMES).?,
         "Stop and exit game.",
         enabled = true,
         None,
@@ -568,7 +567,7 @@ object CPGuiLog:
                 logSearchOffs.find(_ > curPos)
             else
                 val s = logSearchOffs.filter(_ < curPos)
-                if s.isEmpty then None else Option(s.max)
+                if s.isEmpty then None else s.max.?
             posOpt match
                 case Some(pos) =>
                     activeLogSearchOff = pos

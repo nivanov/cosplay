@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import impl.CPUtils
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -29,7 +29,7 @@ import impl.CPUtils
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -129,8 +129,8 @@ abstract class CPFont(origin: String) extends CPGameObject with CPAsset:
       * @return Image as a rendering of the given string with this font.
       */
     def renderSeq(ss: Seq[String], fg: CPColor, bg: Option[CPColor] = None, align: Int = 0): CPImage =
-        require(ss.nonEmpty, "Sequence of text lines cannot be empty.")
-        require(align == -1 || align == 0 || align == 1, "Align value must be -1, 1 or 1.")
+        !>(ss.nonEmpty, "Sequence of text lines cannot be empty.")
+        !>(align == -1 || align == 0 || align == 1, "Align value must be -1, 1 or 1.")
 
         if ss.sizeIs == 1 then render(ss.head, fg, bg)
         else

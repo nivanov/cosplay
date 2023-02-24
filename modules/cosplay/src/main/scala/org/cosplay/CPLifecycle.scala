@@ -27,7 +27,7 @@ package org.cosplay
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -96,7 +96,7 @@ object CPLifecycle:
   *  - [[onStop()]]
   */
 trait CPLifecycle:
-    import CPLifecycle.State.*
+    import org.cosplay.CPLifecycle.State.*
 
     /**
       *

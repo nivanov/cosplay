@@ -3,8 +3,6 @@ package org.cosplay
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-import scala.language.implicitConversions
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -15,7 +13,7 @@ import scala.language.implicitConversions
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**

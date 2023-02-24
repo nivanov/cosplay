@@ -18,10 +18,10 @@
 package org.cosplay
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
-import impl.CPUtils
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -33,7 +33,7 @@ import impl.CPUtils
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -252,17 +252,17 @@ object CPAnimation:
         CPEngine.init(
             CPGameInfo(
                 name = s"Animation Preview $dim",
-                initDim = Option(dim),
+                initDim = dim.?,
                 termBg = bg.bg.getOrElse(CPColor.C_DFLT_BG)
             ),
             emuTerm = emuTerm
         )
-        val spr = CPAnimationSprite("spr", Seq(ani), 4, 4, 0, ani.getId)
+        val spr = CPAnimationSprite("spr", ani.seq, x = 4, y = 4, z = 0, ani.getId)
         CPEngine.rootLog().info(s"Animation ID: ${ani.getId}")
         try
             CPEngine.startGame(new CPScene(
                 "scene",
-                Option(dim),
+                dim.?,
                 bg,
                 spr, // Animation we are previewing.
                 CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
@@ -296,9 +296,9 @@ object CPAnimation:
       * @see [[filmStrip()]]
       */
     def timeBased(id: String, loop: Boolean = true, bounce: Boolean = false, frames: Seq[(CPImage, Long)]): CPAnimation =
-        if frames.isEmpty then E(s"Animation frames cannot be empty.")
-        if frames.exists(_._2 <= 0) then E(s"Invalid animation frames duration (must be > 0).")
-        if bounce && !loop then E("'bounce' cannot be true when 'loop' is false.")
+        !>(frames.nonEmpty, s"Animation frames cannot be empty.")
+        !>(frames.forall(_._2 > 0), s"Invalid animation frames duration (must be > 0).")
+        !>(!(bounce && !loop), "'bounce' cannot be true when 'loop' is false.")
 
         new CPAnimation(id):
             private var lastFrameMs = 0L
@@ -336,11 +336,11 @@ object CPAnimation:
                         else
                             idx += idxIncr
                     if playing then
-                        Option(CPAnimationKeyFrame(
+                        CPAnimationKeyFrame(
                             id,
                             frames(idx)._1,
                             idx
-                        ))
+                        ).?
                     else
                         None
                 else

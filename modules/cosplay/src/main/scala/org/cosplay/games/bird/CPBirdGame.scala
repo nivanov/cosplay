@@ -18,9 +18,9 @@
 package org.cosplay.games.bird
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import prefabs.scenes.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.prefabs.scenes.*
 
 /*
    _________            ______________
@@ -32,7 +32,7 @@ import prefabs.scenes.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 val BLUE_BLACK = CPColor("0x00000F")
@@ -76,8 +76,8 @@ object CPBirdGame:
     def main(args: Array[String]): Unit =
         val gameInfo = CPGameInfo(
             name = "Ascii Bird",
-            initDim = Option(dim),
-            minDim = Option(dim)
+            initDim = dim.?,
+            minDim = dim.?
         )
 
         // Initialize the engine.

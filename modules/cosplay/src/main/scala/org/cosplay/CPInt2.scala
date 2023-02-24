@@ -27,7 +27,7 @@ package org.cosplay
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -83,6 +83,3 @@ object CPInt2:
       * Equivalent of `CPInt2(0)`.
       */
     val ZERO = CPInt2(0)
-
-    given Conversion[CPInt2, (Int, Int)] = t => t.i1 -> t.i2
-    given Conversion[(Int, Int), CPInt2] = t => CPInt2(t._1, t._2)

@@ -1,9 +1,9 @@
 package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import CPColor.*
-import CPArrayImage.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
 
 /*
    _________            ______________
@@ -15,7 +15,7 @@ import CPPixel.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -41,7 +41,7 @@ object CPAstronaut1Image extends CPArrayImage(
           |         \   `\  \
           |          `-._/._/
         """),
-    (ch, _, _) => if ch.isLetter then CPPixel(ch, C_RED, Option(C_WHITE)) else ch&C_WHITE
+    (ch, _, _) => if ch.isLetter then CPPixel(ch, C_RED, C_WHITE.?) else ch&C_WHITE
 )
 
 /**

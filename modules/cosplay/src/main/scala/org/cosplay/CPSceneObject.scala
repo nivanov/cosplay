@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import impl.CPUtils
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -29,7 +29,7 @@ import impl.CPUtils
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**

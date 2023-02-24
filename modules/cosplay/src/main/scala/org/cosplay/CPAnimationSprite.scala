@@ -32,7 +32,7 @@ import scala.collection.mutable
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -82,16 +82,16 @@ class CPAnimationSprite(
     initAniId: String,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
-    tags: String*) extends CPSceneObject(id, tags.toSet):
-    require(anis.nonEmpty, "Sequence of animation cannot be empty.")
+    tags: Seq[String] = Seq.empty) extends CPSceneObject(id, tags.toSet):
+    !>(anis.nonEmpty, "Sequence of animation cannot be empty.")
 
     private var myX = x
     private var myY = y
     private var myZ = z
-    private var keyFrameOpt: Option[CPAnimationKeyFrame] = None
+    private var keyFrameOpt = none[CPAnimationKeyFrame]
     private var curAni: CPAnimation = getAni(initAniId)
-    private var delayedAni: Option[CPAnimation] = None
-    private var pausedAni: Option[CPAnimation] = None
+    private var delayedAni = none[CPAnimation]
+    private var pausedAni = none[CPAnimation]
     private val onKfChangeMap = mutable.HashMap.empty[String, (CPAnimation, CPSceneObjectContext) => Unit]
 
     /**
@@ -158,9 +158,7 @@ class CPAnimationSprite(
       *
       * @param id
       */
-    private def getAni(id: String): CPAnimation = anis.find(_.getId == id) match
-        case Some(ani) => ani
-        case None => E(s"Unknown animation: $id")
+    private def getAni(id: String): CPAnimation = anis.find(_.getId == id).getOrThrow(s"Unknown animation: $id")
 
     /**
       * Gets sequence of animation for this sprite.
@@ -195,7 +193,7 @@ class CPAnimationSprite(
       */
     def splice(id: String, reset: Boolean = true, finish: Boolean = true): Unit =
         if curAni.getId != id then
-            pausedAni = Option(curAni)
+            pausedAni = curAni.?
             switchAni(id, reset, finish)
 
     /**
@@ -222,7 +220,7 @@ class CPAnimationSprite(
       */
     private def switchAni(id: String, reset: Boolean, finish: Boolean): Unit =
         val ani = getAni(id)
-        if finish then delayedAni = Option(ani) else curAni = ani
+        if finish then delayedAni = ani.? else curAni = ani
         if reset then ani.reset()
 
     /**

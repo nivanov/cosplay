@@ -21,9 +21,9 @@ import javafx.animation.{KeyFrame, KeyValue, Timeline}
 import javafx.scene.media.*
 import javafx.scene.media.MediaPlayer.Status
 import javafx.util.*
-import CPSound.*
-import impl.{CPContainer, CPUtils}
-import javafx.event.{ActionEvent, EventHandler}
+import org.cosplay.CPSound.*
+import org.cosplay.impl.*
+import javafx.event.*
 
 import java.io.File
 import java.net.URL
@@ -40,7 +40,7 @@ import scala.collection.{immutable, mutable}
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -69,35 +69,26 @@ import scala.collection.{immutable, mutable}
 class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(tags = tags) with CPAsset:
     private var timeline: Timeline = _
     private val player =
-        if !CPEngine.isInit then
-            E("CosPlay engine must be initialized (CPEngine.init(...) method) before sound can be created.")
-        else
-            val latch = new CountDownLatch(1)
-            try
-                val impl = new MediaPlayer(new Media(getUri))
-                // Wait & load the sounds media.
-                impl.setOnReady(
-                    new Runnable():
-                        override def run(): Unit = latch.countDown()
-                )
-                latch.await()
-                impl
-            catch case e: Exception => E(s"Failed to load sound media: $src", e)
+        !>(CPEngine.isInit, "CosPlay engine must be initialized (CPEngine.init(...) method) before sound can be created.")
+
+        val latch = new CountDownLatch(1)
+        try
+            val impl = new MediaPlayer(new Media(getUri))
+            // Wait & load the sounds media.
+            impl.setOnReady(
+                new Runnable():
+                    override def run(): Unit = latch.countDown()
+            )
+            latch.await()
+            impl
+        catch case e: Exception => raise(s"Failed to load sound media: $src", e.?)
     private var vol = player.getVolume
     private val totalDur = player.getTotalDuration.toMillis.toLong
 
     /** @inheritdoc */
     override val getOrigin: String = src
 
-    /**
-      *
-      */
-    private def getUri: String =
-        if CPUtils.isResource(src) then getClass.getClassLoader.getResource(src).toURI.toString else src
-
-    /**
-      *
-      */
+    private def getUri: String = if CPUtils.isResource(src) then getClass.getClassLoader.getResource(src).toURI.toString else src
     private def init(): Unit = tracks.synchronized(tracks.add(this))
 
     /**
@@ -201,9 +192,6 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
         )
         if fadeInMs > 0 then fadeIn(fadeInMs) else player.play()
 
-    /**
-      *
-      */
     private def stopTimeline(): Unit = if timeline != null then timeline.stop()
 
     /**
@@ -329,13 +317,13 @@ object CPSound:
       *     will be stopped.
       * @see [[CPSound.stop()]]
       */
-    def stopAll(fadeOutMs: Long, tags: String*): Unit = tracks.synchronized {
+    def stopAll(fadeOutMs: Long, tags: Seq[String]): Unit = tracks.synchronized {
         if tags.isEmpty then tracks.values.foreach(_.stop(fadeOutMs))
-        else tracks.getForTags(tags: _*).foreach(_.stop(fadeOutMs))
+        else tracks.getForTags(tags).foreach(_.stop(fadeOutMs))
     }
 
     /**
-      * Loops over all sounds call given function.
+      * Loops over all sounds in the system calling given function.
       *
       * @param f Function to call on each sounds.
       * @param tags Optional set of tags to filter the sounds to loop over. If not provided, all sounds
@@ -345,7 +333,7 @@ object CPSound:
         if tags.isEmpty then
             tracks.values.foreach(f)
         else
-            tracks.getForTags(tags: _*).foreach(f(_))
+            tracks.getForTags(tags).foreach(f(_))
 
     /**
       * Disposes all sounds.
@@ -354,8 +342,8 @@ object CPSound:
       *     will be disposed.
       * @see [[CPSound.dispose()]]
       */
-    def disposeAll(tags: String*): Unit = tracks.synchronized {
+    def disposeAll(tags: Seq[String]): Unit = tracks.synchronized {
         if tags.isEmpty then immutable.HashSet.from(tracks.values).foreach(_.dispose())
-        else immutable.HashSet.from(tracks.getForTags(tags: _*)).foreach(_.dispose())
+        else immutable.HashSet.from(tracks.getForTags(tags)).foreach(_.dispose())
     }
 

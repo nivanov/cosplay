@@ -18,8 +18,8 @@
 package org.cosplay.examples.video
 
 import org.cosplay.*
-import CPPixel.*
-import CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPColor.*
 
 import scala.io.Source
 import scala.util.Using
@@ -34,7 +34,7 @@ import scala.util.Using
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -51,13 +51,13 @@ object CPVideoClip extends CPVideo("vid", "https://ascii.co.uk/animated-art/3d-t
     private val RAW_FOOTAGE = "prefab/video/tunnel.txt" // Under 'resources' folder...
     private val FRAME_CNT = 40 // We know upfront that there are 40 frames there.
     private val frames: Seq[CPImage] = {
-        val rsrc = getClass.getClassLoader.getResourceAsStream(RAW_FOOTAGE)
-        if rsrc != null then
-            Using.resource(Source.fromInputStream(rsrc, "UTF-8")) { rs =>
+        val in = getClass.getClassLoader.getResourceAsStream(RAW_FOOTAGE)
+        if in != null then
+            Using.resource(Source.fromInputStream(in, "UTF-8")) { rs =>
                 val lines = rs.getLines().toSeq.filter(_.trim.nonEmpty) // Load all lines and skip empty ones.
                 lines.grouped(lines.size / FRAME_CNT).toSeq.map { frameLines =>
                     // Psychedelic mode :-)
-                    val c = CPRand.rand(CS_X11_ALL)
+                    val c = CS_X11_ALL.rand
                     new CPArrayImage(frameLines, (ch, _, _) => {
                         ch match
                             // Color it for more contrast.

@@ -17,12 +17,12 @@
   limitations under the License.
 -->
 
-<Configuration status="INFO" strict="true">
+<Configuration status="INFO" strict="true" shutdownHook="disable">
     <Appenders>
         <RollingFile
             name="file"
-            fileName="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_NAME}/log.txt"
-            filePattern="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_NAME}/$${date:yyyy-MM}/log-%d{MM-dd-yyyy}-%i.gz">
+            fileName="${sys:user.home}/.cosplay/${sys:COSPLAY_GAME_ID}/log/log.txt"
+            filePattern="${sys:user.home}/.cosplay/${sys:COSPLAY_GAME_ID}/log/$${date:yyyy-MM}/log-%d{MM-dd-yyyy}-%i.gz">
             <PatternLayout>
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>

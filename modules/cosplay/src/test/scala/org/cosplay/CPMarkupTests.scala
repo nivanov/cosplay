@@ -27,12 +27,12 @@ package org.cosplay
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -47,15 +47,15 @@ object CPMarkupTests:
     private def mkMarkup(elms: List[(String, String)]): CPMarkup =
         new CPMarkup(
             C_GREEN,
-            Option(C_GRAY1),
-            elms.map(elm => (elm._1, elm._2, (ch: Char) => CPPixel(ch, C_WHITE, Option(C_RED))))
+            C_GRAY1.?,
+            elms.map(elm => (elm._1, elm._2, (ch: Char) => CPPixel(ch, C_WHITE, C_RED.?)))
         )
 
     @Test
     def checkMarkupProcess(): Unit =
         val markup = CPMarkup(
             C_GREEN,
-            Option(C_BLACK),
+            C_BLACK.?,
             Seq(
                 CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
                 CPMarkupElement("{#", "#}", _&&(C_BLUE, C_YELLOW)),
@@ -103,20 +103,20 @@ object CPMarkupTests:
         assertDoesNotThrow(() => mkMarkup(
             List(("<%", "%>"))
         ))
-        assertThrows(classOf[IllegalArgumentException], () => mkMarkup(
+        assertThrows(classOf[CPException], () => mkMarkup(
             List((" a", "%>>"))
         ))
-        assertThrows(classOf[IllegalArgumentException], () => mkMarkup(
+        assertThrows(classOf[CPException], () => mkMarkup(
             List(("a", ""))
         ))
-        assertThrows(classOf[IllegalArgumentException], () => mkMarkup(
+        assertThrows(classOf[CPException], () => mkMarkup(
             List(
                 ("<%", "%>"),
                 ("<$", "$>"),
                 ("<~", "%>")
             )
         ))
-        assertThrows(classOf[IllegalArgumentException], () => mkMarkup(
+        assertThrows(classOf[CPException], () => mkMarkup(
             List(
                 ("<%", "%>"),
                 ("<%", "%>>")

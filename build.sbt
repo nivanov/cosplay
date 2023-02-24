@@ -25,31 +25,33 @@
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
-val cosPlayVer = "0.7.5"
+val cosPlayVer = "0.8.9"
 
 val scalaMajVer = "3"
-val scalaMinVer = "1.3"
+val scalaMinVer = "2.1"
 val log4jVer = "2.19.0"
 val scalaLoggingVer = "3.9.5"
 val scalaParColVer = "1.0.4"
 val commonsLang3Ver = "3.12.0"
 val commonsMath3Ver = "3.6.1"
 val commonsTextVer = "1.10.0"
+val commonsIoVer = "2.11.0"
 val commonsCollectionsVer = "4.4"
 val scalaReflectVer = "1.2.0"
 val scalaTestVer = "3.2.15"
 val junitVer = "5.9.2"
-val openjfxVer = "17.0.2"
+val openjfxVer = "17.0.6"
 val ikonliVer = "12.3.1"
 val flatlafVer = "3.0"
 val miglayoutVer = "11.0"
 val jlineVer = "3.22.0"
-val jnaVer = "5.10.0"
+val jnaVer = "5.13.0"
 val mixPanelVer = "1.5.1"
 val antlr4Ver = "4.11.1"
+val audioFileVer = "2.4.2"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
 ThisBuild / version := cosPlayVer
@@ -91,6 +93,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         // Dependencies.
         libraryDependencies += "org.apache.commons" % "commons-math3" % commonsMath3Ver,
         libraryDependencies += "org.apache.commons" % "commons-lang3" % commonsLang3Ver,
+        libraryDependencies += "commons-io" % "commons-io" % commonsIoVer,
         libraryDependencies += "org.apache.commons" % "commons-text" % commonsTextVer,
         libraryDependencies += "org.apache.commons" % "commons-collections4" % commonsCollectionsVer,
         libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % log4jVer,
@@ -108,6 +111,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % scalaParColVer,
         libraryDependencies += "com.mixpanel" % "mixpanel-java" % mixPanelVer,
         libraryDependencies += "org.antlr" % "antlr4-runtime" % antlr4Ver,
+        libraryDependencies += "de.sciss" % "audiofile_3" % audioFileVer,
 
         // Test scope.
         libraryDependencies += "org.scalatest" %% s"scalatest" % s"$scalaTestVer" % Test,

@@ -30,7 +30,7 @@ import scala.collection.mutable
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -65,7 +65,7 @@ class CPContainer[T <: CPGameObject]:
       *
       * @param tags
       */
-    def removeForTags(tags: String): Unit = getForTags(tags).foreach(t => remove(t.getId))
+    def removeForTags(tags: String*): Unit = getForTags(tags).foreach(t => remove(t.getId))
 
     /**
       *
@@ -77,7 +77,7 @@ class CPContainer[T <: CPGameObject]:
       *
       * @param tags
       */
-    def containsForTags(tags: String*): Boolean =
+    def containsForTags(tags: Seq[String]): Boolean =
         map.values.exists(obj => tags.exists(tag => obj.getTags.contains(tag)))
 
     /**
@@ -95,27 +95,27 @@ class CPContainer[T <: CPGameObject]:
       *
       * @param tags
       */
-    def getForTags(tags: String*): Seq[T] =
+    def getForTags(tags: Seq[String]): Seq[T] =
         map.values.filter(obj => tags.exists(tag => obj.getTags.contains(tag))).toSeq
 
     /**
       *
       * @param tags
       */
-    def countForTags(tags: String*): Int =
+    def countForTags(tags: Seq[String]): Int =
         map.values.count(obj => tags.exists(tag => obj.getTags.contains(tag)))
 
     /**
       *
       * @param id
       */
-    def grab(id: String): T = map.getOrElse(id, E(s"Unknown game object ID: $id"))
+    def apply(id: String): T = map.getOrElse(id, raise(s"Unknown game object ID: $id"))
 
     /**
       *
       * @param t
       */
-    def add(t: T): Unit = if map.contains(t.getId) then E(s"Dup game object ID: ${t.getId}") else map.put(t.getId, t)
+    def add(t: T): Unit = if map.contains(t.getId) then raise(s"Dup game object ID: ${t.getId}") else map.put(t.getId, t)
 
     /**
       *

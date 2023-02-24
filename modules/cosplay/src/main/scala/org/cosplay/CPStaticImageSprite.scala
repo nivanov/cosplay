@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import impl.CPUtils
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -29,7 +29,7 @@ import impl.CPUtils
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -77,7 +77,7 @@ class CPStaticImageSprite(
     img: CPImage,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
-    tags: String*
+    tags: Seq[String] = Seq.empty
 ) extends CPSceneObject(id, tags.toSet):
     private val imgDim = img.getDim
     private val imgRect = new CPRect(x, y, imgDim)

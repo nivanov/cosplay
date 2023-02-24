@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import impl.CPUtils
+import org.cosplay.impl.CPUtils
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -32,14 +32,18 @@ import java.util.Date
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
   * Descriptor of the game.
   *
   * @param id Unique ID of the game. If not provided, the default value will be a randomly generated globally unique ID.
-  * @param name Public, display name of the game. This parameter is required and does not have default value.
+  *     For production games this ID must be stable. Changing the name of the game is akin to introduction of a new game.
+  *     It is essentially an internal technical "sister" ID of the game's name.
+  * @param name Public, display name of the game. This parameter is required and does not have default value. Note
+  *     that for production games this name must be stable as it is used in various places in the engine. Changing the
+  *     name of the game is akin to introduction of a new game.
   * @param semVer Semantic version of the game. See https://semver.org/ for details. Default value is `1.0.0`
   * @param initDim Optional initial game dimension. It is used only by `emuterm` built-in terminal emulator to
   *     set the initial terminal emulator dimension. It is ignored by the native terminal. If not provided,

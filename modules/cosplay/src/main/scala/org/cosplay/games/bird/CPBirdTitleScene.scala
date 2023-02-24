@@ -27,17 +27,17 @@ package org.cosplay.games.bird
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 import org.cosplay.*
-import CPColor.*
-import CPKeyboardKey.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPPixel.*
 import org.cosplay.CPArrayImage.*
-import prefabs.scenes.*
-import prefabs.shaders.*
-import prefabs.sprites.*
+import org.cosplay.prefabs.scenes.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
 
 object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     private val bgSnd = CPSound("sounds/games/bird/bg.wav")
@@ -45,7 +45,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     private val fadeInShdr = CPSlideInShader.sigmoid(
         CPSlideDirection.CENTRIFUGAL,
         true,
-        3000,
+        3000.ms,
         GAME_BG_PX
     )
     private val CS = Seq(C1, C2, C3, C4, C5)
@@ -53,7 +53,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         true,
         GAME_BG_PX.bg.get,
         Seq(
-            CPStarStreak('.', CS, 0.025, 30, (0f, .2f), 0),
+            CPStarStreak('.', CS, ratio = 0.025, steps = 30, speed = (0f, .2f), z = 0),
             CPStarStreak(':', CS, 0.015, 25, (0f, .4f), 0),
             CPStarStreak('|', CS, 0.005, 50, (0f, .8f), 0)
         ),
@@ -75,7 +75,7 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     // Add scene objects...
     addObjects(
         // Main logo.
-        CPCenteredImageSprite(img = logoImg, 1, shaders = Seq(blinkShdr)),
+        CPCenteredImageSprite(img = logoImg, 1, shaders = blinkShdr.seq),
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, starStreakShdr, borderShdr)),
         // Exit on 'Q' press.
@@ -86,8 +86,8 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
         CPKeyboardSprite(KEY_SPACE, _.switchScene("play"))
     )
 
-    private def startBgAudio(): Unit = bgSnd.loop(2000)
-    private def stopBgAudio(): Unit = bgSnd.stop(2000)
+    private def startBgAudio(): Unit = bgSnd.loop(2000.ms)
+    private def stopBgAudio(): Unit = bgSnd.stop(2000.ms)
 
     /**
       * Toggles audio on and off.

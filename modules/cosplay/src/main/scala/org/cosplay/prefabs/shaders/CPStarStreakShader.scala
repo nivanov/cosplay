@@ -27,11 +27,11 @@ package org.cosplay.prefabs.shaders
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 import org.cosplay.*
-import CPPixel.*
+import org.cosplay.CPPixel.*
 
 import scala.collection.mutable
 
@@ -66,8 +66,8 @@ case class CPStarStreak(
     speed: (Float, Float),
     z: Int
 ):
-    require(ratio >= 0f && ratio <= 1f, "Ratio must be in [0,1] range.")
-    require(colors.nonEmpty, "Colors cannot be empty.")
+    !>(ratio >= 0f && ratio <= 1f, "Ratio must be in [0,1] range.")
+    !>(colors.nonEmpty, "Colors cannot be empty.")
 
 /**
   * Star streak shader.
@@ -121,12 +121,12 @@ class CPStarStreakShader(
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => ()
 ) extends CPShader:
-    require(streaks.nonEmpty, "Streaks cannot be empty.")
+    !>(streaks.nonEmpty, "Streaks cannot be empty.")
 
     case class Star(streak: CPStarStreak, initX: Int, initY: Int):
         private var x = initX.toFloat
         private var y = initY.toFloat
-        private val initCol = CPRand.rand(streak.colors)
+        private val initCol = streak.colors.rand
         private val grad = CPColor.gradientSeq(initCol, bg, streak.steps)
         private val gradSz = grad.size
         private var gradIdx = CPRand.between(0, gradSz)
@@ -163,7 +163,7 @@ class CPStarStreakShader(
         startMs = 0
 
     /**
-      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods..
+      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods.
       *
       * @see [[start()]]
       * @see [[stop()]]
@@ -173,7 +173,7 @@ class CPStarStreakShader(
     /**
       * Tests whether this shader is in progress or not.
       */
-    def isOn: Boolean = go
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =

@@ -31,7 +31,7 @@ import scala.reflect.ClassTag
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -44,7 +44,7 @@ import scala.reflect.ClassTag
   */
 //noinspection ScalaWeakerAccess
 class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
-    if width < 0 || height < 0 then E(s"2D array dimension must be >= 0: [$width, $height]")
+    !>(width >= 0 && height >= 0, s"2D array dimension must be >= 0: [$width, $height]")
 
     private val data = Array.ofDim[T](width, height)
     private var clearVal: T = _
@@ -52,7 +52,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     private lazy val clearBuf: Array[Array[T]] = Array.ofDim[T](width, height)
 
     /** Shape of this array as a rectangle.*/
-    val rect: CPRect = CPRect(0, 0, width, height)
+    val rect: CPRect = CPRect(x = 0, y = 0, width, height)
 
     /** Maximum X-coordinate. If width is zero this will equal to `-1`. */
     val xMax: Int = width - 1
@@ -129,13 +129,13 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       *     sequence will be returned.
       */
     def split(num: Int)(using c: ClassTag[T]): Seq[CPArray2D[T]] =
-        require(num > 0, "Number of splits must be > 0.")
+        !>(num > 0, "Number of splits must be > 0.")
         if isEmpty then Seq.empty
         else
             if width > height && width % num == 0 then split(width / num, height)
             else if width < height && height % num == 0 then split(width, height / num)
             else if width % num == 0 then split(width / num, height / num)
-            else E(s"Unable to determine split dimensions for $num sub-parts.")
+            else raise(s"Unable to determine split dimensions for $num sub-parts.")
 
     /**
       * Splits this array into a sequence of `w`x`h` arrays.
@@ -148,13 +148,13 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       *     sequence will be returned.
       */
     def split(w: Int, h: Int)(using c: ClassTag[T]): Seq[CPArray2D[T]] =
-        require(w > 0 && h > 0, "Width and height must be > 0.")
+        !>(w > 0 && h > 0, "Width and height must be > 0.")
         if isEmpty then Seq.empty
         else
-            if w > width then E(s"Invalid split width (too big): $w")
-            if h > height then E(s"Invalid split height (too big): $h")
-            if width % w != 0 then E(s"Uneven split width: $w ($width % $w != 0)")
-            if height % h != 0 then E(s"Uneven split height: $h ($height % $h != 0)")
+            !>(w <= width, s"Invalid split width (too big): $w")
+            !>(h <= height, s"Invalid split height (too big): $h")
+            !>(width % w == 0, s"Uneven split width: $w ($width % $w != 0)")
+            !>(height % h == 0, s"Uneven split height: $h ($height % $h != 0)")
 
             val buf = mutable.Buffer.empty[CPArray2D[T]]
 
@@ -522,8 +522,7 @@ object CPArray2D:
       */
     def apply(pxs: Seq[CPPixel], width: Int): CPArray2D[CPPixel] =
         val sz = pxs.size
-        if width < 0 || width > sz || sz % width != 0 then
-            E(s"Invalid width: $width")
+        !>(width >= 0 && width <= sz && sz % width == 0, s"Invalid width: $width")
         val height = sz / width
         val arr = new CPArray2D[CPPixel](width, height)
         var i = 0

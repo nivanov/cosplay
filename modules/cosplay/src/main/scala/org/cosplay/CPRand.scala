@@ -18,7 +18,7 @@
 package org.cosplay
 
 import scala.util.Random
-import CPColor.*
+import org.cosplay.CPColor.*
 import org.apache.commons.lang3.RandomStringUtils
 import java.util.UUID
 
@@ -32,8 +32,14 @@ import java.util.UUID
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
+
+extension[T](seq: Seq[T])
+    /**
+      * Random element selector using [[CPRand]] class.
+      */
+    def rand: T = CPRand.rand(seq)
 
 /**
   * Provides convenient functions for random number generation and usage.

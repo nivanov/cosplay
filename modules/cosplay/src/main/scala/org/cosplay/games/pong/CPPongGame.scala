@@ -18,10 +18,10 @@
 package org.cosplay.games.pong
 
 import org.cosplay.*
-import games.*
-import CPColor.*
-import CPPixel.*
-import prefabs.scenes.CPFadeShimmerLogoScene
+import org.cosplay.games.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 
 /*
    _________            ______________
@@ -33,7 +33,7 @@ import prefabs.scenes.CPFadeShimmerLogoScene
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 val BLUE_BLACK = CPColor("0x00000F")

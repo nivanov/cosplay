@@ -18,10 +18,10 @@
 package org.cosplay.examples.shader
 
 import org.cosplay.*
-import CPPixel.*
+import org.cosplay.CPPixel.*
 import CPArrayImage.prepSeq
-import CPColor.*
-import CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
 import CPStyledString.styleStr
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
@@ -36,7 +36,7 @@ import org.cosplay.prefabs.shaders.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -140,8 +140,9 @@ object CPShaderExample:
 
         val bulbSpr = new CPImageSprite("bulb",
             // Center it on the screen.
-            (dim.w - bulbImg.w) / 2,
-            (dim.h - bulbImg.h) / 2 - 5, 1, bulbImg, false, Seq(FlashLightShader)):
+            x = (dim.w - bulbImg.w) / 2,
+            y = (dim.h - bulbImg.h) / 2 - 5,
+            z = 1, bulbImg, false, FlashLightShader.seq):
             private var x = initX.toFloat
             private var y = initY.toFloat
 
@@ -163,7 +164,7 @@ object CPShaderExample:
                         case _ => ()
                     case None => ()
 
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             bulbSpr,
             CPStaticImageSprite((dim.w - ctrlImg.w) / 2, 24, 0, ctrlImg),
             // Just for the initial scene fade-in effect.
@@ -174,12 +175,12 @@ object CPShaderExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Shaders Example", initDim = Option(dim)),
+            CPGameInfo(name = "Shaders Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

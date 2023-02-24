@@ -29,7 +29,7 @@ import org.cosplay.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -81,8 +81,8 @@ class CPRandomFadeInShader(
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) => Float = (a, b) => a.toFloat / b
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
+    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    !>(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private val chars = "xXzZwWmMkKfFdDsS1234567890{}[]@#$%^&*()_+<>?"
     private var frmCnt = 0
@@ -136,13 +136,11 @@ class CPRandomFadeInShader(
                         val bal = balance(frmCnt, maxFrmCnt)
                         val newFg = CPColor.mixture(bgFg, px.fg, bal)
                         val fin = newFg == px.fg
-                        val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(bgBg, c, bal))
-                            case None => None
+                        val newBg = px.bg.flatMap(CPColor.mixture(bgBg, _, bal).?)
                         var newPx = px.withFg(newFg).withBg(newBg)
                         var ch = px.char
                         if !fin && !(skipSpaces && px.char == ' ') && CPRand.randFloat() > bal then
-                            ch = CPRand.rand(chars)
+                            ch = chars.rand
                         if reCalc then chArr(x)(y) = ch
                         newPx = newPx.withChar(chArr(x)(y))
                         canv.drawPixel(newPx, x, y, zpx.z)

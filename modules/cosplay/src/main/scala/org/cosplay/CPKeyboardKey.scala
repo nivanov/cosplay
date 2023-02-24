@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import CPKeyboardKey.KEY_BACKSPACE
+import org.cosplay.CPKeyboardKey.KEY_BACKSPACE
 
 import scala.collection.mutable
 
@@ -35,7 +35,7 @@ private val WCSI = Seq(ESC, 'O') // Windows application mode.
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**

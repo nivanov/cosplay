@@ -36,7 +36,7 @@ import org.cosplay.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -182,7 +182,7 @@ object CPAnimationExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Animation Example", initDim = Option(dim)),
+            CPGameInfo(name = "Animation Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -192,23 +192,23 @@ object CPAnimationExample:
 
         val aniSeq = Seq(
             // In film strip animation each frame is shown for the same amount of time.
-            CPAnimation.filmStrip("right", 150, imgs = imgsRight),
-            CPAnimation.filmStrip("left", 150, imgs = imgsLeft),
+            CPAnimation.filmStrip("right", 150.ms, imgs = imgsRight),
+            CPAnimation.filmStrip("left", 150.ms, imgs = imgsLeft),
             // In time-based animation each frame has its own duration.
             CPAnimation.timeBased("idle", frames = Seq(
-                imgsIdle.head -> 1000,
-                imgsIdle(1) -> 100,
-                imgsIdle(2) -> 1000,
-                imgsIdle(3) -> 1000,
-                imgsIdle(4) -> 100
+                imgsIdle.head -> 1000.ms,
+                imgsIdle(1) -> 100.ms,
+                imgsIdle(2) -> 1000.ms,
+                imgsIdle(3) -> 1000.ms,
+                imgsIdle(4) -> 100.ms
             )),
-            CPAnimation.filmStrip("vert", 150, imgs = imgVert)
+            CPAnimation.filmStrip("vert", 150.ms, imgs = imgVert)
         )
 
-        val fiShdr = new CPFadeInShader(true, 500, bgPx)
-        val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
+        val fiShdr = new CPFadeInShader(true, 500.ms, bgPx)
+        val foShdr = new CPFadeOutShader(true, 300.ms, bgPx, _.exitGame())
 
-        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, 45, 19, 0, "idle", false, Seq(fiShdr, foShdr)):
+        val player: CPAnimationSprite = new CPAnimationSprite("player", aniSeq, x = 45, y = 19, z = 0, "idle", false, Seq(fiShdr, foShdr)):
             // Use 'float' type for coordinates to smooth out the movement.
             private var x = super.getX.toFloat
             private var y = super.getY.toFloat
@@ -226,14 +226,14 @@ object CPAnimationExample:
 
             override def onStart(): Unit =
                 bgSnd.setVolume(0.2f) // Make background 20% volume.
-                bgSnd.loop(1500) // Auto-play with fade-in.
+                bgSnd.loop(1500.ms) // Auto-play with fade-in.
                 // Example of the per-frame sound synchronization.
                 setOnKeyFrameChange("vert", Option((_, _) => stepSnd.play()))
             override def getX: Int = x.round
             override def getY: Int = y.round
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
-                // Demo the log snapshoting (rendering stats get logged in every 2 seconds).
+                // Demo the log snapshotting (rendering stats get logged in every 2 seconds).
                 if ctx.getFrameCount % 60 == 0 then ctx.getLog.snapshot()
                 ctx.getKbEvent match
                     case Some(evt) =>
@@ -249,7 +249,7 @@ object CPAnimationExample:
                     // Switch to 'idle' waiting for the current animation to complete (default).
                     case None => change("idle")
 
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             player,
             CPStaticImageSprite(28, 28, 0, imgHelp),
             // On 'q' kick in fade out shader that will exit the game once it is finished.
@@ -261,7 +261,7 @@ object CPAnimationExample:
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene(
                     "logo",
-                    Option(dim),
+                    dim.?,
                     bgPx,
                     Seq(C_ORANGE1, C_STEEL_BLUE1, C_DARK_ORANGE, C_WHITE, C_LIGHT_CORAL),
                     "scene"

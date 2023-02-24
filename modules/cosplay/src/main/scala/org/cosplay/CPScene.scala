@@ -29,7 +29,7 @@ import org.cosplay.impl.CPContainer
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -82,7 +82,7 @@ import org.cosplay.impl.CPContainer
   * @see [[org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene]]
   */
 open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGameObject(id) with CPLifecycle:
-    require(bgPx.bg.nonEmpty, "Background pixel must have its background color defined.")
+    !>(bgPx.bg.nonEmpty, "Background pixel must have its background color defined.")
 
     private val cam = CPCamera()
     private[cosplay] val objects = CPContainer[CPSceneObject]()

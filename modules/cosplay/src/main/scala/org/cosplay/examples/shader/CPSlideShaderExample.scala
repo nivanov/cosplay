@@ -27,17 +27,17 @@ package org.cosplay.examples.shader
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 import org.cosplay.*
-import CPPixel.*
-import CPColor.*
-import CPArrayImage.*
-import CPKeyboardKey.*
-import prefabs.scenes.*
-import prefabs.shaders.*
-import CPSlideDirection.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.scenes.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.shaders.CPSlideDirection.*
 import org.cosplay.prefabs.sprites.CPCenteredImageSprite
 
 import scala.collection.mutable
@@ -102,7 +102,7 @@ object CPSlideShaderExample:
             |******************************************************
             |******************************************************
             |"""),
-        (_, _, _) => CPRand.randSymbol()&CPRand.rand(cols)
+        (_, _, _) => CPRand.randSymbol()&cols.rand
     )
 
     /**
@@ -113,7 +113,7 @@ object CPSlideShaderExample:
     def main(args: Array[String]): Unit =
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Slide Shaders Demo", initDim = Option(dim)),
+            CPGameInfo(name = "Slide Shaders Demo", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -145,10 +145,10 @@ object CPSlideShaderExample:
             lastShdr = s2
 
         val imgSpr = new CPCenteredImageSprite(img = img, 0, shdrs.toSeq)
-        val sc = new CPScene("scene", Option(dim), BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
+        val sc = new CPScene("scene", dim.?, BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), BG_PX, cols, "scene"), sc)
+        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, BG_PX, cols, "scene"), sc)
         finally CPEngine.dispose()
 
         sys.exit(0)

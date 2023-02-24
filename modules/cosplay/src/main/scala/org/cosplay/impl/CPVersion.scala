@@ -17,6 +17,7 @@
 
 package org.cosplay.impl
 
+import org.cosplay.*
 import java.time.{LocalDate, Year}
 
 /*
@@ -29,7 +30,7 @@ import java.time.{LocalDate, Year}
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -38,7 +39,7 @@ import java.time.{LocalDate, Year}
   */
 //noinspection ScalaWeakerAccess
 object CPVersion:
-    val year = Year.now().toString
+    val year: String = Year.now().toString
     val tagline = "2D ASCII Game Engine for Scala3"
     val copyright = s"(C) $year Rowan Games, Inc."
 
@@ -50,9 +51,9 @@ object CPVersion:
     case class Version(semver: String,  date: LocalDate):
         override def toString = s"Version [version=$semver, date=$date]"
 
-    // +=================================================+
-    // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
-    // +=================================================+
+    // +==================================================+
+    // | UPDATE BELOW SEQUENCE FOR EACH RELEASE MANUALLY. |
+    // +==================================================+
     private val VERSIONS = Seq(
         Version("0.1.0", LocalDate.of(2022, 1, 25)),
         Version("0.1.1", LocalDate.of(2022, 2, 25)),
@@ -67,11 +68,24 @@ object CPVersion:
         Version("0.7.2", LocalDate.of(2022, 6, 30)),
         Version("0.7.3", LocalDate.of(2022, 11, 22)),
         Version("0.7.4", LocalDate.of(2022, 12, 8)),
-        Version("0.7.5", LocalDate.of(2022, 12, 8)),
+        Version("0.7.5", LocalDate.of(2022, 12, 9)),
+        Version("0.8.0", LocalDate.of(2023, 2, 4)),
+        Version("0.8.1", LocalDate.of(2023, 2, 6)),
+        Version("0.8.2", LocalDate.of(2023, 2, 7)),
+        Version("0.8.3", LocalDate.of(2023, 2, 8)),
+        Version("0.8.4", LocalDate.of(2023, 2, 9)),
+        Version("0.8.5", LocalDate.of(2023, 2, 13)),
+        Version("0.8.6", LocalDate.of(2023, 2, 14)),
+        Version("0.8.7", LocalDate.of(2023, 2, 20)),
+        Version("0.8.8", LocalDate.of(2023, 2, 21)),
+        Version("0.8.9", LocalDate.of(2023, 2, 22)),
     ).sortBy(_.semver)
-    // +=================================================+
-    // | UPDATE THIS SEQUENCE FOR EACH RELEASE MANUALLY. |
-    // +=================================================+
+    // +==================================================+
+    // | UPDATE ABOVE SEQUENCE FOR EACH RELEASE MANUALLY. |
+    // +==================================================+
+
+    !>(VERSIONS.map(_.semver).distinct.sizeIs == VERSIONS.size, "Semver not unique.")
+    !>(VERSIONS.map(_.date).distinct.sizeIs == VERSIONS.size, "Release date not unique.")
 
     /**
       * Gets current version.

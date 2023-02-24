@@ -17,8 +17,8 @@
 
 package org.cosplay
 
-import CPColor.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -49,18 +49,10 @@ object CPPixelTest:
         val p4 = CPPixel('x', C_BLACK)
         val p5 = new CPPixel('x', C_BLACK, None, 0)
 
-        import scala.language.implicitConversions
-
-        val p2: CPPixel = 'x' -> C_BLACK
-        val p3: CPPixel = ('x', C_BLACK)
-
-        assertTrue(p1 == p2)
-        assertTrue(p2 == p3)
-        assertTrue(p3 == p4)
         assertTrue(p4 == p5)
 
         val p6 = 'x'&&(C_BLACK, C_WHITE)
-        val p7 = new CPPixel('x', C_BLACK, Option(C_WHITE), 0)
+        val p7 = new CPPixel('x', C_BLACK, C_WHITE.?, 0)
 
         assertTrue(p6 == p7)
 

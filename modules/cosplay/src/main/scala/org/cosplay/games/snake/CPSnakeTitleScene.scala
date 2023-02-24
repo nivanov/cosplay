@@ -19,12 +19,12 @@ package org.cosplay.games.snake
 
 import org.cosplay.games.*
 import org.cosplay.*
-import CPColor.*
-import CPArrayImage.*
-import prefabs.shaders.*
-import prefabs.sprites.*
-import CPPixel.*
-import CPKeyboardKey.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
 
 /*
    _________            ______________
@@ -36,7 +36,7 @@ import CPKeyboardKey.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -62,8 +62,8 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         ),
         skip = (zpx, _, _) => zpx.z == 1
     )
-    private val fadeOutShdr = CPFadeOutShader(true, 500, BG_PX)
-    private val eyesShdr = CPShimmerShader(false, CS, 7, false, (zpx, _, _) => zpx.px.char != '8')
+    private val fadeOutShdr = CPFadeOutShader(true, 500.ms, BG_PX)
+    private val eyesShdr = CPShimmerShader(false, CS, keyFrame = 7, false, (zpx, _, _) => zpx.px.char != '8')
 
     // Add scene objects...
     addObjects(
@@ -82,8 +82,8 @@ object CPSnakeTitleScene extends CPScene("title", None, BG_PX):
         )
     )
 
-    private def startBgAudio(): Unit = introSnd.loop(2000)
-    private def stopBgAudio(): Unit = introSnd.stop(400)
+    private def startBgAudio(): Unit = introSnd.loop(2000.ms)
+    private def stopBgAudio(): Unit = introSnd.stop(400.ms)
 
     /**
       * Toggles audio on and off.

@@ -29,7 +29,7 @@ import scala.collection.mutable
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -61,8 +61,8 @@ enum CPLogLevel:
   *     <Appenders>
   *         <RollingFile
   *             name="file"
-  *             fileName="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_NAME}/log.txt"
-  *             filePattern="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_NAME}/$${date:yyyy-MM}/log-%d{MM-dd-yyyy}-%i.gz">
+  *             fileName="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_ID}/log.txt"
+  *             filePattern="${sys:user.home}/.cosplay/log/${sys:COSPLAY_GAME_ID}/$${date:yyyy-MM}/log-%d{MM-dd-yyyy}-%i.gz">
   *             <PatternLayout>
   *                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
   *             </PatternLayout>
@@ -196,7 +196,7 @@ trait CPLog:
                     stats.objCount,
                     stats.visObjCount
                 )
-                tbl.trace(this, Option("Performance snapshot:"))
+                tbl.trace(this, "Performance snapshot:".?)
 
             case None => ()
 

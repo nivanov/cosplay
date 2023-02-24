@@ -29,7 +29,7 @@ import org.cosplay.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -39,7 +39,7 @@ import org.cosplay.*
   * camera frame or the individual scene object it is attached to. If used for entire
   * camera frame effect it can be attached to an off-screen sprite.
   *
-  * @param entireFrame Whether apply to the entire camera frame or just the object this
+  * @param entireFrame Whether apply this shader to the entire camera frame or just the object this
   *     shader is attached to.
   * @param durMs Duration of the fade in effect in milliseconds.
   * @param bgPx Background pixel to fade in from. Background pixel don't participate in shader effect.
@@ -75,8 +75,8 @@ class CPFadeInShader(
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) => Float = (a, b) => a.toFloat / b
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
+    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    !>(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
     private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
@@ -91,7 +91,7 @@ class CPFadeInShader(
       * Resets this shaders to its initial state starting its effect on the next frame.
       *
       * @param onFinish Optional override for the callback to call when shader effect is finished.
-      *         If not provided, the default value is the callback supplied at the creation of this shader.
+      *     If not provided, the default value is the callback supplied at the creation of this shader.
       */
     def start(onFinish: CPSceneObjectContext => Unit = cb): Unit =
         cb = onFinish
@@ -121,12 +121,10 @@ class CPFadeInShader(
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
                         val bal = balance(frmCnt, maxFrmCnt)
-                        require(bal >= 0f && bal <= 1f, "Invalid balance value: $bal (must be in [0,1] range).")
+                        !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(bgFg, px.fg, bal)
-                        val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(bgBg, c, bal))
-                            case None => None
-                        canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
+                        val newBg = px.bg.flatMap(CPColor.mixture(bgBg, _, bal).?)
+                        canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then

@@ -17,7 +17,7 @@
 
 package org.cosplay
 
-import impl.CPUtils
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -29,7 +29,7 @@ import impl.CPUtils
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -68,7 +68,7 @@ import impl.CPUtils
 class CPOffScreenSprite(
     id: String = s"off-scr-spr-${CPRand.guid6}",
     shaders: Seq[CPShader] = Seq.empty,
-    tags: String*
+    tags: Seq[String] = Seq.empty
 ) extends CPSceneObject(id, tags.toSet):
     setVisible(false)
 
@@ -84,7 +84,7 @@ class CPOffScreenSprite(
       *
       * @param shader Shader for this sprite.
       */
-    def this(shader: CPShader) = this(CPRand.guid6, Seq(shader))
+    def this(shader: CPShader) = this(CPRand.guid6, shader.seq)
 
     /** @inheritdoc */
     override def getX: Int = 0

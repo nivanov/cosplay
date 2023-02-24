@@ -29,7 +29,7 @@ import org.cosplay.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -74,8 +74,8 @@ class CPFadeOutShader(
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) => Float = (a, b) => a.toFloat / b
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
+    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    !>(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
     private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
@@ -120,11 +120,9 @@ class CPFadeOutShader(
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
                         val bal = balance(frmCnt, maxFrmCnt)
-                        require(bal >= 0f && bal <= 1f, "Invalid balance value: $bal (must be in [0,1] range).")
+                        !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(px.fg, bgFg, bal)
-                        val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(c, bgBg, bal))
-                            case None => None
+                        val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
                         canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
             })
             frmCnt += 1

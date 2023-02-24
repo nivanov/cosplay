@@ -18,8 +18,8 @@
 package org.cosplay.games.pong.shaders
 
 import org.cosplay.*
-import games.*
-import games.pong.*
+import org.cosplay.games.*
+import org.cosplay.games.pong.*
 
 /*
    _________            ______________
@@ -31,14 +31,14 @@ import games.pong.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
   * Paddle return shader.
   */
 class CPPongPaddleShader extends CPShader:
-    private val DUR_MS = 250
+    private val DUR_MS = 250.ms
 
     private var startMs = 0L
     private var go = false
@@ -59,5 +59,5 @@ class CPPongPaddleShader extends CPShader:
             objRect.loop((x, y) => {
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
-                    canv.drawPixel(zpx.px.withBg(Option(C2)), x, y, zpx.z)
+                    canv.drawPixel(zpx.px.withBg(C2.?), x, y, zpx.z)
             })

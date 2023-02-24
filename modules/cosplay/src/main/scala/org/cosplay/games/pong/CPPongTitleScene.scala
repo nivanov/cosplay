@@ -18,14 +18,14 @@
 package org.cosplay.games.pong
 
 import org.cosplay.*
-import games.*
-import CPColor.*
-import CPArrayImage.*
-import CPPixel.*
-import CPKeyboardKey.*
-import prefabs.shaders.*
-import prefabs.sprites.*
-import games.pong.shaders.*
+import org.cosplay.games.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
+import org.cosplay.games.pong.shaders.*
 
 /*
    _________            ______________
@@ -37,7 +37,7 @@ import games.pong.shaders.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -47,8 +47,8 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
     private val introSnd = CPSound(s"sounds/games/pong/intro.wav", 0.3f)
     private val logoImg = CPImage.loadRexXp("images/games/pong/pong_logo.xp").trimBg()
     private val sparkleShdr = CPSparkleShader(true, CS, autoStart = true, skip = (zpx, _, _) => zpx.px != BG_PX)
-    private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000, BG_PX)
-    private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500, BG_PX)
+    private val fadeInShdr = CPSlideInShader(CPSlideDirection.CENTRIFUGAL, true, 3000.ms, BG_PX)
+    private val fadeOutShdr = CPSlideOutShader(CPSlideDirection.CENTRIPETAL, true, 500.ms, BG_PX)
 
     // Add scene objects...
     addObjects(
@@ -64,8 +64,8 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
         CPKeyboardSprite(KEY_ENTER, _ => fadeOutShdr.start(_.switchScene("play")))
     )
 
-    private def startBgAudio(): Unit = introSnd.loop(2000)
-    private def stopBgAudio(): Unit = introSnd.stop(400)
+    private def startBgAudio(): Unit = introSnd.loop(2000.ms)
+    private def stopBgAudio(): Unit = introSnd.stop(400.ms)
 
     /**
       * Toggles audio on and off.

@@ -17,7 +17,7 @@
 
 package org.cosplay.games
 
-import org.cosplay.{CPColor, CPRand}
+import org.cosplay.*
 
 /*
    _________            ______________
@@ -29,7 +29,7 @@ import org.cosplay.{CPColor, CPRand}
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /*

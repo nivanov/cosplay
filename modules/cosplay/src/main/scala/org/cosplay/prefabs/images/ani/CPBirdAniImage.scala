@@ -18,9 +18,9 @@
 package org.cosplay.prefabs.images.ani
 
 import org.cosplay.*
-import CPColor.*
-import CPArrayImage.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
 
 /*
    _________            ______________
@@ -32,7 +32,7 @@ import CPPixel.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 

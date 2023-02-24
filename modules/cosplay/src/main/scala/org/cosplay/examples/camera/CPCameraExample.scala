@@ -25,7 +25,6 @@ import org.cosplay.CPPixel.*
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.*
-
 import scala.collection.mutable
 
 /*
@@ -38,7 +37,7 @@ import scala.collection.mutable
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -69,7 +68,7 @@ object CPCameraExample:
         val bgW = 200
         val bgH = 40
         val dim = CPDim(bgW, bgH)
-        val bgCanv = CPCanvas(CPDim(bgW, bgH), bgPx)
+        val bgCanv = CPCanvas(dim, bgPx)
 
         // +===================>--START--<======================+
         // | Procedural generation of the terrain & background. |
@@ -80,7 +79,7 @@ object CPCameraExample:
         bgCanv.fillRect(bgCanv.rect, -1, (x, y) => {
             if y < 7 && CPRand.randFloat() < 0.02 then
                 val ch = if CPRand.randFloat() < 0.5 then '+' else '*'
-                ch&CPRand.rand(starClrs)
+                ch&starClrs.rand
             else
                 XRAY
         })
@@ -117,7 +116,7 @@ object CPCameraExample:
             else blank
         )
 
-        val fiShdr = new CPFadeInShader(true, 500, bgPx)
+        val fiShdr = new CPFadeInShader(entireFrame = true, durMs = 500.ms, bgPx)
         val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
         val bgSpr = new CPImageSprite("bg", 0, 0, 0, bgCanv.capture(), false, Seq(fiShdr, foShdr)):
@@ -152,7 +151,7 @@ object CPCameraExample:
         )
         
         val brickCanv = CPCanvas(CPDim(bgW, 3), bgPx)
-        for i <- 0 until bgW / brickImg.getWidth do brickCanv.drawImage(brickImg, i * 5, 0, 2)
+        for i <- 0 until bgW / brickImg.getWidth do brickCanv.drawImage(brickImg, x = i * 5, y = 0, z = 2)
         val brickY = bgH - brickImg.getHeight
         val brickSpr = new CPStaticImageSprite("bricks", 0, brickY, 2, brickCanv.capture())
 
@@ -230,15 +229,15 @@ object CPCameraExample:
         objs ++= palmSeq
 
         // Create the scene.
-        val sc = new CPScene("scene", Option(dim), bgPx, objs)
+        val sc = new CPScene("scene", dim.?, bgPx, objs)
         val cam = sc.getCamera
 
-        cam.setFocusTrackId(Option("ufo"))
-        cam.setFocusFrameInsets(new CPInsets(10, 0))
+        cam.setFocusTrackId("ufo".?)
+        cam.setFocusFrameInsets(new CPInsets(hor = 10, vert = 0))
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Camera Example", initDim = Option(initDim)),
+            CPGameInfo(name = "Camera Example", initDim = initDim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -247,7 +246,7 @@ object CPCameraExample:
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene(
                     id = "logo",
-                    Option(initDim),
+                    initDim.?,
                     bgPx,
                     Seq(C_ORANGE1, C_SKY_BLUE1, C_CYAN1, C_DARK_ORANGE3, C_GREEN_YELLOW),
                     nextSc = "scene"

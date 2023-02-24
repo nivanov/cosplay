@@ -18,12 +18,12 @@
 package org.cosplay.examples.fonts
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPFIGLetFont.*
-import CPKeyboardKey.KEY_LO_Q
-import prefabs.scenes.CPFadeShimmerLogoScene
-import prefabs.shaders.CPFadeInShader
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPFIGLetFont.*
+import org.cosplay.CPKeyboardKey.KEY_LO_Q
+import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
+import org.cosplay.prefabs.shaders.CPFadeInShader
 
 /*
    _________            ______________
@@ -35,7 +35,7 @@ import prefabs.shaders.CPFadeInShader
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**

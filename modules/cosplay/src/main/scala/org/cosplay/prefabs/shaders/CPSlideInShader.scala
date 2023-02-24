@@ -18,7 +18,7 @@
 package org.cosplay.prefabs.shaders
 
 import org.cosplay.*
-import CPSlideDirection.*
+import org.cosplay.prefabs.shaders.CPSlideDirection.*
 import org.apache.commons.math3.analysis.function.*
 
 /*
@@ -31,7 +31,7 @@ import org.apache.commons.math3.analysis.function.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -79,8 +79,8 @@ class CPSlideInShader(
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) => Float = (a, b) => a.toFloat / b
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    require(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
+    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    !>(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
 
     private var frmCnt = 0
     private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
@@ -132,12 +132,10 @@ class CPSlideInShader(
                         val px = zpx.px
                         val maxFrame = matrix(x - rect.x)(y - rect.y)
                         val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
-                        require(bal >= 0f && bal <= 1f, "Invalid balance value: $bal (must be in [0,1] range).")
+                        !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
                         val newFg = CPColor.mixture(bgFg, px.fg, bal)
-                        val newBg = px.bg match
-                            case Some(c) => Option(CPColor.mixture(bgBg, c, bal))
-                            case None => None
-                        canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
+                        val newBg = px.bg.flatMap(CPColor.mixture(bgBg, _, bal).?)
+                        canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
             })
             frmCnt += 1
             if frmCnt == maxFrmCnt then

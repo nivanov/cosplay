@@ -41,7 +41,6 @@ import java.util.Date
 import javax.swing.*
 import javax.swing.JFrame.*
 import scala.collection.mutable
-import scala.language.implicitConversions
 
 /*
    _________            ______________
@@ -53,7 +52,7 @@ import scala.language.implicitConversions
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -84,7 +83,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private val pxs = new mutable.ArrayBuffer[CPPosPixel](INIT_PXS_SIZE)
     private var bufImg: BufferedImage = _
     private val glyphCache = new mutable.HashMap[CPPixel, BufferedImage](INIT_GLYPHS_SIZE, GLYPHS_LOAD_FACTOR)
-    private var kbKey: Option[CPKeyboardKey] = None
+    private var kbKey = none[CPKeyboardKey]
     private val renderMux = new Object
     private val kbMux = new Object
     private val isAA = CPUtils.isSysEnvSet("COSPLAY_EMUTERM_ANTIALIAS")
@@ -418,7 +417,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         frame.setVisible(true) // Show.
 
     override def render(scr: CPScreen, camRect: CPRect, forceRedraw: Boolean): Unit =
-        require(scr.getRect.contains(camRect), s"Screen: ${scr.getRect} does not contain camera: $camRect")
+        !>(scr.getRect.contains(camRect), s"Screen: ${scr.getRect} does not contain camera: $camRect")
 
         val tw = curDim.w
         val th = curDim.h
@@ -453,12 +452,11 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     override def setTitle(s: String): Unit = frame.setTitle(s)
     override def nativeKbRead(timeoutMs: Long): Int = assert(assertion = false, "Unsupported.")
     override def kbRead(): Option[CPKeyboardKey] = kbMux.synchronized {
-        kbKey match
-            case Some(key) => 
-                kbKey = None
-                key.clear()
-                Some(key)
-            case None => None
+        kbKey.flatMap(key =>
+            kbKey = None
+            key.clear()
+            key.?
+        )
     }
 
     init()

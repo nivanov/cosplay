@@ -31,7 +31,7 @@ import org.cosplay.CPStyledString.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 import org.cosplay.CPPixel.*
@@ -55,7 +55,8 @@ import org.cosplay.CPPixel.*
   * @note See developer guide at [[https://cosplayengine.com]]
   */
 class CPPanelSprite(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, title: String) extends CPSceneObject:
-    require(x2 > x1 && y2 > y1)
+    !>(x2 > x1, "'x2' must be > 'x1'.")
+    !>(y2 > y1, "'y2' must be > 'y1'.")
 
     private val dim = CPDim(x2 - x1, y2 - y1)
     private val c1 = C_GREEN_YELLOW

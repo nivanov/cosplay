@@ -30,8 +30,21 @@ import org.cosplay.impl.CPUtils
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
+
+/**
+  * Orientation of centering for [[CPCenteredImageSprite]] instance.
+  */
+enum CPCenteredImageSpriteOrientation:
+    /** Only horizontal centering. */
+    case HOR
+    /** Only vertical centering. */
+    case VERT
+    /** Both horizontal and vertical centering. */
+    case BOTH
+
+import CPCenteredImageSpriteOrientation.*
 
 /**
   * Image sprite that centers its image on the canvas on each frame update.
@@ -40,18 +53,23 @@ import org.cosplay.impl.CPUtils
   * @param img The image to render. It can be [[CPImageSprite.setImage() changed later]].
   * @param z Z-index at which to render the image.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param orient Centering orientation. Default value is [[CPCenteredImageSpriteOrientation.BOTH]]. Note that you need
+  *     set requires X or Y coordinates manually if not using [[CPCenteredImageSpriteOrientation.BOTH]] orientation.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
+  * @see [[CPImageSprite.setY()]]
+  * @see [[CPImageSprite.setX()]]
   */
 class CPCenteredImageSprite(
     id: String = s"center-img-spr-${CPRand.guid6}",
     img: CPImage,
     z: Int,
     shaders: Seq[CPShader] = Seq.empty,
-    tags: String*
-) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders, tags = tags: _*):
+    orient: CPCenteredImageSpriteOrientation = BOTH,
+    tags: Seq[String] = Seq.empty
+) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders, tags = tags):
     override def update(ctx: CPSceneObjectContext): Unit =
         super.update(ctx)
         val canv = ctx.getCanvas
         // Center itself.
-        setX((canv.dim.w - getImage.getWidth) / 2)
-        setY((canv.dim.h - getImage.getHeight) / 2)
+        if orient == HOR || orient == BOTH then setX((canv.dim.w - getImage.getWidth) / 2)
+        if orient == VERT || orient == BOTH then setY((canv.dim.h - getImage.getHeight) / 2)

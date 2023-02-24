@@ -29,7 +29,7 @@ import scala.collection.mutable
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -60,7 +60,7 @@ import scala.collection.mutable
   */
 class CPStyledString:
     private var fg: CPColor = _
-    private var bg: Option[CPColor] = None
+    private var bg = none[CPColor]
     private val buf = mutable.Buffer.empty[CPPixel]
 
     /**
@@ -101,7 +101,7 @@ class CPStyledString:
       * @param obj Object to add.
       */
     def str(obj: Any): CPStyledString =
-        if fg == null then E(s"Foreground color must be specified first.")
+        !>(fg != null, s"Foreground color must be specified first.")
         for ch <- obj.toString do buf += CPPixel(ch, fg, bg)
         this
 
@@ -133,7 +133,7 @@ class CPStyledString:
       */
     def fgbg(fg: CPColor, bg: CPColor): CPStyledString =
         this.fg = fg
-        this.bg = Option(bg)
+        this.bg = bg.?
         this
 
     /**
@@ -151,7 +151,7 @@ class CPStyledString:
       * @param bg Background color to set.
       */
     def bg(bg: CPColor): CPStyledString =
-        this.bg = Option(bg)
+        this.bg = bg.?
         this
 
     /**

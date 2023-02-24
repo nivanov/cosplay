@@ -1,0 +1,3 @@
+.LevelTitle:First Level
+.LevelSongName:Don Toliver - After Party
+.LevelBPM:82

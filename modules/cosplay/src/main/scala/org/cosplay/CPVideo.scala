@@ -17,10 +17,10 @@
 
 package org.cosplay
 
-import CPKeyboardKey.*
-import CPColor.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPColor.*
 import CPStyledString.*
-import impl.CPUtils
+import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
@@ -33,7 +33,7 @@ import impl.CPUtils
           2D ASCII GAME ENGINE FOR SCALA3
 
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -112,8 +112,7 @@ object CPVideo:
           */
         def makeKbCtrl(): CPSceneObject = new CPOffScreenSprite:
             override def update(ctx: CPSceneObjectContext): Unit =
-                require(spr != null)
-
+                !>(spr != null)
                 if ctx.getKbEvent.isDefined then
                     ctx.getKbEvent.get.key match
                         case KEY_LO_Q => ctx.exitGame() // Exit preview on 'Q' press.
@@ -135,16 +134,16 @@ object CPVideo:
         CPEngine.init(
             CPGameInfo(
                 name = s"Video Preview (${vid.getFrameCount} ${vidDim.w}x${vidDim.h} frames)",
-                initDim = Option(scDim)
+                initDim = scDim.?
             ),
             emuTerm = emuTerm
         )
-        spr = new CPVideoSprite("spr", vid, 4, 2, 0, 30, loop = true, collidable = false, autoPlay = true)
+        spr = new CPVideoSprite("spr", vid, x = 4, y = 2, z = 0, fps = 30, loop = true, collidable = false, autoPlay = true)
         try
             CPEngine.rootLog().info(s"Video preview [origin=${vid.getOrigin}, frameCount=${vid.getFrameCount}, frameDim=${vid.getFrameDim}, class=${vid.getClass.getName}]")
             CPEngine.startGame(new CPScene(
                 "scene",
-                Option(scDim),
+                scDim.?,
                 bg,
                 spr, // Video we are previewing.
                 makeKbCtrl(),

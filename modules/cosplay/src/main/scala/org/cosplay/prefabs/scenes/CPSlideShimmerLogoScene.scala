@@ -18,9 +18,9 @@
 package org.cosplay.prefabs.scenes
 
 import org.cosplay.*
-import CPArrayImage.*
-import CPPixel.*
-import CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPColor.*
 import org.cosplay.prefabs.shaders.*
 
 /*
@@ -33,7 +33,7 @@ import org.cosplay.prefabs.shaders.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -56,6 +56,7 @@ import org.cosplay.prefabs.shaders.*
   *
   * @see [[CPFadeShimmerLogoScene]]
   */
+//noinspection DuplicatedCode
 class CPSlideShimmerLogoScene(
     id: String,
     dim: Option[CPDim],
@@ -67,7 +68,7 @@ class CPSlideShimmerLogoScene(
     slideOutMs: Long = 1000,
     slideOutDir: CPSlideDirection = CPSlideDirection.LEFT_TO_RIGHT,
     shimmerKeyFrame: Int = 2) extends CPScene(id, dim, bgPx):
-    require(colors.nonEmpty, "Color sequence cannot be empty.")
+    !>(colors.nonEmpty, "Color sequence cannot be empty.")
 
     private val initFg = bgPx.bg.getOrElse(bgPx.fg)
     private val logoImg = new CPArrayImage(
@@ -94,7 +95,7 @@ class CPSlideShimmerLogoScene(
     private val inShdr = new CPSlideInShader(slideInDir, false, slideInMs, bgPx, _ => outShdr.start(), true)
 
     // Main logo sprite with 3 shaders.
-    private val logoSpr = new CPImageSprite("logo", 0, 0, 0, logoImg, false, Seq(shimmerShdr, inShdr, outShdr)):
+    private val logoSpr = new CPImageSprite("logo", x = 0, y = 0, z = 0, logoImg, false, Seq(shimmerShdr, inShdr, outShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             // Center the logo on each frame (ensuring the support for adaptive scenes).
             val canv = ctx.getCanvas

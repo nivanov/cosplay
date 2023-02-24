@@ -18,9 +18,9 @@
 package org.cosplay.prefabs.images
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
-import CPArrayImage.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPArrayImage.*
 
 /*
    _________            ______________
@@ -32,7 +32,7 @@ import CPArrayImage.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**

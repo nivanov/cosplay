@@ -32,7 +32,7 @@ import org.cosplay.prefabs.shaders.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -67,7 +67,7 @@ class CPBorderShader(
     colorMixPerStep: Float,
     autoStart: Boolean = false
 ) extends CPShader:
-    require(colorMixPerStep >= -1f && colorMixPerStep <= 1f, "Color mix per step must be in [-1,1] range.")
+    !>(colorMixPerStep >= -1f && colorMixPerStep <= 1f, "Color mix per step must be in [-1,1] range.")
     private var go = autoStart
 
     /**
@@ -109,7 +109,7 @@ class CPBorderShader(
                 val zpx = canv.getZPixel(x, y)
                 val px = zpx.px
                 if px.bg.nonEmpty then
-                    canv.drawPixel(px.withBg(Option(mixColor(px.bg.get))), x, y, zpx.z)
+                    canv.drawPixel(px.withBg(mixColor(px.bg.get).?), x, y, zpx.z)
 
             if !compensateWidth then
                 for d <- 0 until width do

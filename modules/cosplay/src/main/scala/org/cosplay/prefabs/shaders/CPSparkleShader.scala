@@ -27,12 +27,12 @@ package org.cosplay.prefabs.shaders
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 import org.cosplay.*
-import games.*
-import CPColor.*
+import org.cosplay.games.*
+import org.cosplay.CPColor.*
 
 import scala.collection.mutable
 
@@ -78,12 +78,12 @@ class CPSparkleShader(
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
 ) extends CPShader:
-    require(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    require(ratio >= 0f && ratio <= 1f, "Ratio must be in [0,1] range.")
-    require(colors.nonEmpty, "Colors cannot be empty.")
+    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+    !>(ratio >= 0f && ratio <= 1f, "Ratio must be in [0,1] range.")
+    !>(colors.nonEmpty, "Colors cannot be empty.")
 
     case class Sparkle(zpx: CPZPixel, x: Int, y: Int):
-        private val initCol = CPRand.rand(colors)
+        private val initCol = colors.rand
         private val grad = CPColor.gradientSeq(zpx.px.fg, initCol, steps / 2) ++ CPColor.gradientSeq(initCol, zpx.px.fg, steps / 2)
         private val gradSz = grad.size
         private var gradIdx = CPRand.between(0, gradSz)
@@ -120,7 +120,7 @@ class CPSparkleShader(
         startMs = 0
 
     /**
-      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods..
+      * Toggles this shader effect on and off by calling either [[start()]] or [[stop()]] methods.
       *
       * @see [[start()]]
       * @see [[stop()]]
@@ -130,7 +130,7 @@ class CPSparkleShader(
     /**
       * Tests whether this shader is in progress or not.
       */
-    def isOn: Boolean = go
+    def isActive: Boolean = go
 
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =

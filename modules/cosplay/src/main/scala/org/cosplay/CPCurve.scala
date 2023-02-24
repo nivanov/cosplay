@@ -30,7 +30,7 @@ import org.apache.commons.math3.analysis.polynomials.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -63,7 +63,7 @@ object CPCurve:
       * @see https://en.wikipedia.org/wiki/Lagrange_polynomial
       */
     def lagrangePoly(points: Seq[(Float, Float)]): Float => Float =
-        if points.sizeIs < 2 then E(s"Need two or more interpolating points.")
+        !>(points.sizeIs >= 2, s"Need two or more interpolating points.")
         try
             val poly = PolynomialFunctionLagrangeForm(
                 points.map(_._1.toDouble).toArray,
@@ -71,7 +71,7 @@ object CPCurve:
             )
             (z: Float) => poly.value(z).toFloat
         catch
-            case e: Exception => E(s"Failed to interpolate Lagrange polynomial.", e)
+            case e: Exception => raise(s"Failed to interpolate Lagrange polynomial.", e.?)
 
     /**
       * Gets a linear gradient function for given two values.

@@ -19,7 +19,7 @@ package org.cosplay.games.pong.shaders
 
 import org.cosplay.games.*
 import org.cosplay.*
-import games.pong.*
+import org.cosplay.games.pong.*
 
 /*
    _________            ______________
@@ -31,7 +31,7 @@ import games.pong.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 import org.cosplay.games.pong.*
@@ -53,5 +53,5 @@ object CPPongBallBoostShader extends CPShader:
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     if zpx.px.char != BG_PX.char then
-                        canv.drawPixel(zpx.px.withFg(CPRand.rand(CS)), x, y, zpx.z)
+                        canv.drawPixel(zpx.px.withFg(CS.rand), x, y, zpx.z)
             })

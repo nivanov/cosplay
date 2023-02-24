@@ -19,12 +19,12 @@ package org.cosplay.examples.image
 
 import org.cosplay.*
 import CPArrayImage.prepSeq
-import CPColor.*
-import CPPixel.*
-import CPKeyboardKey.*
-import prefabs.images.*
-import prefabs.scenes.*
-import prefabs.shaders.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.prefabs.images.*
+import org.cosplay.prefabs.scenes.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________
@@ -36,7 +36,7 @@ import prefabs.shaders.*
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -111,8 +111,8 @@ object CPImageCarouselExample:
         private val leftOffScrX = -(img.w + 1)
         private val rightOffScrX = viewDim.w
         private val stepX = 1.0f
-        private val fadeInShdr = new CPFadeInShader(false, 2000, bgPx, autoStart = false)
-        private val fadeOutShdr = new CPFadeOutShader(false, 1000, bgPx, onFinish = _ => setVisible(false))
+        private val fadeInShdr = new CPFadeInShader(false, 2000.ms, bgPx, autoStart = false)
+        private val fadeOutShdr = new CPFadeOutShader(false, 1000.ms, bgPx, onFinish = _ => setVisible(false))
         private val shdrs = Seq(fadeInShdr, fadeOutShdr)
 
         private var x = leftOffScrX.toFloat
@@ -201,7 +201,7 @@ object CPImageCarouselExample:
             case _ => ()
         )
 
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             (
                 // Control sprites.
                 Seq(
@@ -209,7 +209,7 @@ object CPImageCarouselExample:
                     CPStaticImageSprite((dim.w - ctrlImg.w) / 2, dim.h - ctrlImg.h - 2, 0, ctrlImg),
                     kbCtrl,
                     // Just for the initial scene fade-in effect.
-                    new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
+                    new CPOffScreenSprite(new CPFadeInShader(true, 1500.ms, bgPx)),
                 )
                 ++
                 // Add carousel images sprites.
@@ -219,12 +219,21 @@ object CPImageCarouselExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Image Carousel Example", initDim = Option(dim)),
+            CPGameInfo(name = "Image Carousel Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", Option(dim), bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"), sc)
+        try CPEngine.startGame(
+            new CPFadeShimmerLogoScene(
+                id = "logo",
+                dim.?,
+                bgPx,
+                C_STEEL_BLUE1 :: C_LIME :: C_ORANGE1 :: Nil,
+                nextSc = "scene"
+            ),
+            sc
+        )
         finally CPEngine.dispose()
 
         sys.exit(0)

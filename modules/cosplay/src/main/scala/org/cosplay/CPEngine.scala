@@ -19,17 +19,18 @@ package org.cosplay
 
 import org.apache.logging.log4j.LogManager
 import org.apache.commons.lang3.*
-import impl.emuterm.*
-import impl.guilog.*
-import impl.jlineterm.*
-import CPColor.*
-import CPLifecycle.State.*
-import CPKeyboardKey.*
-import impl.*
+import org.cosplay.impl.emuterm.*
+import org.cosplay.impl.guilog.*
+import org.cosplay.impl.jlineterm.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPLifecycle.State.*
+import org.cosplay.CPKeyboardKey.*
+import org.cosplay.impl.*
 
 import java.io.*
 import scala.annotation.targetName
 import scala.collection.mutable
+import scala.util.*
 
 /*
    _________            ______________
@@ -41,7 +42,7 @@ import scala.collection.mutable
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -50,38 +51,92 @@ import scala.collection.mutable
   * @param msg Exception message.
   * @param cause Optional cause.
   */
-def E[T](msg: String, cause: Throwable = null): T = throw new CPException(msg, cause)
+private[cosplay] def raise[T](msg: String, cause: Option[Throwable] = None): T = throw new CPException(msg, cause)
+/**
+  * Global syntax sugar for throwing [[CPException]].
+  *
+  * @param msg Exception message.
+  */
+private[cosplay] def raise[T](msg: String): T = throw new CPException(msg, None)
 
+/**
+  * A shortcut for:
+  * {{{
+  *     if !cond then throw new CPException(errMsg)
+  * }}}
+  *
+  * @param cond Condition to check.
+  * @param errMsg Optional error message to throw if condition is `false`. By default, 'Requirement failed."
+  *     message will be used.
+  */
+@targetName("exclamationRightAngle")
+def !>(cond: Boolean, errMsg: => String = "Requirement failed."): Unit = if !cond then raise(errMsg)
+
+/** Sugar for typed `None` value. */
+def none[T]: Option[T] = None
+
+/** Sugar for typed `Nil` value. */
+def nil[T]: List[T] = Nil
+
+/**
+  * Shortcut for `Option[x]` as `x.?`.
+  */
 extension[T](ref: T)
+    /** Shortcut for `Option[x]` as `x.?`. */
     @targetName("asAnOption")
     def `?`: Option[T] = Option(ref)
 
+/** Single element sequence sugar. */
+extension[T](t: T)
+    /** Shortcut for `Seq(t)` as `t.seq` */
+    def seq: Seq[T] = Seq(t)
+
 extension[R, T](opt: Option[T])
+    @targetName("optEqual")
+    def ===(t: T): Boolean = opt match
+        case Some(a) => a == t
+        case None => false
     def mapOr(f: T => R, dflt: => R): R = opt.flatMap(f(_).?).getOrElse(dflt)
-    def getOrThrow[E <: Exception](e: => E): T = opt match
+    def getOrThrow(err: => String | Exception): T = opt match
         case Some(t) => t
-        case None => throw e
+        case None => err match
+            case s: String => raise(s)
+            case e: Exception => throw e
 
 extension(d: Int)
     // To bytes...
-    def kb: Long = d * 1024
-    def mb: Long = d * 1024 * 1024
-    def gb: Long = d * 1024 * 1024 * 1024
+    private[cosplay] def kb: Long = d * 1024
+    private[cosplay] def mb: Long = d * 1024 * 1024
+    private[cosplay] def gb: Long = d * 1024 * 1024 * 1024
 
     // To milliseconds...
-    def secs: Long = d * 1000
-    def mins: Long = d * 1000 * 60
-    def hours: Long = d * 1000 * 60 * 60
-    def days: Long = d * 1000 * 60 * 60 * 24
-    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
+    private[cosplay] def ms: Long = d
+    private[cosplay] def secs: Long = d * 1000
+    private[cosplay] def mins: Long = d * 1000 * 60
+    private[cosplay] def hours: Long = d * 1000 * 60 * 60
+    private[cosplay] def days: Long = d * 1000 * 60 * 60 * 24
+    private[cosplay] def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
 
 /**
   * CosPlay game engine.
   *
-  * Game engine is mostly an internal object, and it is only used at the beginning of the game. It provides
-  * variety of utility and miscellaneous methods for games.
+  * Game engine is used mostly for game lifecycle like starting and stopping as well as debugging, logging,
+  * and managing global utility and miscellaneous features.
   *
-  * Most CosPlay games follow this basic game organization:
+  * CosPlay games follow relatively straightforward game organization:
+  *  - Initialize game engine by calling [[CPEngine.init()]] or [[CPEngine.initEff()]] method.
+  *  - Start the game loop by calling [[CPEngine.startGame()]] or [[CPEngine.startGameEff()]] method.
+  *  - Dispose the game engine calling [[CPEngine.dispose()]] or [[CPEngine.disposeEff()]] method.
+  *
+  * Note that these methods have two versions:
+  *  - One that throws [[CPException]] exception in case of any errors for the classic exception-based
+  *    error handling.
+  *  - Another with `Eff` suffix in the name that returns [[scala.util.Try]]-monad allowing for composable effect-based error handling.
+  *
+  * You can use either approach but you can't mix them up. Effect-based approach, however, forces a more
+  * rigorous error handling requiring to handle errors at each call.
+  *
+  * CosPlay game organization using classic exception-based error handling:
   * {{{
   * import org.cosplay.*
   *
@@ -103,23 +158,63 @@ extension(d: Int)
   *
   *        sys.exit(0)
   * }}}
+  * Here's the same game structure using effect-based error handling (calling `sys.exit()` with an
+  * appropriate exit code at each step):
+  * {{{
+  * import org.cosplay.*
+  *
+  * object Game:
+  *    def main(args: Array[String]): Unit =
+  *        // Initialize the engine.
+  *        CPEngine.initEff(
+  *             CPGameInfo(name = "My Game"),
+  *             System.console() == null || args.contains("emuterm")
+  *        ).recover(_ => sys.exit(1))
+  *
+  *        // Create game scenes & their scene objects.
+  *        val sc1 = new CPScene(...)
+  *        val sc2 = new CPScene(...)
+  *
+  *        // Start the game & wait for exit.
+  *        CPEngine.startGameEff(sc1, sc2).recover(_ => sys.exit(2))
+  *
+  *        // Dispose game engine.
+  *        CPEngine.disposeEff().fold(_ => sys.exit(3), _ => sys.exit(0))
+  * }}}
   * Notes:
   *  - Game start in a standard Scala way. It is recommended to use `main(...)` function for better
   *    compatibility.
   *  - Create [[CPGameInfo]] object that describes the game and its properties.
-  *  - Initialize game engine by calling [[CPEngine.init()]] method passing it game descriptor and terminal emulation
+  *  - Initialize game engine by calling [[CPEngine.init()]]/[[CPEngine.initEff()]] method passing it game descriptor and terminal emulation
   *    flag.
   *  - Create all necessary scenes, scene objects and assets. You can organize these objects in any desirable way - CosPlay
-  *    does not impose any restrictions or limitation on how it is should be done.
-  *  - Once you have all scenes constructed - you can start the game by calling one of the [[CPEngine.startGame()]] methods.
-  *  - Make sure to call [[CPEngine.dispose()]] method upon exit from [[CPEngine.startGame()]] method.
+  *    does not impose any restrictions or limitation on how it is should be done. Note also that scene and scene objects
+  *    can be added, removed or modified later throughout the game lifecycle.
+  *  - Once you have all initially required scenes constructed - you can start the game by calling one of the
+  *    [[CPEngine.startGame()]]/[[CPEngine.startGameEff()]] methods.
+  *  - Make sure to call [[CPEngine.dispose()]]/[[CPEngine.disposeEff()]] method upon exit from
+  *    [[CPEngine.startGame()]]/[[CPEngine.startGameEff()]] method.
+  *
+  * ### Extensions and Shortcuts
+  * Throughout the CosPlay code, exampled and built-in games there are several extensions and syntactic shortcuts
+  * used to simplify frequently used code idioms:
+  *
+  * | Shortcut | Replaced By |
+  * | -------- | ---- |
+  * | `x.?` | `Option(x)` |
+  * | `x.seq` | `Seq(x)` |
+  * | `val x = nil[Int]` | `val x: List[Int] = Nil` |
+  * | `val x = none[Int]` | `val x: Option[Int] = None` |
+  *
+  * These extensions are introduced in the global scope and can be used by any code that is using CosPlay.
   *
   * ### System Properties
   * CosPlay game engine supports the following system properties that control various aspects of its
-  * operation. Note that these properties must be set before method [[CPEngine.init()]] is called:
+  * operation. Note that these properties must be set before method [[CPEngine.init()]]/[[CPEngine.initEff()]] is called:
   *
   * | System Property | Value Type | Description  |
   * | ----------------| ---------- | ------------ |
+  * | `COSPLAY_GAME_ID` | `String` | Internal unique game ID. |
   * | `COSPLAY_EMUTERM_FONT_NAME` | `String` | Applies to the built-in terminal emulator only. Specifies the font name to use. |
   * | `COSPLAY_EMUTERM_FONT_SIZE` | `Int` | Applies to the built-in terminal emulator only. Specifies the font size to use. |
   * | `COSPLAY_EMUTERM_CH_WIDTH_OFFSET` | `Int` | Applies to the built-in terminal emulator only. Specifies character width offset. Can be positive or negative. Default is zero. |
@@ -132,21 +227,22 @@ extension(d: Int)
   * There are three reserved key strokes that are used by the game engine itself and therefore NOT available
   * to the game. These keystrokes are intercepted before frame update and not propagated to the scene object
   * context:
-  *  - 'CTRL+Q' - toggles in-game FPS overlay
-  *  - 'CTRL+L' - opens GUI-based loc viewer & debugger
+  *  - 'CTRL+Q' - toggles in-game FPS overlay (see [[CPEngine.enableCtrlFps()]] method)
+  *  - 'CTRL+L' - opens GUI-based loc viewer & debugger (see [[CPEngine.enableCtrlLog()]] method)
   *  - 'F12' - saves current frame screenshot as *.xp image to the current working folder.
   *
   * @example See all examples under `org.cosplay.examples` package. Each example has a complete demonstration of
   *     working with game engine including initialization and game start.
   * @note See developer guide at [[https://cosplayengine.com]]
   */
+//noinspection ScalaWeakerAccess
 object CPEngine:
     private enum State:
         case ENG_INIT, ENG_STARTED, ENG_STOPPED
 
     private case class LaterRun(tsMs: Long, f: CPSceneObjectContext => Unit)
 
-    private val FPS = 30 // Target FPS.
+    private val FPS = 30 // Target FPS - ASCII rendering does not benefit from higher frame rate.
     private val FRAME_NANOS = 1_000_000_000 / FPS
     private val FRAME_MICROS = 1_000_000 / FPS
     private val FRAME_MILLIS = 1_000 / FPS
@@ -154,13 +250,15 @@ object CPEngine:
     private val FPS_1PCT_LIST_SIZE = FPS_LIST_SIZE / 100
     private val HOME_DIR = ".cosplay"
 
+    private var ctrlLogEnabled: Boolean = true
+    private var ctrlFpsEnabled: Boolean = true
     private val scenes = CPContainer[CPScene]()
     private var term: CPTerminal = _
     private var pause = false
     private var frameCnt = 0L // Overall game fame count.
     private var scFrameCnt = 0L // Current scene fame count (each scene starts at zero).
-    private var dbgStopAtFrameCnt: Option[Long] = None
-    private var dbgKbKey: Option[CPKeyboardKey] = None
+    private var dbgStopAtFrameCnt = none[Long]
+    private var dbgKbKey = none[CPKeyboardKey]
     private var gameInfo: CPGameInfo = _
     private var isShowFps = false
     private var kbReader: NativeKbReader = _
@@ -170,12 +268,13 @@ object CPEngine:
     private var engLog: CPLog = BufferedLog("").getLog("root")
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
-    private var savedEx: Throwable = _
-    private var stats: Option[CPRenderStats] = None
+    private var stats = none[CPRenderStats]
+    private var homeRoot = none[String]
+    private var tempRoot = none[String]
     @volatile private var state = State.ENG_INIT
     @volatile private var playing = true
 
-    require(FPS_1PCT_LIST_SIZE > 0)
+    !>(FPS_1PCT_LIST_SIZE > 0)
 
     /**
       * Target FPS of the game engine. If the actual frame rate exceeds this value the game engine will
@@ -200,7 +299,7 @@ object CPEngine:
 
     /**
       * Log4J2 wrapper for the log. Mirrors all log output to log4j2 rolling file appended
-      * under ${user.home}/.cosplay/log folder.
+      * under ${user.home}/.cosplay/${game.name}/log folder.
       *
       * @param impl Log implementation.
       */
@@ -221,7 +320,6 @@ object CPEngine:
                 ))
                 buf.clear()
 
-
         def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit =
             if frameCnt % nthFrame == 0 then
                 if obj.toString != CPUtils.PING_MSG then
@@ -239,7 +337,7 @@ object CPEngine:
     /**
       *
       */
-    object BufferedLog:
+    private object BufferedLog:
         case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable)
         val buf: mutable.ArrayBuffer[BufferedLogEntry] = mutable.ArrayBuffer.empty[BufferedLogEntry]
 
@@ -300,8 +398,9 @@ object CPEngine:
                         case EOF | TIMEOUT => ()
                         case code => key = mapping.getOrElse(Seq(code), KEY_UNKNOWN)
                 catch
-                    case _: (InterruptedIOException | InterruptedException) => ()
-                    case e: Exception => E(s"Keyboard read error: $e", e)
+                    case _: InterruptedIOException => ()
+                    case _: InterruptedException => ()
+                    case e: Exception => raise(s"Keyboard read error: $e", e.?)
 
                 kbMux.synchronized {
                     key.clear() // Clear potential metadata from the key.
@@ -310,7 +409,7 @@ object CPEngine:
             end while
 
     /**
-      * Tests whether or not game engine is initialized.
+      * Returns whether or not game engine is initialized.
       */
     def isInit: Boolean = state == State.ENG_STARTED
 
@@ -321,29 +420,57 @@ object CPEngine:
         gameInfo
 
     /**
-      * Creates file with given relative path in the engine's special, system-specific, root location. The actual
+      * Creates file with given relative path in the engine's special, system-specific, game-specific root location. The actual
       * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
       *
-      * @param path Relative path of the file.
+      * @param path Relative path of the file. Path may include sub-directories and should use Unix
+      *     style '/' for path separator.
       */
-    def homeFile(path: String): File = newFile(s"$HOME_DIR/fs/", path)
+    def homeFile(path: String): Try[File] = Try {
+        checkState()
+        newFile(s"${homeRoot.get}/data/$path")
+    }
 
     /**
       * Creates file in the engine's special, system-specific, temporary file location. The actual
-      * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
+      * absolute path of the returned file is OS-dependent and shouldn't be relied on or used. Returned
+      * file wil be automatically deleted upon exiting the game engine.
       */
-    def tempFile(): File = newFile(s"$HOME_DIR/temp/", CPRand.guid)
-    
+    def tempFile(): Try[File] = Try {
+        checkState()
+        val tempFile = newFile(s"${tempRoot.get}/${CPRand.guid}")
+        tempFile.deleteOnExit()
+        tempFile
+    }
+
+    private def mkDir(dir: File): File =
+        if !dir.exists() && !dir.mkdirs() then raise(s"Failed to create folder: ${dir.getAbsolutePath}")
+        dir
+
     /**
       *
-      * @param root
       * @param path
       */
-    private def newFile(root: String, path: String): File =
-        val file = new File(SystemUtils.getUserHome, s"$root/$path")
+    private def newFile(path: String): File =
+        val file = new File(path)
         val parent = file.getParentFile
-        if !parent.exists() && !parent.mkdirs() then throw E(s"Failed to create folder: ${parent.getAbsolutePath}")
+        mkDir(parent)
         file
+
+    /**
+      * Initializes the game engine. Effect-based version of [[init()]] method allowing end-user to use pattern
+      * matching for error handling. This method does not throw any exceptions.
+      *
+      * @param gameInfo Game information.
+      * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
+      *     value will be result of this expression: {{{System.console() == null}}}
+      * @return Try-monad.
+      * @see [[init()]]
+      * @see [[startGameEff()]]
+      * @see [[disposeEff()]]
+      */
+    def initEff(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Try[Unit] =
+        Try(init(gameInfo, emuTerm))
 
     /**
       * Initializes the game engine.
@@ -351,22 +478,31 @@ object CPEngine:
       * @param gameInfo Game information.
       * @param emuTerm Whether or not to use built-in terminal emulator. If not provided, the default
       *     value will be result of this expression: {{{System.console() == null}}}
+      * @see [[initEff()]]
+      * @throws CPException Thrown in case of any errors.
       */
     def init(gameInfo: CPGameInfo, emuTerm: Boolean = System.console() == null): Unit =
-        if state == State.ENG_STARTED then E("Engine is already initialized.")
-        if state == State.ENG_STOPPED then E("Engine is stopped and cannot be restarted.")
-
+        !>(state != State.ENG_STARTED, "Engine is already initialized.")
+        !>(state != State.ENG_STOPPED, "Engine is stopped and cannot be restarted.")
         // Initialize JavaFX toolkit for audio.
-        try com.sun.javafx.application.PlatformImpl.startup(() => ())
-        catch case e: Exception => E(s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io).", e)
+        !>(
+            Try(com.sun.javafx.application.PlatformImpl.startup(() => ())).isSuccess,
+            s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io)."
+        )
 
         this.gameInfo = gameInfo
-
+        // Internal game ID.
+        val gameId = gameInfo.name.toLowerCase.replace(' ', '_').replaceAll("\\W+", "")
         // Used by Log4J configuration for log output sub-folder.
-        System.setProperty(
-            "COSPLAY_GAME_NAME",
-            gameInfo.name.toLowerCase.replace(' ', '_').replaceAll("\\W+", "")
-        )
+        System.setProperty("COSPLAY_GAME_ID", gameId)
+
+        homeRoot = s"${SystemUtils.getUserHome}/$HOME_DIR/$gameId".?
+        tempRoot = s"${homeRoot.get}/temp".?
+
+        // Make sure folders exist and temp folder is cleared up.
+        mkDir(new File(homeRoot.get))
+        val tempDir = mkDir(new File(tempRoot.get))
+        tempDir.listFiles().foreach(_.delete())
 
         val termClsName = CPUtils.sysEnv("COSPLAY_TERM_CLASSNAME") match
             case Some(cls) => cls
@@ -374,7 +510,7 @@ object CPEngine:
 
         // Create new terminal.
         try term = Class.forName(termClsName).getDeclaredConstructor(classOf[CPGameInfo]).newInstance(gameInfo).asInstanceOf[CPTerminal]
-        catch case e: Exception => E(s"Failed to create the terminal for class: $termClsName", e)
+        catch case e: Exception => raise(s"Failed to create the terminal for class: $termClsName", e.?)
 
         // Set terminal window title.
         updateTitle(term.getDim)
@@ -413,7 +549,7 @@ object CPEngine:
                 |
                 |         ${CPVersion.tagline}
                 |           ${CPVersion.copyright}
-                |              ALl rights reserved.
+                |              All rights reserved.
                 |""".stripMargin
         engLog.info(s"\n$logo")
 
@@ -427,7 +563,7 @@ object CPEngine:
         tbl += ("Version", gameInfo.semVer)
         tbl += ("Initial Size", gameInfo.initDim)
         tbl += ("Minimum Size", gameInfo.minDim.mapOr(_.toString, "n/a"))
-        tbl.info(engLog, Option("Game initialized:"))
+        tbl.info(engLog, "Game initialized:".?)
 
     /**
       *
@@ -441,7 +577,7 @@ object CPEngine:
       *
       */
     private def checkState(): Unit =
-        if state != State.ENG_STARTED then E(s"Engine is not started.")
+        !>(state == State.ENG_STARTED, s"Engine is not started.")
 
     /**
       * Gets root log for the game engine.
@@ -452,11 +588,41 @@ object CPEngine:
     def rootLog(): CPLog = engLog
 
     /**
+      * Enables or disables opening the GUI-based debugger log by pressing 'Ctrl-l'. Production games may want to
+      * disable that capability. Default value is `true`.
+      *
+      * @param f Whether to enable or disable opening the GUI-based debugger log by pressing 'Ctrl-l'.
+      */
+    def enableCtrlLog(f: Boolean): Unit = ctrlLogEnabled = f
+
+    /**
+      * Checks whether or not opening the GUI-based debugger log by pressing 'Ctrl-l' is enabled.
+      * Default value is `true`.
+      */
+    def isCtrlLog: Boolean = ctrlLogEnabled
+
+    /**
+      * Enables or disables opening built-in FPS window by pressing 'Ctrl-q'. Production games may want to
+      * disable that capability. Default value is `true`.
+      *
+      * @param f Whether to enable or disable opening built-in FPS window by pressing 'Ctrl-q'.
+      */
+    def enableCtrlFps(f: Boolean): Unit = ctrlFpsEnabled = f
+
+    /**
+      * Checks whether or not opening built-in FPS window pressing 'Ctrl-q' is enabled.
+      * Default value is `true`.
+      */
+    def isCtrlFps:Boolean = ctrlFpsEnabled
+
+    /**
       * Shows or hides the built-in FPS overlay in the right top corner. Can
       * also be turned on or off by pressing `Ctrl-q` in the game.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
-      * @param show Show/hide flag.
+      * @param show Show/hide built-in FPS flag.
+      * @see [[enableCtrlFps()]]
+      * @see [[isCtrlFps]]
       */
     def showFpsOverlay(show: Boolean): Unit =
         checkState()
@@ -466,24 +632,49 @@ object CPEngine:
       * Opens GUI-based log window by bringing it upfront.
       * Can also be open by pressing `Ctrl-l` in the game.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      *
+      * @see [[enableCtrlLog()]]
+      * @see [[isCtrlLog]]
       */
-    //noinspection ScalaWeakerAccess
     def openLog(): Unit =
         rootLog().info(CPUtils.PING_MSG)
 
-    /**
-      * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
-      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
-      */
-    def dispose(): Unit =
-        checkState()
+    private def stopInternals(): Unit =
         if kbReader != null then
             kbReader.st0p = true
             kbReader.interrupt()
             kbReader.join()
         if term != null then term.dispose()
+
+    /**
+      * Disposes the game engine. This method must be called upon exit from the [[startGame()]] method.
+      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      *
+      * @see [[disposeEff()]]
+      */
+    def dispose(): Unit =
+        checkState()
+        stopInternals()
         state = State.ENG_STOPPED
-        if savedEx != null then savedEx.printStackTrace()
+
+    /**
+      * Disposes the game engine. This method must be called upon exit from the [[startGameEff()]] method.
+      * Engine must be [[initEff() initialized]] before this call otherwise exception is thrown.
+      * Effect-based version of [[dispose()]] method allowing end-user to use pattern matching for error handling.
+      * This method does not throw any exceptions.
+      *
+      * @return Try-monad.
+      * @see [[dispose()]]
+      * @see [[startGame()]]
+      * @see [[initEff()]]
+      */
+    def disposeEff(): Try[Unit] =
+        Try {
+            checkState()
+            stopInternals()
+        } match
+            case s: Success[Unit] => state = State.ENG_STOPPED; s
+            case f => f
 
     /**
       * Shortcut for the following two calls:
@@ -528,8 +719,8 @@ object CPEngine:
     def debugStep(kbKey: Option[CPKeyboardKey]): Unit =
         checkState()
         pauseMux.synchronized {
-            if !pause then E(s"Game must be paused for debugging.")
-            dbgStopAtFrameCnt = Option(frameCnt + 1)
+            !>(pause, s"Game must be paused for debugging.")
+            dbgStopAtFrameCnt = (frameCnt + 1).?
             dbgKbKey = kbKey
             pause = false
             pauseMux.notifyAll()
@@ -549,50 +740,72 @@ object CPEngine:
         engLog.info("Game resumed.")
 
     /**
-      * Starts the game.
+      * Starts the game. Games start with the first scene in the list.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
-      * @param startSceneId ID of the scene to start with.
-      * @param scs Set of scene comprising the game. Note that scenes can be dynamically
+      * @param scs Non-empty set of scene comprising the game. Note that scenes can be dynamically
       *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @see [[startGameEff()]]
+      * @throws CPException Thrown in case of any errors.
       */
-    def startGame(startSceneId: String, scs: CPScene*): Unit =
+    def startGame(scs: CPScene*): Unit =
+        !>(scs.nonEmpty, "At least one scene must be provided.")
         checkState()
         scs.foreach(scenes.add)
         engLog.info("Game started.")
-        gameLoop(scenes.grab(startSceneId))
+        gameLoop(scenes(scs.head.getId))
 
     /**
-      * Starts the game.
+      * Starts the game. Games start with the given start scene.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
       *
-      * @param startSceneId ID of the scene to start with.
-      * @param scs Set of scene comprising the game. Note that scenes can be dynamically
-      *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @param startSc ID of the scene to start the game with.
+      * @param scs Non-empty set of scene comprising the game. Note that scenes can be dynamically
+      * [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @see [[startGameEff()]]
+      * @throws CPException Thrown in case of any errors.
       */
-    def startGame(startSceneId: String, scs: List[CPScene]): Unit = startGame(startSceneId, scs:_*)
+    def startGame(startSc: String, scs: CPScene*): Unit =
+        !>(scs.nonEmpty, "At least one scene must be provided.")
+        checkState()
+        scs.foreach(scenes.add)
+        engLog.info("Game started.")
+        gameLoop(scenes(startSc))
 
     /**
-      * Starts the game. Games start with the first scene in the list.
+      * This is effect-based version of [[startGame()]] method allowing end-user to use pattern matching
+      * for error handling. Starts the game. Games start with the first scene in the list.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      * This method does not throw any exceptions.
       *
-      * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
-      *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @param scs Non-empty set of scene comprising the game. Note that scenes can be dynamically
+      * [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @see [[startGame()]]
+      * @see [[initEff()]]
+      * @see [[disposeEff()]]
       */
-    def startGame(scenes: CPScene*): Unit = startGame(scenes.head.getId, scenes:_*)
+    def startGameEff(scs: CPScene*): Try[Unit] = Try(startGame(scs: _*))
 
     /**
-      * Starts the game. Games start with the first scene in the list.
+      * This is effect-based version of [[startGame()]] method allowing end-user to use pattern matching
+      * for error handling. Starts the game. Games start with the given start scene ID.
       * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      * This method does not throw any exceptions.
       *
-      * @param scenes Set of scene comprising the game. Note that scenes can be dynamically
-      *     [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @param startSc ID of the scene to start the game with.
+      * @param scs Non-empty set of scene comprising the game. Note that scenes can be dynamically
+      * [[CPSceneObjectContext.addScene() added]] or [[CPSceneObjectContext.deleteScene() removed]].
+      * @see [[startGame()]]
+      * @see [[initEff()]]
+      * @see [[disposeEff()]]
       */
-    def startGame(scenes: List[CPScene]): Unit = startGame(scenes:_*)
+    def startGameEff(startSc: String, scs: CPScene*): Try[Unit] = Try(startGame(startSc, scs: _*))
 
     /**
-      * Exits the game. Calling this method will exit the [[startGame()]] method.
-      * Engine must be [[init() initialized]] before this call otherwise exception is thrown.
+      * Exits the game. Calling this method will cause [[startGame()]] or [[startGameEff()]] method to exit on the next frame. Note that
+      * this method can only be called from a thread different from the one used to call [[startGame()]] or [[startGameEff()]] method. If
+      * the game wasn't started yet, this method is a no-op. Engine must be [[init() initialized]] before this
+      * call otherwise exception is thrown.
       */
     def exitGame(): Unit =
         checkState()
@@ -689,8 +902,6 @@ object CPEngine:
       * @return Adjusted camera frame.
       */
     private def adjustCameraFrame(scr: CPRect, x: Int, y: Int, termW: Int, termH: Int): CPRect =
-        require(scr.x == 0 && scr.y == 0)
-
         val frame = CPRect(x, y, termW, termH)
         if frame.contains(scr) then
             // If terminal is larger than entire scene return scene as a camera frame.
@@ -719,8 +930,8 @@ object CPEngine:
         var startScMs = startMs
         var fps = 0
         var sc = startScene
-        var lastKbEvt: Option[CPKeyboardEvent] = None
-        var kbEvt: Option[CPKeyboardEvent] = None
+        var lastKbEvt = none[CPKeyboardEvent]
+        var kbEvt = none[CPKeyboardEvent]
         var lastTermDim = CPDim.ZERO
         val msgQ = mutable.HashMap.empty[String, mutable.Buffer[AnyRef]]
         val delayedQ = mutable.ArrayBuffer.empty[() => Unit]
@@ -730,16 +941,16 @@ object CPEngine:
         val sceneCache = CPCache(delayedQ)
         val collidedBuf = mutable.ArrayBuffer.empty[CPSceneObject]
         var stopFrame = false
-        var kbFocusOwner: Option[String] = None
+        var kbFocusOwner = none[String]
         var camRect: CPRect = null
         var camX = 0
         var camY = 0
         var camPanX = 0f
         var camPanY = 0f
-        var fpsList: List[Int] = Nil
+        var fpsList = nil[Int]
         var fpsCnt = 0
         var fpsSum = 0
-        var low1FpsList: List[Int] = Nil
+        var low1FpsList = nil[Int]
         var low1FpsCnt = 0
         var scLog = engLog.getLog(s"${startScene.getId}")
         var forceStatsUpdate = false
@@ -769,7 +980,7 @@ object CPEngine:
             case None => msgQ += id -> mutable.Buffer(msgs)
 
         if term.isNative && gameInfo.minDim.isDefined && term.getDim <@ gameInfo.minDim.get then
-            throw E(s"Terminal window is too small (must be at least ${gameInfo.minDim.get}).")
+            raise(s"Terminal window is too small (must be at least ${gameInfo.minDim.get}).")
 
         var lastScDim: CPDim = null
         var scr: CPScreen = null
@@ -787,7 +998,7 @@ object CPEngine:
                     scObj.getDim
                 )
             })
-            tbl.info(engLog, Option(s"Switching to scene '${x.getId}' $dimS with scene objects:"))
+            tbl.info(engLog, s"Switching to scene '${x.getId}' $dimS with scene objects:".?)
 
         try
             logSceneSwitch(sc) // Initial scene.
@@ -804,7 +1015,7 @@ object CPEngine:
                 stopFrame = false
 
                 val frameNs = System.nanoTime()
-                val frameMs = frameNs / 1_000_000
+                val frameMs = System.currentTimeMillis()
 
                 def waitForWakeup(): Unit =
                     while (pause)
@@ -830,7 +1041,7 @@ object CPEngine:
                 // Visible scene objects sorted by layer.
                 val objs = sc.objects.values.toSeq.sortBy(_.getZ)
 
-                if objs.isEmpty then E(s"Scene '${sc.getId}' has no objects.")
+                !>(objs.nonEmpty, s"Scene '${sc.getId}' has no objects.")
 
                 // Transition objects states.
                 objs.foreach(lifecycleStart)
@@ -899,23 +1110,23 @@ object CPEngine:
 
                         lastKbEvt match
                             case Some(lastEvt) =>
-                                kbEvt = Option(CPKeyboardEvent(
+                                kbEvt = CPKeyboardEvent(
                                     kbKey,
                                     lastEvt.key == kbKey,
                                     frameCnt,
-                                    frameNs,
+                                    frameMs,
                                     lastEvt.eventFrame,
-                                    lastEvt.eventNs
-                                ))
+                                    lastEvt.eventMs
+                                ).?
                             case None =>
-                                kbEvt = Option(CPKeyboardEvent(
+                                kbEvt = CPKeyboardEvent(
                                     kbKey,
                                     sameAsLast = false,
                                     frameCnt,
-                                    frameNs,
+                                    frameMs,
                                     0L,
                                     0L
-                                ))
+                                ).?
 
                         lastKbEvt = kbEvt
                         kbKey = null
@@ -954,7 +1165,7 @@ object CPEngine:
                             else
                                 sc.onDeactivateX()
                                 sc.objects.values.foreach(_.onDeactivateX())
-                            sc = scenes.grab(cloId)
+                            sc = scenes(cloId)
                             scLog = engLog.getLog(s"scene:${sc.getId}")
                             scr = null
                             sceneCache.reset()
@@ -1005,7 +1216,7 @@ object CPEngine:
                         if kbFocusOwner.isDefined && kbFocusOwner.get != id then
                             scLog.trace(s"Input focus is currently held by '${kbFocusOwner.get}', switching to '$id'.")
                         val cloId = id
-                        delayedQ += (() => kbFocusOwner = Option(cloId))
+                        delayedQ += (() => kbFocusOwner = cloId.?)
                     override def getFocusOwner: Option[String] = kbFocusOwner
                     override def releaseFocus(id: String): Unit =
                         if kbFocusOwner.isDefined && kbFocusOwner.get == id then
@@ -1018,10 +1229,10 @@ object CPEngine:
                             engLog.info(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
                         })
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
-                    override def grabObject(id: String): CPSceneObject = sc.objects.grab(id)
-                    override def getObjectsForTags(tags: String*): Seq[CPSceneObject] = sc.objects.getForTags(tags: _*)
-                    override def countObjectsForTags(tags: String*): Int = sc.objects.countForTags(tags: _*)
-                    override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit = 
+                    override def grabObject(id: String): CPSceneObject = sc.objects(id)
+                    override def getObjectsForTags(tags: Seq[String]): Seq[CPSceneObject] = sc.objects.getForTags(tags)
+                    override def countObjectsForTags(tags: Seq[String]): Int = sc.objects.countForTags(tags)
+                    override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit =
                         delayedQ += (() => {
                             engLog.info(s"Scene added: ${newSc.getId}")
                             scenes.add(newSc)
@@ -1029,7 +1240,7 @@ object CPEngine:
                         if switchTo then doSwitchScene(newSc.getId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
-                        if sc.getId == id then E(s"Cannot remove current scene: ${sc.getId}")
+                        if sc.getId == id then raise(s"Cannot remove current scene: ${sc.getId}")
                         else
                             val cloId = id
                             delayedQ += (() => {
@@ -1052,7 +1263,7 @@ object CPEngine:
                                     engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $cloId")
                         })
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
-                        if myObj.getCollisionRect.isEmpty then E(s"Current object does not provide collision shape: ${myObj.getId}")
+                        if myObj.getCollisionRect.isEmpty then raise(s"Current object does not provide collision shape: ${myObj.getId}")
                         else
                             val myClsRect = myObj.getCollisionRect.get
                             collide(r => r.overlaps(myClsRect), zs: _*)
@@ -1152,15 +1363,15 @@ object CPEngine:
                 // Clear delayed operations.
                 delayedQ.clear()
 
-                // Built-in support for 'CTRL+Q', 'CTRL+L' and 'F12'.
+                // Built-in support for 'Ctrl+q', 'Ctrl+l' and 'F12'.
                 if kbEvt.isDefined then
-                    if kbEvt.get.key == KEY_CTRL_Q then
+                    if ctrlFpsEnabled && kbEvt.get.key == KEY_CTRL_Q then
                         isShowFps = !isShowFps
                     else if kbEvt.get.key == KEY_F12 then
                         val path = s"cosplay-screenshot-${CPRand.guid6}.xp"
                         ctx.getCanvas.capture().saveRexXp(path, sc.getBgColor)
                         engLog.info(s"Screenshot saved: $path")
-                    else if kbEvt.get.key == KEY_CTRL_L then
+                    else if ctrlLogEnabled && kbEvt.get.key == KEY_CTRL_L then
                         engLog.info(CPUtils.PING_MSG)
                 end if
 
@@ -1205,7 +1416,7 @@ object CPEngine:
                     val avgFps = fpsSum / fpsCnt
                     val avgLow1Fps = low1FpsList.sum / low1FpsCnt
 
-                    stats = Option(CPRenderStats(frameCnt, scFrameCnt, fps, avgFps, avgLow1Fps, usrNs, sysNs, objs.length, visObjCnt, kbEvt))
+                    stats = CPRenderStats(frameCnt, scFrameCnt, fps, avgFps, avgLow1Fps, usrNs, sysNs, objs.length, visObjCnt, kbEvt).?
 
                     // Update GUI log.
                     CPGuiLog.updateStats(stats.get)
@@ -1226,7 +1437,6 @@ object CPEngine:
                 frameCnt += 1
                 if !stopFrame then scFrameCnt += 1
             end while
-        catch case e: Throwable => savedEx = e
         finally
             engLog.info("Game stopped.")
 

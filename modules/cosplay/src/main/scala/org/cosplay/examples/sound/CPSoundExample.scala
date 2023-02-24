@@ -18,12 +18,12 @@
 package org.cosplay.examples.sound
 
 import org.cosplay.*
-import CPColor.*
-import CPPixel.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPPixel.*
 import CPStyledString.*
-import CPKeyboardKey.*
+import org.cosplay.CPKeyboardKey.*
 import examples.utils.*
-import prefabs.shaders.*
+import org.cosplay.prefabs.shaders.*
 
 /*
    _________            ______________
@@ -35,7 +35,7 @@ import prefabs.shaders.*
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
 /**
@@ -67,11 +67,11 @@ object CPSoundExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Sound Example", initDim = Option(dim)),
+            CPGameInfo(name = "Sound Example", initDim = dim.?),
             System.console() == null || args.contains("emuterm")
         )
 
-        val snd = CPSound(s"sounds/examples/${CPRand.rand(Seq("bg1", "bg2", "bg3"))}.wav")
+        val snd = CPSound(s"sounds/examples/${Seq("bg1", "bg2", "bg3").rand}.wav")
         val panel = CPPanelSprite(4, 2, 80, 8, 0, "Audio Player")
         val c1 = C_SKY_BLUE1
         val c2 = C_LIGHT_CYAN1
@@ -96,7 +96,7 @@ object CPSoundExample:
                     case None => ()
 
         val bgPx = '.'&&(C_GRAY2, C_GRAY1)
-        val sc = new CPScene("scene", Option(dim), bgPx,
+        val sc = new CPScene("scene", dim.?, bgPx,
             panel,
             lbl,
             ctrl,

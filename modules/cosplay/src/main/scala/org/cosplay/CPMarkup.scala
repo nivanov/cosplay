@@ -19,8 +19,8 @@ package org.cosplay
 
 import org.cosplay
 import org.cosplay.*
-import CPPixel.*
-import impl.*
+import org.cosplay.CPPixel.*
+import org.cosplay.impl.*
 import scala.collection.mutable.ArrayBuffer
 
 /*
@@ -33,7 +33,7 @@ import scala.collection.mutable.ArrayBuffer
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
               (C) 2021 Rowan Games, Inc.
-                ALl rights reserved.
+                All rights reserved.
 */
 
 /**
@@ -81,14 +81,14 @@ case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPi
   */
 case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElement]) extends Serializable:
     for elm <- elements do
-        require(
+        !>(
             elm.openTag.nonEmpty && elm.closeTag.nonEmpty,
             s"Markup cannot have empty opening or closing tags: '${elm.openTag}' '${elm.closeTag}'"
         )
-        require(!elm.openTag.contains(' '), s"Markup opening tag cannot have space: '${elm.openTag}'")
-        require(!elm.closeTag.contains(' '), s"Markup closing tag cannot have space: '${elm.closeTag}'")
-    require(!CPUtils.hasDups(elements.flatMap(e => Seq(e.openTag, e.closeTag))), s"Markup opening and closing tags cannot have duplicates.")
-    require(!elements.exists(elm => elements.exists(x =>
+        !>(!elm.openTag.contains(' '), s"Markup opening tag cannot have space: '${elm.openTag}'")
+        !>(!elm.closeTag.contains(' '), s"Markup closing tag cannot have space: '${elm.closeTag}'")
+    !>(!CPUtils.hasDups(elements.flatMap(e => Seq(e.openTag, e.closeTag))), s"Markup opening and closing tags cannot have duplicates.")
+    !>(!elements.exists(elm => elements.exists(x =>
         x != elm &&
         (
             x.openTag.contains(elm.openTag) ||
@@ -133,7 +133,7 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
       * @see [[CPArrayImage.apply()]] method for creating an image from the list of pixel representing text.
       */
     def process(in: String): List[CPPixel] =
-        var skin = (ch: Char) => ch&?(fg, bg)
+        var skin = (ch: Char) => ch&&(fg, bg)
         var skinStack = List(skin)
         val buf = ArrayBuffer.empty[CPPixel]
         val len = in.length
