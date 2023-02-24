@@ -768,7 +768,7 @@ object CPImage:
       */
     def loadRexCsv(src: String, skin: (CPPixel, Int, Int) => CPPixel = (px, _, _) => px): CPImage =
         val arr = CPArray2D(
-            CPUtils.readAllStrings(src).tail.zipWithIndex.map((line, i) => {
+            CPUtils.readStrings(src).tail.zipWithIndex.map((line, i) => {
                 val idx = i + 1
                 val parts = line.split(",").map(_.strip)
                 !>(parts.length == 5, s"Invalid CSV file format at line $idx: $src")
@@ -795,7 +795,7 @@ object CPImage:
       * @note Implementation is based on https://github.com/biscon/xpreader/blob/master/src/REXReader.java
       */
     def loadRexXp(src: String, skin: (CPPixel, Int, Int) => CPPixel = (px, _, _) => px): CPImage =
-        val bb = ByteBuffer.wrap(CPUtils.unzipBytes(CPUtils.readAllBytes(src)))
+        val bb = ByteBuffer.wrap(CPUtils.unzipBytes(CPUtils.readBytes(src)))
         bb.order(ByteOrder.LITTLE_ENDIAN)
         bb.getInt // '-1' in REXPaint 1.60  (skip).
         val layerCnt = bb.getInt
@@ -843,7 +843,7 @@ object CPImage:
       *     return a new pixel. Default value is the function that returns the same pixel.
       */
     def loadTxt(src: String, skin: (CPPixel, Int, Int) => CPPixel = (px, _, _) => px): CPImage =
-        new CPArrayImage(CPArray2D(CPUtils.readAllStrings(src)).map(_&C_WHITE).map(skin))
+        new CPArrayImage(CPArray2D(CPUtils.readStrings(src)).map(_&C_WHITE).map(skin))
 
     /**
       * Loads image auto-detecting its format based on the file path extension. The following extensions are

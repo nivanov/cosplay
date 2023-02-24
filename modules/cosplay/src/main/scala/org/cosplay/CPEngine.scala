@@ -52,6 +52,7 @@ import scala.util.*
   * @param cause Optional cause.
   */
 private[cosplay] def raise[T](msg: String, cause: Option[Throwable] = None): T = throw new CPException(msg, cause)
+
 /**
   * Global syntax sugar for throwing [[CPException]].
   *

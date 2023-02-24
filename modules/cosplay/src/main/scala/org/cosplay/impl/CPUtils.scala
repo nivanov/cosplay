@@ -267,7 +267,7 @@ object CPUtils:
       */
     private def tunnelThrough(in: InputStream, out: OutputStream): Unit =
         val buf = new Array[Byte](1024)
-        while (in.available() > 0)
+        while in.available() > 0 do
             val cnt = in.read(buf, 0, 1024)
             if cnt > 0 then out.write(buf, 0, cnt)
 
@@ -310,7 +310,7 @@ object CPUtils:
       *
       * @param src Local filesystem path, resources file or URL.
       */
-    def readAllStrings(src: String, enc: String = "UTF-8"): List[String] =
+    def readStrings(src: String, enc: String = "UTF-8"): List[String] =
         if isFile(src) then readFile(new File(src), enc)
         else if isResource(src) then readResource(src, enc)
         else if isUrl(src) then Using.resource(new URL(src).openStream()) { readStream(_, enc) }
@@ -320,7 +320,7 @@ object CPUtils:
       *
       * @param src Local filesystem path, resources file or URL.
       */
-    def readAllBytes(src: String): Array[Byte] =
+    def readBytes(src: String): Array[Byte] =
         if isFile(src) then CPUtils.readByteFile(new File(src))
         else if isResource(src) then readByteResource(src)
         else if isUrl(src) then readByteUrl(src)
