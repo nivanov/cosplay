@@ -50,7 +50,7 @@ val miglayoutVer = "11.0"
 val jlineVer = "3.22.0"
 val jnaVer = "5.13.0"
 val mixPanelVer = "1.5.1"
-val antlr4Ver = "4.11.1"
+val antlr4Ver = "4.12.0"
 val audioFileVer = "2.4.2"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
