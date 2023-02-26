@@ -63,12 +63,12 @@ object CPUtilsTests:
     def splitByTest(): Unit =
         var s = "123"
         var ss = CPUtils.splitBy(s, ch => ch == ' ' || ch == 'x')
-        assertTrue(ss.length == 1)
+        assertTrue(ss.sizeIs == 1)
         assertTrue(ss.head.mkString == "123")
 
         s = "  123x456    789    a b xx c"
         ss = CPUtils.splitBy(s, ch => ch == ' ' || ch == 'x').filter(_.nonEmpty)
-        assertTrue(ss.length == 6)
+        assertTrue(ss.sizeIs == 6)
         assertTrue(ss.head.mkString == "123")
         assertTrue(ss(1).mkString == "456")
         assertTrue(ss(2).mkString == "789")
