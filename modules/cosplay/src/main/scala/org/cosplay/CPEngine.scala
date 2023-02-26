@@ -1038,26 +1038,22 @@ object CPEngine:
 
                 // Transition the state of the scene, if necessary.
                 lifecycleStart(sc)
-
                 // Visible scene objects sorted by layer.
                 val objs = sc.objects.values.toSeq.sortBy(_.getZ)
-
                 !>(objs.nonEmpty, s"Scene '${sc.getId}' has no objects.")
-
                 // Transition objects states.
                 objs.foreach(lifecycleStart)
 
                 val termW = termDim.w
                 val termH = termDim.h
                 val redraw = scFrameCnt == 0 || lastTermDim != termDim
-                lastTermDim = termDim
-
-                if redraw then // Update terminal window title.
-                    updateTitle(termDim)
-
                 val cam = sc.getCamera
 
+                lastTermDim = termDim
+
                 if redraw then
+                    // Update terminal window title.
+                    updateTitle(termDim)
                     // When redraw - move camera instantly instead of panning.
                     if cam.getFocusTrackId.isDefined then
                         sc.objects.get(cam.getFocusTrackId.get) match
