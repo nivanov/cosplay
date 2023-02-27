@@ -25,32 +25,21 @@ package org.cosplay
    \____/  \____//____/ /_/     /_/  \__,_/ _\__, /
                                             /____/
 
-          2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2022 Rowan Games, Inc.
-                ALl rights reserved.
+          2D ASCII GAME ENGINE FOR SCALA3
+            (C) 2021 Rowan Games, Inc.
+               ALl rights reserved.
 */
 
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
-import scala.util.*
+import java.lang.ref.Cleaner
 
 /**
-  *
+  * Test singleton `CPEngine` instance.
   */
-object CPEngineTests:
-    /**
-      *
-      */
-    @Test
-    def homeFileTest(): Unit =
-        CPTestEngine.ensureStarted()
-        CPEngine.homeFile("fs/test") match
-            case Success(f) => Console.out.println(f.getAbsolutePath)
-            case Failure(e) =>
-                e.printStackTrace()
-                assert(false)
-        CPEngine.tempFile() match
-            case Success(f) => Console.out.println(f.getAbsolutePath)
-            case Failure(e) =>
-                e.printStackTrace()
-                assert(false)
+object CPTestEngine:
+    Cleaner.create().register(CPTestEngine, () => if CPEngine.isInit then CPEngine.disposeEff())
+
+    def ensureStarted(): Unit =
+        if !CPEngine.isInit then
+            CPEngine.initEff(CPGameInfo(name = "cosplay-tests", initDim = CPDim(2, 2).?), true).recover(fail(_))
+
