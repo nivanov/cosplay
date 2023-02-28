@@ -146,8 +146,8 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       */
     private def addPx(x: Int, y: Int, px: CPPixel): Unit =
         if !px.isXray then
-            buf.append(curPos(x, y))
-            buf.append(px.ansi)
+            buf ++= curPos(x, y)
+            buf ++= px.ansi
             last.set(x, y, px)
 
     /**
@@ -178,7 +178,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       */
     private def draw(scr: TermScreen, f: (Int, Int) => Unit): Unit =
         buf.clear()
-        buf.append(CUR_HIDE)
+        buf ++= CUR_HIDE
         scr.loop((x, y) => f(x, y))
         write(buf.toString)
 
