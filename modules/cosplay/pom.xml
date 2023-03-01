@@ -196,7 +196,7 @@
                             <mainClass>org.cosplay.games.pong.CPPongGame</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -216,7 +216,7 @@
                             <mainClass>org.cosplay.games.mir.MirGame</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -236,7 +236,7 @@
                             <mainClass>org.cosplay.games.bird.CPBirdGame</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -256,7 +256,7 @@
                             <mainClass>org.cosplay.games.snake.CPSnakeGame</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -276,7 +276,7 @@
                             <mainClass>org.cosplay.games.macarena.CPMacarenaGame</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -296,7 +296,7 @@
                             <mainClass>org.cosplay.examples.animation.CPAnimationExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -316,7 +316,7 @@
                             <mainClass>org.cosplay.examples.camera.CPCameraExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -336,7 +336,7 @@
                             <mainClass>org.cosplay.examples.canvas.CPCanvasExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -356,7 +356,7 @@
                             <mainClass>org.cosplay.examples.fonts.CPFontsExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -376,7 +376,7 @@
                             <mainClass>org.cosplay.examples.image.CPImageFormatsExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -396,7 +396,7 @@
                             <mainClass>org.cosplay.examples.image.CPImageCarouselExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -416,7 +416,7 @@
                             <mainClass>org.cosplay.examples.particle.CPParticleExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -436,7 +436,7 @@
                             <mainClass>org.cosplay.examples.shader.CPShaderExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -456,7 +456,7 @@
                             <mainClass>org.cosplay.examples.shader.CPSlideShaderExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -476,7 +476,7 @@
                             <mainClass>org.cosplay.examples.sound.CPSoundExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -496,7 +496,7 @@
                             <mainClass>org.cosplay.examples.textinput.CPTextInputExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -516,7 +516,7 @@
                             <mainClass>org.cosplay.examples.tilemapper.CPTileMapperExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -536,7 +536,7 @@
                             <mainClass>org.cosplay.examples.video.CPVideoExample</mainClass>
                             <arguments>
                                 <argument>--add-opens</argument>
-                                <argument>javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argument>
+                                <argument>javafx.media/com.sun.javafx.application=ALL-UNNAMED</argument>
                             </arguments>
                         </configuration>
                     </plugin>

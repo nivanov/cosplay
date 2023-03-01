@@ -29,7 +29,6 @@ import org.jline.terminal.*
 import org.jline.utils.NonBlockingReader
 
 import java.io.*
-import java.lang.ref.Cleaner
 import java.util.logging.LogManager
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -221,7 +220,8 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         write(CUR_HIDE)
         write(CLR_SCR)
 
-        Cleaner.create().register(term, () => restore(term.writer()))
+        // Make sure to restore terminal after non-standard exit.
+        sys.addShutdownHook(restore(term.writer()))
 
     override def getRootLog: CPLog = root
     override def setTitle(title: String): Unit = write(winTitle(title))

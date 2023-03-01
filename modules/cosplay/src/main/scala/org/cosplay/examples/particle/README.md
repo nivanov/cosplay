@@ -15,11 +15,6 @@ $ cd cosplay
 $ sbt package
 $ sbt "project cosplay; runMain org.cosplay.examples.particle.CPParticleExample"
 ```
-#### Maven:
-```shell
-$ mvn package
-$ mvn -f modules/cosplay -P ex:particle exec:java
-```
 
 ## Copyright
 Copyright (C) 2021 Rowan Games, Inc.

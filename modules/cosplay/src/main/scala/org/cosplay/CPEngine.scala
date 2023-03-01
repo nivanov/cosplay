@@ -30,6 +30,7 @@ import org.cosplay.impl.*
 import java.io.*
 import scala.annotation.targetName
 import scala.collection.mutable
+import com.sun.javafx.application.*
 import scala.util.*
 
 /*
@@ -487,7 +488,10 @@ object CPEngine:
         !>(state != State.ENG_STOPPED, "Engine is stopped and cannot be restarted.")
         // Initialize JavaFX toolkit for audio.
         !>(
-            Try(com.sun.javafx.application.PlatformImpl.startup(() => ())).isSuccess,
+            Try {
+                PlatformImpl.setImplicitExit(false)
+                PlatformImpl.startup(() => {})
+            }.isSuccess,
             s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io)."
         )
 

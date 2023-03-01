@@ -15,11 +15,6 @@ $ cd cosplay
 $ sbt package
 $ sbt "project cosplay; runMain org.cosplay.examples.textinput.CPTextInputExample"
 ```
-#### Maven:
-```shell
-$ mvn package
-$ mvn -f modules/cosplay -P ex:textinput exec:java
-```
 
 ## Copyright
 Copyright (C) 2021 Rowan Games, Inc.
