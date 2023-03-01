@@ -24,10 +24,12 @@ import org.cosplay.CPPixel.*
 import org.cosplay.impl.CPAnsi.*
 import org.cosplay.impl.guilog.CPGuiLog
 import org.cosplay.impl.*
+import org.cosplay.impl.jlineterm.CPJLineTerminal.restore
 import org.jline.terminal.*
 import org.jline.utils.NonBlockingReader
 
 import java.io.*
+import java.lang.ref.Cleaner
 import java.util.logging.LogManager
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -44,6 +46,15 @@ import scala.collection.mutable.ArrayBuffer
             (C) 2021 Rowan Games, Inc.
                All rights reserved.
 */
+
+object CPJLineTerminal:
+    def restore(w: PrintWriter): Unit =
+        w.write(WIN_TITLE_REST)
+        w.write(USE_PRI_SCR_BUF)
+        w.write(RESET_ALL)
+        w.write(CUR_REST)
+        w.write(CUR_SHOW)
+        w.flush()
 
 /**
   * 
@@ -99,7 +110,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     /**
       *
       */
-    class TermDimensionReader extends Thread:
+    private class TermDimensionReader extends Thread:
         @volatile var st0p = false
 
         def getDim: CPDim =
@@ -204,11 +215,13 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         curDim = termDimReader.getDim
         termDimReader.start()
 
-        write(WIN_TITLE_SAVE) // Save current terminal window title.
-        write(CUR_SAVE) // Save cursor position.
-        write(USE_ALT_SCR_BUF) // Use alternate screen buffer, if supported.
-        write(CUR_HIDE) // Hide the cursor.
-        write(CLR_SCR) // Clear the screen.
+        write(WIN_TITLE_SAVE)
+        write(CUR_SAVE)
+        write(USE_ALT_SCR_BUF)
+        write(CUR_HIDE)
+        write(CLR_SCR)
+
+        Cleaner.create().register(term, () => restore(term.writer()))
 
     override def getRootLog: CPLog = root
     override def setTitle(title: String): Unit = write(winTitle(title))
@@ -222,11 +235,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         try reader.close()
         catch case _: IOException => ()
         reader.shutdown()
-        write(WIN_TITLE_REST) // Restore saved terminal window title.
-        write(USE_PRI_SCR_BUF) // Return back to the saved primary screen buffer.
-        write(RESET_ALL) // Drop any CSI remaining settings.
-        write(CUR_REST) // Restore cursor position.
-        write(CUR_SHOW) // Show the cursor back.
+        restore(writer)
         if SystemUtils.IS_OS_WINDOWS then write(WIN_TERM_RESET) // Windows-specific terminal reset.
         term.close() // Close terminal to reset it to original state.
 
