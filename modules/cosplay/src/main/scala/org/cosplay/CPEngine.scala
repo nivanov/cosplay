@@ -30,6 +30,7 @@ import org.cosplay.impl.*
 import java.io.*
 import scala.annotation.targetName
 import scala.collection.mutable
+import com.sun.javafx.application.*
 import scala.util.*
 
 /*
@@ -52,6 +53,7 @@ import scala.util.*
   * @param cause Optional cause.
   */
 private[cosplay] def raise[T](msg: String, cause: Option[Throwable] = None): T = throw new CPException(msg, cause)
+
 /**
   * Global syntax sugar for throwing [[CPException]].
   *
@@ -486,7 +488,10 @@ object CPEngine:
         !>(state != State.ENG_STOPPED, "Engine is stopped and cannot be restarted.")
         // Initialize JavaFX toolkit for audio.
         !>(
-            Try(com.sun.javafx.application.PlatformImpl.startup(() => ())).isSuccess,
+            Try {
+                PlatformImpl.setImplicitExit(false)
+                PlatformImpl.startup(() => {})
+            }.isSuccess,
             s"Failed to start JavaFX - make sure your JDK/OS is compatible with JavaFX (https://openjfx.io)."
         )
 
@@ -1037,26 +1042,22 @@ object CPEngine:
 
                 // Transition the state of the scene, if necessary.
                 lifecycleStart(sc)
-
                 // Visible scene objects sorted by layer.
                 val objs = sc.objects.values.toSeq.sortBy(_.getZ)
-
                 !>(objs.nonEmpty, s"Scene '${sc.getId}' has no objects.")
-
                 // Transition objects states.
                 objs.foreach(lifecycleStart)
 
                 val termW = termDim.w
                 val termH = termDim.h
                 val redraw = scFrameCnt == 0 || lastTermDim != termDim
-                lastTermDim = termDim
-
-                if redraw then // Update terminal window title.
-                    updateTitle(termDim)
-
                 val cam = sc.getCamera
 
+                lastTermDim = termDim
+
                 if redraw then
+                    // Update terminal window title.
+                    updateTitle(termDim)
                     // When redraw - move camera instantly instead of panning.
                     if cam.getFocusTrackId.isDefined then
                         sc.objects.get(cam.getFocusTrackId.get) match

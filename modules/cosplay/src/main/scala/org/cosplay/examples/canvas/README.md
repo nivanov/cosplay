@@ -15,11 +15,6 @@ $ cd cosplay
 $ sbt package
 $ sbt "project cosplay; runMain org.cosplay.examples.canvas.CPCanvasExample"
 ```
-#### Maven:
-```shell
-$ mvn package
-$ mvn -f modules/cosplay -P ex:canvas exec:java
-```
 
 ## Copyright
 Copyright (C) 2021 Rowan Games, Inc.

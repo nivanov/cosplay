@@ -465,12 +465,12 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
     private def loadAndInit(): Unit =
         var lines = try
             enc = "UTF-8"
-            CPUtils.readAllStrings(flfPath, enc).toIndexedSeq
+            CPUtils.readStrings(flfPath, enc).toIndexedSeq
         catch
             case _: MalformedInputException =>
                 try
                     enc = "windows-1252"
-                    CPUtils.readAllStrings(flfPath, enc).toIndexedSeq
+                    CPUtils.readStrings(flfPath, enc).toIndexedSeq
                 catch case e: Exception => raise(s"Failed to read (unsupported encoding?): $flfPath", e.?)
 
         // Some fonts are not following FIGLet spec with extra spaces after EOL...

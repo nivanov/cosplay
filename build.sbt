@@ -43,7 +43,7 @@ val commonsCollectionsVer = "4.4"
 val scalaReflectVer = "1.2.0"
 val scalaTestVer = "3.2.15"
 val junitVer = "5.9.2"
-val openjfxVer = "17.0.6"
+val openjfxVer = "18"
 val ikonliVer = "12.3.1"
 val flatlafVer = "3.0"
 val miglayoutVer = "11.0"
@@ -88,7 +88,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         ),
         // JVM options for Java 17+.
         javaOptions += "--add-opens",
-        javaOptions += "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED",
+        javaOptions += "javafx.media/com.sun.javafx.application=ALL-UNNAMED",
 
         // Dependencies.
         libraryDependencies += "org.apache.commons" % "commons-math3" % commonsMath3Ver,

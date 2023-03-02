@@ -16,12 +16,6 @@ $ sbt package
 $ sbt "project cosplay; runMain org.cosplay.examples.image.CPImageFormatsExample"
 $ sbt "project cosplay; runMain org.cosplay.examples.image.CPImageCarouselExample"
 ```
-#### Maven:
-```shell
-$ mvn package
-$ mvn -f modules/cosplay -P ex:image_formats exec:java
-$ mvn -f modules/cosplay -P ex:image_carousel exec:java
-```
 
 ## Copyright
 Copyright (C) 2021 Rowan Games, Inc.

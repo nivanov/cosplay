@@ -48,7 +48,7 @@ object CPAnsi:
     val UNDERLINE_ON = s"${CSI}4m"
     val UNDERLINE_OFF = s"${CSI}24m"
 
-    val RESET_ALL = s"${CSI}0m"
+    val RESET_ALL = s"${CSI}0m" // Drop any CSI remaining settings.
     val RESET_BG = s"${CSI}49m"
 
     val CLR_SCR = s"${CSI}2J"
@@ -58,22 +58,22 @@ object CPAnsi:
     val CLR_LINE_AFTER = s"${CSI}0K"
     val CLR_LINE_BEFORE = s"${CSI}1K"
 
-    val CUR_HIDE = s"$CSI?25l"
-    val CUR_SHOW = s"$CSI?25h"
+    val CUR_HIDE = s"$CSI?25l" // Hide cursor.
+    val CUR_SHOW = s"$CSI?25h" // Show cursor.
     val CUR_UP = s"${CSI}1A"
     val CUR_DOWN = s"${CSI}1B"
     val CUR_LEFT = s"${CSI}1D"
     val CUR_RIGHT = s"${CSI}1C"
     val CUR_LINE_HOME = s"${CSI}0G"
     val CUR_SCREEN_HOME = s"${CSI}H"
-    val CUR_SAVE = s"${CSI}s"
-    val CUR_REST = s"${CSI}u"
+    val CUR_SAVE = s"${CSI}s" // Save cursor position.
+    val CUR_REST = s"${CSI}u" // Restore cursor position.
 
-    val USE_ALT_SCR_BUF = s"$CSI?1049h"
-    val USE_PRI_SCR_BUF = s"$CSI?1049l"
+    val USE_ALT_SCR_BUF = s"$CSI?1049h" // Use alternate screen buffer.
+    val USE_PRI_SCR_BUF = s"$CSI?1049l" // Return back to the saved primary screen buffer.
 
-    val WIN_TITLE_SAVE = s"${CSI}22t"
-    val WIN_TITLE_REST = s"${CSI}23t"
+    val WIN_TITLE_SAVE = s"${CSI}22t" // Save terminal window title.
+    val WIN_TITLE_REST = s"${CSI}23t" // Restore saved terminal window title.
 
     // Window-only specifics.
     val WIN_TERM_RESET = s"$ESC!p"
