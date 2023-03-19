@@ -171,14 +171,14 @@ extension(d: Int)
   *        CPEngine.initEff(
   *             CPGameInfo(name = "My Game"),
   *             System.console() == null || args.contains("emuterm")
-  *        ).recover(_ => sys.exit(1))
+  *        ).recover(_ => sys.exit(1)).get
   *
   *        // Create game scenes & their scene objects.
   *        val sc1 = new CPScene(...)
   *        val sc2 = new CPScene(...)
   *
   *        // Start the game & wait for exit.
-  *        CPEngine.startGameEff(sc1, sc2).recover(_ => sys.exit(2))
+  *        CPEngine.startGameEff(sc1, sc2).recover(_ => sys.exit(2)).get
   *
   *        // Dispose game engine.
   *        CPEngine.disposeEff().fold(_ => sys.exit(3), _ => sys.exit(0))

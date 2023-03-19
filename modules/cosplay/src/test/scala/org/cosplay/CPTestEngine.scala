@@ -41,5 +41,5 @@ object CPTestEngine:
 
     def ensureStarted(): Unit =
         if !CPEngine.isInit then
-            CPEngine.initEff(CPGameInfo(name = "cosplay-tests", initDim = CPDim(2, 2).?), true).recover(fail(_))
+            CPEngine.initEff(CPGameInfo(name = "cosplay-tests", initDim = CPDim(2, 2).?), true).recover(fail(_)).get
 
