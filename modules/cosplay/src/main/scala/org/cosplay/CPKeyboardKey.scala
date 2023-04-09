@@ -139,7 +139,7 @@ enum CPKeyboardKey(val id: String, val isPrintable: Boolean, val ch: Char, val r
     case KEY_UP_T extends CPKeyboardKey("T", true, 'T', Seq('T'))
     case KEY_UP_U extends CPKeyboardKey("U", true, 'U', Seq('U'))
     case KEY_UP_V extends CPKeyboardKey("V", true, 'V', Seq('V'))
-    case KEY_UP_W extends CPKeyboardKey("W", true, 'V', Seq('W'))
+    case KEY_UP_W extends CPKeyboardKey("W", true, 'W', Seq('W'))
     case KEY_UP_X extends CPKeyboardKey("X", true, 'X', Seq('X'))
     case KEY_UP_Y extends CPKeyboardKey("Y", true, 'Y', Seq('Y'))
     case KEY_UP_Z extends CPKeyboardKey("Z", true, 'Z', Seq('Z'))

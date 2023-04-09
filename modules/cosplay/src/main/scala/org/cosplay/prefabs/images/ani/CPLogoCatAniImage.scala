@@ -15,7 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay
+package org.cosplay.prefabs.images.ani
+
+import org.cosplay.*
+import org.cosplay.CPColor.*
+import org.cosplay.CPArrayImage.*
+import org.cosplay.CPPixel.*
 
 /*
    _________            ______________
@@ -27,19 +32,40 @@ package org.cosplay
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
-import org.junit.jupiter.api.Assertions.*
-import java.lang.ref.Cleaner
+/**
+  *
+  */
+object CPLogoCatAniImage extends CPArrayImage(
+    // 9x3
+    prepSeq(
+        """
+          | /\ /\
+          |(=^.^=)
+          | (")(")_/
+          | /\ /\
+          |(=-.-=)
+          | (")(")_/
+          |  /\ /\
+          | (=-.-=)
+          | (")(")_,
+          | /\ /\
+          |(=-.-=)
+          | (")(")_/
+          | /\ /\
+          |(=^.^=)
+          | (")(")_/
+      """),
+    (ch, _, _) => ch match
+        case '^' | '-' => ch&C_WHITE
+        case _ => ch&C_GREY
+)
 
 /**
-  * Test singleton `CPEngine` instance.
+  * Previews image using the built-in image viewer.
   */
-object CPTestEngine:
-    Cleaner.create().register(CPTestEngine, () => if CPEngine.isInit then CPEngine.disposeEff())
-
-    def ensureStarted(): Unit =
-        if !CPEngine.isInit then
-            CPEngine.initEff(CPGameInfo(name = "cosplay-tests", initDim = CPDim(2, 2).?), true).recover(fail(_)).get
-
+@main def previewLogoCatAniImage(): Unit =
+    CPImage.previewAnimation(CPLogoCatAniImage.trimBg().split(9, 3))
+    sys.exit(0)

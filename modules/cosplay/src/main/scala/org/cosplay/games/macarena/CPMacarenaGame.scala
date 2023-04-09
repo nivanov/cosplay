@@ -82,7 +82,7 @@ object CPMacarenaGame:
 
         val game = CPGameInfo(name = "ASCII Macarena", initDim = dim.?)
         // Initialize the engine - using effect API.
-        CPEngine.initEff(game).recover(e => error("init", e, 1))
+        CPEngine.initEff(game).recover(e => error("init", e, 1)).get
 
         val music = CPSound(src = "sounds/games/macarena/macarena.wav") // https://freesound.org
 
@@ -131,6 +131,6 @@ object CPMacarenaGame:
         val logoSc = new CPSlideShimmerLogoScene("logo", dim.?, bgPx, shimmers, nextSc = "danceFloor")
 
         // Start the game & wait for the exit - using effect API.
-        CPEngine.startGameEff("logo", logoSc, danceSc).recover(e => error("game", e,2 ))
+        CPEngine.startGameEff("logo", logoSc, danceSc).recover(e => error("game", e,2 )).get
         // Dispose the engine - using effect API.
         CPEngine.disposeEff().fold(e => error("dispose", e, 3), _ => sys.exit(0))
