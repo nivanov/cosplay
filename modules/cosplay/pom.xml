@@ -48,11 +48,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
         </dependency>

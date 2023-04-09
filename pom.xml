@@ -128,7 +128,6 @@
         <exec.maven.ver>3.1.0</exec.maven.ver>
         <jna.ver>5.13.0</jna.ver>
         <mixpanel.ver>1.5.1</mixpanel.ver>
-        <org.antlr4.ver>4.11.1</org.antlr4.ver>
         <de.sciss.audiofile.ver>2.4.2</de.sciss.audiofile.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
@@ -155,12 +154,6 @@
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
                 <version>${jna.ver}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-runtime</artifactId>
-                <version>${org.antlr4.ver}</version>
             </dependency>
 
             <dependency>

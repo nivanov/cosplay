@@ -50,7 +50,6 @@ val miglayoutVer = "11.1"
 val jlineVer = "3.23.0"
 val jnaVer = "5.13.0"
 val mixPanelVer = "1.5.1"
-val antlr4Ver = "4.11.1"
 val audioFileVer = "2.4.2"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
@@ -110,12 +109,9 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "net.java.dev.jna" % "jna" % s"$jnaVer",
         libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % scalaParColVer,
         libraryDependencies += "com.mixpanel" % "mixpanel-java" % mixPanelVer,
-        libraryDependencies += "org.antlr" % "antlr4-runtime" % antlr4Ver,
         libraryDependencies += "de.sciss" % "audiofile_3" % audioFileVer,
 
         // Test scope.
         libraryDependencies += "org.scalatest" %% s"scalatest" % s"$scalaTestVer" % Test,
         libraryDependencies += "org.junit.jupiter" % s"junit-jupiter-engine" % s"$junitVer" % Test
     )
-
-
