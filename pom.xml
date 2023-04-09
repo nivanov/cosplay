@@ -121,7 +121,7 @@
         <openjfx.ver>18</openjfx.ver>
         <ikonli.ver>12.3.1</ikonli.ver>
         <flatlaf.ver>3.0</flatlaf.ver>
-        <miglayout.ver>11.0</miglayout.ver>
+        <miglayout.ver>11.1</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
