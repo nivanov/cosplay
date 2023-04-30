@@ -1000,7 +1000,7 @@ object CPEngine:
 
         def postQ(id: String, msgs: Seq[AnyRef]): Unit = msgQ.get(id) match
             case Some(b) => b ++= msgs
-            case None => msgQ += id -> mutable.Buffer(msgs)
+            case None => msgQ += id -> mutable.Buffer(msgs: _*)
 
         if term.isNative && gameInfo.minDim.isDefined && term.getDim <@ gameInfo.minDim.get then
             raise(s"Terminal window is too small (must be at least ${gameInfo.minDim.get}).")
@@ -1223,10 +1223,10 @@ object CPEngine:
                         val cloMsgs = msgs
                         delayedQ += (() => postQ(cloId, cloMsgs))
                     override def receiveMessage(): Seq[AnyRef] = msgQ.get(myId) match
-                        case Some(b) =>
-                            val pckt = Seq.empty ++ b // Copy.
+                        case Some(buf) =>
+                            val msgs = Seq.empty ++ buf // Copy.
                             msgQ.remove(myId)
-                            pckt
+                            msgs
                         case None => Seq.empty
                     override def exitGame(): Unit =
                         stopFrame = true
