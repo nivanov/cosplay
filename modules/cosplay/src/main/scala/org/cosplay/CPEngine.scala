@@ -1176,6 +1176,10 @@ object CPEngine:
                         val cloId = id
                         val cloDelCur = delCur
 
+                        // Complete later runs right away.
+                        laterRuns.foreach(_.f(this))
+                        laterRuns.clear()
+
                         delayedQ += (() => {
                             if cloDelCur then
                                 scenes.remove(sc.getId) match
@@ -1194,7 +1198,6 @@ object CPEngine:
                             kbFocusOwner = None
                             scFrameCnt = 0
                             stopFrame = true
-                            laterRuns.clear()
                             nextFrameRuns.clear()
                             startScMs = System.currentTimeMillis()
                             logSceneSwitch(sc)

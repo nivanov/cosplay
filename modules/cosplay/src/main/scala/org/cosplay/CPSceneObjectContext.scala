@@ -102,13 +102,14 @@ trait CPSceneObjectContext extends CPBaseContext:
     def exitGame(): Unit
 
     /**
-      * Schedules given function to run at least `delayMs` milliseconds later. Given function
-      * will only run if its timer elapses during the current scene. In other words, at scene switch
-      * all currently pending functions will be discarded. Note that given function will run at the minimum
-      * the next frame and never in the current frame (even if `delayMs` is set to 1ms, for example).
+      * Schedules given function to run at least `delayMs` milliseconds later or upon scene switch. Given
+      * function will only run if its timer elapses during the current scene or scene changes. Note that
+      * given function will run at the minimum the next frame and never in the current frame
+      * (even if `delayMs` is set to 1ms, for example).
       *
       * @param delayMs Minimum number of milliseconds before given function will run in the current scene.
-      *         Note that the actual delay can be bigger but never smaller than this parameter.
+      *         Note that the actual delay can be bigger but never smaller than this parameter unless
+      *         scene changes.
       * @param f A function to run later in the current scene.
       */
     def runLater(delayMs: Long, f: CPSceneObjectContext => Unit): Unit
