@@ -27,8 +27,8 @@ import org.cosplay.CPPixel.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.prefabs.particles.CPConfettiEmitter
-import org.cosplay.prefabs.sprites.{CPBubbleSprite, CPCenteredImageSprite}
 import org.cosplay.prefabs.particles.*
+import org.cosplay.prefabs.sprites.{CPBubbleSprite, CPCenteredImageSprite}
 
 /*
    _________            ______________

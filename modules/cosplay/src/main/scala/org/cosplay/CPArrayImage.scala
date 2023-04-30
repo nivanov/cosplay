@@ -219,7 +219,10 @@ object CPArrayImage:
                 Seq.empty
 
     /**
-      * Converts margin-based Scala string into sequence of strings.
+      * Converts margin-based Scala string into sequence of strings. Equivalent to:
+      * {{{
+      *     prepSeq('|', s, trim)
+      * }}}
       *
       * @param s Margin-based Scala string to convert. `'|'` character will be used for margin.
       * @param trim Whether or not to trim leading and trailing empty string. The default value is `true`.
