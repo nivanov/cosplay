@@ -79,6 +79,8 @@ import scala.collection.mutable
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @example See [[org.cosplay.examples.textinput.CPTextInputExample CPTextInputExample]] class for the example of
   *     using labels and text input.
+  * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
+  * @see [[CPCanvas]] various API to draw on the canvas.
   */
 class CPTextInputSprite(
     id: String = s"input-spr-${CPRand.guid6}",

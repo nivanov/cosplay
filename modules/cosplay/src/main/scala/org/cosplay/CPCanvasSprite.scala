@@ -65,6 +65,8 @@ import org.cosplay.impl.CPUtils
   * @param id Optional ID of this sprite.
   * @param shaders Optional list of [[CPShader shaders]] attached to this canvas sprite.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
+  * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
+  * @see [[CPCanvas]] various API to draw on the canvas.
   */
 abstract class CPCanvasSprite(
     id: String = s"canv-spr-${CPRand.guid6}",

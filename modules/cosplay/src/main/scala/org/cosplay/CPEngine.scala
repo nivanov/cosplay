@@ -270,6 +270,7 @@ object CPEngine:
     private var engLog: CPLog = BufferedLog("").getLog("root")
     private val statsReg = mutable.HashSet.empty[CPRenderStatsListener]
     private val inputReg = mutable.HashSet.empty[CPInput]
+    private val extDelayedQ = mutable.ArrayBuffer.empty[(String, Seq[AnyRef])]
     private var stats = none[CPRenderStats]
     private var homeRoot = none[String]
     private var tempRoot = none[String]
@@ -927,6 +928,23 @@ object CPEngine:
             scr.intersectWith(CPRect(x2, y2, termW, termH))
 
     /**
+      * Sends direct message(s) to the scene object of the currently playing scene. Note that to
+      * exchange data between scenes you should use [[CPSceneObjectContext.getGameCache game cache]].
+      * Sent messages will be available to the recipient scene objects starting with the next frame.
+      * Messages will be stored until they are retrieved or the scene is changed.
+      *
+      * Although this method looks identical to [[CPSceneObjectContext.sendMessage()]] method, it
+      * allows to send messages to the scene objects from outside of the game loop.
+      *
+      * @param id Scene object ID from the current scene.
+      * @param msgs Messages to send.
+      * @see [[CPSceneObjectContext.receiveMessage()]]
+      */
+    def sendMessage(id: String, msgs: AnyRef*): Unit = extDelayedQ.synchronized(
+        extDelayedQ += (id -> msgs)
+    )
+
+    /**
       *
       * @param startScene
       */
@@ -982,7 +1000,7 @@ object CPEngine:
 
         def postQ(id: String, msgs: Seq[AnyRef]): Unit = msgQ.get(id) match
             case Some(b) => b ++= msgs
-            case None => msgQ += id -> mutable.Buffer(msgs)
+            case None => msgQ += id -> mutable.Buffer(msgs: _*)
 
         if term.isNative && gameInfo.minDim.isDefined && term.getDim <@ gameInfo.minDim.get then
             raise(s"Terminal window is too small (must be at least ${gameInfo.minDim.get}).")
@@ -1158,6 +1176,10 @@ object CPEngine:
                         val cloId = id
                         val cloDelCur = delCur
 
+                        // Complete later runs right away.
+                        laterRuns.foreach(_.f(this))
+                        laterRuns.clear()
+
                         delayedQ += (() => {
                             if cloDelCur then
                                 scenes.remove(sc.getId) match
@@ -1176,7 +1198,6 @@ object CPEngine:
                             kbFocusOwner = None
                             scFrameCnt = 0
                             stopFrame = true
-                            laterRuns.clear()
                             nextFrameRuns.clear()
                             startScMs = System.currentTimeMillis()
                             logSceneSwitch(sc)
@@ -1205,10 +1226,10 @@ object CPEngine:
                         val cloMsgs = msgs
                         delayedQ += (() => postQ(cloId, cloMsgs))
                     override def receiveMessage(): Seq[AnyRef] = msgQ.get(myId) match
-                        case Some(b) =>
-                            val pckt = Seq.empty ++ b // Copy.
+                        case Some(buf) =>
+                            val msgs = Seq.empty ++ buf // Copy.
                             msgQ.remove(myId)
-                            pckt
+                            msgs
                         case None => Seq.empty
                     override def exitGame(): Unit =
                         stopFrame = true
@@ -1426,6 +1447,13 @@ object CPEngine:
                 stats match
                     case Some(s) => statsReg.foreach(_.onStats(s))
                     case None => ()
+
+                // Copy messages from the external queue to the internal.
+                extDelayedQ.synchronized {
+                    if extDelayedQ.nonEmpty then
+                        extDelayedQ.foreach((id, msgs) => delayedQ += (() => postQ(id, msgs)))
+                        extDelayedQ.clear()
+                }
 
                 val statsNs = System.nanoTime() - statsStart
                 val waitMs = (FRAME_NANOS - (durNs + statsNs)) / 1_000_000

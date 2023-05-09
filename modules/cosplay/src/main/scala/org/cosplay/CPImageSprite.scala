@@ -89,6 +89,8 @@ import org.cosplay.impl.CPUtils
   *     using images.
   * @example See [[org.cosplay.examples.image.CPImageFormatsExample CPImageFormatsExample]] class for the example of
   *     using images.
+  * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
+  * @see [[CPCanvas]] various API to draw on the canvas.
   */
 class CPImageSprite(
     id: String = s"img-spr-${CPRand.guid6}",
