@@ -186,7 +186,7 @@ object CPArrayImage:
         val maxSz = lines.maxBy(_.size).size
         for line <- lines if line.size < maxSz do
             val d = maxSz - line.length
-            if align == -1 || align == 2then // Left align.
+            if align == -1 || align == 2 then // Left align.
                 (0 until d).foreach(_ => line += spacePx)
             else if align == 1 then // Right align.
                 (0 until d).foreach(_ => line.prepend(spacePx))
