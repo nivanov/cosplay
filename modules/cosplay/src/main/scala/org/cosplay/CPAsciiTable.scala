@@ -637,9 +637,9 @@ class CPAsciiTable:
   */
 object CPAsciiTable:
     /** Default row style. */
-    final val DFLT_ROW_STYLE = "align:left"
+    private final val DFLT_ROW_STYLE = "align:left"
     /** Default header style. */
-    final val DFLT_HEADER_STYLE = "align:center"
+    private final val DFLT_HEADER_STYLE = "align:center"
 
     /**
       * Creates new ASCII text table with all defaults.
