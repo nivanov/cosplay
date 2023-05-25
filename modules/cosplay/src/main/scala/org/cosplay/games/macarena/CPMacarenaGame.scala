@@ -125,7 +125,7 @@ object CPMacarenaGame:
             new CPOffScreenSprite:
                 override def onStart(): Unit =
                     music.loop(1500.ms) // Auto-play with fade-in.
-                    beatShdr.start() // Start beat shader at the same time.e
+                    beatShdr.start() // Start beat shader at the same time.
         )
         // CosPlay logo scene.
         val logoSc = new CPSlideShimmerLogoScene("logo", dim.?, bgPx, shimmers, nextSc = "danceFloor")

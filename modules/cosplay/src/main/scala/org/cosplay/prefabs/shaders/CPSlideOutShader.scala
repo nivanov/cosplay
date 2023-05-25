@@ -47,7 +47,7 @@ import org.apache.commons.math3.analysis.function.*
   * @param durMs Duration of the effect in milliseconds.
   * @param bgPx Background pixel to fade out to.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
-  * @param autoStart Whether to start shader right away. Default value is `true`.
+  * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
   *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
   *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
@@ -151,7 +151,7 @@ object CPSlideOutShader:
       * @param durMs Duration of the effect in milliseconds.
       * @param bgPx Background pixel to fade in from.
       * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
-      * @param autoStart Whether to start shader right away. Default value is `true`.
+      * @param autoStart Whether to start shader right away. Default value is `false`.
       * @param skip Predicate allowing to skip certain pixel from the shader. Typically used to skip background
       *     or certain Z-index. Default predicate returns `false` for all pixels.
       */
@@ -161,7 +161,7 @@ object CPSlideOutShader:
         durMs: Long,
         bgPx: CPPixel,
         onFinish: CPSceneObjectContext => Unit = _ => (),
-        autoStart: Boolean = true,
+        autoStart: Boolean = false,
         skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false
     ): CPSlideOutShader =
         val sigmoid = new Sigmoid()

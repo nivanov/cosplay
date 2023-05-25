@@ -24,7 +24,7 @@
     <name>CosPlay Parent</name>
     <groupId>org.cosplayengine</groupId>
     <artifactId>cosplay-parent</artifactId>
-    <version>0.8.9</version>
+    <version>0.8.10</version>
     <packaging>pom</packaging>
     <description>An open-source 2D ASCII game engine for Scala3</description>
     <url>https://github.com/nivanov/cosplay</url>
@@ -117,10 +117,10 @@
         <commons.collections.ver>4.4</commons.collections.ver>
         <scala3.reflect.ver>1.2.0</scala3.reflect.ver>
         <scalatest.ver>3.2.15</scalatest.ver>
-        <junit.ver>5.9.2</junit.ver>
+        <junit.ver>5.9.3</junit.ver>
         <openjfx.ver>18</openjfx.ver>
         <ikonli.ver>12.3.1</ikonli.ver>
-        <flatlaf.ver>3.1</flatlaf.ver>
+        <flatlaf.ver>3.1.1</flatlaf.ver>
         <miglayout.ver>11.1</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>

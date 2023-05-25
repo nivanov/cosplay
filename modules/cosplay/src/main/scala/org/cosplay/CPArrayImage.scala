@@ -186,7 +186,7 @@ object CPArrayImage:
         val maxSz = lines.maxBy(_.size).size
         for line <- lines if line.size < maxSz do
             val d = maxSz - line.length
-            if align == -1 || align == 2then // Left align.
+            if align == -1 || align == 2 then // Left align.
                 (0 until d).foreach(_ => line += spacePx)
             else if align == 1 then // Right align.
                 (0 until d).foreach(_ => line.prepend(spacePx))
@@ -219,7 +219,10 @@ object CPArrayImage:
                 Seq.empty
 
     /**
-      * Converts margin-based Scala string into sequence of strings.
+      * Converts margin-based Scala string into sequence of strings. Equivalent to:
+      * {{{
+      *     prepSeq('|', s, trim)
+      * }}}
       *
       * @param s Margin-based Scala string to convert. `'|'` character will be used for margin.
       * @param trim Whether or not to trim leading and trailing empty string. The default value is `true`.

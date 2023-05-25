@@ -119,6 +119,8 @@ class CPAsciiTable:
         left: Int = 0
     )
 
+    private final val SEP_ROW = IndexedSeq.empty[Cell]
+
     // Table drawing symbols.
     private val HDR_HOR = "="
     private val HDR_VER = "|"
@@ -228,6 +230,15 @@ class CPAsciiTable:
         startRow()
         cells.foreach(p => addRowCell(p))
         endRow()
+        this
+
+    /**
+      * Adds horizontal separator row to the table.
+      */
+    def addSeparator(): CPAsciiTable =
+        startRow()
+        rows :+= SEP_ROW
+        curRow = null
         this
 
     /**
@@ -448,7 +459,7 @@ class CPAsciiTable:
         if isHdr then colsNum = hdr.size
 
         // Calc number of columns and make sure all rows are even.
-        for r <- rows do
+        for r <- rows if r != SEP_ROW do
             if colsNum == -1 then colsNum = r.size
             else if colsNum != r.size then assert(assertion = false, "Table with uneven rows.")
 
@@ -469,9 +480,14 @@ class CPAsciiTable:
 
         // Calculate row heights and column widths.
         for i <- rows.indices; j <- 0 until colsNum do
-            val c = rows(i)(j)
-            rowHeights(i) = math.max(rowHeights(i), c.height)
-            colWidths(j) = math.max(colWidths(j), c.width)
+            val row = rows(i)
+            val (h, w) =
+                if row == SEP_ROW then (1, 0)
+                else
+                    val c = row(j)
+                    (c.height, c.width)
+            rowHeights(i) = math.max(rowHeights(i), h)
+            colWidths(j) = math.max(colWidths(j), w)
 
         // Table width without the border.
         val tableW = colWidths.sum + colsNum - 1
@@ -483,7 +499,7 @@ class CPAsciiTable:
           *
           * @param crs
           * @param cor
-              */
+          */
         def mkAsciiLine(crs: String, cor: String): String =
             s"${space(margin.left)}$crs${dash(cor, tableW)}$crs${space(margin.right)}\n"
 
@@ -524,26 +540,27 @@ class CPAsciiTable:
 
             for i <- rows.indices do
                 val row = rows(i)
-                val rowH = rowHeights(i)
-                for j <- 0 until rowH do
-                    // Left margin and '|'
-                    tbl ++= s"${space(margin.left)}$ROW_VER"
+                if row == SEP_ROW then tbl ++= tblWidthLine
+                else
+                    val rowH = rowHeights(i)
+                    for j <- 0 until rowH do
+                        // Left margin and '|'
+                        tbl ++= s"${space(margin.left)}$ROW_VER"
 
-                    for k <- row.indices do
-                        val c = row(k)
-                        val w = colWidths(k)
-                        if j < c.height then
-                            tbl ++= aligned(c.lines(j), w, c.style)
-                        else
-                            tbl ++= space(w)
-                        tbl ++= s"$ROW_VER" // '|'
+                        for k <- row.indices do
+                            val c = row(k)
+                            val w = colWidths(k)
+                            if j < c.height then
+                                tbl ++= aligned(c.lines(j), w, c.style)
+                            else
+                                tbl ++= space(w)
+                            tbl ++= s"$ROW_VER" // '|'
 
 
-                    // Right margin.
-                    tbl ++= s"${space(margin.right)}\n"
+                        // Right margin.
+                        tbl ++= s"${space(margin.right)}\n"
 
-                if (i < rows.size - 1 && ((rowH > 1 && multiLineAutoBorder) || insideBorder))
-                    addHorLine(i)
+                    if i < rows.size - 1 && ((rowH > 1 && multiLineAutoBorder) || insideBorder) then addHorLine(i)
 
             tbl ++= tblWidthLine
 
@@ -637,9 +654,9 @@ class CPAsciiTable:
   */
 object CPAsciiTable:
     /** Default row style. */
-    final val DFLT_ROW_STYLE = "align:left"
+    private final val DFLT_ROW_STYLE = "align:left"
     /** Default header style. */
-    final val DFLT_HEADER_STYLE = "align:center"
+    private final val DFLT_HEADER_STYLE = "align:center"
 
     /**
       * Creates new ASCII text table with all defaults.

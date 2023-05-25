@@ -80,6 +80,8 @@ import scala.collection.mutable
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @example See [[org.cosplay.examples.video.CPVideoExample CPVideoExample]] class for the example of
   *     using video support.
+  * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
+  * @see [[CPCanvas]] various API to draw on the canvas.
   */
 //noinspection ScalaWeakerAccess
 class CPVideoSprite(

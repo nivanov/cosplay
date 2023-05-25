@@ -1438,7 +1438,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         titleX: Int = -1,
         titleY: Int = -1
     ): Unit =
-        if title.nonEmpty && (titleX <= 0 || titleY <= 0) then raise("Title coordinate must be supplied and >= 0.")
+        if title.nonEmpty && (titleX < 0 || titleY < 0) then raise("Title coordinate must be supplied and >= 0.")
         drawRect(x1, y1, x2, y2, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
         if title.nonEmpty then drawPixels(titleX, titleY, z, title)
 
