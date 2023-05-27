@@ -84,7 +84,6 @@ object CPAnsi:
       * @param fg
       */
     inline def str(s: String, fg: CPColor): String = s"${fg.fgAnsi}$s$RESET_ALL"
-
     /**
       *
       * @param s
@@ -92,25 +91,19 @@ object CPAnsi:
       * @param bg
       */
     inline def str(s: String, fg: CPColor, bg: CPColor): String = s"${fg.fgAnsi}${bg.bgAnsi}$s$RESET_ALL"
-
     /** ANSI sequence for 24-bit foreground color. */
     inline def fg24Bit(r: Int, g: Int, b: Int): String = s"${CSI}38;2;$r;$g;${b}m"
-
     /** ANSI sequence for 24-bit background color. */
     inline def bg24Bit(r: Int, g: Int, b: Int): String = s"${CSI}48;2;$r;$g;${b}m"
-
     /** ANSI sequence for 8-bit xterm lookup foreground color. */
     inline def fg8Bit(n: Int): String = s"${CSI}38;5;${n}m"
-
     /** ANSI sequence for 8-bit xterm lookup background color. */
     inline def bg8Bit(n: Int): String = s"${CSI}48;5;${n}m"
-
     /**
       *
       * @param title
       */
     inline def winTitle(title: String): String = s"${OSC}0;$title$BELL"
-
     /**
       * Cursor ANSI position is 1-based.
       *
