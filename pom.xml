@@ -112,7 +112,7 @@
         <jline.ver>3.23.0</jline.ver>
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
         <commons.math.ver>3.6.1</commons.math.ver>
-        <commons.io.ver>2.11.0</commons.io.ver>
+        <commons.io.ver>2.12.0</commons.io.ver>
         <commons.text.ver>1.10.0</commons.text.ver>
         <commons.collections.ver>4.4</commons.collections.ver>
         <scala3.reflect.ver>1.2.0</scala3.reflect.ver>
@@ -127,7 +127,7 @@
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
         <exec.maven.ver>3.1.0</exec.maven.ver>
         <jna.ver>5.13.0</jna.ver>
-        <mixpanel.ver>1.5.1</mixpanel.ver>
+        <mixpanel.ver>1.5.2</mixpanel.ver>
         <de.sciss.audiofile.ver>2.4.2</de.sciss.audiofile.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
