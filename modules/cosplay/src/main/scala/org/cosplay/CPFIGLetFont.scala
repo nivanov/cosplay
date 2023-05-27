@@ -211,11 +211,11 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
             var x, y = 0
             var overlapping = false
 
-            while (kernX > 0 && !overlapping)
+            while kernX > 0 && !overlapping do
                 x = 0
-                while (x < figCh.width && !overlapping)
+                while x < figCh.width && !overlapping do
                     y = 0
-                    while (y < figHeight && !overlapping)
+                    while y < figHeight && !overlapping do
                         val px1 = data.get(kernX + x, y)
                         if px1 != null then
                             val ch1 =  px1.char
@@ -236,11 +236,11 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
             var ch2: Char = 0
             var overlapping = false
 
-            while (smushX > 0 && !overlapping)
+            while smushX > 0 && !overlapping do
                 x = 0
-                while (x < figCh.width && !overlapping)
+                while x < figCh.width && !overlapping do
                     y = 0
-                    while (y < figHeight && !overlapping)
+                    while y < figHeight && !overlapping do
                         val px1 = data.get(smushX + x, y)
                         if px1 != null then
                             ch1 =  px1.char
@@ -359,7 +359,6 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
         def wrongHeader(err: String): CPException = new CPException(s"Invalid FLF file header ($err): $flfPath")
 
         val parts = hdr.split(" ").filter(_.nonEmpty).map(_.trim)
-
         if parts.length < 7 then wrongHeader("less than 7 mandatory fields")
 
         // Mandatory fields.
@@ -463,19 +462,19 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
       *
       */
     private def loadAndInit(): Unit =
-        var lines = try
-            enc = "UTF-8"
-            CPUtils.readStrings(flfPath, enc).toIndexedSeq
-        catch
-            case _: MalformedInputException =>
-                try
-                    enc = "windows-1252"
-                    CPUtils.readStrings(flfPath, enc).toIndexedSeq
-                catch case e: Exception => raise(s"Failed to read (unsupported encoding?): $flfPath", e.?)
+        var lines =
+            try
+                enc = "UTF-8"
+                CPUtils.readStrings(flfPath, enc).toIndexedSeq
+            catch
+                case _: MalformedInputException =>
+                    try
+                        enc = "windows-1252"
+                        CPUtils.readStrings(flfPath, enc).toIndexedSeq
+                    catch case e: Exception => raise(s"Failed to read (unsupported encoding?): $flfPath", e.?)
 
         // Some fonts are not following FIGLet spec with extra spaces after EOL...
         lines = lines.map(_.stripTrailing())
-
         !>(lines.nonEmpty, s"FLF file is empty: $flfPath")
 
         parseFIGHeader(lines.head)
