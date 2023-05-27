@@ -115,7 +115,7 @@ case class CPStarStreak(
 class CPStarStreakShader(
     entireFrame: Boolean,
     bg: CPColor,
-    streaks: Seq[CPStarStreak],
+    private var streaks: Seq[CPStarStreak],
     autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     durMs: Long = Long.MaxValue,
@@ -123,7 +123,7 @@ class CPStarStreakShader(
 ) extends CPShader:
     !>(streaks.nonEmpty, "Streaks cannot be empty.")
 
-    case class Star(streak: CPStarStreak, initX: Int, initY: Int):
+    private case class Star(streak: CPStarStreak, initX: Int, initY: Int):
         private var x = initX.toFloat
         private var y = initY.toFloat
         private val initCol = streak.colors.rand
@@ -141,6 +141,21 @@ class CPStarStreakShader(
     private val stars = mutable.ArrayBuffer.empty[Star]
     private var go = autoStart
     private var startMs = 0L
+
+    /**
+      * Sets new set of star streaks.
+      *
+      * @param streaks Star streaks to set.
+      */
+    def setStreaks(streaks: Seq[CPStarStreak]): Unit =
+        !>(streaks.nonEmpty, "Streaks cannot be empty.")
+        stars.clear()
+        this.streaks = streaks
+
+    /**
+      * Gets this shader's set of star streaks.
+      */
+    def getStreaks: Seq[CPStarStreak] = streaks
 
     /**
       * Starts the shader effect.
