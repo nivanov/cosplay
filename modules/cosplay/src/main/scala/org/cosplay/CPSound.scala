@@ -122,10 +122,12 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       *
       * @param fadeInMs Fade in duration in milliseconds. Default is zero.
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
+      *     This callback will not be called unless the media riches the end and not stopped
+      *     before.
       */
     def play(fadeInMs: Long = 0, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
         val it = this
-        player.setOnEndOfMedia(
+        setOnEnd(
             new Runnable():
                 override def run(): Unit =
                     seek(0) // Force rewind.
@@ -180,10 +182,12 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       *
       * @param fadeInMs Fade in duration in milliseconds.
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
+      *     This callback will not be called unless the media riches the end and not stopped
+      *     before.
       */
     def loop(fadeInMs: Long, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
         val it = this
-        player.setOnEndOfMedia(
+        setOnEnd(
             new Runnable():
                 override def run(): Unit =
                     endFun(it)
@@ -249,7 +253,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
         stopTimeline()
         def end(): Unit =
             player.stop() // Also rewinds back.
-            player.setOnEndOfMedia(null) // Stop looping, if any.
+            setOnEnd(null) // Stop looping, if any.
             player.setVolume(vol) // Restore the volume.
 
         if fadeOutMs <= 0 then end()
@@ -264,6 +268,8 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
                 override def handle(t: ActionEvent): Unit = end()
             })
             timeline.play()
+
+    inline private def setOnEnd(r: Runnable): Unit = player.setOnEndOfMedia(r)
 
     /**
       * Tests whether or not the audio playback is on.
