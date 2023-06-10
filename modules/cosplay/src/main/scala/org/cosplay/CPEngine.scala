@@ -516,7 +516,7 @@ object CPEngine:
 
         // Create new terminal.
         try term = Class.forName(termClsName).getDeclaredConstructor(classOf[CPGameInfo]).newInstance(gameInfo).asInstanceOf[CPTerminal]
-        catch case e: Exception => raise(s"Failed to create the terminal for class: $termClsName", e.?)
+        catch case e: Exception => throw if e.getCause != null then e.getCause else e
 
         // Set terminal window title.
         updateTitle(term.getDim)

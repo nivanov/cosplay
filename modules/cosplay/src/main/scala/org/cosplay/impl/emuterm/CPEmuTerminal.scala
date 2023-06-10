@@ -137,6 +137,9 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       *
       */
     private def initFontMetrics(): Unit =
+        val fonts = GraphicsEnvironment.getLocalGraphicsEnvironment.getAllFonts.toList
+        val fontNames = (fonts.map(_.getFontName) ++ fonts.map(_.getName) ++ fonts.map(_.getFamily)).distinct
+        if !fontNames.contains(fontName) then raise(s"Unknown emulator font name: $fontName")
         termFont = new Font(fontName, Font.PLAIN, fontSize)
         val g = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).createGraphics()
         configFont(g)
