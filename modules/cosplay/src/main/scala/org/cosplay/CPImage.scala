@@ -706,6 +706,7 @@ object CPImage:
     private val HOR_FLIP_MAP = Seq(
         '{' -> '}',
         '/' -> '\\',
+        '7' -> '\\',
         '<' -> '>',
         '(' -> ')',
         '[' -> ']',
@@ -715,7 +716,8 @@ object CPImage:
         'e' -> 'g',
         'J' -> 'L',
         'q' -> 'p',
-        'd' -> 'b'
+        'd' -> 'b',
+        '\\' -> '/'
     )
 
     // First search for '_1' then, if not found, search for '_2'.
