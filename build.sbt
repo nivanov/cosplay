@@ -73,6 +73,9 @@ lazy val cosplay = (project in file("modules/cosplay"))
         name := "CosPlay",
         version := cosPlayVer,
 
+        Compile / packageBin / packageOptions +=
+            Package.ManifestAttributes("Automatic-Module-Name" -> "cosplay"),
+
         // Scaladoc config.
         Compile / doc / scalacOptions ++= Seq(
             "-project-footer", "(C) 2023 Rowan Games, Inc.",
@@ -86,8 +89,9 @@ lazy val cosplay = (project in file("modules/cosplay"))
             "-social-links:github::https://github.com/nivanov/cosplay"
         ),
         // JVM options for Java 17+.
-        javaOptions += "--add-opens",
-        javaOptions += "javafx.media/com.sun.javafx.application=ALL-UNNAMED",
+        javaOptions += "--add-opens javafx.media/com.sun.javafx.application=ALL-UNNAMED",
+        javaOptions += "--add-opens java.base/java.lang=ALL-UNNAMED",
+        javaOptions += "--add-exports java.base/jdk.internal.access=ALL-UNNAMED",
 
         // Dependencies.
         libraryDependencies += "org.apache.commons" % "commons-math3" % commonsMath3Ver,

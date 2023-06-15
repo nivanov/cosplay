@@ -241,4 +241,3 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
 
     // Init the terminal.
     init()
-
