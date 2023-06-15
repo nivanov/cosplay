@@ -274,6 +274,7 @@ object CPEngine:
     private var stats = none[CPRenderStats]
     private var homeRoot = none[String]
     private var tempRoot = none[String]
+
     @volatile private var state = State.ENG_INIT
     @volatile private var playing = true
 
@@ -363,6 +364,7 @@ object CPEngine:
         private val TIMEOUT = -2
         private val ESC = 27
         private val mapping = mutable.HashMap.empty[Seq[Int], CPKeyboardKey]
+        private val isKbLog = CPUtils.sysEnvBool("COSPLAY_KB_LOG")
 
         @volatile var st0p = false
 
@@ -370,7 +372,7 @@ object CPEngine:
         for key <- CPKeyboardKey.values do key.rawCodes.foreach(s => mapping += s.map(_.toInt) -> key)
 
         private def read(timeout: Long): Int = term.nativeKbRead(timeout)
-
+        private inline def logKb(key: CPKeyboardKey, chs: Int*): Unit = if isKbLog then println(s"'${key.id}' [${chs.mkString(",")}]")
         override def run(): Unit =
             while (!st0p)
                 var key = KEY_UNKNOWN
@@ -378,28 +380,42 @@ object CPEngine:
                 try
                     read(0) match // Blocking wait (timeout = 0).
                         case ESC => read(1) match
-                            case EOF | TIMEOUT => key = KEY_ESC
+                            case EOF | TIMEOUT =>
+                                key = KEY_ESC
+                                logKb(key, ESC)
                             case c1 => mapping.get(Seq(ESC, c1)) match
-                                case Some(k) => key = k
+                                case Some(k) =>
+                                    key = k
+                                    logKb(key, ESC, c1)
                                 case None => read(1) match
                                     case EOF | TIMEOUT => ()
                                     case c2 => mapping.get(Seq(ESC, c1, c2)) match
-                                        case Some(k) => key = k
+                                        case Some(k) =>
+                                            key = k
+                                            logKb(key, ESC, c1, c2)
                                         case None => read(1) match
                                             case EOF | TIMEOUT => ()
                                             case c3 => mapping.get(Seq(ESC, c1, c2, c3)) match
-                                                case Some(k) => key = k
+                                                case Some(k) =>
+                                                    key = k
+                                                    logKb(key, ESC, c1, c2, c3)
                                                 case None => read(1) match
                                                     case EOF | TIMEOUT => ()
                                                     case c4 => mapping.get(Seq(ESC, c1, c2, c3, c4)) match
-                                                        case Some(k) => key = k
+                                                        case Some(k) =>
+                                                            key = k
+                                                            logKb(key, ESC, c1, c2, c3, c4)
                                                         case None => read(1) match
                                                             case EOF | TIMEOUT => ()
                                                             case c5 => mapping.get(Seq(ESC, c1, c2, c3, c4, c5)) match
-                                                                case Some(k) => key = k
+                                                                case Some(k) =>
+                                                                    key = k
+                                                                    logKb(key, ESC, c1, c2, c3, c4, c5)
                                                                 case None => ()
                         case EOF | TIMEOUT => ()
-                        case code => key = mapping.getOrElse(Seq(code), KEY_UNKNOWN)
+                        case code =>
+                            key = mapping.getOrElse(Seq(code), KEY_UNKNOWN)
+                            logKb(key, code)
                 catch
                     case _: InterruptedIOException => ()
                     case _: InterruptedException => ()

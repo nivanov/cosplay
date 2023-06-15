@@ -64,6 +64,7 @@ import scala.collection.mutable
   * - COSPLAY_EMUTERM_ANTIALIAS
   */
 class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
+    private val isKbLog = CPUtils.sysEnvBool("COSPLAY_KB_LOG")
     private val INIT_PXS_SIZE = 100 * 100
     private val INIT_GLYPHS_SIZE = 1000
     private val GLYPHS_LOAD_FACTOR = 0.2
@@ -262,7 +263,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 if bufImg == null then bufImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB)
                 val g2 = bufImg.createGraphics()
                 fillRect(g2, bg, 0, 0, w, h)
-                renderMux.synchronized {
+                renderMux.synchronized:
                     if pxs.nonEmpty then
                         for px <- pxs do
                             val glyph = glyphCache.get(px.px) match
@@ -278,22 +279,23 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                                     glyphCache.put(px.px, img)
                                     img
                             g2.drawImage(glyph, px.x, px.y, chW, chH, null)
-                }
                 g2.dispose()
                 if bufImg != null then g.asInstanceOf[Graphics2D].drawImage(bufImg, 0, 0, w, h, null)
 
-        // Fix handing of 'Tab' keypress.
-        val tabKeys = frame.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS)
-        val newTabKeys = new java.util.HashSet(tabKeys)
-        newTabKeys.remove(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0))
-        frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, newTabKeys)
+        // Clear up focus traverse key bindings.
+        val empty = new java.util.HashSet()
+        frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, empty)
+        frame.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, empty)
+        frame.setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, empty)
+        frame.setFocusTraversalKeys(KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS, empty)
 
         frame.addKeyListener(new KeyAdapter:
             override def keyPressed(e: KeyEvent): Unit =
                 def shift(shiftKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey = if e.isShiftDown then shiftKey else normKey
                 def ctrl(ctrlKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey = if e.isControlDown then ctrlKey else normKey
 
-                kbKey = kbMux.synchronized {
+                if isKbLog then println(e)
+                kbKey = kbMux.synchronized:
                     Option(e.getKeyCode match
                         case VK_ENTER => KEY_ENTER
                         case VK_BACK_SPACE => KEY_BACKSPACE
@@ -378,9 +380,8 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
 
                         case _ => null
                     )
-                }
         )
-        panel.addComponentListener(
+        panel.addComponentListener:
             new ComponentAdapter:
                 override def componentResized(e: ComponentEvent): Unit =
                     val sz = panel.getSize()
@@ -388,7 +389,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                     if newDim != curDim then
                         curDim = CPDim(sz.width / chW, sz.height / chH)
                         bufImg = null
-        )
         panel.setBackground(bg)
         panel.setPreferredSize(safeDim(curDim.w * chW, curDim.h * chH))
         panel.setMinimumSize(new Dimension(10 * chW, 10 * chH)) // 10x10 char is minimum dimension.
@@ -433,7 +433,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         val offX = if tw > cw then (tw - cw) / 2 * chW else 0
         val offY = if th > ch then (th - ch) / 2 * chH else 0
 
-        renderMux.synchronized {
+        renderMux.synchronized:
             pxs.clear()
             effRect.loop((x, y) =>
                 val px = scr.getPixel(x, y).px
@@ -444,7 +444,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                         offY + chH * (y - effRect.y) // Screen pixel-level coordinate.
                     )
             )
-        }
 
         panel.repaint()
 
@@ -454,13 +453,13 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     override def getDim: CPDim = curDim
     override def setTitle(s: String): Unit = frame.setTitle(s)
     override def nativeKbRead(timeoutMs: Long): Int = assert(assertion = false, "Unsupported.")
-    override def kbRead(): Option[CPKeyboardKey] = kbMux.synchronized {
-        kbKey.flatMap(key =>
-            kbKey = None
-            key.clear()
-            key.?
-        )
-    }
+    override def kbRead(): Option[CPKeyboardKey] =
+        kbMux.synchronized:
+            kbKey.flatMap(key =>
+                kbKey = None
+                key.clear()
+                key.?
+            )
 
     init()
 
