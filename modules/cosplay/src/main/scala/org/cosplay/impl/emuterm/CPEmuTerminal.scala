@@ -290,8 +290,11 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         frame.setFocusTraversalKeys(KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS, empty)
 
         frame.addKeyListener(new KeyAdapter:
+            private val tk = Toolkit.getDefaultToolkit
             override def keyPressed(e: KeyEvent): Unit =
-                def shift(shiftKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey = if e.isShiftDown then shiftKey else normKey
+                def shift(shiftKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey =
+                    val capslock = tk.getLockingKeyState(KeyEvent.VK_CAPS_LOCK)
+                    if e.isShiftDown || capslock then shiftKey else normKey
                 def ctrl(ctrlKey: CPKeyboardKey, normKey: CPKeyboardKey): CPKeyboardKey = if e.isControlDown then ctrlKey else normKey
 
                 if isKbLog then println(e)

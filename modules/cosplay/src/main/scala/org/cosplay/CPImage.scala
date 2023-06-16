@@ -142,7 +142,7 @@ import scala.util.Using
   *  - `*.xp` [[https://www.gridsagegames.com/rexpaint/ REXPaint XP]] format. This is a native format
   *    used by [[https://www.gridsagegames.com/rexpaint/ REXPaint]] ASCII editor and can be loaded
   *    by the REXPaint.This format supports full color information.
-  *  - `*.txt` Text format. This format does not retain color inforation.
+  *  - `*.txt` Text format. This format does not retain color information.
   *
   *  Use the following methods to save the image to the file path:
   *   - [[saveRexCsv() saveRexCsv(...)]]
