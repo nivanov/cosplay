@@ -71,6 +71,23 @@ ThisBuild / developers ++= List(
 lazy val cosplay = (project in file("modules/cosplay"))
     .settings(
         name := "CosPlay",
+
+        // NOTE:
+        // -----
+        // This (enabling forking) will force CosPlay to use terminal emulator and will not work in the same
+        // terminal console as SBT itself. If forking is disabled, then CosPlay will try to run in the same
+        // console as SBT and will fail due to JLine native libraries loading semantics (SBT also uses JLine).
+        //
+        // If you want to run a built-in game or example in the terminal console use supplied maven build
+        // 'modules/cosplay/pom.xml'. For example, to run built-in 'Pong' game (maven profile 'pong') in the
+        // terimanl console run the following command from the project root directory:
+        //
+        // $ mvn clean package
+        // $ mvn -f modules/cosplay -P pong exec:java
+        //
+        // See 'modules/cosplay/pom.xml' for all available profiles to run.
+        fork := true,
+
         version := cosPlayVer,
 
         // Scaladoc config.
@@ -103,6 +120,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "co.blocke" %% s"scala-reflection" % scalaReflectVer,
         libraryDependencies += "com.typesafe.scala-logging" % s"scala-logging_$scalaMajVer" % scalaLoggingVer,
         libraryDependencies += "org.jline" % "jline-terminal" % s"$jlineVer",
+        libraryDependencies += "org.fusesource.jansi" % "jansi" % "2.4.0",
         libraryDependencies += "net.java.dev.jna" % "jna" % s"$jnaVer",
         libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % scalaParColVer,
         libraryDependencies += "com.mixpanel" % "mixpanel-java" % mixPanelVer,

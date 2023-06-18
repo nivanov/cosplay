@@ -68,7 +68,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private val root = new CPGuiLog("")
     // Background pixel in case terminal window is bigger than camera frame.
     private val bgPx = ' '&&(CPColor.C_BLACK, bg)
-    @volatile private var curDim: CPDim = _
+    @volatile private var curDim: CPDim = CPDim.ZERO
     private var termDimReader: TermDimensionReader = _
 
     /**
@@ -77,7 +77,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       * @param scr
       * @param camRect
       */
-    class TermScreen(termDim: CPDim, scr: CPScreen, camRect: CPRect):
+    private class TermScreen(termDim: CPDim, scr: CPScreen, camRect: CPRect):
         !>(scr.getRect.contains(camRect))
 
         private val termRect = new CPRect(0, 0, termDim) // Exact terminal window.
@@ -200,8 +200,8 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
             .name("cosplay")
             .system(true)
             .nativeSignals(true)
-            .jansi(SystemUtils.IS_OS_UNIX)
-            .jna(SystemUtils.IS_OS_WINDOWS)
+            .dumb(false)
+            .`type`("xterm-256color")
             .build()
 
         // Set raw mode.
@@ -211,8 +211,8 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         reader = term.reader()
 
         termDimReader = TermDimensionReader()
-        curDim = termDimReader.getDim
         termDimReader.start()
+        curDim = termDimReader.getDim
 
         write(WIN_TITLE_SAVE)
         write(CUR_SAVE)
