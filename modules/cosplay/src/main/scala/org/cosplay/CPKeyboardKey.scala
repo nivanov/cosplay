@@ -56,23 +56,24 @@ object CPKeyboardKey:
   *
   * ### Remapped Keys
   * The following keystrokes are automatically re-mapped:
-  *  - `CTRL+h` is mapped to [[CPKeyboardKey.KEY_BACKSPACE]].
-  *  - `CTRL+i` is mapped to [[CPKeyboardKey.KEY_TAB]].
-  *  - `CTRL+m` is mapped to [[CPKeyboardKey.KEY_ENTER]].
+  *  - `CTRL+H` is mapped to [[CPKeyboardKey.KEY_BACKSPACE]].
+  *  - `CTRL+I` is mapped to [[CPKeyboardKey.KEY_TAB]].
+  *  - `CTRL+M` is mapped to [[CPKeyboardKey.KEY_ENTER]].
   *
-  * NOTE: `CTRL+h`, `CTRL+i` and `CTRL+m` will not be detected as-is, and you should use their conversions
-  * instead. Note that even-though this enumeration provides constants for `CTRL+h`, `CTRL+i` and `CTRL+m` they
+  * NOTE: `CTRL+H`, `CTRL+I` and `CTRL+M` will not be detected as-is, and you should use their conversions
+  * instead. Note that even-though this enumeration provides constants for `CTRL+H`, `CTRL+I` and `CTRL+M` they
   * will never be returned to the scene objects since they would always be automatically remapped.
-  * This is the limitation of the ANSI terminals, i.e. `CTRL+m` generated the same ANSI code as `Enter`
+  * This is the limitation of the ANSI terminals, i.e. `CTRL+M` generates the same ANSI code as `Enter`
   * key press.
   *
   * ### Reserved Keys
   * There are three reserved key strokes that are used by the game engine itself and therefore NOT available
   * to the game. These keystrokes are intercepted before frame update and not propagated to the scene object
   * context:
-  *  - 'CTRL+Q' - toggles in-game FPS overlay
-  *  - 'CTRL+L' - opens GUI-based loc viewer & debugger
-  *  - 'F12' - saves current frame screenshot as *.xp image to the current working folder.
+  *  - `CTRL+Q` - toggles in-game FPS overlay
+  *  - `CTRL+L` - opens GUI-based loc viewer & debugger
+  *  - `F12` - saves current frame screenshot as [[https://www.gridsagegames.com/rexpaint/ REXPaint]]
+  *    *.xp image to the current working folder.
   *
   * @see [[CPKeyboardEvent.key]]
   */
@@ -216,6 +217,7 @@ enum CPKeyboardKey(val id: String, val isPrintable: Boolean, val ch: Char, val r
     // Non-alphanumerics.
     /** `'~'` key press. */
     case KEY_TILDE extends CPKeyboardKey("~", true, '~', Seq('~'))
+    /** `'`' key press. */
     case KEY_BACK_QUOTE extends CPKeyboardKey("`", true, '`', Seq('`'))
     /** `'!'` key press. */
     case KEY_EXCL extends CPKeyboardKey("!", true, '!', Seq('!'))
@@ -223,19 +225,27 @@ enum CPKeyboardKey(val id: String, val isPrintable: Boolean, val ch: Char, val r
     case KEY_AT extends CPKeyboardKey("@", true, '@', Seq('@'))
     /** `'#'` key press. */
     case KEY_NUMBER_SIGN extends CPKeyboardKey("#", true, '#', Seq('#'))
+    /** `'$'` key press. */
     case KEY_DOLLAR extends CPKeyboardKey("$", true, '$', Seq('$'))
+    /** `'%'` key press. */
     case KEY_PERCENT extends CPKeyboardKey("%", true, '%', Seq('%'))
     /** `'^'` key press. */
     case KEY_CIRCUMFLEX extends CPKeyboardKey("^", true, '^', Seq('^'))
+    /** `'&'` key press. */
     case KEY_AMPERSAND extends CPKeyboardKey("&", true, '&', Seq('&'))
+    /** `'*'` key press. */
     case KEY_MULTIPLY extends CPKeyboardKey("*", true, '*', Seq('*'))
     /** `'('` key press. */
     case KEY_LPAR extends CPKeyboardKey("(", true, '(', Seq('('))
     /** `')'` key press. */
     case KEY_RPAR extends CPKeyboardKey(")", true, ')', Seq(')'))
+    /** `'-'` key press. */
     case KEY_MINUS extends CPKeyboardKey("-", true, '-', Seq('-'))
+    /** `'_'` key press. */
     case KEY_UNDERSCORE extends CPKeyboardKey("_", true, '_', Seq('_'))
+    /** `'='` key press. */
     case KEY_EQUAL extends CPKeyboardKey("=", true, '=', Seq('='))
+    /** `'+'` key press. */
     case KEY_PLUS extends CPKeyboardKey("+", true, '+', Seq('+'))
     /** `'['` key press. */
     case KEY_LBRKT extends CPKeyboardKey("[", true, '[', Seq('['))
@@ -245,12 +255,17 @@ enum CPKeyboardKey(val id: String, val isPrintable: Boolean, val ch: Char, val r
     case KEY_LCBRKT extends CPKeyboardKey("{", true, '{', Seq('{'))
     /** `'}'` key press. */
     case KEY_RCBRKT extends CPKeyboardKey("}", true, '}', Seq('}'))
+    /** `';'` key press. */
     case KEY_SEMICOLON extends CPKeyboardKey(";", true, ';', Seq(';'))
+    /** `':'` key press. */
     case KEY_COLON extends CPKeyboardKey(":", true, ':', Seq(':'))
-    case KEY_QUOTE extends CPKeyboardKey("'", true, ch = '\'', Seq('\''))
+    /** `''''` key press. */
+    case KEY_SQUOTE extends CPKeyboardKey("'", true, ch = '\'', Seq('\''))
     /** `'"'` key press. */
-    case KEY_QUOTEDBL extends CPKeyboardKey("\"", true, '"', Seq('"'))
+    case KEY_DQUOTE extends CPKeyboardKey("\"", true, '"', Seq('"'))
+    /** `'.'` key press. */
     case KEY_PERIOD extends CPKeyboardKey(".", true, '.', Seq('.'))
+    /** `','` key press. */
     case KEY_COMMA extends CPKeyboardKey(",", true, ',', Seq(','))
     /** `'<'` key press. */
     case KEY_LT extends CPKeyboardKey("<", true, '<', Seq('<'))

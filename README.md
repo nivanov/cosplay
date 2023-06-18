@@ -57,14 +57,14 @@ Prerequisites:
 
 Using SBT:
 ```scala
-libraryDependencies += "org.cosplayengine" % "cosplay" % "0.8.10"
+libraryDependencies += "org.cosplayengine" % "cosplay" % "0.9.0"
 ```
 Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
 ```xml
 <dependency>
   <groupId>org.cosplayengine</groupId>
   <artifactId>cosplay</artifactId>
-  <version>0.8.10</version>
+  <version>0.9.0</version>
 </dependency>
 ```
 
@@ -76,7 +76,7 @@ Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
 * Join project on [GitHub](https://github.com/nivanov/cosplay/issues)
 
 ## Copyright
-Copyright (C) 2022 Rowan Games, Inc.
+Copyright (C) 2023 Rowan Games, Inc.
 
 <img src="https://cosplayengine.com/images/cosplay-grey.gif" height="24px" alt="CosPlay Logo">
 

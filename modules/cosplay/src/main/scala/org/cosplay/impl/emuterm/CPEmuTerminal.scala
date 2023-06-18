@@ -348,7 +348,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                         case VK_PERIOD => shift(KEY_GT, KEY_PERIOD)
                         case VK_SLASH => shift(KEY_QUESTION, KEY_SLASH)
                         case VK_BACK_SLASH => shift(KEY_VERT, KEY_BACK_SLASH)
-                        case VK_QUOTE => shift(KEY_QUOTEDBL, KEY_QUOTE)
+                        case VK_QUOTE => shift(KEY_DQUOTE, KEY_SQUOTE)
                         case VK_BACK_QUOTE => shift(KEY_TILDE, KEY_BACK_QUOTE)
                         case VK_MINUS => shift(KEY_UNDERSCORE, KEY_MINUS)
                         case VK_EQUALS => shift(KEY_PLUS, KEY_EQUAL)

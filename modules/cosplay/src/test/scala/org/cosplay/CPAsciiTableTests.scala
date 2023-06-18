@@ -26,7 +26,7 @@ package org.cosplay
                                             /____/
 
           2D ASCII JVM GAME ENGINE FOR SCALA3
-              (C) 2022 Rowan Games, Inc.
+              (C) 2023 Rowan Games, Inc.
                 ALl rights reserved.
 */
 
