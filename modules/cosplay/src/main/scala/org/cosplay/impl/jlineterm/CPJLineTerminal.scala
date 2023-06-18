@@ -112,14 +112,20 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     private class TermDimensionReader extends Thread:
         @volatile var st0p = false
 
-        def getDim: CPDim =
+        obtainDim()
+
+        private def obtainDim(): Unit =
             assert(term != null)
             val termSz = term.getSize
-            if termSz.getColumns == 0 || termSz.getRows == 0 then CPDim.ZERO else CPDim(termSz.getColumns, termSz.getRows)
+            curDim =
+                if termSz.getColumns == 0 || termSz.getRows == 0 then
+                    raise(s"Failed to get '${term.getName}/${term.getType}' terminal window size.")
+                else
+                    CPDim(termSz.getColumns, termSz.getRows)
 
         override def run(): Unit =
-            while (!st0p)
-                curDim = getDim
+            while !st0p do
+                obtainDim()
                 try Thread.sleep(250.ms)
                 catch case _: InterruptedException => ()
 
@@ -200,6 +206,10 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
             .name("cosplay")
             .system(true)
             .nativeSignals(true)
+            .signalHandler(
+                new Terminal.SignalHandler:
+                    def handle(sig: Terminal.Signal): Unit = ()
+            )
             .dumb(false)
             .`type`("xterm-256color")
             .build()
@@ -212,7 +222,6 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
 
         termDimReader = TermDimensionReader()
         termDimReader.start()
-        curDim = termDimReader.getDim
 
         write(WIN_TITLE_SAVE)
         write(CUR_SAVE)

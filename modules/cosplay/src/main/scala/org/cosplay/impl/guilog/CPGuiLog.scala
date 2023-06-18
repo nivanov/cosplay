@@ -616,13 +616,12 @@ object CPGuiLog:
     private def searchLog(): Unit =
         SwingUtilities.invokeLater(() => {
             resetLogSearch()
-
             val term = searchFld.getText.trim().toLowerCase
             val termLen = term.length
             if termLen > MIN_LOG_SEARCH_TERM_LEN then
                 val docTxt = doc.getText(0, doc.getLength).toLowerCase
                 var off = docTxt.indexOf(term)
-                while (off != -1)
+                while off != -1 do
                     logSearchOffs += off
                     off = docTxt.indexOf(term, off + termLen)
                 if logSearchOffs.nonEmpty then

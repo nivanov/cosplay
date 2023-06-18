@@ -139,7 +139,7 @@ case class CPMarkup(fg: CPColor, bg: Option[CPColor], elements: Seq[CPMarkupElem
         val len = in.length
         var idx = 0
         var start = 0
-        while (idx < len)
+        while idx < len do
             val s = in.substring(start, idx + 1)
             elements.find(elm => s.endsWith(elm.openTag)) match
                 case Some(elm) =>

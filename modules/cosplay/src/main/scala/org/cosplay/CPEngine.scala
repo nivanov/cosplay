@@ -374,7 +374,7 @@ object CPEngine:
         private def read(timeout: Long): Int = term.nativeKbRead(timeout)
         private inline def logKb(key: CPKeyboardKey, chs: Int*): Unit = if isKbLog then println(s"'${key.id}' [${chs.mkString(",")}]")
         override def run(): Unit =
-            while (!st0p)
+            while !st0p do
                 var key = KEY_UNKNOWN
 
                 try
@@ -1043,7 +1043,7 @@ object CPEngine:
             logSceneSwitch(sc) // Initial scene.
 
             // Main game loop.
-            while (playing)
+            while playing do
                 val termDim = term.getDim
 
                 // If necessary, dynamically adjust scene dimension to the terminal size.
@@ -1057,7 +1057,7 @@ object CPEngine:
                 val frameMs = System.currentTimeMillis()
 
                 def waitForWakeup(): Unit =
-                    while (pause)
+                    while pause do
                         try pauseMux.wait()
                         catch case _: InterruptedException => ()
                     forceStatsUpdate = true

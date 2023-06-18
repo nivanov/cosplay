@@ -245,9 +245,9 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
         if nonEmpty then
             var a = x
             var b = y
-            while (a <= xMax)
+            while a <= xMax do
                 b = y
-                while (b <= yMax)
+                while b <= yMax do
                     f(a, b)
                     b += 1
                 a += 1
@@ -276,9 +276,9 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
         if nonEmpty then
             var a = x
             var b = y
-            while (b <= yMax)
+            while b <= yMax do
                 a = x
-                while (a <= xMax)
+                while a <= xMax do
                     f(a, b)
                     a += 1
                 b += 1
@@ -293,9 +293,9 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
             var a = x
             var b = y
             var found = false
-            while (a <= xMax && !found)
+            while a <= xMax && !found do
                 b = y
-                while (b <= yMax && !found)
+                while b <= yMax && !found do
                     found = f(a, b)
                     b += 1
                 a += 1
@@ -382,7 +382,7 @@ final case class CPRect(x: Int, y: Int, width: Int, height: Int) extends CPInt4(
                 xMax.max(x2) + 1,
                 yMax.max(y2) + 1
             )
-
+            
     /**
       * Creates new rectangle with a minimal size to contain both this and given rectangle.
       *

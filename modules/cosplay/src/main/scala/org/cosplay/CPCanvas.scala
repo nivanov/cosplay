@@ -345,7 +345,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
             val r2 = radius * radius
             // Draw circle with potential gaps.
             var i = 0f
-            while (i < radius.toFloat)
+            while i < radius.toFloat do
                 val c = Math.sqrt(r2 - i * i).round.toInt
                 val dx = (xFactor * i).round
                 val dy = (yFactor * c).round
@@ -717,7 +717,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         var fx = ax.toFloat
         var fy = ay.toFloat
 
-        while (x != bx || y != by)
+        while x != bx || y != by do
             pxf(x, y)
             fx += stepX
             fy += stepY
@@ -1020,7 +1020,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         var seen = nil[(Int, Int)]
         var stack = List(x -> y)
 
-        while (stack.nonEmpty)
+        while stack.nonEmpty do
             val (a, b) = stack.head
             stack = stack.tail
             seen ::= a -> b
@@ -1084,7 +1084,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
 
         val max = pts.length - 1
         var i = 0
-        while (i < max)
+        while i < max do
             val pt1 = pts(i)
             val pt2 = pts(i + 1)
             drawLine(pt1._1, pt1._2, pt2._1, pt2._2, z, pxf)
@@ -1103,7 +1103,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         val buf = new mutable.ArrayBuffer[CPPosPixel]()
         val max = pts.length - 1
         var i = 0
-        while (i < max)
+        while i < max do
             val pt1 = pts(i)
             val pt2 = pts(i + 1)
             buf ++= linePixels(pt1._1, pt1._2, pt2._1, pt2._2, z, pxf)
@@ -1357,7 +1357,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawString(x: Int, y: Int, z: Int, str: String, fg: CPColor, bg: Option[CPColor] = None): Unit =
         var i = 0
         val len = str.length
-        while (i < len)
+        while i < len do
             drawPixel(CPPixel(str.charAt(i), fg, bg), x + i, y, z)
             i += 1
 
@@ -1384,7 +1384,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawPixels(x: Int, y: Int, z: Int, len: Int, pxf: (Int, Int) => CPPixel): Unit =
         var i = 0
         var a = x
-        while (i < len)
+        while i < len do
             drawPixel(pxf(a, y), a, y, z)
             i += 1
             a += 1

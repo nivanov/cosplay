@@ -161,9 +161,9 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
             var x, y = 0
             val xMax = width - 1
             val yMax = height - 1
-            while (x <= xMax)
+            while x <= xMax do
                 y = 0
-                while (y <= yMax)
+                while y <= yMax do
                     buf.append(extract(CPRect(x, y, w, h)))
                     y += h
                 x += w
@@ -208,9 +208,9 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
         var x = 0
         var y = 0
         var found = false
-        while (x <= xMax && !found)
+        while x <= xMax && !found do
             y = 0
-            while (y <= yMax && !found)
+            while y <= yMax && !found do
                 if p(data(x)(y)) then found = true
                 y += 1
             x += 1
@@ -356,7 +356,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
         if nonEmpty then
             if !isClearBufInit then initClearBuf()
             var x = 0
-            while (x < width)
+            while x < width do
                 Array.copy(clearBuf(x), 0, data(x), 0, height)
                 x += 1
 
@@ -404,7 +404,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
         if nonEmpty then
             var a = 0
             var isBlank = true
-            while (a <= max && isBlank)
+            while a <= max && isBlank do
                 isBlank = f(if isRow then data(a)(d) else data(d)(a))
                 a += 1
             isBlank
@@ -430,13 +430,13 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     def trim(f: T => Boolean)(using c: ClassTag[T]): CPArray2D[T] =
         if nonEmpty then
             var x2, y2 = 0
-            while (x2 <= xMax && isColumnBlank(x2, f)) x2 += 1
-            while (y2 <= yMax && isRowBlank(y2, f)) y2 += 1
+            while x2 <= xMax && isColumnBlank(x2, f) do x2 += 1
+            while y2 <= yMax && isRowBlank(y2, f) do y2 += 1
 
             var xMax2 = xMax
             var yMax2 = yMax
-            while (xMax2 >= 0 && isColumnBlank(xMax2, f)) xMax2 -= 1
-            while (yMax2 >= 0 && isRowBlank(yMax2, f)) yMax2 -= 1
+            while xMax2 >= 0 && isColumnBlank(xMax2, f) do xMax2 -= 1
+            while yMax2 >= 0 && isRowBlank(yMax2, f) do yMax2 -= 1
 
             if x2 > 0 || xMax2 < xMax || y2 > 0 || y2 < yMax2 then
                 extract(CPRect(x2, y2, xMax2 - x2 + 1, yMax2 - y2 + 1))
@@ -551,7 +551,7 @@ object CPArray2D:
         val h = data.length
         val arr = new CPArray2D[Char](h, w, ' ') // Note reverse width and height.
         var y = 0
-        while (y < h)
+        while y < h do
             // Normalize (pad).
             val s = data(y).padTo(w, arr.clearVal)
             val a1 = s.toCharArray

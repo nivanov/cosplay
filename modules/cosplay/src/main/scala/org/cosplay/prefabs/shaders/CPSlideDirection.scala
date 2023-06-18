@@ -96,9 +96,9 @@ object CPSlideDirection:
                 var x = 0
                 var y = 0
                 val n = h / 2
-                while (y < n)
+                while y < n do
                     x = 0
-                    while (x < w)
+                    while x < w do
                         val dr = d.round
                         matrix(x)(y) = dr
                         matrix(x)(h - 1 - y) = dr
@@ -111,9 +111,9 @@ object CPSlideDirection:
                 var x = 0
                 var y = 0
                 val n = h / 2
-                while (y < n)
+                while y < n do
                     x = 0
-                    while (x < w)
+                    while x < w do
                         val dr = d.round
                         matrix(x)(y) = dr
                         matrix(x)(h - 1 - y) = dr
@@ -128,7 +128,7 @@ object CPSlideDirection:
                 val n = w / 2
                 while (x < n)
                     y = 0
-                    while (y < h)
+                    while y < h do
                         val dr = d.round
                         matrix(x)(y) = dr
                         matrix(w - 1 - x)(y) = dr
@@ -141,9 +141,9 @@ object CPSlideDirection:
                 var x = 0
                 var y = 0
                 val n = w / 2
-                while (x < n)
+                while x < n do
                     y = 0
-                    while (y < h)
+                    while y < h do
                         val dr = d.round
                         matrix(x)(y) = dr
                         matrix(w - 1 - x)(y) = dr
@@ -155,9 +155,9 @@ object CPSlideDirection:
                 val dx = d / w
                 var x = w - 1
                 var y = 0
-                while (x >= 0)
+                while x >= 0 do
                     y = 0
-                    while (y < h)
+                    while y < h do
                         matrix(x)(y) = d.round
                         y += 1
                     x -= 1
@@ -167,9 +167,9 @@ object CPSlideDirection:
                 val dx = d / w
                 var x = 0
                 var y = 0
-                while (x < w)
+                while x < w do
                     y = 0
-                    while (y < h)
+                    while y < h do
                         matrix(x)(y) = d.round
                         y += 1
                     x += 1
@@ -179,9 +179,9 @@ object CPSlideDirection:
                 val dx = d / w
                 var x = 0
                 var y = h - 1
-                while (y >= 0)
+                while y >= 0 do
                     x = 0
-                    while (x < w)
+                    while x < w do
                         matrix(x)(y) = d.round
                         x += 1
                     d -= dx
@@ -191,9 +191,9 @@ object CPSlideDirection:
                 val dx = d / w
                 var x = 0
                 var y = 0
-                while (y < h)
+                while y < h do
                     x = 0
-                    while (x < w)
+                    while x < w do
                         matrix(x)(y) = d.round
                         x += 1
                     d -= dx
@@ -201,29 +201,29 @@ object CPSlideDirection:
             case RANDOM =>
                 var x = 0
                 var y = 0
-                while (x < w)
+                while x < w do
                     y = 0
-                    while (y < h)
+                    while y < h do
                         matrix(x)(y) = CPRand.randInt(0, maxFrmCnt)
                         y += 1
                     x += 1
             case RANDOM_VERT_LINE =>
                 var x = 0
                 var y = 0
-                while (x < w)
+                while x < w do
                     y = 0
                     val d = CPRand.randInt(0, maxFrmCnt)
-                    while (y < h)
+                    while y < h do
                         matrix(x)(y) = d
                         y += 1
                     x += 1
             case RANDOM_HOR_LINE =>
                 var x = 0
                 var y = 0
-                while (y < h)
+                while y < h do
                     x = 0
                     val d = CPRand.randInt(0, maxFrmCnt)
-                    while (x < w)
+                    while x < w do
                         matrix(x)(y) = d
                         x += 1
                     y += 1
@@ -234,9 +234,9 @@ object CPSlideDirection:
                 val r = Math.min(w.toFloat, h * hFactor) / 2
                 var x = 0
                 var y = 0
-                while (y < h)
+                while y < h do
                     x = 0
-                    while (x < w)
+                    while x < w do
                         val k = Math.sqrt(Math.pow(cx - x, 2) + Math.pow((cy - y) * hFactor, 2)).toFloat
                         val d = (maxFrmCnt * k.min(r) / r).round
                         matrix(x)(y) = d
@@ -249,9 +249,9 @@ object CPSlideDirection:
                 val r = Math.min(w.toFloat, h * hFactor) / 2
                 var x = 0
                 var y = 0
-                while (y < h)
+                while y < h do
                     x = 0
-                    while (x < w)
+                    while x < w do
                         val k = Math.sqrt(Math.pow(cx - x, 2) + Math.pow((cy - y) * hFactor, 2)).toFloat
                         val d = (maxFrmCnt * (1 - k.min(r) / r)).round
                         matrix(x)(y) = d

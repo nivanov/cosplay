@@ -328,7 +328,7 @@ class CPAsciiTable:
 
                 def addLine(s: String): Unit = buf += (if (buf.isEmpty) s else s"${space(leader)}$s")
 
-                while (curr < len)
+                while curr < len do
                     if curr - start > maxWidth then
                         val end = if (lastSpace == -1) curr else lastSpace + 1 /* Keep space at the end of the line. */
                         addLine(line.substring(start, end))

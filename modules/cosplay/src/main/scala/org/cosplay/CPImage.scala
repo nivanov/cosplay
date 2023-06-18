@@ -228,9 +228,9 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             val dim = getDim
             var x = 0
             var y = 0
-            while (y < dim.h)
+            while y < dim.h do
                 x = 0
-                while (x < dim.w)
+                while x < dim.w do
                     val px = getPixel(x, y)
                     ps.print(px.char)
                     x += 1
@@ -809,7 +809,7 @@ object CPImage:
             val layer = new CPArray2D[CPPixel](w, h, CPPixel.XRAY)
             var idx = 0
             val len = w * h
-            while (idx < len)
+            while idx < len do
                 val x = idx / h
                 val y = idx % h
                 val ch = bb.getInt.toChar
