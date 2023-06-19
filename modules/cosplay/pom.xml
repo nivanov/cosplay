@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.cosplayengine</groupId>
         <artifactId>cosplay-parent</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -112,19 +112,9 @@
             <artifactId>javafx-media</artifactId>
         </dependency>
 
-        <!--
-            Scala3 dependencies.
-            ===================
-        -->
-
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala3-library_${scala.major.ver}</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
         </dependency>
 
         <dependency>
@@ -137,31 +127,17 @@
             <artifactId>scala-logging_${scala.major.ver}</artifactId>
         </dependency>
 
-        <!--
-         JLine dependencies.
-         ==================
-        -->
-
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
             <version>${jline.ver}</version>
         </dependency>
 
-        <!--
-         Other dependencies.
-         ===================
-        -->
-
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
         </dependency>
 
-        <!--
-         JUnit & ScalaTest dependencies.
-         ===============================
-        -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
