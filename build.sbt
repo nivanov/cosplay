@@ -72,7 +72,6 @@ ThisBuild / developers ++= List(
 lazy val cosplay = (project in file("modules/cosplay"))
     .settings(
         name := "CosPlay",
-
         // NOTE:
         // -----
         // This (enabling forking) will force CosPlay to use terminal emulator and will not work in the same
@@ -88,9 +87,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         //
         // See 'modules/cosplay/pom.xml' for all available profiles to run.
         fork := true,
-
         version := cosPlayVer,
-
         // Scaladoc config.
         Compile / doc / scalacOptions ++= Seq(
             "-project-footer", "(C) 2023 Rowan Games, Inc.",
@@ -103,7 +100,6 @@ lazy val cosplay = (project in file("modules/cosplay"))
             "-source-links:github://nivanov/cosplay/master",
             "-social-links:github::https://github.com/nivanov/cosplay"
         ),
-
         // Dependencies.
         libraryDependencies += "org.apache.commons"         % "commons-math3"                   % commonsMath3Ver,
         libraryDependencies += "org.apache.commons"         % "commons-lang3"                   % commonsLang3Ver,
@@ -118,15 +114,14 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "com.formdev"                % "flatlaf-intellij-themes"         % flatlafVer,
         libraryDependencies += "com.formdev"                % "flatlaf"                         % flatlafVer,
         libraryDependencies += "org.openjfx"                % "javafx-media"                    % openjfxVer,
-        libraryDependencies += "co.blocke"                  %% s"scala-reflection"              % scalaReflectVer,
         libraryDependencies += "com.typesafe.scala-logging" % s"scala-logging_$scalaMajVer"     % scalaLoggingVer,
         libraryDependencies += "org.jline"                  % "jline-terminal"                  % jlineVer,
         libraryDependencies += "org.fusesource.jansi"       % "jansi"                           % jansiVer,
         libraryDependencies += "net.java.dev.jna"           % "jna"                             % jnaVer,
-        libraryDependencies += "org.scala-lang.modules"     %% "scala-parallel-collections"     % scalaParColVer,
         libraryDependencies += "com.mixpanel"               % "mixpanel-java"                   % mixPanelVer,
         libraryDependencies += "de.sciss"                   % "audiofile_3"                     % audioFileVer,
-
+        libraryDependencies += "co.blocke"                  %% "scala-reflection"               % scalaReflectVer,
+        libraryDependencies += "org.scala-lang.modules"     %% "scala-parallel-collections"     % scalaParColVer,
         // Test scope.
         libraryDependencies += "org.scalatest"              %% s"scalatest"                     % scalaTestVer % Test,
         libraryDependencies += "org.junit.jupiter"          % s"junit-jupiter-engine"           % junitVer % Test

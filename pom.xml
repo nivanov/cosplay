@@ -96,18 +96,21 @@
 
         <!-- Versions. -->
         <scala.plugin.ver>4.5.3</scala.plugin.ver>
-        <log4j.ver>2.20.0</log4j.ver>
-        <scala.logging.ver>3.9.5</scala.logging.ver>
-        <scala.par.colections>1.0.4</scala.par.colections>
-        <scalatest.ver>3.2.16</scalatest.ver>
-        <maven.jar.plugin.ver>3.2.0</maven.jar.plugin.ver>
         <maven.compiler.plugin.ver>3.8.0</maven.compiler.plugin.ver>
         <maven.enforcer.plugin.ver>1.4.1</maven.enforcer.plugin.ver>
         <maven.surefire.plugin.ver>2.22.1</maven.surefire.plugin.ver>
         <maven.shade.plugin.ver>3.2.1</maven.shade.plugin.ver>
         <maven.install.plugin.ver>2.5.2</maven.install.plugin.ver>
         <maven.source.plugin.ver>3.0.1</maven.source.plugin.ver>
+        <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
+        <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
         <maven.clean.plugin.ver>3.1.0</maven.clean.plugin.ver>
+        <maven.jar.plugin.ver>3.2.0</maven.jar.plugin.ver>
+
+        <log4j.ver>2.20.0</log4j.ver>
+        <scala.logging.ver>3.9.5</scala.logging.ver>
+        <scala.par.colections>1.0.4</scala.par.colections>
+        <scalatest.ver>3.2.16</scalatest.ver>
         <jline.ver>3.23.0</jline.ver>
         <commons.lang3.ver>3.12.0</commons.lang3.ver>
         <commons.math.ver>3.6.1</commons.math.ver>
@@ -122,8 +125,6 @@
         <flatlaf.ver>3.1.1</flatlaf.ver>
         <miglayout.ver>11.1</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
-        <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
-        <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
         <exec.maven.ver>3.1.0</exec.maven.ver>
         <jna.ver>5.13.0</jna.ver>
         <mixpanel.ver>1.5.2</mixpanel.ver>
@@ -138,111 +139,75 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>de.sciss</groupId>
-                <artifactId>audiofile_3</artifactId>
-                <version>${de.sciss.audiofile.ver}</version>
+                <groupId>de.sciss</groupId><artifactId>audiofile_3</artifactId><version>${de.sciss.audiofile.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.mixpanel</groupId>
-                <artifactId>mixpanel-java</artifactId>
-                <version>${mixpanel.ver}</version>
+                <groupId>com.mixpanel</groupId><artifactId>mixpanel-java</artifactId><version>${mixpanel.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>net.java.dev.jna</groupId>
-                <artifactId>jna</artifactId>
-                <version>${jna.ver}</version>
+                <groupId>net.java.dev.jna</groupId><artifactId>jna</artifactId><version>${jna.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons.io.ver}</version>
+                <groupId>commons-io</groupId><artifactId>commons-io</artifactId><version>${commons.io.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-math3</artifactId>
-                <version>${commons.math.ver}</version>
+                <groupId>org.apache.commons</groupId><artifactId>commons-math3</artifactId><version>${commons.math.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-text</artifactId>
-                <version>${commons.text.ver}</version>
+                <groupId>org.apache.commons</groupId><artifactId>commons-text</artifactId><version>${commons.text.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-collections4</artifactId>
-                <version>${commons.collections.ver}</version>
+                <groupId>org.apache.commons</groupId><artifactId>commons-collections4</artifactId><version>${commons.collections.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>${log4j.ver}</version>
+                <groupId>org.apache.logging.log4j</groupId><artifactId>log4j-core</artifactId><version>${log4j.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${log4j.ver}</version>
+                <groupId>org.apache.logging.log4j</groupId><artifactId>log4j-api</artifactId><version>${log4j.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.miglayout</groupId>
-                <artifactId>miglayout-swing</artifactId>
-                <version>${miglayout.ver}</version>
+                <groupId>com.miglayout</groupId><artifactId>miglayout-swing</artifactId><version>${miglayout.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.formdev</groupId>
-                <artifactId>flatlaf</artifactId>
-                <version>${flatlaf.ver}</version>
+                <groupId>com.formdev</groupId><artifactId>flatlaf</artifactId><version>${flatlaf.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec.maven.ver}</version>
+                <groupId>org.codehaus.mojo</groupId><artifactId>exec-maven-plugin</artifactId><version>${exec.maven.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.kordamp.ikonli</groupId>
-                <artifactId>ikonli-swing</artifactId>
-                <version>${ikonli.ver}</version>
+                <groupId>org.kordamp.ikonli</groupId><artifactId>ikonli-swing</artifactId><version>${ikonli.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.kordamp.ikonli</groupId>
-                <artifactId>ikonli-lineawesome-pack</artifactId>
-                <version>${ikonli.ver}</version>
+                <groupId>org.kordamp.ikonli</groupId><artifactId>ikonli-lineawesome-pack</artifactId><version>${ikonli.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.formdev</groupId>
-                <artifactId>flatlaf-intellij-themes</artifactId>
-                <version>${flatlaf.ver}</version>
+                <groupId>com.formdev</groupId><artifactId>flatlaf-intellij-themes</artifactId><version>${flatlaf.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-media</artifactId>
-                <version>${openjfx.ver}</version>
+                <groupId>org.openjfx</groupId><artifactId>javafx-media</artifactId><version>${openjfx.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons.lang3.ver}</version>
+                <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>${commons.lang3.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>co.blocke</groupId>
-                <artifactId>scala-reflection_${scala.major.ver}</artifactId>
-                <version>${scala3.reflect.ver}</version>
+                <groupId>co.blocke</groupId><artifactId>scala-reflection_${scala.major.ver}</artifactId><version>${scala3.reflect.ver}</version>
             </dependency>
 
             <!--
@@ -251,47 +216,31 @@
             -->
 
             <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala3-library_${scala.major.ver}</artifactId>
-                <version>${scala3.ver}</version>
+                <groupId>org.scala-lang</groupId><artifactId>scala3-library_${scala.major.ver}</artifactId><version>${scala3.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.scala-lang.modules</groupId>
-                <artifactId>scala-parallel-collections_${scala.major.ver}</artifactId>
-                <version>${scala.par.colections}</version>
+                <groupId>org.scala-lang.modules</groupId><artifactId>scala-parallel-collections_${scala.major.ver}</artifactId><version>${scala.par.colections}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.typesafe.scala-logging</groupId>
-                <artifactId>scala-logging_${scala.major.ver}</artifactId>
-                <version>${scala.logging.ver}</version>
+                <groupId>com.typesafe.scala-logging</groupId><artifactId>scala-logging_${scala.major.ver}</artifactId><version>${scala.logging.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.jline</groupId>
-                <artifactId>jline-terminal</artifactId>
-                <version>${jline.ver}</version>
+                <groupId>org.jline</groupId><artifactId>jline-terminal</artifactId><version>${jline.ver}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest_${scala.major.ver}</artifactId>
-                <version>${scalatest.ver}</version>
-                <scope>test</scope>
+                <groupId>org.scalatest</groupId><artifactId>scalatest_${scala.major.ver}</artifactId><version>${scalatest.ver}</version><scope>test</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit.ver}</version>
-                <scope>test</scope>
+                <groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-engine</artifactId><version>${junit.ver}</version><scope>test</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven.jar.plugin.ver}</version>
+                <groupId>org.apache.maven.plugins</groupId><artifactId>maven-jar-plugin</artifactId><version>${maven.jar.plugin.ver}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
