@@ -123,7 +123,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * @param fadeInMs Fade in duration in milliseconds. Default is zero.
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       *     This callback will not be called unless the media riches the end and not stopped
-      *     before.
+      *     before. Specifically, calling `stop()` method will NOT trigger this function.
       */
     def play(fadeInMs: Long = 0, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
         val it = this
@@ -183,7 +183,7 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
       * @param fadeInMs Fade in duration in milliseconds.
       * @param endFun Optional callback to call when end of media is reached. Default is a no-op function.
       *     This callback will not be called unless the media riches the end and not stopped
-      *     before.
+      *     before. Specifically, calling `stop()` function will NOT trigger this callback.
       */
     def loop(fadeInMs: Long, endFun: CPSound => Unit = (_: CPSound) => ()): Unit =
         val it = this
@@ -245,7 +245,8 @@ class CPSound(src: String, tags: Set[String] = Set.empty) extends CPGameObject(t
     def toggle(fadeInMs: Long = 0): Unit = if isPlaying then pause() else play(fadeInMs)
 
     /**
-      * Stops the playback.
+      * Stops the playback. Note that 'endFun' function will no be called when this
+      * method is called.
       *
       * @param fadeOutMs Fade out duration in milliseconds. Default is zero.
       */
