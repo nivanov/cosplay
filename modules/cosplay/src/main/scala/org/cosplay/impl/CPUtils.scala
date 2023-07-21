@@ -201,10 +201,6 @@ object CPUtils:
         case None => false
         case Some(v) => java.lang.Boolean.valueOf(v) == java.lang.Boolean.TRUE    
 
-    /**
-      *
-      * @param url URL to read.
-      */
     private def readByteUrl(url: String): Array[Byte] =
         Using.resource(new URL(url).openStream()) { in => readByteStream(in, url) }
 
@@ -243,11 +239,6 @@ object CPUtils:
         catch
             case e: Exception => raise(s"Failed to zip byte array.", e.?)
 
-    /**
-      *
-      * @param in
-      * @param out
-      */
     private def tunnelThrough(in: InputStream, out: OutputStream): Unit =
         val buf = new Array[Byte](1024)
         while in.available() > 0 do
@@ -309,10 +300,6 @@ object CPUtils:
         else if isUrl(src) then readByteUrl(src)
         else raise(s"Binary source not found or unsupported: $src")
 
-    /**
-      *
-      * @param url URL to check.
-      */
     private def isUrl(url: String): Boolean =
         try
             new URL(url)
@@ -424,11 +411,6 @@ object CPUtils:
     def mapResource[T](res: String, enc: String = "UTF-8", mapper: Iterator[String] => T): T =
         mapStream(getStream(res), enc, mapper)
 
-    /**
-      *
-      * @param evtName
-      * @param props
-      */
     private def sendMixpanelEvent(evtName: String, props: JSONObject): Unit =
         if isTracking then
             Future {

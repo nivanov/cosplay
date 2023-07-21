@@ -103,9 +103,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         skip = (zpx, _, _) => zpx.z == 1
     )
     private val borderShdr = CPBorderShader(true, 5, true, -.03f, true)
-
     private def mkScoreImage(): CPImage = FIG_BIG.render(score.toString, C1).trimBg()
-
     private val birdImgs = new CPArrayImage(
         prepSeq(
             """
@@ -144,7 +142,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private val C = CPColor("0xF360F6")
     private val youLostImg = new CPArrayImage(
-        prepSeq(
+        prepSeq:
             """
               |**********************************
               |**                              **
@@ -159,13 +157,12 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
               |**    [CTRL+L]  Log Console     **
               |**                              **
               |**********************************
-            """),
+            """,
         (ch, _, _) => ch match
             case '*' => ' '&&(C, C)
             case c if c.isLetter || c == '/' => c&&(C4, BLUE_BLACK)
             case _ => ch&&(C3, BLUE_BLACK)
     )
-
     private val scoreEmitter = new CPConfettiEmitter(
         () => scoreSpr.getRect.centerX,
         () => scoreSpr.getRect.centerY,
@@ -173,11 +170,10 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         15,
         CS.map(c => c.transformHSB(1f, 1.2f, 1f)),
         GAME_BG_PX.fg,
-        _ => CPRand.rand("oO0Xx"),
+        _ => "oO0Xx".rand,
         0
     )
     private val scorePartSpr = CPParticleSprite(emitters = scoreEmitter.seq)
-
     private val birdAnis = Seq(CPAnimation.filmStrip("ani", 100.ms, imgs = birdImgs))
     private val birdSpr = new CPAnimationSprite("bird", anis = birdAnis, x = 15, y = 5, z = 10, "ani", false):
         private var cnt = 0L
@@ -263,9 +259,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     pipeGaHeight = 7
 
     private val scoreSpr = new CPImageSprite("score", 0, 0, 1, mkScoreImage()):
-        override def update(ctx: CPSceneObjectContext): Unit =
-            setX((ctx.getCanvas.width / 2) - 3)
-
+        override def update(ctx: CPSceneObjectContext): Unit = setX((ctx.getCanvas.width / 2) - 3)
     private val lostShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000.ms, GAME_BG_PX)
     private val lostBorderShdr = CPBorderShader(false, 3, true, -.03f, true)
     private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 3, Seq(lostShdr, lostBorderShdr)):
@@ -441,10 +435,6 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     private def startBgAudio(): Unit = bgSnd.loop(2000.ms)
     private def stopBgAudio(): Unit = bgSnd.stop(500.ms)
-
-    /**
-      * Toggles audio on and off.
-      */
     private def toggleAudio(): Unit =
         if audioOn then
             stopBgAudio()

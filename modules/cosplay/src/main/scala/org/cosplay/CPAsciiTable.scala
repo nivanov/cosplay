@@ -307,11 +307,6 @@ class CPAsciiTable:
         case null => "<null>"
         case _ => s.toString
 
-    /**
-      *
-      * @param maxWidth
-      * @param lines
-      */
     private def breakUpByNearestSpace(maxWidth: Int, lines: Seq[String]): Seq[String] =
         lines.flatMap(line => {
             if line.isEmpty then
@@ -344,13 +339,6 @@ class CPAsciiTable:
 
                 buf
         })
-
-    /**
-      *
-      * @param hdr
-      * @param style
-      * @param lines
-      */
     private def mkStyledCell(hdr: Boolean, style: String, lines: Any*): Cell =
         val st = Style(style)
         val strLines = lines.map(x)
@@ -362,7 +350,6 @@ class CPAsciiTable:
             else
                 (for str <- strLines yield str.grouped(st.maxWidth)).flatten
         )
-
 
     /**
       * Adds single header cell with the default style..
@@ -430,12 +417,6 @@ class CPAsciiTable:
         )
         this
 
-    /**
-      *
-      * @param txt Text to align.
-      * @param width Width already accounts for padding.
-      * @param sty Style.
-      */
     private def aligned(txt: String, width: Int, sty: Style): String =
         val d = width - txt.visLength
         sty.align match

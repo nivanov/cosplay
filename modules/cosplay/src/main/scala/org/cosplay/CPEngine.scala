@@ -466,10 +466,6 @@ object CPEngine:
         if !dir.exists() && !dir.mkdirs() then raise(s"Failed to create folder: ${dir.getAbsolutePath}")
         dir
 
-    /**
-      *
-      * @param path
-      */
     private def newFile(path: String): File =
         val file = new File(path)
         val parent = file.getParentFile
@@ -581,14 +577,9 @@ object CPEngine:
         tbl += ("Minimum Size", gameInfo.minDim.mapOr(_.toString, "n/a"))
         tbl.info(engLog, "Game initialized:".?)
 
-    /**
-      *
-      * @param dim
-      */
     private def updateTitle(dim: CPDim): Unit =
         assert(dim != null, "Dimension is null.")
         term.setTitle(s"${gameInfo.name} v${gameInfo.semVer}, ${dim.w}x${dim.h}")
-
     private def checkState(): Unit =
         !>(state == State.ENG_STARTED, s"Engine is not started.")
 
@@ -869,12 +860,6 @@ object CPEngine:
     def removeStatsListener(f: CPRenderStatsListener): Unit =
         statsReg -= f
 
-    /**
-      *
-      * @param canv
-      * @param stats
-      * @param camRect
-      */
     private def showFps(canv: CPCanvas, stats: CPRenderStats, camRect: CPRect): Unit =
         def leftPad(s: String): String = s"${' '.toString * (12 - s.length())}$s"
 
@@ -951,10 +936,6 @@ object CPEngine:
         extDelayedQ += (id -> msgs)
     )
 
-    /**
-      *
-      * @param startScene
-      */
     private def gameLoop(startScene: CPScene): Unit =
         val startMs = System.currentTimeMillis()
         var startScMs = startMs

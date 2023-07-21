@@ -40,10 +40,6 @@ import org.junit.jupiter.api.Test
   *
   */
 object CPMarkupTests:
-    /**
-      *
-      * @param elms
-      */
     private def mkMarkup(elms: List[(String, String)]): CPMarkup =
         new CPMarkup(
             C_GREEN,

@@ -575,12 +575,6 @@ object CPColor:
         val rgb = Color.HSBtoRGB(hue, saturation, brightness)
         new CPColor(rgb >> 16 & 0xff, rgb >> 8 & 0xFF, rgb & 0xFF)
 
-    /**
-      *
-      * @param r Red.
-      * @param g Green
-      * @param b Blue.
-      */
     private def toXterm(r: Int, g: Int, b: Int): Int =
         // https://stackoverflow.com/questions/11765623/convert-hex-to-closest-x11-color-number
         def colorDist(R: Int, G: Int, B: Int, r: Int, g: Int, b: Int): Int = (R - r) * (R - r) + (G - g) * (G - g) + (B - b) * (B - b)

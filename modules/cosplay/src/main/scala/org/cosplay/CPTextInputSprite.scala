@@ -155,10 +155,6 @@ class CPTextInputSprite(
                     case _ => ()
             case None => ()
 
-    /**
-      *
-      * @param optRes
-      */
     private def done(optRes: Option[String]): Unit =
         ready = true
         res = optRes

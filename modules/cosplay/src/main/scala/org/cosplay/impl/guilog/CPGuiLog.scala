@@ -539,10 +539,6 @@ object CPGuiLog:
             UIManager.get("Button.font").asInstanceOf[Font].getSize
         )
 
-    /**
-      *
-      * @param next
-      */
     private def logSearchPrevNext(next: Boolean): Unit =
         if logSearchOffs.nonEmpty then
             // Log search offsets are naturally sorted by the way they are collected.
@@ -559,19 +555,12 @@ object CPGuiLog:
                     searchLog()
                 case None => ()
 
-    /**
-      *
-      * @param name
-      */
     private def onThemeUpdate(name: String): Unit =
         FlatLaf.updateUI()
         bgPropName = name
         updateDocBackground()
         if logPaused then searchLog()
 
-    /**
-      *
-       */
     private def updateDocBackground(): Unit =
         val docLen = doc.getLength
         if docLen > 0 then
@@ -579,7 +568,6 @@ object CPGuiLog:
             val dfltBg = UIManager.get(bgPropName).asInstanceOf[Color]
             StyleConstants.setBackground(attrs, dfltBg)
             doc.setCharacterAttributes(0, docLen, attrs, false)
-
     private def resetLogSearch(): Unit =
         if logSearchOffs.nonEmpty then
             logSearchOffs.clear()
@@ -653,27 +641,16 @@ object CPGuiLog:
             offHeapMemLbl.setText(formatMem(CPUtils.offHeapMemUsage))
         })
 
-    /**
-      *
-      * @param act
-      * @param initState
-      */
     private def mkCheckBox(act: Action, initState: Boolean): JCheckBox =
         val cb = new JCheckBox(act)
         cb.setFocusPainted(false)
         cb.setSelected(initState)
         cb
-
-    /**
-      *
-      * @param act
-      */
     private def mkCheckBoxMenuItem(act: Action): JCheckBoxMenuItem =
         val cb = new JCheckBoxMenuItem(act)
         cb.setFocusPainted(false)
         cb.setSelected(true)
         cb
-
     private def mkGameStatsPanel(): JPanel =
         val p =  mkPanel("wrap 3, insets 3 5 8 5, h 75!")
         val w = 120
@@ -691,36 +668,15 @@ object CPGuiLog:
 
         p.setBorder(BorderFactory.createTitledBorder("Game Stats"))
         p
-
-    /**
-      *
-      * @param key
-      * @param lbl
-      */
     private def mkStatsPair(key: String, lbl: JLabel): JPanel =
         val p =  mkPanel("insets 0")
         p.add(new JLabel(key), "w 75!")
         p.add(lbl)
         p
-
-    /**
-      *
-      * @param txt
-      * @param fg
-      */
     private def mkLabel(txt: String, fg: CPColor): JLabel =
         val lbl = new JLabel(txt)
         lbl.setForeground(fg.awt)
         lbl
-
-    /**
-      *
-      * @param nthFrame
-      * @param lvl
-      * @param cat
-      * @param obj
-      * @param ex
-      */
     private def addLog(nthFrame: Int, lvl: CPLogLevel, cat: String, obj: Any, ex: Throwable): Unit =
         if frameCnt % nthFrame == 0 then
             if frame == null then initGui()
@@ -786,10 +742,6 @@ object CPGuiLog:
         p.add(p2, "span 4, growx")
         p
 
-    /**
-      *
-      * @param bytes
-      */
     private def formatMem(bytes: Long): String =
         // For some (unknown) reason, at least on MacOS, the last
         // line can produce arithmetic exception with "/ by zero" message.
