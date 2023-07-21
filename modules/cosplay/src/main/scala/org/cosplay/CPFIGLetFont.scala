@@ -458,9 +458,6 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
             figHeight
         )
 
-    /**
-      *
-      */
     private def loadAndInit(): Unit =
         var lines =
             try

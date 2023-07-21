@@ -106,9 +106,6 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         def getPx(x: Int, y: Int): CPPixel = if termCamRect.contains(x, y) then scr.getPixel(x + xOff, y + yOff).px else bgPx
         def loop(f: (Int, Int) => Unit): Unit = termRect.loop(f)
 
-    /**
-      *
-      */
     private class TermDimensionReader extends Thread:
         @volatile var st0p = false
 

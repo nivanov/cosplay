@@ -340,9 +340,6 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       */
     def loopVert(f: (T, Int, Int) => Unit): Unit = rect.loopVert((x, y) => f(get(x, y), x, y))
 
-   /**
-      *
-      */
     private def initClearBuf(): Unit =
         rect.loop((x, y) => clearBuf(x)(y) = clearVal)
         isClearBufInit = true

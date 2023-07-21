@@ -21,13 +21,7 @@ import org.cosplay.*
 import org.cosplay.impl.jlineterm.CPJLineTerminal
 import org.junit.jupiter.api.Test
 
-/**
-  *
-  */
 object CPTerminalTests:
-    /**
-      *
-      */
     @Test
     def termTests(): Unit =
         val gameInfo = CPGameInfo(

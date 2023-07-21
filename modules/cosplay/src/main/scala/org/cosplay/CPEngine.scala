@@ -93,6 +93,12 @@ extension[T](t: T)
     /** Shortcut for `Seq(t)` as `t.seq` */
     def seq: Seq[T] = Seq(t)
 
+extension(s: String)
+    /** Length of the string taking into account printable characters only. */
+    inline def visLength: Int = s.count(!_.isControl)
+    /** String with all non-printable characters removed. */
+    inline def visOnly: String = s.filter(!_.isControl)
+
 extension[R, T](opt: Option[T])
     @targetName("optEqual")
     def ===(t: T): Boolean = opt match
@@ -338,9 +344,6 @@ object CPEngine:
         def getLog(category: String): CPLog = new Log4jMirrorLog(impl.getLog(category))
         def getCategory: String = impl.getCategory
 
-    /**
-      *
-      */
     private object BufferedLog:
         case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable)
         val buf: mutable.ArrayBuffer[BufferedLogEntry] = mutable.ArrayBuffer.empty[BufferedLogEntry]
@@ -356,9 +359,6 @@ object CPEngine:
         def getCategory: String = cat
         def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit = buf += BufferedLogEntry(nthFrame, lvl, obj, cat, ex)
 
-    /**
-      *
-      */
     private class NativeKbReader extends Thread:
         private val EOF = -1
         private val TIMEOUT = -2
@@ -555,9 +555,6 @@ object CPEngine:
         ackGameInfo()
         CPUtils.startPing(gameInfo)
 
-    /**
-      *
-      */
     private def asciiLogo(): Unit =
         val verStr = s"ver: ${CPVersion.latest.semver}".padTo(13, ' ')
         val logo =
@@ -575,9 +572,6 @@ object CPEngine:
                 |""".stripMargin
         engLog.info(s"\n$logo")
 
-    /**
-      *
-      */
     private def ackGameInfo(): Unit =
         val tbl = new CPAsciiTable()
         tbl += ("Game ID", gameInfo.id)
@@ -595,9 +589,6 @@ object CPEngine:
         assert(dim != null, "Dimension is null.")
         term.setTitle(s"${gameInfo.name} v${gameInfo.semVer}, ${dim.w}x${dim.h}")
 
-    /**
-      *
-      */
     private def checkState(): Unit =
         !>(state == State.ENG_STARTED, s"Engine is not started.")
 

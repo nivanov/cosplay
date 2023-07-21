@@ -105,7 +105,7 @@ class CPAsciiTable:
       */
     private sealed case class Cell(style: Style, lines: Seq[String]):
         // Cell's calculated width including padding.
-        lazy val width: Int = style.padding + (if (height > 0) lines.map(_.length).max else 0)
+        lazy val width: Int = style.padding + (if (height > 0) lines.map(_.visLength).max else 0)
         // Gets height of the cell.
         lazy val height: Int = lines.length
 
@@ -437,7 +437,7 @@ class CPAsciiTable:
       * @param sty Style.
       */
     private def aligned(txt: String, width: Int, sty: Style): String =
-        val d = width - txt.length
+        val d = width - txt.visLength
         sty.align match
             case "center" => s"${space(d / 2)}$txt${space(d / 2 + d % 2)}"
             case "left" => s"${space(sty.leftPad)}$txt${space(d - sty.leftPad)}"

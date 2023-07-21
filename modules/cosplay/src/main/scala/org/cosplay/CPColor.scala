@@ -541,7 +541,6 @@ object CPColor:
         0xeeeeee
     ).toIndexedSeq
 
-    /** */
     private val force8Bit = CPUtils.sysEnvBool("COSPLAY_FORCE_8BIT_COLOR")
 
     /**
@@ -666,9 +665,6 @@ object CPColor:
     val C_X11_RED = new CPColor(255, 0, 0, "C_X11_RED")
     val C_X11_DARK_RED = new CPColor(139, 0, 0, "C_X11_DARK_RED")
 
-    /**
-      *
-      */
     val CS_X11_REDS: Seq[CPColor] = Seq(
         C_X11_LIGHT_SALMON,
         C_X11_SALMON,
@@ -688,9 +684,6 @@ object CPColor:
     val C_X11_ORANGE = new CPColor(255, 165, 0, "C_X11_ORANGE")
     val C_X11_DARK_ORANGE = new CPColor(255, 140, 0, "C_X11_DARK_ORANGE")
 
-    /**
-      *
-      */
     val CS_X11_ORANGES: Seq[CPColor] = Seq(
         C_X11_CORAL,
         C_X11_TOMATO,
@@ -1262,9 +1255,6 @@ object CPColor:
     val C_X11_DARK_SLATE_GRAY = new CPColor(47, 79, 79, "C_X11_DARK_SLATE_GRAY")
     val C_X11_BLACK = new CPColor(0, 0, 0, "C_X11_BLACK")
 
-    /**
-      *
-      */
     val CS_X11_GRAYS: Seq[CPColor] = Seq(
         C_X11_GAINSBORO,
         C_X11_LIGHT_GRAY,
@@ -1295,9 +1285,6 @@ object CPColor:
     val C_X11_BROWN = new CPColor(165, 42, 42, "C_X11_BROWN")
     val C_X11_MAROON = new CPColor(128, 0, 0, "C_X11_MAROON")
 
-    /**
-      *
-      */
     val CS_X11_BROWNS: Seq[CPColor] = Seq(
         C_X11_CORN_SILK,
         C_X11_BLANCHED_ALMOND,
@@ -1335,9 +1322,6 @@ object CPColor:
     val C_X11_LAVENDER_BLUSH = new CPColor(255, 240, 245, "C_X11_LAVENDER_BLUSH")
     val C_X11_MISTY_ROSE = new CPColor(255, 228, 225, "C_X11_MISTY_ROSE")
 
-    /**
-      *
-      */
     val CS_X11_WHITES: Seq[CPColor] = Seq(
         C_X11_WHITE,
         C_X11_SNOW,
@@ -1365,9 +1349,6 @@ object CPColor:
     val C_X11_PALE_VIOLET_RED = new CPColor(219, 112, 147, "C_X11_PALE_VIOLET_RED")
     val C_X11_MEDIUM_VIOLET_RED = new CPColor(199, 21, 133, "C_X11_MEDIUM_VIOLET_RED")
 
-    /**
-      *
-      */
     val CS_X11_PINKS: Seq[CPColor] = Seq(
          C_X11_PINK,
          C_X11_LIGHT_PINK,
@@ -1393,9 +1374,6 @@ object CPColor:
     val C_X11_PURPLE = new CPColor(128, 0, 128, "C_X11_PURPLE")
     val C_X11_INDIGO = new CPColor(75, 0, 130, "C_X11_INDIGO")
 
-    /**
-      *
-      */
     val CS_X11_PURPLES: Seq[CPColor] = Seq(
          C_X11_LAVENDER,
          C_X11_THISTLE,
@@ -1433,9 +1411,6 @@ object CPColor:
     val C_X11_SLATE_BLUE = new CPColor(106, 90, 205, "C_X11_SLATE_BLUE")
     val C_X11_DARK_SLATE_BLUE = new CPColor(72, 61, 139, "C_X11_DARK_SLATE_BLUE")
 
-    /**
-      *
-      */
     val CS_X11_BLUES: Seq[CPColor] = Seq(
         C_X11_POWDER_BLUE,
         C_X11_LIGHT_BLUE,
@@ -1471,9 +1446,6 @@ object CPColor:
     val C_X11_DARK_CYAN = new CPColor(0, 139, 139, "C_X11_DARK_CYAN")
     val C_X11_TEAL = new CPColor(0, 128, 128, "C_X11_TEAL")
 
-    /**
-      *
-      */
     val CS_X11_CYANS: Seq[CPColor] = Seq(
         C_X11_LIGHT_CYAN,
         C_X11_CYAN,
@@ -1510,9 +1482,6 @@ object CPColor:
     val C_X11_DARK_OLIVE_GREEN = new CPColor(85, 107, 47, "C_X11_DARK_OLIVE_GREEN")
     val C_X11_OLIVE_DRAB = new CPColor(107, 142, 35, "C_X11_OLIVE_DRAB")
 
-    /**
-      *
-      */
     val CS_X11_GREENS: Seq[CPColor] = Seq(
         C_X11_LAWN_GREEN,
         C_X11_CHARTREUSE,
@@ -1546,9 +1515,6 @@ object CPColor:
     val C_X11_DARK_KHAKI = new CPColor(189, 183, 107, "C_X11_DARK_KHAKI")
     val C_X11_YELLOW = new CPColor(255, 255, 0, "C_X11_YELLOW")
 
-    /**
-      *
-      */
     val CS_X11_YELLOWS: Seq[CPColor] = Seq(
         C_X11_LIGHT_YELLOW,
         C_X11_LEMON_CHIFFON,
@@ -1562,9 +1528,6 @@ object CPColor:
         C_X11_YELLOW
     ).sorted
 
-    /**
-      *
-      */
     val CS_X11_ALL: Seq[CPColor] =
         CS_X11_WHITES ++
         CS_X11_CYANS ++
@@ -1578,9 +1541,6 @@ object CPColor:
         CS_X11_PINKS ++
         CS_X11_GRAYS
 
-    /**
-      *
-      */
     val C_X11_GROUPS: Seq[Seq[CPColor]] = Seq(
         CS_X11_REDS,
         CS_X11_GRAYS,
@@ -1595,9 +1555,6 @@ object CPColor:
         CS_X11_YELLOWS
     )
 
-    /**
-      *
-      */
     val C_SYS_GROUP: Seq[CPColor] = Seq(
         C_BLACK,
         C_MAROON,

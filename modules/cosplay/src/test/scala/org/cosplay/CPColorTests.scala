@@ -34,13 +34,7 @@ import org.cosplay.CPColor.*
                All rights reserved.
 */
 
-/**
-  *
-  */
 object CPColorTests:
-    /**
-      *
-      */
     @Test
     def darkerTest(): Unit =
         val c = C_LIME
@@ -53,9 +47,6 @@ object CPColorTests:
         val c = CPColor(10, 20, 30)
         assertEquals(c, CPColor.fromHSB(c.hue, c.saturation, c.brightness))
 
-    /**
-     *
-     */
     @Test
     def modificationsTest(): Unit =
         val c = CPColor(32, 64, 128)
@@ -72,21 +63,12 @@ object CPColorTests:
         val f1 = CPColor.gradientFun(C_WHITE, C_BLACK, 20)
         val s1 = CPColor.gradientSeq(C_WHITE, C_BLACK, 20)
 
-    /**
-      *
-      */
     //@Test
     def genX11ColorSwatches(): Unit = genColorSwatches(CPColor.CS_X11_ALL)
 
-    /**
-      *
-      */
     //@Test
     def genXTermColorSwatches(): Unit = genColorSwatches(CPColor.CS_XTERM_ALL)
 
-    /**
-      *
-      */
     private def genColorSwatches(cs: Seq[CPColor]): Unit =
         // ^(\s+)val ([\d\w_]+) = CPColor\((\d{1,3}, \d{1,3}, \d{1,3})\)$
         // $1val $2 = new CPColor($3, "$2")
@@ -118,9 +100,6 @@ object CPColorTests:
                   |    </td>
                   |</tr>""".stripMargin)
 
-    /**
-      *
-      */
     @Test
     def xterm256Test(): Unit =
         assertTrue(16 == CPColor(0,0,0).xterm)
@@ -165,9 +144,6 @@ object CPColorTests:
         assertTrue(55 == CPColor(95,0,175).xterm)
         assertTrue(56 == CPColor(95,0,215).xterm)
 
-    /**
-      *
-      */
     @Test
     def equalTest(): Unit =
         val c1 = CPColor(0, 128, 0)

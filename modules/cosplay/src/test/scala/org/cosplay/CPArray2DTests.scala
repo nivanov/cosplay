@@ -38,26 +38,17 @@ import org.junit.jupiter.api.Test
   *
   */
 object CPArray2DTests:
-    /**
-      *
-      */
     @Test
     def equalityTest(): Unit =
         assertTrue(new CPArray2D[Char](2, 2, 'a') == CPArray2D(Seq("aa", "aa")))
         assertTrue(new CPArray2D[Char](2, 2, 'a') != CPArray2D(Seq("aa", "1aa")))
 
-    /**
-      *
-      */
     @Test
     def givensTest(): Unit =
         new CPArray2D[Char](100, 100, 'a')
         new CPArray2D[CPPixel](100, 100, CPPixel.XRAY)
         new CPArray2D[CPZPixel](100, 100, CPZPixel(CPPixel.XRAY, Int.MinValue))
 
-    /**
-      *
-      */
     @Test
     def copyTest(): Unit =
         val arr1 = new CPArray2D[Char](100, 100, 'a')
@@ -65,9 +56,6 @@ object CPArray2DTests:
         assertTrue(arr1 == arr2)
         assertTrue(arr2.get(x = 0, y = 0) == 'a')
 
-    /**
-      *
-      */
     @Test
     def applyTest(): Unit =
         val seq = Seq("cosplay", "game", "engine")
@@ -85,9 +73,6 @@ object CPArray2DTests:
         assertTrue(arr.get(0, 1) == 'g')
         assertTrue(arr.get(0, 2) == 'e')
 
-    /**
-      *
-      */
     @Test
     def trimTest(): Unit =
         val arr1 = new CPArray2D[Int](10, 10, 0)

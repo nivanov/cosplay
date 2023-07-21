@@ -72,7 +72,6 @@ object CPUtils:
     private val isTracking = !isSysEnvSet("COSPLAY_DISABLE_MIXPANEL")
     private val exec = Executors.newFixedThreadPool(THREAD_POOL_SIZE)
 
-    /** */
     val PING_MSG = "8369926740-3247024617-2096692631-7483698541-4348351625-9412150510-5442257448-4805421296-5646586017-0232477804"
 
     /**
@@ -128,25 +127,9 @@ object CPUtils:
         else
             ch
 
-    /**
-      *
-      */
     def onHeapMemUsage: Long = memMx.getHeapMemoryUsage.getUsed
-
-    /**
-      *
-      */
     def offHeapMemUsage: Long = memMx.getNonHeapMemoryUsage.getUsed
-
-    /**
-      *
-      */
-    def cpuUsagePct: Int =
-        sysMx.getSystemLoadAverage.toFloat.round
-
-    /**
-      *
-      */
+    def cpuUsagePct: Int = sysMx.getSystemLoadAverage.toFloat.round
     def memUsagePct: Int =
         val free = rt.freeMemory()
         val total = rt.totalMemory()

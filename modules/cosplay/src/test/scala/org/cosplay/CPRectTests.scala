@@ -16,13 +16,7 @@ import org.junit.jupiter.api.Test
                All rights reserved.
 */
 
-/**
-  *
-  */
 object CPRectTests:
-    /**
-      *
-      */
     @Test
     def zeroRectTest(): Unit =
         val r = CPRect.ZERO
@@ -34,25 +28,16 @@ object CPRectTests:
         assertTrue(r.union(CPRect.ZERO) == r)
         assertTrue(CPRect(1, 1, 5, 5).intersectWith(r) == CPRect.ZERO)
 
-    /**
-      *
-      */
     @Test
     def equalityTest(): Unit =
         assertTrue(CPRect(0, 0, 1, 1) == CPRect(0, 0, 1, 1))
 
-    /**
-      *
-      */
     @Test
     def unionTest(): Unit =
         val rect1 = CPRect(0, 0, 1, 1)
         val rect2 = CPRect(3, 3, 2, 2)
         assertTrue(rect1.union(rect2) == CPRect(0, 0, 5, 5))
 
-    /**
-      *
-      */
     @Test
     def intersectionTest(): Unit =
         val rect1 = CPRect(0, 0, 10, 10)
@@ -66,9 +51,6 @@ object CPRectTests:
         // Not intersecting.
         assertTrue(CPRect(1, 1, 1, 1).intersectWith(CPRect(3, 3, 1, 1)) == CPRect.ZERO)
 
-    /**
-      *
-      */
     @Test
     def growToTest(): Unit =
         val rect1 = CPRect(0, 0, 1, 1)
@@ -81,9 +63,6 @@ object CPRectTests:
 
         println(s"rect4 $rect4")
 
-    /**
-      *
-      */
     @Test
     def containsTest(): Unit =
         val rect = new CPRect(0, 0, CPDim(10, 10))

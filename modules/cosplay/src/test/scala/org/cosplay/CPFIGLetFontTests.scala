@@ -37,9 +37,6 @@ import org.junit.jupiter.api.Test
   */
 //noinspection ScalaUnusedSymbol
 object CPFIGLetFontTests:
-    /**
-      *
-      */
     @Test
     def fontTestProperties(): Unit =
         CPFIGLetFont.ALL_FIG_FONTS
@@ -49,9 +46,6 @@ object CPFIGLetFontTests:
             .sortBy(_._1)
             .foreach((h, seq) => println(s"$h -> ${seq.map(_.getOrigin).mkString(",")}"))
 
-    /**
-      *
-      */
     @Test
     def fontTests(): Unit =
         /*

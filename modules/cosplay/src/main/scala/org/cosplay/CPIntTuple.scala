@@ -41,9 +41,6 @@ protected trait CPIntTuple[T](val ints: Int*) extends Serializable:
       */
     val arity: Int = ints.size
 
-    /**
-      *
-      */
     protected def ctor(ints: Seq[Int]): T
 
     /**

@@ -37,9 +37,6 @@ import org.junit.jupiter.api.Test
   *
   */
 object CPInt4Tests:
-    /**
-      *
-      */
     @Test
     def int4Test(): Unit =
         val d = CPInt4(1, 1, 1, 1)

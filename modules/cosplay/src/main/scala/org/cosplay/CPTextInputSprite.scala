@@ -110,9 +110,6 @@ class CPTextInputSprite(
 
     reset()
 
-    /**
-      *
-      */
     private def reset(): Unit =
         buf.clear()
         buf.addAll(initTxt.substring(0, maxBuf.min(initTxt.length)))

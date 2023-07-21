@@ -134,9 +134,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 CPEngine.exitGame()
         })
 
-    /**
-      *
-      */
     private def initFontMetrics(): Unit =
         val fonts = GraphicsEnvironment.getLocalGraphicsEnvironment.getAllFonts.toList
         val fontNames = (fonts.map(_.getFontName) ++ fonts.map(_.getName) ++ fonts.map(_.getFamily)).distinct
@@ -224,29 +221,17 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         if icon.isDefined then act.putValue(Action.SMALL_ICON, icon.get)
         act
 
-    /**
-      *
-      * @param act
-      */
     private def mkMenuItem(act: Action): JMenuItem =
         val mi = new JMenuItem(act)
         mi.setFocusPainted(false)
         mi
 
-    /**
-      *
-      * @param w
-      * @param h
-      */
     private def safeDim(w: Int, h: Int): Dimension =
         val scrSz = Toolkit.getDefaultToolkit.getScreenSize
         val safeW = if w >= scrSz.width then (scrSz.width * 0.8).round.toInt else w
         val safeH = if h >= scrSz.height then (scrSz.height * 0.8).round.toInt else h
         new Dimension(safeW, safeH)
 
-    /**
-      *
-      */
     private def init(): Unit =
         CPUtils.initLaF()
         initFontMetrics()
