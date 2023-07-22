@@ -43,9 +43,15 @@ object CPAsciiTableTests:
     def visLengthTest(): Unit =
         val s = s"$c"
         assertTrue(s.visLength == 0)
-        val s1 = s"ab$c${c}ef$c"
-        assertTrue(s1.visLength == 4)
-        assertTrue(s1.visOnly == "abef")
+        val s1 = s"ab$c${c}ef$c\n"
+        println(
+            """ab$c${c}ef$c""" + "='" + s1 + "'"
+        )
+        println(
+            """ab$c${c}ef$c""" + "='" + s1.visOnly + "'"
+        )
+        assertTrue(s1.visLength == 5)
+        assertTrue(s1.visOnly == "abef\n")
         val s2 = s"$c "
         assertTrue(s2.visLength == 1)
 
@@ -55,4 +61,4 @@ object CPAsciiTableTests:
         tbl += ("Cell 1.1", "Cell 1.2", s"Cell $c 1.3")
         tbl.addSeparator()
         tbl += (s"Cell $c$c$c$c$c$c${c}2.1", "Cell 2.2", "Cell 2.3")
-        println(tbl.toString)
+        println(tbl.toString.visOnly)

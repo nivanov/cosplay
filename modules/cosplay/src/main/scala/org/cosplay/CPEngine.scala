@@ -94,10 +94,11 @@ extension[T](t: T)
     def seq: Seq[T] = Seq(t)
 
 extension(s: String)
+    def isVis(ch: Char): Boolean = ch == '\n' || ch == '\t' || !ch.isControl
     /** Length of the string taking into account printable characters only. */
-    inline def visLength: Int = s.count(!_.isControl)
+    inline def visLength: Int = s.count(isVis)
     /** String with all non-printable characters removed. */
-    inline def visOnly: String = s.filter(!_.isControl)
+    inline def visOnly: String = s.filter(isVis)
 
 extension[R, T](opt: Option[T])
     @targetName("optEqual")

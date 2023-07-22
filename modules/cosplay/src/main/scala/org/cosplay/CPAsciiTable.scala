@@ -476,11 +476,6 @@ class CPAsciiTable:
         // Top margin.
         for _ <- 0 until margin.top do tbl ++= " \n"
 
-        /**
-          *
-          * @param crs
-          * @param cor
-          */
         def mkAsciiLine(crs: String, cor: String): String =
             s"${space(margin.left)}$crs${dash(cor, tableW)}$crs${space(margin.right)}\n"
 
