@@ -43,6 +43,13 @@ object CPColorTests:
         assertTrue(c2 == c3)
 
     @Test
+    def lumaVsBrightness(): Unit =
+        val c = CPColor(10, 20, 30)
+        val b = c.brightness
+        val l = c.luma
+        println(s"Brightness: $b, luma: $l, lumaNorm: ${l / 255}")
+
+    @Test
     def HSBandRGBTest(): Unit =
         val c = CPColor(10, 20, 30)
         assertEquals(c, CPColor.fromHSB(c.hue, c.saturation, c.brightness))

@@ -104,6 +104,14 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
       */
     inline def getName: String = name
 
+    /**
+      * Gets the degree of difference in [0,1] range between this color and the given one. This
+      * color is considered as 100%.
+      *
+      * @param c Color to get a delta for.
+      */
+    def delta(c: CPColor): Array[Float] = CPColor.delta(this, c)
+
     /** RGB value of this color. */
     val rgb: Int = ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff)
 
@@ -156,6 +164,13 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
 
     /** Color's brightness. */
     val brightness: Float = hsb(2)
+
+    /**
+      * Color's luma (brightness) according per ITU-R BT.709. The smaller the number the
+      * darker the color. The result value is in [0,255] range with 128 considered to be a
+      * "dark" color.
+      */
+    val luma: Float = 0.2126f * red + 0.7152f * green + 0.0722f * blue
 
     private def toHex(i: Int): String =
         var hex = i.toHexString.toUpperCase
@@ -234,6 +249,19 @@ final case class CPColor(red: Int, green: Int, blue: Int, name: String = null) e
       * @param newBlue Value for blue channel.
       */
     def setBlue(newBlue: Int): CPColor = CPColor(red, green, newBlue)
+
+    /**
+      * Creates new color by multiplying this color by given delta.
+      *
+      * @param delta 3-element array by which each of the RGB channels will be multiplied.
+      * @see [[delta]]
+      * @see [[CPColor.delta()]]
+      */
+    def mult(delta: Array[Float]): CPColor = CPColor(
+        (red * delta(0)).round,
+        (green * delta(1)).round,
+        (blue * delta(2)).round
+    )
 
     /**
       * Creates a new darker color.
@@ -574,6 +602,20 @@ object CPColor:
     def fromHSB(hue: Float, saturation: Float, brightness: Float): CPColor =
         val rgb = Color.HSBtoRGB(hue, saturation, brightness)
         new CPColor(rgb >> 16 & 0xff, rgb >> 8 & 0xFF, rgb & 0xFF)
+
+    /**
+      * Gets the degree of difference in [0,1] range between color `c1` and `c2`. Color
+      * `c1` is considered as 100%.
+      *
+      * @param c1 Color 1, considered as 100%.
+      * @param c2 Color 2.
+      */
+    def delta(c1: CPColor, c2: CPColor): Array[Float] =
+        Array(
+            c2.red.toFloat / c1.red.toFloat,
+            c2.green.toFloat / c1.green.toFloat,
+            c2.blue.toFloat / c1.blue.toFloat,
+        )
 
     private def toXterm(r: Int, g: Int, b: Int): Int =
         // https://stackoverflow.com/questions/11765623/convert-hex-to-closest-x11-color-number
