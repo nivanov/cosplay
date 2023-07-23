@@ -45,9 +45,16 @@ object CPColorTests:
     @Test
     def lumaVsBrightness(): Unit =
         val c = CPColor(10, 20, 30)
+        val c2 = CPColor(10, 20, 30)
         val b = c.brightness
         val l = c.luma
+        val d = c.delta(c2)
+        assertTrue(d(0) == 1f)
+        assertTrue(d(1) == 1f)
+        assertTrue(d(2) == 1f)
         println(s"Brightness: $b, luma: $l, lumaNorm: ${l / 255}")
+        println(s"Black luma is ${CPColor(0, 0, 0).luma}")
+        println(s"White luma is ${CPColor(255, 255, 255).luma}")
 
     @Test
     def HSBandRGBTest(): Unit =
