@@ -95,7 +95,7 @@
         <timestamp>${maven.build.timestamp}</timestamp>
 
         <!-- Versions. -->
-        <scala.plugin.ver>4.5.3</scala.plugin.ver>
+        <scala.plugin.ver>4.8.1</scala.plugin.ver>
         <maven.compiler.plugin.ver>3.8.0</maven.compiler.plugin.ver>
         <maven.enforcer.plugin.ver>1.4.1</maven.enforcer.plugin.ver>
         <maven.surefire.plugin.ver>2.22.1</maven.surefire.plugin.ver>
