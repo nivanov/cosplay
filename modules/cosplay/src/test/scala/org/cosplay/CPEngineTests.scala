@@ -34,13 +34,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import scala.util.*
 
-/**
-  *
-  */
 object CPEngineTests:
-    /**
-      *
-      */
     @Test
     def homeFileTest(): Unit =
         CPTestEngine.ensureStarted()

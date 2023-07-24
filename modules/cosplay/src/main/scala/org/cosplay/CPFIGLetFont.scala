@@ -146,13 +146,6 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
     // Initialize.
     loadAndInit()
 
-    /**
-      *
-      * @param kerning
-      * @param uniSmush
-      * @param ctrlSmush
-      * @param fullWidth
-      */
     private def withFitting(kerning: Boolean, uniSmush: Boolean, ctrlSmush: Boolean, fullWidth: Boolean): CPFIGLetFont =
         figKerning = kerning
         figFullWidth = fullWidth
@@ -351,10 +344,6 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
          Baseline   /    \   Comment_Lines
           Max_Length      Old_Layout*
     */
-    /**
-      *
-      * @param hdr
-      */
     private def parseFIGHeader(hdr: String): Unit =
         def wrongHeader(err: String): CPException = new CPException(s"Invalid FLF file header ($err): $flfPath")
 
@@ -429,11 +418,6 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
         if !figKerning && !figUniSmush && !figCtrlSmush && !figFullWidth then
             raise(s"Undetermined layout.")
 
-    /**
-      *
-      * @param lines
-      * @param startIdx
-      */
     private def parseFIGLet(lines: IndexedSeq[String], startIdx: Int): FIGLet =
         val eol = lines(startIdx).last
         val chLines = mutable.Buffer.empty[String]
@@ -458,9 +442,6 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
             figHeight
         )
 
-    /**
-      *
-      */
     private def loadAndInit(): Unit =
         var lines =
             try

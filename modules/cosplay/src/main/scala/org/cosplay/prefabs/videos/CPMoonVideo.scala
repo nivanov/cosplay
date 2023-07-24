@@ -4724,9 +4724,6 @@ object CPMoonVideo extends CPVideo("moon_vid", "https://ascii.co.uk/animated-art
                                        ..,::;ii111tt11ii;::,..                                      
 """)
 
-    /**
-      *
-      */
     private def prepFrames(): Seq[CPImage] =
         !>(rawFrames.nonEmpty, s"No video frames found.")
         // NOTE: just in case we remove '\r' from the images...

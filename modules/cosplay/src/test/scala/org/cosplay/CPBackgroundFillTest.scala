@@ -33,13 +33,7 @@ import org.junit.jupiter.api.Test
                All rights reserved.
 */
 
-/**
-  *
-  */
 object CPBackgroundFillTest:
-    /**
-      *
-      */
     @Test
     def backgroundTest(): Unit =
         val img = CPSpinningGlobeAniImage

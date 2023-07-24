@@ -37,9 +37,6 @@ import org.junit.jupiter.api.Test
   *
   */
 object CPInsetsTests:
-    /**
-      *
-      */
     @Test
     def insetTest(): Unit =
         val ins = CPInsets(1, 1, 1, 1)

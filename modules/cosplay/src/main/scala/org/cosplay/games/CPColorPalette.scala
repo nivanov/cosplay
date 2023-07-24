@@ -38,7 +38,7 @@ import org.cosplay.*
  */
 
 // Randomly selected color palette.
-private val palette = CPRand.rand(
+private val palette = 
     // List of colors palettes: https://designs.ai/colors
     Seq(
         Seq("#ee3423", "#fbce59", "#72659e", "#a8bbce", "#443c64"),
@@ -50,8 +50,7 @@ private val palette = CPRand.rand(
         Seq("#8ef560", "#7153f5", "#f552d6", "#a795f5", "#f594e4"),
         Seq("#75f5ae", "#ed53f5", "#f5545b", "#f094f5", "#f5959a"),
         Seq("#f57cb0", "#99f553", "#5399f5", "#bff595", "#95bff5")
-    ).map(_.map(CPColor(_)))
-)
+    ).map(_.map(CPColor(_))).rand
 
 // Global colors randomly chosen from the above palette.
 val C1 = palette.head

@@ -696,15 +696,6 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         lineAlgo(ax, ay, bx, by, z, (x, y) => buf += CPPosPixel(pxf(x, y), x, y))
         buf
 
-    /**
-      *
-      * @param ax X-coordinate of the start point.
-      * @param ay Y-coordinate of the start point.
-      * @param bx X-coordinate of the end point.
-      * @param by Y-coordinate of the end point.
-      * @param z Z-index of the drawing. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param pxf
-      */
     private def lineAlgo(ax: Int, ay: Int, bx: Int, by: Int, z: Int, pxf: (Int, Int) => Unit): Unit =
         val xD = bx - ax
         val yD = by - ay

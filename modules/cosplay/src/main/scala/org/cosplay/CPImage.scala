@@ -637,26 +637,11 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
                 override def getDim: CPDim = it.getDim
                 override def getPixel(x: Int, y: Int): CPPixel = verPixelFlip(it.getPixel(x, yMax - y))
 
-    /**
-      *
-      * @param px
-      * @param map
-      */
     private def flipPixel(px: CPPixel, map: Seq[(Char, Char)]): CPPixel =
         map.find(px.char == _._1) match
             case Some(t) => px.withChar(t._2)
             case None => map.find(px.char == _._2).mapOr(t => px.withChar(t._1), px)
-
-    /**
-      *
-      * @param px
-      */
     private def horPixelFlip(px: CPPixel): CPPixel = flipPixel(px, HOR_FLIP_MAP)
-
-    /**
-      *
-      * @param px
-      */
     private def verPixelFlip(px: CPPixel): CPPixel = flipPixel(px, VER_FLIP_MAP)
 
     /**
@@ -831,10 +816,6 @@ object CPImage:
         for layer <- layers do layer.map((px, x, y) => if !px.isXray then data.set(x, y, px))
         new CPArrayImage(data.map(skin))
 
-    /**
-      *
-      * @param b
-      */
     private def unsigned(b: Byte): Int = b.toInt & 0xFF
 
     /**

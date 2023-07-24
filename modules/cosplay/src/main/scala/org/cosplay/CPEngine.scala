@@ -93,6 +93,13 @@ extension[T](t: T)
     /** Shortcut for `Seq(t)` as `t.seq` */
     def seq: Seq[T] = Seq(t)
 
+extension(s: String)
+    def isVis(ch: Char): Boolean = ch == '\n' || ch == '\t' || !ch.isControl
+    /** Length of the string taking into account printable characters only. */
+    inline def visLength: Int = s.count(isVis)
+    /** String with all non-printable characters removed. */
+    inline def visOnly: String = s.filter(isVis)
+
 extension[R, T](opt: Option[T])
     @targetName("optEqual")
     def ===(t: T): Boolean = opt match
@@ -338,9 +345,6 @@ object CPEngine:
         def getLog(category: String): CPLog = new Log4jMirrorLog(impl.getLog(category))
         def getCategory: String = impl.getCategory
 
-    /**
-      *
-      */
     private object BufferedLog:
         case class BufferedLogEntry(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable)
         val buf: mutable.ArrayBuffer[BufferedLogEntry] = mutable.ArrayBuffer.empty[BufferedLogEntry]
@@ -356,9 +360,6 @@ object CPEngine:
         def getCategory: String = cat
         def log(nthFrame: Int, lvl: CPLogLevel, obj: Any, cat: String, ex: Throwable): Unit = buf += BufferedLogEntry(nthFrame, lvl, obj, cat, ex)
 
-    /**
-      *
-      */
     private class NativeKbReader extends Thread:
         private val EOF = -1
         private val TIMEOUT = -2
@@ -466,10 +467,6 @@ object CPEngine:
         if !dir.exists() && !dir.mkdirs() then raise(s"Failed to create folder: ${dir.getAbsolutePath}")
         dir
 
-    /**
-      *
-      * @param path
-      */
     private def newFile(path: String): File =
         val file = new File(path)
         val parent = file.getParentFile
@@ -555,9 +552,6 @@ object CPEngine:
         ackGameInfo()
         CPUtils.startPing(gameInfo)
 
-    /**
-      *
-      */
     private def asciiLogo(): Unit =
         val verStr = s"ver: ${CPVersion.latest.semver}".padTo(13, ' ')
         val logo =
@@ -575,9 +569,6 @@ object CPEngine:
                 |""".stripMargin
         engLog.info(s"\n$logo")
 
-    /**
-      *
-      */
     private def ackGameInfo(): Unit =
         val tbl = new CPAsciiTable()
         tbl += ("Game ID", gameInfo.id)
@@ -587,17 +578,9 @@ object CPEngine:
         tbl += ("Minimum Size", gameInfo.minDim.mapOr(_.toString, "n/a"))
         tbl.info(engLog, "Game initialized:".?)
 
-    /**
-      *
-      * @param dim
-      */
     private def updateTitle(dim: CPDim): Unit =
         assert(dim != null, "Dimension is null.")
         term.setTitle(s"${gameInfo.name} v${gameInfo.semVer}, ${dim.w}x${dim.h}")
-
-    /**
-      *
-      */
     private def checkState(): Unit =
         !>(state == State.ENG_STARTED, s"Engine is not started.")
 
@@ -878,12 +861,6 @@ object CPEngine:
     def removeStatsListener(f: CPRenderStatsListener): Unit =
         statsReg -= f
 
-    /**
-      *
-      * @param canv
-      * @param stats
-      * @param camRect
-      */
     private def showFps(canv: CPCanvas, stats: CPRenderStats, camRect: CPRect): Unit =
         def leftPad(s: String): String = s"${' '.toString * (12 - s.length())}$s"
 
@@ -960,10 +937,6 @@ object CPEngine:
         extDelayedQ += (id -> msgs)
     )
 
-    /**
-      *
-      * @param startScene
-      */
     private def gameLoop(startScene: CPScene): Unit =
         val startMs = System.currentTimeMillis()
         var startScMs = startMs

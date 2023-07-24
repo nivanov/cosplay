@@ -81,7 +81,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
                 case c if c.isLetter || c == '/' => c && (C4, BG_PX.bg.get)
                 case _ => ch && (C3, BG_PX.bg.get)
         )
-    private val youLostImg = prepDialog(
+    private val youLostImg = prepDialog:
         """
           |**********************************
           |**                              **
@@ -96,8 +96,7 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
           |**                              **
           |**********************************
         """
-    )
-    private val youWonImg = prepDialog(
+    private val youWonImg = prepDialog:
         """
           |**********************************
           |**                              **
@@ -112,7 +111,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
           |**                              **
           |**********************************
         """
-    )
     private val yamEmitter = new CPConfettiEmitter(
         () => yamSpr.getX,
         () => yamSpr.getY,
@@ -165,10 +163,6 @@ class CPSnakePlayScene(dim: CPDim) extends CPScene("play", dim.?, BG_PX):
             this.dx = dx
             this.dy = dy
 
-        /**
-          *
-          * @param c Current canvas.
-          */
         private def isDead(c: CPCanvas): Boolean =
             val (hx, hy) = snake.head
             val rx = (x * 2).round

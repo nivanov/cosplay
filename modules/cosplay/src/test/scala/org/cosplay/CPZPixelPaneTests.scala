@@ -34,13 +34,7 @@ import org.junit.jupiter.api.Assertions.{assertEquals, assertTrue}
 import org.junit.jupiter.api.Test
 import org.cosplay.CPColor.*
 
-/**
-  *
-  */
 object CPZPixelPaneTests:
-    /**
-      *
-      */
     @Test
     def newTest(): Unit =
         val bgPx = CPPixel('x', C_BLACK)

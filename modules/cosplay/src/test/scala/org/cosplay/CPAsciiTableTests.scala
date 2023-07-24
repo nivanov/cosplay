@@ -37,13 +37,28 @@ import org.junit.jupiter.api.Test
   *
   */
 object CPAsciiTableTests:
-    /**
-      *
-      */
+    private final val c = "\u0002\u0007"
+
+    @Test
+    def visLengthTest(): Unit =
+        val s = s"$c"
+        assertTrue(s.visLength == 0)
+        val s1 = s"ab$c${c}ef$c\n"
+        println(
+            """ab$c${c}ef$c""" + "='" + s1 + "'"
+        )
+        println(
+            """ab$c${c}ef$c""" + "='" + s1.visOnly + "'"
+        )
+        assertTrue(s1.visLength == 5)
+        assertTrue(s1.visOnly == "abef\n")
+        val s2 = s"$c "
+        assertTrue(s2.visLength == 1)
+
     @Test
     def equalityTest(): Unit =
-        val tbl = CPAsciiTable("Header 1", "Header 2", "Header 3")
-        tbl += ("Cell 1.1", "Cell 1.2", "Cell 1.3")
+        val tbl = CPAsciiTable("Header 1", s"Header $c$c${c}2", "Header 3")
+        tbl += ("Cell 1.1", "Cell 1.2", s"Cell $c 1.3")
         tbl.addSeparator()
-        tbl += ("Cell 2.1", "Cell 2.2", "Cell 2.3")
-        println(tbl.toString)
+        tbl += (s"Cell $c$c$c$c$c$c${c}2.1", "Cell 2.2", "Cell 2.3")
+        println(tbl.toString.visOnly)

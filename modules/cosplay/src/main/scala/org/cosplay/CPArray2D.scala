@@ -340,9 +340,6 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       */
     def loopVert(f: (T, Int, Int) => Unit): Unit = rect.loopVert((x, y) => f(get(x, y), x, y))
 
-   /**
-      *
-      */
     private def initClearBuf(): Unit =
         rect.loop((x, y) => clearBuf(x)(y) = clearVal)
         isClearBufInit = true
@@ -385,20 +382,8 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       */
     def set(x: Int, y: Int, t: T): Unit = data(x)(y) = t
 
-    /**
-      *
-      * @param x X-coordinate
-      * @param f Blank predicate.
-      */
     private def isColumnBlank(x: Int, f: T => Boolean): Boolean = isBlank(x, f, false)
-
-    /**
-      *
-      * @param y Y-coordinate
-      * @param f Blank predicate.
-      */
     private def isRowBlank(y: Int, f: T => Boolean): Boolean = isBlank(y, f, true)
-
     private def isBlank(d: Int, f: T => Boolean, isRow: Boolean): Boolean =
         val max = if isRow then xMax else yMax
         if nonEmpty then

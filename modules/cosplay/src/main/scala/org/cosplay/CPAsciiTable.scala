@@ -105,7 +105,7 @@ class CPAsciiTable:
       */
     private sealed case class Cell(style: Style, lines: Seq[String]):
         // Cell's calculated width including padding.
-        lazy val width: Int = style.padding + (if (height > 0) lines.map(_.length).max else 0)
+        lazy val width: Int = style.padding + (if (height > 0) lines.map(_.visLength).max else 0)
         // Gets height of the cell.
         lazy val height: Int = lines.length
 
@@ -307,11 +307,6 @@ class CPAsciiTable:
         case null => "<null>"
         case _ => s.toString
 
-    /**
-      *
-      * @param maxWidth
-      * @param lines
-      */
     private def breakUpByNearestSpace(maxWidth: Int, lines: Seq[String]): Seq[String] =
         lines.flatMap(line => {
             if line.isEmpty then
@@ -344,13 +339,6 @@ class CPAsciiTable:
 
                 buf
         })
-
-    /**
-      *
-      * @param hdr
-      * @param style
-      * @param lines
-      */
     private def mkStyledCell(hdr: Boolean, style: String, lines: Any*): Cell =
         val st = Style(style)
         val strLines = lines.map(x)
@@ -362,7 +350,6 @@ class CPAsciiTable:
             else
                 (for str <- strLines yield str.grouped(st.maxWidth)).flatten
         )
-
 
     /**
       * Adds single header cell with the default style..
@@ -430,14 +417,8 @@ class CPAsciiTable:
         )
         this
 
-    /**
-      *
-      * @param txt Text to align.
-      * @param width Width already accounts for padding.
-      * @param sty Style.
-      */
     private def aligned(txt: String, width: Int, sty: Style): String =
-        val d = width - txt.length
+        val d = width - txt.visLength
         sty.align match
             case "center" => s"${space(d / 2)}$txt${space(d / 2 + d % 2)}"
             case "left" => s"${space(sty.leftPad)}$txt${space(d - sty.leftPad)}"
@@ -495,11 +476,6 @@ class CPAsciiTable:
         // Top margin.
         for _ <- 0 until margin.top do tbl ++= " \n"
 
-        /**
-          *
-          * @param crs
-          * @param cor
-          */
         def mkAsciiLine(crs: String, cor: String): String =
             s"${space(margin.left)}$crs${dash(cor, tableW)}$crs${space(margin.right)}\n"
 

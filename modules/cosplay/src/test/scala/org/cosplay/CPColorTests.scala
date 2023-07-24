@@ -34,13 +34,7 @@ import org.cosplay.CPColor.*
                All rights reserved.
 */
 
-/**
-  *
-  */
 object CPColorTests:
-    /**
-      *
-      */
     @Test
     def darkerTest(): Unit =
         val c = C_LIME
@@ -49,13 +43,24 @@ object CPColorTests:
         assertTrue(c2 == c3)
 
     @Test
+    def lumaVsBrightness(): Unit =
+        val c = CPColor(10, 20, 30)
+        val c2 = CPColor(10, 20, 30)
+        val b = c.brightness
+        val l = c.luma
+        val d = c.delta(c2)
+        assertTrue(d(0) == 1f)
+        assertTrue(d(1) == 1f)
+        assertTrue(d(2) == 1f)
+        println(s"Brightness: $b, luma: $l, lumaNorm: ${l / 255}")
+        println(s"Black luma is ${CPColor(0, 0, 0).luma}")
+        println(s"White luma is ${CPColor(255, 255, 255).luma}")
+
+    @Test
     def HSBandRGBTest(): Unit =
         val c = CPColor(10, 20, 30)
         assertEquals(c, CPColor.fromHSB(c.hue, c.saturation, c.brightness))
 
-    /**
-     *
-     */
     @Test
     def modificationsTest(): Unit =
         val c = CPColor(32, 64, 128)
@@ -72,21 +77,12 @@ object CPColorTests:
         val f1 = CPColor.gradientFun(C_WHITE, C_BLACK, 20)
         val s1 = CPColor.gradientSeq(C_WHITE, C_BLACK, 20)
 
-    /**
-      *
-      */
     //@Test
     def genX11ColorSwatches(): Unit = genColorSwatches(CPColor.CS_X11_ALL)
 
-    /**
-      *
-      */
     //@Test
     def genXTermColorSwatches(): Unit = genColorSwatches(CPColor.CS_XTERM_ALL)
 
-    /**
-      *
-      */
     private def genColorSwatches(cs: Seq[CPColor]): Unit =
         // ^(\s+)val ([\d\w_]+) = CPColor\((\d{1,3}, \d{1,3}, \d{1,3})\)$
         // $1val $2 = new CPColor($3, "$2")
@@ -118,9 +114,6 @@ object CPColorTests:
                   |    </td>
                   |</tr>""".stripMargin)
 
-    /**
-      *
-      */
     @Test
     def xterm256Test(): Unit =
         assertTrue(16 == CPColor(0,0,0).xterm)
@@ -165,9 +158,6 @@ object CPColorTests:
         assertTrue(55 == CPColor(95,0,175).xterm)
         assertTrue(56 == CPColor(95,0,215).xterm)
 
-    /**
-      *
-      */
     @Test
     def equalTest(): Unit =
         val c1 = CPColor(0, 128, 0)

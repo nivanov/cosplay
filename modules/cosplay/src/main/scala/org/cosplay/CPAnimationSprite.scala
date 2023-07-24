@@ -154,10 +154,6 @@ class CPAnimationSprite(
       */
     def setZ(d: Int): Unit = myZ = d
 
-    /**
-      *
-      * @param id
-      */
     private def getAni(id: String): CPAnimation = anis.find(_.getId == id).getOrThrow(s"Unknown animation: $id")
 
     /**
@@ -212,12 +208,6 @@ class CPAnimationSprite(
             pausedAni = None
             switchAni(id, reset, finish)
 
-    /**
-      *
-      * @param id
-      * @param reset
-      * @param finish
-      */
     private def switchAni(id: String, reset: Boolean, finish: Boolean): Unit =
         val ani = getAni(id)
         if finish then delayedAni = ani.? else curAni = ani

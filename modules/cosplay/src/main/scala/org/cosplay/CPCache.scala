@@ -116,9 +116,6 @@ final class CPCache(delayedQ: mutable.ArrayBuffer[() => Unit]):
       */
     def clear(): Unit = delayedQ += (() => map.clear())
 
-    /**
-      *
-      */
     private[cosplay] def reset(): Unit = map.clear()
 
     /**
