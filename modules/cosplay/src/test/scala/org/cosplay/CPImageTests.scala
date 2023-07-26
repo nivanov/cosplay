@@ -40,9 +40,6 @@ import org.cosplay.impl.*
   *
   */
 object CPImageTests:
-    /**
-      *
-      */
     @Test
     def saveLoadTest(): Unit =
         CPTestEngine.ensureStarted()

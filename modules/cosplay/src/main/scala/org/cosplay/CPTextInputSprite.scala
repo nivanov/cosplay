@@ -110,9 +110,6 @@ class CPTextInputSprite(
 
     reset()
 
-    /**
-      *
-      */
     private def reset(): Unit =
         buf.clear()
         buf.addAll(initTxt.substring(0, maxBuf.min(initTxt.length)))
@@ -158,10 +155,6 @@ class CPTextInputSprite(
                     case _ => ()
             case None => ()
 
-    /**
-      *
-      * @param optRes
-      */
     private def done(optRes: Option[String]): Unit =
         ready = true
         res = optRes

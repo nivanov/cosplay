@@ -46,34 +46,11 @@ final case class CPPosPixel(px: CPPixel, x: Int, y: Int) extends Ordered[CPPosPi
         else if y > that.y then 1
         else 0
 
-    /**
-      *
-      */
     val char: Char = px.char
-
-    /**
-      *
-      */
     val fg: CPColor = px.fg
-
-    /**
-      *
-      */
     val bg: Option[CPColor] = px.bg
-
-    /**
-      *
-      */
     val tag: Int = px.tag
-
-    /**
-      *
-      */
     lazy val pos: (Int, Int) = x -> y
-
-    /**
-      *
-      */
     lazy val toInt2: CPInt2 = CPInt2(x, y)
 
     /**

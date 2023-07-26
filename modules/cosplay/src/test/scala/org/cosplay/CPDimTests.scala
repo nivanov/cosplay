@@ -35,13 +35,7 @@ import scala.collection.mutable
                All rights reserved.
 */
 
-/**
-  *
-  */
 object CPDimTests:
-    /**
-      *
-      */
     @Test
     def dimTest(): Unit =
         val dim1 = CPDim(5, 5)

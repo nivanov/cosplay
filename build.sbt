@@ -28,7 +28,7 @@
                All rights reserved.
 */
 
-val cosPlayVer = "0.9.1"
+val cosPlayVer = "0.9.2"
 
 val scalaMajVer = "3"
 val scalaMinVer = "3.0"
@@ -42,7 +42,7 @@ val commonsIoVer = "2.13.0"
 val commonsCollectionsVer = "4.4"
 val scalaReflectVer = "1.2.0"
 val scalaTestVer = "3.2.16"
-val junitVer = "5.9.3"
+val junitVer = "5.10.0"
 val openjfxVer = "18"
 val ikonliVer = "12.3.1"
 val flatlafVer = "3.1.1"

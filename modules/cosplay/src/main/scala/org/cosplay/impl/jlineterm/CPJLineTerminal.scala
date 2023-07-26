@@ -106,9 +106,6 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         def getPx(x: Int, y: Int): CPPixel = if termCamRect.contains(x, y) then scr.getPixel(x + xOff, y + yOff).px else bgPx
         def loop(f: (Int, Int) => Unit): Unit = termRect.loop(f)
 
-    /**
-      *
-      */
     private class TermDimensionReader extends Thread:
         @volatile var st0p = false
 
@@ -146,20 +143,9 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
     override def nativeKbRead(timeoutMs: Long): Int = reader.read(timeoutMs)
     override def kbRead(): Option[CPKeyboardKey] = assert(assertion = false, "Unsupported.")
 
-    /**
-      *
-      * @param s
-      */
     private def write(s: String): Unit =
         writer.print(s)
         term.flush()
-
-    /**
-      *
-      * @param x Terminal X-coordinate (zero based).
-      * @param y Terminal Y-coordinate (zero based).
-      * @param px
-      */
     private def addPx(x: Int, y: Int, px: CPPixel): Unit =
         if !px.isXray then
             buf ++= curPos(x, y)
@@ -187,20 +173,11 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 addPx(x, y, px)
         })
 
-    /**
-      *
-      * @param scr
-      * @param f
-      */
     private def draw(scr: TermScreen, f: (Int, Int) => Unit): Unit =
         buf.clear()
         buf ++= CUR_HIDE
         scr.loop((x, y) => f(x, y))
         write(buf.toString)
-
-    /**
-      *
-      */
     private def init(): Unit =
         term = TerminalBuilder.builder()
             .name("cosplay")

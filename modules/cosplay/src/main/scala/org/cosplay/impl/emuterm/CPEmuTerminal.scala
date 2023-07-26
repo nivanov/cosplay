@@ -133,10 +133,6 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
             ) == 0 then
                 CPEngine.exitGame()
         })
-
-    /**
-      *
-      */
     private def initFontMetrics(): Unit =
         val fonts = GraphicsEnvironment.getLocalGraphicsEnvironment.getAllFonts.toList
         val fontNames = (fonts.map(_.getFontName) ++ fonts.map(_.getName) ++ fonts.map(_.getFamily)).distinct
@@ -156,61 +152,25 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         chW = maxW + chWOff
         chH = maxH - fm.getLeading + chHOff
         g.dispose()
-
-    /**
-     *
-     * @param ikon
-     * @param fg
-     * @param size
-     */
     private def mkIcon(ikon: Ikon, fg: CPColor, size: Int): Icon =
         FontIcon.of(
             ikon,
             size,
             fg.awt
         )
-
-    /**
-     *
-     * @param ikon
-     */
     private def mkIcon(ikon: Ikon): Icon =
         mkIcon(
             ikon,
             C_WHITE,
             UIManager.get("Button.font").asInstanceOf[Font].getSize
         )
-
-    /**
-      *
-      * @param g
-      * @param c
-      * @param x X-coordinate
-      * @param y Y-coordinate
-      * @param w
-      * @param h
-      */
     private def fillRect(g: Graphics2D, c: Color, x: Int, y: Int, w: Int, h: Int): Unit =
         g.setColor(c)
         g.fillRect(x, y, w, h)
-
-    /**
-      *
-      * @param g
-      */
     private def configFont(g: Graphics2D): Unit =
         g.setFont(termFont)
         if isAA || SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC then
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
-
-    /**
-      *
-      * @param txt
-      * @param icon
-      * @param tooltip
-      * @param enabled
-      * @param f
-      */
     private def mkAction(
         txt: String,
         icon: Option[Icon],
@@ -224,29 +184,17 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         if icon.isDefined then act.putValue(Action.SMALL_ICON, icon.get)
         act
 
-    /**
-      *
-      * @param act
-      */
     private def mkMenuItem(act: Action): JMenuItem =
         val mi = new JMenuItem(act)
         mi.setFocusPainted(false)
         mi
 
-    /**
-      *
-      * @param w
-      * @param h
-      */
     private def safeDim(w: Int, h: Int): Dimension =
         val scrSz = Toolkit.getDefaultToolkit.getScreenSize
         val safeW = if w >= scrSz.width then (scrSz.width * 0.8).round.toInt else w
         val safeH = if h >= scrSz.height then (scrSz.height * 0.8).round.toInt else h
         new Dimension(safeW, safeH)
 
-    /**
-      *
-      */
     private def init(): Unit =
         CPUtils.initLaF()
         initFontMetrics()

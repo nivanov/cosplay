@@ -36,13 +36,7 @@ import org.junit.jupiter.api.Test
                 All rights reserved.
 */
 
-/**
-  *
-  */
 object CPPixelTest:
-    /**
-      *
-      */
     @Test
     def pixelTest(): Unit =
         val p1 = 'x'&C_BLACK

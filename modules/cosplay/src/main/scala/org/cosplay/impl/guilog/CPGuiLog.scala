@@ -503,9 +503,6 @@ object CPGuiLog:
                 CPEngine.exitGame()
         })
 
-    /**
-      *
-      */
     private def storeProps(): Unit =
         val props = new Properties()
 
@@ -521,9 +518,6 @@ object CPGuiLog:
         try Using.resource(new FileOutputStream(file)) { out => props.store(out, null) }
         catch case _: Exception => ()
 
-    /**
-      *
-      */
     private def loadProps(): Properties =
         val logFile = new File(SystemUtils.getUserHome, ".cosplay/log.properties")
         val props = new Properties()
@@ -531,12 +525,6 @@ object CPGuiLog:
         catch case _: Exception => ()
         props
 
-    /**
-      *
-      * @param ikon
-      * @param fg
-      * @param size
-      */
     private def mkIcon(ikon: Ikon, fg: CPColor, size: Int): Icon =
         FontIcon.of(
             ikon,
@@ -544,10 +532,6 @@ object CPGuiLog:
             fg.awt
         )
 
-    /**
-      *
-      * @param ikon
-      */
     private def mkIcon(ikon: Ikon): Icon =
         mkIcon(
             ikon,
@@ -555,10 +539,6 @@ object CPGuiLog:
             UIManager.get("Button.font").asInstanceOf[Font].getSize
         )
 
-    /**
-      *
-      * @param next
-      */
     private def logSearchPrevNext(next: Boolean): Unit =
         if logSearchOffs.nonEmpty then
             // Log search offsets are naturally sorted by the way they are collected.
@@ -575,19 +555,12 @@ object CPGuiLog:
                     searchLog()
                 case None => ()
 
-    /**
-      *
-      * @param name
-      */
     private def onThemeUpdate(name: String): Unit =
         FlatLaf.updateUI()
         bgPropName = name
         updateDocBackground()
         if logPaused then searchLog()
 
-    /**
-      *
-       */
     private def updateDocBackground(): Unit =
         val docLen = doc.getLength
         if docLen > 0 then
@@ -595,10 +568,6 @@ object CPGuiLog:
             val dfltBg = UIManager.get(bgPropName).asInstanceOf[Color]
             StyleConstants.setBackground(attrs, dfltBg)
             doc.setCharacterAttributes(0, docLen, attrs, false)
-
-    /**
-      *
-      */
     private def resetLogSearch(): Unit =
         if logSearchOffs.nonEmpty then
             logSearchOffs.clear()
@@ -610,9 +579,6 @@ object CPGuiLog:
             searchFirstAct.setEnabled(false)
             searchLastAct.setEnabled(false)
 
-    /**
-      *
-      */
     private def searchLog(): Unit =
         SwingUtilities.invokeLater(() => {
             resetLogSearch()
@@ -675,30 +641,16 @@ object CPGuiLog:
             offHeapMemLbl.setText(formatMem(CPUtils.offHeapMemUsage))
         })
 
-    /**
-      *
-      * @param act
-      * @param initState
-      */
     private def mkCheckBox(act: Action, initState: Boolean): JCheckBox =
         val cb = new JCheckBox(act)
         cb.setFocusPainted(false)
         cb.setSelected(initState)
         cb
-
-    /**
-      *
-      * @param act
-      */
     private def mkCheckBoxMenuItem(act: Action): JCheckBoxMenuItem =
         val cb = new JCheckBoxMenuItem(act)
         cb.setFocusPainted(false)
         cb.setSelected(true)
         cb
-
-    /**
-      *
-      */
     private def mkGameStatsPanel(): JPanel =
         val p =  mkPanel("wrap 3, insets 3 5 8 5, h 75!")
         val w = 120
@@ -716,36 +668,15 @@ object CPGuiLog:
 
         p.setBorder(BorderFactory.createTitledBorder("Game Stats"))
         p
-
-    /**
-      *
-      * @param key
-      * @param lbl
-      */
     private def mkStatsPair(key: String, lbl: JLabel): JPanel =
         val p =  mkPanel("insets 0")
         p.add(new JLabel(key), "w 75!")
         p.add(lbl)
         p
-
-    /**
-      *
-      * @param txt
-      * @param fg
-      */
     private def mkLabel(txt: String, fg: CPColor): JLabel =
         val lbl = new JLabel(txt)
         lbl.setForeground(fg.awt)
         lbl
-
-    /**
-      *
-      * @param nthFrame
-      * @param lvl
-      * @param cat
-      * @param obj
-      * @param ex
-      */
     private def addLog(nthFrame: Int, lvl: CPLogLevel, cat: String, obj: Any, ex: Throwable): Unit =
         if frameCnt % nthFrame == 0 then
             if frame == null then initGui()
@@ -797,9 +728,6 @@ object CPGuiLog:
                     activeLogSearchOff = -1
                 })
 
-    /**
-      *
-      */
     private def mkTopPanel(): JPanel =
         val p =  mkPanel("insets 5")
         p.add(mkLogCtrlPanel())
@@ -814,10 +742,6 @@ object CPGuiLog:
         p.add(p2, "span 4, growx")
         p
 
-    /**
-      *
-      * @param bytes
-      */
     private def formatMem(bytes: Long): String =
         // For some (unknown) reason, at least on MacOS, the last
         // line can produce arithmetic exception with "/ by zero" message.
@@ -830,9 +754,6 @@ object CPGuiLog:
         catch
             case e: ArithmeticException => ""
 
-    /**
-      *
-      */
     private def mkStatusPanel(): JPanel =
         val status =  mkPanel("insets 3 5")
 
@@ -854,16 +775,9 @@ object CPGuiLog:
         status.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(0, 7, 8, 7), new TitledBorder("")))
         status
 
-    /**
-      *
-      * @param mig
-      */
     private def mkPanel(mig: String): JPanel =
         new JPanel(new MigLayout(mig))
 
-    /**
-      *
-      */
     private def mkLogCtrlPanel(): JPanel =
         val p = mkPanel("wrap 2, insets 10 10 14 10, h 75!")
 
@@ -876,9 +790,6 @@ object CPGuiLog:
 
         p
 
-    /**
-      *
-      */
     private def mkLogSearchPanel(): JPanel =
         val p = mkPanel("insets 0 5 0 0")
 
@@ -908,9 +819,6 @@ object CPGuiLog:
 
         p
 
-    /**
-      *
-      */
     private def mkDebugPanel(): JPanel =
         val p = mkPanel("insets 0 0 0 5")
 
@@ -925,11 +833,6 @@ object CPGuiLog:
 
         p
 
-    /**
-      *
-      * @param act
-      * @param lvl
-      */
     private def mkLogLevelPair(act: Action, lvl: CPLogLevel): JPanel =
         val p = mkPanel("insets 0")
         val cb = mkCheckBox(act, initState = true)
@@ -939,9 +842,6 @@ object CPGuiLog:
         p.add(mkLabel(txt, fg))
         p
 
-    /**
-      *
-      */
     private def mkLogLevelsPanel(): JPanel =
         val p = mkPanel("wrap 3, insets 15 10 15 10, h 75!")
 
@@ -956,9 +856,6 @@ object CPGuiLog:
 
         p
 
-    /**
-      *
-      */
     private def mkGameCtrlPanel(): JPanel =
         val p =  mkPanel("wrap 2, insets 10 10 14 10, h 75!")
 
@@ -971,15 +868,6 @@ object CPGuiLog:
 
         p
 
-    /**
-      *
-      * @param txt
-      * @param icon
-      * @param tooltip
-      * @param enabled
-      * @param mnemonic
-      * @param f
-      */
     private def mkAction(
         txt: String,
         icon: Option[Icon],
@@ -996,10 +884,6 @@ object CPGuiLog:
         if icon.isDefined then act.putValue(Action.SMALL_ICON, icon.get)
         act
 
-    /**
-      *
-      * @param act
-      */
     private def mkButton(act: Action): JButton =
         val b = new JButton(act)
         b.setFocusPainted(false)
@@ -1007,18 +891,11 @@ object CPGuiLog:
         b.setIconTextGap(10)
         b
 
-    /**
-      *
-      * @param act
-      */
     private def mkMenuItem(act: Action): JMenuItem =
         val mi = new JMenuItem(act)
         mi.setFocusPainted(false)
         mi
 
-    /**
-      *
-      */
     private def mkLogPanel(): JScrollPane =
         val popup = new JPopupMenu()
         popup.add(mkMenuItem(copyLogAct))
@@ -1052,9 +929,6 @@ object CPGuiLog:
         sp.setInheritsPopupMenu(true)
         sp
 
-    /**
-      *
-      */
     private def initFromProperties(): Unit =
         val props = loadProps()
         props.get("theme") match
@@ -1099,9 +973,6 @@ object CPGuiLog:
                 case _ => ()
         })
 
-    /**
-      *
-      */
     //noinspection DuplicatedCode
     private def initGui(): Unit =
         font = Font
@@ -1185,5 +1056,3 @@ object CPGuiLog:
         frame.pack()
         frame.setLocationByPlatform(true)
         frame.setVisible(false) // Hide by default.
-
-

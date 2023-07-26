@@ -98,27 +98,17 @@ object CPLifecycle:
 trait CPLifecycle:
     import org.cosplay.CPLifecycle.State.*
 
-    /**
-      *
-      */
     private var state: CPLifecycle.State = LF_INIT
 
-    /** */
     final private[cosplay] def onActivateX(): Unit =
         state = LF_ACTIVE
         onActivate()
-
-    /** */
     final private[cosplay] def onDeactivateX(): Unit =
         state = LF_INACTIVE
         onDeactivate()
-
-    /** */
     final private[cosplay] def onStartX(): Unit =
         state = LF_STARTED
         onStart()
-
-    /** */
     final private[cosplay] def onStopX(): Unit =
         state = LF_STOPPED
         onStop()

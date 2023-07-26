@@ -50,13 +50,13 @@ import org.cosplay.prefabs.sprites.CPCenteredImageSprite
 object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private def randBallAngle(): Int = if CPRand.between(0, 2) == 1 then CPRand.between(135, 160) else CPRand.between(200, 225)
 
-    private val INIT_VAL = -1f
-    private val MAX_SCORE = 10
-    private val IS_WIN = SystemUtils.IS_OS_WINDOWS
-    private val INIT_BALL_SPEED = if IS_WIN then .8f else .9f
-    private val INIT_NPC_SPEED = if IS_WIN then .6f else .7f
-    private val BALL_SPEED_INCR = if IS_WIN then .045f else .05f
-    private val ENEMY_SPEED_INCR = if IS_WIN then .045f else .06f
+    private final val INIT_VAL = -1f
+    private final val MAX_SCORE = 10
+    private final val IS_WIN = SystemUtils.IS_OS_WINDOWS
+    private final val INIT_BALL_SPEED = if IS_WIN then .8f else .9f
+    private final val INIT_NPC_SPEED = if IS_WIN then .6f else .7f
+    private final val BALL_SPEED_INCR = if IS_WIN then .045f else .05f
+    private final val ENEMY_SPEED_INCR = if IS_WIN then .045f else .06f
 
     private var plyScore = 0
     private var npcScore = 0
@@ -68,18 +68,18 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private var ballAngle = randBallAngle()
 
     private val ballImg = new CPArrayImage(
-        prepSeq(
+        prepSeq:
             """
               | _
               |(_)
             """
-        ),
+        ,
         (ch, _, _) => ch&C1
     ).trimBg()
 
     private def mkPaddleImage(c: CPColor): CPImage =
         new CPArrayImage(
-            prepSeq(
+            prepSeq:
                 """
                   |X
                   |X
@@ -87,7 +87,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                   |X
                   |X
                 """
-            ),
+            ,
             (ch, _, _) => ' '&&(C_BLACK, c)
         )
 
@@ -119,7 +119,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
         case '&' => '+' & C4
         case _ => ch & C2
     private val serveImg = new CPArrayImage(
-        prepSeq(
+        prepSeq:
             """
               |+------------------------------+
               ||                              |
@@ -133,12 +133,12 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               ||    [Q]       Quit            |
               ||                              |
               |+______________________________+
-            """),
+            """,
         menuSkin
     ).trimBg()
 
     private val youLostImg = new CPArrayImage(
-        prepSeq(
+        prepSeq:
             """
               |+------------------------------+
               ||                              |
@@ -152,12 +152,12 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               ||    [Q]       Quit            |
               ||                              |
               |+______________________________+
-            """),
+            """,
         menuSkin
     ).trimBg()
 
     private val youWonImg = new CPArrayImage(
-        prepSeq(
+        prepSeq:
             """
               |+------------------------------+
               ||                              |
@@ -171,7 +171,7 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
               ||    [Q]       Quit            |
               ||                              |
               |+______________________________+
-            """),
+            """,
         menuSkin
     ).trimBg()
 
@@ -380,10 +380,10 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                 setY(Math.min(Math.max(y, 0f), yMax).round)
 
     // Announcements.
-    private def mkShader = CPSlideInShader.sigmoid(CENTRIFUGAL, false, 500.ms, BG_PX)
-    private val serveShdr = mkShader
-    private val youLostShdr = mkShader
-    private val youWonShdr = mkShader
+    private def mkShader() = CPSlideInShader.sigmoid(CENTRIFUGAL, false, 500.ms, BG_PX)
+    private val serveShdr = mkShader()
+    private val youLostShdr = mkShader()
+    private val youWonShdr = mkShader()
     private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6, serveShdr.seq)
     private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6, youLostShdr.seq)
     private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6, youWonShdr.seq)
@@ -398,7 +398,6 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     end if
                 else // Not playing and not game over - first serve.
                     serveSpr.show()
-
                     // Reset positions.
                     plySpr.reset()
                     npcSpr.reset()
@@ -407,7 +406,6 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
                     npcSpr.setXY(canv.w - paddleW, canv.dim.h / 2 - paddleH / 2)
                     ballSpr.setXY(canv.dim.w - paddleW - ballImg.w - 3, canv.dim.h / 2)
                     ballAngle = randBallAngle()
-
                     if ctx.isKbKey(KEY_SPACE) then
                         serveSpr.hide()
                         serveShdr.start()

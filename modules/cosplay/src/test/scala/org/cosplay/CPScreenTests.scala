@@ -42,23 +42,17 @@ import org.junit.jupiter.api.Test
 object CPScreenTests:
     private val rndChars = "1234567890~!@#$%^&*()-="
 
-    /**
-      *
-      */
     @Test
     def screenCopy(): Unit =
         val bg = CPPixel('.', C_PINK1, C_LIGHT_PINK1)
         val scr1 = CPScreen(CPDim(500, 100), bg)
         val scr2 = CPScreen(CPDim(500, 100), bg)
 
-        scr1.newCanvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
+        scr1.newCanvas().fillRect(scr1.getRect, -1, (_, _) => rndChars.rand&C_BLACK)
         scr1.copyTo(scr2, scr1.getRect)
 
         assertEquals(scr1, scr2)
 
-    /**
-      *
-      */
     @Test
     def screenCopyPerformance(): Unit =
         val dim = CPDim(1000, 1000)
@@ -66,7 +60,7 @@ object CPScreenTests:
         val scr1 = CPScreen(dim, bgPx)
         val scr2 = CPScreen(dim, bgPx)
 
-        scr1.newCanvas().fillRect(scr1.getRect, -1, (_, _) => CPRand.rand(rndChars)&C_BLACK)
+        scr1.newCanvas().fillRect(scr1.getRect, -1, (_, _) => rndChars.rand&C_BLACK)
 
         val num = 10
         val start = System.currentTimeMillis()
@@ -76,9 +70,6 @@ object CPScreenTests:
 
         println(s"Performance of one $dim screen copy is  ${dur / num} ms.")
 
-    /**
-      *
-      */
     @Test
     def screenClear(): Unit =
         val dim = CPDim(100, 100)
@@ -87,9 +78,6 @@ object CPScreenTests:
 
         for x <- 0 until scr.getDim.w; y <- 0 until scr.getDim.h do assert(scr.getPixel(x, y).px == bgPx)
 
-    /**
-      *
-      */
     @Test
     def screenClearPerformance(): Unit =
         val dim = CPDim(1000, 1000)
