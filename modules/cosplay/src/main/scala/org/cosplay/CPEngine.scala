@@ -373,7 +373,8 @@ object CPEngine:
         for key <- CPKeyboardKey.values do key.rawCodes.foreach(s => mapping += s.map(_.toInt) -> key)
 
         private def read(timeout: Long): Int = term.nativeKbRead(timeout)
-        private inline def logKb(key: CPKeyboardKey, chs: Int*): Unit = if isKbLog then println(s"'${key.id}' [${chs.mkString(",")}]")
+        private inline def logKb(key: CPKeyboardKey, chs: Int*): Unit =
+            if isKbLog then rootLog().debug(s"Native kb reader: '${key.id}' [${chs.mkString(",")}]")
         override def run(): Unit =
             while !st0p do
                 var key = KEY_UNKNOWN

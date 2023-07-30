@@ -87,7 +87,6 @@ lazy val cosplay = (project in file("modules/cosplay"))
         //
         // See 'modules/cosplay/pom.xml' for all available profiles to run.
         fork := true,
-        version := cosPlayVer,
         // Scaladoc config.
         Compile / doc / scalacOptions ++= Seq(
             "-project-footer", "(C) 2023 Rowan Games, Inc.",
@@ -111,16 +110,16 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "com.miglayout"              % "miglayout-swing"                 % miglayoutVer,
         libraryDependencies += "org.kordamp.ikonli"         % "ikonli-swing"                    % ikonliVer,
         libraryDependencies += "org.kordamp.ikonli"         % "ikonli-lineawesome-pack"         % ikonliVer,
-        libraryDependencies += "com.formdev"                % "flatlaf-intellij-themes"         % flatlafVer,
-        libraryDependencies += "com.formdev"                % "flatlaf"                         % flatlafVer,
+        libraryDependencies += "com.formdev"                % "flatlaf-intellij-themes"          % flatlafVer,
+        libraryDependencies += "com.formdev"                % "flatlaf"                          % flatlafVer,
         libraryDependencies += "org.openjfx"                % "javafx-media"                    % openjfxVer,
         libraryDependencies += "com.typesafe.scala-logging" % s"scala-logging_$scalaMajVer"     % scalaLoggingVer,
         libraryDependencies += "org.jline"                  % "jline-terminal"                  % jlineVer,
         libraryDependencies += "org.fusesource.jansi"       % "jansi"                           % jansiVer,
         libraryDependencies += "net.java.dev.jna"           % "jna"                             % jnaVer,
         libraryDependencies += "com.mixpanel"               % "mixpanel-java"                   % mixPanelVer,
-        libraryDependencies += "de.sciss"                   % "audiofile_3"                     % audioFileVer,
-        libraryDependencies += "co.blocke"                  %% "scala-reflection"               % scalaReflectVer,
+        libraryDependencies += "de.sciss"                   % "audiofile_3"                      % audioFileVer,
+        libraryDependencies += "co.blocke"                  %% "scala-reflection"                % scalaReflectVer,
         libraryDependencies += "org.scala-lang.modules"     %% "scala-parallel-collections"     % scalaParColVer,
         // Test scope.
         libraryDependencies += "org.scalatest"              %% s"scalatest"                     % scalaTestVer % Test,
