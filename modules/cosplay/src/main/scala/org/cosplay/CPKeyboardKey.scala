@@ -77,7 +77,12 @@ object CPKeyboardKey:
   *
   * @see [[CPKeyboardEvent.key]]
   */
-enum CPKeyboardKey(val id: String, val isPrintable: Boolean, val ch: Char, val rawCodes: Seq[Char]*) extends mutable.HashMap[String, AnyRef]:
+enum CPKeyboardKey(
+    val id: String,
+    val isPrintable: Boolean,
+    val ch: Char,
+    val rawCodes: Seq[Char]*,
+) extends mutable.HashMap[String, AnyRef]:
     case KEY_UNKNOWN extends CPKeyboardKey("Unknown", false, '\u0000', Seq.empty)
 
     case KEY_ESC extends CPKeyboardKey("Esc", false, '\u0000', Seq(ESC))
