@@ -56,9 +56,9 @@ import org.apache.commons.math3.analysis.function.*
   *     100% the actual pixel color, value `0.5` means that the color will be a 50% mix between the background
   *     and the actual pixel color. The function takes two parameters: first is a current frame number since the start
   *     of the effect, and the second parameter is the last frame number of the effect. First parameter is always less
-  *     then the second one. By default, the the `(a, b) => a.toFloat / b` function is used that gives gradual color
+  *     then the second one. By default, the the `(a, b) => a.toFloat / b` function that is used gives more gradual color
   *     transition through the frames range. Another popular function to use here is a sigmoid
-  *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat` that gives a different visual effect.
+  *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat` that gives a different, more rapid visual effect.
   * @see [[CPFadeOutShader]]
   * @see [[CPSlideOutShader]]
   * @see [[CPShimmerShader]]
