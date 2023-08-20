@@ -35,19 +35,19 @@ import scala.collection.mutable
 /**
   * Scene object context during frame update.
   *
-  * This type is main access point to the most of CosPlay functionality for the scene objects comprising
-  * the gameplay. On each game frame update all scene objects from the current scene receive [[CPSceneObject.update()]] call
+  * This type is the main access point to the most of CosPlay functionality for the scene objects comprising
+  * the gameplay. On each frame update all scene objects from the current scene receive [[CPSceneObject.update()]] call
   * and optional [[CPSceneObject.render()]] call both of which receive the instance of this type. Also, the
   * [[CPShader shaders]] attached to that scene objects, if any, receive the callback with the instance of this type.
   *
   * Scene object context functionality can be grouped into:
   *  - Keyboard input focus [[CPSceneObjectContext.getFocusOwner management]]
-  *  - Accessing, adding, and removing scene objects
+  *  - Accessing, adding, replacing and removing scene objects
   *  - Access [[CPSceneObjectContext.getGameCache game]] and [[CPSceneObjectContext.getSceneCache scene]] user-data storage
   *  - Access [[CPSceneObjectContext.getLog game log]]
   *  - [[CPSceneObjectContext.addScene() Adding]], [[CPSceneObjectContext.deleteScene() removing]], and [[CPSceneObjectContext.switchScene() switching]] scenes
-  *  - Check [[CPSceneObjectContext.collisions() collisions]]
-  *  - [[CPSceneObjectContext.sendMessage() Send]] and [[CPSceneObjectContext.receiveMessage() receive]] messages between scene objects
+  *  - Checking [[CPSceneObjectContext.collisions() collisions]]
+  *  - [[CPSceneObjectContext.sendMessage() Sending]] and [[CPSceneObjectContext.receiveMessage() receiving]] messages between scene objects
   *  - Accessing game & [[CPSceneObjectContext.getRenderStats rendering]] statistics
   *  - Getting scene [[CPSceneObjectContext.getCanvas canvas]] to draw on
   *  - Accessing scene [[CPSceneObjectContext.getCamera camera descriptor]]
@@ -145,8 +145,11 @@ trait CPSceneObjectContext extends CPBaseContext:
       * on the next frame update.
       *
       * @param obj Scene object to add.
+      * @param replace If the scene object with the same ID as given object exists, this flag allows
+      *     to remove the existing scene object first thus effectively replace it with the new scene object
+      *     with the same ID. The default value is `false`.
       */
-    def addObject(obj: CPSceneObject): Unit
+    def addObject(obj: CPSceneObject, replace: Boolean = false): Unit
 
     /**
       * Gets scene object with given ID.
@@ -190,13 +193,18 @@ trait CPSceneObjectContext extends CPBaseContext:
     def countObjectsForTags(tags: String*): Int
 
     /**
-      * Adds new scene. Change will be visible only on the next frame update.
+      * Adds new or replaces the existing scene. Change will be visible only on the next frame update.
       *
       * @param newSc A scene to add.
       * @param switchTo Whether or not to immediately switch to this scene right after this frame update cycle.
       * @param delCur If immediately switching to the new scene, whether or not to remove the current scene.
+      * @param replace If the scene with the same ID as a new one already exists, this flag allows to delete
+      *     the existing scene first thus effectively replacing the existing scene with the new one with the same ID.
+      *     This is convenient shortcut for removing the scene manually before re-adding it again, if required. The
+      *     default value is `false`. Note that you cannot replace the current scene as you cannot remove the
+      *     current scene.
       */
-    def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit
+    def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false, replace: Boolean = false): Unit
 
     /**
       * Switches to the given scene. Note that switch will happen only after the current frame update cycle
@@ -269,7 +277,7 @@ trait CPSceneObjectContext extends CPBaseContext:
     def acquireMyFocus(): Unit = acquireFocus(getId)
 
     /**
-      * Gets the current owner of input keyboard focus.
+      * Gets the scene object this context is currently associated with.
       */
     def getOwner: CPSceneObject
 

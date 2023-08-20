@@ -261,7 +261,7 @@ object CPEngine:
 
     private var ctrlLogEnabled: Boolean = true
     private var ctrlFpsEnabled: Boolean = true
-    private val scenes = CPContainer[CPScene]()
+    private val scenes = new CPContainer[CPScene]()
     private var term: CPTerminal = _
     private var pause = false
     private var frameCnt = 0L // Overall game fame count.
@@ -705,7 +705,7 @@ object CPEngine:
             pause = true
         }
         CPGuiLog.onGamePauseResume(pause)
-        engLog.info("Game paused.")
+        engLog.trace("Game paused.")
 
     /**
       * Tests whether or not the game is paused.
@@ -743,7 +743,7 @@ object CPEngine:
             pauseMux.notifyAll()
         }
         CPGuiLog.onGamePauseResume(pause)
-        engLog.info("Game resumed.")
+        engLog.trace("Game resumed.")
 
     /**
       * Starts the game. Games start with the first scene in the list.
@@ -758,7 +758,7 @@ object CPEngine:
         !>(scs.nonEmpty, "At least one scene must be provided.")
         checkState()
         scs.foreach(scenes.add)
-        engLog.info("Game started.")
+        engLog.trace("Game started.")
         gameLoop(scenes(scs.head.getId))
 
     /**
@@ -775,7 +775,7 @@ object CPEngine:
         !>(scs.nonEmpty, "At least one scene must be provided.")
         checkState()
         scs.foreach(scenes.add)
-        engLog.info("Game started.")
+        engLog.trace("Game started.")
         gameLoop(scenes(startSc))
 
     /**
@@ -821,7 +821,7 @@ object CPEngine:
                 pause = false
                 pauseMux.notifyAll()
         }
-        engLog.info("Game exited.")
+        engLog.trace("Game exited.")
 
     /**
       * Gets current rendering statistics, if available.
@@ -1011,7 +1011,7 @@ object CPEngine:
                     scObj.getDim
                 )
             })
-            tbl.info(engLog, s"Switching to scene '${x.getId}' $dimS with scene objects:".?)
+            tbl.trace(engLog, s"Switching to scene '${x.getId}' $dimS with scene objects:".?)
 
         try
             logSceneSwitch(sc) // Initial scene.
@@ -1234,31 +1234,38 @@ object CPEngine:
                         if kbFocusOwner.isDefined && kbFocusOwner.get == id then
                             delayedQ += (() => kbFocusOwner = None)
                     override def releaseMyFocus(): Unit = releaseFocus(myId)
-                    override def addObject(obj: CPSceneObject): Unit =
+                    override def addObject(obj: CPSceneObject, replace: Boolean = false): Unit =
+                        if replace then deleteObject(obj.getId)
                         val cloObj = obj
                         delayedQ += (() => {
                             sc.objects.add(cloObj)
-                            engLog.info(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
+                            engLog.trace(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
                         })
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def grabObject(id: String): CPSceneObject = sc.objects(id)
                     override def getObjectsForTags(tags: Seq[String]): Seq[CPSceneObject] = sc.objects.getForTags(tags)
                     override def countObjectsForTags(tags: Seq[String]): Int = sc.objects.countForTags(tags)
-                    override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false): Unit =
+                    override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false, replace: Boolean = false): Unit =
+                        val newScId = newSc.getId
+                        if newScId == sc.getId then raise(s"Cannot add a new scene with the same ID as the current one: $newScId")
+                        if replace then deleteScene(newScId) // Adds delayed action.
+                        val loNewSc = newSc
                         delayedQ += (() => {
-                            engLog.info(s"Scene added: ${newSc.getId}")
-                            scenes.add(newSc)
+                            // NOTE: scene lifecycle transitions when it becomes active.
+                            scenes.add(loNewSc)
+                            val verb = if replace then "replaced" else "added"
+                            engLog.trace(s"Scene $verb: $newScId")
                         })
-                        if switchTo then doSwitchScene(newSc.getId, delCur)
+                        if switchTo then doSwitchScene(newScId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
-                        if sc.getId == id then raise(s"Cannot remove current scene: ${sc.getId}")
+                        if sc.getId == id then raise(s"Cannot delete current scene: ${sc.getId}")
                         else
                             val cloId = id
                             delayedQ += (() => {
                                 scenes.remove(cloId) match
                                     case Some(s) =>
-                                        engLog.info(s"Scene deleted: ${s.getId}")
+                                        engLog.trace(s"Scene deleted: ${s.getId}")
                                         lifecycleStop(s)
                                     case _ =>
                                         engLog.warn(s"Ignored an attempt to delete unknown scene: $cloId")
@@ -1269,7 +1276,7 @@ object CPEngine:
                             sc.objects.remove(cloId) match
                                 case Some(obj) =>
                                     if kbFocusOwner.isDefined && kbFocusOwner.get == cloId then kbFocusOwner = None
-                                    engLog.info(s"Scene object deleted from '${sc.getId}' scene: ${obj.toExtStr}")
+                                    engLog.trace(s"Scene object deleted from '${sc.getId}' scene: ${obj.toExtStr}")
                                     lifecycleStop(obj)
                                 case _ =>
                                     engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $cloId")
@@ -1382,7 +1389,7 @@ object CPEngine:
                     else if kbEvt.get.key == KEY_F12 then
                         val path = s"cosplay-screenshot-${CPRand.guid6}.xp"
                         ctx.getCanvas.capture().saveRexXp(path, sc.getBgColor)
-                        engLog.info(s"Screenshot saved: $path")
+                        engLog.trace(s"Screenshot saved: $path")
                     else if ctrlLogEnabled && kbEvt.get.key == KEY_CTRL_L then
                         engLog.info(CPUtils.PING_MSG)
                 end if
@@ -1457,7 +1464,7 @@ object CPEngine:
                 if !stopFrame then scFrameCnt += 1
             end while
         finally
-            engLog.info("Game stopped.")
+            engLog.trace("Game stopped.")
 
             // Stop all the scenes and their scene objects.
             for sc <- scenes.values do
