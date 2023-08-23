@@ -798,7 +798,14 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param px Pixel to use for drawing.
       */
-    def drawRect(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, px: CPPixel): Unit =
+    def drawRect(
+        x1: Int,
+        y1: Int,
+        x2: Int,
+        y2: Int,
+        z: Int,
+        px: CPPixel
+    ): Unit =
         drawRect(x1, y1, x2, y2, z, (_, _) => px)
 
     /**
@@ -810,7 +817,13 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param px Pixel to use for drawing.
       */
-    def drawRect(x1: Int, y1: Int, dim: CPDim, z: Int, px: CPPixel): Unit =
+    def drawRect(
+        x1: Int,
+        y1: Int,
+        dim: CPDim,
+        z: Int,
+        px: CPPixel
+    ): Unit =
         drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, (_, _) => px)
 
     /**
@@ -820,7 +833,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param px Pixel to draw the rectangle with.
       */
-    def drawRect(rect: CPRect, z: Int, px: CPPixel): Unit =
+    def drawRect(
+        rect: CPRect,
+        z: Int,
+        px: CPPixel
+    ): Unit =
         drawRect(rect.xMin, rect.yMin, rect.xMax, rect.yMax, z, (_, _) => px)
 
     /**
@@ -833,7 +850,14 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param pxf Pixel producing function.
       */
-    def drawRect(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, pxf: (Int, Int) => CPPixel): Unit =
+    def drawRect(
+        x1: Int,
+        y1: Int,
+        x2: Int,
+        y2: Int,
+        z: Int,
+        pxf: (Int, Int) => CPPixel
+    ): Unit =
         drawPolyline(Seq(
             x1 -> y1,
             x2 -> y1,
@@ -851,7 +875,12 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param pxf Pixel producing function.
       */
-    def drawRect(x1: Int, y1: Int, dim: CPDim, z: Int, pxf: (Int, Int) => CPPixel): Unit =
+    def drawRect(
+        x1: Int,
+        y1: Int,
+        dim: CPDim,
+        z: Int, pxf: (Int, Int) => CPPixel
+    ): Unit =
         drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, pxf)
 
     /**
@@ -861,7 +890,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param pxf Pixel producing function.
       */
-    def drawRect(rect: CPRect, z: Int, pxf: (Int, Int) => CPPixel): Unit =
+    def drawRect(
+        rect: CPRect,
+        z: Int,
+        pxf: (Int, Int) => CPPixel
+    ): Unit =
         drawRect(rect.xMin, rect.yMin, rect.xMax, rect.yMax, z, pxf)
 
     /**
@@ -872,14 +905,16 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param x2 X-coordinate of the right bottom corner.
       * @param y2 Y-coordinate of the right bottom corner.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param leftTop Left top corner pixel.
       * @param top Top line pixel.
-      * @param leftBottom Left bottom corner pixel.
+      * @param leftTop Left top corner pixel.
       * @param left Left side pixel.
-      * @param rightBottom Right bottom corner pixel.
+      * @param leftBottom Left bottom corner pixel.
       * @param bottom Bottom size pixel.
-      * @param rightTop Right top corner pixel.
+      * @param rightBottom Right bottom corner pixel.
       * @param right Right side line pixel.
+      * @param rightTop Right top corner pixel.
+      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      *     and returns the skinned pixel.
       */
     def drawRect(
         x1: Int,
@@ -887,14 +922,15 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         x2: Int,
         y2: Int,
         z: Int,
-        leftTop: CPPixel,
         top: CPPixel,
-        leftBottom: CPPixel,
+        leftTop: CPPixel,
         left: CPPixel,
-        rightBottom: CPPixel,
+        leftBottom: CPPixel,
         bottom: CPPixel,
+        rightBottom: CPPixel,
+        right: CPPixel,
         rightTop: CPPixel,
-        right: CPPixel
+        skin: (Int, Int, CPPixel) => CPPixel
     ): Unit =
         drawPolyline(Seq(
             x1 -> y1,
@@ -902,15 +938,19 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
             x2 -> y2,
             x1 -> y2,
             x1 -> y1
-        ),z, (a, b) =>
-            if a == x1 && b == y1 then leftTop
-            else if a == x1 && b == y2 then rightTop
-            else if a == x2 && b == y1 then leftBottom
-            else if a == x2 && b == y2 then rightBottom
-            else if a == x1 then left
-            else if a == x2 then right
-            else if b == y1 then top
-            else  bottom
+        ), z, (a, b) =>
+            skin(
+                a,
+                b,
+                if a == x1 && b == y1 then leftTop
+                else if a == x1 && b == y2 then leftBottom
+                else if a == x2 && b == y1 then rightTop
+                else if a == x2 && b == y2 then rightBottom
+                else if a == x1 then left
+                else if a == x2 then right
+                else if b == y1 then top
+                else  bottom
+            )
         )
 
     /**
@@ -920,58 +960,80 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param y1 Y-coordinate of the top left corner.
       * @param dim Dimension of the rectangle.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param leftTop Left top corner pixel.
       * @param top Top line pixel.
-      * @param leftBottom Left bottom corner pixel.
+      * @param leftTop Left top corner pixel.
       * @param left Left side pixel.
-      * @param rightBottom Right bottom corner pixel.
+      * @param leftBottom Left bottom corner pixel.
       * @param bottom Bottom size pixel.
-      * @param rightTop Right top corner pixel.
+      * @param rightBottom Right bottom corner pixel.
       * @param right Right side line pixel.
+      * @param rightTop Right top corner pixel.
       */
     def drawRect(
         x1: Int,
         y1: Int,
         dim: CPDim,
         z: Int,
-        leftTop: CPPixel,
         top: CPPixel,
-        leftBottom: CPPixel,
+        leftTop: CPPixel,
         left: CPPixel,
-        rightBottom: CPPixel,
+        leftBottom: CPPixel,
         bottom: CPPixel,
-        rightTop: CPPixel,
-        right: CPPixel
+        rightBottom: CPPixel,
+        right: CPPixel,
+        rightTop: CPPixel
     ): Unit =
-        drawRect(x1, y1, x1 + dim.w - 1, y1 + dim.h - 1, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
+        drawRect(
+            x1,
+            y1,
+            x1 + dim.w - 1,
+            y1 + dim.h - 1,
+            z,
+            top,
+            leftTop,
+            left,
+            leftBottom,
+            bottom,
+            rightBottom,
+            right,
+            rightTop,
+            (_, _, px) => px
+        )
 
     /**
       * Draws rectangle with specific pixels for lines and corners.
       *
       * @param rect Rectangle shape.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param leftTop Left top corner pixel.
       * @param top Top line pixel.
-      * @param leftBottom Left bottom corner pixel.
+      * @param leftTop Left top corner pixel.
       * @param left Left side pixel.
-      * @param rightBottom Right bottom corner pixel.
+      * @param leftBottom Left bottom corner pixel.
       * @param bottom Bottom size pixel.
-      * @param rightTop Right top corner pixel.
+      * @param rightBottom Right bottom corner pixel.
       * @param right Right side line pixel.
+      * @param rightTop Right top corner pixel.
       */
     def drawRect(
         rect: CPRect,
         z: Int,
-        leftTop: CPPixel,
         top: CPPixel,
-        leftBottom: CPPixel,
+        leftTop: CPPixel,
         left: CPPixel,
-        rightBottom: CPPixel,
+        leftBottom: CPPixel,
         bottom: CPPixel,
-        rightTop: CPPixel,
-        right: CPPixel
+        rightBottom: CPPixel,
+        right: CPPixel,
+        rightTop: CPPixel
     ): Unit =
-        drawRect(rect.xMin, rect.yMin, rect.xMax, rect.yMax, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
+        drawRect(
+            rect.xMin,
+            rect.yMin,
+            rect.xMax,
+            rect.yMax,
+            z, top, leftTop, left, leftBottom, bottom, rightBottom, right, rightTop,
+            (_, _, px) => px
+        )
 
     /**
       * Draws a polyline.
@@ -1392,6 +1454,51 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         drawPixels(x, y, z, pxs.size, (a, _) => pxs(a - x))
 
     /**
+      * Draws a single color border for a given rectangle.
+      *
+      * @param rect A rectangle to draw a border around.
+      * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
+      * @param chars A sequence of character in the following order:
+      *     top, top left border, left, bottom left corer, bottom, bottom right corner, right, top right corner.
+      * @param color A color to be used for all border pixels.
+      * @param title Title of the border. Default is no border.
+      * @param titleX X-coordinate of the title. Default is -1.
+      * @param titleY Y-coordinate of the title. Default is -1.
+      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      *     and returns the skinned pixel.
+      */
+    def drawRectBorder(
+        rect: CPRect,
+        z: Int,
+        chars: String,
+        color: CPColor,
+        title: Seq[CPPixel] = Seq.empty,
+        titleX: Int = -1,
+        titleY: Int = -1,
+        skin: (Int, Int, CPPixel) => CPPixel = (_, _, px) => px
+    ): Unit =
+        !>(chars.length >= 8, "'chars' must be at least 8 characters long.")
+        drawBorder(
+            rect.xMin,
+            rect.yMin,
+            rect.xMax,
+            rect.yMax,
+            z,
+            chars(0)&color,
+            chars(1)&color,
+            chars(2)&color,
+            chars(3)&color,
+            chars(4)&color,
+            chars(5)&color,
+            chars(6)&color,
+            chars(7)&color,
+            title,
+            titleX,
+            titleY,
+            skin
+        )
+
+    /**
       * Draws a border.
       *
       * @param x1 X-coordinate of the top left corner.
@@ -1399,17 +1506,19 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param x2 X-coordinate of the bottom right corner.
       * @param y2 Y-coordinate of the bottom right corner.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
-      * @param leftTop Left top corner pixel.
       * @param top Top line pixel.
-      * @param leftBottom Left bottom corner pixel.
+      * @param leftTop Left top corner pixel.
       * @param left Left side pixel.
-      * @param rightBottom Right bottom corner pixel.
+      * @param leftBottom Left bottom corner pixel.
       * @param bottom Bottom size pixel.
-      * @param rightTop Right top corner pixel.
+      * @param rightBottom Right bottom corner pixel.
       * @param right Right side line pixel.
-      * @param title Title of the border.
-      * @param titleX X-coordinate of the title.
-      * @param titleY Y-coordinate of the title.
+      * @param rightTop Right top corner pixel.
+      * @param title Title of the border. Default is no border.
+      * @param titleX X-coordinate of the title. Default is -1.
+      * @param titleY Y-coordinate of the title. Default is -1.
+      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      *     and returns the skinned pixel.
       */
     def drawBorder(
         x1: Int,
@@ -1427,14 +1536,15 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         rightTop: CPPixel,
         title: Seq[CPPixel] = Seq.empty,
         titleX: Int = -1,
-        titleY: Int = -1
+        titleY: Int = -1,
+        skin: (Int, Int, CPPixel) => CPPixel = (_, _, px) => px
     ): Unit =
         if title.nonEmpty && (titleX < 0 || titleY < 0) then raise("Title coordinate must be supplied and >= 0.")
-        drawRect(x1, y1, x2, y2, z, leftTop, top, leftBottom, left, rightBottom, bottom, rightTop, right)
+        drawRect(x1, y1, x2, y2, z, top, leftTop, left, leftBottom, bottom, rightBottom, right, rightTop, skin)
         if title.nonEmpty then drawPixels(titleX, titleY, z, title)
 
     /**
-      * Draws a border.
+      * Draws a border using shorter set of parameters.
       *
       * @param x1 X-coordinate of the top left corner.
       * @param y1 Y-coordinate of the top left corner.
@@ -1444,9 +1554,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param ver Pixel for vertical lines.
       * @param hor Pixel for horizontal lines.
       * @param corner Pixel for corners,
-      * @param title Title of the border.
-      * @param titleX X-coordinate of the title.
-      * @param titleY Y-coordinate of the title.
+      * @param title Title of the border. Default is no border.
+      * @param titleX X-coordinate of the title. Default is -1.
+      * @param titleY Y-coordinate of the title. Default is -1.
+      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      *     and returns the skinned pixel.
       */
     def drawSimpleBorder(
         x1: Int,
@@ -1459,9 +1571,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         corner: CPPixel,
         title: Seq[CPPixel] = Seq.empty,
         titleX: Int = -1,
-        titleY: Int = -1
+        titleY: Int = -1,
+        skin: (Int, Int, CPPixel) => CPPixel = (_, _, px) => px
     ): Unit =
-        drawBorder(x1, y1, x2, y2, z, hor, corner, ver, corner, hor, corner, ver, corner, title, titleX, titleY)
+        drawBorder(x1, y1, x2, y2, z, hor, corner, ver, corner, hor, corner, ver, corner, title, titleX, titleY, skin)
 
 /**
   * Companion object with utility functions.

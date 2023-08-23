@@ -181,6 +181,20 @@ abstract class CPSceneObject(id: String = CPRand.guid6, tags: Set[String] = Set.
     inline def getHeight: Int = getDim.h
 
     /**
+      * Gets last X-coordinate which is {{{getX + getWidth - 1}}}.
+      *
+      * @return Last X-coordinate for this sprite.
+      */
+    inline def getX2: Int = getX + getWidth - 1
+
+    /**
+      * Gets last Y-coordinate which is {{{getY + getHeight - 1}}}.
+      *
+      * @return Last Y-coordinate for this sprite.
+      */
+    inline def getY2: Int = getY + getHeight - 1
+
+    /**
       * Gets rectangular shape of this sprite. It is basically a combination of its top-left
       * corner XY-coordinate and sprite's dimension.
       *

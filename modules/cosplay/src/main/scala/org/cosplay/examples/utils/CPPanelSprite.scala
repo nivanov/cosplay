@@ -60,7 +60,7 @@ class CPPanelSprite(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, title: String) e
 
     private val dim = CPDim(x2 - x1, y2 - y1)
     private val c1 = C_GREEN_YELLOW
-    private val c2 = C_DARK_BLUE
+    private val c2 = C_LIGHT_STEEL_BLUE
     private val c3 = C_DARK_ORANGE3
 
     override def getX: Int = x1
@@ -71,9 +71,14 @@ class CPPanelSprite(x1: Int, y1: Int, x2: Int, y2: Int, z: Int, title: String) e
     override def render(ctx: CPSceneObjectContext): Unit =
         val canv = ctx.getCanvas
         canv.fillRect(x1, y1, x2, y2, z, ' '&C_BLACK)
-        canv.drawSimpleBorder(
-            x1, y1, x2, y2, z,
-            '|'&c1, '-'&c1, '+'&c2,
-            styleStr("< ", c1) ++ styleStr(title, c3) ++ styleStr(" >", c1), x1 + (x2 - x1 - title.length - 4) / 2, y1
+        canv.drawRectBorder(
+            getRect,
+            z,
+            "-.|'-'|.",
+            c1,
+            styleStr("< ", c1) ++ styleStr(title, c3) ++ styleStr(" >", c1),
+            x1 + (x2 - x1 - title.length - 4) / 2,
+            y1,
+            (_, _, px) => px.withDarkerFg(.5f)
         )
 
