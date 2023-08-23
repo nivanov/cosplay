@@ -78,7 +78,7 @@ import scala.annotation.targetName
   *     assertTrue(p4 == p5)
   *
   *     val p6 = 'x'&&(C_BLACK, C_WHITE) // Recommended way.
-  *     val p7 = new CPPixel('x', C_BLACK, Option(C_WHITE), 0)
+  *     val p7 = new CPPixel('x', C_BLACK, C_WHITE.?, 0)
   *
   *     assertTrue(p6 == p7)
   * }}}
@@ -336,9 +336,9 @@ object CPPixel:
           * Adds `'&&'` operator to `Char` type as a sugar to create pixel with background. For example:
           * {{{
           *     val x1 = 'x'&&(C_BLACK, C_WHITE)
-          *     val x2 = 'x'&&(C_BLACK, Some(C_WHITE))
+          *     val x2 = 'x'&&(C_BLACK, C_WHITE.?)
           *     val ch = 'a'
-          *     val a = ch&&(C_WHITE, Option(C_PINK))
+          *     val a = ch&&(C_WHITE, C_PINK.?)
           * }}}
           * Note that background can be either of type `CPColor` or `Option[CPColor]`.
           */

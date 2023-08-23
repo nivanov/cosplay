@@ -58,7 +58,7 @@ case class CPMarkupElement(openTag: String, closeTag: String, skin: Char => CPPi
   * {{{
   *     val markup = CPMarkup(
   *         C_GREEN,
-  *         Option(C_BLACK),
+  *         C_BLACK.?,
   *         Seq(
   *             CPMarkupElement("<$", "$>", _&&(C_RED, C_WHITE)),
   *             CPMarkupElement("{#", "#}", _&&(C_BLUE, C_YELLOW)),

@@ -67,8 +67,12 @@ import scala.collection.mutable
   * @param visLen Visible length of this field.
   * @param maxBuf Overall buffer length of this field. It should always be greater then or equal to visible length.
   * @param initTxt Optional initial text to show at the initial state. Default value is an empty string.
-  * @param onSkin The skinning function to the active state (when sprite has keyboard focus).
-  * @param offSkin The skinning function to the inactive state (when sprite does not have keyboard focus).
+  * @param onSkin The skinning function for the active state (when sprite has keyboard focus).
+  *     Skin function takes a character, its position in the input string and whether or not it is at the
+  *     current cursor position (i.e. cursor is over the character). The function must return [[CPPixel]] instance.
+  * @param offSkin The skinning function for the inactive state (when sprite does not have keyboard focus).
+  *     Skin function takes a character, its position in the input string and whether or not it is at the
+  *     current cursor position (i.e. cursor is over the character). The function must return [[CPPixel]] instance.
   * @param next Optional scene object ID to switch keyboard focus to after the user pressed one of the
   *     submit keys. Default value is `None`.
   * @param cancelKeys Optional set of keyboard keys to accept for cancellation action. When one of these keys
@@ -77,6 +81,10 @@ import scala.collection.mutable
   *     is pressed the sprite will make result available via [[isReady]] method and will optionally switch
   *     keyboard focus for the `next` scene object, if any. Default value is [[CPKeyboardKey.KEY_ENTER]].
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
+  * @param keyFilter Optional filter on keyboard events. Only the if this filter returns `true` for a given
+  *     keyboard event its key will be used as an input. Note that this filter is not applied to built-in
+  *     keyboard key such as cursor movements, escape, backspace, as well as cancel and submit keys. This
+  *     filter can be used, for example, to ensure that only digits can be entered.
   * @example See [[org.cosplay.examples.textinput.CPTextInputExample CPTextInputExample]] class for the example of
   *     using labels and text input.
   * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
@@ -95,7 +103,8 @@ class CPTextInputSprite(
     private var next: Option[String] = None,
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
-    tags: Seq[String] = Seq.empty
+    tags: Seq[String] = Seq.empty,
+    keyFilter: CPKeyboardEvent => Boolean = _ => true
 ) extends CPSceneObject(id, tags.toSet):
     !>(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
     !>(initTxt != null, "Initial text cannot be 'null'.")
@@ -148,7 +157,7 @@ class CPTextInputSprite(
                     case key if submitKeys.contains(key) =>
                         done(buf.toString().?)
                         if next.isDefined then ctx.acquireFocus(next.get)
-                    case key if key.isPrintable =>
+                    case key if keyFilter(evt) && key.isPrintable =>
                         if curPos < maxBuf then
                             buf.insert(curPos, key.ch)
                             curPos += 1
