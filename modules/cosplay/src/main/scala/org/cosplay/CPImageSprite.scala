@@ -61,11 +61,11 @@ import org.cosplay.impl.CPUtils
   *    method since it relies on [[getX]] and [[getY]] method in its implementation.
   *
   * ### Sprites
-  * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
-  * that is custom designed for a particular use case. Built-in sprites provide concrete
-  * implementations for the abstract methods in the base [[CPSceneObject]] class. Most non-trivial games
-  * will use combination of the built-in sprites and their own ones. Here's the list of the built-in
-  * sprites:
+  * CosPlay provides number of built-in sprites. A sprite is a scene objects, fully or partially
+  * visible including being entirely off-screen, that is custom designed for a particular use case.
+  * Built-in sprites provide concrete implementations for the abstract methods in the base
+  * [[CPSceneObject]] class. Most non-trivial games will use combination of the built-in sprites and
+  * their own ones. Here's the list of the built-in sprites:
   *  - [[CPCanvasSprite]]
   *  - [[CPImageSprite]]
   *  - [[CPStaticImageSprite]]
@@ -79,7 +79,7 @@ import org.cosplay.impl.CPUtils
   * @param id Optional ID of the sprite. By default, a random ID will be used.
   * @param x Initial X-coordinate of the sprite.
   * @param y Initial Y-coordinate of the sprite.
-  * @param z Z-index at which to render the image.
+  * @param z Initial z-index at which to render the image.
   * @param img The image to render. It can be changed later.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
@@ -100,12 +100,10 @@ class CPImageSprite(
     img: CPImage,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
-    tags: Seq[String] = Seq.empty) extends CPSceneObject(id, tags.toSet):
+    tags: Set[String] = Set.empty
+) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     private var myImg = img
     private var myDim = img.getDim
-    private var myX = x
-    private var myY = y
-    private var myZ = z
 
     /**
       * Changes the image this sprite is rendering.
@@ -124,27 +122,6 @@ class CPImageSprite(
     def getImage: CPImage = myImg
 
     /**
-      * Initial X-coordinate of the sprite.
-      *
-      * @see [[setX()]]
-      */
-    val initX: Int = x
-
-    /**
-      * Initial Y-coordinate of the sprite.
-      *
-      * @see [[setY()]]
-      */
-    val initY: Int = y
-
-    /**
-      * Initial Z-index of the sprite.
-      *
-      * @see [[setZ()]]
-      */
-    val initZ: Int = z
-
-    /**
       * Initial image of the sprite.
       *
       * @see [[setImage()]]
@@ -160,51 +137,10 @@ class CPImageSprite(
         setZ(initZ)
         setImage(initImg)
 
-    /**
-      * Sets current X-coordinate. This coordinate will be returned from [[getX]] method.
-      *
-      * @param d X-coordinate to set.
-      */
-    def setX(d: Int): Unit = myX = d
-
-    /**
-      * Sets current Y-coordinate. This coordinate will be returned from [[getY]] method.
-      *
-      * @param d Y-coordinate to set.
-      */
-    def setY(d: Int): Unit = myY = d
-
-    /**
-      * Sets both current XY-coordinates.
-      *
-      * @param a X-coordinate to set.
-      * @param b Y-coordinate to set.
-      */
-    def setXY(a: Int, b: Int): Unit =
-        setX(a)
-        setY(b)
-
-    /**
-      * Sets current Z-index. This index will be returned from [[getZ]] method.
-      *
-      * @param d Z-index to set.
-      */
-    def setZ(d: Int): Unit = myZ = d
-
-    /** @inheritdoc */
-    override def getShaders: Seq[CPShader] = shaders
-    /** @inheritdoc */
-    override def getX: Int = myX
-    /** @inheritdoc */
-    override def getY: Int = myY
-    /** @inheritdoc */
-    override def getZ: Int = myZ
     /** @inheritdoc */
     override def getDim: CPDim = myDim
     /** @inheritdoc */
     override def getRect: CPRect = new CPRect(getX, getY, myDim)
-    /** @inheritdoc */
-    override def getCollisionRect: Option[CPRect] = Option.when(collidable)(getRect)
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext): Unit = ctx.getCanvas.drawImage(myImg, getX, getY, getZ)
 
@@ -226,6 +162,7 @@ object CPImageSprite:
       * @param img The image to render. It can be changed later.
       * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
       * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+      * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
       * @see [[CPStaticImageSprite]]
       * @example See [[org.cosplay.examples.image.CPImageCarouselExample CPImageCarouselExample]] class for the example of
       *     using images.
@@ -239,8 +176,10 @@ object CPImageSprite:
         z: Int,
         img: CPImage,
         collidable: Boolean = false,
-        shaders: Seq[CPShader] = Seq.empty): CPImageSprite =
-        new CPImageSprite(id, 0, 0, z, img, collidable, shaders):
+        shaders: Seq[CPShader] = Seq.empty,
+        tags: Set[String] = Set.empty
+    ): CPImageSprite =
+        new CPImageSprite(id, 0, 0, z, img, collidable, shaders, tags):
             private var x = initX
             private var y = initY
 

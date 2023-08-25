@@ -81,9 +81,9 @@ import scala.collection.mutable
   *     is pressed the sprite will make result available via [[isReady]] method and will optionally switch
   *     keyboard focus for the `next` scene object, if any. Default value is [[CPKeyboardKey.KEY_ENTER]].
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
-  * @param keyFilter Optional filter on keyboard events. Only the if this filter returns `true` for a given
+  * @param keyFilter Optional filter on keyboard events. Only if this filter returns `true` for a given
   *     keyboard event its key will be used as an input. Note that this filter is not applied to built-in
-  *     keyboard key such as cursor movements, escape, backspace, as well as cancel and submit keys. This
+  *     keyboard keys such as cursor movements, escape, backspace, as well as cancel and submit keys. This
   *     filter can be used, for example, to ensure that only digits can be entered.
   * @example See [[org.cosplay.examples.textinput.CPTextInputExample CPTextInputExample]] class for the example of
   *     using labels and text input.

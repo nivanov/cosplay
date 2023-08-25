@@ -366,7 +366,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     canv.drawLine(x, gapStartY - pipeGaHeight, x, 0, 2, px2)
 
     private def newGrassSprite(posX: Int, posY: Int) : CPSceneObject =
-        new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = "grass".seq):
+        new CPImageSprite(x = posX, y = posY, z = 1, img = brickImg, tags = "grass".set):
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
                 if ctx.getFrameCount % GRASS_SPEED == 0 && !dead then

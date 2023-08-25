@@ -63,7 +63,7 @@ class CPBubbleSprite(
     durMs: Long,
     var onFinish: CPSceneObjectContext => Unit = _ => (),
     autoDelete: Boolean = true,
-    tags: Seq[String] = Seq.empty
+    tags: Set[String] = Set.empty
 ) extends CPImageSprite(id, initX, initY, z, img, tags = tags):
     private val shdrs = Seq(
         CPFadeOutShader(

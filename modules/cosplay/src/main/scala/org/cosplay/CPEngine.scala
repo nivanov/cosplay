@@ -92,6 +92,8 @@ extension[T](ref: T)
 extension[T](t: T)
     /** Shortcut for `Seq(t)` as `t.seq` */
     def seq: Seq[T] = Seq(t)
+    /** Shortcut for `Set(t)` as `t.set` */
+    def set: Set[T] = Set(t)
 
 extension(s: String)
     def isVis(ch: Char): Boolean = ch == '\n' || ch == '\t' || !ch.isControl

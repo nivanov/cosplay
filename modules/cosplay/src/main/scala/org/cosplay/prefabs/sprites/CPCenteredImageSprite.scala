@@ -65,7 +65,7 @@ class CPCenteredImageSprite(
     z: Int,
     shaders: Seq[CPShader] = Seq.empty,
     orient: CPCenteredImageSpriteOrientation = BOTH,
-    tags: Seq[String] = Seq.empty
+    tags: Set[String] = Set.empty
 ) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders, tags = tags):
     override def update(ctx: CPSceneObjectContext): Unit =
         super.update(ctx)

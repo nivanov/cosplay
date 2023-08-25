@@ -17,8 +17,6 @@
 
 package org.cosplay
 
-import org.cosplay.impl.CPUtils
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
