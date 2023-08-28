@@ -306,7 +306,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                 for s <- set do canv.drawPixel('.'&&(s.fg, s.bg), s.x, s.y, 1)
 
     private def newBuildingSprite(width: Int, height: Int, posX: Int) : CPSceneObject =
-        new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = "building".seq):
+        new CPCanvasSprite(shaders = Seq(winSparkleShdr), tags = "building".set):
             private var x = posX
             private val col = BUILD_COLORS.rand
             private val wallPx = BUILD_WALL_PX.withBg(col.?)
@@ -330,7 +330,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     if x <= -width then ctx.deleteMyself()
 
     private def newPipeSprite(width: Int, posX: Int) : CPSceneObject =
-        new CPCanvasSprite(tags = Seq("pipe")):
+        new CPCanvasSprite(tags = "pipe".set):
             private var pipeX = posX
             private var finished = false
             private var gapStartY = -1

@@ -37,7 +37,8 @@ import org.cosplay.impl.CPUtils
   *
   * This sprite is very similar to [[CPImageSprite]] sprite and they both provide the same functionality.
   * However, for non-moving non-changing images this sprite provides shorter and simple API and better
-  * performance.
+  * performance. Note tha this sprite does not implement [[CPDynamicSprite]] and does not support changing
+  * its position.
   *
   * ### Sprites
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
@@ -79,8 +80,8 @@ class CPStaticImageSprite(
     img: CPImage,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
-    tags: Seq[String] = Seq.empty
-) extends CPSceneObject(id, tags.toSet):
+    tags: Set[String] = Set.empty
+) extends CPSceneObject(id, tags):
     private val imgDim = img.getDim
     private val imgRect = new CPRect(x, y, imgDim)
 

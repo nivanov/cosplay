@@ -103,7 +103,7 @@ class CPTextInputSprite(
     private var next: Option[String] = None,
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
-    tags: Seq[String] = Seq.empty,
+    tags: Set[String] = Set.empty,
     keyFilter: CPKeyboardEvent => Boolean = _ => true
 ) extends CPSceneObject(id, tags.toSet):
     !>(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")

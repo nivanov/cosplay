@@ -173,7 +173,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       *
       * @param tags One or more tags to filter by.
       */
-    def getObjectsForTags(tags: Seq[String]): Seq[CPSceneObject]
+    def getObjectsForTags(tags: Set[String]): Seq[CPSceneObject]
 
     /**
       * Deletes scene objects with given tags. All tags must be present in the scene object
@@ -182,7 +182,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       *
       * @param tags One or more tags to filter by.
       */
-    def deleteObjectsForTags(tags: String*): Unit = getObjectsForTags(tags).foreach(obj => deleteObject(obj.getId))
+    def deleteObjectsForTags(tags: String*): Unit = getObjectsForTags(tags.toSet).foreach(obj => deleteObject(obj.getId))
 
     /**
       * Gets number of scene objects with given tags. All tags must be present in the scene object

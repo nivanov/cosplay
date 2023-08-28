@@ -324,7 +324,7 @@ object CPSound:
       *     will be stopped.
       * @see [[CPSound.stop()]]
       */
-    def stopAll(fadeOutMs: Long, tags: Seq[String]): Unit = tracks.synchronized {
+    def stopAll(fadeOutMs: Long, tags: Set[String]): Unit = tracks.synchronized {
         if tags.isEmpty then tracks.values.foreach(_.stop(fadeOutMs))
         else tracks.getForTags(tags).foreach(_.stop(fadeOutMs))
     }
@@ -340,7 +340,7 @@ object CPSound:
         if tags.isEmpty then
             tracks.values.foreach(f)
         else
-            tracks.getForTags(tags).foreach(f(_))
+            tracks.getForTags(tags.toSet).foreach(f(_))
 
     /**
       * Disposes all sounds.
@@ -349,7 +349,7 @@ object CPSound:
       *     will be disposed.
       * @see [[CPSound.dispose()]]
       */
-    def disposeAll(tags: Seq[String]): Unit = tracks.synchronized {
+    def disposeAll(tags: Set[String]): Unit = tracks.synchronized {
         if tags.isEmpty then immutable.HashSet.from(tracks.values).foreach(_.dispose())
         else immutable.HashSet.from(tracks.getForTags(tags)).foreach(_.dispose())
     }

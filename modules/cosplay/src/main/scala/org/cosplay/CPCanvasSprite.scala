@@ -37,7 +37,8 @@ import org.cosplay.impl.CPUtils
   *
   * Canvas sprite takes dimension of the current [[CPSceneObjectContext.getCameraFrame camera frame]].
   * That allows its [[CPSceneObject.render()]] method, the only one method that needs to be implemented by
-  * the sub-type, to draw on entire camera frame of the terminal.
+  * the sub-type, to draw on entire camera frame of the terminal. Note that this sprite does not inherit
+  * from [[CPDynamicSprite]] and therefore does not support changing its positions out-of-the-box.
   *
   * Note that by default this sprite sets its position and dimension equal to the entire camera frame. This may
   * affect shaders attached to this sprite if they are configured to work with object vs. entire frame since
@@ -71,8 +72,8 @@ import org.cosplay.impl.CPUtils
 abstract class CPCanvasSprite(
     id: String = s"canv-spr-${CPRand.guid6}",
     shaders: Seq[CPShader] = Seq.empty,
-    tags: Seq[String] = Seq.empty
-) extends CPSceneObject(id, tags.toSet):
+    tags: Set[String] = Set.empty
+) extends CPSceneObject(id, tags):
     private var rect: CPRect = _
 
     /** @inheritdoc */

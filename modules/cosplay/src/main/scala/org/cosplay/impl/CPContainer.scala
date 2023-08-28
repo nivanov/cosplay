@@ -43,13 +43,13 @@ class CPContainer[T <: CPGameObject]:
     def values: Iterable[T] = map.values
     def get(id: String): Option[T] = map.get(id)
     def remove(id: String): Option[T] = map.remove(id)
-    def removeForTags(tags: String*): Unit = getForTags(tags).foreach(t => remove(t.getId))
+    def removeForTags(tags: String*): Unit = getForTags(tags.toSet).foreach(t => remove(t.getId))
     def contains(id: String): Boolean = map.contains(id)
-    def containsForTags(tags: Seq[String]): Boolean = map.values.exists(obj => tags.exists(tag => obj.getTags.contains(tag)))
+    def containsForTags(tags: Set[String]): Boolean = map.values.exists(obj => tags.exists(tag => obj.getTags.contains(tag)))
     def isEmpty: Boolean = map.isEmpty
     def foreach(f: T => Unit): Unit = map.values.foreach(f)
-    def getForTags(tags: Seq[String]): Seq[T] = map.values.filter(obj => tags.exists(tag => obj.getTags.contains(tag))).toSeq
-    def countForTags(tags: Seq[String]): Int = map.values.count(obj => tags.exists(tag => obj.getTags.contains(tag)))
+    def getForTags(tags: Set[String]): Seq[T] = map.values.filter(obj => tags.exists(tag => obj.getTags.contains(tag))).toSeq
+    def countForTags(tags: Set[String]): Int = map.values.count(obj => tags.exists(tag => obj.getTags.contains(tag)))
     def apply(id: String): T = map.getOrElse(id, raise(s"Unknown game object ID: $id"))
     def add(t: T): Unit = if map.contains(t.getId) then raise(s"Dup game object ID: ${t.getId}") else map.put(t.getId, t)
     def add(ts: T*): Unit = ts.foreach(add)

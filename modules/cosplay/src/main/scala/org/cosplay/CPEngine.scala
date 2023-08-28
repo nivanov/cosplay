@@ -1245,8 +1245,8 @@ object CPEngine:
                         })
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def grabObject(id: String): CPSceneObject = sc.objects(id)
-                    override def getObjectsForTags(tags: Seq[String]): Seq[CPSceneObject] = sc.objects.getForTags(tags)
-                    override def countObjectsForTags(tags: Seq[String]): Int = sc.objects.countForTags(tags)
+                    override def getObjectsForTags(tags: Set[String]): Seq[CPSceneObject] = sc.objects.getForTags(tags)
+                    override def countObjectsForTags(tags: String*): Int = sc.objects.countForTags(tags.toSet)
                     override def addScene(newSc: CPScene, switchTo: Boolean = false, delCur: Boolean = false, replace: Boolean = false): Unit =
                         val newScId = newSc.getId
                         if newScId == sc.getId then raise(s"Cannot add a new scene with the same ID as the current one: $newScId")
