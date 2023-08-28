@@ -85,6 +85,8 @@ import scala.collection.mutable
   *     keyboard event its key will be used as an input. Note that this filter is not applied to built-in
   *     keyboard keys such as cursor movements, escape, backspace, as well as cancel and submit keys. This
   *     filter can be used, for example, to ensure that only digits can be entered.
+  * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @example See [[org.cosplay.examples.textinput.CPTextInputExample CPTextInputExample]] class for the example of
   *     using labels and text input.
   * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
@@ -104,8 +106,10 @@ class CPTextInputSprite(
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
     tags: Set[String] = Set.empty,
-    keyFilter: CPKeyboardEvent => Boolean = _ => true
-) extends CPSceneObject(id, tags.toSet):
+    keyFilter: CPKeyboardEvent => Boolean = _ => true,
+    collidable: Boolean = false,
+    shaders: Seq[CPShader] = Seq.empty
+) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     !>(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
     !>(initTxt != null, "Initial text cannot be 'null'.")
 
@@ -213,9 +217,3 @@ class CPTextInputSprite(
 
     /** @inheritdoc */
     def getDim: CPDim = dim
-    /** @inheritdoc */
-    def getX: Int = x
-    /** @inheritdoc */
-    def getY: Int = y
-    /** @inheritdoc */
-    def getZ: Int = z

@@ -79,6 +79,19 @@ abstract class CPDynamicSprite(
     def setY(d: Int): Unit = myY = d
 
     /**
+      * Resets this sprite to its initial XY-coordinates.
+      */
+    def resetXYZ(): Unit =
+        resetXY()
+        setZ(initZ)
+
+    /**
+      * Resets this sprite to its initial XYZ-coordinates.
+      */
+    def resetXY(): Unit =
+        setXY(initX, initY)
+
+    /**
       * Sets both current XY-coordinates.
       *
       * @param a X-coordinate to set.

@@ -47,7 +47,7 @@ import scala.collection.mutable
   *  - [[splice()]]
   *  - [[rewind()]]
   *  - [[change()]]
-  *  - [[reset()]]
+  *  - [[resetAni()]]
   *  - [[contains()]]
   *  - [[getAnimations]]
   *  - [[setOnKeyFrameChange()]]
@@ -83,77 +83,14 @@ class CPAnimationSprite(
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
     tags: Set[String] = Set.empty
-) extends CPSceneObject(id, tags):
+) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     !>(anis.nonEmpty, "Sequence of animation cannot be empty.")
 
-    private var myX = x
-    private var myY = y
-    private var myZ = z
     private var keyFrameOpt = none[CPAnimationKeyFrame]
     private var curAni: CPAnimation = getAni(initAniId)
     private var delayedAni = none[CPAnimation]
     private var pausedAni = none[CPAnimation]
     private val onKfChangeMap = mutable.HashMap.empty[String, (CPAnimation, CPSceneObjectContext) => Unit]
-
-    /**
-      * Initial X-coordinate of the sprite.
-      *
-      * @see [[setX()]]
-      */
-    val initX: Int = x
-
-    /**
-      * Initial Y-coordinate of the sprite.
-      *
-      * @see [[setY()]]
-      */
-    val initY: Int = y
-
-    /**
-      * Initial Z-index of the sprite.
-      *
-      * @see [[setZ()]]
-      */
-    val initZ: Int = z
-
-    /**
-      * Resets this sprite to its initial XYZ-coordinates.
-      */
-    def resetXyz(): Unit =
-        setX(initX)
-        setY(initY)
-        setZ(initZ)
-
-    /**
-      * Sets current X-coordinate. This coordinate will be returned from [[getX]] method.
-      *
-      * @param d X-coordinate to set.
-      */
-    def setX(d: Int): Unit = myX = d
-
-    /**
-      * Sets current Y-coordinate. This coordinate will be returned from [[getY]] method.
-      *
-      * @param d Y-coordinate to set.
-      */
-    def setY(d: Int): Unit = myY = d
-
-    /**
-      * Sets both current XY-coordinates.
-      *
-      * @param a X-coordinate to set.
-      * @param b Y-coordinate to set.
-      */
-    def setXY(a: Int, b: Int): Unit =
-        setX(a)
-        setY(b)
-
-    /**
-      * Sets current Z-index. This index will be returned from [[getZ]] method.
-      *
-      * @param d Z-index to set.
-      */
-    def setZ(d: Int): Unit = myZ = d
 
     private def getAni(id: String): CPAnimation = anis.find(_.getId == id).getOrThrow(s"Unknown animation: $id")
 
@@ -242,16 +179,6 @@ class CPAnimationSprite(
         pausedAni = None
         change(initAniId)
 
-    /** @inheritdoc */
-    override def getShaders: Seq[CPShader] = shaders
-    /** @inheritdoc */
-    override def getX: Int = myX
-    /** @inheritdoc */
-    override def getY: Int = myY
-    /** @inheritdoc */
-    override def getZ: Int = myZ
-    /** @inheritdoc */
-    override def getCollisionRect: Option[CPRect] = Option.when(collidable)(getRect)
     /** @inheritdoc */
     override def getDim: CPDim = if keyFrameOpt.isDefined then keyFrameOpt.get.image.getDim else CPDim.ZERO
     /** @inheritdoc */

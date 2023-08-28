@@ -132,9 +132,7 @@ class CPImageSprite(
       * Resets this sprite to its initial XYZ-coordinates and the initial image.
       */
     def reset(): Unit =
-        setX(initX)
-        setY(initY)
-        setZ(initZ)
+        resetXYZ()
         setImage(initImg)
 
     /** @inheritdoc */

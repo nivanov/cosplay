@@ -72,12 +72,13 @@ import scala.collection.mutable
   * @param vid Video to render.
   * @param x Initial X-coordinate of the sprite.
   * @param y Initial Y-coordinate of the sprite.
-  * @param z Z-index at which to render the image.
+  * @param z Initial Z-index at which to render the image.
   * @param fps Frame-per-second to use in rendering the video.
   * @param autoPlay Whether to autoplay the video.
   * @param loop Whether or not to loop the playback.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @example See [[org.cosplay.examples.video.CPVideoExample CPVideoExample]] class for the example of
   *     using video support.
   * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
@@ -94,7 +95,9 @@ class CPVideoSprite(
     autoPlay: Boolean,
     loop: Boolean,
     collidable: Boolean = false,
-    shaders: Seq[CPShader] = Seq.empty) extends CPSceneObject(id):
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: Set[String] = Set.empty
+) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     private val reg = mutable.HashSet.empty[CPVideoSpriteListener]
     private var playing = autoPlay
     private var frameIdx = 0
@@ -105,19 +108,9 @@ class CPVideoSprite(
     private val clsRect = Option.when(collidable)(getRect)
 
     /** @inheritdoc */
-    override def getX: Int = x
-    /** @inheritdoc */
-    override def getY: Int = y
-    /** @inheritdoc */
-    override def getZ: Int = z
-    /** @inheritdoc */
     override def getDim: CPDim = frameDim
     /** @inheritdoc */
     override def getRect: CPRect = sprRect
-    /** @inheritdoc */
-    override def getCollisionRect: Option[CPRect] = clsRect
-    /** @inheritdoc */
-    override def getShaders: Seq[CPShader] = shaders
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext): Unit =
         val frame = vid.getFrame(frameIdx)

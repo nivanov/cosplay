@@ -56,9 +56,9 @@ import org.cosplay.impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param id Optional ID of this sprite.
-  * @param x X-coordinate of the top-left corner of the label.
-  * @param y Y-coordinate of the top-left corner of the label.
-  * @param z Z-index at which to render the label.
+  * @param x Initial X-coordinate of the top-left corner of the label.
+  * @param y Initial Y-coordinate of the top-left corner of the label.
+  * @param z Initial Z-index at which to render the label.
   * @param font Font to use for label.
   * @param text Label text.
   * @param fg Foreground color.
@@ -67,6 +67,7 @@ import org.cosplay.impl.CPUtils
   *     return a new pixel. Default value is the function that returns the same pixel.
   * @param collidable Whether or not this sprite provides collision shape. Default value is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @example See [[org.cosplay.examples.textinput.CPTextInputExample CPTextInputExample]] class for the example of
   *     using labels and text input.
   */
@@ -81,8 +82,9 @@ class CPLabelSprite(
     bg: Option[CPColor] = None,
     skin: (CPPixel, Int, Int) => CPPixel = (px, _, _) => px,
     collidable: Boolean = false,
-    shaders: Seq[CPShader] = Seq.empty
-) extends CPSceneObject(id):
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: Set[String] = Set.empty
+) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     private var lblTxt = text
     private var img: CPImage = _
     private var dim: CPDim = _
@@ -122,16 +124,6 @@ class CPLabelSprite(
     /** @inheritdoc */
     def getDim: CPDim = dim
     /** @inheritdoc */
-    override val getX: Int = x
-    /** @inheritdoc */
-    override val getY: Int = y
-    /** @inheritdoc */
-    override val getZ: Int = z
-    /** @inheritdoc */
-    override def getShaders: Seq[CPShader] = shaders
-    /** @inheritdoc */
     override def getRect: CPRect = new CPRect(getX, getY, dim)
-    /** @inheritdoc */
-    override def getCollisionRect: Option[CPRect] = Option.when(collidable)(getRect)
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext): Unit = ctx.getCanvas.drawImage(img, getX, getY, getZ)

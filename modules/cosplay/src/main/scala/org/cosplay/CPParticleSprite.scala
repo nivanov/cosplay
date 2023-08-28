@@ -67,8 +67,9 @@ import scala.collection.mutable
   *
   * @param id Optional ID of the sprite.
   * @param emitters Set of particle emitters this sprite will use.
-  * @param collidable Whether or not this sprite provides collision shape. Defualt value is `false`.
+  * @param collidable Whether or not this sprite provides collision shape. Default value is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @example See [[org.cosplay.examples.particle.CPParticleExample CPParticleExample]] class for the example of
   *     using particle effect.
   * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
@@ -78,7 +79,8 @@ class CPParticleSprite(
     id: String = s"part-spr-${CPRand.guid6}",
     emitters: Seq[CPParticleEmitter],
     collidable: Boolean = false,
-    shaders: Seq[CPShader] = Seq.empty
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: Set[String] = Set.empty
 ) extends CPSceneObject(id):
     !>(emitters.nonEmpty, "Sequence of emitters cannot be empty.")
 
@@ -162,6 +164,8 @@ class CPParticleSprite(
     override def getCollisionRect: Option[CPRect] = Option.when(collidable)(getRect)
     /** @inheritdoc */
     override def getShaders: Seq[CPShader] = shaders
+    /** @inheritdoc */
+    override def getTags: Set[String] = tags
     /** @inheritdoc */
     override def update(ctx: CPSceneObjectContext): Unit =
         // Purge dead particles.
