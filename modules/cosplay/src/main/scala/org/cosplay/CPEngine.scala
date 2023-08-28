@@ -1310,6 +1310,13 @@ object CPEngine:
                     ctx.setSceneObject(obj)
                     obj.update(ctx)
 
+                // Process scene monitors.
+                for obj <- objs if !stopFrame do obj match
+                    case o: CPSceneMonitor[_] =>
+                        ctx.setSceneObject(obj)
+                        o.monitor(ctx)
+                    case _ => ()
+
                 // NOTE: Update camera panning after the objects were updated BUT before object are drawn.
                 if !redraw then
                     // Calculate camera tracking movement only if focus tracking ID is provided.

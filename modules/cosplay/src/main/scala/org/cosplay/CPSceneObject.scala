@@ -74,6 +74,8 @@ package org.cosplay
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
+  * @see [[CPDynamicSprite]]
+  * @see [[CPSceneMonitor]]
   */
 abstract class CPSceneObject(
     id: String = CPRand.guid6,
