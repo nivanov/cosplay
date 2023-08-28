@@ -144,7 +144,7 @@ object CPSlideShaderExample:
             shdrs.append(s2)
             lastShdr = s2
 
-        val imgSpr = new CPCenteredImageSprite(img = img, 0, shdrs.toSeq)
+        val imgSpr = new CPCenteredImageSprite(img = img, 0, shaders = shdrs.toSeq)
         val sc = new CPScene("scene", dim.?, BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
 
         // Start the game & wait for exit.

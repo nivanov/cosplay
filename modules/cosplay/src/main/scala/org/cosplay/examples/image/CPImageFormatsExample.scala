@@ -50,7 +50,7 @@ import org.cosplay.prefabs.shaders.*
   * }}}
   * to run example:
   * {{{
-  *     $ mvn -f modules/cosplay -P ex:image_formats exec:java
+  *     $ mvn -f modules/cosplay -P ex:image-formats exec:java
   * }}}
   *
   * @see [[CPImage]]

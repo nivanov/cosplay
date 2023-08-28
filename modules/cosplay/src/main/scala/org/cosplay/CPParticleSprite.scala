@@ -81,7 +81,7 @@ class CPParticleSprite(
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
     tags: Set[String] = Set.empty
-) extends CPSceneObject(id):
+) extends CPSceneObject(id, tags):
     !>(emitters.nonEmpty, "Sequence of emitters cannot be empty.")
 
     private var x = 0
@@ -164,8 +164,6 @@ class CPParticleSprite(
     override def getCollisionRect: Option[CPRect] = Option.when(collidable)(getRect)
     /** @inheritdoc */
     override def getShaders: Seq[CPShader] = shaders
-    /** @inheritdoc */
-    override def getTags: Set[String] = tags
     /** @inheritdoc */
     override def update(ctx: CPSceneObjectContext): Unit =
         // Purge dead particles.

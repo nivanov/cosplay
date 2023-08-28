@@ -30,6 +30,19 @@ package org.cosplay
                ALl rights reserved.
 */
 
+/**
+  * Convenient adapter for dynamic sprites, i.e. sprites that can change their screen position. It provides
+  * default implementation for managing sprite's X, Y, and Z coordinates as well as storing the initial
+  * X, Y, and Z coordinates.
+  *
+  * @param id Optional ID of this scene object.
+  * @param x Initial X-coordinate of the top-left corner of the sprite.
+  * @param y Initial Y-coordinate of the top-left corner of the sprite.
+  * @param z Initial Z-index at which to render the sprite.
+  * @param collidable Whether or not this sprite provides collision shape.
+  * @param shaders Optional sequence of shaders for this sprite.
+  * @param tags Optional set of organizational or grouping tags.
+  */
 abstract class CPDynamicSprite(
     id: String,
     x: Int,

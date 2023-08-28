@@ -186,9 +186,7 @@ class CPTextInputSprite(
         res = None
         reset()
 
-    /**
-      * Gets current initial text for this sprite.
-      */
+    /** Gets current initial text for this sprite. */
     def getInitText: String = initTxt
 
     /**
@@ -205,14 +203,10 @@ class CPTextInputSprite(
       */
     def setNext(next: Option[String]): Unit = this.next = next
 
-    /**
-      * Whether or not the result is ready.
-      */
+    /** Whether or not the result is ready. */
     def isReady: Boolean = ready
 
-    /**
-      * Gets input result, `None` if result is not yet ready.
-      */
+    /** Gets input result, `None` if result is not yet ready. */
     def getResult: Option[String] = res
 
     /** @inheritdoc */

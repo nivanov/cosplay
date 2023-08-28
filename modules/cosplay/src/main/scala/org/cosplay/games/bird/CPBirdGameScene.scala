@@ -262,7 +262,7 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         override def update(ctx: CPSceneObjectContext): Unit = setX((ctx.getCanvas.width / 2) - 3)
     private val lostShdr = CPSlideInShader.sigmoid(LEFT_TO_RIGHT, false, 1000.ms, GAME_BG_PX)
     private val lostBorderShdr = CPBorderShader(false, 3, true, -.03f, true)
-    private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 3, Seq(lostShdr, lostBorderShdr)):
+    private val loseSpr = new CPCenteredImageSprite(img = youLostImg, z = 3, shaders = Seq(lostShdr, lostBorderShdr)):
         override def update(ctx: CPSceneObjectContext): Unit =
             if dead && isVisible then
                 val canv = ctx.getCanvas

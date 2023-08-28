@@ -51,7 +51,7 @@ import org.cosplay.prefabs.shaders.*
   * }}}
   * to run example:
   * {{{
-  *     $ mvn -f modules/cosplay -P ex:image_carousel exec:java
+  *     $ mvn -f modules/cosplay -P ex:image-carousel exec:java
   * }}}
   *
   * @see [[CPImage]]

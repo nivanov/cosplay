@@ -384,9 +384,9 @@ object CPPongPlayScene extends CPScene("play", None, BG_PX):
     private val serveShdr = mkShader()
     private val youLostShdr = mkShader()
     private val youWonShdr = mkShader()
-    private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6, serveShdr.seq)
-    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6, youLostShdr.seq)
-    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6, youWonShdr.seq)
+    private val serveSpr = new CPCenteredImageSprite(img = serveImg, 6, shaders = serveShdr.seq)
+    private val youLostSpr = new CPCenteredImageSprite(img = youLostImg, 6, shaders = youLostShdr.seq)
+    private val youWonSpr = new CPCenteredImageSprite(img = youWonImg, 6, shaders = youWonShdr.seq)
 
     private val gameCtrlSpr = new CPOffScreenSprite():
         override def update(ctx: CPSceneObjectContext): Unit =

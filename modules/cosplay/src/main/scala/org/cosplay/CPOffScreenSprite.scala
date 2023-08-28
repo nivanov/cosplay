@@ -69,7 +69,7 @@ class CPOffScreenSprite(
     id: String = s"off-scr-spr-${CPRand.guid6}",
     shaders: Seq[CPShader] = Seq.empty,
     tags: Set[String] = Set.empty
-) extends CPSceneObject(id, tags.toSet):
+) extends CPSceneObject(id, tags):
     setVisible(false)
 
     /**

@@ -52,6 +52,7 @@ import CPCenteredImageSpriteOrientation.*
   * @param id Optional ID of the sprite.
   * @param img The image to render. It can be [[CPImageSprite.setImage() changed later]].
   * @param z Z-index at which to render the image.
+  * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @param orient Centering orientation. Default value is [[CPCenteredImageSpriteOrientation.BOTH]]. Note that you need
   *     set requires X or Y coordinates manually if not using [[CPCenteredImageSpriteOrientation.BOTH]] orientation.
@@ -63,10 +64,11 @@ class CPCenteredImageSprite(
     id: String = s"center-img-spr-${CPRand.guid6}",
     img: CPImage,
     z: Int,
+    collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
     orient: CPCenteredImageSpriteOrientation = BOTH,
     tags: Set[String] = Set.empty
-) extends CPImageSprite(id, 0, 0, z, img, shaders = shaders, tags = tags):
+) extends CPImageSprite(id, 0, 0, z, img, collidable, shaders, tags):
     override def update(ctx: CPSceneObjectContext): Unit =
         super.update(ctx)
         val canv = ctx.getCanvas
