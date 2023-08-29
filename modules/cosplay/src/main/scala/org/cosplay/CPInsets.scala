@@ -78,6 +78,11 @@ object CPInsets:
     val ONE = new CPInsets(1)
 
     /**
+      * Insets of two horizontal and one vertical (ideal for typical ASCII font).
+      */
+    val TWO_ONE = new CPInsets(2, 1)
+
+    /**
       * Zero insets.
       */
     val ZERO = new CPInsets(0)

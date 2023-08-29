@@ -153,11 +153,16 @@ trait CPSceneObjectContext extends CPBaseContext:
     def addObject(obj: CPSceneObject, replace: Boolean = false): Unit
 
     /**
-      * Gets scene object with given ID.
+      * Gets scene object with given ID or `None` if such object cannot be found.
       *
       * @param id ID of the scene object to get.
       */
     def getObject(id: String): Option[CPSceneObject]
+
+    /**
+      * Gets all scene objects in the current scene.
+      */
+    def getObjects: Iterable[CPSceneObject]
 
     /**
       * Gets scene object with given ID. Throws [[CPException]] exception if object with given

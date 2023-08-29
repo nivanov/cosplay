@@ -1244,6 +1244,7 @@ object CPEngine:
                             engLog.trace(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
                         })
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
+                    override def getObjects: Iterable[CPSceneObject] = sc.objects.values
                     override def grabObject(id: String): CPSceneObject = sc.objects(id)
                     override def getObjectsForTags(tags: Set[String]): Seq[CPSceneObject] = sc.objects.getForTags(tags)
                     override def countObjectsForTags(tags: String*): Int = sc.objects.countForTags(tags.toSet)

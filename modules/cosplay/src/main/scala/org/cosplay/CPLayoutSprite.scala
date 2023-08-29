@@ -30,7 +30,15 @@ package org.cosplay
                ALl rights reserved.
 */
 
+private sealed case class LayoutSpec(
+    padTop: Int,
+    padLeft: Int,
+    padBottom: Int,
+    padRight: Int
+)
+
 /**
+  * This sprite is part of UI toolkit at CosPlay.
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   * @param shaders Optional sequence of shaders for this sprite.
@@ -43,9 +51,31 @@ class CPLayoutSprite(
 ) extends CPOffScreenSprite(id, shaders, tags) with CPSceneMonitor[_]:
     override def monitor(ctx: CPSceneObjectContext): Unit = ()
 
+    /** Unlinks all previously linked constituent sprites from this layout sprite. */
     def clear(): Unit
-    def link(spr: CPDynamicSprite, cont: Option[CPDynamicSprite], constr: String): Unit
-    def link(id: String, cont: Option[CPDynamicSprite], constr: String): Unit
+
+    /**
+      *
+      * @param id ID of the dynamic sprite to link. If the sprite with given ID is already linked - this operation
+      *     is ignored.
+      * @param anchor Optional anchor scene object ID relative to which to layout the given dynamic sprite.
+      *     If `None`, the entire scene canvas will be used instead.
+      * @param spec Specific layout instructions to use.
+      */
+    def link(id: String, anchor: Option[String], spec: String): Unit
+
+    /**
+      *
+      * @param id
+      * @return
+      */
+    def isLinked(id: String): Boolean
+
+    /**
+      * Unlinks dynamic sprite with given `id` from this layout sprite.
+      *
+      * @param id ID of the previously linked dynamic sprite.
+      * @return `True` if dynamic sprite with given `id` was successfully unlinked, `false` otherwise.
+      */
     def unlink(id: String): Boolean
-    def unlink(spr: CPDynamicSprite): Boolean
 

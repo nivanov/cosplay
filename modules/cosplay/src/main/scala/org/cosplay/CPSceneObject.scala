@@ -184,6 +184,7 @@ abstract class CPSceneObject(
 
     /**
       * Gets last X-coordinate which is {{{getX + getWidth - 1}}}.
+      * Note the value when the width is zero.
       *
       * @return Last X-coordinate for this sprite.
       */
@@ -191,6 +192,7 @@ abstract class CPSceneObject(
 
     /**
       * Gets last Y-coordinate which is {{{getY + getHeight - 1}}}.
+      * Note the value when the height is zero.
       *
       * @return Last Y-coordinate for this sprite.
       */
