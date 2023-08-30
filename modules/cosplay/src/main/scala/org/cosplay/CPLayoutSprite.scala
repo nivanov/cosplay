@@ -52,7 +52,7 @@ class CPLayoutSprite(
     override def monitor(ctx: CPSceneObjectContext): Unit = ()
 
     /** Unlinks all previously linked constituent sprites from this layout sprite. */
-    def clear(): Unit
+    def clear(): Unit = ???
 
     /**
       *
@@ -62,14 +62,14 @@ class CPLayoutSprite(
       *     If `None`, the entire scene canvas will be used instead.
       * @param spec Specific layout instructions to use.
       */
-    def link(id: String, anchor: Option[String], spec: String): Unit
+    def link(id: String, anchor: Option[String], spec: String): Unit = ???
 
     /**
       *
       * @param id
       * @return
       */
-    def isLinked(id: String): Boolean
+    def isLinked(id: String): Boolean = ???
 
     /**
       * Unlinks dynamic sprite with given `id` from this layout sprite.
@@ -77,5 +77,5 @@ class CPLayoutSprite(
       * @param id ID of the previously linked dynamic sprite.
       * @return `True` if dynamic sprite with given `id` was successfully unlinked, `false` otherwise.
       */
-    def unlink(id: String): Boolean
+    def unlink(id: String): Boolean = ???
 
