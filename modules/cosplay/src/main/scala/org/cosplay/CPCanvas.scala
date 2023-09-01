@@ -43,7 +43,8 @@ import scala.collection.mutable
   * 2D rendering pane. Canvas is synonymous with screen, i.e. it is an object that allows to draw on the screen.
   * Canvas has the dimension of the current scene or, if scene doesn't provide its own dimension, the size of the
   * terminal. Note that this behavior means that canvas can change its size from frame to frame if the current
-  * scene does not provide its own dimension and the terminal size is changing.
+  * scene does not provide its own dimension and the terminal size is changing. One can generally draw outside of
+  * canvas dimensions and any such pixels will be simply ignored.
   *
   * For each game frame, the game engine creates a new empty canvas for all scene objects to draw on with the dimension
   * set as described above. This canvas is available to scene objects via [[CPSceneObjectContext.getCanvas]] method. Game engine
@@ -55,7 +56,8 @@ import scala.collection.mutable
   *
   * Canvas `(0,0)` coordinate point is located in the top left corner. X-axis goes to the right and Y-axis
   * points down. Every drawn pixel on the canvas also has a Z-index or depth. Pixel with larger or equal
-  * Z-index visually overrides the pixel with the smaller Z-index.
+  * Z-index visually overrides the pixel with the smaller Z-index. Pixels with coordinates outside of the current
+  * canvas dimensions are ignored.
   *
   * ASCII-based graphics are vastly different from the traditional raster-based graphics.
   * Since ASCII-based drawing uses printable characters from ASCII character set that are displayed on basic text terminal
@@ -64,7 +66,7 @@ import scala.collection.mutable
   * and ellipses, for example, are hard to do properly in automated way. Moreover, many complex curves need to
   * be done manually, especially if they are dynamically redrawn on each frame update.
   *
-  * This class provides many methods for basic line and rectangular drawing, circle and polylines, anti-aliasing,
+  * This class provides many methods for basic line and rectangular drawing, circle and polyline, anti-aliasing,
   * "color" fill in, and much more. Most functions have multiple overridden variants with different parameters so that they
   * can be easily used in different contexts. Note also that this class deals primarily with line ASCII art and has
   * only few functions like [[antialias() antialiasing]] for the solid ASCII art.

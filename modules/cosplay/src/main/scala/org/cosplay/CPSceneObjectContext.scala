@@ -56,7 +56,7 @@ import scala.collection.mutable
   *
   * @see [[CPSceneObject.update()]]
   * @see [[CPSceneObject.render()]]
-  * @see [[CPSceneMonitor.monitor()]]
+  * @see [[CPSceneObject.monitor()]]
   * @see [[CPShader.render()]]
   */
 trait CPSceneObjectContext extends CPBaseContext:
