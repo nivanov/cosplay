@@ -80,6 +80,8 @@ abstract class CPSceneObject(
     id: String = CPRand.guid6,
     tags: Set[String] = Set.empty
 ) extends CPGameObject(id, tags) with CPLifecycle:
+    !>(id.count(_.isWhitespace) == 0, s"Scene object ID cannot contain whitespaces: '$id'")
+
     private var visible = true
 
     private[cosplay] def toExtStr: String =
