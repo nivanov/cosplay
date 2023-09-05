@@ -30,11 +30,17 @@ package org.cosplay
                ALl rights reserved.
 */
 
-private sealed case class LayoutSpec(
+private[cosplay] sealed case class CPLayoutSpec(
     padTop: Int,
     padLeft: Int,
     padBottom: Int,
-    padRight: Int
+    padRight: Int,
+    xFloat: Int, // -1, 0, 1
+    xFloatRel: Option[String],
+    yFloat: Int, // -1, 0, 1
+    yFloatRel: Option[String],
+    pos: Int, // 1, 2, 3, 4
+    posRel: Option[String]
 )
 
 /**

@@ -80,7 +80,12 @@ abstract class CPSceneObject(
     id: String = CPRand.guid6,
     tags: Set[String] = Set.empty
 ) extends CPGameObject(id, tags) with CPLifecycle:
-    !>(id.count(_.isWhitespace) == 0, s"Scene object ID cannot contain whitespaces: '$id'")
+    !>(id.nonEmpty, "Scene object ID cannot be empty.")
+    !>(id.count(ch => {
+        !(
+            ch.isLetterOrDigit || ch == '-' || ch == '_' || ch == '$'
+        )
+    }) == 0, s"Scene object ID should contain letters, digits, '-', '_' or '$$' characters only: '$id'")
 
     private var visible = true
 

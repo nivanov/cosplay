@@ -30,5 +30,36 @@ package org.cosplay.impl.layout
                ALl rights reserved.
 */
 
-class CPLayoutCompiler
+import org.cosplay.*
+import org.antlr.v4.runtime.tree.*
+import org.antlr.v4.runtime.*
+import org.cosplay.impl.layout.antlr4.*
+import scala.util.*
+
+object CPLayoutCompiler:
+    private class FiniteStateMachine extends CPLayoutBaseListener:
+        def getSpecs: Seq[CPLayoutSpec] = ???
+
+    /**
+      *
+      * @param pl
+      */
+    //noinspection DuplicatedCode
+    private def antlr4Setup(pl: String, origin: String): (FiniteStateMachine, CPLayoutParser) =
+        val lexer = new CPLayoutLexer(CharStreams.fromString(pl, origin))
+        val parser = new CPLayoutParser(new CommonTokenStream(lexer))
+
+        // State automata + it's parser.
+        new FiniteStateMachine -> parser
+
+    /**
+      *
+      * @param pl
+      * @param origin
+      */
+    def compile(pl: String, origin: String): Try[Seq[CPLayoutSpec]] = Try:
+        val (fsm, parser) = antlr4Setup(pl, origin)
+        ParseTreeWalker().walk(fsm, parser.layout())
+        fsm.getSpecs
+
 
