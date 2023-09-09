@@ -70,9 +70,9 @@ object CPLayoutCompiler:
         override def exitPosItem(ctx: CPLayoutParser.PosItemContext): Unit =
             val rel = if ctx.ID() == null then None else ctx.ID().getText.?
             val dir = ctx.getChild(2).getText match
-                case "above" => CPLayoutDirection.TOP
+                case "top" => CPLayoutDirection.TOP
                 case "left" => CPLayoutDirection.LEFT
-                case "below" => CPLayoutDirection.BOTTOM
+                case "bottom" => CPLayoutDirection.BOTTOM
                 case "right" => CPLayoutDirection.RIGHT
                 case _ => assert(false)
             spec.pos = CPLayoutRelation(dir, rel)
@@ -83,8 +83,23 @@ object CPLayoutCompiler:
         val lexer = new CPLayoutLexer(CharStreams.fromString(src, origin))
         val parser = new CPLayoutParser(new CommonTokenStream(lexer))
 
+        // Set custom error handlers.
+        lexer.removeErrorListeners()
+        parser.removeErrorListeners()
+        lexer.addErrorListener(new CompilerErrorListener)
+        parser.addErrorListener(new CompilerErrorListener)
+
         // State automata + it's parser.
         new FiniteStateMachine -> parser
+
+    private class CompilerErrorListener extends BaseErrorListener:
+        override def syntaxError(
+            recog: Recognizer[_, _],
+            badSymbol: scala.Any,
+            line: Int, // 1, 2, ...
+            charPos: Int, // 1, 2, ...
+            msg: String,
+            e: RecognitionException): Unit = throw CPException(msg, e.?)
 
     def compile(src: String, origin: String): Try[Seq[CPLayoutSpec]] = Try:
         val (fsm, parser) = antlr4Setup(src, origin)

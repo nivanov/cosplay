@@ -39,10 +39,12 @@ object CPLayoutTests:
     def compilerTest(): Unit =
         CPLayoutCompiler.compile(
             """
-              |spr1 = pos: top, xfloat: left;
-              |spr2 = pos: bottom(spr1), xfloat: center;
+              |spr1 = pos: top(), xfloat: left();
+              |spr2 = pos: bottom(spr1), xfloat: center();
               |""".stripMargin, "test") match
             case Success(specs) => println(specs)
-            case Failure(e) => throw e
+            case Failure(e) =>
+                e.printStackTrace()
+                throw e
 
 

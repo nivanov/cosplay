@@ -18,8 +18,8 @@ public class CPLayoutParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, EQ=15, SCOLON=16, COLON=17, 
-		COMMA=18, LPAR=19, RPAR=20, NUM=21, ID=22, COMMENT=23, WS=24, ErrorChar=25;
+		T__9=10, EQ=11, SCOLON=12, COLON=13, COMMA=14, LPAR=15, RPAR=16, NUM=17, 
+		ID=18, COMMENT=19, WS=20, ErrorChar=21;
 	public static final int
 		RULE_layout = 0, RULE_decls = 1, RULE_decl = 2, RULE_items = 3, RULE_item = 4, 
 		RULE_padItem = 5, RULE_posItem = 6, RULE_floatItem = 7;
@@ -33,16 +33,16 @@ public class CPLayoutParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'top'", "'left'", "'bottom'", "'right'", "'vert'", "'hor'", "'pos'", 
-			"'before'", "'after'", "'above'", "'below'", "'xfloat'", "'yfloat'", 
-			"'center'", "'='", "';'", "':'", "','", "'('", "')'"
+			"'xfloat'", "'yfloat'", "'center'", "'='", "';'", "':'", "','", "'('", 
+			"')'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, "EQ", "SCOLON", "COLON", "COMMA", "LPAR", "RPAR", "NUM", 
-			"ID", "COMMENT", "WS", "ErrorChar"
+			null, null, null, null, null, null, null, null, null, null, null, "EQ", 
+			"SCOLON", "COLON", "COMMA", "LPAR", "RPAR", "NUM", "ID", "COMMENT", "WS", 
+			"ErrorChar"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -412,8 +412,8 @@ public class CPLayoutParser extends Parser {
 				posItem();
 				}
 				break;
-			case T__11:
-			case T__12:
+			case T__7:
+			case T__8:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(52);
@@ -520,7 +520,7 @@ public class CPLayoutParser extends Parser {
 			match(COLON);
 			setState(61);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 3840L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 30L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -584,7 +584,7 @@ public class CPLayoutParser extends Parser {
 			{
 			setState(68);
 			_la = _input.LA(1);
-			if ( !(_la==T__11 || _la==T__12) ) {
+			if ( !(_la==T__7 || _la==T__8) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -596,7 +596,7 @@ public class CPLayoutParser extends Parser {
 			match(COLON);
 			setState(70);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 16414L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 1054L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -656,7 +656,7 @@ public class CPLayoutParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0019N\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u0015N\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0001"+
 		"\u0000\u0005\u0000\u0012\b\u0000\n\u0000\f\u0000\u0015\t\u0000\u0001\u0000"+
@@ -670,8 +670,8 @@ public class CPLayoutParser extends Parser {
 		"\u0001\u0006\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007"+
 		"\u0003\u0007J\b\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0000\u0002"+
 		"\u0002\u0006\b\u0000\u0002\u0004\u0006\b\n\f\u000e\u0000\u0004\u0001\u0000"+
-		"\u0001\u0006\u0001\u0000\b\u000b\u0001\u0000\f\r\u0002\u0000\u0001\u0004"+
-		"\u000e\u000eL\u0000\u0013\u0001\u0000\u0000\u0000\u0002\u0018\u0001\u0000"+
+		"\u0001\u0006\u0001\u0000\u0001\u0004\u0001\u0000\b\t\u0002\u0000\u0001"+
+		"\u0004\n\nL\u0000\u0013\u0001\u0000\u0000\u0000\u0002\u0018\u0001\u0000"+
 		"\u0000\u0000\u0004\"\u0001\u0000\u0000\u0000\u0006\'\u0001\u0000\u0000"+
 		"\u0000\b5\u0001\u0000\u0000\u0000\n7\u0001\u0000\u0000\u0000\f;\u0001"+
 		"\u0000\u0000\u0000\u000eD\u0001\u0000\u0000\u0000\u0010\u0012\u0003\u0002"+
@@ -684,25 +684,24 @@ public class CPLayoutParser extends Parser {
 		"\u0000\u0000\u001c\u001e\u0003\u0004\u0002\u0000\u001d\u001b\u0001\u0000"+
 		"\u0000\u0000\u001e!\u0001\u0000\u0000\u0000\u001f\u001d\u0001\u0000\u0000"+
 		"\u0000\u001f \u0001\u0000\u0000\u0000 \u0003\u0001\u0000\u0000\u0000!"+
-		"\u001f\u0001\u0000\u0000\u0000\"#\u0005\u0016\u0000\u0000#$\u0005\u000f"+
-		"\u0000\u0000$%\u0003\u0006\u0003\u0000%&\u0005\u0010\u0000\u0000&\u0005"+
-		"\u0001\u0000\u0000\u0000\'(\u0006\u0003\uffff\uffff\u0000()\u0003\b\u0004"+
-		"\u0000)/\u0001\u0000\u0000\u0000*+\n\u0001\u0000\u0000+,\u0005\u0012\u0000"+
-		"\u0000,.\u0003\b\u0004\u0000-*\u0001\u0000\u0000\u0000.1\u0001\u0000\u0000"+
-		"\u0000/-\u0001\u0000\u0000\u0000/0\u0001\u0000\u0000\u00000\u0007\u0001"+
-		"\u0000\u0000\u00001/\u0001\u0000\u0000\u000026\u0003\n\u0005\u000036\u0003"+
-		"\f\u0006\u000046\u0003\u000e\u0007\u000052\u0001\u0000\u0000\u000053\u0001"+
+		"\u001f\u0001\u0000\u0000\u0000\"#\u0005\u0012\u0000\u0000#$\u0005\u000b"+
+		"\u0000\u0000$%\u0003\u0006\u0003\u0000%&\u0005\f\u0000\u0000&\u0005\u0001"+
+		"\u0000\u0000\u0000\'(\u0006\u0003\uffff\uffff\u0000()\u0003\b\u0004\u0000"+
+		")/\u0001\u0000\u0000\u0000*+\n\u0001\u0000\u0000+,\u0005\u000e\u0000\u0000"+
+		",.\u0003\b\u0004\u0000-*\u0001\u0000\u0000\u0000.1\u0001\u0000\u0000\u0000"+
+		"/-\u0001\u0000\u0000\u0000/0\u0001\u0000\u0000\u00000\u0007\u0001\u0000"+
+		"\u0000\u00001/\u0001\u0000\u0000\u000026\u0003\n\u0005\u000036\u0003\f"+
+		"\u0006\u000046\u0003\u000e\u0007\u000052\u0001\u0000\u0000\u000053\u0001"+
 		"\u0000\u0000\u000054\u0001\u0000\u0000\u00006\t\u0001\u0000\u0000\u0000"+
-		"78\u0007\u0000\u0000\u000089\u0005\u0011\u0000\u00009:\u0005\u0015\u0000"+
-		"\u0000:\u000b\u0001\u0000\u0000\u0000;<\u0005\u0007\u0000\u0000<=\u0005"+
-		"\u0011\u0000\u0000=>\u0007\u0001\u0000\u0000>@\u0005\u0013\u0000\u0000"+
-		"?A\u0005\u0016\u0000\u0000@?\u0001\u0000\u0000\u0000@A\u0001\u0000\u0000"+
-		"\u0000AB\u0001\u0000\u0000\u0000BC\u0005\u0014\u0000\u0000C\r\u0001\u0000"+
-		"\u0000\u0000DE\u0007\u0002\u0000\u0000EF\u0005\u0011\u0000\u0000FG\u0007"+
-		"\u0003\u0000\u0000GI\u0005\u0013\u0000\u0000HJ\u0005\u0016\u0000\u0000"+
-		"IH\u0001\u0000\u0000\u0000IJ\u0001\u0000\u0000\u0000JK\u0001\u0000\u0000"+
-		"\u0000KL\u0005\u0014\u0000\u0000L\u000f\u0001\u0000\u0000\u0000\u0006"+
-		"\u0013\u001f/5@I";
+		"78\u0007\u0000\u0000\u000089\u0005\r\u0000\u00009:\u0005\u0011\u0000\u0000"+
+		":\u000b\u0001\u0000\u0000\u0000;<\u0005\u0007\u0000\u0000<=\u0005\r\u0000"+
+		"\u0000=>\u0007\u0001\u0000\u0000>@\u0005\u000f\u0000\u0000?A\u0005\u0012"+
+		"\u0000\u0000@?\u0001\u0000\u0000\u0000@A\u0001\u0000\u0000\u0000AB\u0001"+
+		"\u0000\u0000\u0000BC\u0005\u0010\u0000\u0000C\r\u0001\u0000\u0000\u0000"+
+		"DE\u0007\u0002\u0000\u0000EF\u0005\r\u0000\u0000FG\u0007\u0003\u0000\u0000"+
+		"GI\u0005\u000f\u0000\u0000HJ\u0005\u0012\u0000\u0000IH\u0001\u0000\u0000"+
+		"\u0000IJ\u0001\u0000\u0000\u0000JK\u0001\u0000\u0000\u0000KL\u0005\u0010"+
+		"\u0000\u0000L\u000f\u0001\u0000\u0000\u0000\u0006\u0013\u001f/5@I";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

@@ -48,7 +48,7 @@ item
     | floatItem
     ;
 padItem: ('top' | 'left' | 'bottom' | 'right' | 'vert' | 'hor') COLON NUM;
-posItem: 'pos' COLON ('before' | 'after' | 'above' | 'below') LPAR ID? RPAR;
+posItem: 'pos' COLON ('left' | 'right' | 'top' | 'bottom') LPAR ID? RPAR;
 floatItem: ('xfloat' | 'yfloat') COLON ('top' | 'left' | 'bottom' | 'right' | 'center') LPAR ID? RPAR;
 
 // Lexer.
