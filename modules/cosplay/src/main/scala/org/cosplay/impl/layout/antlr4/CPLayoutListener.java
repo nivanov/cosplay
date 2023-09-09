@@ -38,53 +38,53 @@ public interface CPLayoutListener extends ParseTreeListener {
 	 */
 	void exitDecl(CPLayoutParser.DeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#specs}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#items}.
 	 * @param ctx the parse tree
 	 */
-	void enterSpecs(CPLayoutParser.SpecsContext ctx);
+	void enterItems(CPLayoutParser.ItemsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#specs}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#items}.
 	 * @param ctx the parse tree
 	 */
-	void exitSpecs(CPLayoutParser.SpecsContext ctx);
+	void exitItems(CPLayoutParser.ItemsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#spec}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#item}.
 	 * @param ctx the parse tree
 	 */
-	void enterSpec(CPLayoutParser.SpecContext ctx);
+	void enterItem(CPLayoutParser.ItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#spec}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#item}.
 	 * @param ctx the parse tree
 	 */
-	void exitSpec(CPLayoutParser.SpecContext ctx);
+	void exitItem(CPLayoutParser.ItemContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#padSpec}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#padItem}.
 	 * @param ctx the parse tree
 	 */
-	void enterPadSpec(CPLayoutParser.PadSpecContext ctx);
+	void enterPadItem(CPLayoutParser.PadItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#padSpec}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#padItem}.
 	 * @param ctx the parse tree
 	 */
-	void exitPadSpec(CPLayoutParser.PadSpecContext ctx);
+	void exitPadItem(CPLayoutParser.PadItemContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#posSpec}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#posItem}.
 	 * @param ctx the parse tree
 	 */
-	void enterPosSpec(CPLayoutParser.PosSpecContext ctx);
+	void enterPosItem(CPLayoutParser.PosItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#posSpec}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#posItem}.
 	 * @param ctx the parse tree
 	 */
-	void exitPosSpec(CPLayoutParser.PosSpecContext ctx);
+	void exitPosItem(CPLayoutParser.PosItemContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#floatSpec}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#floatItem}.
 	 * @param ctx the parse tree
 	 */
-	void enterFloatSpec(CPLayoutParser.FloatSpecContext ctx);
+	void enterFloatItem(CPLayoutParser.FloatItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#floatSpec}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#floatItem}.
 	 * @param ctx the parse tree
 	 */
-	void exitFloatSpec(CPLayoutParser.FloatSpecContext ctx);
+	void exitFloatItem(CPLayoutParser.FloatItemContext ctx);
 }

@@ -30,17 +30,19 @@ package org.cosplay
                ALl rights reserved.
 */
 
+private[cosplay] enum CPLayoutDirection:
+    case LEFT, RIGHT, TOP, BOTTOM, CENTER
+private[cosplay] sealed class CPLayoutRelation(
+    dir: CPLayoutDirection,
+    rel: Option[String]
+)
+import CPLayoutDirection.*
 private[cosplay] sealed case class CPLayoutSpec(
-    padTop: Int,
-    padLeft: Int,
-    padBottom: Int,
-    padRight: Int,
-    xFloat: Int, // -1, 0, 1
-    xFloatRel: Option[String],
-    yFloat: Int, // -1, 0, 1
-    yFloatRel: Option[String],
-    pos: Int, // 1, 2, 3, 4
-    posRel: Option[String]
+    var id: String,
+    var padding: CPInsets = CPInsets.ZERO,
+    var xFloat: CPLayoutRelation = CPLayoutRelation(LEFT, None),
+    var yFloat: CPLayoutRelation = CPLayoutRelation(TOP, None),
+    var pos: CPLayoutRelation = CPLayoutRelation(BOTTOM, None)
 )
 
 /**

@@ -53,61 +53,61 @@ public class CPLayoutBaseListener implements CPLayoutListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSpecs(CPLayoutParser.SpecsContext ctx) { }
+	@Override public void enterItems(CPLayoutParser.ItemsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSpecs(CPLayoutParser.SpecsContext ctx) { }
+	@Override public void exitItems(CPLayoutParser.ItemsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSpec(CPLayoutParser.SpecContext ctx) { }
+	@Override public void enterItem(CPLayoutParser.ItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSpec(CPLayoutParser.SpecContext ctx) { }
+	@Override public void exitItem(CPLayoutParser.ItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPadSpec(CPLayoutParser.PadSpecContext ctx) { }
+	@Override public void enterPadItem(CPLayoutParser.PadItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPadSpec(CPLayoutParser.PadSpecContext ctx) { }
+	@Override public void exitPadItem(CPLayoutParser.PadItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPosSpec(CPLayoutParser.PosSpecContext ctx) { }
+	@Override public void enterPosItem(CPLayoutParser.PosItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPosSpec(CPLayoutParser.PosSpecContext ctx) { }
+	@Override public void exitPosItem(CPLayoutParser.PosItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFloatSpec(CPLayoutParser.FloatSpecContext ctx) { }
+	@Override public void enterFloatItem(CPLayoutParser.FloatItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFloatSpec(CPLayoutParser.FloatSpecContext ctx) { }
+	@Override public void exitFloatItem(CPLayoutParser.FloatItemContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

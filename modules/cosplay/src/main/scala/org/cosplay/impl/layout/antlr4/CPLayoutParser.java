@@ -21,11 +21,11 @@ public class CPLayoutParser extends Parser {
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, EQ=15, SCOLON=16, COLON=17, 
 		COMMA=18, LPAR=19, RPAR=20, NUM=21, ID=22, COMMENT=23, WS=24, ErrorChar=25;
 	public static final int
-		RULE_layout = 0, RULE_decls = 1, RULE_decl = 2, RULE_specs = 3, RULE_spec = 4, 
-		RULE_padSpec = 5, RULE_posSpec = 6, RULE_floatSpec = 7;
+		RULE_layout = 0, RULE_decls = 1, RULE_decl = 2, RULE_items = 3, RULE_item = 4, 
+		RULE_padItem = 5, RULE_posItem = 6, RULE_floatItem = 7;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"layout", "decls", "decl", "specs", "spec", "padSpec", "posSpec", "floatSpec"
+			"layout", "decls", "decl", "items", "item", "padItem", "posItem", "floatItem"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -236,8 +236,8 @@ public class CPLayoutParser extends Parser {
 	public static class DeclContext extends ParserRuleContext {
 		public TerminalNode ID() { return getToken(CPLayoutParser.ID, 0); }
 		public TerminalNode EQ() { return getToken(CPLayoutParser.EQ, 0); }
-		public SpecsContext specs() {
-			return getRuleContext(SpecsContext.class,0);
+		public ItemsContext items() {
+			return getRuleContext(ItemsContext.class,0);
 		}
 		public TerminalNode SCOLON() { return getToken(CPLayoutParser.SCOLON, 0); }
 		public DeclContext(ParserRuleContext parent, int invokingState) {
@@ -265,7 +265,7 @@ public class CPLayoutParser extends Parser {
 			setState(35);
 			match(EQ);
 			setState(36);
-			specs(0);
+			items(0);
 			setState(37);
 			match(SCOLON);
 			}
@@ -282,46 +282,46 @@ public class CPLayoutParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class SpecsContext extends ParserRuleContext {
-		public SpecContext spec() {
-			return getRuleContext(SpecContext.class,0);
+	public static class ItemsContext extends ParserRuleContext {
+		public ItemContext item() {
+			return getRuleContext(ItemContext.class,0);
 		}
-		public SpecsContext specs() {
-			return getRuleContext(SpecsContext.class,0);
+		public ItemsContext items() {
+			return getRuleContext(ItemsContext.class,0);
 		}
 		public TerminalNode COMMA() { return getToken(CPLayoutParser.COMMA, 0); }
-		public SpecsContext(ParserRuleContext parent, int invokingState) {
+		public ItemsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_specs; }
+		@Override public int getRuleIndex() { return RULE_items; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterSpecs(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterItems(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitSpecs(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitItems(this);
 		}
 	}
 
-	public final SpecsContext specs() throws RecognitionException {
-		return specs(0);
+	public final ItemsContext items() throws RecognitionException {
+		return items(0);
 	}
 
-	private SpecsContext specs(int _p) throws RecognitionException {
+	private ItemsContext items(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
-		SpecsContext _localctx = new SpecsContext(_ctx, _parentState);
-		SpecsContext _prevctx = _localctx;
+		ItemsContext _localctx = new ItemsContext(_ctx, _parentState);
+		ItemsContext _prevctx = _localctx;
 		int _startState = 6;
-		enterRecursionRule(_localctx, 6, RULE_specs, _p);
+		enterRecursionRule(_localctx, 6, RULE_items, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			{
 			setState(40);
-			spec();
+			item();
 			}
 			_ctx.stop = _input.LT(-1);
 			setState(47);
@@ -333,14 +333,14 @@ public class CPLayoutParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new SpecsContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_specs);
+					_localctx = new ItemsContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_items);
 					setState(42);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
 					setState(43);
 					match(COMMA);
 					setState(44);
-					spec();
+					item();
 					}
 					} 
 				}
@@ -362,33 +362,33 @@ public class CPLayoutParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class SpecContext extends ParserRuleContext {
-		public PadSpecContext padSpec() {
-			return getRuleContext(PadSpecContext.class,0);
+	public static class ItemContext extends ParserRuleContext {
+		public PadItemContext padItem() {
+			return getRuleContext(PadItemContext.class,0);
 		}
-		public PosSpecContext posSpec() {
-			return getRuleContext(PosSpecContext.class,0);
+		public PosItemContext posItem() {
+			return getRuleContext(PosItemContext.class,0);
 		}
-		public FloatSpecContext floatSpec() {
-			return getRuleContext(FloatSpecContext.class,0);
+		public FloatItemContext floatItem() {
+			return getRuleContext(FloatItemContext.class,0);
 		}
-		public SpecContext(ParserRuleContext parent, int invokingState) {
+		public ItemContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_spec; }
+		@Override public int getRuleIndex() { return RULE_item; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterSpec(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterItem(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitSpec(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitItem(this);
 		}
 	}
 
-	public final SpecContext spec() throws RecognitionException {
-		SpecContext _localctx = new SpecContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_spec);
+	public final ItemContext item() throws RecognitionException {
+		ItemContext _localctx = new ItemContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_item);
 		try {
 			setState(53);
 			_errHandler.sync(this);
@@ -402,14 +402,14 @@ public class CPLayoutParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(50);
-				padSpec();
+				padItem();
 				}
 				break;
 			case T__6:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(51);
-				posSpec();
+				posItem();
 				}
 				break;
 			case T__11:
@@ -417,7 +417,7 @@ public class CPLayoutParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(52);
-				floatSpec();
+				floatItem();
 				}
 				break;
 			default:
@@ -436,26 +436,26 @@ public class CPLayoutParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class PadSpecContext extends ParserRuleContext {
+	public static class PadItemContext extends ParserRuleContext {
 		public TerminalNode COLON() { return getToken(CPLayoutParser.COLON, 0); }
 		public TerminalNode NUM() { return getToken(CPLayoutParser.NUM, 0); }
-		public PadSpecContext(ParserRuleContext parent, int invokingState) {
+		public PadItemContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_padSpec; }
+		@Override public int getRuleIndex() { return RULE_padItem; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterPadSpec(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterPadItem(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitPadSpec(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitPadItem(this);
 		}
 	}
 
-	public final PadSpecContext padSpec() throws RecognitionException {
-		PadSpecContext _localctx = new PadSpecContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_padSpec);
+	public final PadItemContext padItem() throws RecognitionException {
+		PadItemContext _localctx = new PadItemContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_padItem);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -488,28 +488,28 @@ public class CPLayoutParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class PosSpecContext extends ParserRuleContext {
+	public static class PosItemContext extends ParserRuleContext {
 		public TerminalNode COLON() { return getToken(CPLayoutParser.COLON, 0); }
 		public TerminalNode LPAR() { return getToken(CPLayoutParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(CPLayoutParser.RPAR, 0); }
 		public TerminalNode ID() { return getToken(CPLayoutParser.ID, 0); }
-		public PosSpecContext(ParserRuleContext parent, int invokingState) {
+		public PosItemContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_posSpec; }
+		@Override public int getRuleIndex() { return RULE_posItem; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterPosSpec(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterPosItem(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitPosSpec(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitPosItem(this);
 		}
 	}
 
-	public final PosSpecContext posSpec() throws RecognitionException {
-		PosSpecContext _localctx = new PosSpecContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_posSpec);
+	public final PosItemContext posItem() throws RecognitionException {
+		PosItemContext _localctx = new PosItemContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_posItem);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -556,28 +556,28 @@ public class CPLayoutParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class FloatSpecContext extends ParserRuleContext {
+	public static class FloatItemContext extends ParserRuleContext {
 		public TerminalNode COLON() { return getToken(CPLayoutParser.COLON, 0); }
 		public TerminalNode LPAR() { return getToken(CPLayoutParser.LPAR, 0); }
 		public TerminalNode RPAR() { return getToken(CPLayoutParser.RPAR, 0); }
 		public TerminalNode ID() { return getToken(CPLayoutParser.ID, 0); }
-		public FloatSpecContext(ParserRuleContext parent, int invokingState) {
+		public FloatItemContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_floatSpec; }
+		@Override public int getRuleIndex() { return RULE_floatItem; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterFloatSpec(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterFloatItem(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitFloatSpec(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitFloatItem(this);
 		}
 	}
 
-	public final FloatSpecContext floatSpec() throws RecognitionException {
-		FloatSpecContext _localctx = new FloatSpecContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_floatSpec);
+	public final FloatItemContext floatItem() throws RecognitionException {
+		FloatItemContext _localctx = new FloatItemContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_floatItem);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -636,7 +636,7 @@ public class CPLayoutParser extends Parser {
 		case 1:
 			return decls_sempred((DeclsContext)_localctx, predIndex);
 		case 3:
-			return specs_sempred((SpecsContext)_localctx, predIndex);
+			return items_sempred((ItemsContext)_localctx, predIndex);
 		}
 		return true;
 	}
@@ -647,7 +647,7 @@ public class CPLayoutParser extends Parser {
 		}
 		return true;
 	}
-	private boolean specs_sempred(SpecsContext _localctx, int predIndex) {
+	private boolean items_sempred(ItemsContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 1:
 			return precpred(_ctx, 1);

@@ -58,11 +58,11 @@ rule names:
 layout
 decls
 decl
-specs
-spec
-padSpec
-posSpec
-floatSpec
+items
+item
+padItem
+posItem
+floatItem
 
 
 atn:

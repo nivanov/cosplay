@@ -37,19 +37,19 @@ decls
     : decl
     | decls decl
     ;
-decl: ID EQ specs SCOLON;
-specs
-    : spec
-    | specs COMMA spec
+decl: ID EQ items SCOLON;
+items
+    : item
+    | items COMMA item
     ;
-spec
-    : padSpec
-    | posSpec
-    | floatSpec
+item
+    : padItem
+    | posItem
+    | floatItem
     ;
-padSpec: ('top' | 'left' | 'bottom' | 'right' | 'vert' | 'hor') COLON NUM;
-posSpec: 'pos' COLON ('before' | 'after' | 'above' | 'below') LPAR ID? RPAR;
-floatSpec: ('xfloat' | 'yfloat') COLON ('top' | 'left' | 'bottom' | 'right' | 'center') LPAR ID? RPAR;
+padItem: ('top' | 'left' | 'bottom' | 'right' | 'vert' | 'hor') COLON NUM;
+posItem: 'pos' COLON ('before' | 'after' | 'above' | 'below') LPAR ID? RPAR;
+floatItem: ('xfloat' | 'yfloat') COLON ('top' | 'left' | 'bottom' | 'right' | 'center') LPAR ID? RPAR;
 
 // Lexer.
 // ======

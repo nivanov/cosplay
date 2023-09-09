@@ -35,30 +35,48 @@ import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
 import org.cosplay.impl.layout.antlr4.*
 import scala.util.*
+import scala.collection.*
 
 object CPLayoutCompiler:
     private class FiniteStateMachine extends CPLayoutBaseListener:
-        def getSpecs: Seq[CPLayoutSpec] = ???
+        private val specs = mutable.ArrayBuffer.empty[CPLayoutSpec]
+        private var spec = CPLayoutSpec(id = null)
 
-    /**
-      *
-      * @param pl
-      */
-    //noinspection DuplicatedCode
-    private def antlr4Setup(pl: String, origin: String): (FiniteStateMachine, CPLayoutParser) =
-        val lexer = new CPLayoutLexer(CharStreams.fromString(pl, origin))
+        override def enterDecl(ctx: CPLayoutParser.DeclContext): Unit = spec = CPLayoutSpec(id = ctx.ID().getText)
+        override def exitDecl(ctx: CPLayoutParser.DeclContext): Unit = specs += spec
+        override def exitFloatItem(ctx: CPLayoutParser.FloatItemContext): Unit = ???
+        override def exitPadItem(ctx: CPLayoutParser.PadItemContext): Unit =
+            val num = ctx.NUM().getText.toInt
+            ctx.getChild(0).getText match
+                case "top" => spec.padding.withTop(num)
+                case "left" => spec.padding.withLeft(num)
+                case "bottom" => spec.padding.withBottom(num)
+                case "right" => spec.padding.withRight(num)
+                case "vert" => spec.padding.withVert(num)
+                case "hor" => spec.padding.withHor(num)
+                case _ => assert(false)
+
+        override def exitPosItem(ctx: CPLayoutParser.PosItemContext): Unit =
+            val rel = if ctx.ID() == null then None else ctx.ID().getText.?
+            val dir = ctx.getChild(2).getText match
+                case "above" => CPLayoutDirection.TOP
+                case "left" => CPLayoutDirection.LEFT
+                case "below" => CPLayoutDirection.BOTTOM
+                case "right" => CPLayoutDirection.RIGHT
+                case _ => assert(false)
+            spec.pos = CPLayoutRelation(dir, rel)
+
+        def getSpecs: Seq[CPLayoutSpec] = specs
+
+    private def antlr4Setup(src: String, origin: String): (FiniteStateMachine, CPLayoutParser) =
+        val lexer = new CPLayoutLexer(CharStreams.fromString(src, origin))
         val parser = new CPLayoutParser(new CommonTokenStream(lexer))
 
         // State automata + it's parser.
         new FiniteStateMachine -> parser
 
-    /**
-      *
-      * @param pl
-      * @param origin
-      */
-    def compile(pl: String, origin: String): Try[Seq[CPLayoutSpec]] = Try:
-        val (fsm, parser) = antlr4Setup(pl, origin)
+    def compile(src: String, origin: String): Try[Seq[CPLayoutSpec]] = Try:
+        val (fsm, parser) = antlr4Setup(src, origin)
         ParseTreeWalker().walk(fsm, parser.layout())
         fsm.getSpecs
 
