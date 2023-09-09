@@ -44,7 +44,18 @@ object CPLayoutCompiler:
 
         override def enterDecl(ctx: CPLayoutParser.DeclContext): Unit = spec = CPLayoutSpec(id = ctx.ID().getText)
         override def exitDecl(ctx: CPLayoutParser.DeclContext): Unit = specs += spec
-        override def exitFloatItem(ctx: CPLayoutParser.FloatItemContext): Unit = ???
+        override def exitFloatItem(ctx: CPLayoutParser.FloatItemContext): Unit =
+            val rel = if ctx.ID() == null then None else ctx.ID().getText.?
+            val isX = ctx.getChild(0).getText == "xfloat"
+            val dir = ctx.getChild(2).getText match
+                case "top" => CPLayoutDirection.TOP
+                case "left" => CPLayoutDirection.LEFT
+                case "bottom" => CPLayoutDirection.BOTTOM
+                case "right" => CPLayoutDirection.RIGHT
+                case "center" => CPLayoutDirection.CENTER
+                case _ => assert(false)
+            if isX then spec.xFloat = CPLayoutRelation(dir, rel) else spec.yFloat = CPLayoutRelation(dir, rel)
+
         override def exitPadItem(ctx: CPLayoutParser.PadItemContext): Unit =
             val num = ctx.NUM().getText.toInt
             ctx.getChild(0).getText match
