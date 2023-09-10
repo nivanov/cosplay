@@ -37,14 +37,22 @@ import scala.util.*
 object CPLayoutTests:
     @Test
     def compilerTest(): Unit =
-        CPLayoutCompiler.compile(
+        def testOk(code: String): Unit =
+            CPLayoutCompiler.compile(code, "test") match
+                case Success(specs) => specs.foreach(println)
+                case Failure(e) => throw e
+        def testFail(code: String): Unit =
+            CPLayoutCompiler.compile(code, "test") match
+                case Success(specs) => fail(s"This should not succeed: $code")
+                case Failure(e) =>
+                    Console.err.println("Expected error:")
+                    e.printStackTrace()
+
+        testOk(
             """
               |spr1 = pos: top(), xfloat: left();
               |spr2 = pos: bottom(spr1), xfloat: center();
-              |""".stripMargin, "test") match
-            case Success(specs) => println(specs)
-            case Failure(e) =>
-                e.printStackTrace()
-                throw e
+              |""".stripMargin
+        )
 
 

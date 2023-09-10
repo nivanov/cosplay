@@ -30,12 +30,19 @@ package org.cosplay
                ALl rights reserved.
 */
 
-private[cosplay] enum CPLayoutDirection:
-    case LEFT, RIGHT, TOP, BOTTOM, CENTER
+private[cosplay] enum CPLayoutDirection(private val s: String):
+    case LEFT extends CPLayoutDirection("left")
+    case RIGHT extends CPLayoutDirection("right")
+    case TOP extends CPLayoutDirection("top")
+    case BOTTOM extends CPLayoutDirection("bottom")
+    case CENTER extends CPLayoutDirection("center")
+    override def toString: String = s
+
 private[cosplay] sealed class CPLayoutRelation(
     dir: CPLayoutDirection,
     rel: Option[String]
-)
+):
+    override def toString: String = s"$dir(${rel.getOrElse("")})"
 import CPLayoutDirection.*
 private[cosplay] sealed case class CPLayoutSpec(
     var id: String,
@@ -43,7 +50,17 @@ private[cosplay] sealed case class CPLayoutSpec(
     var xFloat: CPLayoutRelation = CPLayoutRelation(LEFT, None),
     var yFloat: CPLayoutRelation = CPLayoutRelation(TOP, None),
     var pos: CPLayoutRelation = CPLayoutRelation(BOTTOM, None)
-)
+):
+    override def toString: String =
+        s"$id = " +
+        s"top: ${padding.top}, " +
+        s"left: ${padding.left}, " +
+        s"bottom: ${padding.bottom}, " +
+        s"right: ${padding.right}, " +
+        s"xfloat: $xFloat, " +
+        s"yfloat: $yFloat, " +
+        s"pos: $pos" +
+        ";"
 
 /**
   *
