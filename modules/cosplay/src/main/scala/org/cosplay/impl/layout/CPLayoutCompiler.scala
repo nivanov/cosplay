@@ -35,7 +35,7 @@ import org.antlr.v4.runtime.tree.*
 import org.antlr.v4.runtime.*
 import org.cosplay.impl.layout.antlr4.*
 import scala.util.*
-import scala.collection.*
+import scala.collection.mutable
 
 object CPLayoutCompiler:
     private class FiniteStateMachine extends CPLayoutBaseListener:
@@ -77,10 +77,10 @@ object CPLayoutCompiler:
                 case _ => assert(false)
             spec.pos = CPLayoutRelation(dir, rel)
 
-        def getSpecs: Seq[CPLayoutSpec] = specs
+        def getSpecs: Seq[CPLayoutSpec] = specs.toSeq
 
-    private def antlr4Setup(src: String, origin: String): (FiniteStateMachine, CPLayoutParser) =
-        val lexer = new CPLayoutLexer(CharStreams.fromString(src, origin))
+    private def antlr4Setup(src: String): (FiniteStateMachine, CPLayoutParser) =
+        val lexer = new CPLayoutLexer(CharStreams.fromString(src, "code"))
         val parser = new CPLayoutParser(new CommonTokenStream(lexer))
 
         // Set custom error handlers.
@@ -96,13 +96,13 @@ object CPLayoutCompiler:
         override def syntaxError(
             recog: Recognizer[_, _],
             badSymbol: scala.Any,
-            line: Int, // 1, 2, ...
-            charPos: Int, // 1, 2, ...
+            line: Int,
+            charPos: Int,
             msg: String,
             e: RecognitionException): Unit = throw CPException(msg, e.?)
 
-    def compile(src: String, origin: String): Try[Seq[CPLayoutSpec]] = Try:
-        val (fsm, parser) = antlr4Setup(src, origin)
+    def compile(src: String): Try[Seq[CPLayoutSpec]] = Try:
+        val (fsm, parser) = antlr4Setup(src)
         ParseTreeWalker().walk(fsm, parser.layout())
         fsm.getSpecs
 

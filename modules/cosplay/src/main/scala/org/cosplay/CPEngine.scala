@@ -88,6 +88,12 @@ extension[T](ref: T)
     @targetName("asAnOption")
     def `?`: Option[T] = Option(ref)
 
+/** Sugar for `scala.util.Try`. */
+extension[T] (t: Try[T])
+    def getOr(pf: PartialFunction[Throwable, T]): T = t.recover(pf).get
+    def onFailure(pf: PartialFunction[Throwable, T]): Unit = t.recover(pf).get
+    def getOrRethrow(): T = t.recover(e => throw e).get
+
 /** Single element sequence sugar. */
 extension[T](t: T)
     /** Shortcut for `Seq(t)` as `t.seq` */
@@ -103,6 +109,12 @@ extension(s: String)
     inline def visOnly: String = s.filter(isVis)
 
 extension[R, T](opt: Option[T])
+    def onSome(f: T => R): Unit = opt match
+        case Some(s) => f(s)
+        case None => ()
+    def onNone(f: () => R): Unit = opt match
+        case Some(_) => ()
+        case None => f()
     @targetName("optEqual")
     def ===(t: T): Boolean = opt match
         case Some(a) => a == t
@@ -116,17 +128,17 @@ extension[R, T](opt: Option[T])
 
 extension(d: Int)
     // To bytes...
-    private[cosplay] def kb: Long = d * 1024
-    private[cosplay] def mb: Long = d * 1024 * 1024
-    private[cosplay] def gb: Long = d * 1024 * 1024 * 1024
+    def kb: Long = d * 1024
+    def mb: Long = d * 1024 * 1024
+    def gb: Long = d * 1024 * 1024 * 1024
 
     // To milliseconds...
-    private[cosplay] def ms: Long = d
-    private[cosplay] def secs: Long = d * 1000
-    private[cosplay] def mins: Long = d * 1000 * 60
-    private[cosplay] def hours: Long = d * 1000 * 60 * 60
-    private[cosplay] def days: Long = d * 1000 * 60 * 60 * 24
-    private[cosplay] def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
+    def ms: Long = d
+    def secs: Long = d * 1000
+    def mins: Long = d * 1000 * 60
+    def hours: Long = d * 1000 * 60 * 60
+    def days: Long = d * 1000 * 60 * 60 * 24
+    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
 
 /**
   * CosPlay game engine.

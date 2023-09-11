@@ -30,6 +30,10 @@ package org.cosplay
                ALl rights reserved.
 */
 
+import org.cosplay.*
+import org.cosplay.impl.layout.*
+import scala.collection.mutable
+
 private[cosplay] enum CPLayoutDirection(private val s: String):
     case LEFT extends CPLayoutDirection("left")
     case RIGHT extends CPLayoutDirection("right")
@@ -69,6 +73,7 @@ private[cosplay] sealed case class CPLayoutSpec(
   * @param spec
   * @param shaders Optional sequence of shaders for this sprite.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
+  * @see [[CPDynamicSprite]]
   */
 class CPLayoutSprite(
     id: String,
@@ -76,7 +81,26 @@ class CPLayoutSprite(
     shaders: Seq[CPShader] = Seq.empty,
     tags: Set[String] = Set.empty
 ) extends CPOffScreenSprite(id, shaders, tags):
-    override def monitor(ctx: CPSceneObjectContext): Unit = ()
+    private var specs = Seq.empty[CPLayoutSpec]
 
-    def updateSpec(spec: String): Unit = ???
+    private def warn(msg: String): Unit = ctx.getLog.warnx(CPEngine.fps * 60, msg) // Throttle for a minute.
+    override def monitor(ctx: CPSceneObjectContext): Unit =
+        val laidOut = mutable.ArrayBuffer.empty[String]
+        val seen = mutable.ArrayBuffer.empty[String]
+
+        def layout(spr: CPDynamicSprite): Unit = ???
+
+        for spec <- specs do
+            ctx.getObject(spec.id) match
+                case Some(o) =>
+                    if o.isVisible then // Ignore invisible scene objects.
+                        o match
+                            case spr: CPDynamicSprite => layout(spr)
+                            case _ => throw CPException(s"Only scene objects extending 'CPDynamicSprite' can be used in layout: ${spec.id}")
+                case None =>
+                    warn(s"Attempt to layout scene object with unknown ID (ignoring): ${spec.id}")
+                    () // Ignore unknown object.
+
+    def updateSpec(code: String): Unit = specs = CPLayoutCompiler.compile(code).getOrRethrow()
+
 

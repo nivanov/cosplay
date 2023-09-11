@@ -38,11 +38,11 @@ object CPLayoutTests:
     @Test
     def compilerTest(): Unit =
         def testOk(code: String): Unit =
-            CPLayoutCompiler.compile(code, "test") match
+            CPLayoutCompiler.compile(code) match
                 case Success(specs) => specs.foreach(println)
                 case Failure(e) => throw e
         def testFail(code: String): Unit =
-            CPLayoutCompiler.compile(code, "test") match
+            CPLayoutCompiler.compile(code) match
                 case Success(specs) => fail(s"This should not succeed: $code")
                 case Failure(e) =>
                     Console.err.println("Expected error:")
