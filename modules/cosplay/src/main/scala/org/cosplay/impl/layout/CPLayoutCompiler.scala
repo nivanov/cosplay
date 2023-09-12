@@ -42,7 +42,10 @@ object CPLayoutCompiler:
         private val specs = mutable.ArrayBuffer.empty[CPLayoutSpec]
         private var spec = CPLayoutSpec(id = null)
 
-        override def enterDecl(ctx: CPLayoutParser.DeclContext): Unit = spec = CPLayoutSpec(id = ctx.ID().getText)
+        override def enterDecl(ctx: CPLayoutParser.DeclContext): Unit =
+            val id = ctx.ID().getText
+            if specs.exists(_.id == id) then throw CPException(s"Duplicate layout sprite ID: $id")
+            spec = CPLayoutSpec(id)
         override def exitDecl(ctx: CPLayoutParser.DeclContext): Unit = specs += spec
         override def exitFloatItem(ctx: CPLayoutParser.FloatItemContext): Unit =
             val rel = if ctx.ID() == null then None else ctx.ID().getText.?

@@ -83,23 +83,30 @@ class CPLayoutSprite(
 ) extends CPOffScreenSprite(id, shaders, tags):
     private var specs = Seq.empty[CPLayoutSpec]
 
-    private def warn(msg: String): Unit = ctx.getLog.warnx(CPEngine.fps * 60, msg) // Throttle for a minute.
-    override def monitor(ctx: CPSceneObjectContext): Unit =
+    private def warn(msg: String)(using ctx: CPSceneObjectContext): Unit = ctx.getLog.warnx(CPEngine.fps * 60, msg) // Throttle for a minute.
+    override def monitor(using ctx: CPSceneObjectContext): Unit =
         val laidOut = mutable.ArrayBuffer.empty[String]
         val seen = mutable.ArrayBuffer.empty[String]
 
-        def layout(spr: CPDynamicSprite): Unit = ???
+        def layout(id: String): Unit =
+            if !laidOut.contains(id) then
+                if seen.contains(id) then throw CPException(s"Cyclical layout dependency on ID: $id")
+                seen += id
+                ctx.getObject(id) match
+                    case Some(o) =>
+                        if o.isVisible then // Ignore invisible scene objects.
+                            o match
+                                case spr: CPDynamicSprite => specs.find(_.id == id) match
+                                    case Some(spec) =>
+                                        ()
+                                    case None => ()
+                                case _ => throw CPException(s"Only scene objects extending 'CPDynamicSprite' can be used in layout: $id")
+                    case None =>
+                        // Ignore unknown object.
+                        warn(s"Attempt to layout scene object with unknown ID (ignoring): $id")
+                laidOut += id
 
-        for spec <- specs do
-            ctx.getObject(spec.id) match
-                case Some(o) =>
-                    if o.isVisible then // Ignore invisible scene objects.
-                        o match
-                            case spr: CPDynamicSprite => layout(spr)
-                            case _ => throw CPException(s"Only scene objects extending 'CPDynamicSprite' can be used in layout: ${spec.id}")
-                case None =>
-                    warn(s"Attempt to layout scene object with unknown ID (ignoring): ${spec.id}")
-                    () // Ignore unknown object.
+        for spec <- specs do layout(spec.id)
 
     def updateSpec(code: String): Unit = specs = CPLayoutCompiler.compile(code).getOrRethrow()
 
