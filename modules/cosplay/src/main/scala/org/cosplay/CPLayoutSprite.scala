@@ -39,6 +39,10 @@ private[cosplay] enum CPLayoutDirection(private val s: String):
     case RIGHT extends CPLayoutDirection("right")
     case TOP extends CPLayoutDirection("top")
     case BOTTOM extends CPLayoutDirection("bottom")
+    case BEFORE extends CPLayoutDirection("before")
+    case AFTER extends CPLayoutDirection("after")
+    case BELOW extends CPLayoutDirection("below")
+    case ABOVE extends CPLayoutDirection("above")
     case CENTER extends CPLayoutDirection("center")
     override def toString: String = s
 
@@ -50,20 +54,15 @@ private[cosplay] sealed class CPLayoutRelation(
 import CPLayoutDirection.*
 private[cosplay] sealed case class CPLayoutSpec(
     var id: String,
-    var padding: CPInsets = CPInsets.ZERO,
-    var xFloat: CPLayoutRelation = CPLayoutRelation(LEFT, None),
-    var yFloat: CPLayoutRelation = CPLayoutRelation(TOP, None),
-    var pos: CPLayoutRelation = CPLayoutRelation(BOTTOM, None)
+    var margin: CPInsets = CPInsets.ZERO,
+    var x: CPLayoutRelation = CPLayoutRelation(LEFT, None),
+    var y: CPLayoutRelation = CPLayoutRelation(TOP, None)
 ):
     override def toString: String =
         s"$id = " +
-        s"top: ${padding.top}, " +
-        s"left: ${padding.left}, " +
-        s"bottom: ${padding.bottom}, " +
-        s"right: ${padding.right}, " +
-        s"xfloat: $xFloat, " +
-        s"yfloat: $yFloat, " +
-        s"pos: $pos" +
+        s"margin: $margin, " +
+        s"x: $x, " +
+        s"y: $y" +
         ";"
 
 /**

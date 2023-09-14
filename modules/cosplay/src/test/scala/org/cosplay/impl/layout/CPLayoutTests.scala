@@ -50,8 +50,8 @@ object CPLayoutTests:
 
         testOk(
             """
-              |spr1 = pos: top(), xfloat: left();
-              |spr2 = pos: bottom(spr1), xfloat: center();
+              |spr1 = margin: [1, 1, 1, 1], x: center(), y: top(spr2);
+              |spr2 = y: center();
               |""".stripMargin
         )
 

@@ -52,7 +52,7 @@ val jnaVer = "5.13.0"
 val mixPanelVer = "1.5.2"
 val audioFileVer = "2.4.2"
 val jansiVer = "2.4.0"
-val antlrVer = "4.12.0"
+val antlrVer = "4.13.1"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
 ThisBuild / version := cosPlayVer

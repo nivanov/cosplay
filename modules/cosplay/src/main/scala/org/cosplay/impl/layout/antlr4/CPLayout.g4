@@ -43,13 +43,13 @@ items
     | items COMMA item
     ;
 item
-    : padItem
-    | posItem
-    | floatItem
+    : marginItem
+    | xItem
+    | yItem
     ;
-padItem: ('top' | 'left' | 'bottom' | 'right' | 'vert' | 'hor') COLON NUM;
-posItem: 'pos' COLON ('left' | 'right' | 'top' | 'bottom') LPAR ID? RPAR;
-floatItem: ('xfloat' | 'yfloat') COLON ('top' | 'left' | 'bottom' | 'right' | 'center') LPAR ID? RPAR;
+marginItem: 'margin' COLON LBRK NUM COMMA NUM COMMA NUM COMMA NUM RBRK;
+xItem: 'x' COLON ('before' | 'left' | 'center' | 'right' | 'after') LPAR ID? RPAR;
+yItem: 'y' COLON ('above' | 'top' | 'center' | 'bottom' | 'below') LPAR ID? RPAR;
 
 // Lexer.
 // ======
@@ -59,6 +59,8 @@ COLON: ':';
 COMMA: ',';
 LPAR: '(';
 RPAR: ')';
+LBRK: '[';
+RBRK: ']';
 NUM: '-'? [0-9] [0-9]*;
 ID: [a-zA-Z0-9-_$]+;
 COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;

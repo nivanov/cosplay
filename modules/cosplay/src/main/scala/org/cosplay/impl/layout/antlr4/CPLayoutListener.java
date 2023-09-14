@@ -1,4 +1,4 @@
-// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/impl/layout/antlr4/CPLayout.g4 by ANTLR 4.12.0
+// Generated from /Users/nivanov/cosplay/modules/cosplay/src/main/scala/org/cosplay/impl/layout/antlr4/CPLayout.g4 by ANTLR 4.13.1
 package org.cosplay.impl.layout.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -58,33 +58,33 @@ public interface CPLayoutListener extends ParseTreeListener {
 	 */
 	void exitItem(CPLayoutParser.ItemContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#padItem}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#marginItem}.
 	 * @param ctx the parse tree
 	 */
-	void enterPadItem(CPLayoutParser.PadItemContext ctx);
+	void enterMarginItem(CPLayoutParser.MarginItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#padItem}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#marginItem}.
 	 * @param ctx the parse tree
 	 */
-	void exitPadItem(CPLayoutParser.PadItemContext ctx);
+	void exitMarginItem(CPLayoutParser.MarginItemContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#posItem}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#xItem}.
 	 * @param ctx the parse tree
 	 */
-	void enterPosItem(CPLayoutParser.PosItemContext ctx);
+	void enterXItem(CPLayoutParser.XItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#posItem}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#xItem}.
 	 * @param ctx the parse tree
 	 */
-	void exitPosItem(CPLayoutParser.PosItemContext ctx);
+	void exitXItem(CPLayoutParser.XItemContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#floatItem}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#yItem}.
 	 * @param ctx the parse tree
 	 */
-	void enterFloatItem(CPLayoutParser.FloatItemContext ctx);
+	void enterYItem(CPLayoutParser.YItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#floatItem}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#yItem}.
 	 * @param ctx the parse tree
 	 */
-	void exitFloatItem(CPLayoutParser.FloatItemContext ctx);
+	void exitYItem(CPLayoutParser.YItemContext ctx);
 }

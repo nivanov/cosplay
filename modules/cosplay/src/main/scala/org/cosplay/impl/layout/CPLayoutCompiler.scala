@@ -47,39 +47,33 @@ object CPLayoutCompiler:
             if specs.exists(_.id == id) then throw CPException(s"Duplicate layout sprite ID: $id")
             spec = CPLayoutSpec(id)
         override def exitDecl(ctx: CPLayoutParser.DeclContext): Unit = specs += spec
-        override def exitFloatItem(ctx: CPLayoutParser.FloatItemContext): Unit =
+        override def exitMarginItem(ctx: CPLayoutParser.MarginItemContext): Unit =
+            spec.margin = CPInsets(
+                ctx.getChild(3).getText.toInt,
+                ctx.getChild(5).getText.toInt,
+                ctx.getChild(7).getText.toInt,
+                ctx.getChild(9).getText.toInt
+            )
+        override def exitYItem(ctx: CPLayoutParser.YItemContext): Unit =
             val rel = if ctx.ID() == null then None else ctx.ID().getText.?
-            val isX = ctx.getChild(0).getText == "xfloat"
             val dir = ctx.getChild(2).getText match
+                case "above" => CPLayoutDirection.ABOVE
                 case "top" => CPLayoutDirection.TOP
-                case "left" => CPLayoutDirection.LEFT
                 case "bottom" => CPLayoutDirection.BOTTOM
-                case "right" => CPLayoutDirection.RIGHT
+                case "below" => CPLayoutDirection.BELOW
                 case "center" => CPLayoutDirection.CENTER
                 case _ => assert(false)
-            if isX then spec.xFloat = CPLayoutRelation(dir, rel) else spec.yFloat = CPLayoutRelation(dir, rel)
-
-        override def exitPadItem(ctx: CPLayoutParser.PadItemContext): Unit =
-            val num = ctx.NUM().getText.toInt
-            ctx.getChild(0).getText match
-                case "top" => spec.padding.withTop(num)
-                case "left" => spec.padding.withLeft(num)
-                case "bottom" => spec.padding.withBottom(num)
-                case "right" => spec.padding.withRight(num)
-                case "vert" => spec.padding.withVert(num)
-                case "hor" => spec.padding.withHor(num)
-                case _ => assert(false)
-
-        override def exitPosItem(ctx: CPLayoutParser.PosItemContext): Unit =
+            spec.y = CPLayoutRelation(dir, rel)
+        override def exitXItem(ctx: CPLayoutParser.XItemContext): Unit =
             val rel = if ctx.ID() == null then None else ctx.ID().getText.?
             val dir = ctx.getChild(2).getText match
-                case "top" => CPLayoutDirection.TOP
+                case "before" => CPLayoutDirection.BEFORE
                 case "left" => CPLayoutDirection.LEFT
-                case "bottom" => CPLayoutDirection.BOTTOM
                 case "right" => CPLayoutDirection.RIGHT
+                case "after" => CPLayoutDirection.AFTER
+                case "center" => CPLayoutDirection.CENTER
                 case _ => assert(false)
-            spec.pos = CPLayoutRelation(dir, rel)
-
+            spec.x = CPLayoutRelation(dir, rel)
         def getSpecs: Seq[CPLayoutSpec] = specs.toSeq
 
     private def antlr4Setup(src: String): (FiniteStateMachine, CPLayoutParser) =
