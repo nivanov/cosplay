@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package org.cosplay.examples.textinput
+package org.cosplay.examples.layout
 
 import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
+import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPStyledString.styleStr
 import org.cosplay.examples.utils.*
 import org.cosplay.prefabs.shaders.*
 
@@ -49,17 +51,14 @@ import org.cosplay.prefabs.shaders.*
   * }}}
   * to run example:
   * {{{
-  *     $ mvn -f modules/cosplay -P ex:textinput exec:java
+  *     $ mvn -f modules/cosplay -P ex:layout exec:java
   * }}}
   *
-  * @see [[CPLabelSprite]]
-  * @see [[CPTextInputSprite]]
-  * @see [[CPKeyboardKey]]
-  * @see [[CPKeyboardEvent]]
-  * @see [[CPKeyboardSprite]]
+  * @see [[CPLayoutSprite]]
+  * @see [[CPDynamicSprite]]
   * @note See developer guide at [[https://cosplayengine.com]]
   */
-object CPTextInputExample:
+object CPLayoutExample:
     /**
       * Entry point for JVM runtime.
       *
@@ -112,7 +111,7 @@ object CPTextInputExample:
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Text Input Example", initDim = termDim.?),
+            CPGameInfo(name = "Layout Example", initDim = termDim.?),
             System.console() == null || args.contains("emuterm")
         )
 

@@ -66,7 +66,7 @@ private[cosplay] sealed case class CPLayoutSpec(
         ";"
 
 /**
-  *
+  * TODO
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   * @param spec
