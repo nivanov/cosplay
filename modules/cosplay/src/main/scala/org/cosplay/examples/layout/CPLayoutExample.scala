@@ -24,6 +24,7 @@ import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
 
 /*
    _________            ______________
@@ -66,6 +67,54 @@ object CPLayoutExample:
     def main(args: Array[String]): Unit =
         val termDim = CPDim(100, 40)
 
-        // TODO
+        def mkPanel(name: String, w: Int, h: Int, z: Int): CPDynamicSprite =
+            CPTitlePanelSprite(
+                name,
+                0, 0, w, h, z,
+                C_BLACK,
+                "-.|'-'|.",
+                C_GREEN_YELLOW,
+                styleStr(name, C_DARK_ORANGE3)
+            )
+
+        val bgPx = ' '&&(C_GRAY2, C_BLACK)
+        val sc = new CPScene("scene", termDim.?, bgPx,
+            // Just for the initial scene fade-in effect.
+            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+            mkPanel("Panel-1", 60, 30, 0),
+            mkPanel("Panel-2", 15, 5, 1),
+            mkPanel("Panel-3", 15, 5, 1),
+            mkPanel("Panel-4", 15, 5, 1),
+            mkPanel("Panel-5", 15, 5, 1),
+            mkPanel("Panel-6", 15, 5, 1),
+            mkPanel("Panel-7", 10, 5, 1),
+            new CPImageSprite("img", 0, 0, 1, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
+            CPLayoutSprite("layout",
+                """
+                  | Panel-1 = x: center(), y: center();
+                  | Panel-2 = offset: [1, 0], x: left(Panel-1), y: top(Panel-1);
+                  | Panel-3 = offset: [-1, 0], x: right(Panel-1), y: top(Panel-1);
+                  | Panel-4 = offset: [1, 0], x: left(Panel-1), y: bottom(Panel-1);
+                  | Panel-5 = offset: [-1, 0], x: right(Panel-1), y: bottom(Panel-1);
+                  | Panel-6 = x: after(Panel-2), y: below(Panel-2);
+                  | Panel-7 = x: after(Panel-6), y: below(Panel-2);
+                  | img = offset: [0, 2], x: center(Panel-1), y: center(Panel-1);
+                  |""".stripMargin
+            )
+        )
+
+        // Initialize the engine.
+        CPEngine.init(
+            CPGameInfo(name = "Layout Example", initDim = termDim.?),
+            System.console() == null || args.contains("emuterm")
+        )
+
+        // Start the game & wait for exit.
+        try CPEngine.startGame(sc)
+        finally CPEngine.dispose()
+
+        sys.exit(0)
+
 
 

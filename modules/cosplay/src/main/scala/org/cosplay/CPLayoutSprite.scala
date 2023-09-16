@@ -80,7 +80,7 @@ class CPLayoutSprite(
     shaders: Seq[CPShader] = Seq.empty,
     tags: Set[String] = Set.empty
 ) extends CPOffScreenSprite(id, shaders, tags):
-    private var specs = Seq.empty[CPLayoutSpec]
+    private var specs = CPLayoutCompiler.compile(spec).getOrRethrow()
 
     override def monitor(using ctx: CPSceneObjectContext): Unit =
         val laidOut = mutable.ArrayBuffer.empty[String]
@@ -106,14 +106,14 @@ class CPLayoutSprite(
                                     val yRelRect = getRect(spec.y.rel)
                                     val dim = spr.getDim
                                     spec.x.dir match
-                                        case LEFT => spr.setX(xRelRect.x)
+                                        case LEFT => spr.setX(xRelRect.x + 1)
                                         case BEFORE => spr.setX(xRelRect.x - dim.w)
                                         case CENTER => spr.setX(xRelRect.x + (xRelRect.w - dim.w) / 2)
                                         case RIGHT => spr.setX(xRelRect.xMax - dim.w)
                                         case AFTER => spr.setX(xRelRect.xMax + 1)
                                         case _ => throw CPException(s"Invalid X-coordinate direction: ${spec.x.dir}")
                                     spec.y.dir match
-                                        case TOP => spr.setY(yRelRect.y)
+                                        case TOP => spr.setY(yRelRect.y + 1)
                                         case ABOVE => spr.setY(yRelRect.y - dim.h)
                                         case CENTER => spr.setY(yRelRect.y + (yRelRect.h - dim.h) / 2)
                                         case BOTTOM => spr.setY(yRelRect.yMax - dim.h)
@@ -128,6 +128,6 @@ class CPLayoutSprite(
 
         for spec <- specs do layout(spec.id)
 
-    def updateSpec(code: String): Unit = specs = CPLayoutCompiler.compile(code).getOrRethrow()
+    def updateSpec(spec: String): Unit = specs = CPLayoutCompiler.compile(spec).getOrRethrow()
 
 

@@ -46,8 +46,8 @@ import org.cosplay.CPPixel.*
   * @param id Optional ID of this scene object.
   * @param x Initial X-coordinate of the top-left corner of the sprite.
   * @param y Initial Y-coordinate of the top-left corner of the sprite.
-  * @param width Panel width.
-  * @param height Panel height.
+  * @param width Immutable panel width.
+  * @param height Immutable panel height.
   * @param z Initial Z-index at which to render the sprite.
   * @param bg Panel background color.
   * @param borderChars Border chars. See [[CPCanvas.drawRectBorder()]] method for details.
@@ -89,17 +89,20 @@ class CPTitlePanelSprite(
     /** @inheritdoc */
     override def render(ctx: CPSceneObjectContext): Unit =
         val canv = ctx.getCanvas
-        val x2 = x + width - 1
-        val y2 = y + height - 1
-        canv.fillRect(x, y, x2, y2, z, ' '&bg)
+        val x1 = getX
+        val y1 = getY
+        val x2 = x1 + width - 1
+        val y2 = y1 + height - 1
+        val z1 = getZ
+        canv.fillRect(x1, y1, x2, y2, z1, ' '&bg)
         canv.drawRectBorder(
             getRect,
-            z,
+            z1,
             borderChars,
             borderFg,
             title,
-            x + (width - title.length) / 2,
-            y,
+            x1 + (width - title.length) / 2,
+            y1,
             borderSkin
         )
 
