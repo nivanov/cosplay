@@ -85,6 +85,20 @@ abstract class CPDynamicSprite(
     def setX(d: Int): Unit = myX = d
 
     /**
+      * Increments current X-coordinate by given value.
+      *
+      * @param d A value (negative, zero or positive) to increment X-coordinate by.
+      */
+    def incrX(d: Int): Unit = myX += d
+
+    /**
+      * Increments current Y-coordinate by given value.
+      *
+      * @param d A value (negative, zero or positive) to increment Y-coordinate by.
+      */
+    def incrY(d: Int): Unit = myY += d
+
+    /**
       * Sets current Y-coordinate. This coordinate will be returned from [[getY]] method.
       *
       * @param d Y-coordinate to set.

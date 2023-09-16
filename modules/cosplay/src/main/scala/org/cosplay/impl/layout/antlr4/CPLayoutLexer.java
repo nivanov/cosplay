@@ -39,7 +39,7 @@ public class CPLayoutLexer extends Lexer {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'margin'", "'x'", "'before'", "'left'", "'center'", "'right'", 
+			null, "'offset'", "'x'", "'before'", "'left'", "'center'", "'right'", 
 			"'after'", "'y'", "'above'", "'top'", "'bottom'", "'below'", "'='", "';'", 
 			"':'", "','", "'('", "')'", "'['", "']'"
 		};
@@ -168,8 +168,8 @@ public class CPLayoutLexer extends Lexer {
 		"\u0000\u0000\u0000%\u0080\u0001\u0000\u0000\u0000\'\u0082\u0001\u0000"+
 		"\u0000\u0000)\u0085\u0001\u0000\u0000\u0000+\u008f\u0001\u0000\u0000\u0000"+
 		"-\u00ad\u0001\u0000\u0000\u0000/\u00b2\u0001\u0000\u0000\u00001\u00b8"+
-		"\u0001\u0000\u0000\u000034\u0005m\u0000\u000045\u0005a\u0000\u000056\u0005"+
-		"r\u0000\u000067\u0005g\u0000\u000078\u0005i\u0000\u000089\u0005n\u0000"+
+		"\u0001\u0000\u0000\u000034\u0005o\u0000\u000045\u0005f\u0000\u000056\u0005"+
+		"f\u0000\u000067\u0005s\u0000\u000078\u0005e\u0000\u000089\u0005t\u0000"+
 		"\u00009\u0002\u0001\u0000\u0000\u0000:;\u0005x\u0000\u0000;\u0004\u0001"+
 		"\u0000\u0000\u0000<=\u0005b\u0000\u0000=>\u0005e\u0000\u0000>?\u0005f"+
 		"\u0000\u0000?@\u0005o\u0000\u0000@A\u0005r\u0000\u0000AB\u0005e\u0000"+

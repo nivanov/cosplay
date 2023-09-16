@@ -48,11 +48,9 @@ object CPLayoutCompiler:
             spec = CPLayoutSpec(id)
         override def exitDecl(ctx: CPLayoutParser.DeclContext): Unit = specs += spec
         override def exitMarginItem(ctx: CPLayoutParser.MarginItemContext): Unit =
-            spec.margin = CPInsets(
+            spec.offset = CPInt2(
                 ctx.getChild(3).getText.toInt,
-                ctx.getChild(5).getText.toInt,
-                ctx.getChild(7).getText.toInt,
-                ctx.getChild(9).getText.toInt
+                ctx.getChild(5).getText.toInt
             )
         override def exitYItem(ctx: CPLayoutParser.YItemContext): Unit =
             val rel = if ctx.ID() == null then None else ctx.ID().getText.?

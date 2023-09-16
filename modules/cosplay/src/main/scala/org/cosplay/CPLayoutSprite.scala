@@ -46,7 +46,7 @@ private[cosplay] enum CPLayoutDirection(private val s: String):
     case CENTER extends CPLayoutDirection("center")
     override def toString: String = s
 
-private[cosplay] sealed class CPLayoutRelation(
+private[cosplay] sealed case class CPLayoutRelation(
     dir: CPLayoutDirection,
     rel: Option[String]
 ):
@@ -54,13 +54,13 @@ private[cosplay] sealed class CPLayoutRelation(
 import CPLayoutDirection.*
 private[cosplay] sealed case class CPLayoutSpec(
     var id: String,
-    var margin: CPInsets = CPInsets.ZERO,
+    var offset: CPInt2 = CPInt2.ZERO,
     var x: CPLayoutRelation = CPLayoutRelation(LEFT, None),
     var y: CPLayoutRelation = CPLayoutRelation(TOP, None)
 ):
     override def toString: String =
         s"$id = " +
-        s"margin: $margin, " +
+        s"margin: $offset, " +
         s"x: $x, " +
         s"y: $y" +
         ";"
@@ -82,28 +82,49 @@ class CPLayoutSprite(
 ) extends CPOffScreenSprite(id, shaders, tags):
     private var specs = Seq.empty[CPLayoutSpec]
 
-    private def warn(msg: String)(using ctx: CPSceneObjectContext): Unit = ctx.getLog.warnx(CPEngine.fps * 60, msg) // Throttle for a minute.
     override def monitor(using ctx: CPSceneObjectContext): Unit =
         val laidOut = mutable.ArrayBuffer.empty[String]
         val seen = mutable.ArrayBuffer.empty[String]
 
-        def layout(id: String): Unit =
-            if !laidOut.contains(id) then
-                if seen.contains(id) then throw CPException(s"Cyclical layout dependency on ID: $id")
-                seen += id
-                ctx.getObject(id) match
-                    case Some(o) =>
-                        if o.isVisible then // Ignore invisible scene objects.
-                            o match
-                                case spr: CPDynamicSprite => specs.find(_.id == id) match
-                                    case Some(spec) =>
-                                        ()
-                                    case None => ()
-                                case _ => throw CPException(s"Only scene objects extending 'CPDynamicSprite' can be used in layout: $id")
-                    case None =>
-                        // Ignore unknown object.
-                        warn(s"Attempt to layout scene object with unknown ID (ignoring): $id")
-                laidOut += id
+        def layout(id: String): CPSceneObject =
+            val obj = ctx.getObject(id) match
+                case Some(o) => o
+                case None => throw CPException(s"Attempt to layout scene object with unknown ID: $id")
+            if specs.exists(_.id == id) then // Skip the layout for IDs not in the spec list.
+                if !laidOut.contains(id) then
+                    if seen.contains(id) then throw CPException(s"Cyclical layout dependency on ID: $id")
+                    seen += id
+                    obj match
+                        case spr: CPDynamicSprite =>
+                            specs.find(_.id == id) match
+                                case Some(spec) =>
+                                    def getRect(idOpt: Option[String]): CPRect =
+                                        idOpt match
+                                            case Some(id) => layout(id).getRect
+                                            case None => ctx.getCanvas.rect
+                                    val xRelRect = getRect(spec.x.rel)
+                                    val yRelRect = getRect(spec.y.rel)
+                                    val dim = spr.getDim
+                                    spec.x.dir match
+                                        case LEFT => spr.setX(xRelRect.x)
+                                        case BEFORE => spr.setX(xRelRect.x - dim.w)
+                                        case CENTER => spr.setX(xRelRect.x + (xRelRect.w - dim.w) / 2)
+                                        case RIGHT => spr.setX(xRelRect.xMax - dim.w)
+                                        case AFTER => spr.setX(xRelRect.xMax + 1)
+                                        case _ => throw CPException(s"Invalid X-coordinate direction: ${spec.x.dir}")
+                                    spec.y.dir match
+                                        case TOP => spr.setY(yRelRect.y)
+                                        case ABOVE => spr.setY(yRelRect.y - dim.h)
+                                        case CENTER => spr.setY(yRelRect.y + (yRelRect.h - dim.h) / 2)
+                                        case BOTTOM => spr.setY(yRelRect.yMax - dim.h)
+                                        case BELOW => spr.setY(yRelRect.yMax + 1)
+                                        case _ => throw CPException(s"Invalid Y-coordinate direction: ${spec.x.dir}")
+                                    spr.incrX(spec.offset.x)
+                                    spr.incrY(spec.offset.y)
+                                case None => ()
+                        case _ => throw CPException(s"Only scene objects extending 'CPDynamicSprite' can be used in layout: $id")
+                    laidOut += id
+            obj
 
         for spec <- specs do layout(spec.id)
 

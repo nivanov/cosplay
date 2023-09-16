@@ -47,7 +47,7 @@ item
     | xItem
     | yItem
     ;
-marginItem: 'margin' COLON LBRK NUM COMMA NUM COMMA NUM COMMA NUM RBRK;
+marginItem: 'offset' COLON LBRK NUM COMMA NUM RBRK;
 xItem: 'x' COLON ('before' | 'left' | 'center' | 'right' | 'after') LPAR ID? RPAR;
 yItem: 'y' COLON ('above' | 'top' | 'center' | 'bottom' | 'below') LPAR ID? RPAR;
 
