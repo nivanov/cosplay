@@ -21,8 +21,9 @@ import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
 import org.cosplay.CPKeyboardKey.*
-import org.cosplay.examples.utils.*
+import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.shaders.*
+import org.cosplay.prefabs.sprites.*
 
 /*
    _________            ______________
@@ -95,7 +96,14 @@ object CPTextInputExample:
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
             next = "user".?
         )
-        val panel = CPPanelSprite(2, 2, 24, 11, 0, "Login")
+        val panel = CPTitlePanelSprite(
+            "panel",
+            2, 2, 23, 9, 0,
+            C_BLACK,
+            "-.|'-'|.",
+            C_GREEN_YELLOW,
+            styleStr("< ", C_GREEN_YELLOW) ++ styleStr("Login", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW)
+        )
         val focusAcq = CPOffScreenSprite(ctx => if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user"))
 
         val bgPx = '.'&&(C_GRAY2, C_GRAY1)
