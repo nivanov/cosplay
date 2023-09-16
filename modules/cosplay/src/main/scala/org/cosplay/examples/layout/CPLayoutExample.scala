@@ -90,23 +90,31 @@ object CPLayoutExample:
             mkPanel("Panel-6", 15, 5, 1),
             mkPanel("Panel-7", 10, 5, 1),
             new CPImageSprite("img", 0, 0, 1, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
+            // Dynamic layout specification.
             CPLayoutSprite("layout",
                 """
+                  | // This is the main panel centered on the screen.
                   | Panel-1 = x: center(), y: center();
-                  | Panel-2 = offset: [1, 0], x: left(Panel-1), y: top(Panel-1);
-                  | Panel-3 = offset: [-1, 0], x: right(Panel-1), y: top(Panel-1);
-                  | Panel-4 = offset: [1, 0], x: left(Panel-1), y: bottom(Panel-1);
-                  | Panel-5 = offset: [-1, 0], x: right(Panel-1), y: bottom(Panel-1);
+                  |
+                  | // These panels are placed in the 4 corners of the panel 1.
+                  | Panel-2 = off: [1, 0], x: left(Panel-1), y: top(Panel-1);
+                  | Panel-3 = off: [-1, 0], x: right(Panel-1), y: top(Panel-1);
+                  | Panel-4 = off: [1, 0], x: left(Panel-1), y: bottom(Panel-1);
+                  | Panel-5 = off: [-1, 0], x: right(Panel-1), y: bottom(Panel-1);
+                  |
+                  | // Panels 6 and 7 go after each other.
                   | Panel-6 = x: after(Panel-2), y: below(Panel-2);
-                  | Panel-7 = x: after(Panel-6), y: below(Panel-2);
-                  | img = offset: [0, 2], x: center(Panel-1), y: center(Panel-1);
+                  | Panel-7 = x: after(Panel-6), y: same(Panel-6);
+                  |
+                  | // Centered image with 2-row offset.
+                  | img = off: [0, 2], x: center(Panel-1), y: center(Panel-1);
                   |""".stripMargin
             )
         )
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Layout Example", initDim = termDim.?),
+            CPGameInfo(name = "Layout Example - [Q] to Exit", initDim = termDim.?),
             System.console() == null || args.contains("emuterm")
         )
 

@@ -43,13 +43,13 @@ items
     | items COMMA item
     ;
 item
-    : marginItem
+    : offItem
     | xItem
     | yItem
     ;
-marginItem: 'offset' COLON LBRK NUM COMMA NUM RBRK;
-xItem: 'x' COLON ('before' | 'left' | 'center' | 'right' | 'after') LPAR ID? RPAR;
-yItem: 'y' COLON ('above' | 'top' | 'center' | 'bottom' | 'below') LPAR ID? RPAR;
+offItem: 'off' COLON LBRK NUM COMMA NUM RBRK;
+xItem: 'x' COLON ('same' | 'before' | 'left' | 'center' | 'right' | 'after') LPAR ID? RPAR;
+yItem: 'y' COLON ('same' | 'above' | 'top' | 'center' | 'bottom' | 'below') LPAR ID? RPAR;
 
 // Lexer.
 // ======

@@ -58,15 +58,15 @@ public interface CPLayoutListener extends ParseTreeListener {
 	 */
 	void exitItem(CPLayoutParser.ItemContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CPLayoutParser#marginItem}.
+	 * Enter a parse tree produced by {@link CPLayoutParser#offItem}.
 	 * @param ctx the parse tree
 	 */
-	void enterMarginItem(CPLayoutParser.MarginItemContext ctx);
+	void enterOffItem(CPLayoutParser.OffItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CPLayoutParser#marginItem}.
+	 * Exit a parse tree produced by {@link CPLayoutParser#offItem}.
 	 * @param ctx the parse tree
 	 */
-	void exitMarginItem(CPLayoutParser.MarginItemContext ctx);
+	void exitOffItem(CPLayoutParser.OffItemContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CPLayoutParser#xItem}.
 	 * @param ctx the parse tree

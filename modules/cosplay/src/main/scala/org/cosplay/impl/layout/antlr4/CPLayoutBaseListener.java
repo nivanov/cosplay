@@ -77,13 +77,13 @@ public class CPLayoutBaseListener implements CPLayoutListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMarginItem(CPLayoutParser.MarginItemContext ctx) { }
+	@Override public void enterOffItem(CPLayoutParser.OffItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMarginItem(CPLayoutParser.MarginItemContext ctx) { }
+	@Override public void exitOffItem(CPLayoutParser.OffItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

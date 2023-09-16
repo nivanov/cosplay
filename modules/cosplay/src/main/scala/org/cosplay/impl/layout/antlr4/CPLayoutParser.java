@@ -18,21 +18,22 @@ public class CPLayoutParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, T__10=11, T__11=12, EQ=13, SCOLON=14, COLON=15, COMMA=16, LPAR=17, 
-		RPAR=18, LBRK=19, RBRK=20, NUM=21, ID=22, COMMENT=23, WS=24, ErrorChar=25;
+		T__9=10, T__10=11, T__11=12, T__12=13, EQ=14, SCOLON=15, COLON=16, COMMA=17, 
+		LPAR=18, RPAR=19, LBRK=20, RBRK=21, NUM=22, ID=23, COMMENT=24, WS=25, 
+		ErrorChar=26;
 	public static final int
 		RULE_layout = 0, RULE_decls = 1, RULE_decl = 2, RULE_items = 3, RULE_item = 4, 
-		RULE_marginItem = 5, RULE_xItem = 6, RULE_yItem = 7;
+		RULE_offItem = 5, RULE_xItem = 6, RULE_yItem = 7;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"layout", "decls", "decl", "items", "item", "marginItem", "xItem", "yItem"
+			"layout", "decls", "decl", "items", "item", "offItem", "xItem", "yItem"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'offset'", "'x'", "'before'", "'left'", "'center'", "'right'", 
+			null, "'off'", "'x'", "'same'", "'before'", "'left'", "'center'", "'right'", 
 			"'after'", "'y'", "'above'", "'top'", "'bottom'", "'below'", "'='", "';'", 
 			"':'", "','", "'('", "')'", "'['", "']'"
 		};
@@ -41,8 +42,8 @@ public class CPLayoutParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, "EQ", "SCOLON", "COLON", "COMMA", "LPAR", "RPAR", "LBRK", "RBRK", 
-			"NUM", "ID", "COMMENT", "WS", "ErrorChar"
+			null, null, "EQ", "SCOLON", "COLON", "COMMA", "LPAR", "RPAR", "LBRK", 
+			"RBRK", "NUM", "ID", "COMMENT", "WS", "ErrorChar"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -363,8 +364,8 @@ public class CPLayoutParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ItemContext extends ParserRuleContext {
-		public MarginItemContext marginItem() {
-			return getRuleContext(MarginItemContext.class,0);
+		public OffItemContext offItem() {
+			return getRuleContext(OffItemContext.class,0);
 		}
 		public XItemContext xItem() {
 			return getRuleContext(XItemContext.class,0);
@@ -397,7 +398,7 @@ public class CPLayoutParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(50);
-				marginItem();
+				offItem();
 				}
 				break;
 			case T__1:
@@ -407,7 +408,7 @@ public class CPLayoutParser extends Parser {
 				xItem();
 				}
 				break;
-			case T__7:
+			case T__8:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(52);
@@ -430,7 +431,7 @@ public class CPLayoutParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class MarginItemContext extends ParserRuleContext {
+	public static class OffItemContext extends ParserRuleContext {
 		public TerminalNode COLON() { return getToken(CPLayoutParser.COLON, 0); }
 		public TerminalNode LBRK() { return getToken(CPLayoutParser.LBRK, 0); }
 		public List<TerminalNode> NUM() { return getTokens(CPLayoutParser.NUM); }
@@ -439,23 +440,23 @@ public class CPLayoutParser extends Parser {
 		}
 		public TerminalNode COMMA() { return getToken(CPLayoutParser.COMMA, 0); }
 		public TerminalNode RBRK() { return getToken(CPLayoutParser.RBRK, 0); }
-		public MarginItemContext(ParserRuleContext parent, int invokingState) {
+		public OffItemContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_marginItem; }
+		@Override public int getRuleIndex() { return RULE_offItem; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterMarginItem(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).enterOffItem(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitMarginItem(this);
+			if ( listener instanceof CPLayoutListener ) ((CPLayoutListener)listener).exitOffItem(this);
 		}
 	}
 
-	public final MarginItemContext marginItem() throws RecognitionException {
-		MarginItemContext _localctx = new MarginItemContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_marginItem);
+	public final OffItemContext offItem() throws RecognitionException {
+		OffItemContext _localctx = new OffItemContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_offItem);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -519,7 +520,7 @@ public class CPLayoutParser extends Parser {
 			match(COLON);
 			setState(65);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 248L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 504L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -582,12 +583,12 @@ public class CPLayoutParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(72);
-			match(T__7);
+			match(T__8);
 			setState(73);
 			match(COLON);
 			setState(74);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 7712L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 15432L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -647,7 +648,7 @@ public class CPLayoutParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0019R\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u001aR\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0001"+
 		"\u0000\u0005\u0000\u0012\b\u0000\n\u0000\f\u0000\u0015\t\u0000\u0001\u0000"+
@@ -661,40 +662,40 @@ public class CPLayoutParser extends Parser {
 		"\u0001\u0006\u0003\u0006E\b\u0006\u0001\u0006\u0001\u0006\u0001\u0007"+
 		"\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0003\u0007N\b\u0007"+
 		"\u0001\u0007\u0001\u0007\u0001\u0007\u0000\u0002\u0002\u0006\b\u0000\u0002"+
-		"\u0004\u0006\b\n\f\u000e\u0000\u0002\u0001\u0000\u0003\u0007\u0002\u0000"+
-		"\u0005\u0005\t\fP\u0000\u0013\u0001\u0000\u0000\u0000\u0002\u0018\u0001"+
-		"\u0000\u0000\u0000\u0004\"\u0001\u0000\u0000\u0000\u0006\'\u0001\u0000"+
-		"\u0000\u0000\b5\u0001\u0000\u0000\u0000\n7\u0001\u0000\u0000\u0000\f?"+
-		"\u0001\u0000\u0000\u0000\u000eH\u0001\u0000\u0000\u0000\u0010\u0012\u0003"+
-		"\u0002\u0001\u0000\u0011\u0010\u0001\u0000\u0000\u0000\u0012\u0015\u0001"+
-		"\u0000\u0000\u0000\u0013\u0011\u0001\u0000\u0000\u0000\u0013\u0014\u0001"+
-		"\u0000\u0000\u0000\u0014\u0016\u0001\u0000\u0000\u0000\u0015\u0013\u0001"+
-		"\u0000\u0000\u0000\u0016\u0017\u0005\u0000\u0000\u0001\u0017\u0001\u0001"+
-		"\u0000\u0000\u0000\u0018\u0019\u0006\u0001\uffff\uffff\u0000\u0019\u001a"+
-		"\u0003\u0004\u0002\u0000\u001a\u001f\u0001\u0000\u0000\u0000\u001b\u001c"+
-		"\n\u0001\u0000\u0000\u001c\u001e\u0003\u0004\u0002\u0000\u001d\u001b\u0001"+
-		"\u0000\u0000\u0000\u001e!\u0001\u0000\u0000\u0000\u001f\u001d\u0001\u0000"+
-		"\u0000\u0000\u001f \u0001\u0000\u0000\u0000 \u0003\u0001\u0000\u0000\u0000"+
-		"!\u001f\u0001\u0000\u0000\u0000\"#\u0005\u0016\u0000\u0000#$\u0005\r\u0000"+
-		"\u0000$%\u0003\u0006\u0003\u0000%&\u0005\u000e\u0000\u0000&\u0005\u0001"+
-		"\u0000\u0000\u0000\'(\u0006\u0003\uffff\uffff\u0000()\u0003\b\u0004\u0000"+
-		")/\u0001\u0000\u0000\u0000*+\n\u0001\u0000\u0000+,\u0005\u0010\u0000\u0000"+
-		",.\u0003\b\u0004\u0000-*\u0001\u0000\u0000\u0000.1\u0001\u0000\u0000\u0000"+
-		"/-\u0001\u0000\u0000\u0000/0\u0001\u0000\u0000\u00000\u0007\u0001\u0000"+
-		"\u0000\u00001/\u0001\u0000\u0000\u000026\u0003\n\u0005\u000036\u0003\f"+
-		"\u0006\u000046\u0003\u000e\u0007\u000052\u0001\u0000\u0000\u000053\u0001"+
-		"\u0000\u0000\u000054\u0001\u0000\u0000\u00006\t\u0001\u0000\u0000\u0000"+
-		"78\u0005\u0001\u0000\u000089\u0005\u000f\u0000\u00009:\u0005\u0013\u0000"+
-		"\u0000:;\u0005\u0015\u0000\u0000;<\u0005\u0010\u0000\u0000<=\u0005\u0015"+
-		"\u0000\u0000=>\u0005\u0014\u0000\u0000>\u000b\u0001\u0000\u0000\u0000"+
-		"?@\u0005\u0002\u0000\u0000@A\u0005\u000f\u0000\u0000AB\u0007\u0000\u0000"+
-		"\u0000BD\u0005\u0011\u0000\u0000CE\u0005\u0016\u0000\u0000DC\u0001\u0000"+
-		"\u0000\u0000DE\u0001\u0000\u0000\u0000EF\u0001\u0000\u0000\u0000FG\u0005"+
-		"\u0012\u0000\u0000G\r\u0001\u0000\u0000\u0000HI\u0005\b\u0000\u0000IJ"+
-		"\u0005\u000f\u0000\u0000JK\u0007\u0001\u0000\u0000KM\u0005\u0011\u0000"+
-		"\u0000LN\u0005\u0016\u0000\u0000ML\u0001\u0000\u0000\u0000MN\u0001\u0000"+
-		"\u0000\u0000NO\u0001\u0000\u0000\u0000OP\u0005\u0012\u0000\u0000P\u000f"+
-		"\u0001\u0000\u0000\u0000\u0006\u0013\u001f/5DM";
+		"\u0004\u0006\b\n\f\u000e\u0000\u0002\u0001\u0000\u0003\b\u0003\u0000\u0003"+
+		"\u0003\u0006\u0006\n\rP\u0000\u0013\u0001\u0000\u0000\u0000\u0002\u0018"+
+		"\u0001\u0000\u0000\u0000\u0004\"\u0001\u0000\u0000\u0000\u0006\'\u0001"+
+		"\u0000\u0000\u0000\b5\u0001\u0000\u0000\u0000\n7\u0001\u0000\u0000\u0000"+
+		"\f?\u0001\u0000\u0000\u0000\u000eH\u0001\u0000\u0000\u0000\u0010\u0012"+
+		"\u0003\u0002\u0001\u0000\u0011\u0010\u0001\u0000\u0000\u0000\u0012\u0015"+
+		"\u0001\u0000\u0000\u0000\u0013\u0011\u0001\u0000\u0000\u0000\u0013\u0014"+
+		"\u0001\u0000\u0000\u0000\u0014\u0016\u0001\u0000\u0000\u0000\u0015\u0013"+
+		"\u0001\u0000\u0000\u0000\u0016\u0017\u0005\u0000\u0000\u0001\u0017\u0001"+
+		"\u0001\u0000\u0000\u0000\u0018\u0019\u0006\u0001\uffff\uffff\u0000\u0019"+
+		"\u001a\u0003\u0004\u0002\u0000\u001a\u001f\u0001\u0000\u0000\u0000\u001b"+
+		"\u001c\n\u0001\u0000\u0000\u001c\u001e\u0003\u0004\u0002\u0000\u001d\u001b"+
+		"\u0001\u0000\u0000\u0000\u001e!\u0001\u0000\u0000\u0000\u001f\u001d\u0001"+
+		"\u0000\u0000\u0000\u001f \u0001\u0000\u0000\u0000 \u0003\u0001\u0000\u0000"+
+		"\u0000!\u001f\u0001\u0000\u0000\u0000\"#\u0005\u0017\u0000\u0000#$\u0005"+
+		"\u000e\u0000\u0000$%\u0003\u0006\u0003\u0000%&\u0005\u000f\u0000\u0000"+
+		"&\u0005\u0001\u0000\u0000\u0000\'(\u0006\u0003\uffff\uffff\u0000()\u0003"+
+		"\b\u0004\u0000)/\u0001\u0000\u0000\u0000*+\n\u0001\u0000\u0000+,\u0005"+
+		"\u0011\u0000\u0000,.\u0003\b\u0004\u0000-*\u0001\u0000\u0000\u0000.1\u0001"+
+		"\u0000\u0000\u0000/-\u0001\u0000\u0000\u0000/0\u0001\u0000\u0000\u0000"+
+		"0\u0007\u0001\u0000\u0000\u00001/\u0001\u0000\u0000\u000026\u0003\n\u0005"+
+		"\u000036\u0003\f\u0006\u000046\u0003\u000e\u0007\u000052\u0001\u0000\u0000"+
+		"\u000053\u0001\u0000\u0000\u000054\u0001\u0000\u0000\u00006\t\u0001\u0000"+
+		"\u0000\u000078\u0005\u0001\u0000\u000089\u0005\u0010\u0000\u00009:\u0005"+
+		"\u0014\u0000\u0000:;\u0005\u0016\u0000\u0000;<\u0005\u0011\u0000\u0000"+
+		"<=\u0005\u0016\u0000\u0000=>\u0005\u0015\u0000\u0000>\u000b\u0001\u0000"+
+		"\u0000\u0000?@\u0005\u0002\u0000\u0000@A\u0005\u0010\u0000\u0000AB\u0007"+
+		"\u0000\u0000\u0000BD\u0005\u0012\u0000\u0000CE\u0005\u0017\u0000\u0000"+
+		"DC\u0001\u0000\u0000\u0000DE\u0001\u0000\u0000\u0000EF\u0001\u0000\u0000"+
+		"\u0000FG\u0005\u0013\u0000\u0000G\r\u0001\u0000\u0000\u0000HI\u0005\t"+
+		"\u0000\u0000IJ\u0005\u0010\u0000\u0000JK\u0007\u0001\u0000\u0000KM\u0005"+
+		"\u0012\u0000\u0000LN\u0005\u0017\u0000\u0000ML\u0001\u0000\u0000\u0000"+
+		"MN\u0001\u0000\u0000\u0000NO\u0001\u0000\u0000\u0000OP\u0005\u0013\u0000"+
+		"\u0000P\u000f\u0001\u0000\u0000\u0000\u0006\u0013\u001f/5DM";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

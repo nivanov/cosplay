@@ -47,8 +47,8 @@ object CPLayoutCompiler:
             if specs.exists(_.id == id) then throw CPException(s"Duplicate layout sprite ID: $id")
             spec = CPLayoutSpec(id)
         override def exitDecl(ctx: CPLayoutParser.DeclContext): Unit = specs += spec
-        override def exitMarginItem(ctx: CPLayoutParser.MarginItemContext): Unit =
-            spec.offset = CPInt2(
+        override def exitOffItem(ctx: CPLayoutParser.OffItemContext): Unit =
+            spec.off = CPInt2(
                 ctx.getChild(3).getText.toInt,
                 ctx.getChild(5).getText.toInt
             )
@@ -56,6 +56,7 @@ object CPLayoutCompiler:
             val rel = if ctx.ID() == null then None else ctx.ID().getText.?
             val dir = ctx.getChild(2).getText match
                 case "above" => CPLayoutDirection.ABOVE
+                case "same" => CPLayoutDirection.SAME
                 case "top" => CPLayoutDirection.TOP
                 case "bottom" => CPLayoutDirection.BOTTOM
                 case "below" => CPLayoutDirection.BELOW
@@ -65,6 +66,7 @@ object CPLayoutCompiler:
         override def exitXItem(ctx: CPLayoutParser.XItemContext): Unit =
             val rel = if ctx.ID() == null then None else ctx.ID().getText.?
             val dir = ctx.getChild(2).getText match
+                case "same" => CPLayoutDirection.SAME
                 case "before" => CPLayoutDirection.BEFORE
                 case "left" => CPLayoutDirection.LEFT
                 case "right" => CPLayoutDirection.RIGHT

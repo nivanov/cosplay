@@ -43,6 +43,7 @@ private[cosplay] enum CPLayoutDirection(private val s: String):
     case AFTER extends CPLayoutDirection("after")
     case BELOW extends CPLayoutDirection("below")
     case ABOVE extends CPLayoutDirection("above")
+    case SAME extends CPLayoutDirection("same")
     case CENTER extends CPLayoutDirection("center")
     override def toString: String = s
 
@@ -54,13 +55,13 @@ private[cosplay] sealed case class CPLayoutRelation(
 import CPLayoutDirection.*
 private[cosplay] sealed case class CPLayoutSpec(
     var id: String,
-    var offset: CPInt2 = CPInt2.ZERO,
+    var off: CPInt2 = CPInt2.ZERO,
     var x: CPLayoutRelation = CPLayoutRelation(LEFT, None),
     var y: CPLayoutRelation = CPLayoutRelation(TOP, None)
 ):
     override def toString: String =
         s"$id = " +
-        s"margin: $offset, " +
+        s"off: $off, " +
         s"x: $x, " +
         s"y: $y" +
         ";"
@@ -111,6 +112,7 @@ class CPLayoutSprite(
                                         case CENTER => spr.setX(xRelRect.x + (xRelRect.w - dim.w) / 2)
                                         case RIGHT => spr.setX(xRelRect.xMax - dim.w)
                                         case AFTER => spr.setX(xRelRect.xMax + 1)
+                                        case SAME => spr.setX(xRelRect.x)
                                         case _ => throw CPException(s"Invalid X-coordinate direction: ${spec.x.dir}")
                                     spec.y.dir match
                                         case TOP => spr.setY(yRelRect.y + 1)
@@ -118,9 +120,10 @@ class CPLayoutSprite(
                                         case CENTER => spr.setY(yRelRect.y + (yRelRect.h - dim.h) / 2)
                                         case BOTTOM => spr.setY(yRelRect.yMax - dim.h)
                                         case BELOW => spr.setY(yRelRect.yMax + 1)
-                                        case _ => throw CPException(s"Invalid Y-coordinate direction: ${spec.x.dir}")
-                                    spr.incrX(spec.offset.x)
-                                    spr.incrY(spec.offset.y)
+                                        case SAME => spr.setY(xRelRect.y)
+                                        case _ => throw CPException(s"Invalid Y-coordinate direction: ${spec.y.dir}")
+                                    spr.incrX(spec.off.x)
+                                    spr.incrY(spec.off.y)
                                 case None => ()
                         case _ => throw CPException(s"Only scene objects extending 'CPDynamicSprite' can be used in layout: $id")
                     laidOut += id
