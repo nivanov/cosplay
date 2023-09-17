@@ -33,6 +33,7 @@ package org.cosplay
 import org.cosplay.*
 import org.cosplay.impl.layout.*
 import scala.collection.mutable
+import org.cosplay.examples.layout.*
 
 private[cosplay] enum CPLayoutDirection(private val s: String):
     case LEFT extends CPLayoutDirection("left")
@@ -108,12 +109,45 @@ private[cosplay] sealed case class CPLayoutSpec(
   *    ID: [a-zA-Z0-9-_$]+;
   * }}}
   *
+  * Here's an example of the layout specification (from [[CPLayoutExample]]):
+  * {{{
+  * // This is the main panel centered on the screen.
+  * Panel-1 = x: center(), y: center();
+  *
+  * // These panels are placed in the 4 corners of the panel 1.
+  * Panel-2 = off: [1, 0], x: left(Panel-1), y: top(Panel-1);
+  * Panel-3 = off: [-1, 0], x: right(Panel-1), y: top(Panel-1);
+  * Panel-4 = off: [1, 0], x: left(Panel-1), y: bottom(Panel-1);
+  * Panel-5 = off: [-1, 0], x: right(Panel-1), y: bottom(Panel-1);
+  *
+  * // Panels 6 and 7 go after each other.
+  * Panel-6 = x: after(Panel-2), y: below(Panel-2);
+  * Panel-7 = x: after(Panel-6), y: same(Panel-6);
+  *
+  * // Centered image with 2-row offset.
+  * img = off: [0, 2], x: center(Panel-1), y: center(Panel-1);
+  * }}}
+  *
+  * Notes:
+  *  - Each sprite is positioned by its top-left XY-coordinates.
+  *  - Offsets can be negative and are applied to the top-left XY-coordinates of the sprite.
+  *  - Default specification is 'off: [0,0], x: left(), y: top();'
+  *  - C-style comments are allowed in any place in the specification.
+  *  - 'left', 'right', 'top' and 'bottom' are referring to a relative position inside of the referral.
+  *  - 'before', 'after', 'above', and 'below' are referring to a relative position outside of the referral.
+  *  - '()' (empty brackets) refer to a entire scene screen as a referral "sprite".
+  *  - Only sprites extending [[CPDynamicSprite]] can be used in layout specification. However, any
+  *    scene object can act as a referral.
+  *  - 'center' provides centering for either X or Y-coordinates.
+  *  - 'same' allows to use the same X or Y-coordinates as a referral.
+  *
   * @param id ID of this scene object.
   * @param spec Layout specification as described above. Note that specification can be updated
   *             later using [[CPLayoutSprite.updateSpec]] method.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPDynamicSprite]]
+  * @see [[CPLayoutExample]]
   */
 class CPLayoutSprite(
     id: String,
