@@ -78,44 +78,56 @@ object CPTextInputExample:
                 else ch2&&(C_BLACK, C_WHITE.darker(0.3f))
             }
 
-        val userLbl = new CPLabelSprite(6, 4, 1, text = "Username:", C_LIGHT_STEEL_BLUE)
-        val userTin = CPTextInputSprite("user", 6, 5, 1,
+        val userTin = CPTextInputSprite("usrTin", 0, 0, 1,
             15, 20,
             "",
             mkSkin(true, false),
             mkSkin(false, false),
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = "passwd".?
+            next = "pwdTin".?
         )
-        val pwdLbl = new CPLabelSprite(6, 7, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
-        val pwdTin = CPTextInputSprite("passwd", 6, 8, 1,
+        val pwdTin = CPTextInputSprite("pwdTin", 0, 0, 1,
             15, 20,
             "",
             mkSkin(true, true),
             mkSkin(false, true),
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = "user".?
+            next = "usrTin".?
         )
         val panel = CPTitlePanelSprite(
             "panel",
-            2, 2, 23, 9, 0,
+            0, 0, 23, 9, 0,
             C_BLACK,
             "-.|'-'|.",
             C_GREEN_YELLOW,
-            styleStr("< ", C_GREEN_YELLOW) ++ styleStr("Login", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW)
+            styleStr("< ", C_GREEN_YELLOW) ++ styleStr("Login", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW),
+            borderSkin = (_, _, px) => px.withDarkerFg(0.5f),
         )
-        val focusAcq = CPOffScreenSprite(ctx => if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user"))
-
         val bgPx = '.'&&(C_GRAY2, C_GRAY1)
         val sc = new CPScene("scene", CPDim(27, 13).?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            userLbl,
+            new CPLabelSprite("usrLbl", 0, 0, 1, text = "Username:", C_LIGHT_STEEL_BLUE),
+            new CPLabelSprite("pwdLbl", 0, 0, 1, text = "Password:", C_LIGHT_STEEL_BLUE),
             userTin,
-            pwdLbl,
             pwdTin,
             panel,
-            focusAcq
+            // Acquire the focus at the beginning by username text input.
+            CPOffScreenSprite(ctx => if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("usrTin")),
+            CPLayoutSprite("layout",
+                """
+                  | // Centered dialog panel.
+                  | panel = x: center(), y: center();
+                  |
+                  | // Username.
+                  | usrLbl = off: [3, 1], x: left(panel), y: top(panel);
+                  | usrTin = x: same(usrLbl), y: below(usrLbl);
+                  |
+                  | // Password.
+                  | pwdLbl = off: [3, 1], x: left(panel), y: below(usrTin);
+                  | pwdTin = x: same(pwdLbl), y: below(pwdLbl);
+                  |""".stripMargin
+            )
         )
 
         // Initialize the engine.

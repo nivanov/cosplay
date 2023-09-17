@@ -144,7 +144,7 @@ class CPTextInputSprite(
             val ch = if i < len then buf(i) else ' '
             pxs += skin(ch, i, i == curPos)
             i += 1
-        ctx.getCanvas.drawPixels(x, y, z, pxs.toSeq)
+        ctx.getCanvas.drawPixels(getX, getY, getZ, pxs.toSeq)
 
     /** @inheritdoc */
     override def update(ctx: CPSceneObjectContext): Unit =
