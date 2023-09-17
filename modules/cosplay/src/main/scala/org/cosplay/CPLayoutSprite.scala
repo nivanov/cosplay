@@ -205,6 +205,11 @@ class CPLayoutSprite(
 
         for spec <- specs do layout(spec.id)
 
+    /**
+      * Updates the layout spec to given value. It will take an effect on the next frame.
+      *
+      * @param spec Layout specification. 
+      */
     def updateSpec(spec: String): Unit = specs = CPLayoutCompiler.compile(spec).getOrRethrow()
 
 
