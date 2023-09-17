@@ -1461,7 +1461,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param rect A rectangle to draw a border around.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param chars A sequence of character in the following order:
-      *              top, top left border, left, bottom left corer, bottom, bottom right corner, right, top right corner.
+      *              top, top left border, left, bottom left corner, bottom, bottom right corner, right, top right corner.
       * @param color A color to be used for all border pixels.
       * @param title Title of the border. Default is no border.
       * @param titleX X-coordinate of the title. Default is -1.

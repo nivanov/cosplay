@@ -67,11 +67,51 @@ private[cosplay] sealed case class CPLayoutSpec(
         ";"
 
 /**
-  * TODO
+  * This is an off-screen sprite that provides layout capabilities for other dynamic sprites. This sprite
+  * relies on provided layout specification that dictates how every sprite should be positioned in relation
+  * to the entire screen or other sprite.
   *
-  * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
-  * @param spec
-  * @param shaders Optional sequence of shaders for this sprite.
+  * Here are several important notes about how this sprite works:
+  *  - This sprite only deals with the XY-position of sprites and does NOT deal with Z-index or the
+  *    size of the sprite. In other words, it never resizes the sprite it is laying out and expects
+  *    that all constituent sprites have their size correctly set in [[CPSceneObject.update]] method.
+  *  - Only sprites that extend [[CPDynamicSprite]] can be using with this layout sprite.
+  *  - This sprite perform the layout on each frame.
+  *  - Laid out sprites can overlap.
+  *
+  * ### Layout Specification
+  * Layout specification is a string that consists of semi-colon separated commands. Each command starts
+  * with the sprite ID, followed by '=' character and a set of instructions for this sprite position.
+  *
+  * Here's basic BNF form for the layout specification:
+  * {{{
+  *    layout: decls* EOF;
+  *    decls
+  *        : decl
+  *        | decls decl
+  *        ;
+  *    decl: ID '='' items ';';
+  *    items
+  *        : item
+  *        | items ','' item
+  *        ;
+  *    item
+  *        : offItem
+  *        | xItem
+  *        | yItem
+  *        ;
+  *    offItem: 'off' ':'' '[' NUM '.' NUM ']';
+  *    xItem: 'x' ':' ('same' | 'before' | 'left' | 'center' | 'right' | 'after') '(' ID? ')'';
+  *    yItem: 'y' ':' ('same' | 'above' | 'top' | 'center' | 'bottom' | 'below') '(' ID? ')';
+  *
+  *    NUM: '-'? [0-9] [0-9]*;
+  *    ID: [a-zA-Z0-9-_$]+;
+  * }}}
+  *
+  * @param id ID of this scene object.
+  * @param spec Layout specification as described above. Note that specification can be updated
+  *             later using [[CPLayoutSprite.updateSpec]] method.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPDynamicSprite]]
   */

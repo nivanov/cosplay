@@ -34,7 +34,7 @@ package org.cosplay
   * Dynamic sprites can change their screen position. It provides an implementation for managing
   * sprite's X, Y, and Z coordinates as well as storing the sprite's initial X, Y, and Z coordinates.
   *
-  * @param id Optional ID of this scene object.
+  * @param id ID of this scene object.
   * @param x Initial X-coordinate of the top-left corner of the sprite.
   * @param y Initial Y-coordinate of the top-left corner of the sprite.
   * @param z Initial Z-index at which to render the sprite.

@@ -62,7 +62,7 @@ import org.cosplay.impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
-  * @param shaders Optional sequence of shaders for this sprite.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
 class CPOffScreenSprite(

@@ -34,16 +34,16 @@ import org.cosplay.CPPixel.*
 */
 
 /**
-  * Reusable, dynamic titled panel sprite. It creates the bordered panel like this:
+  * A sprite representing a dynamic panel with titled border. It creates the bordered panel similar to this:
   * <pre>
-  *  +------Title-------+
+  *  .------Title-------.
   *  |                  |
   *  |                  |
   *  |                  |
-  *  +------------------+
+  *  '------------------'
   * </pre>
   *
-  * @param id Optional ID of this scene object.
+  * @param id ID of this scene object.
   * @param x Initial X-coordinate of the top-left corner of the sprite.
   * @param y Initial Y-coordinate of the top-left corner of the sprite.
   * @param width Immutable panel width.
