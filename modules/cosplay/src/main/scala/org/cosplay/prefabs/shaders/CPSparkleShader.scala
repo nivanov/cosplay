@@ -47,16 +47,17 @@ import scala.collection.mutable
   * @param entireFrame Whether apply to the entire camera frame or just the object this shader is attached to.
   * @param colors Set of color to use for sparking effect. Colors will be randomly chosen for each pixel.
   * @param ratio Percentage of pixels to sparkle at the same time. Default value is `0.04`, i.e. 4%. For example,
-  *         if the camera frame size is 100x50 characters then the default 4% ratio will result in 200 pixels
-  *         sparkling at any given time.
+  *              if the camera frame size is 100x50 characters then the default 4% ratio will result in 200 pixels
+  *              sparkling at any given time.
   * @param steps Number of frames that it takes for entire sparkle cycle from brightening to dimming back.
   * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
-  *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
-  *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
-  * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
+  *             and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
+  *             Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
+  * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever. It can
+  *              changed later.
   * @param onDuration Optional callback to call when this shader finishes by exceeding the duration
-  *     specified by `durMs` parameter. Default is a no-op.
+  *                   specified by `durMs` parameter. Default is a no-op.
   *
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
@@ -77,8 +78,8 @@ class CPSparkleShader(
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
-) extends CPShader:
-    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+) extends CPDurationShader:
+    checkDuration(durMs)
     !>(ratio >= 0f && ratio <= 1f, "Ratio must be in [0,1] range.")
     !>(colors.nonEmpty, "Colors cannot be empty.")
 
@@ -96,8 +97,18 @@ class CPSparkleShader(
     private val sparkles = mutable.ArrayBuffer.empty[Sparkle]
     private var go = autoStart
     private var startMs = 0L
+    private var ms = durMs
 
     if autoStart then start()
+
+    /**
+      * Sets the duration in millisecond for this shader effect.
+      *
+      * @param durMs Duration of the fade in effect in milliseconds.
+      */
+    def setDuration(durMs: Long): Unit =
+        checkDuration(durMs)
+        ms = durMs
 
     /**
       * Starts the shader effect.
@@ -136,7 +147,7 @@ class CPSparkleShader(
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         val flag = go && (entireFrame || (ctx.isVisible && inCamera)) 
         
-        if flag && System.currentTimeMillis() - startMs > durMs then
+        if flag && System.currentTimeMillis() - startMs > ms then
             stop()
             onDuration(ctx)
         else if flag then

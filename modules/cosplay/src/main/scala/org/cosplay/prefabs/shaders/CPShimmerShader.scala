@@ -44,17 +44,20 @@ import scala.collection.mutable
   * random color selection from the given set of colors.
   *
   * @param entireFrame Whether apply to the entire camera frame or just the object this
-  *     shader is attached to.
+  *                    shader is attached to.
   * @param colors Sequence of colors to use for shimmering effect. Colors will be selected randomly from this set.
   * @param keyFrame nth-frame to render the effect. For example, if key frame is `5` than the colors will
-  *     change on each 5th frame and remain the same on all subsequent frames until next key frame is reached.
+  *                 change on each 5th frame and remain the same on all subsequent frames until next key
+  *                 frame is reached.
   * @param autoStart Whether to start shader right away. Default value is `false`.
   * @param skip Predicate allowing to skip certain pixel from the shader. Predicate takes a pixel (with its Z-order),
-  *     and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the entire canvas.
-  *     Typically used to skip background or certain Z-index. Default predicate returns `false` for all pixels.
-  * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever.
+  *             and X and Y-coordinate of that pixel. Note that XY-coordinates are always in relation to the
+  *             entire canvas. Typically used to skip background or certain Z-index. Default predicate returns
+  *             `false` for all pixels.
+  * @param durMs Duration of the effect in milliseconds. By default, the effect will go forever. Can be
+  *              changed later.
   * @param onDuration Optional callback to call when this shader finishes by exceeding the duration
-  *     specified by `durMs` parameter. Default is a no-op.
+  *                   specified by `durMs` parameter. Default is a no-op.
   *
   * @see [[CPFadeInShader]]
   * @see [[CPFadeOutShader]]
@@ -71,16 +74,26 @@ class CPShimmerShader(
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     durMs: Long = Long.MaxValue,
     onDuration: CPSceneObjectContext => Unit = _ => (),
-) extends CPShader:
-    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
+) extends CPDurationShader:
+    checkDuration(durMs)
 
-    case class PixelXYZ(px: CPPixel, x: Int, y: Int, z: Int)
+    private case class PixelXYZ(px: CPPixel, x: Int, y: Int, z: Int)
     private var go = autoStart
     private val lastSet = mutable.ArrayBuffer.empty[PixelXYZ]
     private var startMs = 0L
     private var lastRect = CPRect.ZERO
+    private var ms = durMs
 
     if autoStart then start()
+
+    /**
+      * Sets the duration in millisecond for this shader effect.
+      *
+      * @param durMs Duration of the fade in effect in milliseconds.
+      */
+    def setDuration(durMs: Long): Unit =
+        checkDuration(durMs)
+        ms = durMs
 
     /**
       * Starts the shader effect.
@@ -120,7 +133,7 @@ class CPShimmerShader(
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         val flag = go && (entireFrame || (ctx.isVisible && inCamera))
 
-        if flag && System.currentTimeMillis() - startMs > durMs then
+        if flag && System.currentTimeMillis() - startMs > ms then
             stop()
             onDuration(ctx)
         else if flag then

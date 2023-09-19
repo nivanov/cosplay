@@ -44,7 +44,7 @@ import org.apache.commons.math3.analysis.function.*
   * @param dir Slide direction as defined by [[CPSlideDirection]].
   * @param entireFrame Whether apply to the entire camera frame or just the object this
   *     shader is attached to.
-  * @param durMs Duration of the effect in milliseconds.
+  * @param durMs Duration of the effect in milliseconds. It can be changed later.
   * @param bgPx Background pixel to fade in from.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
   * @param autoStart Whether to start shader right away. Default value is `true`.
@@ -78,12 +78,12 @@ class CPSlideInShader(
     autoStart: Boolean = true,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) => Float = (a, b) => a.toFloat / b
-) extends CPShader:
-    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    !>(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
+) extends CPDurationShader:
+    checkDuration(durMs)
+    checkBgPixel(bgPx)
 
     private var frmCnt = 0
-    private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
+    private var maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
     private var go = autoStart
@@ -92,6 +92,15 @@ class CPSlideInShader(
     private var matrixDim: CPDim = _
 
     if autoStart then start()
+
+    /**
+      * Sets the duration in millisecond for this shader effect.
+      *
+      * @param durMs Duration of the slide in effect in milliseconds.
+      */
+    def setDuration(durMs: Long): Unit =
+        checkDuration(durMs)
+        maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
 
     /**
       * Resets this shaders to its initial state starting its effect on the next frame.
@@ -151,7 +160,7 @@ object CPSlideInShader:
       *
       * @param dir Slide direction as defined by [[CPSlideDirection]].
       * @param entireFrame Whether apply to the entire camera frame or just the object this shader is attached to.
-      * @param durMs Duration of the effect in milliseconds.
+      * @param durMs Duration of the effect in milliseconds. It can be changed later.
       * @param bgPx Background pixel to fade in from.
       * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
       * @param autoStart Whether to start shader right away. Default value is `true`.
