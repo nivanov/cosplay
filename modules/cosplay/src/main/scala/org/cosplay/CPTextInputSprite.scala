@@ -76,7 +76,8 @@ import scala.collection.mutable
   * @param next Optional scene object ID to switch keyboard focus to after the user pressed one of the
   *     submit keys. Default value is `None`.
   * @param cancelKeys Optional set of keyboard keys to accept for cancellation action. When one of these keys
-  *     is pressed the sprite will reset to its initial state. Default value is [[CPKeyboardKey.KEY_ESC]].
+  *     is pressed the sprite will reset to its initial state, marked as ready and its result set to `None`.
+  *     Default value is [[CPKeyboardKey.KEY_ESC]].
   * @param submitKeys Optional set of keyboard keys to accept for submission action. When one of these keys
   *     is pressed the sprite will make result available via [[isReady]] method and will optionally switch
   *     keyboard focus for the `next` scene object, if any. Default value is [[CPKeyboardKey.KEY_ENTER]].
@@ -119,7 +120,8 @@ class CPTextInputSprite(
     private var lastStart = 0
     private var ready = false
     private val pxs = mutable.ArrayBuffer.empty[CPPixel]
-    private var res = none[String]
+    private var res = (none[CPKeyboardKey], none[String])
+    private var lastKey = none[CPKeyboardKey]
 
     reset()
 
@@ -150,6 +152,7 @@ class CPTextInputSprite(
     override def update(ctx: CPSceneObjectContext): Unit =
         ctx.getKbEvent match
             case Some(evt) =>
+                lastKey = evt.key.?
                 evt.key match
                     case KEY_LEFT => if curPos > 0 then curPos -= 1
                     case KEY_RIGHT => if curPos < buf.length then curPos += 1
@@ -170,8 +173,8 @@ class CPTextInputSprite(
 
     private def done(optRes: Option[String]): Unit =
         ready = true
-        res = optRes
-        if res.isEmpty then
+        res = (lastKey, optRes)
+        if optRes.isEmpty then
             reset()
 
     /**
@@ -183,7 +186,7 @@ class CPTextInputSprite(
     def clear(initTxt: String = null): Unit =
         if initTxt != null then this.initTxt = initTxt
         ready = false
-        res = None
+        res = (None, None)
         reset()
 
     /** Gets current initial text for this sprite. */
@@ -203,11 +206,21 @@ class CPTextInputSprite(
       */
     def setNext(next: Option[String]): Unit = this.next = next
 
-    /** Whether or not the result is ready. */
+    /**
+      * Whether or not the result is either submitted or cancelled, i.e. ready.
+      *
+      * @see [[getResult()]]
+      */
     def isReady: Boolean = ready
 
-    /** Gets input result, `None` if result is not yet ready. */
-    def getResult: Option[String] = res
+    /**
+      * Gets the tuple of the last key pressed and input result. Input result will be `None` if result is not
+      * yet ready or got cancelled. Last key pressed is `None` when no keys were pressed yet on this sprite.
+      * Call method [[isReady()]] on each frame to check whether the input result is actually ready.
+      *
+      * @see [[isReady()]]
+      */
+    def getResult: (Option[CPKeyboardKey], Option[String]) = res
 
     /** @inheritdoc */
     def getDim: CPDim = dim
