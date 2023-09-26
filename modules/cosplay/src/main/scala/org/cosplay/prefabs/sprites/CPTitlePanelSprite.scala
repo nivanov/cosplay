@@ -60,6 +60,7 @@ import org.cosplay.CPPixel.*
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @param tags Optional set of organizational or grouping tags. Default value is an empty set.
   *
+  * @see [[org.cosplay.examples.dialog.CPDialogExample]]
   * @see [[org.cosplay.examples.layout.CPLayoutExample]]
   * @see [[org.cosplay.examples.textinput.CPTextInputExample]]
   * @see [[org.cosplay.examples.sound.CPSoundExample]]

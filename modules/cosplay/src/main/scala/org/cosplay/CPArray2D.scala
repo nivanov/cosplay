@@ -499,7 +499,10 @@ object CPArray2D:
         arr
         
     /**
-      * Creates new 2D array from given sequence of [[CPPixel pixels]] and width.
+      * Creates new 2D array from given sequence of [[CPPixel pixels]] and width. The height of 2D array
+      * will be calculated as size of pixel sequence divided by the given width. To guarantee the single row
+      * 2D array make sure that pixel sequence length and width are the same.
+      *
       * Note that clear value is not set.
       *
       * @param pxs Sequence of [[CPPixel pixels]].

@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package org.cosplay.examples.textinput
+package org.cosplay.examples.dialog
 
 import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
+import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.shaders.*
@@ -50,17 +51,14 @@ import org.cosplay.prefabs.sprites.*
   * }}}
   * to run example:
   * {{{
-  *     $ mvn -f modules/cosplay -P ex:textinput exec:java
+  *     $ mvn -f modules/cosplay -P ex:dialog exec:java
   * }}}
   *
-  * @see [[CPLabelSprite]]
-  * @see [[CPTextInputSprite]]
-  * @see [[CPKeyboardKey]]
-  * @see [[CPKeyboardEvent]]
-  * @see [[CPKeyboardSprite]]
+  * @see [[CPLayoutSprite]]
+  * @see [[CPDynamicSprite]]
   * @note See developer guide at [[https://cosplayengine.com]]
   */
-object CPTextInputExample:
+object CPDialogExample:
     /**
       * Entry point for JVM runtime.
       *
@@ -69,70 +67,54 @@ object CPTextInputExample:
     def main(args: Array[String]): Unit =
         val termDim = CPDim(100, 40)
 
-        def mkSkin(active: Boolean, passwd: Boolean): (Char, Int, Boolean) => CPPixel =
-            (ch: Char, pos: Int, isCur: Boolean) => {
-                val ch2 = if passwd && !ch.isWhitespace then '*' else ch
-                if active then
-                    if isCur then ch2&&(C_WHITE, C_SLATE_BLUE3)
-                    else ch2&&(C_BLACK, C_WHITE)
-                else ch2&&(C_BLACK, C_WHITE.darker(0.3f))
-            }
+        def mkPanel(name: String, w: Int, h: Int, z: Int): CPDynamicSprite =
+            CPTitlePanelSprite(
+                name,
+                0, 0, w, h, z,
+                C_BLACK,
+                "-.|'-'|.",
+                C_GREEN_YELLOW,
+                styleStr(name, C_DARK_ORANGE3)
+            )
 
-        val userTin = CPTextInputSprite("usrTin", 0, 0, 1,
-            15, 20,
-            "",
-            mkSkin(true, false),
-            mkSkin(false, false),
-            submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = "pwdTin".?
-        )
-        val pwdTin = CPTextInputSprite("pwdTin", 0, 0, 1,
-            15, 20,
-            "",
-            mkSkin(true, true),
-            mkSkin(false, true),
-            submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = "usrTin".?
-        )
-        val panel = CPTitlePanelSprite(
-            "panel",
-            0, 0, 23, 9, 0,
-            C_BLACK,
-            "-.|'-'|.",
-            C_GREEN_YELLOW,
-            styleStr("< ", C_GREEN_YELLOW) ++ styleStr("Login", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW),
-            borderSkin = (_, _, px) => px.withDarkerFg(0.5f),
-        )
-        val bgPx = '.'&&(C_GRAY2, C_GRAY1)
+        val bgPx = ' '&&(C_GRAY2, C_BLACK)
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            new CPLabelSprite("usrLbl", 0, 0, 1, text = "Username:", C_LIGHT_STEEL_BLUE),
-            new CPLabelSprite("pwdLbl", 0, 0, 1, text = "Password:", C_LIGHT_STEEL_BLUE),
-            userTin,
-            pwdTin,
-            panel,
-            // Acquire the focus at the beginning by username text input.
-            CPOffScreenSprite(ctx => if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("usrTin")),
+            CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+            mkPanel("Panel-1", 60, 30, 0),
+            mkPanel("Panel-2", 15, 5, 1),
+            mkPanel("Panel-3", 15, 5, 1),
+            mkPanel("Panel-4", 15, 5, 1),
+            mkPanel("Panel-5", 15, 5, 1),
+            mkPanel("Panel-6", 15, 5, 1),
+            mkPanel("Panel-7", 10, 5, 1),
+            new CPImageSprite("img", 0, 0, 1, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
+            // Dynamic layout specification.
             CPLayoutSprite("layout",
                 """
-                  | // Centered dialog panel.
-                  | panel = x: center(), y: center();
+                  | // This is the main panel centered on the screen.
+                  | Panel-1 = x: center(), y: center();
                   |
-                  | // Username.
-                  | usrLbl = off: [3, 1], x: left(panel), y: top(panel);
-                  | usrTin = x: same(usrLbl), y: below(usrLbl);
+                  | // These panels are placed in the 4 corners of the panel 1.
+                  | Panel-2 = off: [1, 0], x: left(Panel-1), y: top(Panel-1);
+                  | Panel-3 = off: [-1, 0], x: right(Panel-1), y: top(Panel-1);
+                  | Panel-4 = off: [1, 0], x: left(Panel-1), y: bottom(Panel-1);
+                  | Panel-5 = off: [-1, 0], x: right(Panel-1), y: bottom(Panel-1);
                   |
-                  | // Password.
-                  | pwdLbl = off: [3, 1], x: left(panel), y: below(usrTin);
-                  | pwdTin = x: same(pwdLbl), y: below(pwdLbl);
+                  | // Panels 6 and 7 go after each other.
+                  | Panel-6 = x: after(Panel-2), y: below(Panel-2);
+                  | Panel-7 = x: after(Panel-6), y: same(Panel-6);
+                  |
+                  | // Centered image with 2-row offset.
+                  | img = off: [0, 2], x: center(Panel-1), y: center(Panel-1);
                   |""".stripMargin
             )
         )
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Text Input Example", initDim = termDim.?),
+            CPGameInfo(name = "Layout Example - [Q] to Exit", initDim = termDim.?),
             System.console() == null || args.contains("emuterm")
         )
 
@@ -141,5 +123,6 @@ object CPTextInputExample:
         finally CPEngine.dispose()
 
         sys.exit(0)
+
 
 
