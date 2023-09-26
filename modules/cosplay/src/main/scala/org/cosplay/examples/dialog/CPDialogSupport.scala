@@ -33,9 +33,10 @@ package org.cosplay.examples.dialog
 import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
+import org.cosplay.prefabs.sprites.*
 
 /**
-  * Mixin trait that provide basic dialog support.
+  * Simple "framework" for basic modal dialog functionality.
   */
 object CPDialogSupport:
     private val bg = C_BLACK
@@ -46,6 +47,51 @@ object CPDialogSupport:
         bg.?,
         CPMarkupElement("<%", "%>", _ && (liteFg, bg)).seq, // Light.
     )
+
+    /**
+      * Makes dynamic image sprite with given image.
+      *
+      * @param img Image to make the dynamic image sprite with.
+      */
+    private def mkImageSpr(img: CPImage): CPImageSprite = new CPImageSprite(
+        // Coordinates don't matter as it will be laid out.
+        x = 0,
+        y = 0,
+        z = 0,
+        img = img
+    )
+
+    /**
+      * Makes "Rectangle" font image for given title with gradual darkening.
+      *
+      * @param title Title string.
+      */
+    private def mkTitleSpr(title: String): CPImageSprite = mkImageSpr(
+        img = CPFIGLetFont.FIG_RECTANGLES.render(title, fg)
+            .skin((px, _, y) =>
+                if y == 0 then px.withDarkerFg(.5f)
+                else if y == 1 then px.withDarkerFg(.3f)
+                else if y == 2 then px.withDarkerFg(.2f)
+                else px
+            )
+    )
+
+    /**
+      * Creates panel sprite with given width and height.
+      *
+      * @param w Panel width.
+      * @param h Panel height.
+      */
+    private def mkPanelSpr(w: Int, h: Int): CPTitlePanelSprite =
+        CPTitlePanelSprite(
+            CPRand.guid6,
+            0, 0, w, h, 0,
+            C_BLACK,
+            "-.|'-'|.",
+            C_GREEN_YELLOW,
+            Seq.empty,
+            borderSkin = (_, _, px) => px.withDarkerFg(0.5f),
+        )
 
     /**
       * Shows dialog with given title, message and '[Enter] Continue' button.
@@ -64,15 +110,15 @@ object CPDialogSupport:
         onEnd: () => Unit,
         fg: CPColor,
     ): Unit =
-        val titleImg = CPFIGLetFont.FIG_RECTANGLES.render(title, fg)
-        val dashImg = CPSystemFont.render("-" * titleImg.w, fg)
-        val msgImg = CPSystemFont.render(msg, fg)
-        val btnImg = new CPArrayImage(markup.process("<%[Enter]%> Continue"))
+        val titleSpr = mkTitleSpr(title)
+        val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getImage.w, fg))
+        val msgSpr = mkImageSpr(CPSystemFont.render(msg, fg))
+        val btnSpr = mkImageSpr(new CPArrayImage(markup.process("<%[Enter]%> Continue")))
 
     /**
       *
       * @param ctx The context of the caller.
-      * @param objs
+      * @param objs Dynamic sprite comprising the UI of the dialog.
       * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
       * @param onEnd Function to call after dialog's constituent sprites are removed from the scene.
       * @param onKey
