@@ -23,7 +23,6 @@ import org.cosplay.CPPixel.*
 import CPStyledString.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.prefabs.sprites.*
 
 /*
    _________            ______________
@@ -78,6 +77,7 @@ object CPSoundExample:
             C_BLACK,
             "-.|'-'|.",
             C_GREEN_YELLOW,
+            C_BLACK.?,
             styleStr("< ", C_GREEN_YELLOW) ++ styleStr("Audio Player", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW)
         )
 

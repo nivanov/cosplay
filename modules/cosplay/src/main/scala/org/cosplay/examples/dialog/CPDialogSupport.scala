@@ -32,8 +32,8 @@ package org.cosplay.examples.dialog
 
 import org.cosplay.*
 import org.cosplay.CPColor.*
+import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.*
-import org.cosplay.prefabs.sprites.*
 
 /**
   * Simple "framework" for basic modal dialog functionality.
@@ -55,25 +55,25 @@ object CPDialogSupport:
       */
     private def mkImageSpr(img: CPImage): CPImageSprite = new CPImageSprite(
         // Coordinates don't matter as it will be laid out.
-        x = 0,
-        y = 0,
-        z = 0,
+        x = 0, y = 0, z = 0,
         img = img
     )
 
     /**
-      * Makes "Rectangle" font image for given title with gradual darkening.
+      * Makes "Rectangle" font label sprite for given title with gradual vertical darkening.
       *
-      * @param title Title string.
+      * @param text Title string.
       */
-    private def mkTitleSpr(title: String): CPImageSprite = mkImageSpr(
-        img = CPFIGLetFont.FIG_RECTANGLES.render(title, fg)
-            .skin((px, _, y) =>
-                if y == 0 then px.withDarkerFg(.5f)
-                else if y == 1 then px.withDarkerFg(.3f)
-                else if y == 2 then px.withDarkerFg(.2f)
-                else px
-            )
+    private def mkTitleSpr(text: String): CPLabelSprite = new CPLabelSprite(
+        x = 0, y = 0, z = 0,
+        font = CPFIGLetFont.FIG_RECTANGLES,
+        fg = fg,
+        text = text,
+        skin = (px, _, y) =>
+            if y == 0 then px.withDarkerFg(.5f)
+            else if y == 1 then px.withDarkerFg(.3f)
+            else if y == 2 then px.withDarkerFg(.2f)
+            else px
     )
 
     /**
@@ -85,16 +85,18 @@ object CPDialogSupport:
     private def mkPanelSpr(w: Int, h: Int): CPTitlePanelSprite =
         CPTitlePanelSprite(
             CPRand.guid6,
-            0, 0, w, h, 0,
+            0, 0, w, h, -1,
             C_BLACK,
             "-.|'-'|.",
             C_GREEN_YELLOW,
+            C_BLACK.?,
             Seq.empty,
             borderSkin = (_, _, px) => px.withDarkerFg(0.5f),
         )
 
     /**
-      * Shows dialog with given title, message and '[Enter] Continue' button.
+      * Shows dialog with given title, message and `[Enter] Continue` button. `ESC` key also closes
+      * the dialog.
       *
       * @param ctx The context of the caller.
       * @param title Dialog title to be rendered using "Rectangles" ASCII font.
@@ -106,14 +108,50 @@ object CPDialogSupport:
         ctx: CPSceneObjectContext,
         title: String,
         msg: String,
-        onStart: () => Unit,
-        onEnd: () => Unit,
-        fg: CPColor,
+        onStart: (CPSceneObjectContext) => Unit = _ => (),
+        onEnd: (CPSceneObjectContext) => Unit = _ => ()
     ): Unit =
         val titleSpr = mkTitleSpr(title)
-        val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getImage.w, fg))
+        val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getWidth, fg.darker(.5f)))
         val msgSpr = mkImageSpr(CPSystemFont.render(msg, fg))
         val btnSpr = mkImageSpr(new CPArrayImage(markup.process("<%[Enter]%> Continue")))
+        val panelW = Seq(titleSpr.getWidth, msgSpr.getImage.w, btnSpr.getImage.w).max
+            + 4 // Left padding.
+            + 4 // Right padding.
+            + 2 // Account for left and right 1-pixel borders.
+        val panelH =  titleSpr.getHeight
+            + 1 // Dash.
+            + 1 // Empty line between the dash and the message.
+            + 1 // Message.
+            + 3 // 3 empty lines between message and the button.
+            + 1 // Button line.
+            + 3 // Top & bottom padding.
+            + 2 // Account for top and bottom 1-pixel borders.
+        val panelSpr = mkPanelSpr(panelW, panelH)
+        val layoutSpr = CPLayoutSprite(CPRand.guid6,
+            s"""
+              | // Centered dialog panel.
+              | ${panelSpr.getId} = x: center(), y: center();
+              | // Laying out constituent sprites.
+              | ${titleSpr.getId} = x: left(${panelSpr.getId}), y: top(${panelSpr.getId}), off: [4, 1];
+              | ${dashSpr.getId} = x: same(${titleSpr.getId}), y: below(${titleSpr.getId});
+              | ${msgSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId}), off: [0, 1];
+              | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${msgSpr.getId}), off: [0, 3];
+              |""".stripMargin
+        )
+        val objs = Seq(panelSpr, titleSpr, dashSpr, msgSpr, btnSpr, layoutSpr)
+        showDialog(
+            ctx,
+            objs,
+            onStart,
+            x => {
+                objs.foreach(o => x.deleteObject(o.getId))
+                onEnd(x)
+            },
+            (x, key) => key match
+                case KEY_ESC | KEY_ENTER => true
+                case _ => false
+        )
 
     /**
       *
@@ -126,11 +164,13 @@ object CPDialogSupport:
     def showDialog(
         ctx: CPSceneObjectContext,
         objs: Seq[CPSceneObject],
-        onStart: () => Unit,
-        onEnd: () => Unit,
+        onStart: (CPSceneObjectContext) => Unit,
+        onEnd: (CPSceneObjectContext) => Unit,
         onKey: (CPSceneObjectContext, CPKeyboardKey) => Boolean // Return 'true' to exit the dialog.
     ): Unit =
-        ctx.addObject(CPOffScreenSprite(c => { // Called on each update() callback.
+        objs.foreach(ctx.addObject(_))
+        // Add the controller sprite.
+        ctx.addObject(CPOffScreenSprite(x => { // Called on each update() callback.
             // Obtain the pressed key, if any.
             var keyOpt = none[CPKeyboardKey]
 
@@ -143,11 +183,10 @@ object CPDialogSupport:
 
             keyOpt match
                 case Some(key) =>
-                    if onKey(c, key) then
-                        objs.foreach(o => c.deleteObject(o.getId))
-                        c.deleteMyself()
-                        onEnd()
+                    if onKey(x, key) then
+                        objs.foreach(o => x.deleteObject(o.getId))
+                        x.deleteMyself()
+                        onEnd(x)
                 case None => ()
         }))
-        objs.foreach(ctx.addObject(_))
-        onStart()
+        onStart(ctx)

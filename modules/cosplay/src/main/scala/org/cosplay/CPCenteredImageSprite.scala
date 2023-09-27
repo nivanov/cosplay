@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.prefabs.sprites
+package org.cosplay
 
 import org.cosplay.*
 import org.cosplay.impl.CPUtils
@@ -44,7 +44,7 @@ enum CPCenteredImageSpriteOrientation:
     /** Both horizontal and vertical centering. */
     case BOTH
 
-import CPCenteredImageSpriteOrientation.*
+import org.cosplay.CPCenteredImageSpriteOrientation.*
 
 /**
   * Image sprite that centers its image on the canvas on each frame update.

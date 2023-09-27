@@ -25,7 +25,6 @@ import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPColor.*
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.prefabs.particles.*
-import org.cosplay.prefabs.sprites.*
 import org.cosplay.prefabs.shaders.CPSlideDirection.*
 import org.cosplay.prefabs.particles.CPConfettiEmitter
 

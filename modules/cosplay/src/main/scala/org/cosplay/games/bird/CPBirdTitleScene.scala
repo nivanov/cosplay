@@ -37,7 +37,6 @@ import org.cosplay.CPPixel.*
 import org.cosplay.CPArrayImage.*
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.prefabs.sprites.*
 
 object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     private val bgSnd = CPSound("sounds/games/bird/bg.wav")

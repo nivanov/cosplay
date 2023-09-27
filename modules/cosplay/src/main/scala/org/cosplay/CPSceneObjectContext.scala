@@ -253,7 +253,7 @@ trait CPSceneObjectContext extends CPBaseContext:
     def getKbEvent: Option[CPKeyboardEvent]
 
     /**
-      * Checks if the current frame's keyboard event, if any, contains given keyboard key. Returns `True` only
+      * Checks if the current frame's keyboard event, if any, contains given keyboard key. Returns `true` only
       * and only if current frame has a key press and its keyboard key is equal to the given key.
       *
       * Note that if the focus is not held by any scene object, i.e. was acquired and released or not

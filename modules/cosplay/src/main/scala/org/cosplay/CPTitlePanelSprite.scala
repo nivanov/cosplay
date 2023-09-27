@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay.prefabs.sprites
+package org.cosplay
 
 import org.cosplay.*
 import org.cosplay.CPPixel.*
@@ -51,7 +51,8 @@ import org.cosplay.CPPixel.*
   * @param z Initial Z-index at which to render the sprite.
   * @param bg Panel background color.
   * @param borderChars Border chars. See [[CPCanvas.drawRectBorder()]] method for details.
-  * @param borderFg Border color.
+  * @param borderFg Border foreground color.
+  * @param borderBg Optional border background color.
   * @param title Optional title for the border as sequence of pixels. Title is always centered. If
   *              sequence is empty, no title will be drawn.
   * @param borderSkin Skin function for the border that takes x and y coordinates as well as default pixel
@@ -75,6 +76,7 @@ class CPTitlePanelSprite(
     bg: CPColor,
     borderChars: String,
     borderFg: CPColor,
+    borderBg: Option[CPColor],
     title: Seq[CPPixel],
     borderSkin: (Int, Int, CPPixel) => CPPixel = (_, _, px) => px,
     collidable: Boolean = false,
@@ -95,12 +97,13 @@ class CPTitlePanelSprite(
         val x2 = x1 + width - 1
         val y2 = y1 + height - 1
         val z1 = getZ
-        canv.fillRect(x1, y1, x2, y2, z1, ' '&bg)
+        canv.fillRect(x1, y1, x2, y2, z1, ' '&&(bg, bg))
         canv.drawRectBorder(
             getRect,
             z1,
             borderChars,
             borderFg,
+            borderBg,
             title,
             x1 + (width - title.length) / 2,
             y1,

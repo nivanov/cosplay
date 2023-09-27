@@ -23,7 +23,6 @@ import org.cosplay.CPPixel.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.prefabs.sprites.*
 
 /*
    _________            ______________
@@ -100,6 +99,7 @@ object CPTextInputExample:
             C_BLACK,
             "-.|'-'|.",
             C_GREEN_YELLOW,
+            C_BLACK.?,
             styleStr("< ", C_GREEN_YELLOW) ++ styleStr("Login", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW),
             borderSkin = (_, _, px) => px.withDarkerFg(0.5f),
         )

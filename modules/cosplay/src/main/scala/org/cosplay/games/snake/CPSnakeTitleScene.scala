@@ -22,7 +22,6 @@ import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPArrayImage.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.prefabs.sprites.*
 import org.cosplay.CPPixel.*
 import org.cosplay.CPKeyboardKey.*
 

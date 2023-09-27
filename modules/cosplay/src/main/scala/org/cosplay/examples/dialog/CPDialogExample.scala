@@ -24,7 +24,6 @@ import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.prefabs.sprites.*
 
 /*
    _________            ______________
@@ -67,54 +66,31 @@ object CPDialogExample:
     def main(args: Array[String]): Unit =
         val termDim = CPDim(100, 40)
 
-        def mkPanel(name: String, w: Int, h: Int, z: Int): CPDynamicSprite =
-            CPTitlePanelSprite(
-                name,
-                0, 0, w, h, z,
-                C_BLACK,
-                "-.|'-'|.",
-                C_GREEN_YELLOW,
-                styleStr(name, C_DARK_ORANGE3)
-            )
+//        def mkPanel(name: String, w: Int, h: Int, z: Int): CPDynamicSprite =
+//            CPTitlePanelSprite(
+//                name,
+//                0, 0, w, h, z,
+//                C_BLACK,
+//                "-.|'-'|.",
+//                C_GREEN_YELLOW,
+//                styleStr(name, C_DARK_ORANGE3)
+//            )
 
         val bgPx = ' '&&(C_GRAY2, C_BLACK)
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
-            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-            mkPanel("Panel-1", 60, 30, 0),
-            mkPanel("Panel-2", 15, 5, 1),
-            mkPanel("Panel-3", 15, 5, 1),
-            mkPanel("Panel-4", 15, 5, 1),
-            mkPanel("Panel-5", 15, 5, 1),
-            mkPanel("Panel-6", 15, 5, 1),
-            mkPanel("Panel-7", 10, 5, 1),
-            new CPImageSprite("img", 0, 0, 1, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
-            // Dynamic layout specification.
-            CPLayoutSprite("layout",
-                """
-                  | // This is the main panel centered on the screen.
-                  | Panel-1 = x: center(), y: center();
-                  |
-                  | // These panels are placed in the 4 corners of the panel 1.
-                  | Panel-2 = off: [1, 0], x: left(Panel-1), y: top(Panel-1);
-                  | Panel-3 = off: [-1, 0], x: right(Panel-1), y: top(Panel-1);
-                  | Panel-4 = off: [1, 0], x: left(Panel-1), y: bottom(Panel-1);
-                  | Panel-5 = off: [-1, 0], x: right(Panel-1), y: bottom(Panel-1);
-                  |
-                  | // Panels 6 and 7 go after each other.
-                  | Panel-6 = x: after(Panel-2), y: below(Panel-2);
-                  | Panel-7 = x: after(Panel-6), y: same(Panel-6);
-                  |
-                  | // Centered image with 2-row offset.
-                  | img = off: [0, 2], x: center(Panel-1), y: center(Panel-1);
-                  |""".stripMargin
-            )
+            new CPSingletonSprite(fun = ctx =>
+                CPDialogSupport.showConfirm(
+                    ctx = ctx,
+                    title = "Example",
+                    msg = "This is an example of a very, very, really very long message."
+                )
+            ),
         )
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Layout Example - [Q] to Exit", initDim = termDim.?),
+            CPGameInfo(name = "Dialog Example", initDim = termDim.?),
             System.console() == null || args.contains("emuterm")
         )
 

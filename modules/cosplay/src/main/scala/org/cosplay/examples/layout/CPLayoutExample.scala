@@ -24,7 +24,6 @@ import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.prefabs.sprites.*
 
 /*
    _________            ______________
@@ -74,6 +73,7 @@ object CPLayoutExample:
                 C_BLACK,
                 "-.|'-'|.",
                 C_GREEN_YELLOW,
+                C_BLACK.?,
                 styleStr(name, C_DARK_ORANGE3)
             )
 

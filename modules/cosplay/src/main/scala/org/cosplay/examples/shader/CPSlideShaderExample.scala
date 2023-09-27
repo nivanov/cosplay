@@ -30,7 +30,7 @@ package org.cosplay.examples.shader
                 All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{CPCenteredImageSprite, *}
 import org.cosplay.CPPixel.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPArrayImage.*
@@ -38,7 +38,6 @@ import org.cosplay.CPKeyboardKey.*
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.prefabs.shaders.CPSlideDirection.*
-import org.cosplay.prefabs.sprites.CPCenteredImageSprite
 
 import scala.collection.mutable
 

@@ -1462,7 +1462,8 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param chars A sequence of character in the following order:
       *              top, top left border, left, bottom left corner, bottom, bottom right corner, right, top right corner.
-      * @param color A color to be used for all border pixels.
+      * @param fg A foreground color to be used for all border pixels.
+      * @param bg An optional background color to be used for all border pixels.
       * @param title Title of the border. Default is no border.
       * @param titleX X-coordinate of the title. Default is -1.
       * @param titleY Y-coordinate of the title. Default is -1.
@@ -1473,7 +1474,8 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         rect: CPRect,
         z: Int,
         chars: String,
-        color: CPColor,
+        fg: CPColor,
+        bg: Option[CPColor],
         title: Seq[CPPixel] = Seq.empty,
         titleX: Int = -1,
         titleY: Int = -1,
@@ -1486,14 +1488,14 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
             rect.xMax,
             rect.yMax,
             z,
-            chars(0)&color,
-            chars(1)&color,
-            chars(2)&color,
-            chars(3)&color,
-            chars(4)&color,
-            chars(5)&color,
-            chars(6)&color,
-            chars(7)&color,
+            chars(0)&&(fg, bg),
+            chars(1)&&(fg, bg),
+            chars(2)&&(fg, bg),
+            chars(3)&&(fg, bg),
+            chars(4)&&(fg, bg),
+            chars(5)&&(fg, bg),
+            chars(6)&&(fg, bg),
+            chars(7)&&(fg, bg),
             title,
             titleX,
             titleY,
