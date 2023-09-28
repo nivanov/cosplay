@@ -66,24 +66,16 @@ object CPDialogExample:
     def main(args: Array[String]): Unit =
         val termDim = CPDim(100, 40)
 
-//        def mkPanel(name: String, w: Int, h: Int, z: Int): CPDynamicSprite =
-//            CPTitlePanelSprite(
-//                name,
-//                0, 0, w, h, z,
-//                C_BLACK,
-//                "-.|'-'|.",
-//                C_GREEN_YELLOW,
-//                styleStr(name, C_DARK_ORANGE3)
-//            )
-
         val bgPx = ' '&&(C_GRAY2, C_BLACK)
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPSingletonSprite(fun = ctx =>
-                CPDialogSupport.showConfirm(
+                CPDialogSupport.showYesNo(
                     ctx = ctx,
-                    title = "Example",
-                    msg = "This is an example of a very, very, really very long message."
+                    title = "Login",
+                    msg = "Do you want to start login demo?",
+                    onYes = x => (),
+                    onNo = x => x.exitGame()
                 )
             ),
         )

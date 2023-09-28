@@ -84,11 +84,10 @@ object CPCurve:
     def linearGradient(f1: Float, f2: Float, steps: Int): () => Float =
         val df = (f2 - f1) / steps
         var i = 0
-        () => {
+        () =>
             val f = f1 + (i % steps) * df
             i += 1
             f
-        }
 
 
 

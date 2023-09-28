@@ -71,11 +71,11 @@ class CPBubbleSprite(
             durMs,
             bgPx,
             autoStart = true,
-            onFinish = ctx => {
+            onFinish = ctx =>
                 // Delete the sprite when shader is finished, if required.
                 if autoDelete then ctx.deleteObject(id)
                 onFinish(ctx)
-            },
+            ,
             skip = (zpx, _, _) => zpx.z > z // Don't modify above Z-layers.
         )
     )

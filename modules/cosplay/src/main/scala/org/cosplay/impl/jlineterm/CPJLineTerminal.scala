@@ -166,12 +166,12 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
       * @param scr Current entire screen.
       */
     private def diffToAnsi(scr: TermScreen): Unit =
-        draw(scr, (x, y) => {
+        draw(scr, (x, y) =>
             val px = scr.getPx(x, y)
             val lastPx = last.get(x, y)
             if px != lastPx then
                 addPx(x, y, px)
-        })
+        )
 
     private def draw(scr: TermScreen, f: (Int, Int) => Unit): Unit =
         buf.clear()

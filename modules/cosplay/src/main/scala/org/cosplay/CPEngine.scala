@@ -1184,7 +1184,7 @@ object CPEngine:
                         laterRuns.foreach(_.f(this))
                         laterRuns.clear()
 
-                        delayedQ += (() => {
+                        delayedQ += (() =>
                             if cloDelCur then
                                 scenes.remove(sc.getId) match
                                     case Some(s) => lifecycleStop(s)
@@ -1205,7 +1205,7 @@ object CPEngine:
                             nextFrameRuns.clear()
                             startScMs = System.currentTimeMillis()
                             logSceneSwitch(sc)
-                        })
+                        )
 
                     override def getId: String = myId
                     override def getLog: CPLog = myLog
@@ -1251,10 +1251,10 @@ object CPEngine:
                     override def addObject(obj: CPSceneObject, replace: Boolean = false): Unit =
                         if replace then deleteObject(obj.getId)
                         val cloObj = obj
-                        delayedQ += (() => {
+                        delayedQ += (() =>
                             sc.objects.add(cloObj)
                             engLog.trace(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
-                        })
+                        )
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def getObjects: Iterable[CPSceneObject] = sc.objects.values
                     override def grabObject(id: String): CPSceneObject = sc.objects(id)
@@ -1265,29 +1265,29 @@ object CPEngine:
                         if newScId == sc.getId then raise(s"Cannot add a new scene with the same ID as the current one: $newScId")
                         if replace then deleteScene(newScId) // Adds delayed action.
                         val loNewSc = newSc
-                        delayedQ += (() => {
+                        delayedQ += (() =>
                             // NOTE: scene lifecycle transitions when it becomes active.
                             scenes.add(loNewSc)
                             val verb = if replace then "replaced" else "added"
                             engLog.trace(s"Scene $verb: $newScId")
-                        })
+                        )
                         if switchTo then doSwitchScene(newScId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
                         if sc.getId == id then raise(s"Cannot delete current scene: ${sc.getId}")
                         else
                             val cloId = id
-                            delayedQ += (() => {
+                            delayedQ += (() =>
                                 scenes.remove(cloId) match
                                     case Some(s) =>
                                         engLog.trace(s"Scene deleted: ${s.getId}")
                                         lifecycleStop(s)
                                     case _ =>
                                         engLog.warn(s"Ignored an attempt to delete unknown scene: $cloId")
-                            })
+                            )
                     override def deleteObject(id: String): Unit =
                         val cloId = id
-                        delayedQ += (() => {
+                        delayedQ += (() =>
                             sc.objects.remove(cloId) match
                                 case Some(obj) =>
                                     if kbFocusOwner.isDefined && kbFocusOwner.get == cloId then kbFocusOwner = None
@@ -1295,7 +1295,7 @@ object CPEngine:
                                     lifecycleStop(obj)
                                 case _ =>
                                     engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $cloId")
-                        })
+                        )
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
                         if myObj.getCollisionRect.isEmpty then raise(s"Current object does not provide collision shape: ${myObj.getId}")
                         else

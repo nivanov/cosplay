@@ -506,13 +506,12 @@ class CPAsciiTable:
 
         // Print rows, if any.
         if rows.nonEmpty then
-            val addHorLine = (i: Int) => {
+            val addHorLine = (i: Int) =>
                 // Left margin and '+'
                 tbl ++= s"${space(margin.left)}$ROW_CRS"
                 for k <- rows(i).indices do tbl ++= s"${dash(ROW_HOR, colWidths(k))}$ROW_CRS"
                 // Right margin.
                 tbl ++= s"${space(margin.right)}\n"
-            }
 
             for i <- rows.indices do
                 val row = rows(i)

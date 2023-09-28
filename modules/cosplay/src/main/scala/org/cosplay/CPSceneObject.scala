@@ -81,11 +81,11 @@ abstract class CPSceneObject(
     tags: Set[String] = Set.empty
 ) extends CPGameObject(id, tags) with CPLifecycle:
     !>(id.nonEmpty, "Scene object ID cannot be empty.")
-    !>(id.count(ch => {
+    !>(id.count(ch =>
         !(
             ch.isLetterOrDigit || ch == '-' || ch == '_' || ch == '$'
         )
-    }) == 0, s"Scene object ID should contain letters, digits, '-', '_' or '$$' characters only: '$id'")
+    ) == 0, s"Scene object ID should contain letters, digits, '-', '_' or '$$' characters only: '$id'")
 
     private var visible = true
 

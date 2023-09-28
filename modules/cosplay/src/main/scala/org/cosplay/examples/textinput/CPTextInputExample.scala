@@ -69,13 +69,12 @@ object CPTextInputExample:
         val termDim = CPDim(100, 40)
 
         def mkSkin(active: Boolean, passwd: Boolean): (Char, Int, Boolean) => CPPixel =
-            (ch: Char, pos: Int, isCur: Boolean) => {
+            (ch: Char, pos: Int, isCur: Boolean) =>
                 val ch2 = if passwd && !ch.isWhitespace then '*' else ch
                 if active then
                     if isCur then ch2&&(C_WHITE, C_SLATE_BLUE3)
                     else ch2&&(C_BLACK, C_WHITE)
                 else ch2&&(C_BLACK, C_WHITE.darker(0.3f))
-            }
 
         val userTin = CPTextInputSprite("usrTin", 0, 0, 1,
             15, 20,

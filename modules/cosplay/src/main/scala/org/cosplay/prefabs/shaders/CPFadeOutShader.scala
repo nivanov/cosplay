@@ -123,7 +123,7 @@ class CPFadeOutShader(
         if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             val canv = ctx.getCanvas
-            rect.loop((x, y) => {
+            rect.loop((x, y) => 
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
@@ -133,7 +133,7 @@ class CPFadeOutShader(
                         val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
                         canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
-            })
+            )
             frmCnt += 1
             if frmCnt == maxFrmCnt then
                 go = false

@@ -95,6 +95,148 @@ object CPDialogSupport:
         )
 
     /**
+      * Creates and returns list of dialog constituents including a layout controller.
+      *
+      * @param title Dialog title to be rendered using "Rectangles" ASCII font.
+      * @param msg One line message.
+      * @param btnsMd Buttons line markup.
+      */
+    private def mkBasicDialogParts(
+        title: String,
+        msg: String,
+        btnsMd: String
+    ): Seq[CPSceneObject] =
+        val titleSpr = mkTitleSpr(title)
+        val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getWidth, fg.darker(.5f)))
+        val msgSpr = mkImageSpr(CPSystemFont.render(msg, fg))
+        val btnSpr = mkImageSpr(new CPArrayImage(markup.process(btnsMd)))
+        val panelW = Seq(titleSpr.getWidth, msgSpr.getImage.w, btnSpr.getImage.w).max
+            + 4 // Left padding.
+            + 4 // Right padding.
+            + 2 // Account for left and right 1-pixel borders.
+        val panelH = titleSpr.getHeight
+            + 1 // Dash.
+            + 1 // Empty line between the dash and the message.
+            + 1 // Message.
+            + 3 // 3 empty lines between message and the button.
+            + 1 // Button line.
+            + 3 // Top & bottom padding.
+            + 2 // Account for top and bottom 1-pixel borders.
+        val panelSpr = mkPanelSpr(panelW, panelH)
+        val layoutSpr = CPLayoutSprite(CPRand.guid6,
+            s"""
+               | // Centered dialog panel.
+               | ${panelSpr.getId} = x: center(), y: center();
+               | // Laying out constituent sprites.
+               | ${titleSpr.getId} = x: left(${panelSpr.getId}), y: top(${panelSpr.getId}), off: [4, 1];
+               | ${dashSpr.getId} = x: same(${titleSpr.getId}), y: below(${titleSpr.getId});
+               | ${msgSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId}), off: [0, 1];
+               | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${msgSpr.getId}), off: [0, 3];
+               |""".stripMargin
+        )
+        Seq(panelSpr, titleSpr, dashSpr, msgSpr, btnSpr, layoutSpr)
+
+    /**
+      *
+      * @param onStart
+      * @param onOk
+      * @param onCancel
+      */
+    def showLogin(
+        onStart: (CPSceneObjectContext) => Unit = _ => (),
+        onOk: (CPSceneObjectContext) => Unit,
+        onCancel: (CPSceneObjectContext) => Unit
+    ): Unit =
+        def mkSkin(active: Boolean, passwd: Boolean): (Char, Int, Boolean) => CPPixel =
+            (ch: Char, pos: Int, isCur: Boolean) =>
+                val ch2 = if passwd && !ch.isWhitespace then '*' else ch
+                if active then
+                    if isCur then ch2 && (C_WHITE, C_SLATE_BLUE3)
+                    else ch2 && (C_BLACK, C_WHITE)
+                else ch2 && (C_BLACK, C_WHITE.darker(0.3f))
+
+        val titleSpr = mkTitleSpr("Login")
+        val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getWidth, fg.darker(.5f)))
+        val usrSpr = CPTextInputSprite(x = 0, 0, 1,
+            30, 30,
+            "",
+            mkSkin(true, false),
+            mkSkin(false, false),
+            submitKeys = Seq(KEY_ENTER, KEY_TAB),
+            next = "pwdField".?
+        )
+        val pwdFieldSpr = CPTextInputSprite(x = 0, 0, 1,
+            30, 30,
+            "",
+            mkSkin(true, true),
+            mkSkin(false, true),
+            submitKeys = Seq(KEY_ENTER, KEY_TAB),
+            next = "usrField".?
+        )
+        val usrLblSpr = new CPLabelSprite("usrLbl", 0, 0, 1, text = "Username:", C_LIGHT_STEEL_BLUE)
+        val pwdLblSpr = new CPLabelSprite("pwdLbl", 0, 0, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
+        val btnSpr = mkImageSpr(new CPArrayImage(markup.process("<%[ESC]%> Cancel    <%[Ctrl-A]%> Submit")))
+        val panelW = 30 // Text field.
+            + 4 // Left padding.
+            + 4 // Right padding.
+            + 2 // Account for left and right 1-pixel borders.
+        val panelH = titleSpr.getHeight
+            + 1 // Dash.
+            + 1 // Empty line between the dash and the message.
+            + 5 // Two text fields with labels.
+            + 3 // 3 empty lines between message and the button.
+            + 1 // Button line.
+            + 3 // Top & bottom padding.
+            + 2 // Account for top and bottom 1-pixel borders.
+        val panelSpr = mkPanelSpr(panelW, panelH)
+        val layoutSpr = CPLayoutSprite(CPRand.guid6,
+            s"""
+               | // Centered dialog panel.
+               | ${panelSpr.getId} = x: center(), y: center();
+               | // Laying out constituent sprites.
+               | ${titleSpr.getId} = x: left(${panelSpr.getId}), y: top(${panelSpr.getId}), off: [4, 1];
+               | ${dashSpr.getId} = x: same(${titleSpr.getId}), y: below(${titleSpr.getId});
+               | ${msgSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId}), off: [0, 1];
+               | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${msgSpr.getId}), off: [0, 3];
+               |""".stripMargin
+        )
+        Seq(panelSpr, titleSpr, dashSpr, msgSpr, btnSpr, layoutSpr)
+
+    /**
+      *
+      * @param ctx The context of the caller.
+      * @param title Dialog title to be rendered using "Rectangles" ASCII font.
+      * @param msg One line message.
+      * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
+      * @param onYes
+      * @param onNo
+      */
+    def showYesNo(
+        ctx: CPSceneObjectContext,
+        title: String,
+        msg: String,
+        onStart: (CPSceneObjectContext) => Unit = _ => (),
+        onYes: (CPSceneObjectContext) => Unit,
+        onNo: (CPSceneObjectContext) => Unit
+    ): Unit =
+        val objs = mkBasicDialogParts(title, msg, "<%[N]%> No    <%[Y]%> Yes")
+        var isYes = false
+        showDialog(
+            ctx,
+            objs,
+            onStart,
+            x =>
+                objs.foreach(o => x.deleteObject(o.getId))
+                if isYes then onYes(x) else onNo(x)
+            ,
+            (x, key) => key match
+                case KEY_ESC | KEY_UP_N | KEY_UP_Y =>
+                    isYes = key == KEY_UP_Y
+                    true
+                case _ => false
+        )
+
+    /**
       * Shows dialog with given title, message and `[Enter] Continue` button. `ESC` key also closes
       * the dialog.
       *
@@ -111,43 +253,15 @@ object CPDialogSupport:
         onStart: (CPSceneObjectContext) => Unit = _ => (),
         onEnd: (CPSceneObjectContext) => Unit = _ => ()
     ): Unit =
-        val titleSpr = mkTitleSpr(title)
-        val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getWidth, fg.darker(.5f)))
-        val msgSpr = mkImageSpr(CPSystemFont.render(msg, fg))
-        val btnSpr = mkImageSpr(new CPArrayImage(markup.process("<%[Enter]%> Continue")))
-        val panelW = Seq(titleSpr.getWidth, msgSpr.getImage.w, btnSpr.getImage.w).max
-            + 4 // Left padding.
-            + 4 // Right padding.
-            + 2 // Account for left and right 1-pixel borders.
-        val panelH =  titleSpr.getHeight
-            + 1 // Dash.
-            + 1 // Empty line between the dash and the message.
-            + 1 // Message.
-            + 3 // 3 empty lines between message and the button.
-            + 1 // Button line.
-            + 3 // Top & bottom padding.
-            + 2 // Account for top and bottom 1-pixel borders.
-        val panelSpr = mkPanelSpr(panelW, panelH)
-        val layoutSpr = CPLayoutSprite(CPRand.guid6,
-            s"""
-              | // Centered dialog panel.
-              | ${panelSpr.getId} = x: center(), y: center();
-              | // Laying out constituent sprites.
-              | ${titleSpr.getId} = x: left(${panelSpr.getId}), y: top(${panelSpr.getId}), off: [4, 1];
-              | ${dashSpr.getId} = x: same(${titleSpr.getId}), y: below(${titleSpr.getId});
-              | ${msgSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId}), off: [0, 1];
-              | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${msgSpr.getId}), off: [0, 3];
-              |""".stripMargin
-        )
-        val objs = Seq(panelSpr, titleSpr, dashSpr, msgSpr, btnSpr, layoutSpr)
+        val objs = mkBasicDialogParts(title, msg, "<%[Enter]%> Continue")
         showDialog(
             ctx,
             objs,
             onStart,
-            x => {
+            x =>
                 objs.foreach(o => x.deleteObject(o.getId))
                 onEnd(x)
-            },
+            ,
             (x, key) => key match
                 case KEY_ESC | KEY_ENTER => true
                 case _ => false
@@ -161,7 +275,7 @@ object CPDialogSupport:
       * @param onEnd Function to call after dialog's constituent sprites are removed from the scene.
       * @param onKey
       */
-    def showDialog(
+    private def showDialog(
         ctx: CPSceneObjectContext,
         objs: Seq[CPSceneObject],
         onStart: (CPSceneObjectContext) => Unit,
@@ -170,7 +284,7 @@ object CPDialogSupport:
     ): Unit =
         objs.foreach(ctx.addObject(_))
         // Add the controller sprite.
-        ctx.addObject(CPOffScreenSprite(x => { // Called on each update() callback.
+        ctx.addObject(CPOffScreenSprite(x =>  // Called on each update() callback.
             // Obtain the pressed key, if any.
             var keyOpt = none[CPKeyboardKey]
 
@@ -188,5 +302,5 @@ object CPDialogSupport:
                         x.deleteMyself()
                         onEnd(x)
                 case None => ()
-        }))
+        ))
         onStart(ctx)

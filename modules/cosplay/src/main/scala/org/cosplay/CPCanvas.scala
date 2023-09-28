@@ -200,7 +200,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param isBlank Predicate defining whether a particular pixel should be considered as a blank.
       */
     def antialias(rect: CPRect, isBlank: CPPixel => Boolean): Unit =
-        rect.loop((x, y) => {
+        rect.loop((x, y) =>
             val zpx = pane.getPixel(x, y)
             val px = zpx.px
             // Based on: https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
@@ -213,7 +213,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
                 pane.addPixel(px.withChar(CPUtils.aaChar(px.char, top, left, bottom, right)), x, y, zpx.z)
             else
                 pane.addPixel(px, x, y, zpx.z)
-        })
+        )
 
     /**
       * Antialiasing solid ASCII-art canvas region. Works `only` for solid ASCII-art.
@@ -252,11 +252,12 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawCircle(x: Int, y: Int, radius: Int, z: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, pxs: Seq[CPPixel]): CPRect =
         var i = 0
         val pxsNum = pxs.length
-        drawCircle(x, y, radius, z, xFactor, yFactor, densFactor, fillGaps, (_, _) => {
-            val px = pxs(i % pxsNum)
-            i += 1
-            px
-        })
+        drawCircle(x, y, radius, z, xFactor, yFactor, densFactor, fillGaps,
+            (_, _) =>
+                val px = pxs(i % pxsNum)
+                i += 1
+                px
+        )
 
     /**
       * Draws a circle with a single pixel returning its final shape.
@@ -305,12 +306,12 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         var y1 = Int.MaxValue
         var x2 = -1
         var y2 = -1
-        pxs.foreach(px => {
+        pxs.foreach(px =>
             x1 = x1.min(px.x)
             y1 = y1.min(px.y)
             x2 = x2.max(px.x)
             y2 = y2.max(px.y)
-        })
+        )
 
         x1 = x1.max(0)
         y1 = y1.max(0)
@@ -458,11 +459,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawVector(x: Int, y: Int, deg: Float, len: Int, z: Int, xFactor: Float, yFactor: Float, pxs: Seq[CPPixel]): Unit =
         var i = 0
         val pxsNum = pxs.length
-        drawVector(x, y, deg, len, z, xFactor, yFactor, (_, _) => {
+        drawVector(x, y, deg, len, z, xFactor, yFactor, (_, _) =>
             val px = pxs(i % pxsNum)
             i += 1
             px
-        })
+        )
 
     /**
       * Draws a vector.
@@ -538,11 +539,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param endPx End pixel.
       */
     def drawLine(ax: Int, ay: Int, bx: Int, by: Int, z: Int, startPx: CPPixel, linePx: CPPixel, endPx:CPPixel): Unit =
-        drawLine(ax, ay, bx, by, z, (x, y) => {
+        drawLine(ax, ay, bx, by, z, (x, y) =>
             if x == ax && y == ay then startPx
             else if x == bx && y == by then endPx
             else linePx
-        })
+        )
 
     /**
       * Draws a line.
@@ -557,11 +558,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawLine(ax: Int, ay: Int, bx: Int, by: Int, z: Int, pxs: Seq[CPPixel]): Unit =
         var i = 0
         val pxsNum = pxs.length
-        drawLine(ax, ay, bx, by, z, (_, _) => {
+        drawLine(ax, ay, bx, by, z, (_, _) =>
             val px = pxs(i % pxsNum)
             i += 1
             px
-        })
+        )
 
     /**
       * Draws a line.
@@ -1057,11 +1058,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawPolyline(pts: Seq[(Int, Int)], z: Int, pxs: Seq[CPPixel]): Unit =
         val pxsNum = pxs.size
         var i = 0
-        drawPolyline(pts, z, (_, _) => {
+        drawPolyline(pts, z, (_, _) =>
             val px = pxs(i % pxsNum)
             i += 1
             px
-        })
+        )
 
     /**
       * Fills in bordered area with a pixel. This is also known as "bucket tool".
@@ -1100,10 +1101,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         val rect = new CPRect(x1 -> y1, x2 -> y2)
         val dx = rect.x - destX
         val dy = rect.y - destY
-        rect.loop((a, b) => {
+        rect.loop((a, b) =>
             val zpx = getZPixel(a, b)
             drawPixel(zpx.px, a - dx, b - dx, zpx.z)
-        })
+        )
 
     /**
       * Copies one rectangular areas in this canvas to another location in the same canvas.
@@ -1304,10 +1305,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         var i = 0
         val pxsNum = pxs.length
 
-        rect.loop((x, y) => {
+        rect.loop((x, y) =>
             drawPixel(pxs(i % pxsNum), x, y, z)
             i += 1
-        })
+        )
 
     /**
       * Captures given rectangular canvas region as an image. This method will capture only

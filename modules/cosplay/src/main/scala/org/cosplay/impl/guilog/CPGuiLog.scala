@@ -157,16 +157,15 @@ object CPGuiLog:
         "Whether or not to simulate keyboard input.",
         enabled = true,
         None,
-        _ => {
-            dbgKbCombo.setEnabled(dbgSimKbChkBox.isSelected)
-        })
+        _ => dbgKbCombo.setEnabled(dbgSimKbChkBox.isSelected)
+    )
     private val saveLogAct: Action = mkAction(
         "Save Log",
         mkIcon(SAVE).?,
         "<html>Save log to a file.<br/>Log must be paused.</html>",
         enabled = false,
         None,
-        _ => {
+        _ =>
             val fileChooser = new JFileChooser
             fileChooser.setDialogTitle("Specify a file to save:")
             val resp = fileChooser.showSaveDialog(frame)
@@ -185,89 +184,87 @@ object CPGuiLog:
                         JOptionPane.ERROR_MESSAGE,
                         mkIcon(TIMES_CIRCLE, C_INDIAN_RED, 32)
                     )
-        })
+    )
     private val searchNextAct: Action = mkAction(
         "Next",
         mkIcon(STEP_FORWARD).?,
         "<html>Next search result.<br/>Log must be paused.</html>",
         enabled = false,
         'N'.?,
-        _ => {
-            logSearchPrevNext(true)
-        })
+        _ => logSearchPrevNext(true)
+    )
     private val searchPrevAct: Action = mkAction(
         "Prev",
         mkIcon(STEP_BACKWARD).?,
         "<html>Previous search result.<br/>Log must be paused.</html>",
         enabled = false,
         'P'.?,
-        _ => {
-            logSearchPrevNext(false)
-        })
+        _ => logSearchPrevNext(false)
+    )
     private val searchClearAct: Action = mkAction(
         "",
         mkIcon(TRASH_ALT).?,
         "<html>Clear the search.<br/>Log must be paused.</html>",
         enabled = false,
         None,
-        _ => {
+        _ =>
             searchFld.setText("")
             resetLogSearch()
-        })
+    )
     private val searchFirstAct: Action = mkAction(
         "",
         mkIcon(FAST_BACKWARD).?,
         "<html>Go to the first match.<br/>Log must be paused.</html>",
         enabled = false,
         None,
-        _ => {
+        _ =>
             if logSearchOffs.nonEmpty then
                 activeLogSearchOff = logSearchOffs.head
                 logPanel.setCaretPosition(activeLogSearchOff)
                 searchLog()
-        })
+    )
     private val searchLastAct: Action = mkAction(
         "",
         mkIcon(FAST_FORWARD).?,
         "<html>Go to the last match.<br/>Log must be paused.</html>",
         enabled = false,
         None,
-        _ => {
+        _ =>
             if logSearchOffs.nonEmpty then
                 activeLogSearchOff = logSearchOffs.last
                 logPanel.setCaretPosition(activeLogSearchOff)
                 searchLog()
-        })
+    )
     private val traceAct: Action = mkAction(
         "TRACE",
         None,
         "",
         enabled = true,
         None,
-        _ => {
+        _ =>
             flags.put(CPLogLevel.TRACE, !flags(CPLogLevel.TRACE))
             storeProps()
-        })
+    )
     private val debugAct: Action = mkAction(
         "DEBUG",
         None,
         "",
         enabled = true,
         None,
-        _ => {
+        _ =>
             flags.put(CPLogLevel.DEBUG, !flags(CPLogLevel.DEBUG))
             storeProps()
-        })
+    )
     private val infoAct: Action = mkAction(
         "INFO",
         None,
         "",
         enabled = true,
         None,
-        _ => {
+        _ =>
             flags.put(CPLogLevel.INFO, !flags(CPLogLevel.INFO))
             storeProps()
-        })
+    )
     private val warnAct: Action = mkAction(
         "WARN",
         None,
@@ -284,37 +281,37 @@ object CPGuiLog:
         "",
         enabled = true,
         None,
-        _ => {
+        _ =>
             flags.put(CPLogLevel.ERROR, !flags(CPLogLevel.ERROR))
             storeProps()
-        })
+    )
     private val fatalAct: Action = mkAction(
         "FATAL",
         None,
         "",
         enabled = true,
         None,
-        _ => {
+        _ =>
             flags.put(CPLogLevel.FATAL, !flags(CPLogLevel.FATAL))
             storeProps()
-        })
+    )
     private val clearLogAct: Action = mkAction(
         "Clear",
         mkIcon(TRASH_ALT).?,
         "Clear entire log.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             doc.remove(0, doc.getLength)
             resetLogSearch()
-        })
+    )
     private val pauseLogAct: Action = mkAction(
         "Pause",
         mkIcon(PAUSE).?,
         "<html>Pause new log entries.<br/>Log must be paused for search.</html>",
         enabled = true,
         None,
-        _ => {
+        _ =>
             logPaused = true
             pauseLogAct.setEnabled(false)
             resumeLogAct.setEnabled(true)
@@ -323,14 +320,14 @@ object CPGuiLog:
             saveLogAct.setEnabled(true)
             logStatusLbl.setText("Paused")
             searchLog()
-        })
+    )
     private val resumeLogAct: Action = mkAction(
         "Resume",
         mkIcon(PLAY).?,
         "Resume new log entries.",
         enabled = false,
         None,
-        _ => {
+        _ =>
             resetLogSearch()
             logPaused = false
             pauseLogAct.setEnabled(true)
@@ -338,7 +335,7 @@ object CPGuiLog:
             searchFld.setEnabled(false)
             saveLogAct.setEnabled(false)
             logStatusLbl.setText("Running")
-        })
+    )
     private val closeLogAct: Action = mkAction(
         "Close",
         None,
@@ -346,14 +343,14 @@ object CPGuiLog:
         enabled = true,
         None,
         _ => frame.setVisible(false)
-        )
+    )
     private val pauseGameAct: Action = mkAction(
         "Pause",
         mkIcon(PAUSE).?,
         "Pause game play.",
         enabled = CPEngine.isGamePaused,
         None,
-        _ => {
+        _ =>
             CPEngine.pauseGame()
             pauseGameAct.setEnabled(false)
             resumeGameAct.setEnabled(true)
@@ -361,14 +358,14 @@ object CPGuiLog:
             dbgSimKbChkBox.setEnabled(true)
             dbgKbCombo.setEnabled(dbgSimKbChkBox.isSelected)
             gameStatusLbl.setText("Paused")
-        })
+    )
     private val resumeGameAct: Action = mkAction(
         "Resume",
         mkIcon(PLAY).?,
         "Resume game play.",
         enabled = !CPEngine.isGamePaused,
         None,
-        _ => {
+        _ =>
             CPEngine.resumeGame()
             pauseGameAct.setEnabled(true)
             resumeGameAct.setEnabled(false)
@@ -376,121 +373,121 @@ object CPGuiLog:
             dbgSimKbChkBox.setEnabled(false)
             dbgKbCombo.setEnabled(false)
             gameStatusLbl.setText("Running")
-        })
+    )
     private val audioOffAct: Action = mkAction(
         "Audio Off",
         mkIcon(VOLUME_MUTE).?,
         "Silence all audio.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             audioStatusLbl.setText("Off")
             CPSound.foreach(_.setVolume(0f))
             audioOnAct.setEnabled(true)
             audioOffAct.setEnabled(false)
-        })
+    )
     private val audioOnAct: Action = mkAction(
         "Audio On",
         mkIcon(VOLUME_UP).?,
         "Resume all audio.",
         enabled = false,
         None,
-        _ => {
+        _ =>
             audioStatusLbl.setText("On")
             CPSound.foreach(_.setVolume(1.0f))
             audioOnAct.setEnabled(false)
             audioOffAct.setEnabled(true)
-        })
+    )
     private val dbgStepAct: Action = mkAction(
         "Step",
         mkIcon(BUG).?,
         "<html>Step one frame at a time.<br/>Game must be paused.</html>",
         enabled = CPEngine.isGamePaused,
         'S'.toInt.?,
-        _ => {
+        _ =>
             val kbKey = Option.when(dbgSimKbChkBox.isSelected)(CPKeyboardKey.ofId(dbgKbCombo.getSelectedItem.asInstanceOf[String]))
             if kbKey.isDefined then kbKey.get.clear() // Clear potential metadata from the key.
             CPEngine.debugStep(kbKey)
-        })
+    )
     private val darkThemeAct: Action = mkAction(
         "Flat Dark",
         None,
         "Switch to 'Flat Dark' theme.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             FlatDarkFlatIJTheme.setup()
             curTheme = classOf[FlatDarkFlatIJTheme]
             onThemeUpdate("TextPane.inactiveBackground")
             storeProps()
-        })
+    )
     private val draculaThemeAct: Action = mkAction(
         "Flat Dracula",
         None,
         "Switch to 'Flat Dracula' theme.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             FlatDraculaIJTheme.setup()
             curTheme = classOf[FlatDraculaIJTheme]
             onThemeUpdate("TextPane.inactiveBackground")
             storeProps()
-        })
+    )
     private val oneDarkThemeAct: Action = mkAction(
         "One Dark",
         None,
         "Switch to 'One Dark' theme.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             FlatOneDarkIJTheme.setup()
             curTheme = classOf[FlatOneDarkIJTheme]
             onThemeUpdate("TextPane.inactiveBackground")
             storeProps()
-        })
+    )
     private val darkPurpleThemeAct: Action = mkAction(
         "Dark Purple",
         None,
         "Switch to 'Dark Purple' theme.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             FlatDarkPurpleIJTheme.setup()
             curTheme = classOf[FlatDarkPurpleIJTheme]
             onThemeUpdate("TextPane.inactiveBackground")
             storeProps()
-        })
+    )
     private val materialDarkerThemeAct: Action = mkAction(
         "Material Darker",
         None,
         "Switch to 'Material Darker' theme.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             FlatMaterialDarkerIJTheme.setup()
             curTheme = classOf[FlatMaterialDarkerIJTheme]
             onThemeUpdate("TextPane.background")
             storeProps()
-        })
+    )
     private val carbonThemeAct: Action = mkAction(
         "Carbon",
         None,
         "Switch to 'Carbon' theme.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             FlatCarbonIJTheme.setup()
             curTheme = classOf[FlatCarbonIJTheme]
             onThemeUpdate("TextPane.background")
             storeProps()
-        })
+    )
     private val stopGameAct: Action = mkAction(
         "Stop Game",
         mkIcon(TIMES).?,
         "Stop and exit game.",
         enabled = true,
         None,
-        _ => {
+        _ =>
             val resp = JOptionPane.showConfirmDialog(
                 frame,
                 "Are you sure you want to stop and exit the game?",
@@ -501,7 +498,7 @@ object CPGuiLog:
             )
             if resp == 0 then
                 CPEngine.exitGame()
-        })
+    )
 
     private def storeProps(): Unit =
         val props = new Properties()
@@ -624,7 +621,7 @@ object CPGuiLog:
     def updateStats(stats: CPRenderStats): Unit =
         frameCnt = stats.frameCount
 
-        SwingUtilities.invokeLater(() => {
+        SwingUtilities.invokeLater(() =>
             fpsLbl.setText(numFmt.format(stats.fps))
             avgFpsLbl.setText(numFmt.format(stats.avgFps))
             usrTimeLbl.setText(s"${stats.userTimeNs / 1_000_000}ms")
@@ -639,7 +636,7 @@ object CPGuiLog:
             memUsageLbl.setText(s"$memUsage%")
             onHeapMemLbl.setText(formatMem(CPUtils.onHeapMemUsage))
             offHeapMemLbl.setText(formatMem(CPUtils.offHeapMemUsage))
-        })
+        )
 
     private def mkCheckBox(act: Action, initState: Boolean): JCheckBox =
         val cb = new JCheckBox(act)

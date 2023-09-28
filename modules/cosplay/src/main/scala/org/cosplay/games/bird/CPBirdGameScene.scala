@@ -293,13 +293,13 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
                     case None => mutable.HashSet.empty
 
                 if set.isEmpty then
-                    objRect.loop((x, y) => {
+                    objRect.loop((x, y) =>
                         if canv.isValid(x, y) then
                             val zpx = canv.getZPixel(x, y)
                             val px = zpx.px
                             if px.tag == 1 && CPRand.randFloat() < .02f then
                                 set += Sparkle(x, y, winSparkleColors.rand, px.bg.get)
-                    })
+                    )
                     map += objId -> set
 
                 for s <- set do canv.drawPixel('.'&&(s.fg, s.bg), s.x, s.y, 1)
@@ -377,12 +377,12 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
         dead = true
         if audioOn then
             stopBgAudio()
-            hitSnd.play(200, _ => fallSnd.play(0, _ => {
+            hitSnd.play(200, _ => fallSnd.play(0, _ =>
                 loseSpr.show()
                 lostShdr.start()
                 birdSpr.hide()
                 youLostSnd.play()
-            }))
+            ))
         delta = 0.4
         vel = velChange
         speed = 0f

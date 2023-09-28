@@ -137,7 +137,7 @@ class CPRandomFadeInShader(
             if reCalc then
                 lastRect = rect
                 chArr = Array.ofDim[Char](rect.w, rect.h)
-            rect.loop((x, y) => {
+            rect.loop((x, y) =>
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
@@ -153,7 +153,7 @@ class CPRandomFadeInShader(
                         if reCalc then chArr(x)(y) = ch
                         newPx = newPx.withChar(chArr(x)(y))
                         canv.drawPixel(newPx, x, y, zpx.z)
-            })
+            )
             frmCnt += 1
             if frmCnt == maxFrmCnt then
                 go = false

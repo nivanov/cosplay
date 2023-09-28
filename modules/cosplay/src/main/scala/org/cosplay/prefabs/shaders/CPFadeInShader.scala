@@ -124,7 +124,7 @@ class CPFadeInShader(
         if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             val canv = ctx.getCanvas
-            rect.loop((x, y) => {
+            rect.loop((x, y) => 
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
@@ -134,7 +134,7 @@ class CPFadeInShader(
                         val newFg = CPColor.mixture(bgFg, px.fg, bal)
                         val newBg = px.bg.flatMap(CPColor.mixture(bgBg, _, bal).?)
                         canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
-            })
+            )
             frmCnt += 1
             if frmCnt == maxFrmCnt then
                 go = false

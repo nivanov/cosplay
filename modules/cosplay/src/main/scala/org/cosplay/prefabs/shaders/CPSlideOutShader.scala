@@ -130,7 +130,7 @@ class CPSlideOutShader(
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             if matrix == null then matrix = CPSlideDirection.mkMatrix(dir, rect.dim, maxFrmCnt)
             val canv = ctx.getCanvas
-            rect.loop((x, y) => {
+            rect.loop((x, y) => 
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
@@ -142,7 +142,7 @@ class CPSlideOutShader(
                         val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
                         canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
-            })
+            )
             frmCnt += 1
             if frmCnt == maxFrmCnt then
                 go = false

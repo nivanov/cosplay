@@ -142,7 +142,7 @@ class CPShimmerShader(
                 lastSet.clear()
                 lastRect = canv.rect
                 val rect = if entireFrame then ctx.getCameraFrame else objRect
-                rect.loop((x, y) => {
+                rect.loop((x, y) => 
                     if canv.isValid(x, y) then
                         val zpx = canv.getZPixel(x, y)
                         if !skip(zpx, x, y) then
@@ -151,7 +151,7 @@ class CPShimmerShader(
                             val newPx = if px.char == ' ' then px.withBg(rc.?) else px.withFg(rc)
                             canv.drawPixel(newPx, x, y, zpx.z)
                             lastSet += PixelXYZ(newPx, x, y, zpx.z)
-                })
+                )
             else
                 for px <- lastSet do canv.drawPixel(px.px, px.x, px.y, px.z)
 
