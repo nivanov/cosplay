@@ -67,14 +67,14 @@ object CPTextInputExample:
       */
     def main(args: Array[String]): Unit =
         val termDim = CPDim(100, 40)
-
+        val darkerBg = C_WHITE.darker(0.3f)
         def mkSkin(active: Boolean, passwd: Boolean): (Char, Int, Boolean) => CPPixel =
             (ch: Char, pos: Int, isCur: Boolean) =>
                 val ch2 = if passwd && !ch.isWhitespace then '*' else ch
                 if active then
                     if isCur then ch2&&(C_WHITE, C_SLATE_BLUE3)
                     else ch2&&(C_BLACK, C_WHITE)
-                else ch2&&(C_BLACK, C_WHITE.darker(0.3f))
+                else ch2&&(C_BLACK, darkerBg)
 
         val userTin = CPTextInputSprite("usrTin", 0, 0, 1,
             15, 20,
@@ -112,7 +112,7 @@ object CPTextInputExample:
             pwdTin,
             panel,
             // Acquire the focus at the beginning by username text input.
-            CPOffScreenSprite(ctx => if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("usrTin")),
+            CPSingletonSprite(fun = _.acquireFocus("usrTin")),
             CPLayoutSprite("layout",
                 """
                   | // Centered dialog panel.

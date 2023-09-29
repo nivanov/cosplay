@@ -42,6 +42,8 @@ object CPDialogSupport:
     private val bg = C_BLACK
     private val fg = C_GREEN
     private val liteFg = fg.lighter(.5f)
+    private val liteBg = fg.darker(.6f)
+    private val darkBg = fg.darker(.8f)
     private val markup = CPMarkup(
         fg,
         bg.?,
@@ -138,45 +140,49 @@ object CPDialogSupport:
 
     /**
       *
+      * @param ctx
       * @param onStart
       * @param onOk
       * @param onCancel
       */
     def showLogin(
+        ctx: CPSceneObjectContext,
         onStart: (CPSceneObjectContext) => Unit = _ => (),
         onOk: (CPSceneObjectContext) => Unit,
         onCancel: (CPSceneObjectContext) => Unit
     ): Unit =
+        //val txtBg = C_GREEN.darker(.8f)
         def mkSkin(active: Boolean, passwd: Boolean): (Char, Int, Boolean) => CPPixel =
             (ch: Char, pos: Int, isCur: Boolean) =>
                 val ch2 = if passwd && !ch.isWhitespace then '*' else ch
                 if active then
-                    if isCur then ch2 && (C_WHITE, C_SLATE_BLUE3)
-                    else ch2 && (C_BLACK, C_WHITE)
-                else ch2 && (C_BLACK, C_WHITE.darker(0.3f))
+                    if isCur then ch2 && (bg, fg)
+                    else ch2 && (liteFg, liteBg)
+                else
+                    ch2 && (liteFg, darkBg)
 
         val titleSpr = mkTitleSpr("Login")
         val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getWidth, fg.darker(.5f)))
         val usrSpr = CPTextInputSprite(x = 0, 0, 1,
-            30, 30,
+            40, 40,
             "",
             mkSkin(true, false),
             mkSkin(false, false),
-            submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = "pwdField".?
+            submitKeys = Seq(KEY_ENTER, KEY_TAB, KEY_CTRL_A)
         )
-        val pwdFieldSpr = CPTextInputSprite(x = 0, 0, 1,
-            30, 30,
+        val pwdSpr = CPTextInputSprite(x = 0, 0, 1,
+            40, 40,
             "",
             mkSkin(true, true),
             mkSkin(false, true),
-            submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = "usrField".?
+            submitKeys = Seq(KEY_ENTER, KEY_TAB, KEY_CTRL_A)
         )
-        val usrLblSpr = new CPLabelSprite("usrLbl", 0, 0, 1, text = "Username:", C_LIGHT_STEEL_BLUE)
-        val pwdLblSpr = new CPLabelSprite("pwdLbl", 0, 0, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
+        usrSpr.setNext(pwdSpr.getId.?)
+        pwdSpr.setNext(usrSpr.getId.?)
+        val usrLblSpr = new CPLabelSprite(x = 0, 0, 1, text = "Username:", fg)
+        val pwdLblSpr = new CPLabelSprite(x = 0, 0, 1, text = "Password:", fg)
         val btnSpr = mkImageSpr(new CPArrayImage(markup.process("<%[ESC]%> Cancel    <%[Ctrl-A]%> Submit")))
-        val panelW = 30 // Text field.
+        val panelW = usrSpr.getWidth // Text field.
             + 4 // Left padding.
             + 4 // Right padding.
             + 2 // Account for left and right 1-pixel borders.
@@ -196,11 +202,27 @@ object CPDialogSupport:
                | // Laying out constituent sprites.
                | ${titleSpr.getId} = x: left(${panelSpr.getId}), y: top(${panelSpr.getId}), off: [4, 1];
                | ${dashSpr.getId} = x: same(${titleSpr.getId}), y: below(${titleSpr.getId});
-               | ${msgSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId}), off: [0, 1];
-               | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${msgSpr.getId}), off: [0, 3];
+               | ${usrLblSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId}), off: [0, 1];
+               | ${usrSpr.getId} = x: same(${titleSpr.getId}), y: below(${usrLblSpr.getId});
+               | ${pwdLblSpr.getId} = x: same(${titleSpr.getId}), y: below(${usrSpr.getId}), off: [0, 1];
+               | ${pwdSpr.getId} = x: same(${titleSpr.getId}), y: below(${pwdLblSpr.getId});
+               | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${pwdSpr.getId}), off: [0, 3];
                |""".stripMargin
         )
-        Seq(panelSpr, titleSpr, dashSpr, msgSpr, btnSpr, layoutSpr)
+        val ctrlSpr = CPSingletonSprite(fun = _.acquireFocus(usrSpr.getId))
+        val objs = Seq(panelSpr, titleSpr, dashSpr, usrLblSpr, usrSpr, pwdLblSpr, pwdSpr, btnSpr, layoutSpr, ctrlSpr)
+        var isOk = false
+        showDialog(
+            ctx,
+            objs,
+            onStart,
+            onEnd = x => if isOk then onOk(x) else onCancel(x),
+            onKey = (x, key) => key match
+                case KEY_ESC | KEY_CTRL_A =>
+                    isOk = key == KEY_CTRL_A
+                    true
+                case _ => false
+        )
 
     /**
       *
@@ -225,13 +247,10 @@ object CPDialogSupport:
             ctx,
             objs,
             onStart,
-            x =>
-                objs.foreach(o => x.deleteObject(o.getId))
-                if isYes then onYes(x) else onNo(x)
-            ,
+            x => if isYes then onYes(x) else onNo(x),
             (x, key) => key match
-                case KEY_ESC | KEY_UP_N | KEY_UP_Y =>
-                    isYes = key == KEY_UP_Y
+                case KEY_ESC | KEY_UP_N | KEY_LO_Y | KEY_UP_Y | KEY_LO_N =>
+                    isYes = key == KEY_UP_Y || key == KEY_LO_Y
                     true
                 case _ => false
         )
@@ -258,10 +277,7 @@ object CPDialogSupport:
             ctx,
             objs,
             onStart,
-            x =>
-                objs.foreach(o => x.deleteObject(o.getId))
-                onEnd(x)
-            ,
+            onEnd(_),
             (x, key) => key match
                 case KEY_ESC | KEY_ENTER => true
                 case _ => false

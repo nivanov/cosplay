@@ -31,6 +31,19 @@ package org.cosplay
 */
 
 /**
+  * The scope for the [[CPSingletonSprite]].
+  */
+enum CPSingletonScope:
+    /**  Scope of the entire game. One event at the beginning of the game loop. */
+    case GAME
+    /**  Scope of the scene. One event at the beginning of the scene life cycle. */
+    case SCENE
+    /**  Scope of the individual singleton object. One event at the beginning of the singleton life cycle. */
+    case OBJECT
+
+import CPSingletonScope.*
+
+/**
   * Special type of off screen sprite that performs given function only once the first time
   * this sprite is processed by either the current scene or globally. Note that if the sprite is never added to the
   * scene or never processed as part of the game loop, its function will never be called. Depending on the `isMon`
@@ -40,19 +53,23 @@ package org.cosplay
   * @param fun Function to call.
   * @param isMon If `true` then given function will be called from [[CPSceneObject.monitor()]] callback, otherwise
   *              it will be called from [[CPSceneObject.update()]] method. Default value is `false`.
-  * @param isGlobal If `true` than 1st global frame count will trigger the function call, otherwise
-  *                 the local scene zero frame count will be the trigger. Note that if this parameter is `false`,
-  *                 than the function can be called multiple times (as many times as given scene gets activated).
-  *                 Default value is `true`.
+  * @param scope The scope of this singleton. Default value is [[CPSingletonScope.OBJECT]].
   */
 class CPSingletonSprite(
     id: String = s"singleton-${CPRand.guid6}",
     fun: CPSceneObjectContext => Unit,
     isMon: Boolean = false,
-    isGlobal: Boolean = true
+    scope: CPSingletonScope = OBJECT
 ) extends CPOffScreenSprite(id):
+    private var touched = false
     private def check(using ctx: CPSceneObjectContext): Unit =
-        if (isGlobal && ctx.getFrameCount == 0) || (!isGlobal && ctx.getSceneFrameCount == 0) then fun(ctx)
-    override def update(using ctx: CPSceneObjectContext): Unit = if !isMon then check
-    override def monitor(using ctx: CPSceneObjectContext): Unit = if isMon then check
+        scope match
+            case GAME => if ctx.getFrameCount == 0 then fun(ctx)
+            case SCENE => if ctx.getSceneFrameCount == 0 then fun(ctx)
+            case OBJECT => if !touched then fun(ctx)
+    override def update(using ctx: CPSceneObjectContext): Unit =
+        if !isMon then check
+        touched = true
+    override def monitor(using ctx: CPSceneObjectContext): Unit =
+        if isMon then check
 

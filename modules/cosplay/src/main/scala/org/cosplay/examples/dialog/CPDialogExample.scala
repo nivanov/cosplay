@@ -74,7 +74,11 @@ object CPDialogExample:
                     ctx = ctx,
                     title = "Login",
                     msg = "Do you want to start login demo?",
-                    onYes = x => (),
+                    onYes = x => CPDialogSupport.showLogin(
+                        x,
+                        onOk = _ => (),
+                        onCancel = _ => (),
+                    ),
                     onNo = x => x.exitGame()
                 )
             ),
