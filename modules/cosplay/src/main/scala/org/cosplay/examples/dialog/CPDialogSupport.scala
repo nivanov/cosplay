@@ -147,9 +147,9 @@ object CPDialogSupport:
       */
     def showLogin(
         ctx: CPSceneObjectContext,
-        onStart: (CPSceneObjectContext) => Unit = _ => (),
-        onOk: (CPSceneObjectContext) => Unit,
-        onCancel: (CPSceneObjectContext) => Unit
+        onStart: CPSceneObjectContext => Unit = _ => (),
+        onOk: CPSceneObjectContext => Unit,
+        onCancel: CPSceneObjectContext => Unit
     ): Unit =
         //val txtBg = C_GREEN.darker(.8f)
         def mkSkin(active: Boolean, passwd: Boolean): (Char, Int, Boolean) => CPPixel =
@@ -237,9 +237,9 @@ object CPDialogSupport:
         ctx: CPSceneObjectContext,
         title: String,
         msg: String,
-        onStart: (CPSceneObjectContext) => Unit = _ => (),
-        onYes: (CPSceneObjectContext) => Unit,
-        onNo: (CPSceneObjectContext) => Unit
+        onStart: CPSceneObjectContext => Unit = _ => (),
+        onYes: CPSceneObjectContext => Unit,
+        onNo: CPSceneObjectContext => Unit
     ): Unit =
         val objs = mkBasicDialogParts(title, msg, "<%[N]%> No    <%[Y]%> Yes")
         var isYes = false
@@ -269,8 +269,8 @@ object CPDialogSupport:
         ctx: CPSceneObjectContext,
         title: String,
         msg: String,
-        onStart: (CPSceneObjectContext) => Unit = _ => (),
-        onEnd: (CPSceneObjectContext) => Unit = _ => ()
+        onStart: CPSceneObjectContext => Unit = _ => (),
+        onEnd: CPSceneObjectContext => Unit = _ => ()
     ): Unit =
         val objs = mkBasicDialogParts(title, msg, "<%[Enter]%> Continue")
         showDialog(
@@ -294,8 +294,8 @@ object CPDialogSupport:
     private def showDialog(
         ctx: CPSceneObjectContext,
         objs: Seq[CPSceneObject],
-        onStart: (CPSceneObjectContext) => Unit,
-        onEnd: (CPSceneObjectContext) => Unit,
+        onStart: CPSceneObjectContext => Unit,
+        onEnd: CPSceneObjectContext => Unit,
         onKey: (CPSceneObjectContext, CPKeyboardKey) => Boolean // Return 'true' to exit the dialog.
     ): Unit =
         objs.foreach(ctx.addObject(_))
@@ -306,7 +306,7 @@ object CPDialogSupport:
 
             // Test text input sprites first since their hold keyboard focus.
             for obj <- objs if keyOpt.isEmpty do obj match
-                case ti: CPTextInputSprite => if ti.isReady then keyOpt = ti.getResult._1
+                case ti: CPTextInputSprite if ti.isReady => keyOpt = ti.getResult._1
                 case _ => ()
             // If no text input, check regular keyboard event on each frame.
             if keyOpt.isEmpty then keyOpt = ctx.getKbEvent.flatMap(_.key.?)

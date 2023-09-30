@@ -218,9 +218,14 @@ class CPTextInputSprite(
       * yet ready or got cancelled. Last key pressed is `None` when no keys were pressed yet on this sprite.
       * Call method [[isReady()]] on each frame to check whether the input result is actually ready.
       *
+      * Note that if result was ready the internal ready flag will be reset to `false` so that the next
+      * call to [[isReady()]] will return `false`.
+      *
       * @see [[isReady()]]
       */
-    def getResult: (Option[CPKeyboardKey], Option[String]) = res
+    def getResult: (Option[CPKeyboardKey], Option[String]) =
+        ready = false
+        res
 
     /** @inheritdoc */
     def getDim: CPDim = dim

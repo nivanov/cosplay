@@ -291,6 +291,26 @@ trait CPSceneObjectContext extends CPBaseContext:
         case None => false
 
     /**
+      * Tests whether or not scene object with given ID is a keyboard focus owner.
+      *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
+      *
+      * @param id Scene object ID to test for keyboard focus ownership.
+      * @see [[acquireFocus()]]
+      * @see [[getFocusOwner]]
+      * @see [[acquireMyFocus()]]
+      * @see [[releaseFocus()]]
+      * @see [[releaseMyFocus()]]
+      */
+    def isFocusOwner(id: String): Boolean = getFocusOwner match
+        case Some(x) => id == x
+        case None => false
+
+    /**
       * Makes the current scene object the owner of the keyboard focus.
       *
       * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
