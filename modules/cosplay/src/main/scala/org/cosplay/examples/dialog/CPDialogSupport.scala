@@ -100,31 +100,33 @@ object CPDialogSupport:
       * Creates and returns list of dialog constituents including a layout controller.
       *
       * @param title Dialog title to be rendered using "Rectangles" ASCII font.
-      * @param msg One line message.
+      * @param msgObjs Scene objects representing the message. They will be laid out vertically
+      *                one below another. At least one object is required.
       * @param btnsMd Buttons line markup.
       */
     private def mkBasicDialogParts(
         title: String,
-        msg: String,
+        msgObjs: Seq[CPSceneObject],
         btnsMd: String
     ): Seq[CPSceneObject] =
+        !>(msgObjs.nonEmpty, "At least one message object is required.")
         val titleSpr = mkTitleSpr(title)
         val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getWidth, fg.darker(.5f)))
-        val msgSpr = mkImageSpr(CPSystemFont.render(msg, fg))
         val btnSpr = mkImageSpr(new CPArrayImage(markup.process(btnsMd)))
-        val panelW = Seq(titleSpr.getWidth, msgSpr.getImage.w, btnSpr.getImage.w).max
+        val panelW = Seq(titleSpr.getWidth, msgObjs.maxBy(_.getWidth), btnSpr.getImage.w).max
             + 4 // Left padding.
             + 4 // Right padding.
             + 2 // Account for left and right 1-pixel borders.
         val panelH = titleSpr.getHeight
             + 1 // Dash.
             + 1 // Empty line between the dash and the message.
-            + 1 // Message.
+            + msgObjs.size // Message.
             + 3 // 3 empty lines between message and the button.
             + 1 // Button line.
             + 3 // Top & bottom padding.
             + 2 // Account for top and bottom 1-pixel borders.
         val panelSpr = mkPanelSpr(panelW, panelH)
+        val msgLayoutSpec = for msg <- msgObjs yield s""
         val layoutSpr = CPLayoutSprite(CPRand.guid6,
             s"""
                | // Centered dialog panel.
@@ -132,18 +134,21 @@ object CPDialogSupport:
                | // Laying out constituent sprites.
                | ${titleSpr.getId} = x: left(${panelSpr.getId}), y: top(${panelSpr.getId}), off: [4, 1];
                | ${dashSpr.getId} = x: same(${titleSpr.getId}), y: below(${titleSpr.getId});
+               |
                | ${msgSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId}), off: [0, 1];
-               | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${msgSpr.getId}), off: [0, 3];
+               |
+               | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${msgObjs.last.getId}), off: [0, 3];
                |""".stripMargin
         )
-        Seq(panelSpr, titleSpr, dashSpr, msgSpr, btnSpr, layoutSpr)
+        Seq(panelSpr, titleSpr, dashSpr, btnSpr, layoutSpr) ++ msgObjs
 
     /**
+      * Example login dialog with username and password text fields.
       *
-      * @param ctx
-      * @param onStart
-      * @param onOk
-      * @param onCancel
+      * @param ctx The context of the caller.
+      * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
+      * @param onOk Callback if 'ok' is chosen.
+      * @param onCancel Callback if 'cancel' is chose.
       */
     def showLogin(
         ctx: CPSceneObjectContext,
@@ -151,7 +156,7 @@ object CPDialogSupport:
         onOk: CPSceneObjectContext => Unit,
         onCancel: CPSceneObjectContext => Unit
     ): Unit =
-        //val txtBg = C_GREEN.darker(.8f)
+        // Makes the skins for active/inactive text fields.
         def mkSkin(active: Boolean, passwd: Boolean): (Char, Int, Boolean) => CPPixel =
             (ch: Char, pos: Int, isCur: Boolean) =>
                 val ch2 = if passwd && !ch.isWhitespace then '*' else ch
@@ -230,8 +235,8 @@ object CPDialogSupport:
       * @param title Dialog title to be rendered using "Rectangles" ASCII font.
       * @param msg One line message.
       * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
-      * @param onYes
-      * @param onNo
+      * @param onYes Callback when 'yes' is chosen.
+      * @param onNo Callback when 'no' is chosen.
       */
     def showYesNo(
         ctx: CPSceneObjectContext,
@@ -284,12 +289,16 @@ object CPDialogSupport:
         )
 
     /**
+      * Internal implementation for dialog logic.
       *
       * @param ctx The context of the caller.
-      * @param objs Dynamic sprite comprising the UI of the dialog.
+      * @param objs Scene objects comprising the UI of the dialog. They will be automatically
+      *             added to the current scene and automatically remove once the dialog is closed.
       * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
       * @param onEnd Function to call after dialog's constituent sprites are removed from the scene.
-      * @param onKey
+      * @param onKey Called on each key press within the dialog. Should return `true` if dialog
+      *              should be closed in response to this key press, `false` otherwise to keep
+      *              dialog open.
       */
     private def showDialog(
         ctx: CPSceneObjectContext,
@@ -298,23 +307,24 @@ object CPDialogSupport:
         onEnd: CPSceneObjectContext => Unit,
         onKey: (CPSceneObjectContext, CPKeyboardKey) => Boolean // Return 'true' to exit the dialog.
     ): Unit =
+        // Add dialog components to the current scene.
         objs.foreach(ctx.addObject(_))
         // Add the controller sprite.
         ctx.addObject(CPOffScreenSprite(x =>  // Called on each update() callback.
-            // Obtain the pressed key, if any.
             var keyOpt = none[CPKeyboardKey]
-
-            // Test text input sprites first since their hold keyboard focus.
+            // Scan text input sprites first since their hold keyboard focus.
             for obj <- objs if keyOpt.isEmpty do obj match
                 case ti: CPTextInputSprite if ti.isReady => keyOpt = ti.getResult._1
                 case _ => ()
-            // If no text input, check regular keyboard event on each frame.
+            // If no key press found in text inputs, check regular keyboard event on each frame.
             if keyOpt.isEmpty then keyOpt = ctx.getKbEvent.flatMap(_.key.?)
 
             keyOpt match
                 case Some(key) =>
                     if onKey(x, key) then
+                        // Remove dialog components from the current scene.
                         objs.foreach(o => x.deleteObject(o.getId))
+                        // Remove this controller scene object itself from the scene.
                         x.deleteMyself()
                         onEnd(x)
                 case None => ()

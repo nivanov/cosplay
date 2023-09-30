@@ -77,17 +77,22 @@ import scala.collection.mutable
   *     submit keys. Default value is `None`.
   * @param cancelKeys Optional set of keyboard keys to accept for cancellation action. When one of these keys
   *     is pressed the sprite will reset to its initial state, marked as ready and its result set to `None`.
-  *     Default value is [[CPKeyboardKey.KEY_ESC]].
+  *     Default value is [[CPKeyboardKey.KEY_ESC]]. Note that neither cancel or submit keys can contain any of the
+  *     internally used keys: [[CPKeyboardKey.KEY_LEFT]], [[CPKeyboardKey.KEY_RIGHT]], [[CPKeyboardKey.KEY_BACKSPACE]]
+  *     or [[CPKeyboardKey.KEY_DEL]].
   * @param submitKeys Optional set of keyboard keys to accept for submission action. When one of these keys
   *     is pressed the sprite will make result available via [[isReady]] method and will optionally switch
   *     keyboard focus for the `next` scene object, if any. Default value is [[CPKeyboardKey.KEY_ENTER]].
-  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
+  *     Note that neither cancel or submit keys can contain any of the internally used keys:
+  *     [[CPKeyboardKey.KEY_LEFT]], [[CPKeyboardKey.KEY_RIGHT]], [[CPKeyboardKey.KEY_BACKSPACE]]
+  *     or [[CPKeyboardKey.KEY_DEL]].
   * @param keyFilter Optional filter on keyboard events. Only if this filter returns `true` for a given
   *     keyboard event its key will be used as an input. Note that this filter is not applied to built-in
   *     keyboard keys such as cursor movements, escape, backspace, as well as cancel and submit keys. This
   *     filter can be used, for example, to ensure that only digits can be entered.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @example See [[org.cosplay.examples.textinput.CPTextInputExample CPTextInputExample]] class for the example of
   *     using labels and text input.
   * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
@@ -106,13 +111,18 @@ class CPTextInputSprite(
     private var next: Option[String] = None,
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
-    tags: Set[String] = Set.empty,
     keyFilter: CPKeyboardEvent => Boolean = _ => true,
     collidable: Boolean = false,
-    shaders: Seq[CPShader] = Seq.empty
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: Set[String] = Set.empty,
 ) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     !>(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
     !>(initTxt != null, "Initial text cannot be 'null'.")
+    !>(!cancelKeys.exists(isReservedKey), "Cancel keys cannot contain reserved keys.")
+    !>(!submitKeys.exists(isReservedKey), "Submit keys cannot contain reserved keys.")
+
+    private def isReservedKey(key: CPKeyboardKey): Boolean =
+        key == KEY_LEFT || key == KEY_RIGHT || key == KEY_BACKSPACE || key == KEY_DEL
 
     private val dim = CPDim(visLen, 1)
     private val buf = mutable.ArrayBuffer.empty[Char]
@@ -208,6 +218,8 @@ class CPTextInputSprite(
 
     /**
       * Whether or not the result is either submitted or cancelled, i.e. ready.
+      * Note that the internal ready flag is set to `false` again after the [[getResult()]] call (if the
+      * result was ready).
       *
       * @see [[getResult()]]
       */
@@ -218,8 +230,8 @@ class CPTextInputSprite(
       * yet ready or got cancelled. Last key pressed is `None` when no keys were pressed yet on this sprite.
       * Call method [[isReady()]] on each frame to check whether the input result is actually ready.
       *
-      * Note that if result was ready the internal ready flag will be reset to `false` so that the next
-      * call to [[isReady()]] will return `false`.
+      * Note that if result was ready the internal ready flag will be reset to `false` afte this call so that
+      * the next call to [[isReady()]] will return `false`.
       *
       * @see [[isReady()]]
       */

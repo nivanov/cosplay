@@ -54,13 +54,17 @@ import CPSingletonScope.*
   * @param isMon If `true` then given function will be called from [[CPSceneObject.monitor()]] callback, otherwise
   *              it will be called from [[CPSceneObject.update()]] method. Default value is `false`.
   * @param scope The scope of this singleton. Default value is [[CPSingletonScope.OBJECT]].
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   */
 class CPSingletonSprite(
     id: String = s"singleton-${CPRand.guid6}",
     fun: CPSceneObjectContext => Unit,
     isMon: Boolean = false,
-    scope: CPSingletonScope = OBJECT
-) extends CPOffScreenSprite(id):
+    scope: CPSingletonScope = OBJECT,
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: Set[String] = Set.empty
+) extends CPOffScreenSprite(id, shaders, tags):
     private var touched = false
     private def check(using ctx: CPSceneObjectContext): Unit =
         scope match

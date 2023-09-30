@@ -65,10 +65,11 @@ object CPDialogExample:
       */
     def main(args: Array[String]): Unit =
         val termDim = CPDim(100, 40)
-
         val bgPx = ' '&&(C_GRAY2, C_BLACK)
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
+            new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
+            // Spin up dialog example at the start.
             new CPSingletonSprite(fun = ctx =>
                 CPDialogSupport.showYesNo(
                     ctx = ctx,
