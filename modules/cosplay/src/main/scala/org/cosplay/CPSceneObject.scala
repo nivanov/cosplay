@@ -250,6 +250,8 @@ abstract class CPSceneObject(
       * when one needs to be notified when all scene objects to be updated but before any of them are rendered.
       * Default implementation is no-op. No rendering should be done in this callback.
       *
+      * Default implementation is no-op.
+      *
       * @param ctx Frame context. This context provides bulk of functionality that a scene object
       *     can do in a game, e.g. interact with other scene objects, check collisions, read input
       *     events and manage input focus, add or remove scene objects, add new and switch between scenes, etc.
@@ -268,6 +270,8 @@ abstract class CPSceneObject(
       *
       * Note that generally this callback should not modify scene object state (which should be done in either
       * [[update()]] or [[monitor()]] callbacks.
+      *
+      * Default implementation is no-op.
       *
       * @param ctx Frame context. This context provides bulk of functionality that a scene object
       *     can do in a game, e.g. interact with other scene objects, check collisions, read input

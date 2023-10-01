@@ -69,16 +69,24 @@ object CPDialogExample:
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            // Spin up dialog example at the start.
+            // Spin up dialog workflow at the start.
             new CPSingletonSprite(fun = ctx =>
                 CPDialogSupport.showYesNo(
                     ctx = ctx,
                     title = "Login",
-                    msg = "Do you want to start login demo?",
+                    msgs = "Do you want to start login demo?".seq,
                     onYes = x => CPDialogSupport.showLogin(
                         x,
                         onOk = _ => (),
-                        onCancel = _ => (),
+                        onCancel = _ => CPDialogSupport.showConfirm(
+                            ctx,
+                            title = "Login",
+                            msgs = Seq(
+                                "Login dialog was cancelled by the user.",
+                                "You can click <%ESC%> or <%[Enter]%> to exit this example."
+                            ),
+                            onEnd = _.exitGame()
+                        ),
                     ),
                     onNo = x => x.exitGame()
                 )

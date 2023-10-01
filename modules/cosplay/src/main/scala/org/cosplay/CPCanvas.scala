@@ -916,7 +916,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param rightBottom Right bottom corner pixel.
       * @param right Right side line pixel.
       * @param rightTop Right top corner pixel.
-      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      * @param skin Skin function that takes global X and Y coordinates as well as default pixel at that location
       *     and returns the skinned pixel.
       */
     def drawRect(
@@ -1468,7 +1468,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param title Title of the border. Default is no border.
       * @param titleX X-coordinate of the title. Default is -1.
       * @param titleY Y-coordinate of the title. Default is -1.
-      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      * @param skin Skin function that takes global X and Y coordinates as well as default pixel at that location
       *             and returns the skinned pixel.
       */
     def drawRectBorder(
@@ -1522,7 +1522,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param title Title of the border. Default is no border.
       * @param titleX X-coordinate of the title. Default is -1.
       * @param titleY Y-coordinate of the title. Default is -1.
-      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      * @param skin Skin function that takes global X and Y coordinates as well as default pixel at that location
       *     and returns the skinned pixel.
       */
     def drawBorder(
@@ -1562,7 +1562,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param title Title of the border. Default is no border.
       * @param titleX X-coordinate of the title. Default is -1.
       * @param titleY Y-coordinate of the title. Default is -1.
-      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      * @param skin Skin function that takes X and Y coordinates as well as default pixel at that location
       *     and returns the skinned pixel.
       */
     def drawSimpleBorder(

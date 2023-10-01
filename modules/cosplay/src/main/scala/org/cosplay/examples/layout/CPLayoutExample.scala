@@ -74,7 +74,9 @@ object CPLayoutExample:
                 "-.|'-'|.",
                 C_GREEN_YELLOW,
                 C_BLACK.?,
-                styleStr(name, C_DARK_ORANGE3)
+                styleStr(name, C_DARK_ORANGE3),
+                // Border darkening gradient.
+                borderSkin = (_, y, px) => px.withDarkerFg(.8f - y.min(6) / 20.0f)
             )
 
         val bgPx = ' '&&(C_GRAY2, C_BLACK)

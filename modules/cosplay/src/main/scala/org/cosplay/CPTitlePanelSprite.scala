@@ -55,7 +55,7 @@ import org.cosplay.CPPixel.*
   * @param borderBg Optional border background color.
   * @param title Optional title for the border as sequence of pixels. Title is always centered. If
   *              sequence is empty, no title will be drawn.
-  * @param borderSkin Skin function for the border that takes x and y coordinates as well as default pixel
+  * @param borderSkin Skin function for the border that takes *relative* X and Y coordinates as well as default pixel
   *                   at that location and returns the skinned pixel. Default value is no-op function.
   * @param collidable Whether or not this sprite provides collision shape. Default value is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
@@ -107,6 +107,6 @@ class CPTitlePanelSprite(
             title,
             x1 + (width - title.length) / 2,
             y1,
-            borderSkin
+            (x, y, px) => borderSkin(x - x1, y - y1, px)
         )
 

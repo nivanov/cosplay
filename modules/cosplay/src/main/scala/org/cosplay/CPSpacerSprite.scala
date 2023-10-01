@@ -30,6 +30,20 @@ package org.cosplay
                ALl rights reserved.
 */
 
+/**
+  * Simple sprite that only provides its dimension for layout purposes and has no rendering content.
+  *
+  * @param id ID of this scene object.
+  * @param x Initial X-coordinate of the top-left corner of the sprite.
+  * @param y Initial Y-coordinate of the top-left corner of the sprite.
+  * @param z Initial Z-index at which to render the sprite.
+  * @param width Spacer width.
+  * @param height Spacer height.
+  * @param collidable Whether or not this sprite provides collision shape.
+  * @param shaders Optional sequence of shaders for this sprite.
+  * @param tags Optional set of organizational or grouping tags.
+  * @see [[CPLayoutSprite]]
+  */
 class CPSpacerSprite(
     id: String = s"spacer-spr-${CPRand.guid6}",
     x: Int,
@@ -64,7 +78,7 @@ class CPSpacerSprite(
     override def getDim: CPDim = dim
 
 /**
-  *
+  * Companion object.
   */
 object CPSpacerSprite:
     /**

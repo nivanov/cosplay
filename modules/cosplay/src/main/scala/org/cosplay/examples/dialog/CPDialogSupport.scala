@@ -85,7 +85,7 @@ object CPDialogSupport:
       * @param h Panel height.
       */
     private def mkPanelSpr(w: Int, h: Int): CPTitlePanelSprite =
-        CPTitlePanelSprite(
+       CPTitlePanelSprite(
             CPRand.guid6,
             0, 0, w, h, -1,
             C_BLACK,
@@ -93,7 +93,8 @@ object CPDialogSupport:
             C_GREEN_YELLOW,
             C_BLACK.?,
             Seq.empty,
-            borderSkin = (_, _, px) => px.withDarkerFg(0.5f),
+           // Border darkening gradient.
+           borderSkin = (_, y, px) => px.withDarkerFg(.8f - y.min(6) / 20.0f)
         )
 
     /**
@@ -113,7 +114,7 @@ object CPDialogSupport:
         val titleSpr = mkTitleSpr(title)
         val dashSpr = mkImageSpr(CPSystemFont.render("-" * titleSpr.getWidth, fg.darker(.5f)))
         val btnSpr = mkImageSpr(new CPArrayImage(markup.process(btnsMd)))
-        val panelW = Seq(titleSpr.getWidth, msgObjs.maxBy(_.getWidth), btnSpr.getImage.w).max
+        val panelW = Seq(titleSpr.getWidth, msgObjs.map(_.getWidth).max, btnSpr.getImage.w).max
             + 4 // Left padding.
             + 4 // Right padding.
             + 2 // Account for left and right 1-pixel borders.
@@ -126,7 +127,12 @@ object CPDialogSupport:
             + 3 // Top & bottom padding.
             + 2 // Account for top and bottom 1-pixel borders.
         val panelSpr = mkPanelSpr(panelW, panelH)
-        val msgLayoutSpec = for msg <- msgObjs yield s""
+        val spacerSpr = CPSpacerSprite(1, 1)
+        var lastId = spacerSpr.getId
+        val msgLayoutSpec = for obj <- msgObjs yield
+            val spec = s"${obj.getId} = x: same(${titleSpr.getId}), y: below($lastId);"
+            lastId = obj.getId
+            spec
         val layoutSpr = CPLayoutSprite(CPRand.guid6,
             s"""
                | // Centered dialog panel.
@@ -134,13 +140,12 @@ object CPDialogSupport:
                | // Laying out constituent sprites.
                | ${titleSpr.getId} = x: left(${panelSpr.getId}), y: top(${panelSpr.getId}), off: [4, 1];
                | ${dashSpr.getId} = x: same(${titleSpr.getId}), y: below(${titleSpr.getId});
-               |
-               | ${msgSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId}), off: [0, 1];
-               |
+               | ${spacerSpr.getId} = x: same(${titleSpr.getId}), y: below(${dashSpr.getId});
+               | ${msgLayoutSpec.mkString(" ")}
                | ${btnSpr.getId} = x: same(${titleSpr.getId}), y: below(${msgObjs.last.getId}), off: [0, 3];
                |""".stripMargin
         )
-        Seq(panelSpr, titleSpr, dashSpr, btnSpr, layoutSpr) ++ msgObjs
+        Seq(panelSpr, titleSpr, dashSpr, btnSpr, spacerSpr, layoutSpr) ++ msgObjs
 
     /**
       * Example login dialog with username and password text fields.
@@ -233,7 +238,7 @@ object CPDialogSupport:
       *
       * @param ctx The context of the caller.
       * @param title Dialog title to be rendered using "Rectangles" ASCII font.
-      * @param msg One line message.
+      * @param msgs One or more message lines.
       * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
       * @param onYes Callback when 'yes' is chosen.
       * @param onNo Callback when 'no' is chosen.
@@ -241,12 +246,17 @@ object CPDialogSupport:
     def showYesNo(
         ctx: CPSceneObjectContext,
         title: String,
-        msg: String,
+        msgs: Seq[String],
         onStart: CPSceneObjectContext => Unit = _ => (),
         onYes: CPSceneObjectContext => Unit,
         onNo: CPSceneObjectContext => Unit
     ): Unit =
-        val objs = mkBasicDialogParts(title, msg, "<%[N]%> No    <%[Y]%> Yes")
+        require(msgs.nonEmpty, "At least one message is required.")
+        val objs = mkBasicDialogParts(
+            title,
+            msgs.map(msg => mkImageSpr(CPSystemFont.render(msg, fg, bg.?))),
+            "<%[N]%> No    <%[Y]%> Yes"
+        )
         var isYes = false
         showDialog(
             ctx,
@@ -266,18 +276,23 @@ object CPDialogSupport:
       *
       * @param ctx The context of the caller.
       * @param title Dialog title to be rendered using "Rectangles" ASCII font.
-      * @param msg One line message.
+      * @param msgs One or more message lines.
       * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
       * @param onEnd Function to call after dialog's constituent sprites are removed from the scene.
       */
     def showConfirm(
         ctx: CPSceneObjectContext,
         title: String,
-        msg: String,
+        msgs: Seq[String],
         onStart: CPSceneObjectContext => Unit = _ => (),
         onEnd: CPSceneObjectContext => Unit = _ => ()
     ): Unit =
-        val objs = mkBasicDialogParts(title, msg, "<%[Enter]%> Continue")
+        require(msgs.nonEmpty, "At least one message is required.")
+        val objs = mkBasicDialogParts(
+            title,
+            msgs.map(msg => mkImageSpr(new CPArrayImage(markup.process(msg)))),
+            "<%[Enter]%> Continue"
+        )
         showDialog(
             ctx,
             objs,
