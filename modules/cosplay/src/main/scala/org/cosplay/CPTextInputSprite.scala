@@ -172,7 +172,7 @@ class CPTextInputSprite(
                     case KEY_DEL => if buf.nonEmpty && curPos < buf.length then buf.remove(curPos)
                     case key if cancelKeys.contains(key) => done(None)
                     case key if submitKeys.contains(key) =>
-                        done(buf.toString().?)
+                        done(buf.mkString("").?)
                         if next.isDefined then ctx.acquireFocus(next.get)
                     case key if keyFilter(evt) && key.isPrintable =>
                         if curPos < maxBuf then

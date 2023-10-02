@@ -77,20 +77,30 @@ object CPDialogExample:
                     msgs = "Do you want to start login demo?".seq,
                     onYes = x => CPDialogSupport.showLogin(
                         x,
-                        onOk = _ => (),
-                        onCancel = _ => CPDialogSupport.showConfirm(
-                            ctx,
-                            title = "Login",
-                            msgs = Seq(
-                                "Login dialog was cancelled by the user.",
-                                "You can click <%ESC%> or <%[Enter]%> to exit this example."
+                        onOk =
+                            (x2, username, pwd) => CPDialogSupport.showConfirm(
+                                x2,
+                                title = "Login",
+                                msgs = Seq(
+                                    s"User entered <@$username@> username and <@$pwd@> password. ",
+                                    "You can click <%ESC%> or <%[Enter]%> to exit this example."
+                                ),
+                                onEnd = _.exitGame()
                             ),
-                            onEnd = _.exitGame()
-                        ),
+                        onCancel =
+                            x2 => CPDialogSupport.showConfirm(
+                                x2,
+                                title = "Login",
+                                msgs = Seq(
+                                    "Login dialog was cancelled by the user.",
+                                    "You can click <%ESC%> or <%[Enter]%> to exit this example."
+                                ),
+                                onEnd = _.exitGame()
+                            ),
                     ),
-                    onNo = x => x.exitGame()
+                    onNo = _.exitGame()
                 )
-            ),
+            )
         )
 
         // Initialize the engine.

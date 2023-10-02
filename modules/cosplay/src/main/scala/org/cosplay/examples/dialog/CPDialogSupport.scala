@@ -47,7 +47,10 @@ object CPDialogSupport:
     private val markup = CPMarkup(
         fg,
         bg.?,
-        CPMarkupElement("<%", "%>", _ && (liteFg, bg)).seq, // Light.
+        Seq(
+            CPMarkupElement("<%", "%>", _ && (liteFg, bg)), // Light.
+            CPMarkupElement("<@", "@>", _ && (bg, liteFg)) // Dark.
+        )
     )
 
     /**
@@ -152,13 +155,14 @@ object CPDialogSupport:
       *
       * @param ctx The context of the caller.
       * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
-      * @param onOk Callback if 'ok' is chosen.
+      * @param onOk Callback if 'ok' is chosen. Takes scene object context, entered username and password
+      *             (both of which can be empty).
       * @param onCancel Callback if 'cancel' is chose.
       */
     def showLogin(
         ctx: CPSceneObjectContext,
         onStart: CPSceneObjectContext => Unit = _ => (),
-        onOk: CPSceneObjectContext => Unit,
+        onOk: (CPSceneObjectContext, String, String) => Unit,
         onCancel: CPSceneObjectContext => Unit
     ): Unit =
         // Makes the skins for active/inactive text fields.
@@ -226,7 +230,13 @@ object CPDialogSupport:
             ctx,
             objs,
             onStart,
-            onEnd = x => if isOk then onOk(x) else onCancel(x),
+            onEnd = x =>
+                if isOk then
+                    val username = usrSpr.getResult._2.getOrElse("")
+                    val pwd = pwdSpr.getResult._2.getOrElse("")
+                    onOk(x, username, pwd)
+                else
+                    onCancel(x),
             onKey = (x, key) => key match
                 case KEY_ESC | KEY_CTRL_A =>
                     isOk = key == KEY_CTRL_A

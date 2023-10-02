@@ -140,6 +140,7 @@ private[cosplay] sealed case class CPLayoutSpec(
   *    scene object can act as a referral.
   *  - 'center' provides centering for either X or Y-coordinates.
   *  - 'same' allows to use the same X or Y-coordinates as a referral.
+  *  - Use [[CPSpacerSprite]] to help fill up space in your layout.
   *
   * @param id ID of this scene object.
   * @param spec Layout specification as described above. Note that specification can be updated
@@ -147,6 +148,7 @@ private[cosplay] sealed case class CPLayoutSpec(
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPDynamicSprite]]
+  * @see [[CPSpacerSprite]]
   * @see [[CPLayoutExample]]
   */
 class CPLayoutSprite(
