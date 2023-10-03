@@ -24,7 +24,7 @@
     <name>CosPlay Parent</name>
     <groupId>org.cosplayengine</groupId>
     <artifactId>cosplay-parent</artifactId>
-    <version>0.9.3</version>
+    <version>0.9.4</version>
     <packaging>pom</packaging>
     <description>An open-source 2D ASCII game engine for Scala3</description>
     <url>https://github.com/nivanov/cosplay</url>
@@ -129,6 +129,7 @@
         <jna.ver>5.13.0</jna.ver>
         <mixpanel.ver>1.5.2</mixpanel.ver>
         <de.sciss.audiofile.ver>2.4.2</de.sciss.audiofile.ver>
+        <antlr.ver>4.13.1</antlr.ver>
 
         <gpg.keyname>2908C5A9</gpg.keyname>
 
@@ -208,6 +209,10 @@
 
             <dependency>
                 <groupId>co.blocke</groupId><artifactId>scala-reflection_${scala.major.ver}</artifactId><version>${scala3.reflect.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.antlr</groupId><artifactId>antlr4</artifactId><version>${antlr.ver}</version>
             </dependency>
 
             <!--

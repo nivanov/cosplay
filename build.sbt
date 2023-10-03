@@ -28,7 +28,7 @@
                All rights reserved.
 */
 
-val cosPlayVer = "0.9.3"
+val cosPlayVer = "0.9.4"
 
 val scalaMajVer = "3"
 val scalaMinVer = "3.0"
@@ -40,8 +40,8 @@ val commonsMath3Ver = "3.6.1"
 val commonsTextVer = "1.10.0"
 val commonsIoVer = "2.13.0"
 val commonsCollectionsVer = "4.4"
-val scalaReflectVer = "1.2.0"
 val scalaTestVer = "3.2.17"
+val scalaReflectVer = "1.2.2"
 val junitVer = "5.10.0"
 val openjfxVer = "18"
 val ikonliVer = "12.3.1"
@@ -52,6 +52,7 @@ val jnaVer = "5.13.0"
 val mixPanelVer = "1.5.2"
 val audioFileVer = "2.4.2"
 val jansiVer = "2.4.0"
+val antlrVer = "4.13.1"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
 ThisBuild / version := cosPlayVer
@@ -121,6 +122,8 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "de.sciss"                   % "audiofile_3"                      % audioFileVer,
         libraryDependencies += "co.blocke"                  %% "scala-reflection"                % scalaReflectVer,
         libraryDependencies += "org.scala-lang.modules"     %% "scala-parallel-collections"     % scalaParColVer,
+        libraryDependencies += "org.antlr"                  % "antlr4"                          % antlrVer,
+
         // Test scope.
         libraryDependencies += "org.scalatest"              %% s"scalatest"                     % scalaTestVer % Test,
         libraryDependencies += "org.junit.jupiter"          % s"junit-jupiter-engine"           % junitVer % Test

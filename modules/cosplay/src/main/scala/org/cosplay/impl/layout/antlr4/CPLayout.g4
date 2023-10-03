@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.cosplay
+grammar CPLayout;
 
 /*
    _________            ______________
@@ -27,25 +27,42 @@ package org.cosplay
 
           2D ASCII GAME ENGINE FOR SCALA3
             (C) 2021 Rowan Games, Inc.
-               ALl rights reserved.
+               All rights reserved.
 */
 
-/**
-  * A scene monitor is any scene object that wants to be notified on each frame after all scene objects
-  * have been updated but before any of them were rendered. It allows, for example, to rearrange UI sprites
-  * on the screen after all of them had a chance to update their inner state but before they are actually
-  * rendered on the screen. Essentially, it provides for "post-update, pre-render" notification.
-  *
-  * Note that this trait should only be implemented by [[CPSceneObject]] subclasses.
-  *
-  * @tparam T Any scene object.
-  */
-trait CPSceneMonitor[T <: CPSceneObject]:
-    /**
-      * Called on each frame after all scene objects have been updated but before any of them were rendered.
-      *
-      * @param ctx Frame context. This context provides bulk of functionality that a scene object
-      *     can do in a game, e.g. interact with other scene objects, check collisions, read input
-      *     events and manage input focus, add or remove scene objects, add new and switch between scenes, etc.
-      */
-    def monitor(ctx: CPSceneObjectContext): Unit
+// Parser.
+// =======
+layout: decls* EOF;
+decls
+    : decl
+    | decls decl
+    ;
+decl: ID EQ items SCOLON;
+items
+    : item
+    | items COMMA item
+    ;
+item
+    : offItem
+    | xItem
+    | yItem
+    ;
+offItem: 'off' COLON LBRK NUM COMMA NUM RBRK;
+xItem: 'x' COLON ('same' | 'before' | 'left' | 'center' | 'right' | 'after') LPAR ID? RPAR;
+yItem: 'y' COLON ('same' | 'above' | 'top' | 'center' | 'bottom' | 'below') LPAR ID? RPAR;
+
+// Lexer.
+// ======
+EQ: '=';
+SCOLON: ';';
+COLON: ':';
+COMMA: ',';
+LPAR: '(';
+RPAR: ')';
+LBRK: '[';
+RBRK: ']';
+NUM: '-'? [0-9] [0-9]*;
+ID: [a-zA-Z0-9-_$]+;
+COMMENT : ('//' ~[\r\n]* '\r'? ('\n'| EOF) | '/*' .*? '*/' ) -> skip;
+WS: [ \r\t\n\u000C]+ -> skip;
+ErrorChar: .;

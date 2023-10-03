@@ -41,7 +41,7 @@ import org.cosplay.*
   *
   * @param entireFrame Whether apply to the entire camera frame or just the object this
   *     shader is attached to.
-  * @param durMs Duration of the fade out effect in milliseconds.
+  * @param durMs Duration of the fade out effect in milliseconds. It can be changed later.
   * @param bgPx Background pixel to fade out to. Background pixel don't participate in shader effect.
   * @param onFinish Optional callback to call when this shader finishes. Default is a no-op.
   * @param autoStart Whether to start shader right away. Default value is `false`.
@@ -73,12 +73,12 @@ class CPFadeOutShader(
     autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
     balance: (Int, Int) => Float = (a, b) => a.toFloat / b
-) extends CPShader:
-    !>(durMs > CPEngine.frameMillis, s"Duration must be > ${CPEngine.frameMillis}ms.")
-    !>(bgPx.bg.nonEmpty, s"Background pixel must have background color defined: $bgPx")
+) extends CPDurationShader:
+    checkDuration(durMs)
+    checkBgPixel(bgPx)
 
     private var frmCnt = 0
-    private val maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
+    private var maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
     private val bgBg = bgPx.bg.get
     private val bgFg = bgPx.fg
     private var go = autoStart
@@ -87,10 +87,19 @@ class CPFadeOutShader(
     if autoStart then start()
 
     /**
+      * Sets the duration in millisecond for this shader effect.
+      *
+      * @param durMs Duration of the fade out effect in milliseconds.
+      */
+    def setDuration(durMs: Long): Unit =
+        checkDuration(durMs)
+        maxFrmCnt = (durMs / CPEngine.frameMillis).toInt
+
+    /**
       * Resets this shaders to its initial state starting its effect on the next frame.
       *
       * @param onFinish Optional override for the callback to call when shader effect is finished.
-      *         If not provided, the default value is the callback supplied at the creation of this shader.
+      *                 If not provided, the default value is the callback supplied at the creation of this shader.
       */
     def start(onFinish: CPSceneObjectContext => Unit = cb): Unit =
         cb = onFinish
@@ -114,7 +123,7 @@ class CPFadeOutShader(
         if go && (entireFrame || (ctx.isVisible && inCamera)) then
             val rect = if entireFrame then ctx.getCameraFrame else objRect
             val canv = ctx.getCanvas
-            rect.loop((x, y) => {
+            rect.loop((x, y) => 
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
@@ -124,7 +133,7 @@ class CPFadeOutShader(
                         val newFg = CPColor.mixture(px.fg, bgFg, bal)
                         val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
                         canv.drawPixel(px.withFg(newFg).withBg(newBg), x, y, zpx.z)
-            })
+            )
             frmCnt += 1
             if frmCnt == maxFrmCnt then
                 go = false

@@ -88,6 +88,12 @@ extension[T](ref: T)
     @targetName("asAnOption")
     def `?`: Option[T] = Option(ref)
 
+/** Sugar for `scala.util.Try`. */
+extension[T] (t: Try[T])
+    def getOr(pf: PartialFunction[Throwable, T]): T = t.recover(pf).get
+    def onFailure(pf: PartialFunction[Throwable, T]): Unit = t.recover(pf).get
+    def getOrRethrow(): T = t.recover(e => throw e).get
+
 /** Single element sequence sugar. */
 extension[T](t: T)
     /** Shortcut for `Seq(t)` as `t.seq` */
@@ -103,6 +109,12 @@ extension(s: String)
     inline def visOnly: String = s.filter(isVis)
 
 extension[R, T](opt: Option[T])
+    def onSome(f: T => R): Unit = opt match
+        case Some(s) => f(s)
+        case None => ()
+    def onNone(f: () => R): Unit = opt match
+        case Some(_) => ()
+        case None => f()
     @targetName("optEqual")
     def ===(t: T): Boolean = opt match
         case Some(a) => a == t
@@ -116,17 +128,17 @@ extension[R, T](opt: Option[T])
 
 extension(d: Int)
     // To bytes...
-    private[cosplay] def kb: Long = d * 1024
-    private[cosplay] def mb: Long = d * 1024 * 1024
-    private[cosplay] def gb: Long = d * 1024 * 1024 * 1024
+    def kb: Long = d * 1024
+    def mb: Long = d * 1024 * 1024
+    def gb: Long = d * 1024 * 1024 * 1024
 
     // To milliseconds...
-    private[cosplay] def ms: Long = d
-    private[cosplay] def secs: Long = d * 1000
-    private[cosplay] def mins: Long = d * 1000 * 60
-    private[cosplay] def hours: Long = d * 1000 * 60 * 60
-    private[cosplay] def days: Long = d * 1000 * 60 * 60 * 24
-    private[cosplay] def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
+    def ms: Long = d
+    def secs: Long = d * 1000
+    def mins: Long = d * 1000 * 60
+    def hours: Long = d * 1000 * 60 * 60
+    def days: Long = d * 1000 * 60 * 60 * 24
+    def weeks: Long = d * 1000 * 60 * 60 * 24 * 7
 
 /**
   * CosPlay game engine.
@@ -1172,7 +1184,7 @@ object CPEngine:
                         laterRuns.foreach(_.f(this))
                         laterRuns.clear()
 
-                        delayedQ += (() => {
+                        delayedQ += (() =>
                             if cloDelCur then
                                 scenes.remove(sc.getId) match
                                     case Some(s) => lifecycleStop(s)
@@ -1193,7 +1205,7 @@ object CPEngine:
                             nextFrameRuns.clear()
                             startScMs = System.currentTimeMillis()
                             logSceneSwitch(sc)
-                        })
+                        )
 
                     override def getId: String = myId
                     override def getLog: CPLog = myLog
@@ -1239,10 +1251,10 @@ object CPEngine:
                     override def addObject(obj: CPSceneObject, replace: Boolean = false): Unit =
                         if replace then deleteObject(obj.getId)
                         val cloObj = obj
-                        delayedQ += (() => {
+                        delayedQ += (() =>
                             sc.objects.add(cloObj)
                             engLog.trace(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
-                        })
+                        )
                     override def getObject(id: String): Option[CPSceneObject] = sc.objects.get(id)
                     override def getObjects: Iterable[CPSceneObject] = sc.objects.values
                     override def grabObject(id: String): CPSceneObject = sc.objects(id)
@@ -1253,29 +1265,29 @@ object CPEngine:
                         if newScId == sc.getId then raise(s"Cannot add a new scene with the same ID as the current one: $newScId")
                         if replace then deleteScene(newScId) // Adds delayed action.
                         val loNewSc = newSc
-                        delayedQ += (() => {
+                        delayedQ += (() =>
                             // NOTE: scene lifecycle transitions when it becomes active.
                             scenes.add(loNewSc)
                             val verb = if replace then "replaced" else "added"
                             engLog.trace(s"Scene $verb: $newScId")
-                        })
+                        )
                         if switchTo then doSwitchScene(newScId, delCur)
                     override def switchScene(id: String, delCur: Boolean = false): Unit = doSwitchScene(id, delCur)
                     override def deleteScene(id: String): Unit =
                         if sc.getId == id then raise(s"Cannot delete current scene: ${sc.getId}")
                         else
                             val cloId = id
-                            delayedQ += (() => {
+                            delayedQ += (() =>
                                 scenes.remove(cloId) match
                                     case Some(s) =>
                                         engLog.trace(s"Scene deleted: ${s.getId}")
                                         lifecycleStop(s)
                                     case _ =>
                                         engLog.warn(s"Ignored an attempt to delete unknown scene: $cloId")
-                            })
+                            )
                     override def deleteObject(id: String): Unit =
                         val cloId = id
-                        delayedQ += (() => {
+                        delayedQ += (() =>
                             sc.objects.remove(cloId) match
                                 case Some(obj) =>
                                     if kbFocusOwner.isDefined && kbFocusOwner.get == cloId then kbFocusOwner = None
@@ -1283,7 +1295,7 @@ object CPEngine:
                                     lifecycleStop(obj)
                                 case _ =>
                                     engLog.warn(s"Ignored an attempt to delete unknown object from '${sc.getId}' scene: $cloId")
-                        })
+                        )
                     override def collisions(zs: Int*): Seq[CPSceneObject] =
                         if myObj.getCollisionRect.isEmpty then raise(s"Current object does not provide collision shape: ${myObj.getId}")
                         else
@@ -1312,11 +1324,9 @@ object CPEngine:
                     obj.update(ctx)
 
                 // Process scene monitors.
-                for obj <- objs if !stopFrame do obj match
-                    case o: CPSceneMonitor[_] =>
-                        ctx.setSceneObject(obj)
-                        o.monitor(ctx)
-                    case _ => ()
+                for obj <- objs if !stopFrame do
+                    ctx.setSceneObject(obj)
+                    obj.monitor(ctx)
 
                 // NOTE: Update camera panning after the objects were updated BUT before object are drawn.
                 if !redraw then

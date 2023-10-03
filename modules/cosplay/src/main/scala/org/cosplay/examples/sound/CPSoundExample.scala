@@ -22,7 +22,6 @@ import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
 import CPStyledString.*
 import org.cosplay.CPKeyboardKey.*
-import examples.utils.*
 import org.cosplay.prefabs.shaders.*
 
 /*
@@ -72,7 +71,16 @@ object CPSoundExample:
         )
 
         val snd = CPSound(s"sounds/examples/${Seq("bg1", "bg2", "bg3").rand}.wav")
-        val panel = CPPanelSprite(4, 2, 80, 8, 0, "Audio Player")
+        val panel = CPTitlePanelSprite(
+            "panel",
+            4, 2, 77, 7, 0,
+            C_BLACK,
+            "-.|'-'|.",
+            C_GREEN_YELLOW,
+            C_BLACK.?,
+            styleStr("< ", C_GREEN_YELLOW) ++ styleStr("Audio Player", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW)
+        )
+
         val c1 = C_SKY_BLUE1
         val c2 = C_LIGHT_CYAN1
         val lbl = CPStaticImageSprite(12, 5, 1, new CPArrayImage(

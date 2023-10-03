@@ -20,10 +20,8 @@ package org.cosplay.examples.textinput
 import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
-import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
-import org.cosplay.CPStyledString.styleStr
-import org.cosplay.examples.utils.*
+import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.shaders.*
 
 /*
@@ -69,47 +67,66 @@ object CPTextInputExample:
       */
     def main(args: Array[String]): Unit =
         val termDim = CPDim(100, 40)
-
+        val darkerBg = C_WHITE.darker(0.3f)
         def mkSkin(active: Boolean, passwd: Boolean): (Char, Int, Boolean) => CPPixel =
-            (ch: Char, pos: Int, isCur: Boolean) => {
+            (ch: Char, pos: Int, isCur: Boolean) =>
                 val ch2 = if passwd && !ch.isWhitespace then '*' else ch
                 if active then
                     if isCur then ch2&&(C_WHITE, C_SLATE_BLUE3)
                     else ch2&&(C_BLACK, C_WHITE)
-                else ch2&&(C_BLACK, C_WHITE.darker(0.3f))
-            }
+                else ch2&&(C_BLACK, darkerBg)
 
-        val userLbl = new CPLabelSprite(6, 4, 1, text = "Username:", C_LIGHT_STEEL_BLUE)
-        val userTin = CPTextInputSprite("user", 6, 5, 1,
+        val userTin = CPTextInputSprite("usrTin", 0, 0, 1,
             15, 20,
             "",
             mkSkin(true, false),
             mkSkin(false, false),
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = "passwd".?
+            next = "pwdTin".?
         )
-        val pwdLbl = new CPLabelSprite(6, 7, 1, text = "Password:", C_LIGHT_STEEL_BLUE)
-        val pwdTin = CPTextInputSprite("passwd", 6, 8, 1,
+        val pwdTin = CPTextInputSprite("pwdTin", 0, 0, 1,
             15, 20,
             "",
             mkSkin(true, true),
             mkSkin(false, true),
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
-            next = "user".?
+            next = "usrTin".?
         )
-        val panel = CPPanelSprite(2, 2, 24, 11, 0, "Login")
-        val focusAcq = CPOffScreenSprite(ctx => if ctx.getSceneFrameCount == 0 then ctx.acquireFocus("user"))
-
+        val panel = CPTitlePanelSprite(
+            "panel",
+            0, 0, 23, 9, 0,
+            C_BLACK,
+            "-.|'-'|.",
+            C_GREEN_YELLOW,
+            C_BLACK.?,
+            styleStr("< ", C_GREEN_YELLOW) ++ styleStr("Login", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW),
+            borderSkin = (_, _, px) => px.withDarkerFg(0.5f),
+        )
         val bgPx = '.'&&(C_GRAY2, C_GRAY1)
-        val sc = new CPScene("scene", CPDim(27, 13).?, bgPx,
+        val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            userLbl,
+            new CPLabelSprite("usrLbl", 0, 0, 1, text = "Username:", C_LIGHT_STEEL_BLUE),
+            new CPLabelSprite("pwdLbl", 0, 0, 1, text = "Password:", C_LIGHT_STEEL_BLUE),
             userTin,
-            pwdLbl,
             pwdTin,
             panel,
-            focusAcq
+            // Acquire the focus at the beginning by username text input.
+            CPSingletonSprite(fun = _.acquireFocus("usrTin")),
+            CPLayoutSprite("layout",
+                """
+                  | // Centered dialog panel.
+                  | panel = x: center(), y: center();
+                  |
+                  | // Username.
+                  | usrLbl = off: [3, 1], x: left(panel), y: top(panel);
+                  | usrTin = x: same(usrLbl), y: below(usrLbl);
+                  |
+                  | // Password.
+                  | pwdLbl = off: [3, 1], x: left(panel), y: below(usrTin);
+                  | pwdTin = x: same(pwdLbl), y: below(pwdLbl);
+                  |""".stripMargin
+            )
         )
 
         // Initialize the engine.

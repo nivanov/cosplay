@@ -264,7 +264,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         buf.putInt(1) // Only 1 layer.
         buf.putInt(dim.w) // Image width.
         buf.putInt(dim.h) // Image height.
-        loopVert((px, _, _) => {
+        loopVert((px, _, _) =>
             buf.putInt(if px.isXray then ' '.toInt else px.char.toInt)
             val fgc = px.fg
             val bgc = px.bg.getOrElse(bg)
@@ -274,7 +274,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
             buf.put(bgc.red.toByte)
             buf.put(bgc.green.toByte)
             buf.put(bgc.blue.toByte)
-        })
+        )
         buf.flip()
 
         Using.resource(new DataOutputStream(new FileOutputStream(file))) { _.write(CPUtils.zipBytes(buf.array())) }
@@ -329,12 +329,11 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
         val h = dim.h + insets.verOffset
         val data = new CPArray2D[CPPixel](w, h, bgPx)
 
-        loop((px, x, y) => {
+        loop((px, x, y) =>
             val x2 = x + insets.left
             val y2 = y + insets.top
-
             if data.isValid(x2, y2) then data.set(x2, y2, px)
-        })
+        )
 
         new CPArrayImage(data, origin)
 
@@ -382,7 +381,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
     def antialias(isBlank: CPPixel => Boolean): CPImage =
         val data = new CPArray2D[CPPixel](getDim)
         val dim = getDim
-        data.rect.loop((x, y) => {
+        data.rect.loop((x, y) =>
             val px = getPixel(x, y)
             // Based on: https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
             if !isBlank(px) then
@@ -394,7 +393,7 @@ abstract class CPImage(origin: String) extends CPGameObject with CPAsset:
                 data.set(x, y, px.withChar(CPUtils.aaChar(px.char, top, left, bottom, right)))
             else
                 data.set(x, y, px)
-        })
+        )
         new CPArrayImage(data, origin)
 
     /**
@@ -755,7 +754,7 @@ object CPImage:
       */
     def loadRexCsv(src: String, skin: (CPPixel, Int, Int) => CPPixel = (px, _, _) => px): CPImage =
         val arr = CPArray2D(
-            CPUtils.readStrings(src).tail.zipWithIndex.map((line, i) => {
+            CPUtils.readStrings(src).tail.zipWithIndex.map((line, i) =>
                 val idx = i + 1
                 val parts = line.split(",").map(_.strip)
                 !>(parts.length == 5, s"Invalid CSV file format at line $idx: $src")
@@ -769,7 +768,7 @@ object CPImage:
                     CPPosPixel(CPPixel(ch, fg, bg.?), x, y)
                 catch
                     case e: Exception => raise(s"Invalid CSV file format at line $idx: $src", e.?)
-            })
+            )
         )
         new CPArrayImage(arr.map(skin))
 

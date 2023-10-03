@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.cosplayengine</groupId>
         <artifactId>cosplay-parent</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -125,6 +125,11 @@
         <dependency>
             <groupId>com.typesafe.scala-logging</groupId>
             <artifactId>scala-logging_${scala.major.ver}</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4</artifactId>
         </dependency>
 
         <dependency>
@@ -405,6 +410,38 @@
                         <configuration>
                             <skip>false</skip>
                             <mainClass>org.cosplay.examples.textinput.CPTextInputExample</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>ex:layout</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.examples.layout.CPLayoutExample</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>ex:dialog</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.examples.dialog.CPDialogExample</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>

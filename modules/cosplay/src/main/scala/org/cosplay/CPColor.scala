@@ -646,11 +646,10 @@ object CPColor:
     def gradientFun(c1: CPColor, c2: CPColor, steps: Int): () => CPColor =
         val grad = gradientSeq(c1, c2, steps)
         var i = 0
-        () => {
+        () =>
             val c = grad(i % steps)
             i += 1
             c
-        }
 
     /**
       * Gets a new color that is a mixture between given two colors with specified balance.

@@ -40,7 +40,6 @@ import org.cosplay.CPFIGLetFont.*
 import org.cosplay.prefabs.images.ani.*
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.prefabs.sprites.*
 import CPCenteredImageSpriteOrientation.*
 import scala.util.*
 

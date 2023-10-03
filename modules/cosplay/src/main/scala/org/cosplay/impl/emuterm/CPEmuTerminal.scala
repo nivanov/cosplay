@@ -94,35 +94,34 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
         Some(mkIcon(PAUSE)),
         "Pause game play.",
         enabled = true,
-        _ => {
+        _ =>
             CPEngine.pauseGame()
             pauseGameAct.setEnabled(false)
             resumeGameAct.setEnabled(true)
-        })
+        )
     private val resumeGameAct: Action = mkAction(
         "Resume",
         Some(mkIcon(PLAY)),
         "Resume game play.",
         enabled = false,
-        _ => {
+        _ =>
             CPEngine.resumeGame()
             pauseGameAct.setEnabled(true)
             resumeGameAct.setEnabled(false)
-        })
+        )
     private val openLogAct: Action = mkAction(
         "Open Log",
         None,
         "Open log window.",
         enabled = true,
-        _ => {
-            CPEngine.rootLog().info(CPUtils.PING_MSG)
-        })
+        _ => CPEngine.rootLog().info(CPUtils.PING_MSG)
+        )
     private val stopGameAct: Action = mkAction(
         "Stop Game",
         Some(mkIcon(TIMES)),
         "Stop and exit game.",
         enabled = true,
-        _ => {
+        _ =>
             if JOptionPane.showConfirmDialog(
                 frame,
                 "Are you sure you want to stop and exit the game?",
@@ -132,7 +131,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 mkIcon(QUESTION, C_LIGHT_GOLDEN_ROD1, 32)
             ) == 0 then
                 CPEngine.exitGame()
-        })
+        )
     private def initFontMetrics(): Unit =
         val fonts = GraphicsEnvironment.getLocalGraphicsEnvironment.getAllFonts.toList
         val fontNames = (fonts.map(_.getFontName) ++ fonts.map(_.getName) ++ fonts.map(_.getFamily)).distinct

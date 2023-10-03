@@ -43,7 +43,8 @@ import scala.collection.mutable
   * 2D rendering pane. Canvas is synonymous with screen, i.e. it is an object that allows to draw on the screen.
   * Canvas has the dimension of the current scene or, if scene doesn't provide its own dimension, the size of the
   * terminal. Note that this behavior means that canvas can change its size from frame to frame if the current
-  * scene does not provide its own dimension and the terminal size is changing.
+  * scene does not provide its own dimension and the terminal size is changing. One can generally draw outside of
+  * canvas dimensions and any such pixels will be simply ignored.
   *
   * For each game frame, the game engine creates a new empty canvas for all scene objects to draw on with the dimension
   * set as described above. This canvas is available to scene objects via [[CPSceneObjectContext.getCanvas]] method. Game engine
@@ -55,7 +56,8 @@ import scala.collection.mutable
   *
   * Canvas `(0,0)` coordinate point is located in the top left corner. X-axis goes to the right and Y-axis
   * points down. Every drawn pixel on the canvas also has a Z-index or depth. Pixel with larger or equal
-  * Z-index visually overrides the pixel with the smaller Z-index.
+  * Z-index visually overrides the pixel with the smaller Z-index. Pixels with coordinates outside of the current
+  * canvas dimensions are ignored.
   *
   * ASCII-based graphics are vastly different from the traditional raster-based graphics.
   * Since ASCII-based drawing uses printable characters from ASCII character set that are displayed on basic text terminal
@@ -64,7 +66,7 @@ import scala.collection.mutable
   * and ellipses, for example, are hard to do properly in automated way. Moreover, many complex curves need to
   * be done manually, especially if they are dynamically redrawn on each frame update.
   *
-  * This class provides many methods for basic line and rectangular drawing, circle and polylines, anti-aliasing,
+  * This class provides many methods for basic line and rectangular drawing, circle and polyline, anti-aliasing,
   * "color" fill in, and much more. Most functions have multiple overridden variants with different parameters so that they
   * can be easily used in different contexts. Note also that this class deals primarily with line ASCII art and has
   * only few functions like [[antialias() antialiasing]] for the solid ASCII art.
@@ -198,7 +200,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param isBlank Predicate defining whether a particular pixel should be considered as a blank.
       */
     def antialias(rect: CPRect, isBlank: CPPixel => Boolean): Unit =
-        rect.loop((x, y) => {
+        rect.loop((x, y) =>
             val zpx = pane.getPixel(x, y)
             val px = zpx.px
             // Based on: https://codegolf.stackexchange.com/questions/5450/anti-aliasing-ascii-art
@@ -211,7 +213,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
                 pane.addPixel(px.withChar(CPUtils.aaChar(px.char, top, left, bottom, right)), x, y, zpx.z)
             else
                 pane.addPixel(px, x, y, zpx.z)
-        })
+        )
 
     /**
       * Antialiasing solid ASCII-art canvas region. Works `only` for solid ASCII-art.
@@ -250,11 +252,12 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawCircle(x: Int, y: Int, radius: Int, z: Int, xFactor: Float, yFactor: Float, densFactor: Float, fillGaps: Boolean, pxs: Seq[CPPixel]): CPRect =
         var i = 0
         val pxsNum = pxs.length
-        drawCircle(x, y, radius, z, xFactor, yFactor, densFactor, fillGaps, (_, _) => {
-            val px = pxs(i % pxsNum)
-            i += 1
-            px
-        })
+        drawCircle(x, y, radius, z, xFactor, yFactor, densFactor, fillGaps,
+            (_, _) =>
+                val px = pxs(i % pxsNum)
+                i += 1
+                px
+        )
 
     /**
       * Draws a circle with a single pixel returning its final shape.
@@ -303,12 +306,12 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         var y1 = Int.MaxValue
         var x2 = -1
         var y2 = -1
-        pxs.foreach(px => {
+        pxs.foreach(px =>
             x1 = x1.min(px.x)
             y1 = y1.min(px.y)
             x2 = x2.max(px.x)
             y2 = y2.max(px.y)
-        })
+        )
 
         x1 = x1.max(0)
         y1 = y1.max(0)
@@ -456,11 +459,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawVector(x: Int, y: Int, deg: Float, len: Int, z: Int, xFactor: Float, yFactor: Float, pxs: Seq[CPPixel]): Unit =
         var i = 0
         val pxsNum = pxs.length
-        drawVector(x, y, deg, len, z, xFactor, yFactor, (_, _) => {
+        drawVector(x, y, deg, len, z, xFactor, yFactor, (_, _) =>
             val px = pxs(i % pxsNum)
             i += 1
             px
-        })
+        )
 
     /**
       * Draws a vector.
@@ -536,11 +539,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param endPx End pixel.
       */
     def drawLine(ax: Int, ay: Int, bx: Int, by: Int, z: Int, startPx: CPPixel, linePx: CPPixel, endPx:CPPixel): Unit =
-        drawLine(ax, ay, bx, by, z, (x, y) => {
+        drawLine(ax, ay, bx, by, z, (x, y) =>
             if x == ax && y == ay then startPx
             else if x == bx && y == by then endPx
             else linePx
-        })
+        )
 
     /**
       * Draws a line.
@@ -555,11 +558,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawLine(ax: Int, ay: Int, bx: Int, by: Int, z: Int, pxs: Seq[CPPixel]): Unit =
         var i = 0
         val pxsNum = pxs.length
-        drawLine(ax, ay, bx, by, z, (_, _) => {
+        drawLine(ax, ay, bx, by, z, (_, _) =>
             val px = pxs(i % pxsNum)
             i += 1
             px
-        })
+        )
 
     /**
       * Draws a line.
@@ -913,7 +916,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param rightBottom Right bottom corner pixel.
       * @param right Right side line pixel.
       * @param rightTop Right top corner pixel.
-      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      * @param skin Skin function that takes global X and Y coordinates as well as default pixel at that location
       *     and returns the skinned pixel.
       */
     def drawRect(
@@ -1055,11 +1058,11 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
     def drawPolyline(pts: Seq[(Int, Int)], z: Int, pxs: Seq[CPPixel]): Unit =
         val pxsNum = pxs.size
         var i = 0
-        drawPolyline(pts, z, (_, _) => {
+        drawPolyline(pts, z, (_, _) =>
             val px = pxs(i % pxsNum)
             i += 1
             px
-        })
+        )
 
     /**
       * Fills in bordered area with a pixel. This is also known as "bucket tool".
@@ -1098,10 +1101,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         val rect = new CPRect(x1 -> y1, x2 -> y2)
         val dx = rect.x - destX
         val dy = rect.y - destY
-        rect.loop((a, b) => {
+        rect.loop((a, b) =>
             val zpx = getZPixel(a, b)
             drawPixel(zpx.px, a - dx, b - dx, zpx.z)
-        })
+        )
 
     /**
       * Copies one rectangular areas in this canvas to another location in the same canvas.
@@ -1302,10 +1305,10 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
         var i = 0
         val pxsNum = pxs.length
 
-        rect.loop((x, y) => {
+        rect.loop((x, y) =>
             drawPixel(pxs(i % pxsNum), x, y, z)
             i += 1
-        })
+        )
 
     /**
       * Captures given rectangular canvas region as an image. This method will capture only
@@ -1459,19 +1462,21 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param rect A rectangle to draw a border around.
       * @param z Z-index. Pixel with the larger or equal Z-index overrides the pixel with the smaller one.
       * @param chars A sequence of character in the following order:
-      *     top, top left border, left, bottom left corer, bottom, bottom right corner, right, top right corner.
-      * @param color A color to be used for all border pixels.
+      *              top, top left border, left, bottom left corner, bottom, bottom right corner, right, top right corner.
+      * @param fg A foreground color to be used for all border pixels.
+      * @param bg An optional background color to be used for all border pixels.
       * @param title Title of the border. Default is no border.
       * @param titleX X-coordinate of the title. Default is -1.
       * @param titleY Y-coordinate of the title. Default is -1.
-      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
-      *     and returns the skinned pixel.
+      * @param skin Skin function that takes global X and Y coordinates as well as default pixel at that location
+      *             and returns the skinned pixel.
       */
     def drawRectBorder(
         rect: CPRect,
         z: Int,
         chars: String,
-        color: CPColor,
+        fg: CPColor,
+        bg: Option[CPColor],
         title: Seq[CPPixel] = Seq.empty,
         titleX: Int = -1,
         titleY: Int = -1,
@@ -1484,14 +1489,14 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
             rect.xMax,
             rect.yMax,
             z,
-            chars(0)&color,
-            chars(1)&color,
-            chars(2)&color,
-            chars(3)&color,
-            chars(4)&color,
-            chars(5)&color,
-            chars(6)&color,
-            chars(7)&color,
+            chars(0)&&(fg, bg),
+            chars(1)&&(fg, bg),
+            chars(2)&&(fg, bg),
+            chars(3)&&(fg, bg),
+            chars(4)&&(fg, bg),
+            chars(5)&&(fg, bg),
+            chars(6)&&(fg, bg),
+            chars(7)&&(fg, bg),
             title,
             titleX,
             titleY,
@@ -1517,7 +1522,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param title Title of the border. Default is no border.
       * @param titleX X-coordinate of the title. Default is -1.
       * @param titleY Y-coordinate of the title. Default is -1.
-      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      * @param skin Skin function that takes global X and Y coordinates as well as default pixel at that location
       *     and returns the skinned pixel.
       */
     def drawBorder(
@@ -1557,7 +1562,7 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param title Title of the border. Default is no border.
       * @param titleX X-coordinate of the title. Default is -1.
       * @param titleY Y-coordinate of the title. Default is -1.
-      * @param skin Skin function that takes x and y coordinates as well as default pixel at that location
+      * @param skin Skin function that takes X and Y coordinates as well as default pixel at that location
       *     and returns the skinned pixel.
       */
     def drawSimpleBorder(

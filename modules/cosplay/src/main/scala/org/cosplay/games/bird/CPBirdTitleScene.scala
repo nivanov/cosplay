@@ -37,7 +37,6 @@ import org.cosplay.CPPixel.*
 import org.cosplay.CPArrayImage.*
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.prefabs.sprites.*
 
 object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
     private val bgSnd = CPSound("sounds/games/bird/bg.wav")
@@ -66,11 +65,11 @@ object CPBirdTitleScene extends CPScene("title", None, GAME_BG_PX):
             if ctx.isVisible && inCamera then
                 val rect = ctx.getCameraFrame
                 val canv = ctx.getCanvas
-                rect.loop((x, y) => {
+                rect.loop((x, y) =>
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
                     if px.char == '@' && CPRand.randFloat() < 0.06f then canv.drawPixel(px.withChar('-'), x, y, zpx.z)
-                })
+                )
 
     // Add scene objects...
     addObjects(

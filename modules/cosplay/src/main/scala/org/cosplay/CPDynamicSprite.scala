@@ -31,17 +31,17 @@ package org.cosplay
 */
 
 /**
-  * Convenient adapter for dynamic sprites, i.e. sprites that can change their screen position. It provides
-  * default implementation for managing sprite's X, Y, and Z coordinates as well as storing the initial
-  * X, Y, and Z coordinates.
+  * Dynamic sprites can change their screen position. It provides an implementation for managing
+  * sprite's X, Y, and Z coordinates as well as storing the sprite's initial X, Y, and Z coordinates.
   *
-  * @param id Optional ID of this scene object.
+  * @param id ID of this scene object.
   * @param x Initial X-coordinate of the top-left corner of the sprite.
   * @param y Initial Y-coordinate of the top-left corner of the sprite.
   * @param z Initial Z-index at which to render the sprite.
   * @param collidable Whether or not this sprite provides collision shape.
   * @param shaders Optional sequence of shaders for this sprite.
   * @param tags Optional set of organizational or grouping tags.
+  * @see [[CPLayoutSprite]]
   */
 abstract class CPDynamicSprite(
     id: String,
@@ -83,6 +83,20 @@ abstract class CPDynamicSprite(
       * @param d X-coordinate to set.
       */
     def setX(d: Int): Unit = myX = d
+
+    /**
+      * Increments current X-coordinate by given value.
+      *
+      * @param d A value (negative, zero or positive) to increment X-coordinate by.
+      */
+    def incrX(d: Int): Unit = myX += d
+
+    /**
+      * Increments current Y-coordinate by given value.
+      *
+      * @param d A value (negative, zero or positive) to increment Y-coordinate by.
+      */
+    def incrY(d: Int): Unit = myY += d
 
     /**
       * Sets current Y-coordinate. This coordinate will be returned from [[getY]] method.

@@ -76,13 +76,13 @@ object CPCameraExample:
 
         // Paint the starry sky.
         val starClrs = CS_X11_CYANS ++ CS_X11_ORANGES ++ CS_X11_REDS ++ CS_X11_WHITES
-        bgCanv.fillRect(bgCanv.rect, -1, (x, y) => {
+        bgCanv.fillRect(bgCanv.rect, -1, (x, y) =>
             if y < 7 && CPRand.randFloat() < 0.02 then
                 val ch = if CPRand.randFloat() < 0.5 then '+' else '*'
                 ch&starClrs.rand
             else
                 XRAY
-        })
+        )
 
         // Mountains polyline.
         val mntPts = mutable.ArrayBuffer.empty[(Int, Int)]

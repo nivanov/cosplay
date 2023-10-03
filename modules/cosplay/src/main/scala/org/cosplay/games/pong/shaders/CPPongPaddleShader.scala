@@ -56,8 +56,8 @@ class CPPongPaddleShader extends CPShader:
         if go && System.currentTimeMillis() - startMs > DUR_MS then stop()
         if go then
             val canv = ctx.getCanvas
-            objRect.loop((x, y) => {
+            objRect.loop((x, y) =>
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     canv.drawPixel(zpx.px.withBg(C2.?), x, y, zpx.z)
-            })
+            )

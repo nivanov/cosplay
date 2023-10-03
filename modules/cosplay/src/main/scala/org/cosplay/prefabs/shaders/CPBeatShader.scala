@@ -121,7 +121,7 @@ class CPBeatShader(
         // Manually maintain the sum of the elements in the queue for RMS calculation.
         var sum = 0f
 
-        (ms: Long) => {
+        (ms: Long) =>
             // Calculate RMS of the elements in the queue..
             val threshold = (if queue.isEmpty then 0 else math.sqrt(sum / queue.size)) * thresholdGain
             val br = normAmpSeq(((ms % sndDur) / winMs).toInt.min(sz - 1))
@@ -136,7 +136,6 @@ class CPBeatShader(
                 case SMOOTH_NONE => if br < threshold then 0 else 1
                 case SMOOTH_UP => if br < threshold then 0 else br
                 case SMOOTH_DOWN => if br < threshold then br else 1
-        }
 
     /**
       * Starts the shader effect. Note that the start of playing the sound this shader is configured with must be
@@ -191,12 +190,12 @@ class CPBeatShader(
             lastRenderMs = now
             val brightness = fun.get(dur)
             val canv = ctx.getCanvas
-            objRect.loop((x, y) => {
+            objRect.loop((x, y) =>
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     val px = zpx.px
                     if px.char != ' ' then canv.drawPixel(px.withLighterFg(brightness), x, y, zpx.z)
-            })
+            )
 
 
 

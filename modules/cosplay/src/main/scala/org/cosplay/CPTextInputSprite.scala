@@ -76,17 +76,23 @@ import scala.collection.mutable
   * @param next Optional scene object ID to switch keyboard focus to after the user pressed one of the
   *     submit keys. Default value is `None`.
   * @param cancelKeys Optional set of keyboard keys to accept for cancellation action. When one of these keys
-  *     is pressed the sprite will reset to its initial state. Default value is [[CPKeyboardKey.KEY_ESC]].
+  *     is pressed the sprite will reset to its initial state, marked as ready and its result set to `None`.
+  *     Default value is [[CPKeyboardKey.KEY_ESC]]. Note that neither cancel or submit keys can contain any of the
+  *     internally used keys: [[CPKeyboardKey.KEY_LEFT]], [[CPKeyboardKey.KEY_RIGHT]], [[CPKeyboardKey.KEY_BACKSPACE]]
+  *     or [[CPKeyboardKey.KEY_DEL]].
   * @param submitKeys Optional set of keyboard keys to accept for submission action. When one of these keys
   *     is pressed the sprite will make result available via [[isReady]] method and will optionally switch
   *     keyboard focus for the `next` scene object, if any. Default value is [[CPKeyboardKey.KEY_ENTER]].
-  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
+  *     Note that neither cancel or submit keys can contain any of the internally used keys:
+  *     [[CPKeyboardKey.KEY_LEFT]], [[CPKeyboardKey.KEY_RIGHT]], [[CPKeyboardKey.KEY_BACKSPACE]]
+  *     or [[CPKeyboardKey.KEY_DEL]].
   * @param keyFilter Optional filter on keyboard events. Only if this filter returns `true` for a given
   *     keyboard event its key will be used as an input. Note that this filter is not applied to built-in
   *     keyboard keys such as cursor movements, escape, backspace, as well as cancel and submit keys. This
   *     filter can be used, for example, to ensure that only digits can be entered.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @example See [[org.cosplay.examples.textinput.CPTextInputExample CPTextInputExample]] class for the example of
   *     using labels and text input.
   * @see [[CPSceneObjectContext.getCanvas]] to get current canvas you can draw on.
@@ -105,13 +111,18 @@ class CPTextInputSprite(
     private var next: Option[String] = None,
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
-    tags: Set[String] = Set.empty,
     keyFilter: CPKeyboardEvent => Boolean = _ => true,
     collidable: Boolean = false,
-    shaders: Seq[CPShader] = Seq.empty
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: Set[String] = Set.empty,
 ) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     !>(maxBuf >= visLen, "'maxBuf' must be >= 'visLen'.")
     !>(initTxt != null, "Initial text cannot be 'null'.")
+    !>(!cancelKeys.exists(isReservedKey), "Cancel keys cannot contain reserved keys.")
+    !>(!submitKeys.exists(isReservedKey), "Submit keys cannot contain reserved keys.")
+
+    private def isReservedKey(key: CPKeyboardKey): Boolean =
+        key == KEY_LEFT || key == KEY_RIGHT || key == KEY_BACKSPACE || key == KEY_DEL
 
     private val dim = CPDim(visLen, 1)
     private val buf = mutable.ArrayBuffer.empty[Char]
@@ -119,7 +130,8 @@ class CPTextInputSprite(
     private var lastStart = 0
     private var ready = false
     private val pxs = mutable.ArrayBuffer.empty[CPPixel]
-    private var res = none[String]
+    private var res = (none[CPKeyboardKey], none[String])
+    private var lastKey = none[CPKeyboardKey]
 
     reset()
 
@@ -144,12 +156,13 @@ class CPTextInputSprite(
             val ch = if i < len then buf(i) else ' '
             pxs += skin(ch, i, i == curPos)
             i += 1
-        ctx.getCanvas.drawPixels(x, y, z, pxs.toSeq)
+        ctx.getCanvas.drawPixels(getX, getY, getZ, pxs.toSeq)
 
     /** @inheritdoc */
     override def update(ctx: CPSceneObjectContext): Unit =
         ctx.getKbEvent match
             case Some(evt) =>
+                lastKey = evt.key.?
                 evt.key match
                     case KEY_LEFT => if curPos > 0 then curPos -= 1
                     case KEY_RIGHT => if curPos < buf.length then curPos += 1
@@ -159,7 +172,7 @@ class CPTextInputSprite(
                     case KEY_DEL => if buf.nonEmpty && curPos < buf.length then buf.remove(curPos)
                     case key if cancelKeys.contains(key) => done(None)
                     case key if submitKeys.contains(key) =>
-                        done(buf.toString().?)
+                        done(buf.mkString("").?)
                         if next.isDefined then ctx.acquireFocus(next.get)
                     case key if keyFilter(evt) && key.isPrintable =>
                         if curPos < maxBuf then
@@ -170,8 +183,8 @@ class CPTextInputSprite(
 
     private def done(optRes: Option[String]): Unit =
         ready = true
-        res = optRes
-        if res.isEmpty then
+        res = (lastKey, optRes)
+        if optRes.isEmpty then
             reset()
 
     /**
@@ -183,7 +196,7 @@ class CPTextInputSprite(
     def clear(initTxt: String = null): Unit =
         if initTxt != null then this.initTxt = initTxt
         ready = false
-        res = None
+        res = (None, None)
         reset()
 
     /** Gets current initial text for this sprite. */
@@ -203,11 +216,28 @@ class CPTextInputSprite(
       */
     def setNext(next: Option[String]): Unit = this.next = next
 
-    /** Whether or not the result is ready. */
+    /**
+      * Whether or not the result is either submitted or cancelled, i.e. ready.
+      * Note that the internal ready flag is set to `false` again after the [[getResult()]] call (if the
+      * result was ready).
+      *
+      * @see [[getResult()]]
+      */
     def isReady: Boolean = ready
 
-    /** Gets input result, `None` if result is not yet ready. */
-    def getResult: Option[String] = res
+    /**
+      * Gets the tuple of the last key pressed and input result. Input result will be `None` if result is not
+      * yet ready or got cancelled. Last key pressed is `None` when no keys were pressed yet on this sprite.
+      * Call method [[isReady()]] on each frame to check whether the input result is actually ready.
+      *
+      * Note that if result was ready the internal ready flag will be reset to `false` afte this call so that
+      * the next call to [[isReady()]] will return `false`.
+      *
+      * @see [[isReady()]]
+      */
+    def getResult: (Option[CPKeyboardKey], Option[String]) =
+        ready = false
+        res
 
     /** @inheritdoc */
     def getDim: CPDim = dim

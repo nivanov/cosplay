@@ -88,9 +88,14 @@ open class CPScene(id: String, dim: Option[CPDim], bgPx: CPPixel) extends CPGame
     private[cosplay] val objects = CPContainer[CPSceneObject]()
 
     /**
-      * Adds scene object(s) to this scene.
+      * Adds scene object(s) to this scene. Note that this method is protected and not intended for public
+      * use but other than implementing types. This method should only be used by subtypes during their
+      * construction outside of the game loop. In order to correctly add (and remove) scene objects from
+      * the scene while in game loop you should use appropriate methods from [[CPSceneObjectContext]] trait.
       *
       * @param objs Scene objects to add.
+      * @see [[CPSceneObjectContext.addObject()]]
+      * @see [[CPSceneObjectContext.deleteObject()]]
       */
     protected def addObjects(objs: CPSceneObject*): Unit = objs.foreach(objects.add)
 

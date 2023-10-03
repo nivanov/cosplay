@@ -30,7 +30,7 @@ package org.cosplay.examples.shader
                 All rights reserved.
 */
 
-import org.cosplay.*
+import org.cosplay.{CPCenteredImageSprite, *}
 import org.cosplay.CPPixel.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPArrayImage.*
@@ -38,7 +38,6 @@ import org.cosplay.CPKeyboardKey.*
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
 import org.cosplay.prefabs.shaders.CPSlideDirection.*
-import org.cosplay.prefabs.sprites.CPCenteredImageSprite
 
 import scala.collection.mutable
 
@@ -130,14 +129,14 @@ object CPSlideShaderExample:
         for dir <- CPSlideDirection.values do
             val s1 = CPSlideInShader.sigmoid(dir, false, 1500, BG_PX, _ => (), lastShdr == null)
             val s2 = CPSlideOutShader.sigmoid(dir, false, 1500, BG_PX, _ => labelSpr.reset(), false)
-            s1.setOnFinish(_ => {
+            s1.setOnFinish(_ =>
                 labelSpr.setImage(CPSystemFont.render(dir.toString, C_ORANGE1, None))
                 s2.start()
-            })
-            if lastShdr != null then lastShdr.setOnFinish(_ => {
+            )
+            if lastShdr != null then lastShdr.setOnFinish(_ =>
                 labelSpr.setImage(CPSystemFont.render(dir.toString, C_ORANGE1, None))
                 s1.start()
-            })
+            )
             else
                 labelSpr.setImage(CPSystemFont.render(dir.toString, C_ORANGE1, None))
             shdrs.append(s1)

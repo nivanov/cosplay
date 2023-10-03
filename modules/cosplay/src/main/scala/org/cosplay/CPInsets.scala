@@ -68,6 +68,54 @@ final case class CPInsets(top: Int, left: Int, bottom: Int, right: Int) extends 
       */
     val verOffset: Int = top + bottom
 
+    /**
+      * Creates new copy with given left inset.
+      *
+      * @param d Left inset.
+      * @return New copy.
+      */
+    def withLeft(d: Int): CPInsets = CPInsets(top, d, bottom, right)
+
+    /**
+      * Creates new copy with given top inset.
+      *
+      * @param d Top inset.
+      * @return New copy.
+      */
+    def withTop(d: Int): CPInsets = CPInsets(d, left, bottom, right)
+
+    /**
+      * Creates new copy with given bottom inset.
+      *
+      * @param d Bottom inset.
+      * @return New copy.
+      */
+    def withBottom(d: Int): CPInsets = CPInsets(top, left, d, right)
+
+    /**
+      * Creates new copy with given right inset.
+      *
+      * @param d Right inset.
+      * @return New copy.
+      */
+    def withRight(d: Int): CPInsets = CPInsets(top, left, bottom, d)
+
+    /**
+      * Creates new copy with given vertical insets.
+      *
+      * @param d Top and bottom (vertical) inset.
+      * @return New copy.
+      */
+    def withVert(d: Int): CPInsets = CPInsets(d, left, d, right)
+
+    /**
+      * Creates new copy with given horizontal insets.
+      *
+      * @param d Left and right (horizontal) inset.
+      * @return New copy.
+      */
+    def withHor(d: Int): CPInsets = CPInsets(top, d, bottom, d)
+
 /**
   * Companion object with utility functions.
   */

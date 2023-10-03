@@ -56,7 +56,7 @@ import scala.collection.mutable
   *
   * @see [[CPSceneObject.update()]]
   * @see [[CPSceneObject.render()]]
-  * @see [[CPSceneMonitor.monitor()]]
+  * @see [[CPSceneObject.monitor()]]
   * @see [[CPShader.render()]]
   */
 trait CPSceneObjectContext extends CPBaseContext:
@@ -243,11 +243,24 @@ trait CPSceneObjectContext extends CPBaseContext:
 
     /**
       * Gets current frame's keyboard event.
+      *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
       */
     def getKbEvent: Option[CPKeyboardEvent]
 
     /**
-      * Checks if the current frame's keyboard event, if any, contains given keyboard key.
+      * Checks if the current frame's keyboard event, if any, contains given keyboard key. Returns `true` only
+      * and only if current frame has a key press and its keyboard key is equal to the given key.
+      *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
       *
       * @param key Keyboard key to check.
       * @see [[getKbEvent]]
@@ -259,7 +272,13 @@ trait CPSceneObjectContext extends CPBaseContext:
             case None => false
 
     /**
-      * Tests whether or not current object is a input keyboard focus owner.
+      * Tests whether or not current object is a keyboard focus owner.
+      *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
       *
       * @see [[acquireFocus()]]
       * @see [[getFocusOwner]]
@@ -272,7 +291,33 @@ trait CPSceneObjectContext extends CPBaseContext:
         case None => false
 
     /**
-      * Makes the current scene object the owner of the input keyboard focus.
+      * Tests whether or not scene object with given ID is a keyboard focus owner.
+      *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
+      *
+      * @param id Scene object ID to test for keyboard focus ownership.
+      * @see [[acquireFocus()]]
+      * @see [[getFocusOwner]]
+      * @see [[acquireMyFocus()]]
+      * @see [[releaseFocus()]]
+      * @see [[releaseMyFocus()]]
+      */
+    def isFocusOwner(id: String): Boolean = getFocusOwner match
+        case Some(x) => id == x
+        case None => false
+
+    /**
+      * Makes the current scene object the owner of the keyboard focus.
+      *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
       *
       * @see [[acquireFocus()]]
       * @see [[getFocusOwner]]
@@ -288,7 +333,13 @@ trait CPSceneObjectContext extends CPBaseContext:
     def getOwner: CPSceneObject
 
     /**
-      * Makes the scene object with given ID the owner of the input keyboard focus.
+      * Makes the scene object with given ID the owner of the keyboard focus.
+      *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
       *
       * @param id ID of the scene object.
       * @see [[acquireFocus()]]
@@ -296,6 +347,7 @@ trait CPSceneObjectContext extends CPBaseContext:
       * @see [[acquireMyFocus()]]
       * @see [[releaseFocus()]]
       * @see [[releaseMyFocus()]]
+      * @see [[isFocusOwner()]]
       */
     def acquireFocus(id: String): Unit
 
@@ -303,23 +355,36 @@ trait CPSceneObjectContext extends CPBaseContext:
       * Gets ID of the scene object owning the input focus, if any. If `None` - no object is
       * owning the input focus and all objects will get input events.
       *
-      * @see [[acquireFocus()]]
-      * @see [[getFocusOwner]]
-      * @see [[acquireMyFocus()]]
-      * @see [[releaseFocus()]]
-      * @see [[releaseMyFocus()]]
-      */
-    def getFocusOwner: Option[String]
-
-    /**
-      * Releases the input keyboard focus if it is held by the current scene object. No-op in all other
-      * cases.
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
       *
       * @see [[acquireFocus()]]
       * @see [[getFocusOwner]]
       * @see [[acquireMyFocus()]]
       * @see [[releaseFocus()]]
       * @see [[releaseMyFocus()]]
+      * @see [[isFocusOwner()]]
+      */
+    def getFocusOwner: Option[String]
+
+    /**
+      * Releases the keyboard focus if it is held by the current scene object. No-op in all other cases.
+      *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
+      *
+      * @see [[acquireFocus()]]
+      * @see [[getFocusOwner]]
+      * @see [[acquireMyFocus()]]
+      * @see [[releaseFocus()]]
+      * @see [[releaseMyFocus()]]
+      * @see [[isFocusOwner()]]
       */
     def releaseMyFocus(): Unit
 
@@ -327,12 +392,19 @@ trait CPSceneObjectContext extends CPBaseContext:
       * Releases the input focus if it is help by the object with given ID. No-op in all
       * other cases.
       *
+      * Note that if the focus is not held by any scene object, i.e. was acquired and released or not
+      * acquired at all, all objects that call [[getKbEvent]] function will receive the same result, i.e.
+      * the pressed key or `None` if there wasn't a key press. If keyboard focus was acquired and is held by
+      * the scene object - only that object will receive a result from [[getKbEvent]] function call
+      * while all other scene objects will get `None` as if no key press happened.
+      *
       * @param id ID of the scene object.
       * @see [[acquireFocus()]]
       * @see [[getFocusOwner]]
       * @see [[acquireMyFocus()]]
       * @see [[releaseFocus()]]
       * @see [[releaseMyFocus()]]
+      * @see [[isFocusOwner()]]
       */
     def releaseFocus(id: String): Unit
 

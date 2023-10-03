@@ -264,11 +264,11 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
             for ch <- s do
                 val figCh = getFIGChar(ch)
                 chX = if chX == 0 then 0 else if figKerning then kerningPos(chX, figCh) else smushingPos(chX, figCh)
-                figCh.loop((x, y) => {
+                figCh.loop((x, y) =>
                     val x2 = chX + x
                     val px1 = data.get(x2, y)
                     if px1 == null || px1.char == ' ' then data.set(x2, y, CPPixel(figCh.raw(x, y), fg, bg))
-                })
+                )
                 chX += figCh.width
         else if figCtrlSmush then
             var chX = 0
@@ -276,7 +276,7 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
                 val figCh = getFIGChar(ch)
                 // Controlled smushing.
                 chX = if chX == 0 then 0 else smushingPos(chX, figCh)
-                figCh.loop((x, y) => {
+                figCh.loop((x, y) =>
                     val x2 = chX + x
                     val px1 = data.get(x2, y)
                     val ch2 = figCh.raw(x, y)
@@ -309,16 +309,16 @@ class CPFIGLetFont(flfPath: String) extends CPFont(flfPath):
                             if ch1 == '/' && ch2 == '\\' then data.set(x2, y, '|'&&(fg, bg))
                             else if ch1 == '\\' && ch2 == '/' then data.set(x2, y, 'Y'&&(fg, bg))
                             else if ch1 == '>' && ch2 == '<' then data.set(x2, y, 'X'&&(fg, bg))
-                })
+                )
                 chX += figCh.width
         else
             assert(false)
 
         // Switch hardblanks to spaces.
-        data.rect.loop((x, y) => {
+        data.rect.loop((x, y) =>
             val px = data.get(x, y)
             if px != null && px.char == figHardblank then data.set(x, y, px.withChar(' '))
-        })
+        )
 
         new CPArrayImage(data.trim(px => px == null || px.char == ' '))
 

@@ -123,7 +123,7 @@ object CPShaderExample:
                     val cx = objRect.centerX
                     val cy = objRect.centerY
                     val effRect = CPRect(cx - RADIUS * 2, cy - RADIUS, RADIUS * 4, RADIUS * 2)
-                    effRect.loop((x, y) => {
+                    effRect.loop((x, y) =>
                         if canv.isValid(x, y) then
                             // Account for character with/height ratio to make a proper circle...
                             // NOTE: we can't get the font metrics in the native ANSI terminal so
@@ -136,7 +136,7 @@ object CPShaderExample:
                                 val px = zpx.px
                                 val newFg = px.fg.lighter(0.8f * (1.0f - r / RADIUS))
                                 canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
-                    })
+                    )
 
         val bulbSpr = new CPImageSprite("bulb",
             // Center it on the screen.

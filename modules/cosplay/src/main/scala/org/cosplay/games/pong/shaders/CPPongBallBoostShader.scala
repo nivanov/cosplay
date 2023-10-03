@@ -49,9 +49,9 @@ object CPPongBallBoostShader extends CPShader:
     override def render(ctx: CPSceneObjectContext, objRect: CPRect, inCamera: Boolean): Unit =
         if go then
             val canv = ctx.getCanvas
-            objRect.loop((x, y) => {
+            objRect.loop((x, y) =>
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     if zpx.px.char != BG_PX.char then
                         canv.drawPixel(zpx.px.withFg(CS.rand), x, y, zpx.z)
-            })
+            )

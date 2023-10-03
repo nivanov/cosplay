@@ -94,7 +94,7 @@ class CPFlashlightShader(
             val cx = objRect.centerX
             val cy = objRect.centerY
             val effRect = CPRect(cx - radius * 2, cy - radius, radius * 4, radius * 2)
-            effRect.loop((x, y) => {
+            effRect.loop((x, y) =>
                 if canv.isValid(x, y) then
                     val zpx = canv.getZPixel(x, y)
                     if !skip(zpx, x, y) then
@@ -109,4 +109,4 @@ class CPFlashlightShader(
                             if px.char == BG_PX.char then
                                 val newFg = px.fg.lighter(0.2f * (1.0f - r / radius))
                                 canv.drawPixel(px.withFg(newFg), x, y, zpx.z)
-            })
+            )

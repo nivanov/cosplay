@@ -75,12 +75,18 @@ package org.cosplay
   * @param id Optional ID of this scene object. By default, the random 6-character ID will be used.
   * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPDynamicSprite]]
-  * @see [[CPSceneMonitor]]
   */
 abstract class CPSceneObject(
     id: String = CPRand.guid6,
     tags: Set[String] = Set.empty
 ) extends CPGameObject(id, tags) with CPLifecycle:
+    !>(id.nonEmpty, "Scene object ID cannot be empty.")
+    !>(id.count(ch =>
+        !(
+            ch.isLetterOrDigit || ch == '-' || ch == '_' || ch == '$'
+        )
+    ) == 0, s"Scene object ID should contain letters, digits, '-', '_' or '$$' characters only: '$id'")
+
     private var visible = true
 
     private[cosplay] def toExtStr: String =
@@ -219,27 +225,59 @@ abstract class CPSceneObject(
     /**
       * Called to update the internal state of this scene object. This callback is called each frame on every
       * object in the scene and it is called before any [[render()]] callback. Note that all scene object will
-      * receive this callback before first [[render()]] callback.
+      * receive this callback before first [[render()]] callback. The order in which scene objects are called is
+      * undefined.
+      *
+      * Default implementation is no-op. No rendering should be done in this callback.
       *
       * @param ctx Frame context. This context provides bulk of functionality that a scene object
       *     can do in a game, e.g. interact with other scene objects, check collisions, read input
       *     events and manage input focus, add or remove scene objects, add new and switch between scenes, etc.
       * @see [[render()]]
+      * @see [[monitor()]]
       * @see [[isVisible]]
       */
     def update(ctx: CPSceneObjectContext): Unit = {}
 
     /**
+      * Called after all scene objects have been updated but before any of them were rendered. It allows,
+      * for example, to rearrange UI sprites on the screen after all of them had a chance to update their
+      * dimensions but before they are actually rendered on the screen. Essentially, it provides for
+      * "post-update, pre-render" notification. The order in which scene objects are called is
+      * undefined.
+      *
+      * Note that in most cases one should not override this callback. It is only meant for the use cases
+      * when one needs to be notified when all scene objects to be updated but before any of them are rendered.
+      * Default implementation is no-op. No rendering should be done in this callback.
+      *
+      * Default implementation is no-op.
+      *
+      * @param ctx Frame context. This context provides bulk of functionality that a scene object
+      *     can do in a game, e.g. interact with other scene objects, check collisions, read input
+      *     events and manage input focus, add or remove scene objects, add new and switch between scenes, etc.
+      * @see [[render()]]
+      * @see [[update()]]
+      */
+    def monitor(ctx: CPSceneObjectContext): Unit = {}
+
+    /**
       * Called to render this scene object. Only visible and in camera frame objects will receive this
       * callback. This callback is called on scene object
-      * after all scene objects received [[update()]] callback. Note that unlike [[update()]] callbacks
-      * and shaders that are called for all scene objects on each frame, this callback is only called for scene
-      * objects that are visible and, at least partially, in camera frame.
+      * after all scene objects received [[update()]] and [[monitor()]] callbacks. Note that unlike
+      * [[update()]] and [[monitor()]] callbacks and shaders that are called for all scene objects on each frame,
+      * this callback is only called for scene objects that are visible and, at least partially, in camera frame.
+      * The order in which scene objects are called is undefined.
+      *
+      * Note that generally this callback should not modify scene object state (which should be done in either
+      * [[update()]] or [[monitor()]] callbacks.
+      *
+      * Default implementation is no-op.
       *
       * @param ctx Frame context. This context provides bulk of functionality that a scene object
       *     can do in a game, e.g. interact with other scene objects, check collisions, read input
       *     events and manage input focus, add or remove scene objects, add new and switch between scenes, etc.
       * @see [[update()]]
+      * @see [[monitor()]]
       * @see [[isVisible]]
       */
     def render(ctx: CPSceneObjectContext): Unit = {}

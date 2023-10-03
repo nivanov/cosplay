@@ -4733,11 +4733,11 @@ object CPMoonVideo extends CPVideo("moon_vid", "https://ascii.co.uk/animated-art
         val maxLen = frameStrs.flatten.max.length
         frameStrs.map(strArr =>
             val padded = strArr.map(_.padTo(maxLen, ' ')).toSeq
-            new CPArrayImage(padded, (ch, _, _) => {
+            new CPArrayImage(padded, (ch, _, _) =>
                 ch match
                     case ' ' => XRAY
                     case _ => ch&C_WHITE
-            })
+            )
         ).toSeq
 
     private val frames = prepFrames()
