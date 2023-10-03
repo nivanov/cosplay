@@ -72,7 +72,7 @@ Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
 * libraryDependencies +=
     "org.cosplayengine" % "cosplay" % "0.9.2"
 
-## One-time Git clone & build:
+## One-Time Git Clone & Build:
 * $ git clone https://github.com/nivanov/cosplay.git
 * $ cd cosplay
 * $ sbt package
