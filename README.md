@@ -50,7 +50,8 @@ CosPlay is 2D ASCII game engine written in [Scala3](https://www.scala-lang.org/)
 * Multi-channel audio & ASCII-video support
 * 277 built-in FIGLet fonts with full rendering
 * Built-in log viewer, debugger and terminal emulator
-* CosPlay also comes with many examples for each functional area. The source code for these examples is shipped with the project (see org.cosplay.examples package) 
+* CosPlay also comes with many examples for each functional area: 
+  * The source code for these examples is shipped with the project (see `org.cosplay.examples` package). 
 
 ## Install and Use Cosplay
 Prerequisites:
@@ -69,26 +70,20 @@ Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
 </dependency>
 ```
 
-* libraryDependencies +=
-    "org.cosplayengine" % "cosplay" % "0.9.2"
-
 ## One-Time Git Clone & Build:
-* $ git clone https://github.com/nivanov/cosplay.git
-* $ cd cosplay
-* $ sbt package
-* CosPlay comes with support for both SBT and Maven builds so you can use both libraries of commands
-* Use Cosplay to create new and fun games
+```
+$ git clone https://github.com/nivanov/cosplay.git
+$ cd cosplay
+$ sbt package
+```
 
-* This is assuming you've already cloned the Cosplay repo on your machine
-* For developers interested in contributing to the project, you can work within and create pull requests to the active UTIK branch
-* For those just interested in using Cosply to create games can just download the most recent version
+For developers interested in contributing to the project, you can work within your own feature off-`master` branches and create pull requests.
+For those just interested in using CosPlay to create games - you can just get the most recent version via SBT or Maven.
 
 ## Development 
-Fork and Clone
-* First fork the repository and clone to your own machine
-* Submit pull requests to active branch UTIK to submit your possible changes
-* Documentation and Information on possible changes can be found below within the discord 
-
+* First, fork the repository and clone to your own machine.
+* Create new feature branch off the `master` branch.
+* Work on your changes in that branch and submit pull requests with your proposed changes.
 
 ## Questions?
 * Join [discord](https://discord.gg/gDQuYJDM)
