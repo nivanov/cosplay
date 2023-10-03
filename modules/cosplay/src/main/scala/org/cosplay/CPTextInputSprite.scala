@@ -33,7 +33,6 @@ package org.cosplay
 import org.cosplay.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.impl.CPUtils
-
 import scala.collection.mutable
 
 /**
@@ -170,9 +169,9 @@ class CPTextInputSprite(
                         curPos -= 1
                         buf.remove(curPos)
                     case KEY_DEL => if buf.nonEmpty && curPos < buf.length then buf.remove(curPos)
-                    case key if cancelKeys.contains(key) => done(None)
+                    case key if cancelKeys.contains(key) => done(ctx, None)
                     case key if submitKeys.contains(key) =>
-                        done(buf.mkString("").?)
+                        done(ctx, buf.mkString("").?)
                         if next.isDefined then ctx.acquireFocus(next.get)
                     case key if keyFilter(evt) && key.isPrintable =>
                         if curPos < maxBuf then
@@ -181,9 +180,17 @@ class CPTextInputSprite(
                     case _ => ()
             case None => ()
 
-    private def done(optRes: Option[String]): Unit =
+    /**
+      * Gets current text of this input sprite. Note that a non-empty result does not mean
+      * that overall result is ready (i.e. submit key was pressed). This method simply returns
+      * whatever is currently entered in the text input.
+      */
+    def getCurrentText: String = buf.mkString("")
+
+    private def done(ctx: CPSceneObjectContext, optRes: Option[String]): Unit =
         ready = true
         res = (lastKey, optRes)
+        ctx.releaseMyFocus()
         if optRes.isEmpty then
             reset()
 
@@ -230,7 +237,7 @@ class CPTextInputSprite(
       * yet ready or got cancelled. Last key pressed is `None` when no keys were pressed yet on this sprite.
       * Call method [[isReady()]] on each frame to check whether the input result is actually ready.
       *
-      * Note that if result was ready the internal ready flag will be reset to `false` afte this call so that
+      * Note that if result was ready the internal ready flag will be reset to `false` after this call so that
       * the next call to [[isReady()]] will return `false`.
       *
       * @see [[isReady()]]
