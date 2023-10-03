@@ -23,6 +23,7 @@ import org.cosplay.CPPixel.*
 import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPStyledString.*
+import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
 
 /*
@@ -121,7 +122,10 @@ object CPLayoutExample:
         )
 
         // Start the game & wait for exit.
-        try CPEngine.startGame(sc)
+        try CPEngine.startGame(
+            new CPFadeShimmerLogoScene("logo", termDim.?, bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"),
+            sc
+        )
         finally CPEngine.dispose()
 
         sys.exit(0)
