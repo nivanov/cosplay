@@ -412,5 +412,3 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
             )
 
     init()
-
-
