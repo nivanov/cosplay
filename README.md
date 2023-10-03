@@ -50,8 +50,9 @@ CosPlay is 2D ASCII game engine written in [Scala3](https://www.scala-lang.org/)
 * Multi-channel audio & ASCII-video support
 * 277 built-in FIGLet fonts with full rendering
 * Built-in log viewer, debugger and terminal emulator
+* CosPlay also comes with many examples for each functional area. The source code for these examples is shipped with the project (see org.cosplay.examples package) 
 
-## Install
+## Install and Use Cosplay
 Prerequisites:
 * Java 11+ ([download](https://www.java.com/en/download/))
 
@@ -67,6 +68,27 @@ Using [Maven](https://mvnrepository.com/artifact/org.cosplayengine/cosplay):
   <version>0.9.4</version>
 </dependency>
 ```
+
+* libraryDependencies +=
+    "org.cosplayengine" % "cosplay" % "0.9.2"
+
+## One-time Git clone & build:
+* $ git clone https://github.com/nivanov/cosplay.git
+* $ cd cosplay
+* $ sbt package
+* CosPlay comes with support for both SBT and Maven builds so you can use both libraries of commands
+* Use Cosplay to create new and fun games
+
+* This is assuming you've already cloned the Cosplay repo on your machine
+* For developers interested in contributing to the project, you can work within and create pull requests to the active UTIK branch
+* For those just interested in using Cosply to create games can just download the most recent version
+
+## Development 
+Fork and Clone
+* First fork the repository and clone to your own machine
+* Submit pull requests to active branch UTIK to submit your possible changes
+* Documentation and Information on possible changes can be found below within the discord 
+
 
 ## Questions?
 * Join [discord](https://discord.gg/gDQuYJDM)
