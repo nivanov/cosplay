@@ -56,11 +56,11 @@ object CPPongTitleScene extends CPScene("title", None, BG_PX):
         // Add all screen shaders.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, fadeOutShdr, sparkleShdr)),
         // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        // Toggle audio on 'CTRL+A' press.
-        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
+        CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q),
+        // Toggle audio on 'Ctrl+A' press.
+        CPKeyboardSprite(_ => toggleAudio(), KEY_CTRL_A),
         // Transition to the next scene on 'Enter' press.
-        CPKeyboardSprite(KEY_ENTER, _ => fadeOutShdr.start(_.switchScene("play")))
+        CPKeyboardSprite(_ => fadeOutShdr.start(_.switchScene("play")), KEY_ENTER)
     )
 
     private def startBgAudio(): Unit = introSnd.loop(2000.ms)

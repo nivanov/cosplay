@@ -875,7 +875,7 @@ object CPImage:
                 dim.?,
                 bg,
                 spr, // Animation we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
+                CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()
@@ -905,7 +905,7 @@ object CPImage:
                 dim.?,
                 bg,
                 new CPImageSprite("spr", 4, 4, 0, img, false), // Image we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
+                CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()

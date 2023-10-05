@@ -421,9 +421,9 @@ object CPBirdGameScene extends CPScene("play", None, GAME_BG_PX):
 
     addObjects(
         // Exit on 'Q' press.
-        CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
-        // Toggle audio on 'CTRL+A' press.
-        CPKeyboardSprite(KEY_CTRL_A, _ => toggleAudio()),
+        CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q),
+        // Toggle audio on 'Ctrl+A' press.
+        CPKeyboardSprite(_ => toggleAudio(), KEY_CTRL_A),
         // Off screen sprite since shaders are applied to entire screen.
         new CPOffScreenSprite(shaders = Seq(fadeInShdr, borderShdr, starStreakShdr)),
         birdSpr,

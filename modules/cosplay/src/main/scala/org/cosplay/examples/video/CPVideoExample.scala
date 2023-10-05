@@ -112,10 +112,10 @@ object CPVideoExample:
                     music.loop(1500.ms) // Auto-play with fade-in.
                     beatShdr.start() // Start beat shader in the same time.
             ,
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()) // Exit the game on 'Q' press.
+            CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q) // Exit the example on 'Q' press.
         )
 
-        // Start the game & wait for exit.
+        // Start the example & wait for exit.
         try CPEngine.startGame(sc)
         finally CPEngine.dispose()
 

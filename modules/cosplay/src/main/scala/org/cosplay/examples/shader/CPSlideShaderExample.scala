@@ -144,9 +144,17 @@ object CPSlideShaderExample:
             lastShdr = s2
 
         val imgSpr = new CPCenteredImageSprite(img = img, 0, shaders = shdrs.toSeq)
-        val sc = new CPScene("scene", dim.?, BG_PX, imgSpr, labelSpr, CPKeyboardSprite(KEY_LO_Q, _.exitGame()))
+        val sc = new CPScene(
+            "scene",
+            dim.?,
+            BG_PX,
+            imgSpr,
+            labelSpr,
+            // Exit example on 'Q' press.
+            CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q)
+        )
 
-        // Start the game & wait for exit.
+        // Start the example & wait for exit.
         try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, BG_PX, cols, "scene"), sc)
         finally CPEngine.dispose()
 

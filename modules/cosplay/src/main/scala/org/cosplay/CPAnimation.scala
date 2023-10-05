@@ -265,7 +265,7 @@ object CPAnimation:
                 dim.?,
                 bg,
                 spr, // Animation we are previewing.
-                CPKeyboardSprite(KEY_LO_Q, _.exitGame()), // Exit the game on 'Q' press.
+                CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q), // Exit the game on 'Q' press.
             ))
         finally
             CPEngine.dispose()

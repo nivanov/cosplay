@@ -110,7 +110,7 @@ object CPDialogExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        // Start the game & wait for exit.
+        // Start the example & wait for exit.
         try CPEngine.startGame(
             new CPFadeShimmerLogoScene("logo", termDim.?, bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"),
             sc

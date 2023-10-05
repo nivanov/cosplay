@@ -40,15 +40,26 @@ import scala.collection.mutable
   * @see [[CPListBoxModel]]
   */
 trait CPListBoxElement[T]:
+    /** Gets the sequence of pixel visually representing this listbox value. */
     def getLine: Seq[CPPixel]
+    /** Gets the value of the this listbox element. */
     def getValue: T
 
 /**
   * A model for listbox sprite.
   */
 trait CPListBoxModel:
+    /** Gets the total number of elements in the model. */
     def getSize: Int
-    def getElement[T](i: Int): CPListBoxElement[T]
+    /** Gets the model element with given index or `None` if index is invalid or model is empty.. */
+    def getElement[T](i: Int): Option[CPListBoxElement[T]]
+    /**
+      * Gets the index of the currently selected item.
+      * Model must always have an element selected unless it is empty.
+      */
+    def getSelectionIndex: Int
+    /** A shortcut getter for the value of the selected element or `None` if the model is empty.*/
+    def getSelectedValue[T]: Option[T] = getElement[T](getSelectionIndex).flatMap(_.getValue.?)
 
 /**
   *
@@ -60,14 +71,10 @@ trait CPListBoxModel:
   * @param width
   * @param height
   * @param selSkin
-  * @param initSelIdx
-  * @param next
-  * @param cancelKeys
-  * @param submitKeys
   * @param collidable Whether or not this sprite provides collision shape.
   * @param shaders Optional sequence of shaders for this sprite.
   * @param tags Optional set of organizational or grouping tags.
-  *  @see [[CPListBoxModel]]
+  * @see [[CPListBoxModel]]
   */
 class CPListBoxSprite(
     id: String = s"listbox-spr-${CPRand.guid6}",
@@ -77,49 +84,40 @@ class CPListBoxSprite(
     model: CPListBoxModel,
     width: Int,
     height: Int,
+    onKey: (CPListBoxModel, CPKeyboardKey) => Unit,
     selSkin: (Int, CPPixel) => CPPixel,
-    initSelIdx: Int = 0,
-    private var next: Option[String] = None,
-    cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
-    submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
     tags: Set[String] = Set.empty
 ) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
+    !>(width > 0, s"Width must be > 0: $width")
+    !>(height > 0, s"Height must be > 0: $height")
     private val dim = CPDim(width, height)
-    private var curIdx = cap(initSelIdx)
+    private var xOff = 0
+    private var viewStartIdx = 0
 
-    reset()
-
-    override def update(ctx: CPSceneObjectContext): Unit = super.update(ctx)
-    override def render(ctx: CPSceneObjectContext): Unit = super.render(ctx)
+    override def update(ctx: CPSceneObjectContext): Unit =
+        if ctx.isFocusOwner then
+            ctx.getKbEvent match
+                case Some(evt) => onKey(model, evt.key)
+                case None => ()
+    override def render(ctx: CPSceneObjectContext): Unit =
+        val selIdx = model.getSelectionIndex
+        if selIdx < viewStartIdx then viewStartIdx = selIdx
+        else if selIdx >= viewStartIdx + width then viewStartIdx = selIdx - width + 1
+        var i = viewStartIdx
+        val sz = model.getSize
+        val lastIdx = (i + width - 1).min(i + sz - viewStartIdx - 1)
+        val canv = ctx.getCanvas
+        while i <= lastIdx do
+            model.getElement(i) match
+                case Some(elm) =>
+                    canv.drawPixels(
+                        x + xOff,
+                        y,
+                        z,
+                        if i == selIdx then elm.getLine.zipWithIndex.map(t => selSkin(t._2, t._1)) else elm.getLine
+                    )
+                case None => ()
+            i += 1
     override def getDim: CPDim = dim
-
-    private def cap(idx: Int): Int =
-        if idx < 0 then 0
-        else if idx >= model.getSize then model.getSize - 1
-        else idx
-
-    /**
-      * Resets listbox to its initial state.
-      */
-    def reset(): Unit =
-        curIdx = cap(initSelIdx)
-
-    /**
-      * Gets value of the currently selected element in the listbox. Note that listbox always
-      * has one element selected.
-      */
-    def getSelection[T](): T = model.getElement(curIdx).getValue
-
-    /**
-      * Gets optional ID of the next scene object which will receive the keyboard focus after this sprite.
-      */
-    def getNext: Option[String] = next
-
-    /**
-      * Sets optional ID of the next scene object which will receive the keyboard focus after this sprite.
-      *
-      * @param next ID of the 'next' scene object or `None` to remove it.
-      */
-    def setNext(next: Option[String]): Unit = this.next = next

@@ -74,6 +74,8 @@ import scala.collection.mutable
   *     current cursor position (i.e. cursor is over the character). The function must return [[CPPixel]] instance.
   * @param next Optional scene object ID to switch keyboard focus to after the user pressed one of the
   *     submit keys. Default value is `None`.
+  * @param prev Optional scene object ID to switch keyboard focus to after the user pressed one of the
+  *     cancel keys. Default value is `None`.
   * @param cancelKeys Optional set of keyboard keys to accept for cancellation action. When one of these keys
   *     is pressed the sprite will reset to its initial state, marked as ready and its result set to `None`.
   *     Default value is [[CPKeyboardKey.KEY_ESC]]. Note that neither cancel or submit keys can contain any of the
@@ -108,6 +110,7 @@ class CPTextInputSprite(
     onSkin: (Char, Int, Boolean) => CPPixel,
     offSkin: (Char, Int, Boolean) => CPPixel,
     private var next: Option[String] = None,
+    private var prev: Option[String] = None,
     cancelKeys: Seq[CPKeyboardKey] = Seq(KEY_ESC),
     submitKeys: Seq[CPKeyboardKey] = Seq(KEY_ENTER),
     keyFilter: CPKeyboardEvent => Boolean = _ => true,
@@ -169,7 +172,9 @@ class CPTextInputSprite(
                         curPos -= 1
                         buf.remove(curPos)
                     case KEY_DEL => if buf.nonEmpty && curPos < buf.length then buf.remove(curPos)
-                    case key if cancelKeys.contains(key) => done(ctx, None)
+                    case key if cancelKeys.contains(key) =>
+                        done(ctx, None)
+                        if prev.isDefined then ctx.acquireFocus(prev.get)
                     case key if submitKeys.contains(key) =>
                         done(ctx, buf.mkString("").?)
                         if next.isDefined then ctx.acquireFocus(next.get)
@@ -210,18 +215,32 @@ class CPTextInputSprite(
     def getInitText: String = initTxt
 
     /**
-      * Gets optional ID of the 'next' scene object which will receive the keyboard focus after this
-      * sprite result is ready.
+      * Gets optional ID of the 'next' scene object which will receive the keyboard focus after one of
+      * submit keys is pressed.
       */
     def getNext: Option[String] = next
 
     /**
-      * Sets optional ID of the 'next' scene object which will receive the keyboard focus after this
-      * sprite result is ready.
+      * Sets optional ID of the 'next' scene object which will receive the keyboard focus after one of the
+      * submit keys is pressed.
       *
       * @param next ID of the 'next' scene object or `None` to remove it.
       */
     def setNext(next: Option[String]): Unit = this.next = next
+
+    /**
+      * Gets optional ID of the 'previous' scene object which will receive the keyboard focus after one of
+      * the cancel keys is pressed.
+      */
+    def getPrevious: Option[String] = prev
+
+    /**
+      * Sets optional ID of the 'next' scene object which will receive the keyboard focus after one of
+      * the cancel keys is pressed.
+      *
+      * @param prev ID of the 'previous' scene object or `None` to remove it.
+      */
+    def setPrevious(prev: Option[String]): Unit = this.prev = prev
 
     /**
       * Whether or not the result is either submitted or cancelled, i.e. ready.

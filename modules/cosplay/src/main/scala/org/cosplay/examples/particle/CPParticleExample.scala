@@ -189,10 +189,10 @@ object CPParticleExample:
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500.ms, bgPx)),
             // Exit the game on 'Q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
+            CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q)
         )
 
-        // Start the game & wait for exit.
+        // Start the example & wait for exit.
         try CPEngine.startGame(new CPFadeShimmerLogoScene("logo", dim.?, bgPx, COLORS, "scene"), sc)
         finally CPEngine.dispose()
 

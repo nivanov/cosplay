@@ -21,7 +21,7 @@ import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
 import org.cosplay.CPFIGLetFont.*
-import org.cosplay.CPKeyboardKey.KEY_LO_Q
+import org.cosplay.CPKeyboardKey.*
 import org.cosplay.prefabs.scenes.CPFadeShimmerLogoScene
 import org.cosplay.prefabs.shaders.CPFadeInShader
 
@@ -105,11 +105,11 @@ object CPFontsExample:
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(Seq(new CPFadeInShader(true, 500, bgPx))),
             // Exit the game on 'Q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
+            CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q)
         )
 
         try
-            // Start the game & wait for exit.
+            // Start the example & wait for exit.
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene(
                     "logo",

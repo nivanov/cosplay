@@ -149,7 +149,7 @@ object CPTileMapperExample:
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             // Exit the game on 'Q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame()),
+            CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q),
         )
 
         // Layout tile sprites and add them to the scene.
@@ -173,7 +173,7 @@ object CPTileMapperExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        // Start the game & wait for exit.
+        // Start the example & wait for exit.
         try CPEngine.startGame(new CPScene("scene", dim.?, bgPx, objs))
         finally CPEngine.dispose()
 

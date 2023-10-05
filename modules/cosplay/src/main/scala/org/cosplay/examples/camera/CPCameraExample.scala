@@ -223,8 +223,8 @@ object CPCameraExample:
             bgSpr,
             brickSpr,
             ufoSpr,
-            // On 'Ctrl-q' kick in fade out shader that will exit the game once it is finished.
-            CPKeyboardSprite(KEY_LO_Q, _ => foShdr.start()),
+            // On 'Q' press kick off fade out shader that will exit the game once it is finished.
+            CPKeyboardSprite(_ => foShdr.start(), KEY_LO_Q, KEY_UP_Q),
         )
         objs ++= palmSeq
 
@@ -242,7 +242,7 @@ object CPCameraExample:
         )
 
         try
-            // Start the game & wait for exit.
+            // Start the example & wait for exit.
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene(
                     id = "logo",

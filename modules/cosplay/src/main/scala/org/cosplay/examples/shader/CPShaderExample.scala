@@ -170,7 +170,7 @@ object CPShaderExample:
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             // Exit the game on 'Q' press.
-            CPKeyboardSprite(KEY_LO_Q, _.exitGame())
+            CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q)
         )
 
         // Initialize the engine.
@@ -179,7 +179,7 @@ object CPShaderExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        // Start the game & wait for exit.
+        // Start the example & wait for exit.
         try CPEngine.startGame(
             new CPFadeShimmerLogoScene("logo", dim.?, bgPx, List(C_STEEL_BLUE1, C_LIME, C_ORANGE1), "scene"),
             sc

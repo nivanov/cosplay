@@ -260,11 +260,11 @@ object CPAnimationExample:
             player,
             CPStaticImageSprite(28, 28, 0, imgHelp),
             // On 'q' kick in fade out shader that will exit the game once it is finished.
-            CPKeyboardSprite(KEY_LO_Q, _ => foShdr.start()) // Exit the game on 'Q' press.
+            CPKeyboardSprite(_ => foShdr.start(), KEY_LO_Q, KEY_UP_Q) // Exit the game on 'Q' press.
         )
 
         try
-            // Start the game & wait for exit.
+            // Start the example & wait for exit.
             CPEngine.startGame(
                 new CPFadeShimmerLogoScene(
                     "logo",

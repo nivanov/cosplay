@@ -432,6 +432,22 @@
             </build>
         </profile>
         <profile>
+            <id>ex:listbox</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions><execution><goals><goal>java</goal></goals></execution></executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>org.cosplay.examples.listbox.CPListBoxExample</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>ex:dialog</id>
             <build>
                 <plugins>

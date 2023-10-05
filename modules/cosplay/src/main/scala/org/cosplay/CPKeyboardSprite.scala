@@ -40,9 +40,9 @@ import org.cosplay.impl.CPUtils
   * be called. Use [[CPSceneObject.update()]] callback, if necessary, instead and make sure to
   * call `super.update(...)`.
   *
-  * This is an example of the often used idiom by built-in examples to handle 'Ctrl-q' key press to exit the game:
+  * This is an example of the often used idiom by built-in examples to handle 'Q' key press to exit the game:
   * {{{
-  *     CPKeyboardSprite(KEY_LO_Q, _.exitGame())
+  *     CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q)
   * }}}
   *
   * ### Sprites
@@ -75,14 +75,14 @@ class CPKeyboardSprite(
 
     /**
       * Creates keyboard sprite handling a single keyboard key. This is an example of the often used idiom by
-      * built-in examples to handle 'Ctrl-q' key press to exit the game:
+      * built-in examples to handle 'Q' key press to exit the game:
       * {{{
-      *     CPKeyboardSprite(KEY_LO_Q, _.exitGame())
+      *     CPKeyboardSprite(_.exitGame(), KEY_LO_Q)
       * }}}
       *
-      * @param key Keyboard key to handle.
-      * @param act A function to call when given `key` is pressed.
+      * @param act A function to call when one of the keys from `keys` set is pressed.
+      * @param keys One or more keyboard keys to handle.
       */
-    def this(key: CPKeyboardKey, act: CPSceneObjectContext => Unit) =
-        this((ctx, k) => if k == key then act(ctx))
+    def this(act: CPSceneObjectContext => Unit, keys: CPKeyboardKey*) =
+        this((ctx, k) => if keys.contains(k) then act(ctx))
 

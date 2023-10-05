@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-package org.cosplay.examples.layout
+package org.cosplay.examples.listbox
 
 import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
-import org.cosplay.CPFIGLetFont.*
 import org.cosplay.CPKeyboardKey.*
-import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
+import scala.collection.*
 
 /*
    _________            ______________
@@ -51,72 +50,59 @@ import org.cosplay.prefabs.shaders.*
   * }}}
   * to run example:
   * {{{
-  *     $ mvn -f modules/cosplay -P ex:layout exec:java
+  *     $ mvn -f modules/cosplay -P ex:listbox exec:java
   * }}}
   *
-  * @see [[CPLayoutSprite]]
+  * @see [[CPListBoxSprite]]
   * @see [[CPDynamicSprite]]
   * @note See developer guide at [[https://cosplayengine.com]]
   */
-object CPLayoutExample:
+object CPListBoxExample:
     /**
       * Entry point for JVM runtime.
       *
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        def mkPanel(name: String, w: Int, h: Int, z: Int): CPDynamicSprite =
-            CPTitlePanelSprite(
-                name,
-                0, 0, w, h, z,
-                C_BLACK,
-                "-.|'-'|.",
-                C_GREEN_YELLOW,
-                C_BLACK.?,
-                styleStr(name, C_DARK_ORANGE3),
-                // Border darkening gradient.
-                borderSkin = (_, y, px) => px.withDarkerFg(.8f - y.min(6) / 20.0f)
-            )
-
         val termDim = CPDim(100, 40)
         val bgPx = ' '&&(C_GRAY2, C_BLACK)
+        class FsModel(path: String) extends CPListBoxModel:
+            private var idx = -1
+            private val buf = mutable.ArrayBuffer.empty[CPListBoxElement[_]]
+            private var sz = 0
+
+            rescan(path)
+
+            override def getSelectionIndex: Int = idx
+            override def getElement[T](i: Int): Option[CPListBoxElement[T]] = if i >= 0 && i < sz then buf(i).asInstanceOf[CPListBoxElement[T]].? else None
+            override def getSize: Int = sz
+
+            def rescan(path: String): Unit =
+                // TODO
+                buf.clear()
+                sz = 0
+            def moveUp(): Unit = if idx > 0 then idx -= 1
+            def moveDown(): Unit = if idx >= 0 && idx < sz - 1 then idx += 1
+
+        val model = new FsModel("") // TODO
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q),
-            mkPanel("Panel-1", 60, 30, 0),
-            mkPanel("Panel-2", 15, 5, 1),
-            mkPanel("Panel-3", 15, 5, 1),
-            mkPanel("Panel-4", 15, 5, 1),
-            mkPanel("Panel-5", 15, 5, 1),
-            mkPanel("Panel-6", 15, 5, 1),
-            mkPanel("Panel-7", 10, 5, 1),
-            new CPImageSprite("img", 0, 0, 1, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
-            // Dynamic layout specification.
-            CPLayoutSprite("layout",
-                """
-                  | // This is the main panel centered on the screen.
-                  | Panel-1 = x: center(), y: center();
-                  |
-                  | // These panels are placed in the 4 corners of the panel 1.
-                  | Panel-2 = off: [1, 0], x: left(Panel-1), y: top(Panel-1);
-                  | Panel-3 = off: [-1, 0], x: right(Panel-1), y: top(Panel-1);
-                  | Panel-4 = off: [1, 0], x: left(Panel-1), y: bottom(Panel-1);
-                  | Panel-5 = off: [-1, 0], x: right(Panel-1), y: bottom(Panel-1);
-                  |
-                  | // Panels 6 and 7 go after each other.
-                  | Panel-6 = x: after(Panel-2), y: below(Panel-2);
-                  | Panel-7 = x: after(Panel-6), y: same(Panel-6);
-                  |
-                  | // Centered image with 2-row offset.
-                  | img = off: [0, 2], x: center(Panel-1), y: center(Panel-1);
-                  |""".stripMargin
-            )
+            CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q),  // Exit on 'Q' press.
+            new CPListBoxSprite("listbox", 0, 0, 1,
+                model = model,
+                width = 30, height = 10,
+                onKey = (m, key) =>
+                    ???,
+                selSkin = (x, px) =>
+                    ???
+            ),
+            CPLayoutSprite("layout", "listbox = x: center(), y: center();") // Center layout.
         )
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "Layout Example - [Q] to Exit", initDim = termDim.?),
+            CPGameInfo(name = "ListBox Example - [Q] To Exit", initDim = termDim.?),
             System.console() == null || args.contains("emuterm")
         )
 

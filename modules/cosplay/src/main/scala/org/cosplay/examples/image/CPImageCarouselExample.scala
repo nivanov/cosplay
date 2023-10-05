@@ -223,7 +223,7 @@ object CPImageCarouselExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        // Start the game & wait for exit.
+        // Start the example & wait for exit.
         try CPEngine.startGame(
             new CPFadeShimmerLogoScene(
                 id = "logo",
