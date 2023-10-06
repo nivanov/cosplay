@@ -21,9 +21,11 @@ import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
 import org.cosplay.CPKeyboardKey.*
+import org.cosplay.CPStyledString.*
 import org.cosplay.prefabs.scenes.*
 import org.cosplay.prefabs.shaders.*
-import scala.collection.*
+import scala.collection.mutable
+import java.io.*
 
 /*
    _________            ______________
@@ -66,38 +68,72 @@ object CPListBoxExample:
     def main(args: Array[String]): Unit =
         val termDim = CPDim(100, 40)
         val bgPx = ' '&&(C_GRAY2, C_BLACK)
-        class FsModel(path: String) extends CPListBoxModel:
-            private var idx = -1
+
+        class FsModelElement(file: File, line: Seq[CPPixel]) extends CPListBoxElement[File]:
+            override def getLine: Seq[CPPixel] = line
+            override def getValue: File = file
+        class FsModel(file: File) extends CPListBoxModel:
+            private var selIdx = -1
             private val buf = mutable.ArrayBuffer.empty[CPListBoxElement[_]]
             private var sz = 0
 
-            rescan(path)
+            rescan(file)
 
-            override def getSelectionIndex: Int = idx
-            override def getElement[T](i: Int): Option[CPListBoxElement[T]] = if i >= 0 && i < sz then buf(i).asInstanceOf[CPListBoxElement[T]].? else None
+            override def getSelectionIndex: Int = selIdx
+            override def getElement[T](i: Int): Option[CPListBoxElement[T]] =
+                if i >= 0 && i < sz then buf(i).asInstanceOf[CPListBoxElement[T]].? else None
             override def getSize: Int = sz
 
-            def rescan(path: String): Unit =
-                // TODO
+            private def mkLine(s: String): Seq[CPPixel] = CPSystemFont.renderAsSeq(s, C_GREEN_YELLOW)
+            def rescan(file: File): Unit =
                 buf.clear()
-                sz = 0
-            def moveUp(): Unit = if idx > 0 then idx -= 1
-            def moveDown(): Unit = if idx >= 0 && idx < sz - 1 then idx += 1
+                buf += FsModelElement(File("./"), mkLine("."))
+                buf += FsModelElement(File("../"), mkLine(".."))
+                for f <- file.listFiles() do
+                    var line = mkLine(f.getName)
+                    if f.isDirectory then line = line.map(_.withDarkerFg(.5f))
+                    buf += FsModelElement(f, line)
+                sz = buf.size
+            def moveUp(): Unit = if selIdx > 0 then selIdx -= 1
+            def moveDown(): Unit = if selIdx >= 0 && selIdx < sz - 1 then selIdx += 1
 
-        val model = new FsModel("") // TODO
+        val W = 30
+        val H = 10
+        val model = new FsModel(File("./"))
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q),  // Exit on 'Q' press.
             new CPListBoxSprite("listbox", 0, 0, 1,
                 model = model,
-                width = 30, height = 10,
-                onKey = (m, key) =>
-                    ???,
-                selSkin = (x, px) =>
-                    ???
+                width = W, height = H,
+                onKey = (ctx, _, key) => key match
+                    case KEY_UP => model.moveUp()
+                    case KEY_DOWN => model.moveDown()
+                    case KEY_SPACE | KEY_ENTER => model.rescan(model.getSelectedValue.get)
+                    case KEY_LO_Q | KEY_UP_Q => ctx.exitGame()
+                    case _ => ()
+                ,
+                selSkin = (x, px) => px.inverse
             ),
-            CPLayoutSprite("layout", "listbox = x: center(), y: center();") // Center layout.
+            CPSingletonSprite(fun = _.acquireFocus("listbox"), scope = CPSingletonScope.SCENE),
+            CPTitlePanelSprite(
+                "panel",
+                0, 0, W + 2, H + 2, -1,
+                C_BLACK,
+                "-.|'-'|.",
+                C_GREEN_YELLOW,
+                C_BLACK.?,
+                styleStr("< ", C_GREEN_YELLOW) ++ styleStr("File Selector", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW),
+                // Border darkening gradient.
+                borderSkin = (_, y, px) => px.withDarkerFg(.8f - y.min(6) / 20.0f)
+            ),
+            CPLayoutSprite("layout",
+                """
+                  | panel = x: center(), y: center(); // Center layout.
+                  | listbox = x: center(panel), y: center(panel); // Centered within 'panel'.
+                  |""".stripMargin
+            )
         )
 
         // Initialize the engine.

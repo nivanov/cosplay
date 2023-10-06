@@ -72,6 +72,15 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
     /** Checks whether or not this array is not empty, i.e. it's [[size]] != 0. */
     val nonEmpty: Boolean = size > 0
 
+    /** Gets i-th column for this 2D array. */
+    def column(i: Int)(using ClassTag[T]): Seq[T] =
+        if isEmpty then Seq.empty else data(i).toIndexedSeq
+
+    /** Gets i-th row for this 2D array. */
+    def row(i: Int)(using ClassTag[T]): Seq[T] =
+        if isEmpty then Seq.empty
+        else for x <- 0 until width yield get(x, i)
+
     /**
       * Creates 1x1 array with a given single value.
       *
@@ -176,7 +185,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       * @param f Mapping function.
       * @tparam B Type of the new array.
       */
-    def map[B](f: T => B)(using c: ClassTag[B]): CPArray2D[B] =
+    def map[B](f: T => B)(using ClassTag[B]): CPArray2D[B] =
         val arr = new CPArray2D[B](width, height)
         rect.loop((x, y) => arr.set(x, y, f(data(x)(y))))
         arr
@@ -187,7 +196,7 @@ class CPArray2D[T](val width: Int, val height: Int)(using c: ClassTag[T]):
       * @param f Mapping function that takes value and its XY-coordinate in the array.
       * @tparam B Type of the new array.
       */
-    def map[B](f: (T, Int, Int) => B)(using c: ClassTag[B]): CPArray2D[B] =
+    def map[B](f: (T, Int, Int) => B)(using ClassTag[B]): CPArray2D[B] =
         val arr = new CPArray2D[B](width, height)
         rect.loop((x, y) => arr.set(x, y, f(data(x)(y), x, y)))
         arr

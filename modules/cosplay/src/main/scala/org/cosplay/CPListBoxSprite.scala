@@ -33,13 +33,14 @@ package org.cosplay
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.impl.CPUtils
 import scala.collection.mutable
+import scala.reflect.*
 
 /**
   * An element of the listbox model.
   *
   * @see [[CPListBoxModel]]
   */
-trait CPListBoxElement[T]:
+trait CPListBoxElement[T](using ClassTag[T]):
     /** Gets the sequence of pixel visually representing this listbox value. */
     def getLine: Seq[CPPixel]
     /** Gets the value of the this listbox element. */
@@ -84,7 +85,7 @@ class CPListBoxSprite(
     model: CPListBoxModel,
     width: Int,
     height: Int,
-    onKey: (CPListBoxModel, CPKeyboardKey) => Unit,
+    onKey: (CPSceneObjectContext, CPListBoxModel, CPKeyboardKey) => Unit,
     selSkin: (Int, CPPixel) => CPPixel,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
@@ -99,7 +100,7 @@ class CPListBoxSprite(
     override def update(ctx: CPSceneObjectContext): Unit =
         if ctx.isFocusOwner then
             ctx.getKbEvent match
-                case Some(evt) => onKey(model, evt.key)
+                case Some(evt) => onKey(ctx, model, evt.key)
                 case None => ()
     override def render(ctx: CPSceneObjectContext): Unit =
         val selIdx = model.getSelectionIndex
@@ -109,15 +110,19 @@ class CPListBoxSprite(
         val sz = model.getSize
         val lastIdx = (i + width - 1).min(i + sz - viewStartIdx - 1)
         val canv = ctx.getCanvas
+        val myX = getX + xOff
+        var myY = getY
+        val myZ = getZ
         while i <= lastIdx do
             model.getElement(i) match
                 case Some(elm) =>
                     canv.drawPixels(
-                        x + xOff,
-                        y,
-                        z,
+                        myX,
+                        myY,
+                        myZ,
                         if i == selIdx then elm.getLine.zipWithIndex.map(t => selSkin(t._2, t._1)) else elm.getLine
                     )
                 case None => ()
             i += 1
+            myY += 1
     override def getDim: CPDim = dim

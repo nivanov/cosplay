@@ -63,6 +63,11 @@ class CPArrayImage(data: CPArray2D[CPPixel], origin: String = "code") extends CP
     !>(!data.contains(_ == null), "Image data cannot have 'null' values.")
 
     /**
+      * Gets internal read-only 2D representation of this image.
+      */
+    def getData: CPArray2D[CPPixel] = data
+
+    /**
       * Creates an image from 2D array of characters.
       *
       * @param data Image data.

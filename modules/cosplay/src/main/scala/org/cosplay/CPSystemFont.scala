@@ -52,7 +52,19 @@ object CPSystemFont extends CPFont(getClass.getName):
     /** @inheritdoc */ 
     override def getBaseline: Int = 1
     /** @inheritdoc */ 
-    override def render(s: String, fg: CPColor, bg: Option[CPColor]): CPImage = new CPArrayImage(s, fg, bg)
+    override def render(s: String, fg: CPColor, bg: Option[CPColor] = None): CPImage = new CPArrayImage(s, fg, bg)
+
+    /**
+      * Renders given one-line string into a sequence of pixels.
+      *
+      * @param s Text to render. Must be non-empty.
+      * @param fg Foreground color to use.
+      * @param bg Optional background color to use. Default value is `None`.
+      * @return Sequence of pixel representing given string in system font.
+      */
+    def renderAsSeq(s: String, fg: CPColor, bg: Option[CPColor] = None): Seq[CPPixel] =
+        val imgArr = new CPArrayImage(s, fg, bg).getData
+        if imgArr.isEmpty then Seq.empty else imgArr.row(0)
 
 
 
