@@ -35,22 +35,22 @@ package org.cosplay
   * sprite's X, Y, and Z coordinates as well as storing the sprite's initial X, Y, and Z coordinates.
   *
   * @param id ID of this scene object.
-  * @param x Initial X-coordinate of the top-left corner of the sprite.
-  * @param y Initial Y-coordinate of the top-left corner of the sprite.
-  * @param z Initial Z-index at which to render the sprite.
-  * @param collidable Whether or not this sprite provides collision shape.
-  * @param shaders Optional sequence of shaders for this sprite.
-  * @param tags Optional set of organizational or grouping tags.
+  * @param x Initial X-coordinate of the top-left corner of the sprite. Default value is zero.
+  * @param y Initial Y-coordinate of the top-left corner of the sprite. Default value is zero.
+  * @param z Initial Z-index at which to render the sprite. Default value is zero.
+  * @param collidable Whether or not this sprite provides collision shape. Default value is `false`.
+  * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
+  * @param tags Optional set of organizational or grouping tags. By default, the empty set is used.
   * @see [[CPLayoutSprite]]
   */
 abstract class CPDynamicSprite(
     id: String,
-    x: Int,
-    y: Int,
-    z: Int,
-    collidable: Boolean,
-    shaders: Seq[CPShader],
-    tags: Set[String]
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
+    collidable: Boolean = false,
+    shaders: Seq[CPShader] = Seq.empty,
+    tags: Set[String] = Set.empty
 ) extends CPSceneObject(id, tags):
     private var myX = x
     private var myY = y

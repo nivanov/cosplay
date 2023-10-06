@@ -40,7 +40,7 @@ import org.cosplay.prefabs.shaders.*
 */
 
 /**
-  * Code example for built-in text input functionality.
+  * Code example for built-in dialog functionality.
   *
   * ### Running Example
   * One-time Git clone & build:

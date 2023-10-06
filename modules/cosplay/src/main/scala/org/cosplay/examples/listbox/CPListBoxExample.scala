@@ -41,7 +41,7 @@ import java.io.*
 */
 
 /**
-  * Code example for built-in text input functionality.
+  * Code example for built-in listbox functionality.
   *
   * ### Running Example
   * One-time Git clone & build:
@@ -60,13 +60,27 @@ import java.io.*
   * @note See developer guide at [[https://cosplayengine.com]]
   */
 object CPListBoxExample:
+    private val termDim = CPDim(100, 40)
+    private val bg = C_BLACK
+    private val fg = C_GREEN
+    private val liteFg = fg.lighter(.5f)
+    private val liteBg = fg.darker(.6f)
+    private val darkBg = fg.darker(.8f)
+    private val markup = CPMarkup(
+        fg,
+        bg.?,
+        Seq(
+            CPMarkupElement("<%", "%>", _ && (liteFg, bg)), // Light.
+            CPMarkupElement("<@", "@>", _ && (bg, liteFg)) // Dark.
+        )
+    )
+
     /**
       * Entry point for JVM runtime.
       *
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
-        val termDim = CPDim(100, 40)
         val bgPx = ' '&&(C_GRAY2, C_BLACK)
 
         class FsModelElement(file: File, line: Seq[CPPixel]) extends CPListBoxElement[File]:
@@ -74,32 +88,37 @@ object CPListBoxExample:
             override def getValue: File = file
         class FsModel(file: File) extends CPListBoxModel:
             private var selIdx = -1
-            private val buf = mutable.ArrayBuffer.empty[CPListBoxElement[_]]
+            private var buf = mutable.ArrayBuffer.empty[FsModelElement]
             private var sz = 0
 
             rescan(file)
 
             override def getSelectionIndex: Int = selIdx
-            override def getElement[T](i: Int): Option[CPListBoxElement[T]] =
-                if i >= 0 && i < sz then buf(i).asInstanceOf[CPListBoxElement[T]].? else None
+            override def getElement[File](i: Int): Option[CPListBoxElement[File]] =
+                if i >= 0 && i < sz then buf(i).asInstanceOf[CPListBoxElement[File]].? else None
             override def getSize: Int = sz
 
-            private def mkLine(s: String): Seq[CPPixel] = CPSystemFont.renderAsSeq(s, C_GREEN_YELLOW)
+            private def mkLine(s: String): Seq[CPPixel] = CPSystemFont.renderAsSeq(s, fg, bg.?)
             def rescan(file: File): Unit =
                 buf.clear()
-                buf += FsModelElement(File("./"), mkLine("."))
-                buf += FsModelElement(File("../"), mkLine(".."))
+                val parent = file.getParentFile
                 for f <- file.listFiles() do
-                    var line = mkLine(f.getName)
-                    if f.isDirectory then line = line.map(_.withDarkerFg(.5f))
-                    buf += FsModelElement(f, line)
+                    if !f.getName.startsWith(".") then // Skip hidden files.
+                        var line = mkLine(f.getName)
+                        if f.isDirectory then line = line.map(_.withDarkerFg(.5f))
+                        buf += FsModelElement(f, line)
+                buf = buf.sortBy(_.getValue.getName)
+                buf.prepend(FsModelElement(if parent != null then parent else file, mkLine("..")))
+                buf.prepend(FsModelElement(file, mkLine(".")))
                 sz = buf.size
+                selIdx = 0
             def moveUp(): Unit = if selIdx > 0 then selIdx -= 1
             def moveDown(): Unit = if selIdx >= 0 && selIdx < sz - 1 then selIdx += 1
 
         val W = 30
         val H = 10
-        val model = new FsModel(File("./"))
+        // Get current working directory.
+        val model: FsModel = new FsModel(File(File(".").getAbsolutePath).getParentFile)
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
@@ -110,35 +129,64 @@ object CPListBoxExample:
                 onKey = (ctx, _, key) => key match
                     case KEY_UP => model.moveUp()
                     case KEY_DOWN => model.moveDown()
-                    case KEY_SPACE | KEY_ENTER => model.rescan(model.getSelectedValue.get)
+                    case KEY_SPACE | KEY_ENTER => model.getSelectedValue[File] match
+                        case Some(file) if file.isDirectory => model.rescan(file)
+                        case _ => ()
                     case KEY_LO_Q | KEY_UP_Q => ctx.exitGame()
                     case _ => ()
                 ,
-                selSkin = (x, px) => px.inverse
+                selSkin = (_, px) => px.withFg(bg).withBg(fg.?)
             ),
+            // For the initial focus acquisition.
             CPSingletonSprite(fun = _.acquireFocus("listbox"), scope = CPSingletonScope.SCENE),
+            // Bordered panel underneath the listbox.
             CPTitlePanelSprite(
-                "panel",
-                0, 0, W + 2, H + 2, -1,
-                C_BLACK,
+                "border",
+                0, 0, W + 2, H + 2, // "+2" accounts for border width (i.e. 2 pixels horizontally and vertically).
+                z = -1, // Put border on the background.
+                bg,
                 "-.|'-'|.",
-                C_GREEN_YELLOW,
-                C_BLACK.?,
-                styleStr("< ", C_GREEN_YELLOW) ++ styleStr("File Selector", C_DARK_ORANGE3) ++ styleStr(" >", C_GREEN_YELLOW),
+                fg,
+                bg.?,
+                styleStr("< ", fg) ++ styleStr("File Selector", C_DARK_ORANGE3) ++ styleStr(" >", fg),
                 // Border darkening gradient.
                 borderSkin = (_, y, px) => px.withDarkerFg(.8f - y.min(6) / 20.0f)
             ),
+            // Buttons markup at the bottom.
+            new CPImageSprite(
+                "btns",
+                new CPArrayImage(markup.process("<%[Up]%>/<%[Down]%> Move Up/Down    <%[Space]%>/<%[Enter]%> Select    <%[Q]%> Quit"))
+            ),
+            // "Path:" label.
+            new CPLabelSprite("label", "Path:", fg.lighter(.5f), bg.?),
+            // Sprite that renders currently selected path.
+            new CPDynamicSprite("path"):
+                private var w = 0
+                private var pxs = Seq.empty[CPPixel]
+
+                override def getDim: CPDim = CPDim(w, 1) // Dynamically update sprite's dimensions.
+                override def update(ctx: CPSceneObjectContext): Unit =
+                    pxs = model.getSelectedValue[File] match
+                        case Some(f) => CPSystemFont.renderAsSeq(f.getAbsolutePath, fg, bg.?)
+                        case None => Seq.empty
+                    w = pxs.size // Make sure to update sprite's dimensions.
+                override def render(ctx: CPSceneObjectContext): Unit = ctx.getCanvas.drawPixels(getX, getY, getZ, pxs)
+            ,
+            // Layout controller.
             CPLayoutSprite("layout",
                 """
-                  | panel = x: center(), y: center(); // Center layout.
-                  | listbox = x: center(panel), y: center(panel); // Centered within 'panel'.
+                  | border = x: center(), y: center(); // Center layout.
+                  | listbox = x: center(border), y: center(border); // Centered within 'panel'.
+                  | label = x: same(border), y: below(border), off: [1, 1];
+                  | path = x: after(label), y: same(label), off: [1, 0];
+                  | btns = x: center(), y: below(path), off: [0, 3];
                   |""".stripMargin
             )
         )
 
         // Initialize the engine.
         CPEngine.init(
-            CPGameInfo(name = "ListBox Example - [Q] To Exit", initDim = termDim.?),
+            CPGameInfo(name = "ListBox Example - File Chooser", initDim = termDim.?),
             System.console() == null || args.contains("emuterm")
         )
 

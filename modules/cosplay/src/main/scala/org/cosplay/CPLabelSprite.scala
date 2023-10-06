@@ -99,9 +99,34 @@ class CPLabelSprite(
       * @param z Z-index to render label at.
       * @param text Label text.
       * @param fg Foreground color.
+      * @param bg Background color.
+      */
+    def this(x: Int, y: Int, z: Int, text: String, fg: CPColor, bg: Option[CPColor]) =
+        this(id = CPRand.guid6, x = x, y = y, z = z, text = text, fg = fg, bg = bg)
+
+    /**
+      * Creates label sprite with given parameters using system font.
+      *
+      * @param x X-coordinate of the label.
+      * @param y Y-coordinate of the label.
+      * @param z Z-index to render label at.
+      * @param text Label text.
+      * @param fg Foreground color.
       */
     def this(x: Int, y: Int, z: Int, text: String, fg: CPColor) =
-        this(CPRand.guid6, x, y, z, text = text, fg = fg)
+        this(id = CPRand.guid6, x = x, y = y, z = z, text = text, fg = fg)
+
+    /**
+      * Creates label sprite with given parameters using system font.
+      * Initial coordinates will be (0, 0, 0).
+      *
+      * @param id Label ID.
+      * @param text Label text.
+      * @param fg Foreground color.
+      * @param bg Background color.
+      */
+    def this(id: String, text: String, fg: CPColor, bg: Option[CPColor]) =
+        this(id = id, x = 0, y = 0, z = 0, text = text, fg = fg)
 
     private def reset(): Unit =
         img = font.render(lblTxt, fg, bg).trimBg().skin(skin)

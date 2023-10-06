@@ -60,6 +60,8 @@ import org.cosplay.impl.CPUtils
   *  - Note that we don't need to override any other methods. Specifically, we don't need to override [[render()]]
   *    method since it relies on [[getX]] and [[getY]] method in its implementation.
   *
+  * See also [[CPDynamicSprite]] and [[CPLayoutSprite]] for imperative scene object layout.
+  *
   * ### Sprites
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, fully or partially
   * visible including being entirely off-screen, that is custom designed for a particular use case.
@@ -104,6 +106,15 @@ class CPImageSprite(
 ) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     private var myImg = img
     private var myDim = img.getDim
+
+    /**
+      * Creates new image sprite with given ID and image. Initial coordinates will be (0, 0, 0).
+      *
+      * @param id Image sprite ID.
+      * @param img Image to render.
+      */
+    def this(id: String, img: CPImage) =
+        this(id = id, 0, 0, 0, img = img)
 
     /**
       * Changes the image this sprite is rendering.

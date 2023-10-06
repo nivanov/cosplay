@@ -63,19 +63,29 @@ trait CPListBoxModel:
     def getSelectedValue[T]: Option[T] = getElement[T](getSelectionIndex).flatMap(_.getValue.?)
 
 /**
+  * A sprite that provide classic list box selector. It supports single selection over a list of values.
+  * This sprite uses an instance of [[CPListBoxModel]] to govern its operation. One needs to provide the model
+  * instance and `onKey` function to update the model based on the keyboard events.
   *
   * @param id ID of this scene object.
   * @param x Initial X-coordinate of the top-left corner of the sprite.
   * @param y Initial Y-coordinate of the top-left corner of the sprite.
   * @param z Initial Z-index at which to render the sprite.
-  * @param model
-  * @param width
-  * @param height
-  * @param selSkin
+  * @param model List box model to use.
+  * @param width Width of the sprite.
+  * @param height Height of the sprite.
+  * @param onKey A function that is called on each frame if a keyboard key was pressed. It takes
+  *              scene object context, model and the pressed keyboard key. This function should
+  *              manipulate the `model` instance passed into this constructor to update model state
+  *              for given keyboard input. These model changes will then be rendered by this sprite.
+  * @param selSkin Skinning function for the currently selected row. It takes relative X-coordinate
+  *                and current pixel return a new skinned pixel for that location.
   * @param collidable Whether or not this sprite provides collision shape.
   * @param shaders Optional sequence of shaders for this sprite.
   * @param tags Optional set of organizational or grouping tags.
   * @see [[CPListBoxModel]]
+  * @example See [[org.cosplay.examples.listbox.CPListBoxExample CPListBoxExample]] class for the example of
+  *     using this sprite.
   */
 class CPListBoxSprite(
     id: String = s"listbox-spr-${CPRand.guid6}",
@@ -104,15 +114,16 @@ class CPListBoxSprite(
                 case None => ()
     override def render(ctx: CPSceneObjectContext): Unit =
         val selIdx = model.getSelectionIndex
-        if selIdx < viewStartIdx then viewStartIdx = selIdx
-        else if selIdx >= viewStartIdx + width then viewStartIdx = selIdx - width + 1
-        var i = viewStartIdx
         val sz = model.getSize
-        val lastIdx = (i + width - 1).min(i + sz - viewStartIdx - 1)
         val canv = ctx.getCanvas
+        if viewStartIdx >= sz then viewStartIdx = (sz - height).max(0)
+        if selIdx < viewStartIdx then viewStartIdx = selIdx
+        else if selIdx >= viewStartIdx + height then viewStartIdx = selIdx - height + 1
         val myX = getX + xOff
         var myY = getY
         val myZ = getZ
+        var i = viewStartIdx
+        val lastIdx = (i + height - 1).min(i + sz - viewStartIdx - 1)
         while i <= lastIdx do
             model.getElement(i) match
                 case Some(elm) =>

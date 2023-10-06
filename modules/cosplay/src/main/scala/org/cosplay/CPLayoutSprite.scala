@@ -150,6 +150,8 @@ private[cosplay] sealed case class CPLayoutSpec(
   * @see [[CPDynamicSprite]]
   * @see [[CPSpacerSprite]]
   * @see [[CPLayoutExample]]
+  * @example See [[org.cosplay.examples.layout.CPLayoutExample CPLayoutExample]] class for the example of
+  *     using this sprite.
   */
 class CPLayoutSprite(
     id: String,
