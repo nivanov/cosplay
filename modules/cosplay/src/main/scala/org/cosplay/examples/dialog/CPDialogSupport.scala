@@ -90,7 +90,7 @@ object CPDialogSupport:
     private def mkPanelSpr(w: Int, h: Int): CPTitlePanelSprite =
        CPTitlePanelSprite(
             CPRand.guid6,
-            0, 0, w, h, -1,
+            z = -1, w, h,
             C_BLACK,
             "-.|'-'|.",
             C_GREEN_YELLOW,

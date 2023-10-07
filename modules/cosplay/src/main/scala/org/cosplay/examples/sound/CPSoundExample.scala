@@ -73,7 +73,7 @@ object CPSoundExample:
         val snd = CPSound(s"sounds/examples/${Seq("bg1", "bg2", "bg3").rand}.wav")
         val panel = CPTitlePanelSprite(
             "panel",
-            4, 2, 77, 7, 0,
+            4, 2, 0, 77, 7,
             C_BLACK,
             "-.|'-'|.",
             C_GREEN_YELLOW,

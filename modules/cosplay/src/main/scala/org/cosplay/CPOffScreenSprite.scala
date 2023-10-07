@@ -49,7 +49,7 @@ import org.cosplay.impl.CPUtils
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
   * that is custom designed for a particular use case. Built-in sprites provide concrete
   * implementations for the abstract methods in the base [[CPSceneObject]] class. Most non-trivial games
-  * will use combination of the built-in sprites and their own ones. Here's the list of the built-in
+  * will use combination of the built-in sprites and their own ones. Here's the list of some of the built-in
   * sprites:
   *  - [[CPCanvasSprite]]
   *  - [[CPImageSprite]]

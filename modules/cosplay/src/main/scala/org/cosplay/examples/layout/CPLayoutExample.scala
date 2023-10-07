@@ -68,7 +68,7 @@ object CPLayoutExample:
         def mkPanel(name: String, w: Int, h: Int, z: Int): CPDynamicSprite =
             CPTitlePanelSprite(
                 name,
-                0, 0, w, h, z,
+                z = z, w, h,
                 C_BLACK,
                 "-.|'-'|.",
                 C_GREEN_YELLOW,
@@ -91,7 +91,7 @@ object CPLayoutExample:
             mkPanel("Panel-5", 15, 5, 1),
             mkPanel("Panel-6", 15, 5, 1),
             mkPanel("Panel-7", 10, 5, 1),
-            new CPImageSprite("img", 0, 0, 1, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
+            new CPImageSprite("img", z = 1, FIG_OGRE.render("CosPlay", C_WHITE).trimBg()),
             // Dynamic layout specification.
             CPLayoutSprite("layout",
                 """

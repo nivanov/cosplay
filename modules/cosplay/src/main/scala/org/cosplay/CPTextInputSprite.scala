@@ -47,7 +47,7 @@ import scala.collection.mutable
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
   * that is custom designed for a particular use case. Built-in sprites provide concrete
   * implementations for the abstract methods in the base [[CPSceneObject]] class. Most non-trivial games
-  * will use combination of the built-in sprites and their own ones. Here's the list of the built-in
+  * will use combination of the built-in sprites and their own ones. Here's the list of some of the built-in
   * sprites:
   *  - [[CPCanvasSprite]]
   *  - [[CPImageSprite]]
@@ -59,10 +59,27 @@ import scala.collection.mutable
   *  - [[CPVideoSprite]]
   *  - [[CPTextInputSprite]]
   *
+  * ### UI Framework
+  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * used for constructing UI element on the screen. These include:
+  *  - [[CPLayoutSprite]]
+  *  - [[CPDynamicSprite]]
+  *  - [[CPLabelSprite]]
+  *  - [[CPSpacerSprite]]
+  *  - [[CPListBoxSprite]]
+  *  - [[CPTextInputSprite]]
+  *  - [[CPSystemFont]]
+  *
+  *  You can can also look at the following UI-related examples:
+  *   - [[org.cosplay.examples.listbox.CPListBoxExample]]
+  *   - [[org.cosplay.examples.dialog.CPDialogExample]]
+  *   - [[org.cosplay.examples.layout.CPLayoutExample]]
+  *   - [[org.cosplay.examples.textinput.CPTextInputExample]]
+  *
   * @param id Optional ID of this sprite.
-  * @param x X-coordinate of the top-left corner.
-  * @param y Y-coordinate of the top-left corner.
-  * @param z Z-index at which to render this sprite.
+  * @param x X-coordinate of the top-left corner. Default value is zero.
+  * @param y Y-coordinate of the top-left corner. Default value is zero.
+  * @param z Z-index at which to render this sprite. Default value is zero.
   * @param visLen Visible length of this field.
   * @param maxBuf Overall buffer length of this field. It should always be greater then or equal to visible length.
   * @param initTxt Optional initial text to show at the initial state. Default value is an empty string.
@@ -101,9 +118,9 @@ import scala.collection.mutable
   */
 class CPTextInputSprite(
     id: String = s"input-spr-${CPRand.guid6}",
-    x: Int,
-    y: Int,
-    z: Int,
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
     visLen: Int,
     maxBuf: Int,
     private var initTxt: String = "",

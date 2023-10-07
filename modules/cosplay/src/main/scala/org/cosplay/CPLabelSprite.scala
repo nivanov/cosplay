@@ -43,7 +43,7 @@ import org.cosplay.impl.CPUtils
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
   * that is custom designed for a particular use case. Built-in sprites provide concrete
   * implementations for the abstract methods in the base [[CPSceneObject]] class. Most non-trivial games
-  * will use combination of the built-in sprites and their own ones. Here's the list of the built-in
+  * will use combination of the built-in sprites and their own ones. Here's the list of some of the built-in
   * sprites:
   *  - [[CPCanvasSprite]]
   *  - [[CPImageSprite]]
@@ -55,10 +55,27 @@ import org.cosplay.impl.CPUtils
   *  - [[CPParticleSprite]]
   *  - [[CPTextInputSprite]]
   *
+  * ### UI Framework
+  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * used for constructing UI element on the screen. These include:
+  *  - [[CPLayoutSprite]]
+  *  - [[CPDynamicSprite]]
+  *  - [[CPLabelSprite]]
+  *  - [[CPSpacerSprite]]
+  *  - [[CPListBoxSprite]]
+  *  - [[CPTextInputSprite]]
+  *  - [[CPSystemFont]]
+  *
+  *  You can can also look at the following UI-related examples:
+  *   - [[org.cosplay.examples.listbox.CPListBoxExample]]
+  *   - [[org.cosplay.examples.dialog.CPDialogExample]]
+  *   - [[org.cosplay.examples.layout.CPLayoutExample]]
+  *   - [[org.cosplay.examples.textinput.CPTextInputExample]]
+  *
   * @param id Optional ID of this sprite.
-  * @param x Initial X-coordinate of the top-left corner of the label.
-  * @param y Initial Y-coordinate of the top-left corner of the label.
-  * @param z Initial Z-index at which to render the label.
+  * @param x Initial X-coordinate of the top-left corner of the label. Default value is zero.
+  * @param y Initial Y-coordinate of the top-left corner of the label. Default value is zero.
+  * @param z Initial Z-index at which to render the label. Default value is zero.
   * @param font Font to use for label.
   * @param text Label text.
   * @param fg Foreground color.
@@ -73,9 +90,9 @@ import org.cosplay.impl.CPUtils
   */
 class CPLabelSprite(
     id: String = s"lbl-spr-${CPRand.guid6}",
-    x: Int,
-    y: Int,
-    z: Int,
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
     font: CPFont = CPSystemFont,
     text: String,
     fg: CPColor,

@@ -31,16 +31,14 @@ package org.cosplay
 */
 
 import org.cosplay.CPKeyboardKey.*
-import org.cosplay.impl.CPUtils
 import scala.collection.mutable
-import scala.reflect.*
 
 /**
   * An element of the listbox model.
   *
   * @see [[CPListBoxModel]]
   */
-trait CPListBoxElement[T](using ClassTag[T]):
+trait CPListBoxElement[T]:
     /** Gets the sequence of pixel visually representing this listbox value. */
     def getLine: Seq[CPPixel]
     /** Gets the value of the this listbox element. */
@@ -67,10 +65,31 @@ trait CPListBoxModel:
   * This sprite uses an instance of [[CPListBoxModel]] to govern its operation. One needs to provide the model
   * instance and `onKey` function to update the model based on the keyboard events.
   *
+  * Note that this sprite will automatically process  [[KEY_LEFT]] and [[KEY_RIGHT]] keys to adjust the viewport
+  * of the listbox when the content of the model does not fit the dimensions of the sprite. These keys will still be
+  * passed to `onKey()` function call.
+  *
+  * ### UI Framework
+  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * used for constructing UI element on the screen. These include:
+  *  - [[CPLayoutSprite]]
+  *  - [[CPDynamicSprite]]
+  *  - [[CPLabelSprite]]
+  *  - [[CPSpacerSprite]]
+  *  - [[CPListBoxSprite]]
+  *  - [[CPTextInputSprite]]
+  *  - [[CPSystemFont]]
+  *
+  *  You can can also look at the following UI-related examples:
+  *   - [[org.cosplay.examples.listbox.CPListBoxExample]]
+  *   - [[org.cosplay.examples.dialog.CPDialogExample]]
+  *   - [[org.cosplay.examples.layout.CPLayoutExample]]
+  *   - [[org.cosplay.examples.textinput.CPTextInputExample]]
+  *
   * @param id ID of this scene object.
-  * @param x Initial X-coordinate of the top-left corner of the sprite.
-  * @param y Initial Y-coordinate of the top-left corner of the sprite.
-  * @param z Initial Z-index at which to render the sprite.
+  * @param x Initial X-coordinate of the top-left corner of the sprite. Default value is zero.
+  * @param y Initial Y-coordinate of the top-left corner of the sprite. Default value is zero.
+  * @param z Initial Z-index at which to render the sprite. Default value is zero.
   * @param model List box model to use.
   * @param width Width of the sprite.
   * @param height Height of the sprite.
@@ -89,9 +108,9 @@ trait CPListBoxModel:
   */
 class CPListBoxSprite(
     id: String = s"listbox-spr-${CPRand.guid6}",
-    x: Int,
-    y: Int,
-    z: Int,
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
     model: CPListBoxModel,
     width: Int,
     height: Int,
@@ -105,12 +124,16 @@ class CPListBoxSprite(
     !>(height > 0, s"Height must be > 0: $height")
     private val dim = CPDim(width, height)
     private var xOff = 0
+    private var lastKey = none[CPKeyboardKey]
     private var viewStartIdx = 0
 
     override def update(ctx: CPSceneObjectContext): Unit =
+        lastKey = None
         if ctx.isFocusOwner then
             ctx.getKbEvent match
-                case Some(evt) => onKey(ctx, model, evt.key)
+                case Some(evt) =>
+                    lastKey = evt.key.?
+                    onKey(ctx, model, evt.key)
                 case None => ()
     override def render(ctx: CPSceneObjectContext): Unit =
         val selIdx = model.getSelectionIndex
@@ -119,20 +142,28 @@ class CPListBoxSprite(
         if viewStartIdx >= sz then viewStartIdx = (sz - height).max(0)
         if selIdx < viewStartIdx then viewStartIdx = selIdx
         else if selIdx >= viewStartIdx + height then viewStartIdx = selIdx - height + 1
-        val myX = getX + xOff
-        var myY = getY
-        val myZ = getZ
         var i = viewStartIdx
         val lastIdx = (i + height - 1).min(i + sz - viewStartIdx - 1)
+        lastKey match
+            case Some(key) if key == KEY_LEFT => if xOff > 0 then xOff -= 1
+            case Some(key) if key == KEY_RIGHT =>
+                var k = i
+                var offNeeded = false
+                while k <= lastIdx && !offNeeded do
+                    model.getElement(k) match
+                        case Some(elm) => if elm.getLine.length - xOff > width then offNeeded = true
+                        case _ => ()
+                    k += 1
+                if offNeeded then xOff += 1
+            case _ => ()
+        val myX = getX
+        var myY = getY
+        val myZ = getZ
         while i <= lastIdx do
             model.getElement(i) match
                 case Some(elm) =>
-                    canv.drawPixels(
-                        myX,
-                        myY,
-                        myZ,
-                        if i == selIdx then elm.getLine.zipWithIndex.map(t => selSkin(t._2, t._1)) else elm.getLine
-                    )
+                    val pxs = if i == selIdx then elm.getLine.zipWithIndex.map(t => selSkin(t._2, t._1)) else elm.getLine
+                    canv.drawPixels(myX, myY, myZ, pxs.slice(xOff, (xOff + width).min(pxs.length)))
                 case None => ()
             i += 1
             myY += 1

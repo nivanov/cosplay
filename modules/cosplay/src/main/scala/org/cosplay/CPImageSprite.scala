@@ -67,7 +67,7 @@ import org.cosplay.impl.CPUtils
   * visible including being entirely off-screen, that is custom designed for a particular use case.
   * Built-in sprites provide concrete implementations for the abstract methods in the base
   * [[CPSceneObject]] class. Most non-trivial games will use combination of the built-in sprites and
-  * their own ones. Here's the list of the built-in sprites:
+  * their own ones. Here's the list of some of the built-in sprites:
   *  - [[CPCanvasSprite]]
   *  - [[CPImageSprite]]
   *  - [[CPStaticImageSprite]]
@@ -79,9 +79,9 @@ import org.cosplay.impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * @param id Optional ID of the sprite. By default, a random ID will be used.
-  * @param x Initial X-coordinate of the sprite.
-  * @param y Initial Y-coordinate of the sprite.
-  * @param z Initial z-index at which to render the image.
+  * @param x Initial X-coordinate of the sprite. Default value is zero.
+  * @param y Initial Y-coordinate of the sprite. Default value is zero.
+  * @param z Initial z-index at which to render the image. Default value is zero.
   * @param img The image to render. It can be changed later.
   * @param collidable Whether or not this sprite has a collision shape. Default is `false`.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty sequence.
@@ -96,9 +96,9 @@ import org.cosplay.impl.CPUtils
   */
 class CPImageSprite(
     id: String = s"img-spr-${CPRand.guid6}",
-    x: Int,
-    y: Int,
-    z: Int,
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
     img: CPImage,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,
@@ -106,15 +106,6 @@ class CPImageSprite(
 ) extends CPDynamicSprite(id, x, y, z, collidable, shaders, tags):
     private var myImg = img
     private var myDim = img.getDim
-
-    /**
-      * Creates new image sprite with given ID and image. Initial coordinates will be (0, 0, 0).
-      *
-      * @param id Image sprite ID.
-      * @param img Image to render.
-      */
-    def this(id: String, img: CPImage) =
-        this(id = id, 0, 0, 0, img = img)
 
     /**
       * Changes the image this sprite is rendering.
@@ -188,7 +179,7 @@ object CPImageSprite:
         shaders: Seq[CPShader] = Seq.empty,
         tags: Set[String] = Set.empty
     ): CPImageSprite =
-        new CPImageSprite(id, 0, 0, z, img, collidable, shaders, tags):
+        new CPImageSprite(id, z = z, img, collidable, shaders, tags):
             private var x = initX
             private var y = initY
 

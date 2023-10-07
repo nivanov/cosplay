@@ -119,7 +119,7 @@ object CPCameraExample:
         val fiShdr = new CPFadeInShader(entireFrame = true, durMs = 500.ms, bgPx)
         val foShdr = new CPFadeOutShader(true, 300, bgPx, _.exitGame())
 
-        val bgSpr = new CPImageSprite("bg", 0, 0, 0, bgCanv.capture(), false, Seq(fiShdr, foShdr)):
+        val bgSpr = new CPImageSprite("bg", img = bgCanv.capture(), false, Seq(fiShdr, foShdr)):
             private var lastCamFrame: CPRect = _
             private var xf = initX.toFloat
 

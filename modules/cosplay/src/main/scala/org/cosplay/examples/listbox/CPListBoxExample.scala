@@ -81,8 +81,14 @@ object CPListBoxExample:
       * @param args Ignored.
       */
     def main(args: Array[String]): Unit =
+        // Listbox selector dimensions.
+        val W = 40
+        val H = 10
         val bgPx = ' '&&(C_GRAY2, C_BLACK)
 
+        //
+        // File selector model & element.
+        //
         class FsModelElement(file: File, line: Seq[CPPixel]) extends CPListBoxElement[File]:
             override def getLine: Seq[CPPixel] = line
             override def getValue: File = file
@@ -91,46 +97,50 @@ object CPListBoxExample:
             private var buf = mutable.ArrayBuffer.empty[FsModelElement]
             private var sz = 0
 
-            rescan(file)
+            scan(file)
 
             override def getSelectionIndex: Int = selIdx
             override def getElement[File](i: Int): Option[CPListBoxElement[File]] =
                 if i >= 0 && i < sz then buf(i).asInstanceOf[CPListBoxElement[File]].? else None
             override def getSize: Int = sz
 
-            private def mkLine(s: String): Seq[CPPixel] = CPSystemFont.renderAsSeq(s, fg, bg.?)
-            def rescan(file: File): Unit =
+            def scan(file: File): Unit =
                 buf.clear()
-                val parent = file.getParentFile
-                for f <- file.listFiles() do
-                    if !f.getName.startsWith(".") then // Skip hidden files.
-                        var line = mkLine(f.getName)
-                        if f.isDirectory then line = line.map(_.withDarkerFg(.5f))
-                        buf += FsModelElement(f, line)
+                val files = file.listFiles().filter(!_.getName.startsWith(".")) // Skip hidden files.
+                val maxLen = W.max(files.maxBy(_.getName.length).getName.length)
+                def mkLine(s: String): Seq[CPPixel] = CPSystemFont.renderAsSeq(s, fg, bg.?).padTo(maxLen, ' '&&(fg, bg.?))
+                for f <- files do
+                    var line = mkLine(f.getName)
+                    if f.isDirectory then line = line.map(_.withDarkerFg(.5f))
+                    buf += FsModelElement(f, line)
                 buf = buf.sortBy(_.getValue.getName)
-                buf.prepend(FsModelElement(if parent != null then parent else file, mkLine("..")))
+                val parent = file.getParentFile
+                if parent != null then buf.prepend(FsModelElement(parent, mkLine("..")))
                 buf.prepend(FsModelElement(file, mkLine(".")))
                 sz = buf.size
                 selIdx = 0
             def moveUp(): Unit = if selIdx > 0 then selIdx -= 1
             def moveDown(): Unit = if selIdx >= 0 && selIdx < sz - 1 then selIdx += 1
+            def moveTop(): Unit = if sz > 0 then selIdx = 0
+            def moveBottom(): Unit = if sz > 0 then selIdx = sz - 1
 
-        val W = 30
-        val H = 10
         // Get current working directory.
         val model: FsModel = new FsModel(File(File(".").getAbsolutePath).getParentFile)
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
             CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q),  // Exit on 'Q' press.
-            new CPListBoxSprite("listbox", 0, 0, 1,
+            new CPListBoxSprite("listbox", z = 1,
                 model = model,
                 width = W, height = H,
                 onKey = (ctx, _, key) => key match
+                    // NOTE: on MacOs Ctrl-Up and Ctrl-Down won't work.
                     case KEY_UP => model.moveUp()
                     case KEY_DOWN => model.moveDown()
+                    case KEY_CTRL_UP | KEY_HOME => model.moveTop()
+                    case KEY_CTRL_DOWN => model.moveBottom()
                     case KEY_SPACE | KEY_ENTER => model.getSelectedValue[File] match
-                        case Some(file) if file.isDirectory => model.rescan(file)
+                        case Some(file) if file.isDirectory => model.scan(file)
                         case _ => ()
                     case KEY_LO_Q | KEY_UP_Q => ctx.exitGame()
                     case _ => ()
@@ -142,8 +152,8 @@ object CPListBoxExample:
             // Bordered panel underneath the listbox.
             CPTitlePanelSprite(
                 "border",
-                0, 0, W + 2, H + 2, // "+2" accounts for border width (i.e. 2 pixels horizontally and vertically).
                 z = -1, // Put border on the background.
+                W + 2, H + 2, // "+2" accounts for border width (i.e. 2 pixels horizontally and vertically).
                 bg,
                 "-.|'-'|.",
                 fg,
@@ -154,8 +164,12 @@ object CPListBoxExample:
             ),
             // Buttons markup at the bottom.
             new CPImageSprite(
-                "btns",
-                new CPArrayImage(markup.process("<%[Up]%>/<%[Down]%> Move Up/Down    <%[Space]%>/<%[Enter]%> Select    <%[Q]%> Quit"))
+                id ="btns1",
+                img = new CPArrayImage(markup.process("<%[Up]%>/<%[Down]%>/<%[Left]%>/<%[Right]%>    Selection Move    <%[Space]%>/<%[Enter]%> Select    <%[Q]%> Quit"))
+            ),
+            new CPImageSprite(
+                id = "btns2",
+                img = new CPArrayImage(markup.process("<%[Home]%>/<%[Ctrl-Down]%>/<%[Ctrl-Up]%>"))
             ),
             // "Path:" label.
             new CPLabelSprite("label", "Path:", fg.lighter(.5f), bg.?),
@@ -179,7 +193,8 @@ object CPListBoxExample:
                   | listbox = x: center(border), y: center(border); // Centered within 'panel'.
                   | label = x: same(border), y: below(border), off: [1, 1];
                   | path = x: after(label), y: same(label), off: [1, 0];
-                  | btns = x: center(), y: below(path), off: [0, 3];
+                  | btns1 = x: center(), y: below(path), off: [0, 3];
+                  | btns2 = x: same(btns1), y: below(btns1);
                   |""".stripMargin
             )
         )

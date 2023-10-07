@@ -51,7 +51,7 @@ import scala.collection.mutable
   * CosPlay provides number of built-in sprites. A sprite is a scene objects, visible or off-screen,
   * that is custom designed for a particular use case. Built-in sprites provide concrete
   * implementations for the abstract methods in the base [[CPSceneObject]] class. Most non-trivial games
-  * will use combination of the built-in sprites and their own ones. Here's the list of the built-in
+  * will use combination of the built-in sprites and their own ones. Here's the list of some of the built-in
   * sprites:
   *  - [[CPCanvasSprite]]
   *  - [[CPImageSprite]]
@@ -88,9 +88,9 @@ import scala.collection.mutable
 class CPVideoSprite(
     id: String = s"video-spr-${CPRand.guid6}",
     vid: CPVideo,
-    x: Int,
-    y: Int,
-    z: Int,
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
     fps: Int,
     autoPlay: Boolean,
     loop: Boolean,

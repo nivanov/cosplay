@@ -116,7 +116,7 @@ object CPSlideShaderExample:
             System.console() == null || args.contains("emuterm")
         )
 
-        val labelSpr = new CPImageSprite("label", 0, 0, 0, CPSystemFont.render("", C_ORANGE1, None)):
+        val labelSpr = new CPImageSprite("label", img = CPSystemFont.render("", C_ORANGE1, None)):
             override def update(ctx: CPSceneObjectContext): Unit =
                 super.update(ctx)
                 val canv = ctx.getCanvas

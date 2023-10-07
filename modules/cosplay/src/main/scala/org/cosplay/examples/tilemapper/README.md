@@ -19,6 +19,6 @@ $ sbt "project cosplay; runMain org.cosplay.examples.tilemapper.CPTileMapperExam
 ## Copyright
 Copyright (C) 2021 Rowan Games, Inc.
 
-<img src="https://cosplayengine.com/images/cosplay-grey.gif" height="24px" alt="CosPlay Logo">
+<img src="https://cosplayengine.com/images/cosplay-grey.gif" width="36px" height="24px" alt="CosPlay Logo">
 
 

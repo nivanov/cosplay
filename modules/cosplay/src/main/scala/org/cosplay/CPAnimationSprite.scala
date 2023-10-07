@@ -59,9 +59,9 @@ import scala.collection.mutable
   *
   * @param id Optional ID of the sprite.
   * @param anis Sequence of animation. Must have at least one animation in it.
-  * @param x Initial X-coordinate.
-  * @param y Initial Y-coordinate.
-  * @param z Initial Z-index.
+  * @param x Initial X-coordinate. Default value is zero.
+  * @param y Initial Y-coordinate. Default value is zero.
+  * @param z Initial Z-index. Default value is zero.
   * @param initAniId ID of the initial animation to play. This animation starts to play immediately.
   * @param collidable Whether or not this sprite is collidable.
   * @param shaders Optional sequence of shaders for this sprite. Default value is an empty list.
@@ -76,9 +76,9 @@ import scala.collection.mutable
 class CPAnimationSprite(
     id: String = s"ani-spr-${CPRand.guid6}",
     anis: Seq[CPAnimation],
-    x: Int,
-    y: Int,
-    z: Int,
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
     initAniId: String,
     collidable: Boolean = false,
     shaders: Seq[CPShader] = Seq.empty,

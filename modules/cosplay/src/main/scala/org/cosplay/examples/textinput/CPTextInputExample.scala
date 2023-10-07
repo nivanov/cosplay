@@ -76,7 +76,7 @@ object CPTextInputExample:
                     else ch2&&(C_BLACK, C_WHITE)
                 else ch2&&(C_BLACK, darkerBg)
 
-        val userTin = CPTextInputSprite("usrTin", 0, 0, 1,
+        val userTin = CPTextInputSprite("usrTin", z = 1,
             15, 20,
             "",
             mkSkin(true, false),
@@ -84,7 +84,7 @@ object CPTextInputExample:
             submitKeys = Seq(KEY_ENTER, KEY_TAB),
             next = "pwdTin".?
         )
-        val pwdTin = CPTextInputSprite("pwdTin", 0, 0, 1,
+        val pwdTin = CPTextInputSprite("pwdTin", z = 1,
             15, 20,
             "",
             mkSkin(true, true),
@@ -94,7 +94,7 @@ object CPTextInputExample:
         )
         val panel = CPTitlePanelSprite(
             "panel",
-            0, 0, 23, 9, 0,
+            width = 23, height = 9,
             C_BLACK,
             "-.|'-'|.",
             C_GREEN_YELLOW,
@@ -106,8 +106,8 @@ object CPTextInputExample:
         val sc = new CPScene("scene", termDim.?, bgPx,
             // Just for the initial scene fade-in effect.
             new CPOffScreenSprite(new CPFadeInShader(true, 1500, bgPx)),
-            new CPLabelSprite("usrLbl", 0, 0, 1, text = "Username:", C_LIGHT_STEEL_BLUE),
-            new CPLabelSprite("pwdLbl", 0, 0, 1, text = "Password:", C_LIGHT_STEEL_BLUE),
+            new CPLabelSprite("usrLbl", z = 1, text = "Username:", C_LIGHT_STEEL_BLUE),
+            new CPLabelSprite("pwdLbl", z = 1, text = "Password:", C_LIGHT_STEEL_BLUE),
             userTin,
             pwdTin,
             panel,

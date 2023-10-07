@@ -33,10 +33,27 @@ package org.cosplay
 /**
   * Simple sprite that only provides its dimension for layout purposes and has no rendering content.
   *
+  * ### UI Framework
+  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * used for constructing UI element on the screen. These include:
+  *  - [[CPLayoutSprite]]
+  *  - [[CPDynamicSprite]]
+  *  - [[CPLabelSprite]]
+  *  - [[CPSpacerSprite]]
+  *  - [[CPListBoxSprite]]
+  *  - [[CPTextInputSprite]]
+  *  - [[CPSystemFont]]
+  *
+  *  You can can also look at the following UI-related examples:
+  *   - [[org.cosplay.examples.listbox.CPListBoxExample]]
+  *   - [[org.cosplay.examples.dialog.CPDialogExample]]
+  *   - [[org.cosplay.examples.layout.CPLayoutExample]]
+  *   - [[org.cosplay.examples.textinput.CPTextInputExample]]
+  *
   * @param id ID of this scene object.
-  * @param x Initial X-coordinate of the top-left corner of the sprite.
-  * @param y Initial Y-coordinate of the top-left corner of the sprite.
-  * @param z Initial Z-index at which to render the sprite.
+  * @param x Initial X-coordinate of the top-left corner of the sprite. Default value is zero.
+  * @param y Initial Y-coordinate of the top-left corner of the sprite. Default value is zero.
+  * @param z Initial Z-index at which to render the sprite. Default value is zero.
   * @param width Spacer width.
   * @param height Spacer height.
   * @param collidable Whether or not this sprite provides collision shape.
@@ -46,9 +63,9 @@ package org.cosplay
   */
 class CPSpacerSprite(
     id: String = s"spacer-spr-${CPRand.guid6}",
-    x: Int,
-    y: Int,
-    z: Int,
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
     private var width: Int,
     private var height: Int,
     collidable: Boolean = false,
@@ -88,7 +105,7 @@ object CPSpacerSprite:
       * @param height Height of the spacer.
       */
     def apply(width: Int, height: Int): CPSpacerSprite =
-        new CPSpacerSprite(x = 0, 0, 0, width, height)
+        new CPSpacerSprite(width = width, height)
 
     /**
       * Creates new spacer sprite.
@@ -96,4 +113,4 @@ object CPSpacerSprite:
       * @param dim Dimension of the spacer.
       */
     def apply(dim: CPDim): CPSpacerSprite =
-        new CPSpacerSprite(x = 0, 0, 0, dim.width, dim.height)
+        new CPSpacerSprite(width = dim.width, dim.height)

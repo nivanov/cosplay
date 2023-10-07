@@ -95,6 +95,6 @@ For those just interested in using CosPlay to create games - you can just get th
 ## Copyright
 Copyright (C) 2023 Rowan Games, Inc.
 
-<img src="https://cosplayengine.com/images/cosplay-grey.gif" height="24px" alt="CosPlay Logo">
+<img src="https://cosplayengine.com/images/cosplay-grey.gif" width="36px" height="24px" alt="CosPlay Logo">
 
 

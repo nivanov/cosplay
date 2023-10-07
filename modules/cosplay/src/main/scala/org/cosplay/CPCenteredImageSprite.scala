@@ -68,7 +68,7 @@ class CPCenteredImageSprite(
     shaders: Seq[CPShader] = Seq.empty,
     orient: CPCenteredImageSpriteOrientation = BOTH,
     tags: Set[String] = Set.empty
-) extends CPImageSprite(id, 0, 0, z, img, collidable, shaders, tags):
+) extends CPImageSprite(id, z = z, img, collidable, shaders, tags):
     override def update(ctx: CPSceneObjectContext): Unit =
         super.update(ctx)
         val canv = ctx.getCanvas

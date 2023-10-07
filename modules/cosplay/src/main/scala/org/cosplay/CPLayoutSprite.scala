@@ -142,6 +142,23 @@ private[cosplay] sealed case class CPLayoutSpec(
   *  - 'same' allows to use the same X or Y-coordinates as a referral.
   *  - Use [[CPSpacerSprite]] to help fill up space in your layout.
   *
+  * ### UI Framework
+  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * used for constructing UI element on the screen. These include:
+  *  - [[CPLayoutSprite]]
+  *  - [[CPDynamicSprite]]
+  *  - [[CPLabelSprite]]
+  *  - [[CPSpacerSprite]]
+  *  - [[CPListBoxSprite]]
+  *  - [[CPTextInputSprite]]
+  *  - [[CPSystemFont]]
+  *
+  *  You can can also look at the following UI-related examples:
+  *   - [[org.cosplay.examples.listbox.CPListBoxExample]]
+  *   - [[org.cosplay.examples.dialog.CPDialogExample]]
+  *   - [[org.cosplay.examples.layout.CPLayoutExample]]
+  *   - [[org.cosplay.examples.textinput.CPTextInputExample]]
+  *
   * @param id ID of this scene object.
   * @param spec Layout specification as described above. Note that specification can be updated
   *             later using [[CPLayoutSprite.updateSpec]] method.

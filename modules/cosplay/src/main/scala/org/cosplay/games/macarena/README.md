@@ -43,6 +43,6 @@ $ mvn -f modules/cosplay -P macarena exec:java
 ## Copyright
 Copyright (C) 2021 Rowan Games, Inc.
 
-<img src="https://cosplayengine.com/images/cosplay-grey.gif" height="24px" alt="CosPlay Logo">
+<img src="https://cosplayengine.com/images/cosplay-grey.gif" width="36px" height="24px" alt="CosPlay Logo">
 
 

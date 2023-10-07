@@ -44,11 +44,11 @@ import org.cosplay.CPPixel.*
   * </pre>
   *
   * @param id ID of this scene object.
-  * @param x Initial X-coordinate of the top-left corner of the sprite.
-  * @param y Initial Y-coordinate of the top-left corner of the sprite.
+  * @param x Initial X-coordinate of the top-left corner of the sprite. Default value is zero.
+  * @param y Initial Y-coordinate of the top-left corner of the sprite. Default value is zero.
+  * @param z Initial Z-index at which to render the sprite. Default value is zero.
   * @param width Immutable panel width.
   * @param height Immutable panel height.
-  * @param z Initial Z-index at which to render the sprite.
   * @param bg Panel background color.
   * @param borderChars Border chars. See [[CPCanvas.drawRectBorder()]] method for details.
   * @param borderFg Border foreground color.
@@ -68,11 +68,11 @@ import org.cosplay.CPPixel.*
   */
 class CPTitlePanelSprite(
     id: String,
-    x: Int,
-    y: Int,
+    x: Int = 0,
+    y: Int = 0,
+    z: Int = 0,
     width: Int,
     height: Int,
-    z: Int,
     bg: CPColor,
     borderChars: String,
     borderFg: CPColor,
