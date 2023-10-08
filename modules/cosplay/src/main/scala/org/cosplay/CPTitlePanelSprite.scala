@@ -43,6 +43,18 @@ import org.cosplay.CPPixel.*
   *  '------------------'
   * </pre>
   *
+  * ### UI Framework
+  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * used for constructing UI element on the screen. These include:
+  *  - [[CPLayoutSprite]]
+  *  - [[CPDynamicSprite]]
+  *  - [[CPLabelSprite]]
+  *  - [[CPSpacerSprite]]
+  *  - [[CPTitlePanelSprite]]
+  *  - [[CPListBoxSprite]]
+  *  - [[CPTextInputSprite]]
+  *  - [[CPSystemFont]]
+  *
   * @param id ID of this scene object.
   * @param x Initial X-coordinate of the top-left corner of the sprite. Default value is zero.
   * @param y Initial Y-coordinate of the top-left corner of the sprite. Default value is zero.

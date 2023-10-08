@@ -76,6 +76,7 @@ trait CPListBoxModel:
   *  - [[CPDynamicSprite]]
   *  - [[CPLabelSprite]]
   *  - [[CPSpacerSprite]]
+  *  - [[CPTitlePanelSprite]]
   *  - [[CPListBoxSprite]]
   *  - [[CPTextInputSprite]]
   *  - [[CPSystemFont]]

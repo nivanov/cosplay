@@ -17,8 +17,6 @@
 
 package org.cosplay
 
-import org.cosplay.impl.CPUtils
-
 /*
    _________            ______________
    __  ____/_______________  __ \__  /_____ _____  __
@@ -36,8 +34,8 @@ import org.cosplay.impl.CPUtils
   * Scene object tailor-made for handling keyboard events.
   *
   * This is an off-screen sprite that has only one purpose of handling keyboard events.
-  * Since this is an off-screen sprite the method [[CPSceneObject.render()]] will never
-  * be called. Use [[CPSceneObject.update()]] callback, if necessary, instead and make sure to
+  * Since this is an off-screen sprite the method [[CPSceneObject.render]] will never
+  * be called. Use [[CPSceneObject.update]] callback, if necessary, instead and make sure to
   * call `super.update(...)`.
   *
   * This is an example of the often used idiom by built-in examples to handle 'Q' key press to exit the game:
@@ -68,7 +66,7 @@ class CPKeyboardSprite(
     f: (CPSceneObjectContext, CPKeyboardKey) => Unit,
     tags: Set[String] = Set.empty
 ) extends CPOffScreenSprite(s"kbd-spr-${CPRand.guid6}", tags = tags):
-    /** @inheritdoc */ 
+    /** @inheritdoc */
     override def update(ctx: CPSceneObjectContext): Unit = ctx.getKbEvent match
         case Some(evt) => f(ctx, evt.key)
         case None => ()
@@ -77,7 +75,7 @@ class CPKeyboardSprite(
       * Creates keyboard sprite handling a single keyboard key. This is an example of the often used idiom by
       * built-in examples to handle 'Q' key press to exit the game:
       * {{{
-      *     CPKeyboardSprite(_.exitGame(), KEY_LO_Q)
+      *     CPKeyboardSprite(_.exitGame(), KEY_LO_Q, KEY_UP_Q)
       * }}}
       *
       * @param act A function to call when one of the keys from `keys` set is pressed.

@@ -62,6 +62,7 @@ import org.cosplay.impl.CPUtils
   *  - [[CPDynamicSprite]]
   *  - [[CPLabelSprite]]
   *  - [[CPSpacerSprite]]
+  *  - [[CPTitlePanelSprite]]
   *  - [[CPListBoxSprite]]
   *  - [[CPTextInputSprite]]
   *  - [[CPSystemFont]]

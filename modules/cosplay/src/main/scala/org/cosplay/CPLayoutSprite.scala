@@ -149,6 +149,7 @@ private[cosplay] sealed case class CPLayoutSpec(
   *  - [[CPDynamicSprite]]
   *  - [[CPLabelSprite]]
   *  - [[CPSpacerSprite]]
+  *  - [[CPTitlePanelSprite]]
   *  - [[CPListBoxSprite]]
   *  - [[CPTextInputSprite]]
   *  - [[CPSystemFont]]

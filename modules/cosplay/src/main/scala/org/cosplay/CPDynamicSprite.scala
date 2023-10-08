@@ -41,6 +41,7 @@ package org.cosplay
   *  - [[CPDynamicSprite]]
   *  - [[CPLabelSprite]]
   *  - [[CPSpacerSprite]]
+  *  - [[CPTitlePanelSprite]]
   *  - [[CPListBoxSprite]]
   *  - [[CPTextInputSprite]]
   *  - [[CPSystemFont]]

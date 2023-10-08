@@ -67,6 +67,7 @@ import scala.collection.mutable
   *  - [[CPLabelSprite]]
   *  - [[CPSpacerSprite]]
   *  - [[CPListBoxSprite]]
+  *  - [[CPTitlePanelSprite]]
   *  - [[CPTextInputSprite]]
   *  - [[CPSystemFont]]
   *
