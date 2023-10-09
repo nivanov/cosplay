@@ -56,7 +56,7 @@ import org.cosplay.impl.CPUtils
   *  - [[CPTextInputSprite]]
   *
   * ### UI Framework
-  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * Although CosPlay does not define an opinionated UI framework, several sprites and supporting classes are often
   * used for constructing UI element on the screen. These include:
   *  - [[CPLayoutSprite]]
   *  - [[CPDynamicSprite]]

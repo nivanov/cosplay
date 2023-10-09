@@ -143,7 +143,7 @@ private[cosplay] sealed case class CPLayoutSpec(
   *  - Use [[CPSpacerSprite]] to help fill up space in your layout.
   *
   * ### UI Framework
-  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * Although CosPlay does not define an opinionated UI framework, several sprites and supporting classes are often
   * used for constructing UI element on the screen. These include:
   *  - [[CPLayoutSprite]]
   *  - [[CPDynamicSprite]]

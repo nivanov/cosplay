@@ -44,7 +44,7 @@ import org.cosplay.CPPixel.*
   * </pre>
   *
   * ### UI Framework
-  * Although CosPlay does not define an opinionated UI framework several sprites and supporting classes are often
+  * Although CosPlay does not define an opinionated UI framework, several sprites and supporting classes are often
   * used for constructing UI element on the screen. These include:
   *  - [[CPLayoutSprite]]
   *  - [[CPDynamicSprite]]
@@ -54,6 +54,12 @@ import org.cosplay.CPPixel.*
   *  - [[CPListBoxSprite]]
   *  - [[CPTextInputSprite]]
   *  - [[CPSystemFont]]
+  *
+  *  You can can also look at the following UI-related examples:
+  *   - [[org.cosplay.examples.listbox.CPListBoxExample]]
+  *   - [[org.cosplay.examples.dialog.CPDialogExample]]
+  *   - [[org.cosplay.examples.layout.CPLayoutExample]]
+  *   - [[org.cosplay.examples.textinput.CPTextInputExample]]
   *
   * @param id ID of this scene object.
   * @param x Initial X-coordinate of the top-left corner of the sprite. Default value is zero.
