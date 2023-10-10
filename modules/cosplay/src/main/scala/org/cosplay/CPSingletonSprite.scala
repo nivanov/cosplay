@@ -34,11 +34,23 @@ package org.cosplay
   * The scope for the [[CPSingletonSprite]].
   */
 enum CPSingletonScope:
-    /**  Scope of the entire game. One event at the beginning of the game loop. */
+    /**
+      * Scope of the entire game. One event at the beginning of the game loop.
+      * The beginning of the game loop will be determined when [[CPSceneObjectContext.getFrameCount]]
+      * is equal to zero.
+      */
     case GAME
-    /**  Scope of the scene. One event at the beginning of the scene life cycle. */
+    /**
+      * Scope of the scene. One event at the beginning of the scene life cycle.
+      * The beginning of the scene life cycle will be determined when [[CPSceneObjectContext.getSceneFrameCount]]
+      * is equal to zero.
+      */
     case SCENE
-    /**  Scope of the individual singleton object. One event at the beginning of the singleton life cycle. */
+    /**
+      * Scope of the individual singleton object. One event at the beginning of the singleton life cycle.
+      * The beginning of the scene object life cycle is determined when its callback is called for the
+      * first time.
+      */
     case OBJECT
 
 import CPSingletonScope.*
