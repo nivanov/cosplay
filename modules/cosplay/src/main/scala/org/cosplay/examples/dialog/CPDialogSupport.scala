@@ -29,11 +29,11 @@ package org.cosplay.examples.dialog
             (C) 2021 Rowan Games, Inc.
                ALl rights reserved.
 */
-
 import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPKeyboardKey.*
 import org.cosplay.CPPixel.*
+
 
 /**
   * Simple "framework" for basic modal dialog functionality.
@@ -318,7 +318,7 @@ object CPDialogSupport:
       *
       * @param ctx The context of the caller.
       * @param objs Scene objects comprising the UI of the dialog. They will be automatically
-      *             added to the current scene and automatically remove once the dialog is closed.
+      *             added to the current scene and automatically removed once the dialog is closed.
       * @param onStart Function to call when dialog's constituent sprites are added to the scene but not rendered yet.
       * @param onEnd Function to call after dialog's constituent sprites are removed from the scene.
       * @param onKey Called on each key press within the dialog. Should return `true` if dialog
