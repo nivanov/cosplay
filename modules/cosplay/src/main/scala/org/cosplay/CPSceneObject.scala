@@ -113,26 +113,39 @@ abstract class CPSceneObject(
 
     /**
       * Sets visibility flag. Note that by default all scene objects are visible.
+      * Note also that this change happens
+      * immediately in the same frame. If you want this to happen in the next frame only you need
+      * to use [[CPSceneObjectContext.runNextFrame()]].
       *
       * @param vis `true` to make this object visible, `false` otherwise.
       * @see [[show()]]
       * @see [[hide()]]
+      * @see [[CPSceneObjectContext.runNextFrame()]]
+      * @see [[CPSceneObjectContext.runLater()]]
       */
     def setVisible(vis: Boolean): Unit = visible = vis
 
     /**
       * Shortcut method for showing this object.
-      * Note that by default all scene objects are visible.
+      * Note that by default all scene objects are visible. Note also that this change happens
+      * immediately in the same frame. If you want this to happen in the next frame only you need
+      * to use [[CPSceneObjectContext.runNextFrame()]].
       *
       * @see [[setVisible()]]
+      * @see [[CPSceneObjectContext.runNextFrame()]]
+      * @see [[CPSceneObjectContext.runLater()]]
       */
     def show(): Unit = visible = true
 
     /**
       * Shortcut method for hiding this object.
-      * Note that by default all scene objects are visible.
+      * Note that by default all scene objects are visible. Note also that this change happens
+      * immediately in the same frame. If you want this to happen in the next frame only you need
+      * to use [[CPSceneObjectContext.runNextFrame()]].
       *
       * @see [[setVisible()]]
+      * @see [[CPSceneObjectContext.runNextFrame()]]
+      * @see [[CPSceneObjectContext.runLater()]]
       */
     def hide(): Unit = visible = false
 
