@@ -1225,6 +1225,7 @@ object CPEngine:
                     override def runLater(delayMs: Long, f: CPSceneObjectContext => Unit): Unit = laterRuns += LaterRun(frameMs + delayMs, f)
                     override def runNextFrame(f: CPSceneObjectContext => Unit): Unit = nextFrameRuns += f
                     override def getKbEvent: Option[CPKeyboardEvent] = if kbFocusOwner.isEmpty || kbFocusOwner.get == myId then kbEvt else None
+                    override def consumeKbEvent(): Unit = kbEvt = None
                     override def sendMessage(id: String, msgs: AnyRef*): Unit =
                         val cloId = id
                         val cloMsgs = msgs
