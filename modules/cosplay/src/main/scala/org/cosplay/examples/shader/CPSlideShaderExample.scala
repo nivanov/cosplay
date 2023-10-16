@@ -128,7 +128,7 @@ object CPSlideShaderExample:
         val shdrs = mutable.Buffer.empty[CPSlideInShader | CPSlideOutShader]
         for dir <- CPSlideDirection.values do
             val s1 = CPSlideInShader.sigmoid(dir, false, 1500, BG_PX, _ => (), lastShdr == null)
-            val s2 = CPSlideOutShader.sigmoid(dir, false, 1500, BG_PX, _ => labelSpr.reset(), false)
+            val s2 = CPSlideOutShader.sigmoid(dir, false, 1500, BG_PX, _ => labelSpr.reset())
             s1.setOnFinish(_ =>
                 labelSpr.setImage(CPSystemFont.render(dir.toString, C_ORANGE1, None))
                 s2.start()
