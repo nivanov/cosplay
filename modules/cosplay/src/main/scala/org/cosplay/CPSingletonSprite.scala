@@ -36,13 +36,13 @@ package org.cosplay
 enum CPSingletonScope:
     /**
       * Scope of the entire game. One event at the beginning of the game loop.
-      * The beginning of the game loop will be determined when [[CPSceneObjectContext.getFrameCount]]
+      * The beginning of the game loop will be determined when [[CPBaseContext.getFrameCount]]
       * is equal to zero.
       */
     case GAME
     /**
       * Scope of the scene. One event at the beginning of the scene life cycle.
-      * The beginning of the scene life cycle will be determined when [[CPSceneObjectContext.getSceneFrameCount]]
+      * The beginning of the scene life cycle will be determined when [[CPBaseContext.getSceneFrameCount]]
       * is equal to zero.
       */
     case SCENE
