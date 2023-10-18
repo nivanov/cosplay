@@ -56,7 +56,7 @@ import org.apache.commons.math3.analysis.function.*
   *     100% the actual pixel color, value `0.5` means that the color will be a 50% mix between the background
   *     and the actual pixel color. The function takes two parameters: first is a current frame number since the start
   *     of the effect, and the second parameter is the last frame number of the effect. First parameter is always less
-  *     then the second one. By default, the the `(a, b) => a.toFloat / b` function that is used gives a more gradual color
+  *     then the second one. By default, the the `(a, b) => a.toFloat / b` function is used that gives a more gradual color
   *     transition through the frames range. Another popular function to use here is a sigmoid
   *     function: `(a, b) => sigmoid.value(a - b / 2).toFloat` that gives a different, more rapid visual effect.
   * @see [[CPFadeInShader]]
@@ -77,7 +77,7 @@ class CPSlideOutShader(
     onFinish: CPSceneObjectContext => Unit = _ => (),
     autoStart: Boolean = false,
     skip: (CPZPixel, Int, Int) => Boolean = (_, _, _) => false,
-    balance: (Int, Int) => Float = (a, b) => a.toFloat / b
+    balance: (Int, Int) => Float = (a, b) => if b == 0 then 1f else a.toFloat / b
 ) extends CPDurationShader:
     checkDuration(durMs)
     checkBgPixel(bgPx)
@@ -140,12 +140,15 @@ class CPSlideOutShader(
                     val px = zpx.px
                     if px != bgPx && !skip(zpx, x, y) then
                         val px = zpx.px
-                        val maxFrame = matrix(x - rect.x)(y - rect.y)
-                        val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
-                        !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
-                        val newFg = CPColor.mixture(px.fg, bgFg, bal)
-                        val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
-                        canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
+                        val mx = x - rect.x
+                        val my = y - rect.y
+                        if mx >= 0 && mx < lastDim.w && my >= 0 && my < lastDim.h then
+                            val maxFrame = matrix(mx)(my)
+                            val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
+                            !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
+                            val newFg = CPColor.mixture(px.fg, bgFg, bal)
+                            val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
+                            canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
             )
             frmCnt += 1
             if frmCnt == maxFrmCnt then

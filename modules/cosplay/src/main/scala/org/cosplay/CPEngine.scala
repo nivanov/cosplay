@@ -961,11 +961,12 @@ object CPEngine:
         var kbEvt = none[CPKeyboardEvent]
         var lastTermDim = CPDim.ZERO
         val msgQ = mutable.HashMap.empty[String, mutable.Buffer[AnyRef]]
-        val delayedQ = mutable.ArrayBuffer.empty[() => Unit]
+        val delayedQ0 = mutable.ArrayBuffer.empty[() => Unit]
+        val delayedQ1 = mutable.ArrayBuffer.empty[() => Unit]
         val laterRuns = mutable.ArrayBuffer.empty[LaterRun]
         val nextFrameRuns = mutable.ArrayBuffer.empty[CPSceneObjectContext => Unit]
-        val gameCache = CPCache(delayedQ)
-        val sceneCache = CPCache(delayedQ)
+        val gameCache = CPCache(delayedQ1)
+        val sceneCache = CPCache(delayedQ1)
         val collidedBuf = mutable.ArrayBuffer.empty[CPSceneObject]
         var stopFrame = false
         var kbFocusOwner = none[String]
@@ -1184,7 +1185,7 @@ object CPEngine:
                         laterRuns.foreach(_.f(this))
                         laterRuns.clear()
 
-                        delayedQ += (() =>
+                        delayedQ1 += (() =>
                             if cloDelCur then
                                 scenes.remove(sc.getId) match
                                     case Some(s) => lifecycleStop(s)
@@ -1229,7 +1230,7 @@ object CPEngine:
                     override def sendMessage(id: String, msgs: AnyRef*): Unit =
                         val cloId = id
                         val cloMsgs = msgs
-                        delayedQ += (() => postQ(cloId, cloMsgs))
+                        delayedQ0 += (() => postQ(cloId, cloMsgs))
                     override def receiveMessage(): Seq[AnyRef] = msgQ.get(myId) match
                         case Some(buf) =>
                             val msgs = Seq.empty ++ buf // Copy.
@@ -1243,16 +1244,16 @@ object CPEngine:
                         if kbFocusOwner.isDefined && kbFocusOwner.get != id then
                             scLog.trace(s"Input focus is currently held by '${kbFocusOwner.get}', switching to '$id'.")
                         val cloId = id
-                        delayedQ += (() => kbFocusOwner = cloId.?)
+                        delayedQ0 += (() => kbFocusOwner = cloId.?)
                     override def getFocusOwner: Option[String] = kbFocusOwner
                     override def releaseFocus(id: String): Unit =
                         if kbFocusOwner.isDefined && kbFocusOwner.get == id then
-                            delayedQ += (() => kbFocusOwner = None)
+                            delayedQ0 += (() => kbFocusOwner = None)
                     override def releaseMyFocus(): Unit = releaseFocus(myId)
                     override def addObject(obj: CPSceneObject, replace: Boolean = false): Unit =
                         if replace then deleteObject(obj.getId)
                         val cloObj = obj
-                        delayedQ += (() =>
+                        delayedQ0 += (() =>
                             sc.objects.add(cloObj)
                             engLog.trace(s"Scene object added to '${sc.getId}' scene: ${cloObj.toExtStr}")
                         )
@@ -1266,7 +1267,7 @@ object CPEngine:
                         if newScId == sc.getId then raise(s"Cannot add a new scene with the same ID as the current one: $newScId")
                         if replace then deleteScene(newScId) // Adds delayed action.
                         val loNewSc = newSc
-                        delayedQ += (() =>
+                        delayedQ1 += (() =>
                             // NOTE: scene lifecycle transitions when it becomes active.
                             scenes.add(loNewSc)
                             val verb = if replace then "replaced" else "added"
@@ -1278,7 +1279,7 @@ object CPEngine:
                         if sc.getId == id then raise(s"Cannot delete current scene: ${sc.getId}")
                         else
                             val cloId = id
-                            delayedQ += (() =>
+                            delayedQ1 += (() =>
                                 scenes.remove(cloId) match
                                     case Some(s) =>
                                         engLog.trace(s"Scene deleted: ${s.getId}")
@@ -1288,7 +1289,7 @@ object CPEngine:
                             )
                     override def deleteObject(id: String): Unit =
                         val cloId = id
-                        delayedQ += (() =>
+                        delayedQ0 += (() =>
                             sc.objects.remove(cloId) match
                                 case Some(obj) =>
                                     if kbFocusOwner.isDefined && kbFocusOwner.get == cloId then kbFocusOwner = None
@@ -1399,9 +1400,10 @@ object CPEngine:
                 val startSysNs = System.nanoTime()
 
                 // Perform all delayed operations for the next frame.
-                for f <- delayedQ if !stopFrame do f()
-                // Clear delayed operations.
-                delayedQ.clear()
+                for f <- delayedQ0 if !stopFrame do f()
+                delayedQ0.clear()
+                for f <- delayedQ1 if !stopFrame do f()
+                delayedQ1.clear()
 
                 // Built-in support for 'Ctrl+q', 'Ctrl+l' and 'F12'.
                 if kbEvt.isDefined then
@@ -1469,7 +1471,7 @@ object CPEngine:
                 // Copy messages from the external queue to the internal.
                 extDelayedQ.synchronized {
                     if extDelayedQ.nonEmpty then
-                        extDelayedQ.foreach((id, msgs) => delayedQ += (() => postQ(id, msgs)))
+                        extDelayedQ.foreach((id, msgs) => delayedQ0 += (() => postQ(id, msgs)))
                         extDelayedQ.clear()
                 }
 
