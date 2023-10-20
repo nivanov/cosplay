@@ -1469,14 +1469,14 @@ class CPCanvas(pane: CPZPixelPane, clip: CPRect):
       * @param titleX X-coordinate of the title. Default is -1.
       * @param titleY Y-coordinate of the title. Default is -1.
       * @param skin Skin function that takes global X and Y coordinates as well as default pixel at that location
-      *             and returns the skinned pixel.
+      *             and returns the skinned pixel. Default value is the function that returns the same pixel.
       */
     def drawRectBorder(
         rect: CPRect,
         z: Int,
         chars: String,
         fg: CPColor,
-        bg: Option[CPColor],
+        bg: Option[CPColor] = None,
         title: Seq[CPPixel] = Seq.empty,
         titleX: Int = -1,
         titleY: Int = -1,

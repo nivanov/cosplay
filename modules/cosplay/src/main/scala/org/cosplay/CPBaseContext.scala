@@ -74,12 +74,13 @@ trait CPBaseContext:
     def getSceneCache: CPCache
 
     /**
-      * Gets global frame count for the game.
+      * Gets global frame count for the game. Global frame count spans all scenes.
       */
     def getFrameCount: Long
 
     /**
-      * Gets frame count since the beginning of the current scene.
+      * Gets frame count since the beginning of the current scene. If the same scene gets
+      * deactivated and activated again its frame count will reset to zero.
       */
     def getSceneFrameCount: Long
 
