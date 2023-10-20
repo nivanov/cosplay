@@ -51,7 +51,6 @@ val jlineVer = "3.23.0"
 val jnaVer = "5.13.0"
 val mixPanelVer = "1.5.2"
 val audioFileVer = "2.4.2"
-val jansiVer = "2.4.1"
 val antlrVer = "4.13.1"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
@@ -116,7 +115,6 @@ lazy val cosplay = (project in file("modules/cosplay"))
         libraryDependencies += "org.openjfx"                % "javafx-media"                    % openjfxVer,
         libraryDependencies += "com.typesafe.scala-logging" % s"scala-logging_$scalaMajVer"     % scalaLoggingVer,
         libraryDependencies += "org.jline"                  % "jline-terminal"                  % jlineVer,
-        libraryDependencies += "org.fusesource.jansi"       % "jansi"                           % jansiVer,
         libraryDependencies += "net.java.dev.jna"           % "jna"                             % jnaVer,
         libraryDependencies += "com.mixpanel"               % "mixpanel-java"                   % mixPanelVer,
         libraryDependencies += "de.sciss"                   % "audiofile_3"                      % audioFileVer,
