@@ -135,23 +135,21 @@ class CPSlideOutShader(
                 matrix = CPSlideDirection.mkMatrix(dir, dim, maxFrmCnt)
                 lastDim = dim
             val canv = ctx.getCanvas
-            rect.loop((x, y) => 
+            rect.loop((x, y) =>
                 if canv.isValid(x, y) then
-                    Try(canv.getZPixel(x, y)) match
-                        case Success(zpx) =>
-                            val px = zpx.px
-                            if px != bgPx && !skip(zpx, x, y) then
-                                val px = zpx.px
-                                val mx = x - rect.x
-                                val my = y - rect.y
-                                if mx >= 0 && mx < lastDim.w && my >= 0 && my < lastDim.h then
-                                    val maxFrame = matrix(mx)(my)
-                                    val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
-                                    !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
-                                    val newFg = CPColor.mixture(px.fg, bgFg, bal)
-                                    val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
-                                    canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
-                        case _ => () // Ignore.
+                    val zpx = canv.getZPixel(x, y)
+                    val px = zpx.px
+                    if px != bgPx && !skip(zpx, x, y) then
+                        val px = zpx.px
+                        val mx = x - rect.x
+                        val my = y - rect.y
+                        if mx >= 0 && mx < lastDim.w && my >= 0 && my < lastDim.h then
+                            val maxFrame = matrix(mx)(my)
+                            val bal = if frmCnt >= maxFrame then 1f else balance(frmCnt, maxFrame)
+                            !>(bal >= 0f && bal <= 1f, s"Invalid balance value: $bal (must be in [0,1] range).")
+                            val newFg = CPColor.mixture(px.fg, bgFg, bal)
+                            val newBg = px.bg.flatMap(CPColor.mixture(_, bgBg, bal).?)
+                            canv.drawPixel(px.withFgBg(newFg, newBg), x, y, zpx.z)
             )
             frmCnt += 1
             if frmCnt == maxFrmCnt then
