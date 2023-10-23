@@ -85,6 +85,7 @@ object CPVersion:
         Version("0.9.2", LocalDate.of(2023, 7, 22)),
         Version("0.9.3", LocalDate.of(2023, 8, 20)),
         Version("0.9.4", LocalDate.of(2023, 10, 6)),
+        Version("0.9.5", LocalDate.of(2023, 10, 22)),
     ).sortBy(_.semver)
     // +==================================================+
     // | UPDATE ABOVE SEQUENCE FOR EACH RELEASE MANUALLY. |
