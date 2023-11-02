@@ -177,7 +177,7 @@ class CPLayoutSprite(
     shaders: Seq[CPShader] = Seq.empty,
     tags: Set[String] = Set.empty
 ) extends CPOffScreenSprite(id, shaders, tags):
-    private var specs = CPLayoutCompiler.compile(spec).getOrRethrow()
+    private var specs = CPLayoutCompiler.compile(spec).get
 
     override def monitor(using ctx: CPSceneObjectContext): Unit =
         val laidOut = mutable.ArrayBuffer.empty[String]
@@ -232,6 +232,6 @@ class CPLayoutSprite(
       *
       * @param spec Layout specification.
       */
-    def updateSpec(spec: String): Unit = specs = CPLayoutCompiler.compile(spec).getOrRethrow()
+    private def updateSpec(spec: String): Unit = specs = CPLayoutCompiler.compile(spec).get
 
 

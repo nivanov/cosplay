@@ -92,7 +92,6 @@ extension[T](ref: T)
 extension[T] (t: Try[T])
     def getOr(pf: PartialFunction[Throwable, T]): T = t.recover(pf).get
     def onFailure(pf: PartialFunction[Throwable, T]): Unit = t.recover(pf).get
-    def getOrRethrow(): T = t.recover(e => throw e).get
 
 /** Single element sequence sugar. */
 extension[T](t: T)
@@ -455,15 +454,31 @@ object CPEngine:
         gameInfo
 
     /**
-      * Creates file with given relative path in the engine's special, system-specific, game-specific root location. The actual
-      * absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
+      * Creates a file instance with given relative path in the engine's special, system-specific, game-specific root
+      * location. The actual absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
       *
-      * @param path Relative path of the file. Path may include sub-directories and should use Unix
-      *     style '/' for path separator.
+      * @param path Relative path of the existing or non-existing file. Note that the returning file instance is just
+      *             a wrapper around the path. If the referenced file doesn't exist it will have to be created by
+      *             the outside code. Path may include sub-directories, which will be created, if
+      *             necessary, and should use Unix style '/' for path separator.
       */
     def homeFile(path: String): Try[File] = Try {
         checkState()
         newFile(s"${homeRoot.get}/data/$path")
+    }
+
+    /**
+      * Creates new directory with given relative path in the engine's special, system-specific, game-specific root
+      * location. The actual absolute path of the returned file is OS-dependent and shouldn't be relied on or used.
+      * Note that unlike [[homeFile()]] method, this call will create a new directory or return the existing one
+      * if the given path points to the existing directory.
+      *
+      * @param path Relative path of the new or existing directory. Path may include sub-directories, which will be
+      *             created, if necessary, and should use Unix style '/' for path separator.
+      */
+    def homeDir(path: String): Try[File] = Try {
+        checkState()
+        mkDir(new File(s"${homeRoot.get}/data/$path"))
     }
 
     /**
