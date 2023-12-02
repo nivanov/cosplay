@@ -184,8 +184,7 @@ class CPJLineTerminal(gameInfo: CPGameInfo) extends CPTerminal:
             .system(true)
             .nativeSignals(true)
             .signalHandler(
-                new Terminal.SignalHandler:
-                    def handle(sig: Terminal.Signal): Unit = ()
+                (sig: Terminal.Signal) => ()
             )
             .dumb(false)
             .`type`("xterm-256color")
