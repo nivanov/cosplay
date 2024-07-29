@@ -49,7 +49,7 @@ val miglayoutVer = "11.3"
 val flatlafVer = "3.2.2"
 val jlineVer = "3.25.1"
 val jnaVer = "5.13.0"
-val mixPanelVer = "1.5.2"
+val mixPanelVer = "1.5.3"
 val audioFileVer = "2.4.2"
 val antlrVer = "4.13.1"
 
