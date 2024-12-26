@@ -21,7 +21,6 @@ import org.cosplay.*
 import org.cosplay.CPColor.*
 import org.cosplay.CPPixel.*
 import org.cosplay.CPKeyboardKey.*
-import org.cosplay.impl.CPUtils
 
 /*
    _________            ______________
