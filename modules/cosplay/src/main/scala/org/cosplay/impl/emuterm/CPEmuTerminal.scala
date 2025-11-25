@@ -230,7 +230,7 @@ class CPEmuTerminal(gameInfo: CPGameInfo) extends CPTerminal:
                 if bufImg != null then g.asInstanceOf[Graphics2D].drawImage(bufImg, 0, 0, w, h, null)
 
         // Clear up focus traverse key bindings.
-        val empty = new java.util.HashSet()
+        val empty = new java.util.HashSet[AWTKeyStroke]()
         frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, empty)
         frame.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, empty)
         frame.setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, empty)

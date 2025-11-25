@@ -17,12 +17,10 @@
 
 package org.cosplay.games.snake
 
-import org.cosplay.games.*
 import org.cosplay.*
-import org.cosplay.CPColor.*
-import org.cosplay.CPArrayImage.*
+import org.cosplay.games.*
 import org.cosplay.prefabs.shaders.*
-import org.cosplay.CPPixel.*
+import org.cosplay.prefabs.particles.*
 import org.cosplay.CPKeyboardKey.*
 
 /*

@@ -68,7 +68,7 @@ object CPSnakeGame:
         val gameInfo = CPGameInfo(name = "Ascii Snake")
 
         // Initialize the engine.
-        CPEngine.init(gameInfo, System.console() == null || args.contains("emuterm"))
+        CPEngine.init(gameInfo, true/*System.console() == null || args.contains("emuterm")*/)
 
         // Start the game & wait for exit.
         try

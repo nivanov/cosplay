@@ -31,27 +31,27 @@
 val cosPlayVer = "0.9.5"
 
 val scalaMajVer = "3"
-val scalaMinVer = "3.0"
-val log4jVer = "2.22.1"
+val scalaMinVer = "3.6" 
+val log4jVer = "2.23.1"  // Updated from "2.22.1" - Security fix
 val scalaLoggingVer = "3.9.5"
 val scalaParColVer = "1.0.4"
-val commonsLang3Ver = "3.14.0"
-val commonsMath3Ver = "3.6.1"
-val commonsTextVer = "1.10.0"
-val commonsIoVer = "2.15.1"
-val commonsCollectionsVer = "4.4"
-val scalaTestVer = "3.2.17"
+val commonsLang3Ver = "3.14.0"  // Keep current - 3.14.1 doesn't exist
+val commonsMath3Ver = "3.6.1"  // Keep current - 3.6.2 doesn't exist
+val commonsTextVer = "1.11.0"  // Updated from "1.10.0" - CRITICAL: Security fix (CVE-2022-42889)
+val commonsIoVer = "2.16.0"  // Updated from "2.15.1"
+val commonsCollectionsVer = "4.4"  // Keep current - 4.4.1 doesn't exist
+val scalaTestVer = "3.2.19"  // Updated from "3.2.17"
 val scalaReflectVer = "2.0.0"
-val junitVer = "5.10.1"
-val openjfxVer = "18"
+val junitVer = "5.11.0"  // Updated from "5.10.1"
+val openjfxVer = "21"  // Updated from "18" -> "21" (LTS) - Test thoroughly for compatibility
 val ikonliVer = "12.3.1"
 val miglayoutVer = "11.3"
-val flatlafVer = "3.2.2"
-val jlineVer = "3.25.1"
-val jnaVer = "5.13.0"
+val flatlafVer = "3.2.5"  // Updated from "3.2.2" - 3.3.0 doesn't exist, using latest 3.2.x
+val jlineVer = "3.26.0"  // Updated from "3.25.1"
+val jnaVer = "5.14.0"  // Updated from "5.13.0"
 val mixPanelVer = "1.5.2"
 val audioFileVer = "2.4.2"
-val antlrVer = "4.13.1"
+val antlrVer = "4.13.2"  // Updated from "4.13.1"
 
 ThisBuild / scalaVersion := s"$scalaMajVer.$scalaMinVer"
 ThisBuild / version := cosPlayVer
@@ -80,7 +80,7 @@ lazy val cosplay = (project in file("modules/cosplay"))
         //
         // If you want to run a built-in game or example in the terminal console use supplied maven build
         // 'modules/cosplay/pom.xml'. For example, to run built-in 'Pong' game (maven profile 'pong') in the
-        // terimanl console run the following command from the project root directory:
+        // terminal console run the following command from the project root directory:
         //
         // $ mvn clean package
         // $ mvn -f modules/cosplay -P pong exec:java

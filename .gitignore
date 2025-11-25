@@ -17,6 +17,7 @@
 
 # Compiled class file
 *.class
+*.tasty
 
 # Log file
 *.log
@@ -44,6 +45,8 @@ hs_err_pid*
 *.iml
 .idea/
 .bsp/
+.bloop/
+.metals/
 null/
 target
 project
