@@ -32,7 +32,7 @@ val cosPlayVer = "0.9.5"
 
 val scalaMajVer = "3"
 val scalaMinVer = "3.6" 
-val log4jVer = "2.23.1"  // Updated from "2.22.1" - Security fix
+val log4jVer = "2.25.3"  // Updated from "2.22.1" - Security fix
 val scalaLoggingVer = "3.9.5"
 val scalaParColVer = "1.0.4"
 val commonsLang3Ver = "3.14.0"  // Keep current - 3.14.1 doesn't exist
