@@ -104,7 +104,7 @@
         <maven.source.plugin.ver>3.0.1</maven.source.plugin.ver>
         <maven.gpg.plugin.ver>3.0.1</maven.gpg.plugin.ver>
         <maven.javadoc.plugin.ver>3.3.1</maven.javadoc.plugin.ver>
-        <maven.clean.plugin.ver>3.1.0</maven.clean.plugin.ver>
+        <maven.clean.plugin.ver>3.1.1</maven.clean.plugin.ver>
         <maven.jar.plugin.ver>3.2.0</maven.jar.plugin.ver>
 
         <log4j.ver>2.21.0</log4j.ver>
@@ -125,7 +125,7 @@
         <flatlaf.ver>3.2.2</flatlaf.ver>
         <miglayout.ver>11.2</miglayout.ver>
         <sonatype.staging.ver>1.6.8</sonatype.staging.ver>
-        <exec.maven.ver>3.1.0</exec.maven.ver>
+        <exec.maven.ver>3.1.1</exec.maven.ver>
         <jna.ver>5.13.0</jna.ver>
         <mixpanel.ver>1.5.2</mixpanel.ver>
         <de.sciss.audiofile.ver>2.4.2</de.sciss.audiofile.ver>
